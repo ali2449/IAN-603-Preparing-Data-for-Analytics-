@@ -30,13 +30,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html">Home</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="./index.html">Home</a></li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Modules
-                        </a>
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Modules</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="./module1.html">Module 1</a></li>
                             <li><a class="dropdown-item" href="./module2.html">Module 2</a></li>
@@ -54,9 +50,7 @@
                             <li><a class="dropdown-item" href="./module14.html">Module 14</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html#contact">Contact</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="./index.html#contact">Contact</a></li>
                 </ul>
             </div>
         </div>
@@ -67,6 +61,8 @@
         <!-- Module Title -->
         <section class="text-center py-5 bg-white rounded shadow">
             <h1 class="display-4 fw-bold text-dark">Module 1: Introduction to Data in Informatics</h1>
+            <p class="lead text-muted mb-0">Data types (structured, semi-structured, unstructured) and measurement scales (nominal, ordinal, interval, ratio), including discrete vs. continuous, encoding, visualization, and typical modeling paths.</p>
+            <p class="text-muted mt-2 mb-0"><small>Updated: August 26, 2025</small></p>
         </section>
 
         <!-- Module Content -->
@@ -74,200 +70,365 @@
             <div class="bg-white p-4 rounded shadow">
                 <!-- Learning Objectives -->
                 <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Learning Objectives</h2>
-                <p>Upon completion of this module, participants will be able to:</p>
                 <ul>
-                    <li>Define and provide concrete examples of structured, semi-structured, and unstructured data.</li>
-                    <li>Articulate the primary characteristics, typical sources, and storage methods for each data type.</li>
-                    <li>Analyze the implications of different data types on data preparation, analysis, and tool selection.</li>
-                    <li>Understand the critical role of data quality dimensions (accuracy, completeness, consistency, timeliness, validity) in informatics.</li>
+                    <li>Classify data as structured, semi-structured, or unstructured and state common sources/tools for each.</li>
+                    <li>Explain the four measurement scales (nominal, ordinal, interval, ratio) and choose appropriate stats and visuals.</li>
+                    <li>Distinguish <strong>discrete</strong> vs <strong>continuous</strong> numerics and pick sensible models and encodings.</li>
+                    <li>Apply pandas/scikit-learn to set dtypes, encode categorical variables, and scale numeric features.</li>
+                    <li>Map analytics data types to SQL column types and write constraints for validity.</li>
                 </ul>
 
-                <!-- Introduction to Data in Informatics -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Introduction to Data in Informatics</h2>
-                <p>Informatics, at its core, is the science of information. Whether in healthcare, business, or scientific research, the ability to extract meaningful insights hinges entirely on the quality and organization of the underlying data. This module serves as the foundational cornerstone of our course, introducing the diverse forms data can take. From the rigid order of a spreadsheet to the free-flowing narrative of a clinical note, understanding these data types is the first critical step in mastering data preparation. We will explore their historical evolution, their prevalence in modern systems, and the unique challenges each presents, setting the stage for the SQL and Spark techniques we will learn to tame them.</p>
-                <p>Historically, structured data dominated early computing eras with punch cards and relational databases in the 1970s. The rise of the internet in the 1990s introduced semi-structured formats like XML, while the social media boom in the 2000s exploded unstructured data. Today, in fields like informatics, blending these types is common—e.g., combining patient records (structured) with doctor notes (unstructured) and wearable data (semi-structured) for holistic analysis.</p>
+                <!-- Introduction -->
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Why Data Types & Scales Matter</h2>
+                <p>Choice of data type and measurement scale affects: (1) which <em>statistics</em> are valid, (2) how you <em>encode</em> features, (3) which <em>visualizations</em> make sense, and (4) what <em>models</em> are appropriate. For example, a five-point satisfaction item is ordinal (order but not equal gaps), so medians/IQRs or rank tests are safer than means when distributions are skewed; if you still treat it as interval, document why and check robustness with non-parametrics. (See references at the end.)</p>
 
-                <!-- The Data Landscape -->
-                <h3 class="h4 fw-bold mb-3">The Data Landscape</h3>
-                <p>The digital age has led to an explosion in data volume, velocity, and variety (the "3 Vs" of Big Data). This necessitates a clear understanding of data classification to effectively manage and analyze it. For instance, in a smart city project in Greensboro, NC, traffic sensors provide structured data, social media complaints offer unstructured insights, and API feeds deliver semi-structured updates.</p>
+                <!-- 3Vs Context -->
+                <div class="alert alert-info">
+                    <strong>Context:</strong> Modern datasets vary in <em>Volume, Velocity, Variety</em> (the “3Vs” popularized by Doug Laney). Variety is exactly the mix of structured, semi-structured, and unstructured data you’ll wrangle in this course.
+                </div>
 
-                <!-- Structured Data -->
-                <h4 class="h5 fw-bold mb-2">Structured Data</h4>
-                <p>Structured data is the most traditional and organized form of data. It conforms to a predefined data model, making it highly suitable for relational databases.</p>
+                <!-- Data Landscape -->
+                <h3 class="h4 fw-bold mb-3">The Data Landscape (with Examples)</h3>
+
+                <h4 class="h5 fw-bold mt-3">Structured Data</h4>
                 <ul>
-                    <li><strong>Characteristics:</strong>
+                    <li><strong>What it is:</strong> Predefined schema (tables, rows, columns). Easy to query with SQL.</li>
+                    <li><strong>Where it lives:</strong> PostgreSQL/MySQL/SQL Server; data warehouses; CSV/Parquet exports.</li>
+                    <li><strong>Examples:</strong>
                         <ul>
-                            <li><strong>Fixed Schema:</strong> Data is organized into tables with rows and columns, where each column has a specific data type (e.g., integer, string, date).</li>
-                            <li><strong>Relational:</strong> Relationships between tables are defined using keys.</li>
-                            <li><strong>Easily Queryable:</strong> Highly efficient for querying and analysis using SQL.</li>
+                            <li>Healthcare EHR tables: <code>patients</code>, <code>encounters</code>, <code>labs</code>.</li>
+                            <li>Retail: <code>orders(order_id, customer_id, order_date, total_amount)</code>.</li>
+                            <li>Finance: <code>transactions</code> with decimals for currency.</li>
                         </ul>
                     </li>
-                    <li><strong>Typical Sources:</strong>
-                        <ul>
-                            <li>Relational Database Management Systems (RDBMS): PostgreSQL, MySQL, SQL Server, Oracle.</li>
-                            <li>Enterprise Resource Planning (ERP) systems, Customer Relationship Management (CRM) systems.</li>
-                            <li>Financial transaction systems, online forms, sensor data (when pre-processed).</li>
-                        </ul>
-                    </li>
-                    <li><strong>Storage:</strong> Primarily in relational databases, data warehouses, or simple flat files (CSV, Excel).</li>
-                    <li><strong>Implications for Preparation:</strong> Generally requires less cleaning for structural issues, but focuses on data quality within the defined schema (e.g., correct data types, valid ranges, no duplicates).</li>
-                    <li><strong>How to Recognize Structured Data:</strong> Structured data often originates from sources with predefined fields, such as old paper forms (e.g., patient registration forms, survey questionnaires) that are digitized. If the data fits neatly into rows and columns with consistent types—like a spreadsheet where every row has the same number of fields and each field is of a uniform type (e.g., all ages are numbers)—it's structured. For example, a paper census form with fixed blanks for name, age, address can be scanned and converted directly into a database table.</li>
-                    <li><strong>Example (Healthcare):</strong> A patient demographics table with columns for <code>patient_id</code>, <code>name</code>, <code>date_of_birth</code>, <code>gender</code>, <code>blood_type</code>. Each record fits neatly into these predefined fields.</li>
-                    <li><strong>Example (Survey):</strong> A survey where respondents select answers from multiple-choice options, resulting in a table with <code>respondent_id</code>, <code>question_1_answer</code>, <code>question_2_answer</code>.</li>
-                    <li><strong>Expanded Example (E-commerce):</strong> An order table with <code>order_id</code> (INT), <code>customer_id</code> (INT), <code>order_date</code> (DATE), <code>total_amount</code> (DECIMAL). This allows easy aggregation like total sales per day.</li>
+                    <li><strong>Prep focus:</strong> Types, ranges, NOT NULLs, referential integrity, deduping.</li>
                 </ul>
-                <p><strong>Example Structured Data Table (Patient Demographics):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>patient_id</th>
-                            <th>name</th>
-                            <th>date_of_birth</th>
-                            <th>gender</th>
-                            <th>blood_type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1001</td>
-                            <td>Alice Smith</td>
-                            <td>1985-05-15</td>
-                            <td>Female</td>
-                            <td>A+</td>
-                        </tr>
-                        <tr>
-                            <td>1002</td>
-                            <td>Bob Johnson</td>
-                            <td>1990-03-22</td>
-                            <td>Male</td>
-                            <td>O-</td>
-                        </tr>
-                        <tr>
-                            <td>1003</td>
-                            <td>Carol White</td>
-                            <td>1978-11-07</td>
-                            <td>Female</td>
-                            <td>AB+</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p>This table illustrates how structured data maintains a consistent format, similar to how old paper medical forms with fixed sections (e.g., "Name:", "DOB:", "Gender:") are transcribed into digital rows and columns.</p>
+                <div class="table-responsive mb-3">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr><th>patient_id</th><th>dob</th><th>sex</th><th>blood_type</th><th>zip</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1001</td><td>1985-05-15</td><td>F</td><td>A+</td><td>27401</td></tr>
+                            <tr><td>1002</td><td>1990-03-22</td><td>M</td><td>O-</td><td>27214</td></tr>
+                            <tr><td>1003</td><td>1978-11-07</td><td>F</td><td>AB+</td><td>27410</td></tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                <!-- Semi-Structured Data -->
-                <h4 class="h5 fw-bold mb-2">Semi-Structured Data</h4>
-                <p>Semi-structured data does not conform to a rigid, tabular schema but contains tags or markers that organize and describe the data, allowing for some level of structure. It's more flexible than structured data, making it adaptable to evolving data requirements.</p>
+                <h4 class="h5 fw-bold mt-4">Semi-Structured Data</h4>
                 <ul>
-                    <li><strong>Characteristics:</strong>
-                        <ul>
-                            <li><strong>Flexible Schema:</strong> Schema is not fixed; fields can be added or removed easily.</li>
-                            <li><strong>Self-Describing:</strong> Data elements are often accompanied by tags or attributes that define their meaning.</li>
-                            <li><strong>Hierarchical/Nested:</strong> Often organized in a tree-like or graph-like structure.</li>
-                        </ul>
-                    </li>
-                    <li><strong>Typical Sources:</strong>
-                        <ul>
-                            <li>Web data (JSON from APIs, XML from web services).</li>
-                            <li>Log files (server logs, application logs).</li>
-                            <li>NoSQL databases (document databases like MongoDB).</li>
-                            <li>IoT sensor data streams.</li>
-                        </ul>
-                    </li>
-                    <li><strong>Storage:</strong> NoSQL databases, file systems (HDFS, S3), specialized data formats (Parquet, ORC).</li>
-                    <li><strong>Implications for Preparation:</strong> Requires parsing and schema inference. Challenges include inconsistent naming conventions, optional fields, and deeply nested structures that need to be flattened.</li>
-                    <li><strong>Example (Healthcare):</strong> Data from a wearable health device transmitted as JSON:</li>
+                    <li><strong>What it is:</strong> Flexible, self-describing formats (JSON, XML). Fields may be optional or nested.</li>
+                    <li><strong>Where it lives:</strong> API payloads, logs, IoT streams, document stores (MongoDB), data lakes.</li>
+                    <li><strong>Prep focus:</strong> Parsing, schema inference, JSON flattening, harmonizing keys/units.</li>
                 </ul>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-json">{
+                <div class="position-relative border rounded">
+                    <button class="btn btn-sm btn-secondary position-absolute end-0 m-2" onclick="copyCode(this)">Copy</button>
+                    <pre class="m-0 p-3"><code class="language-json">{
   "patient_id": "P1001",
-  "timestamp": "2024-07-28T10:30:00Z",
-  "metrics": {
-    "heart_rate": 72,
-    "steps": 500,
-    "sleep_duration_hours": 7.5
-  },
-  "location": {
-    "latitude": 36.07,
-    "longitude": -79.79
-  }
+  "timestamp": "2025-07-28T10:30:00Z",
+  "metrics": {"hr": 72, "steps": 500, "sleep_hours": 7.5},
+  "location": {"lat": 36.07, "lon": -79.79}
 }</code></pre>
                 </div>
-                <p>Another patient's data might omit <code>sleep_duration_hours</code> or add <code>blood_oxygen</code>.</p>
+                <p class="mt-2">Another record might add <code>"spo2": 0.97</code> or omit <code>sleep_hours</code>. Expect variability.</p>
+
+                <h4 class="h5 fw-bold mt-4">Unstructured Data</h4>
                 <ul>
-                    <li><strong>Example (Survey):</strong> An online survey allowing optional comments or attachments, where the response is stored as XML:</li>
+                    <li><strong>What it is:</strong> No predefined schema (free text, images, audio, video).</li>
+                    <li><strong>Where it lives:</strong> Clinical notes, PDFs, DICOM images, call recordings, social posts.</li>
+                    <li><strong>Prep focus:</strong> NLP (tokenization/NER), computer vision, ASR; convert to structured features.</li>
                 </ul>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-xml">&lt;response id="R2001"&gt;
-  &lt;demographics&gt;
-    &lt;age&gt;35&lt;/age&gt;
-    &lt;gender&gt;Female&lt;/gender&gt;
-  &lt;/demographics&gt;
-  &lt;answers&gt;
-    &lt;q1&gt;Strongly Agree&lt;/q1&gt;
-    &lt;q2&gt;Neutral&lt;/q2&gt;
-    &lt;comment&gt;I found the survey questions very clear.&lt;/comment&gt;
-  &lt;/answers&gt;
-&lt;/response&gt;</code></pre>
+                <div class="alert alert-secondary small">
+                    <strong>NIST terminology:</strong> Structured data has a predefined model; unstructured lacks one; semi-structured sits between. (See References.)
                 </div>
-                <p><strong>Expanded Example (Weather API):</strong> A weather forecast API response in JSON:</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-json">{
-  "city": "Greensboro",
-  "forecast": [
-    {"date": "2025-08-06", "temp": 85, "conditions": "Sunny"},
-    {"date": "2025-08-07", "temp": 78, "conditions": "Rainy", "wind_speed": 15}
-  ]
-}</code></pre>
+
+                <!-- Measurement Scales -->
+                <h2 class="h3 fw-bold border-bottom pb-2 my-4">Measurement Scales (Nominal, Ordinal, Interval, Ratio)</h2>
+                <p>These scales (originating with S. S. Stevens) determine what math is valid and how you should plot/analyze.</p>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Scale</th><th>Ordered?</th><th>Equal Differences?</th><th>True Zero?</th>
+                                <th>Typical Examples</th><th>Stats You Can Trust</th><th>Good Visuals</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Nominal</strong> (categorical)</td>
+                                <td>No</td><td>No</td><td>No</td>
+                                <td>Color, blood type, device type, ZIP</td>
+                                <td>Counts, mode, proportions; χ² tests</td>
+                                <td>Bar chart, mosaic</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ordinal</strong> (categorical)</td>
+                                <td>Yes</td><td>Not guaranteed</td><td>No</td>
+                                <td>Education level; satisfaction 1–5</td>
+                                <td>Median/IQR, percentiles; rank tests</td>
+                                <td>Ordered bars; median/IQR plots</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Interval</strong> (numeric)</td>
+                                <td>Yes</td><td>Yes</td><td>No</td>
+                                <td>Temperature (°C/°F), calendar year</td>
+                                <td>Mean/SD, correlation; <em>ratios invalid</em></td>
+                                <td>Histogram, line charts</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ratio</strong> (numeric)</td>
+                                <td>Yes</td><td>Yes</td><td>Yes</td>
+                                <td>Age, weight, income, distance, time</td>
+                                <td>All arithmetic incl. ratios</td>
+                                <td>Histogram, box/violin, scatter</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <p>Note how the "forecast" array allows variable fields like "wind_speed" in some entries but not others, showcasing flexibility.</p>
 
-                <!-- Unstructured Data -->
-                <h4 class="h5 fw-bold mb-2">Unstructured Data</h4>
-                <p>Unstructured data is information that does not have a predefined data model or is not organized in a pre-defined manner. It is the most challenging to process but often contains the richest insights.</p>
-                <ul>
-                    <li><strong>Characteristics:</strong>
-                        <ul>
-                            <li><strong>No Schema:</strong> Lacks any internal structure or organization.</li>
-                            <li><strong>Heterogeneous:</strong> Can be a mix of text, images, audio, video.</li>
-                            <li><strong>Context-Dependent:</strong> Meaning often relies heavily on human interpretation.</li>
-                        </ul>
-                    </li>
-                    <li><strong>Typical Sources:</strong>
-                        <ul>
-                            <li>Text documents: Clinical notes, emails, reports, open-ended survey responses, social media posts, articles.</li>
-                            <li>Multimedia: Images (X-rays, MRIs), audio recordings (patient interviews), video files.</li>
-                            <li>Satellite imagery, surveillance footage.</li>
-                        </ul>
-                    </li>
-                    <li><strong>Storage:</strong> Data lakes, content management systems, specialized databases for multimedia.</li>
-                    <li><strong>Implications for Preparation:</strong> Requires advanced techniques like Natural Language Processing (NLP), computer vision, or audio analysis to extract features or convert it into a structured or semi-structured format. High potential for noise, ambiguity, and bias.</li>
-                    <li><strong>Example (Healthcare):</strong> A physician's clinical note: "Patient presented with severe headache and fever. No rash observed. Prescribed Tylenol. Follow-up in 3 days. History of migraines." Extracting "headache," "fever," "Tylenol," and "migraines" requires NLP.</li>
-                    <li><strong>Example (Survey):</strong> An open-ended comment from a public health survey: "The new clinic hours are terrible for working parents. I wish they had evening appointments in Greensboro." Extracting sentiment, location, and specific issues requires text analysis.</li>
-                    <li><strong>Expanded Example (Social Media):</strong> A tweet: "Loving the new park in Greensboro! Great for family picnics, but needs more benches. #CityLife" – Sentiment analysis could classify it as positive with suggestions, while topic modeling identifies "urban planning."</li>
-                    <li><strong>Expanded Example (Multimedia):</strong> An MRI image file or a video of a patient consultation; processing might involve AI to detect anomalies or transcribe speech.</li>
-                </ul>
+                <div class="alert alert-warning small">
+                    <strong>Likert caution:</strong> Single 1–5 items are <em>ordinal</em>; means are commonly reported but medians/IQRs and non-parametrics are safer when distributions are skewed or scales are coarse. If you aggregate many items into a validated composite, treating as approximately interval is more defensible—still justify and check robustness.
+                </div>
 
-                <!-- Data Quality Dimensions -->
-                <h3 class="h4 fw-bold mb-3">Data Quality Dimensions</h3>
-                <p>Regardless of the data type, the ultimate goal of data preparation is to ensure data quality. Key dimensions include:</p>
-                <ul>
-                    <li><strong>Accuracy:</strong> Is the data correct and free from errors? (e.g., Is the patient's age actually 45, or was it a typo? In a sales dataset, does the total match the sum of items?)</li>
-                    <li><strong>Completeness:</strong> Is all necessary data present? (e.g., Are there missing `diagnosis` entries in the `ADMISSIONS` table? Or absent responses in a survey leading to biased results?)</li>
-                    <li><strong>Consistency:</strong> Is the data uniform across systems and over time? (e.g., Is "Influenza" sometimes spelled "Flu"? Or dates formatted as MM/DD vs DD/MM?)</li>
-                    <li><strong>Timeliness:</strong> Is the data available when needed and up-to-date? (e.g., Are lab results from yesterday available for today's diagnosis? Stock prices should be real-time for trading.)</li>
-                    <li><strong>Validity:</strong> Does the data conform to defined business rules or formats? (e.g., Is `age` a positive number? Is `gender` 'Male' or 'Female'? Email addresses should match regex patterns.)</li>
-                </ul>
-                <p>Expanded dimension: <strong>Relevance</strong> – Does the data align with the analysis goal? E.g., including outdated customer data in a current marketing campaign reduces effectiveness.</p>
+                <!-- Numeric: Discrete vs Continuous -->
+                <h2 class="h3 fw-bold border-bottom pb-2 my-4">Numeric Types: Discrete vs. Continuous</h2>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <h5 class="fw-bold">Discrete (Counts)</h5>
+                            <ul class="mb-2">
+                                <li>Arises from <strong>counting</strong> (0,1,2,…).</li>
+                                <li>Examples: ER visits, purchases, readmissions, defects.</li>
+                                <li>Usually ratio scale (0 means none; “twice as many” makes sense).</li>
+                            </ul>
+                            <p class="mb-0"><strong>Modeling:</strong> Poisson or Negative Binomial; zero-inflated variants when many zeros; consider exposure offsets (e.g., time at risk).</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <h5 class="fw-bold">Continuous (Measurements)</h5>
+                            <ul class="mb-2">
+                                <li>Arises from <strong>measurement</strong> (precision-limited).</li>
+                                <li>Examples: height, lab values, session duration, income.</li>
+                                <li>Interval or ratio depending on whether zero is meaningful.</li>
+                            </ul>
+                            <p class="mb-0"><strong>Modeling:</strong> Linear/GAM; use transforms (log) for heavy tails; robust scalers for outliers.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-secondary small mt-3">
+                    <strong>Edge case:</strong> Integer-stored vitals (e.g., heart rate) measure a continuous phenomenon—treat conceptually, not by storage type.
+                </div>
 
-                <!-- Assessments -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Assessments</h2>
+                <!-- Encoding & Visualization -->
+                <h2 class="h3 fw-bold border-bottom pb-2 my-4">Encoding, Visualization, & Common Pitfalls</h2>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="fw-bold">Nominal</h6>
+                            <ul class="mb-2">
+                                <li>Encoding: One-hot (dummy). Group very rare levels into “Other”.</li>
+                                <li>Viz: Bars/mosaic; order by frequency; show percentages.</li>
+                            </ul>
+                            <p class="small mb-0">High cardinality? Consider target/mean encoding with nested CV to avoid leakage.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="fw-bold">Ordinal</h6>
+                            <ul class="mb-2">
+                                <li>Encoding: Ordinal codes with <em>documented order</em> (or one-hot if order uncertain).</li>
+                                <li>Viz: Ordered bars; medians with IQRs.</li>
+                            </ul>
+                            <p class="small mb-0">Don’t imply equal gaps unless justified (e.g., validated composite score).</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="fw-bold">Interval / Ratio</h6>
+                            <ul class="mb-2">
+                                <li>Keep numeric; standardize for distance-based models.</li>
+                                <li>Log-scale heavy-tailed variables (time, revenue).</li>
+                            </ul>
+                            <p class="small mb-0">For currency, use exact <code>DECIMAL/NUMERIC</code> in SQL, not float.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Python & Pandas -->
+                <h2 class="h3 fw-bold border-bottom pb-2 my-4">Python/Pandas: Practical Snippets</h2>
+                <p class="mb-2">Detect dtypes, set nominal/ordinal, one-hot vs ordinal encoding, and scaling:</p>
+                <div class="position-relative border rounded">
+                    <button class="btn btn-sm btn-secondary position-absolute end-0 m-2" onclick="copyCode(this)">Copy</button>
+                    <pre class="m-0 p-3"><code class="language-python">import pandas as pd
+from pandas.api.types import CategoricalDtype
+from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder, StandardScaler
+
+df = pd.DataFrame({
+    "gender": ["F","M","F","F","M"],            # nominal
+    "edu_level": ["HS","BS","MS","PhD","BS"],   # ordinal
+    "age": [19, 33, 28, 41, 37],                # ratio (continuous)
+    "temp_c": [22.0, 21.5, 23.1, 20.0, 19.8],   # interval
+    "er_visits": [0, 3, 2, 5, 1],               # ratio (count)
+    "member_tier": ["Bronze","Silver","Gold","Platinum","Silver"]  # ordinal
+})
+
+# Nominal to pandas 'category'
+df["gender"] = df["gender"].astype("category")
+
+# Ordinal with explicit order (pandas)
+edu_order = CategoricalDtype(categories=["HS","BS","MS","PhD"], ordered=True)
+df["edu_level"] = df["edu_level"].astype(edu_order)
+df["edu_code"] = df["edu_level"].cat.codes  # HS=0 ... PhD=3
+
+# OrdinalEncoder (sklearn) with specified order
+enc = OrdinalEncoder(categories=[["Bronze","Silver","Gold","Platinum"]])
+df["tier_code"] = enc.fit_transform(df[["member_tier"]]).astype(int)
+
+# One-hot for nominal
+ohe = OneHotEncoder(drop="first", sparse_output=False)  # avoids dummy trap
+gender_oh = ohe.fit_transform(df[["gender"]])
+ohe_cols = [f"gender_{c}" for c in ohe.categories_[0][1:]]
+df[ohe_cols] = gender_oh
+
+# Scale numeric features (fit on train only in practice)
+scaler = StandardScaler()
+num_cols = ["age","temp_c","er_visits"]
+df[[c + "_z" for c in num_cols]] = scaler.fit_transform(df[num_cols])
+print(df.dtypes)
+print(df.head())</code></pre>
+                </div>
+                <div class="alert alert-secondary small mt-2">
+                    <strong>Notes:</strong> Use <code>dtype='category'</code> or <code>CategoricalDtype</code> for pandas categoricals. In scikit-learn, <code>OrdinalEncoder</code> enforces a single integer column per feature; <code>StandardScaler</code> standardizes numeric features (mean 0, variance 1). See References for docs.
+                </div>
+
+                <!-- Flattening JSON with pandas -->
+                <h5 class="fw-bold mt-4">Flattening Semi-Structured JSON</h5>
+                <div class="position-relative border rounded">
+                    <button class="btn btn-sm btn-secondary position-absolute end-0 m-2" onclick="copyCode(this)">Copy</button>
+                    <pre class="m-0 p-3"><code class="language-python">import pandas as pd
+from pandas import json_normalize
+
+records = [
+  {"patient_id":"P1001","metrics":{"hr":72,"steps":500},"location":{"lat":36.07,"lon":-79.79}},
+  {"patient_id":"P1002","metrics":{"hr":65,"steps":900,"spo2":0.97}}
+]
+
+flat = json_normalize(records, sep="_")
+# Columns: patient_id, metrics_hr, metrics_steps, metrics_spo2, location_lat, location_lon
+print(flat)</code></pre>
+                </div>
+
+                <!-- SQL Mapping -->
+                <h2 class="h3 fw-bold border-bottom pb-2 my-4">SQL Mapping & Constraints</h2>
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr><th>Analytics Type</th><th>Typical SQL Type</th><th>Practical Notes</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Nominal</td><td>VARCHAR/TEXT</td><td>Constrain with <code>CHECK</code>; index selective columns.</td></tr>
+                            <tr><td>Ordinal</td><td>SMALLINT or VARCHAR+<code>CHECK</code></td><td>Document mapping table (code→label, order).</td></tr>
+                            <tr><td>Interval</td><td>INTEGER/FLOAT; DATE/TIMESTAMP</td><td>Years as INT; time types retain calendar meaning.</td></tr>
+                            <tr><td>Ratio (continuous)</td><td>DECIMAL/NUMERIC</td><td><strong>Use for currency</strong> (exact arithmetic), avoid FLOAT rounding.</td></tr>
+                            <tr><td>Ratio (count)</td><td>INTEGER/BIGINT</td><td>Enforce non-negativity: <code>CHECK(value &gt;= 0)</code>.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="position-relative border rounded mt-3">
+                    <button class="btn btn-sm btn-secondary position-absolute end-0 m-2" onclick="copyCode(this)">Copy</button>
+                    <pre class="m-0 p-3"><code class="language-sql">-- Example DDL
+CREATE TABLE orders (
+  order_id BIGSERIAL PRIMARY KEY,
+  customer_id BIGINT NOT NULL,
+  order_date DATE NOT NULL,
+  -- use exact DECIMAL/NUMERIC for money
+  total_amount NUMERIC(12,2) NOT NULL CHECK (total_amount &gt;= 0),
+  currency CHAR(3) NOT NULL CHECK (currency IN ('USD','EUR','GBP'))
+);
+
+-- Ordinal mapping table
+CREATE TABLE membership_tier (
+  tier_code SMALLINT PRIMARY KEY,
+  tier_label VARCHAR(20) UNIQUE NOT NULL,
+  tier_rank SMALLINT NOT NULL CHECK (tier_rank BETWEEN 1 AND 4)
+);
+INSERT INTO membership_tier VALUES
+  (10,'Bronze',1),(20,'Silver',2),(30,'Gold',3),(40,'Platinum',4);</code></pre>
+                </div>
+
+                <!-- Mini Case Studies -->
+                <h2 class="h3 fw-bold border-bottom pb-2 my-4">Mini Case Studies</h2>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <h5 class="fw-bold">Healthcare</h5>
+                            <ul>
+                                <li><strong>Outcome:</strong> Length of stay (days) → ratio, discrete count of days (conceptually continuous time).</li>
+                                <li><strong>Predictors:</strong> Diagnosis code (nominal), pain score 0–10 (ordinal), temperature °C (interval), age (ratio), comorbidity count (ratio-discrete).</li>
+                                <li><strong>Modeling path:</strong> For count outcomes (readmissions): Poisson/NB; check over-dispersion; zero-inflation if many zeros.</li>
+                                <li><strong>Viz:</strong> Box/violin for length of stay; ordered bars for pain score distribution.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <h5 class="fw-bold">E-commerce</h5>
+                            <ul>
+                                <li><strong>Outcome:</strong> Purchases in 30 days → ratio (count).</li>
+                                <li><strong>Predictors:</strong> Device (nominal), membership tier (ordinal), session duration (ratio), weekday (nominal cyclical).</li>
+                                <li><strong>Encoding:</strong> One-hot device/weekday; ordinal tier; log duration if heavy-tailed.</li>
+                                <li><strong>SQL tip:</strong> Store currency in <code>NUMERIC</code> with ISO-4217 currency code.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Self-Check -->
+                <h2 class="h3 fw-bold border-bottom pb-2 my-4">Self-Check & Practice</h2>
                 <ol>
-                    <li><strong>Conceptual Question:</strong> You are analyzing patient feedback. Some feedback is from a structured rating scale (1-5), some from a free-text comment box, and some from a voice recording of a call. Classify each type of feedback and describe one specific data preparation challenge for each.</li>
-                    <li><strong>Application Scenario:</strong> For a business in Greensboro, NC, describe how structured, semi-structured, and unstructured data might be used to understand customer behavior. Provide a concrete example for each data type.</li>
+                    <li>Classify and justify:
+                        <ul>
+                            <li>Education level (HS, BS, MS, PhD)</li>
+                            <li>Body temperature (°C)</li>
+                            <li>Monthly income (USD)</li>
+                            <li>Number of ER visits in last year</li>
+                            <li>Customer satisfaction (1–5)</li>
+                            <li>ZIP code</li>
+                        </ul>
+                    </li>
+                    <li>Encoding task: Encode <code>membership_tier</code> = {Bronze, Silver, Gold, Platinum} two ways: ordinal mapping and one-hot.</li>
+                    <li>Visualization: Pick one categorical and one numeric variable and make a sensible chart choice. Explain why.</li>
                 </ol>
-                <p>Expanded assessment example: Classify data from a retail app: Transaction logs (structured), user session JSON (semi-structured), review texts (unstructured). Discuss preparation steps like normalizing transactions, flattening JSON, and sentiment analysis on reviews.</p>
+                <p><a class="btn btn-outline-primary btn-sm" data-bs-toggle="collapse" href="#answers1" role="button" aria-expanded="false" aria-controls="answers1">Show sample answers</a></p>
+                <div class="collapse" id="answers1">
+                    <div class="card card-body">
+                        <ul class="mb-2">
+                            <li>Education level → <strong>Ordinal</strong></li>
+                            <li>Temperature (°C) → <strong>Interval</strong></li>
+                            <li>Income → <strong>Ratio (continuous)</strong></li>
+                            <li>ER visits → <strong>Ratio (discrete count)</strong></li>
+                            <li>Satisfaction 1–5 → <strong>Ordinal</strong> (treat cautiously if using means)</li>
+                            <li>ZIP code → <strong>Nominal</strong></li>
+                        </ul>
+                        <p class="mb-0"><em>Viz:</em> Bars for nominal/ordinal; histogram/box/violin for numeric; preserve order for ordinal axes.</p>
+                    </div>
+                </div>
+
+                <!-- References -->
+                <h2 class="h3 fw-bold border-bottom pb-2 my-4">References & Further Reading</h2>
+                <ol class="mb-0">
+                    <li>Stevens, S. S. “On the Theory of Scales of Measurement,” <em>Science</em>, 1946. (Open PDF)</li>
+                    <li>NIST Big Data Interoperability Framework, Vol. 1: Definitions — structured vs. unstructured data; terminology.</li>
+                    <li>pandas docs — <code>CategoricalDtype</code> and categorical user guide.</li>
+                    <li>scikit-learn docs — <code>OrdinalEncoder</code>, <code>StandardScaler</code>, preprocessing guide.</li>
+                    <li>PostgreSQL docs — monetary types; why <code>NUMERIC</code> over float for money.</li>
+                    <li>UCLA OARC Stats — Poisson/Negative Binomial and zero-inflated count models; ordinal logistic regression.</li>
+                    <li>Doug Laney (Gartner) — Original “3Vs” research note (archived).</li>
+                </ol>
             </div>
         </section>
     </div>
@@ -284,10 +445,11 @@
     <!-- Custom Copy Functionality -->
     <script>
         function copyCode(button) {
-            const code = button.nextElementSibling.querySelector('code');
+            const code = button.parentElement.querySelector('code');
             navigator.clipboard.writeText(code.innerText).then(() => {
+                const original = button.textContent;
                 button.textContent = 'Copied!';
-                setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                setTimeout(() => { button.textContent = original; }, 1500);
             });
         }
     </script>
