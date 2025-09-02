@@ -1,16 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Module 2: An Expert's Guide to Relational Database Design - IAF 603</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;family=Source+Code+Pro:wght@400;500;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style>
     <script src="./js/mathjax.js"></script>
     <link rel="stylesheet" href="./css/styles.css">
     <style>
@@ -20,7 +56,358 @@
       .callout-danger { border-left-color: #dc3545; background: #fff5f5; }
       .table-sm td, .table-sm th { padding: .4rem .5rem; }
     </style>
-</head>
+<style id="MJX-CHTML-styles">
+mjx-container[jax="CHTML"] {
+  line-height: 0;
+}
+
+mjx-container [space="1"] {
+  margin-left: .111em;
+}
+
+mjx-container [space="2"] {
+  margin-left: .167em;
+}
+
+mjx-container [space="3"] {
+  margin-left: .222em;
+}
+
+mjx-container [space="4"] {
+  margin-left: .278em;
+}
+
+mjx-container [space="5"] {
+  margin-left: .333em;
+}
+
+mjx-container [rspace="1"] {
+  margin-right: .111em;
+}
+
+mjx-container [rspace="2"] {
+  margin-right: .167em;
+}
+
+mjx-container [rspace="3"] {
+  margin-right: .222em;
+}
+
+mjx-container [rspace="4"] {
+  margin-right: .278em;
+}
+
+mjx-container [rspace="5"] {
+  margin-right: .333em;
+}
+
+mjx-container [size="s"] {
+  font-size: 70.7%;
+}
+
+mjx-container [size="ss"] {
+  font-size: 50%;
+}
+
+mjx-container [size="Tn"] {
+  font-size: 60%;
+}
+
+mjx-container [size="sm"] {
+  font-size: 85%;
+}
+
+mjx-container [size="lg"] {
+  font-size: 120%;
+}
+
+mjx-container [size="Lg"] {
+  font-size: 144%;
+}
+
+mjx-container [size="LG"] {
+  font-size: 173%;
+}
+
+mjx-container [size="hg"] {
+  font-size: 207%;
+}
+
+mjx-container [size="HG"] {
+  font-size: 249%;
+}
+
+mjx-container [width="full"] {
+  width: 100%;
+}
+
+mjx-box {
+  display: inline-block;
+}
+
+mjx-block {
+  display: block;
+}
+
+mjx-itable {
+  display: inline-table;
+}
+
+mjx-row {
+  display: table-row;
+}
+
+mjx-row > * {
+  display: table-cell;
+}
+
+mjx-mtext {
+  display: inline-block;
+}
+
+mjx-mstyle {
+  display: inline-block;
+}
+
+mjx-merror {
+  display: inline-block;
+  color: red;
+  background-color: yellow;
+}
+
+mjx-mphantom {
+  visibility: hidden;
+}
+
+_::-webkit-full-page-media, _:future, :root mjx-container {
+  will-change: opacity;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-c::before {
+  display: block;
+  width: 0;
+}
+
+.MJX-TEX {
+  font-family: MJXZERO, MJXTEX;
+}
+
+.TEX-B {
+  font-family: MJXZERO, MJXTEX-B;
+}
+
+.TEX-I {
+  font-family: MJXZERO, MJXTEX-I;
+}
+
+.TEX-MI {
+  font-family: MJXZERO, MJXTEX-MI;
+}
+
+.TEX-BI {
+  font-family: MJXZERO, MJXTEX-BI;
+}
+
+.TEX-S1 {
+  font-family: MJXZERO, MJXTEX-S1;
+}
+
+.TEX-S2 {
+  font-family: MJXZERO, MJXTEX-S2;
+}
+
+.TEX-S3 {
+  font-family: MJXZERO, MJXTEX-S3;
+}
+
+.TEX-S4 {
+  font-family: MJXZERO, MJXTEX-S4;
+}
+
+.TEX-A {
+  font-family: MJXZERO, MJXTEX-A;
+}
+
+.TEX-C {
+  font-family: MJXZERO, MJXTEX-C;
+}
+
+.TEX-CB {
+  font-family: MJXZERO, MJXTEX-CB;
+}
+
+.TEX-FR {
+  font-family: MJXZERO, MJXTEX-FR;
+}
+
+.TEX-FRB {
+  font-family: MJXZERO, MJXTEX-FRB;
+}
+
+.TEX-SS {
+  font-family: MJXZERO, MJXTEX-SS;
+}
+
+.TEX-SSB {
+  font-family: MJXZERO, MJXTEX-SSB;
+}
+
+.TEX-SSI {
+  font-family: MJXZERO, MJXTEX-SSI;
+}
+
+.TEX-SC {
+  font-family: MJXZERO, MJXTEX-SC;
+}
+
+.TEX-T {
+  font-family: MJXZERO, MJXTEX-T;
+}
+
+.TEX-V {
+  font-family: MJXZERO, MJXTEX-V;
+}
+
+.TEX-VB {
+  font-family: MJXZERO, MJXTEX-VB;
+}
+
+mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
+  font-family: MJXZERO, MJXTEX-S1, MJXTEX-S4, MJXTEX, MJXTEX-A ! important;
+}
+
+@font-face /* 0 */ {
+  font-family: MJXZERO;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff") format("woff");
+}
+
+@font-face /* 1 */ {
+  font-family: MJXTEX;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+}
+
+@font-face /* 2 */ {
+  font-family: MJXTEX-B;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff");
+}
+
+@font-face /* 3 */ {
+  font-family: MJXTEX-I;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff") format("woff");
+}
+
+@font-face /* 4 */ {
+  font-family: MJXTEX-MI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff");
+}
+
+@font-face /* 5 */ {
+  font-family: MJXTEX-BI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-BoldItalic.woff") format("woff");
+}
+
+@font-face /* 6 */ {
+  font-family: MJXTEX-S1;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size1-Regular.woff") format("woff");
+}
+
+@font-face /* 7 */ {
+  font-family: MJXTEX-S2;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff") format("woff");
+}
+
+@font-face /* 8 */ {
+  font-family: MJXTEX-S3;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size3-Regular.woff") format("woff");
+}
+
+@font-face /* 9 */ {
+  font-family: MJXTEX-S4;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size4-Regular.woff") format("woff");
+}
+
+@font-face /* 10 */ {
+  font-family: MJXTEX-A;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_AMS-Regular.woff") format("woff");
+}
+
+@font-face /* 11 */ {
+  font-family: MJXTEX-C;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Regular.woff") format("woff");
+}
+
+@font-face /* 12 */ {
+  font-family: MJXTEX-CB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Bold.woff") format("woff");
+}
+
+@font-face /* 13 */ {
+  font-family: MJXTEX-FR;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Regular.woff") format("woff");
+}
+
+@font-face /* 14 */ {
+  font-family: MJXTEX-FRB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Bold.woff") format("woff");
+}
+
+@font-face /* 15 */ {
+  font-family: MJXTEX-SS;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Regular.woff") format("woff");
+}
+
+@font-face /* 16 */ {
+  font-family: MJXTEX-SSB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Bold.woff") format("woff");
+}
+
+@font-face /* 17 */ {
+  font-family: MJXTEX-SSI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Italic.woff") format("woff");
+}
+
+@font-face /* 18 */ {
+  font-family: MJXTEX-SC;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Script-Regular.woff") format("woff");
+}
+
+@font-face /* 19 */ {
+  font-family: MJXTEX-T;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Typewriter-Regular.woff") format("woff");
+}
+
+@font-face /* 20 */ {
+  font-family: MJXTEX-V;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Regular.woff") format("woff");
+}
+
+@font-face /* 21 */ {
+  font-family: MJXTEX-VB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Bold.woff") format("woff");
+}
+</style></head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
         <div class="container-fluid">
@@ -80,7 +467,7 @@
                     <li>Identify entities, attributes, keys, and relationships, choosing data types appropriately.</li>
                     <li>Enforce correctness with integrity constraints (<strong>NOT NULL</strong>, <strong>UNIQUE</strong>, <strong>CHECK</strong>, <strong>PRIMARY KEY</strong>, <strong>FOREIGN KEY</strong>).</li>
                     <li>Model relationships using ERDs and implement them with SQL DDL.</li>
-                    <li>Normalize tables to 1NF &rarr; 2NF &rarr; 3NF and reason about denormalization tradeoffs.</li>
+                    <li>Normalize tables to 1NF → 2NF → 3NF and reason about denormalization tradeoffs.</li>
                     <li>Apply naming, documentation, and governance best practices.</li>
                 </ul>
 
@@ -116,8 +503,8 @@
                         </tr>
                         <tr>
                             <td><strong>Orientation</strong></td>
-                            <td>Horizontal (left&rarr;right)</td>
-                            <td>Vertical (top&rarr;bottom)</td>
+                            <td>Horizontal (left→right)</td>
+                            <td>Vertical (top→bottom)</td>
                         </tr>
                         <tr>
                             <td><strong>Database name</strong></td>
@@ -142,8 +529,8 @@
 
                 <h3 class="h4 fw-bold mb-3">1.4 A Record in Practice</h3>
                 <p>Consider a simple two-table example for an e-commerce store:</p>
-                <pre><code>customers(customer_id PK, first_name, last_name, email, …)
-orders(order_id PK, customer_id FK→customers.customer_id, product_id, qty, size, order_date, …)</code></pre>
+                <pre><code data-highlighted="yes" class="hljs language-scss"><span class="hljs-built_in">customers</span>(customer_id PK, first_name, last_name, email, …)
+<span class="hljs-built_in">orders</span>(order_id PK, customer_id FK→customers.customer_id, product_id, qty, size, order_date, …)</code></pre>
                 <p>To retrieve a buyer's details for a specific order, you would use a <strong>JOIN</strong> on the <code>customer_id</code> column, linking the <code>orders</code> table to the <code>customers</code> table.</p>
 
                 <hr>
@@ -152,74 +539,74 @@ orders(order_id PK, customer_id FK→customers.customer_id, product_id, qty, siz
                 <h3 class="h4 fw-bold mb-3">2.1 Why constraints matter</h3>
                 <p>Constraints encode business rules directly into the database, preventing bad data at the source. This is far more robust than relying solely on application code, which can have bugs or be circumvented.</p>
 
-                <h3 class="h4 fw-bold mb-3">2.2 NOT NULL &mdash; Completeness</h3>
+                <h3 class="h4 fw-bold mb-3">2.2 NOT NULL — Completeness</h3>
                 <p>The <strong>NOT NULL</strong> constraint prevents missing values where a value is mandatory. If you try to insert a row without a value for a <strong>NOT NULL</strong> column, the database will throw an error, protecting the integrity of your data.</p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">CREATE TABLE users (
-  user_id      BIGSERIAL PRIMARY KEY,
-  email        VARCHAR(255) NOT NULL,
-  password_hash TEXT        NOT NULL
+                    <pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> users (
+  user_id      BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  email        <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">255</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  password_hash TEXT        <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>
 );</code></pre>
                 </div>
                 <p>In this example, both <code>email</code> and <code>password_hash</code> must have a value for every row.</p>
 
-                <h3 class="h4 fw-bold mb-3">2.3 UNIQUE &mdash; No Duplicates</h3>
+                <h3 class="h4 fw-bold mb-3">2.3 UNIQUE — No Duplicates</h3>
                 <p>The <strong>UNIQUE</strong> constraint ensures all values in a column or set of columns are distinct. It's used when a column must be unique but isn't the primary key. Unlike a <strong>PRIMARY KEY</strong>, a <strong>UNIQUE</strong> constraint typically allows a single NULL value.</p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">ALTER TABLE users ADD CONSTRAINT uq_users_email UNIQUE (email);</code></pre>
+                    <pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> users <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">CONSTRAINT</span> uq_users_email <span class="hljs-keyword">UNIQUE</span> (email);</code></pre>
                 </div>
                 <p>You can also create composite uniqueness, such as <code>UNIQUE (col1, col2)</code>. Most RDBMSs automatically create a unique index to enforce this constraint efficiently.</p>
 
-                <h3 class="h4 fw-bold mb-3">2.4 CHECK &mdash; Domain &amp; Business Rules</h3>
+                <h3 class="h4 fw-bold mb-3">2.4 CHECK — Domain &amp; Business Rules</h3>
                 <p>The <strong>CHECK</strong> constraint validates that values meet a specified condition, such as being within a certain range or matching a pattern. This is an excellent way to encode business rules directly into your schema.</p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">CREATE TABLE employees (
-  emp_id   BIGSERIAL PRIMARY KEY,
-  salary   NUMERIC(12,2) NOT NULL,
-  grade    INT           NOT NULL,
-  CONSTRAINT chk_salary_min  CHECK (salary >= 20000),
-  CONSTRAINT chk_grade_range CHECK (grade BETWEEN 1 AND 10)
+                    <pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> employees (
+  emp_id   BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  salary   <span class="hljs-type">NUMERIC</span>(<span class="hljs-number">12</span>,<span class="hljs-number">2</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  grade    <span class="hljs-type">INT</span>           <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  <span class="hljs-keyword">CONSTRAINT</span> chk_salary_min  <span class="hljs-keyword">CHECK</span> (salary <span class="hljs-operator">&gt;=</span> <span class="hljs-number">20000</span>),
+  <span class="hljs-keyword">CONSTRAINT</span> chk_grade_range <span class="hljs-keyword">CHECK</span> (grade <span class="hljs-keyword">BETWEEN</span> <span class="hljs-number">1</span> <span class="hljs-keyword">AND</span> <span class="hljs-number">10</span>)
 );</code></pre>
                 </div>
                 <p><strong>Advanced CHECK (cross-column):</strong> You can also use <strong>CHECK</strong> for more complex, cross-column logic, like ensuring a state field is only 2 characters long when the country is 'USA'.</p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">ALTER TABLE addresses
-ADD CONSTRAINT chk_state_if_usa
-CHECK (country &lt;&gt; 'USA' OR char_length(state) = 2);</code></pre>
+                    <pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> addresses
+<span class="hljs-keyword">ADD</span> <span class="hljs-keyword">CONSTRAINT</span> chk_state_if_usa
+<span class="hljs-keyword">CHECK</span> (country <span class="hljs-operator">&lt;&gt;</span> <span class="hljs-string">'USA'</span> <span class="hljs-keyword">OR</span> <span class="hljs-keyword">char_length</span>(state) <span class="hljs-operator">=</span> <span class="hljs-number">2</span>);</code></pre>
                 </div>
 
                 <hr>
 
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">3) Keys &mdash; The Structural Backbone</h2>
-                <h3 class="h4 fw-bold mb-3">3.1 PRIMARY KEY &mdash; The Official Identifier</h3>
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">3) Keys — The Structural Backbone</h2>
+                <h3 class="h4 fw-bold mb-3">3.1 PRIMARY KEY — The Official Identifier</h3>
                 <p>A <strong>PRIMARY KEY</strong> is the one official identifier for a table. It must be <strong>UNIQUE</strong> and <strong>NOT NULL</strong>, and there can be exactly one per table. Primary keys are often implemented as a <strong>surrogate key</strong>, such as an auto-incrementing integer or a UUID, for stability.</p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">CREATE TABLE products (
-  product_id BIGSERIAL PRIMARY KEY,
-  sku        VARCHAR(32) UNIQUE NOT NULL,
-  name       VARCHAR(200) NOT NULL
+                    <pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> products (
+  product_id BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  sku        <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">32</span>) <span class="hljs-keyword">UNIQUE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  name       <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">200</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>
 );</code></pre>
                 </div>
                 <p>In this example, <code>product_id</code> is the primary key, while the <code>sku</code> (stock keeping unit) is a unique natural key.</p>
 
-                <h3 class="h4 fw-bold mb-3">3.2 FOREIGN KEY &mdash; Referential Integrity</h3>
+                <h3 class="h4 fw-bold mb-3">3.2 FOREIGN KEY — Referential Integrity</h3>
                 <p>A <strong>FOREIGN KEY</strong> enforces a link between a "child" row and an existing "parent" row in another table. This is how you model <strong>relationships</strong> and enforce <strong>referential integrity</strong>.</p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">CREATE TABLE orders (
-  order_id    BIGSERIAL PRIMARY KEY,
-  customer_id BIGINT NOT NULL,
-  order_date  DATE   NOT NULL,
-  CONSTRAINT fk_orders_customer
-    FOREIGN KEY (customer_id)
-    REFERENCES customers (customer_id)
-    ON UPDATE CASCADE
-    ON DELETE RESTRICT
+                    <pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> orders (
+  order_id    BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  customer_id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  order_date  <span class="hljs-type">DATE</span>   <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  <span class="hljs-keyword">CONSTRAINT</span> fk_orders_customer
+    <span class="hljs-keyword">FOREIGN</span> KEY (customer_id)
+    <span class="hljs-keyword">REFERENCES</span> customers (customer_id)
+    <span class="hljs-keyword">ON</span> <span class="hljs-keyword">UPDATE</span> CASCADE
+    <span class="hljs-keyword">ON</span> <span class="hljs-keyword">DELETE</span> RESTRICT
 );</code></pre>
                 </div>
                 <p>You can define <strong>ON UPDATE</strong> and <strong>ON DELETE</strong> actions to specify how the database should behave when a referenced row is updated or deleted. Common options include <strong>CASCADE</strong> (delete/update child rows) and <strong>RESTRICT</strong> (prevent the delete/update).</p>
@@ -228,12 +615,12 @@ CHECK (country &lt;&gt; 'USA' OR char_length(state) = 2);</code></pre>
                 <p>A <strong>composite key</strong> is a primary key that consists of two or more columns. This is used when a single column isn't sufficient to uniquely identify a row, often in <strong>junction tables</strong> that resolve many-to-many relationships.</p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">CREATE TABLE enrollment (
-  student_id BIGINT NOT NULL,
-  class_id   BIGINT NOT NULL,
-  PRIMARY KEY (student_id, class_id),
-  FOREIGN KEY (student_id) REFERENCES students(student_id),
-  FOREIGN KEY (class_id)   REFERENCES classes(class_id)
+                    <pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> enrollment (
+  student_id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  class_id   <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  <span class="hljs-keyword">PRIMARY</span> KEY (student_id, class_id),
+  <span class="hljs-keyword">FOREIGN</span> KEY (student_id) <span class="hljs-keyword">REFERENCES</span> students(student_id),
+  <span class="hljs-keyword">FOREIGN</span> KEY (class_id)   <span class="hljs-keyword">REFERENCES</span> classes(class_id)
 );</code></pre>
                 </div>
 
@@ -278,10 +665,10 @@ CHECK (country &lt;&gt; 'USA' OR char_length(state) = 2);</code></pre>
 
                 <hr>
 
-                <!-- 5 Normalization  -->
-                <h2 id="normalization" class="h3 fw-bold border-bottom pb-2 mb-4">5) Normalization — Integrity & Efficiency</h2>
+                <!-- 5 Normalization (Revised & Expanded) -->
+                <h2 id="normalization" class="h3 fw-bold border-bottom pb-2 mb-4">5) Normalization — Integrity &amp; Efficiency (Revised for Informatics &amp; Analytics)</h2>
 
-                <h3 class="h4 fw-bold mb-3">5.1 Why Normalize? Anomalies & Data Trust</h3>
+                <h3 class="h4 fw-bold mb-3">5.1 Why Normalize? Anomalies &amp; Data Trust</h3>
                 <p>Normalization organizes data to reduce redundancy and prevent anomalies so downstream analytics are accurate and reproducible:</p>
                 <ul>
                   <li><strong>Update anomaly:</strong> A single fact (e.g., provider specialty) exists in many rows—one update misses others.</li>
@@ -303,7 +690,7 @@ CHECK (country &lt;&gt; 'USA' OR char_length(state) = 2);</code></pre>
                 </ul>
                 <p class="mb-3"><em>Rule of thumb:</em> Target 3NF/BCNF for OLTP. Use 4NF/5NF selectively for highly combinatorial reference models.</p>
 
-                <h3 class="h4 fw-bold mb-3">5.3 Worked Example </h3>
+                <h3 class="h4 fw-bold mb-3">5.3 Worked Example (Student–Class, step-by-step)</h3>
                 <p><strong>Unnormalized Table</strong></p>
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -372,76 +759,76 @@ CHECK (country &lt;&gt; 'USA' OR char_length(state) = 2);</code></pre>
                 <h3 class="h4 fw-bold mb-3">5.4 When to Denormalize (with guardrails)</h3>
                 <p>Denormalize for read-heavy analytics (e.g., pre-aggregates, star schemas). <strong>Risks:</strong> higher write cost, potential inconsistency. <strong>Mitigations:</strong> refresh policies, materialized views, data quality checks, and lineage docs.</p>
 
-                <h3 class="h4 fw-bold mb-3">5.5 Informatics Patterns — Code Systems & Reference Integrity  </h3>
+                <h3 class="h4 fw-bold mb-3">5.5 Informatics Patterns — Code Systems &amp; Reference Integrity (NEW)</h3>
                 <p>Normalize external clinical vocabularies and link by code. Store human-readable labels in the reference table, not duplicated in facts.</p>
                 <div class="code-block">
                   <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-<pre><code class="language-sql">-- ICD-10 diagnoses reference (authoritative list)
-CREATE TABLE ref_icd10 (
-  icd10_code   VARCHAR(10) PRIMARY KEY,
-  long_title   VARCHAR(400) NOT NULL
+<pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-comment">-- ICD-10 diagnoses reference (authoritative list)</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> ref_icd10 (
+  icd10_code   <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">10</span>) <span class="hljs-keyword">PRIMARY</span> KEY,
+  long_title   <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">400</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>
 );
 
--- LOINC test catalog
-CREATE TABLE ref_loinc (
-  loinc_code   VARCHAR(20) PRIMARY KEY,
-  component    VARCHAR(200),
-  property     VARCHAR(50),
-  scale        VARCHAR(50)
+<span class="hljs-comment">-- LOINC test catalog</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> ref_loinc (
+  loinc_code   <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">PRIMARY</span> KEY,
+  component    <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">200</span>),
+  property     <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">50</span>),
+  scale        <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">50</span>)
 );
 
--- Clinical facts reference these codes (no free text duplication)
-CREATE TABLE encounter (
-  encounter_id BIGSERIAL PRIMARY KEY,
-  patient_id   BIGINT NOT NULL,
-  start_time   TIMESTAMP NOT NULL,
-  end_time     TIMESTAMP,
-  CHECK (end_time IS NULL OR end_time &gt;= start_time)
+<span class="hljs-comment">-- Clinical facts reference these codes (no free text duplication)</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> encounter (
+  encounter_id BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  patient_id   <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  start_time   <span class="hljs-type">TIMESTAMP</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  end_time     <span class="hljs-type">TIMESTAMP</span>,
+  <span class="hljs-keyword">CHECK</span> (end_time <span class="hljs-keyword">IS</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">OR</span> end_time <span class="hljs-operator">&gt;=</span> start_time)
 );
 
--- Many diagnoses per encounter (N:M)
-CREATE TABLE encounter_dx (
-  encounter_id BIGINT NOT NULL REFERENCES encounter(encounter_id) ON DELETE CASCADE,
-  icd10_code   VARCHAR(10) NOT NULL REFERENCES ref_icd10(icd10_code),
-  dx_rank      INT NOT NULL CHECK (dx_rank BETWEEN 1 AND 30),
-  PRIMARY KEY (encounter_id, icd10_code)
+<span class="hljs-comment">-- Many diagnoses per encounter (N:M)</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> encounter_dx (
+  encounter_id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> encounter(encounter_id) <span class="hljs-keyword">ON</span> <span class="hljs-keyword">DELETE</span> CASCADE,
+  icd10_code   <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">10</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> ref_icd10(icd10_code),
+  dx_rank      <span class="hljs-type">INT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">CHECK</span> (dx_rank <span class="hljs-keyword">BETWEEN</span> <span class="hljs-number">1</span> <span class="hljs-keyword">AND</span> <span class="hljs-number">30</span>),
+  <span class="hljs-keyword">PRIMARY</span> KEY (encounter_id, icd10_code)
 );
 
--- Lab results normalized to LOINC
-CREATE TABLE lab_result (
-  lab_result_id BIGSERIAL PRIMARY KEY,
-  encounter_id  BIGINT NOT NULL REFERENCES encounter(encounter_id) ON DELETE CASCADE,
-  loinc_code    VARCHAR(20) NOT NULL REFERENCES ref_loinc(loinc_code),
-  value_num     NUMERIC(12,4),
-  value_text    VARCHAR(200),
-  unit          VARCHAR(32),
-  collected_at  TIMESTAMP NOT NULL
+<span class="hljs-comment">-- Lab results normalized to LOINC</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> lab_result (
+  lab_result_id BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  encounter_id  <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> encounter(encounter_id) <span class="hljs-keyword">ON</span> <span class="hljs-keyword">DELETE</span> CASCADE,
+  loinc_code    <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> ref_loinc(loinc_code),
+  value_num     <span class="hljs-type">NUMERIC</span>(<span class="hljs-number">12</span>,<span class="hljs-number">4</span>),
+  value_text    <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">200</span>),
+  unit          <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">32</span>),
+  collected_at  <span class="hljs-type">TIMESTAMP</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>
 );</code></pre>
                 </div>
                 <p class="small text-muted">Why it matters: clean joins to <code>ref_icd10</code> / <code>ref_loinc</code> enable robust cohort building and KPI definition without brittle text matching.</p>
 
-                <h3 class="h4 fw-bold mb-3">5.6 Temporal Normalization & Auditability  </h3>
+                <h3 class="h4 fw-bold mb-3">5.6 Temporal Normalization &amp; Auditability (NEW)</h3>
                 <p>Healthcare and finance require time-aware truth. Keep changes with effective windows; don’t overwrite history.</p>
                 <div class="code-block">
                   <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-<pre><code class="language-sql">-- Patient demographics with validity (bi-temporal possible)
-CREATE TABLE patient_demographics (
-  patient_id   BIGINT NOT NULL,
+<pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-comment">-- Patient demographics with validity (bi-temporal possible)</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> patient_demographics (
+  patient_id   <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
   version_id   BIGSERIAL,
-  mrn          VARCHAR(20) NOT NULL,
-  first_name   VARCHAR(100) NOT NULL,
-  last_name    VARCHAR(100) NOT NULL,
-  birth_date   DATE NOT NULL,
-  valid_from   TIMESTAMP NOT NULL DEFAULT NOW(),
-  valid_to     TIMESTAMP,
-  is_current   BOOLEAN NOT NULL DEFAULT TRUE,
-  PRIMARY KEY (patient_id, version_id),
-  UNIQUE (patient_id, is_current) DEFERRABLE INITIALLY DEFERRED
+  mrn          <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  first_name   <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">100</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  last_name    <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">100</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  birth_date   <span class="hljs-type">DATE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  valid_from   <span class="hljs-type">TIMESTAMP</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> NOW(),
+  valid_to     <span class="hljs-type">TIMESTAMP</span>,
+  is_current   <span class="hljs-type">BOOLEAN</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">TRUE</span>,
+  <span class="hljs-keyword">PRIMARY</span> KEY (patient_id, version_id),
+  <span class="hljs-keyword">UNIQUE</span> (patient_id, is_current) DEFERRABLE INITIALLY DEFERRED
 );</code></pre>
                 </div>
                 <p class="small text-muted">Pattern: insert new version with <code>is_current=TRUE</code>, set previous row’s <code>valid_to</code> and <code>is_current=FALSE</code>.</p>
 
-                <h3 class="h4 fw-bold mb-3">5.7 Dimensional Modeling for Analytics — Star & Snowflake  </h3>
+                <h3 class="h4 fw-bold mb-3">5.7 Dimensional Modeling for Analytics — Star &amp; Snowflake (NEW)</h3>
                 <p>For BI/analytics, model facts (events/measures) and conformed dimensions (who/what/when/where). Choose a clear grain for each fact.</p>
                 <ul>
                   <li><strong>Star:</strong> fact table links directly to all dimensions (simpler joins).</li>
@@ -450,74 +837,74 @@ CREATE TABLE patient_demographics (
                 </ul>
                 <div class="code-block">
                   <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-<pre><code class="language-sql">-- Dimensions (with SCD2-friendly keys)
-CREATE TABLE dim_patient (
-  patient_sk   BIGSERIAL PRIMARY KEY,
-  patient_id   BIGINT NOT NULL,                 -- business key
-  mrn          VARCHAR(20) NOT NULL,
-  birth_date   DATE NOT NULL,
-  gender       VARCHAR(16),
-  effective_from DATE NOT NULL,
-  effective_to   DATE,
-  is_current     BOOLEAN NOT NULL DEFAULT TRUE
+<pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-comment">-- Dimensions (with SCD2-friendly keys)</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> dim_patient (
+  patient_sk   BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  patient_id   <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,                 <span class="hljs-comment">-- business key</span>
+  mrn          <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  birth_date   <span class="hljs-type">DATE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  gender       <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">16</span>),
+  effective_from <span class="hljs-type">DATE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  effective_to   <span class="hljs-type">DATE</span>,
+  is_current     <span class="hljs-type">BOOLEAN</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">TRUE</span>
 );
 
-CREATE TABLE dim_provider (
-  provider_sk BIGSERIAL PRIMARY KEY,
-  provider_id BIGINT NOT NULL,                  -- business key
-  npi         VARCHAR(20) UNIQUE NOT NULL,
-  specialty   VARCHAR(100)
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> dim_provider (
+  provider_sk BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  provider_id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,                  <span class="hljs-comment">-- business key</span>
+  npi         <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">UNIQUE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  specialty   <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">100</span>)
 );
 
-CREATE TABLE dim_date (
-  date_sk     INTEGER PRIMARY KEY,              -- yyyymmdd
-  full_date   DATE NOT NULL,
-  year        SMALLINT NOT NULL,
-  month       SMALLINT NOT NULL,
-  day         SMALLINT NOT NULL,
-  week        SMALLINT NOT NULL
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> dim_date (
+  date_sk     <span class="hljs-type">INTEGER</span> <span class="hljs-keyword">PRIMARY</span> KEY,              <span class="hljs-comment">-- yyyymmdd</span>
+  full_date   <span class="hljs-type">DATE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  <span class="hljs-keyword">year</span>        <span class="hljs-type">SMALLINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  <span class="hljs-keyword">month</span>       <span class="hljs-type">SMALLINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  <span class="hljs-keyword">day</span>         <span class="hljs-type">SMALLINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  week        <span class="hljs-type">SMALLINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>
 );
 
-CREATE TABLE dim_icd10 (
-  icd10_sk    BIGSERIAL PRIMARY KEY,
-  icd10_code  VARCHAR(10) UNIQUE NOT NULL,
-  long_title  VARCHAR(400) NOT NULL
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> dim_icd10 (
+  icd10_sk    BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  icd10_code  <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">10</span>) <span class="hljs-keyword">UNIQUE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  long_title  <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">400</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>
 );
 
--- Fact table at encounter grain
-CREATE TABLE fact_encounter (
-  encounter_id BIGINT PRIMARY KEY,              -- optional surrogate also fine
-  patient_sk   BIGINT NOT NULL REFERENCES dim_patient(patient_sk),
-  provider_sk  BIGINT NOT NULL REFERENCES dim_provider(provider_sk),
-  admit_date_sk INTEGER NOT NULL REFERENCES dim_date(date_sk),
-  discharge_date_sk INTEGER,
-  total_charges NUMERIC(12,2),
-  length_of_stay_days NUMERIC(6,2)
+<span class="hljs-comment">-- Fact table at encounter grain</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> fact_encounter (
+  encounter_id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">PRIMARY</span> KEY,              <span class="hljs-comment">-- optional surrogate also fine</span>
+  patient_sk   <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> dim_patient(patient_sk),
+  provider_sk  <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> dim_provider(provider_sk),
+  admit_date_sk <span class="hljs-type">INTEGER</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> dim_date(date_sk),
+  discharge_date_sk <span class="hljs-type">INTEGER</span>,
+  total_charges <span class="hljs-type">NUMERIC</span>(<span class="hljs-number">12</span>,<span class="hljs-number">2</span>),
+  length_of_stay_days <span class="hljs-type">NUMERIC</span>(<span class="hljs-number">6</span>,<span class="hljs-number">2</span>)
 );
 
--- Bridge table for N:M diagnoses per encounter
-CREATE TABLE bridge_encounter_dx (
-  encounter_id BIGINT NOT NULL REFERENCES fact_encounter(encounter_id) ON DELETE CASCADE,
-  icd10_sk     BIGINT NOT NULL REFERENCES dim_icd10(icd10_sk),
-  dx_rank      INT NOT NULL CHECK (dx_rank BETWEEN 1 AND 30),
-  PRIMARY KEY (encounter_id, icd10_sk)
+<span class="hljs-comment">-- Bridge table for N:M diagnoses per encounter</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> bridge_encounter_dx (
+  encounter_id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> fact_encounter(encounter_id) <span class="hljs-keyword">ON</span> <span class="hljs-keyword">DELETE</span> CASCADE,
+  icd10_sk     <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> dim_icd10(icd10_sk),
+  dx_rank      <span class="hljs-type">INT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">CHECK</span> (dx_rank <span class="hljs-keyword">BETWEEN</span> <span class="hljs-number">1</span> <span class="hljs-keyword">AND</span> <span class="hljs-number">30</span>),
+  <span class="hljs-keyword">PRIMARY</span> KEY (encounter_id, icd10_sk)
 );</code></pre>
                 </div>
                 <div class="code-block">
                   <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-<pre><code class="language-sql">-- Example analytic query: top 10 diagnoses by encounters in the last 90 days
-SELECT d.long_title, COUNT(*) AS encounters
-FROM bridge_encounter_dx b
-JOIN dim_icd10 d ON d.icd10_sk = b.icd10_sk
-JOIN fact_encounter f ON f.encounter_id = b.encounter_id
-JOIN dim_date dd ON dd.date_sk = f.admit_date_sk
-WHERE dd.full_date &gt;= CURRENT_DATE - INTERVAL '90 days'
-GROUP BY d.long_title
-ORDER BY encounters DESC
-LIMIT 10;</code></pre>
+<pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-comment">-- Example analytic query: top 10 diagnoses by encounters in the last 90 days</span>
+<span class="hljs-keyword">SELECT</span> d.long_title, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">AS</span> encounters
+<span class="hljs-keyword">FROM</span> bridge_encounter_dx b
+<span class="hljs-keyword">JOIN</span> dim_icd10 d <span class="hljs-keyword">ON</span> d.icd10_sk <span class="hljs-operator">=</span> b.icd10_sk
+<span class="hljs-keyword">JOIN</span> fact_encounter f <span class="hljs-keyword">ON</span> f.encounter_id <span class="hljs-operator">=</span> b.encounter_id
+<span class="hljs-keyword">JOIN</span> dim_date dd <span class="hljs-keyword">ON</span> dd.date_sk <span class="hljs-operator">=</span> f.admit_date_sk
+<span class="hljs-keyword">WHERE</span> dd.full_date <span class="hljs-operator">&gt;=</span> <span class="hljs-built_in">CURRENT_DATE</span> <span class="hljs-operator">-</span> <span class="hljs-type">INTERVAL</span> <span class="hljs-string">'90 days'</span>
+<span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> d.long_title
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> encounters <span class="hljs-keyword">DESC</span>
+LIMIT <span class="hljs-number">10</span>;</code></pre>
                 </div>
 
-                <h3 class="h4 fw-bold mb-3">5.8 Slowly Changing Dimensions (SCD) — Type 1 vs Type 2  </h3>
+                <h3 class="h4 fw-bold mb-3">5.8 Slowly Changing Dimensions (SCD) — Type 1 vs Type 2 (NEW)</h3>
                 <ul>
                   <li><strong>Type 1:</strong> Overwrite old attribute (easy, but loses history).</li>
                   <li><strong>Type 2:</strong> New row per change with <code>effective_from/to</code>, <code>is_current</code>. Preserves historical truth for time-correct analytics.</li>
@@ -525,7 +912,7 @@ LIMIT 10;</code></pre>
                 </ul>
                 <p class="small text-muted">Choose SCD strategy per dimension. Patients usually SCD2; code vocab dimensions usually Type 1 (definitions rarely change for the same code).</p>
 
-                <h3 class="h4 fw-bold mb-3">5.9 Practical Denormalization for Analytics  </h3>
+                <h3 class="h4 fw-bold mb-3">5.9 Practical Denormalization for Analytics (NEW)</h3>
                 <ul>
                   <li><strong>Materialized views:</strong> pre-aggregate daily/weekly metrics; refresh nightly.</li>
                   <li><strong>Wide export tables:</strong> team-friendly flat tables generated from the normalized core.</li>
@@ -533,19 +920,19 @@ LIMIT 10;</code></pre>
                 </ul>
                 <div class="code-block">
                   <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-<pre><code class="language-sql">-- Postgres example: monthly encounter summary (materialized)
-CREATE MATERIALIZED VIEW mv_encounter_monthly AS
-SELECT date_trunc('month', dd.full_date) AS month_start,
-       COUNT(*) AS encounters,
-       SUM(f.total_charges) AS charges
-FROM fact_encounter f
-JOIN dim_date dd ON dd.date_sk = f.admit_date_sk
-GROUP BY 1;
+<pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-comment">-- Postgres example: monthly encounter summary (materialized)</span>
+<span class="hljs-keyword">CREATE</span> MATERIALIZED <span class="hljs-keyword">VIEW</span> mv_encounter_monthly <span class="hljs-keyword">AS</span>
+<span class="hljs-keyword">SELECT</span> date_trunc(<span class="hljs-string">'month'</span>, dd.full_date) <span class="hljs-keyword">AS</span> month_start,
+       <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">AS</span> encounters,
+       <span class="hljs-built_in">SUM</span>(f.total_charges) <span class="hljs-keyword">AS</span> charges
+<span class="hljs-keyword">FROM</span> fact_encounter f
+<span class="hljs-keyword">JOIN</span> dim_date dd <span class="hljs-keyword">ON</span> dd.date_sk <span class="hljs-operator">=</span> f.admit_date_sk
+<span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">1</span>;
 
--- REFRESH MATERIALIZED VIEW mv_encounter_monthly;</code></pre>
+<span class="hljs-comment">-- REFRESH MATERIALIZED VIEW mv_encounter_monthly;</span></code></pre>
                 </div>
 
-                <h3 class="h4 fw-bold mb-3">5.10 Governance Tips for Health Analytics  </h3>
+                <h3 class="h4 fw-bold mb-3">5.10 Governance Tips for Health Analytics (NEW)</h3>
                 <ul>
                   <li><strong>Lineage:</strong> Record source system and transformation notes for each fact/dimension.</li>
                   <li><strong>Quality checks:</strong> Null-rate, range checks, foreign key coverage, duplicate code audits.</li>
@@ -554,7 +941,7 @@ GROUP BY 1;
 
                 <hr>
 
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">6) ERDs &mdash; Visualize Before You Implement</h2>
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">6) ERDs — Visualize Before You Implement</h2>
                 <p>An <strong>Entity-Relationship Diagram (ERD)</strong> is a visual blueprint of a database. It's a critical tool for planning and communicating your design before writing a single line of SQL.</p>
                 <h3 class="h4 fw-bold mb-3">6.1 Components</h3>
                 <ul>
@@ -563,19 +950,19 @@ GROUP BY 1;
                     <li><strong>Relationships (Lines):</strong> Connect entities to show how they relate.</li>
                 </ul>
                 <p>A simple ERD for a retail system looks like this:</p>
-                <pre><code>Customer (customer_id PK, email UNIQUE, first_name, last_name)
-   |
-   | 1:N
-   |
-Order (order_id PK, customer_id FK→Customer.customer_id, order_date)
-   |
-   | 1:N
-   |
-OrderItem (order_id FK, product_id FK, qty, unit_price, PRIMARY KEY(order_id, product_id))
-   ^
-   |
-   N:1
-Product (product_id PK, sku UNIQUE, name, price)</code></pre>
+                <pre><code data-highlighted="yes" class="hljs language-sql">Customer (customer_id PK, email <span class="hljs-keyword">UNIQUE</span>, first_name, last_name)
+   <span class="hljs-operator">|</span>
+   <span class="hljs-operator">|</span> <span class="hljs-number">1</span>:N
+   <span class="hljs-operator">|</span>
+<span class="hljs-keyword">Order</span> (order_id PK, customer_id FK→Customer.customer_id, order_date)
+   <span class="hljs-operator">|</span>
+   <span class="hljs-operator">|</span> <span class="hljs-number">1</span>:N
+   <span class="hljs-operator">|</span>
+OrderItem (order_id FK, product_id FK, qty, unit_price, <span class="hljs-keyword">PRIMARY</span> KEY(order_id, product_id))
+   <span class="hljs-operator">^</span>
+   <span class="hljs-operator">|</span>
+   N:<span class="hljs-number">1</span>
+Product (product_id PK, sku <span class="hljs-keyword">UNIQUE</span>, name, price)</code></pre>
                 
                 <h3 class="h4 fw-bold mb-3">6.2 Cardinality</h3>
                 <p>Cardinality defines the number of instances of one entity that can be associated with the number of instances of another entity.</p>
@@ -627,7 +1014,7 @@ Product (product_id PK, sku UNIQUE, name, price)</code></pre>
 
                 <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Lab: Three Exercises + One Project</h2>
                 <p>This lab provides hands-on experience in applying the concepts learned in this module.</p>
-                <h3 class="h4 fw-bold mb-3">Exercise 1 &mdash; Identify entities, keys, and columns (15–20 min)</h3>
+                <h3 class="h4 fw-bold mb-3">Exercise 1 — Identify entities, keys, and columns (15–20 min)</h3>
                 <p><strong>Prompt:</strong> A bookstore app needs to track customers, books, authors, and purchases. List entities and attributes (with proposed types), choose primary keys, and identify relationships and their cardinalities.</p>
                 <p><strong>Expected Direction (not unique):</strong></p>
                 <ul>
@@ -639,72 +1026,16 @@ Product (product_id PK, sku UNIQUE, name, price)</code></pre>
                     <li><code>OrderItem(order_id FK, book_id FK, qty, unit_price, PRIMARY KEY(order_id, book_id))</code></li>
                 </ul>
 
-                <h3 class="h4 fw-bold mb-3">Exercise 2 &mdash; Write the DDL with constraints (20–25 min)</h3>
-                <p><strong>Prompt:</strong> Implement the schema for <code>Customer</code>, <code>Order</code>, and <code>OrderItem</code> from Exercise 1 with appropriate constraints: <code>email UNIQUE</code>, <code>qty > 0</code>, <code>unit_price &ge; 0</code>, and meaningful <strong>FOREIGN KEY</strong> actions.</p>
+                <h3 class="h4 fw-bold mb-3">Exercise 2 — Write the DDL with constraints (20–25 min)</h3>
+                <p><strong>Prompt:</strong> Implement the schema for <code>Customer</code>, <code>Order</code>, and <code>OrderItem</code> from Exercise 1 with appropriate constraints: <code>email UNIQUE</code>, <code>qty &gt; 0</code>, <code>unit_price ≥ 0</code>, and meaningful <strong>FOREIGN KEY</strong> actions.</p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">CREATE TABLE customer (
-  customer_id BIGSERIAL PRIMARY KEY,
-  email       VARCHAR(255) UNIQUE NOT NULL,
-  first_name  VARCHAR(100) NOT NULL,
-  last_name   VARCHAR(100) NOT NULL
-);
-
-CREATE TABLE "order" (
-  order_id    BIGSERIAL PRIMARY KEY,
-  customer_id BIGINT NOT NULL
-              REFERENCES customer(customer_id) ON DELETE RESTRICT,
-  order_date  DATE NOT NULL DEFAULT CURRENT_DATE
-);
-
-CREATE TABLE order_item (
-  order_id   BIGINT NOT NULL
-             REFERENCES "order"(order_id) ON DELETE CASCADE,
-  book_id    BIGINT NOT NULL,
-  qty        INTEGER NOT NULL CHECK (qty > 0),
-  unit_price NUMERIC(10,2) NOT NULL CHECK (unit_price >= 0),
-  PRIMARY KEY (order_id, book_id)
-);</code></pre>
+                    <pre></pre>
                 </div>
 
-                <h3 class="h4 fw-bold mb-3">Exercise 3 &mdash; Normalize a messy table (25–30 min)</h3>
+                <h3 class="h4 fw-bold mb-3">Exercise 3 — Normalize a messy table (25–30 min)</h3>
                 <p><strong>Prompt:</strong> Normalize the following denormalized "Purchases" table to 3NF. Identify anomalies, split the data into new tables, and provide minimal DDL.</p>
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>purchase_id</th>
-                            <th>customer_email</th>
-                            <th>customer_name</th>
-                            <th>book_isbn</th>
-                            <th>book_title</th>
-                            <th>author_name</th>
-                            <th>qty</th>
-                            <th>price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>a@a.com</td>
-                            <td>Alice</td>
-                            <td>978...1</td>
-                            <td>SQL Book</td>
-                            <td>Jones</td>
-                            <td>1</td>
-                            <td>25.00</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>b@b.com</td>
-                            <td>Bob</td>
-                            <td>978...1</td>
-                            <td>SQL Book</td>
-                            <td>Jones</td>
-                            <td>2</td>
-                            <td>25.00</td>
-                        </tr>
-                    </tbody>
-                </table>
+                
                 <p><strong>Direction:</strong></p>
                 <ul>
                     <li>Identify anomalies: Redundant customer, book, and author information.</li>
@@ -720,7 +1051,7 @@ CREATE TABLE order_item (
                     </li>
                 </ul>
 
-                <h3 class="h4 fw-bold mb-3">End-of-Module Project &mdash; Design &amp; Implement a Mini OLTP (60–90 min)</h3>
+                <h3 class="h4 fw-bold mb-3">End-of-Module Project — Design &amp; Implement a Mini OLTP (60–90 min)</h3>
                 <p><strong>Scenario:</strong> A small clinic needs a system to track patients, appointments, providers, and billed services.</p>
                 <p><strong>Deliverables:</strong></p>
                 <ol>
@@ -732,86 +1063,26 @@ CREATE TABLE order_item (
                 </ol>
 
                 <p><strong>Starter DDL:</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">CREATE TABLE patient (
-  patient_id BIGSERIAL PRIMARY KEY,
-  mrn        VARCHAR(20) UNIQUE NOT NULL,
-  first_name VARCHAR(100) NOT NULL,
-  last_name  VARCHAR(100) NOT NULL,
-  dob        DATE NOT NULL
-);
-
-CREATE TABLE provider (
-  provider_id BIGSERIAL PRIMARY KEY,
-  npi         VARCHAR(20) UNIQUE NOT NULL,
-  name        VARCHAR(150) NOT NULL,
-  specialty   VARCHAR(100)
-);
-
-CREATE TABLE appointment (
-  appt_id     BIGSERIAL PRIMARY KEY,
-  patient_id  BIGINT NOT NULL REFERENCES patient(patient_id) ON DELETE CASCADE,
-  provider_id BIGINT NOT NULL REFERENCES provider(provider_id) ON DELETE RESTRICT,
-  appt_time   TIMESTAMP NOT NULL
-);
-
-CREATE TABLE service (
-  service_id  BIGSERIAL PRIMARY KEY,
-  cpt_code    VARCHAR(10) UNIQUE NOT NULL,
-  description VARCHAR(200) NOT NULL,
-  charge      NUMERIC(10,2) NOT NULL CHECK (charge >= 0)
-);
-
-CREATE TABLE appointment_service (
-  appt_id    BIGINT NOT NULL REFERENCES appointment(appt_id) ON DELETE CASCADE,
-  service_id BIGINT NOT NULL REFERENCES service(service_id),
-  qty        INTEGER NOT NULL CHECK (qty > 0),
-  charge     NUMERIC(10,2) NOT NULL CHECK (charge >= 0),
-  PRIMARY KEY (appt_id, service_id)
-);</code></pre>
-                </div>
-                <p><strong>Example Queries:</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Upcoming appointments (next 7 days)
-SELECT a.appt_time,
-       p.first_name || ' ' || p.last_name AS patient,
-       pr.name AS provider
-FROM appointment a
-JOIN patient  p  ON p.patient_id  = a.patient_id
-JOIN provider pr ON pr.provider_id = a.provider_id
-WHERE a.appt_time >= CURRENT_DATE
-  AND a.appt_time <  CURRENT_DATE + INTERVAL '7 days'
-ORDER BY a.appt_time;
-
--- Total charges per patient
-SELECT p.patient_id,
-       p.first_name || ' ' || p.last_name AS patient,
-       SUM(asv.qty * asv.charge) AS total_charges
-FROM appointment a
-JOIN patient p           ON p.patient_id = a.patient_id
-JOIN appointment_service asv ON asv.appt_id = a.appt_id
-GROUP BY p.patient_id, p.first_name, p.last_name
-ORDER BY total_charges DESC;</code></pre>
-                </div>
+                
+                
+                
 
                 <hr>
 
                 <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Quick Reference</h2>
                 <p><strong>Column definitions:</strong> <code>column_name DATA_TYPE [NULL | NOT NULL] [DEFAULT expr]</code></p>
                 <p><strong>Table constraints:</strong></p>
-                <pre><code>[CONSTRAINT name] PRIMARY KEY (col[, …])
-[CONSTRAINT name] UNIQUE (col[, …])
-[CONSTRAINT name] CHECK (boolean_expression)
-[CONSTRAINT name] FOREIGN KEY (col[, …])
-  REFERENCES parent_table(parent_col[, …])
-  [ON UPDATE action] [ON DELETE action]</code></pre>
+                <pre><code data-highlighted="yes" class="hljs language-scss"><span class="hljs-selector-attr">[CONSTRAINT name]</span> PRIMARY KEY (col[, …])
+<span class="hljs-selector-attr">[CONSTRAINT name]</span> UNIQUE (col[, …])
+<span class="hljs-selector-attr">[CONSTRAINT name]</span> CHECK (boolean_expression)
+<span class="hljs-selector-attr">[CONSTRAINT name]</span> FOREIGN KEY (col[, …])
+  REFERENCES <span class="hljs-built_in">parent_table</span>(parent_col[, …])
+  <span class="hljs-selector-attr">[ON UPDATE action]</span> <span class="hljs-selector-attr">[ON DELETE action]</span></code></pre>
                 <p><strong>Actions (common):</strong> <code>NO ACTION/RESTRICT</code>, <code>CASCADE</code>, <code>SET NULL</code>, <code>SET DEFAULT</code>.</p>
                 <p><strong>Indexing (typical patterns):</strong></p>
-                <pre><code>CREATE INDEX idx_order_customer ON "order"(customer_id);
-CREATE INDEX idx_product_sku ON product(sku);
-CREATE INDEX idx_appointment_time ON appointment(appt_time);</code></pre>
+                <pre><code data-highlighted="yes" class="hljs language-scss">CREATE INDEX idx_order_customer ON "<span class="hljs-attribute">order</span>"(customer_id);
+CREATE INDEX idx_product_sku ON <span class="hljs-built_in">product</span>(sku);
+CREATE INDEX idx_appointment_time ON <span class="hljs-built_in">appointment</span>(appt_time);</code></pre>
 
                 <hr>
 
@@ -821,7 +1092,7 @@ CREATE INDEX idx_appointment_time ON appointment(appt_time);</code></pre>
                     <li><strong>Overly wide text types:</strong> Use <strong>VARCHAR(n)</strong> when you know reasonable bounds to save storage and improve performance.</li>
                     <li><strong>Ambiguous names:</strong> Inconsistent naming slows everyone down—standardize from the beginning.</li>
                     <li><strong>Everything as TEXT:</strong> You lose validation and performance hints. Always pick proper data types.</li>
-                    <li><strong>Missing CHECKs:</strong> Encode business rules like <code>qty > 0</code> and <code>charge &ge; 0</code>.</li>
+                    <li><strong>Missing CHECKs:</strong> Encode business rules like <code>qty &gt; 0</code> and <code>charge ≥ 0</code>.</li>
                     <li><strong>Indexes everywhere:</strong> Create targeted indexes for specific queries; measure performance with <code>EXPLAIN/ANALYZE</code>.</li>
                     <li><strong>Skipping docs:</strong> Add comments to your schema and keep a schema migration log.</li>
                 </ul>
@@ -830,7 +1101,7 @@ CREATE INDEX idx_appointment_time ON appointment(appt_time);</code></pre>
     </div>
 
     <footer class="bg-light py-3 text-center">
-        <p class="text-muted mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
+        <p class="text-muted mb-0">© 2025 Ali Noori, UNCG. All rights reserved.</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
@@ -846,5 +1117,6 @@ CREATE INDEX idx_appointment_time ON appointment(appt_time);</code></pre>
             });
         }
     </script>
-</body>
-</html>
+
+
+</body></html>
