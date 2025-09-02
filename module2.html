@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Module 2: Database Concepts - IAF 603</title>
-    <!-- Bootstrap CSS -->
+    <title>Module 2: An Expert's Guide to Relational Database Design - IAF 603</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Highlight.js for code highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- MathJax CDN -->
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- Custom MathJax Configuration -->
     <script src="./js/mathjax.js"></script>
-    <!-- Custom Styles -->
     <link rel="stylesheet" href="./css/styles.css">
+    <style>
+      .code-block { position: relative; }
+      .copy-btn { position: absolute; top: .5rem; right: .5rem; }
+      .callout { border-left: 4px solid #0d6efd; background: #f6f9ff; padding: 1rem 1.25rem; border-radius: .5rem; }
+      .callout-danger { border-left-color: #dc3545; background: #fff5f5; }
+      .table-sm td, .table-sm th { padding: .4rem .5rem; }
+    </style>
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="./index.html">IAF 603: Preparing Data for Analytics</a>
@@ -62,340 +62,787 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container my-5">
-        <!-- Module Title -->
         <section class="text-center py-5 bg-white rounded shadow">
-            <h1 class="display-4 fw-bold text-dark">Module 2: Database Concepts</h1>
+            <h1 class="display-4 fw-bold text-dark">Module 2: An Expert's Guide to Relational Database Design</h1>
+            <p class="lead text-muted">A Comprehensive Teaching Module (Lecture, Lab, and Assessment Ready)</p>
         </section>
 
-        <!-- Module Content -->
         <section class="my-5">
             <div class="bg-white p-4 rounded shadow">
-                <!-- Learning Objectives -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Learning Objectives</h2>
-                <p>Upon completion of this module, participants will be able to:</p>
-                <ul>
-                    <li>Define and differentiate core relational database components: tables, columns, rows, and data types.</li>
-                    <li>Understand and apply various integrity constraints, including <code>NOT NULL</code>, <code>UNIQUE</code>, and <code>CHECK</code>.</li>
-                    <li>Master the concepts and practical application of primary keys, foreign keys, and composite keys.</li>
-                    <li>Explain the purpose of database schemas and their role in organization and security.</li>
-                    <li>Apply normalization principles (1NF, 2NF, 3NF) to design efficient and robust database structures.</li>
-                    <li>Create and interpret Entity-Relationship Diagrams (ERDs) to visually model database relationships.</li>
-                </ul>
-
-                <!-- Introduction to Database Concepts -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Introduction to Database Concepts</h2>
-                <p>Data preparation often begins with understanding how data is stored and organized. Relational databases, built upon the relational model proposed by E.F. Codd in 1970, remain the backbone of most structured data storage. This module dives into the fundamental building blocks of these databases: tables, keys, and schemas. We will also explore normalization, a crucial design principle that minimizes redundancy and improves data integrity, and Entity-Relationship Diagrams (ERDs), which provide a visual blueprint of a database. A solid grasp of these concepts is essential for anyone working with structured data, enabling efficient querying and robust data management.</p>
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Introduction</h2>
+                <p>This module is designed for students with little to no prior database experience, as well as practitioners who need a rigorous "mental model" for designing OLTP (Online Transaction Processing) systems. It provides a foundational understanding of the relational model, from core components to advanced design principles. A solid grasp of these concepts is essential for anyone working with structured data, enabling efficient querying and robust data management.</p>
                 <p>In practice, consider a hospital system in Greensboro, NC, managing patient records, appointments, and billing. A poorly designed database could lead to errors like duplicate patient entries or mismatched billing records, while a well-structured database ensures accurate and efficient data retrieval for healthcare analytics.</p>
-
-                <!-- Tables, Columns, Rows, and Data Types -->
-                <h3 class="h4 fw-bold mb-3">Tables, Columns, Rows, and Data Types</h3>
-                <p>Relational databases organize data into tables, which are composed of columns (attributes) and rows (records). Each column has a specific data type to enforce consistency.</p>
+                <h3 class="h4 fw-bold border-bottom pb-2 mb-4">Learning Outcomes</h3>
+                <p>By the end of this module, students will be able to:</p>
                 <ul>
-                    <li><strong>Table:</strong> A collection of related data organized into rows and columns, similar to a spreadsheet. E.g., a <code>Customers</code> table for a retail business.</li>
-                    <li><strong>Column (Attribute/Field):</strong> Represents a specific characteristic of the data, with a defined data type (e.g., <code>INT</code>, <code>VARCHAR</code>, <code>DATE</code>).</li>
-                    <li><strong>Row (Record/Tuple):</strong> A single, complete entry in a table, like one customer's details.</li>
-                    <li><strong>Data Types:</strong> Define the kind of data a column can hold (e.g., <code>INT</code> for integers, <code>VARCHAR</code> for strings, <code>DATE</code> for dates, <code>BOOLEAN</code> for true/false). Choosing correct data types prevents errors, like storing a phone number as a number (losing leading zeros).</li>
+                    <li>Explain the relational model and the separation of logical vs. physical design.</li>
+                    <li>Identify entities, attributes, keys, and relationships, choosing data types appropriately.</li>
+                    <li>Enforce correctness with integrity constraints (<strong>NOT NULL</strong>, <strong>UNIQUE</strong>, <strong>CHECK</strong>, <strong>PRIMARY KEY</strong>, <strong>FOREIGN KEY</strong>).</li>
+                    <li>Model relationships using ERDs and implement them with SQL DDL.</li>
+                    <li>Normalize tables to 1NF &rarr; 2NF &rarr; 3NF and reason about denormalization tradeoffs.</li>
+                    <li>Apply naming, documentation, and governance best practices.</li>
                 </ul>
-                <p><strong>Example:</strong> In a library system, a <code>Books</code> table might have columns <code>isbn</code> (VARCHAR), <code>title</code> (VARCHAR), <code>publish_date</code> (DATE), and <code>available</code> (BOOLEAN). A row represents one book, like {"1234567890", "Data Science Basics", "2023-01-15", true}.</p>
-                <p><strong>Sample Table (Books):</strong></p>
-                <table class="table table-bordered">
+
+                <hr>
+
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">1) Foundational Components of Relational Databases</h2>
+                <h3 class="h4 fw-bold mb-3">1.1 Defining the Relational Model</h3>
+                <p>The core idea of the relational model is that data is represented as relations, which we call <strong>tables</strong>. Each table has a name and is composed of rows and columns.</p>
+                <ul>
+                    <li><strong>Tuple (row):</strong> Represents one record or entity instance.</li>
+                    <li><strong>Attribute (column):</strong> A property shared by all rows in a table.</li>
+                    <li><strong>Key:</strong> A minimal set of attributes that uniquely identifies a row.</li>
+                    <li><strong>Relational algebra:</strong> A set of operations that define how data is manipulated. Declarative querying (e.g., SQL) focuses on <em>what</em> you want, not <em>how</em> to get it.</li>
+                </ul>
+                <p>A key architectural principle is the <strong>separation of logical vs. physical design</strong>. The logical layer defines the tables, views, columns, constraints, and ER diagrams. The physical layer deals with files, pages, indexes, and storage configuration. This separation allows you to evolve physical storage (e.g., move files, rebuild indexes) without changing the logical contracts used by your applications.</p>
+
+                <h3 class="h4 fw-bold mb-3">1.2 Tables, Columns, and Rows</h3>
+                <p>For a cohesive design, you should use one table per distinct entity (e.g., <code>Customer</code>, <code>Order</code>, <code>Product</code>). Rows are instances of that entity (e.g., Customer #123), and columns are the attributes that describe them (e.g., <code>FirstName</code>, <code>Email</code>). It's crucial to keep columns <strong>atomic</strong>, meaning no lists or comma-separated values inside a single cell.</p>
+                <p>Here's a quick contrast:</p>
+                <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>isbn</th>
-                            <th>title</th>
-                            <th>publish_date</th>
-                            <th>available</th>
+                            <th>Comparator</th>
+                            <th>Rows</th>
+                            <th>Columns</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1234567890</td>
-                            <td>Data Science Basics</td>
-                            <td>2023-01-15</td>
-                            <td>true</td>
+                            <td><strong>Description</strong></td>
+                            <td>A single record/entity</td>
+                            <td>A property common to all records</td>
                         </tr>
                         <tr>
-                            <td>0987654321</td>
-                            <td>SQL for Beginners</td>
-                            <td>2022-06-20</td>
-                            <td>false</td>
+                            <td><strong>Orientation</strong></td>
+                            <td>Horizontal (left&rarr;right)</td>
+                            <td>Vertical (top&rarr;bottom)</td>
                         </tr>
                         <tr>
-                            <td>1122334455</td>
-                            <td>Big Data Analytics</td>
-                            <td>2024-03-10</td>
-                            <td>true</td>
+                            <td><strong>Database name</strong></td>
+                            <td>Record / Tuple</td>
+                            <td>Attribute / Field</td>
                         </tr>
                     </tbody>
                 </table>
 
-                <!-- Integrity Constraints -->
-                <h3 class="h4 fw-bold mb-3">Integrity Constraints</h3>
-                <p>Integrity constraints enforce rules to ensure data accuracy and reliability, critical for maintaining trustworthy databases.</p>
+                <h3 class="h4 fw-bold mb-3">1.3 Data Types</h3>
+                <p>Choosing the right data type is a fundamental step that ensures data integrity and storage efficiency. You should choose types that fit both the domain and any constraints. Common data types include:</p>
                 <ul>
-                    <li><strong>NOT NULL:</strong> Ensures a column cannot be empty (e.g., every patient must have a name).</li>
-                    <li><strong>UNIQUE:</strong> Ensures all values in a column or set of columns are distinct (e.g., no two patients have the same ID).</li>
-                    <li><strong>PRIMARY KEY:</strong> Uniquely identifies each row; must be UNIQUE and NOT NULL (e.g., <code>patient_id</code>).</li>
-                    <li><strong>FOREIGN KEY:</strong> Links a column in one table to a PRIMARY KEY in another, enforcing referential integrity (e.g., an admission references a patient).</li>
-                    <li><strong>CHECK:</strong> Ensures values meet a condition (e.g., <code>age >= 0</code>).</li>
+                    <li><strong>Integer/Bigint:</strong> For IDs and counters.</li>
+                    <li><strong>Decimal(N, d):</strong> For exact numeric types like currency.</li>
+                    <li><strong>Varchar(n):</strong> For bounded text strings.</li>
+                    <li><strong>Text:</strong> For long-form text.</li>
+                    <li><strong>Date/Time/Timestamp:</strong> For storing temporal data.</li>
+                    <li><strong>Boolean:</strong> For true/false values.</li>
+                    <li><strong>UUID:</strong> A universally unique identifier.</li>
+                </ul>
+                <p>A good rule of thumb is to prefer exact numeric types for currency (<strong>DECIMAL</strong>), bound string lengths where appropriate, and use <strong>CHECK</strong> constraints for domain rules (e.g., <code>0 ≤ Discount ≤ 1</code>).</p>
+
+                <h3 class="h4 fw-bold mb-3">1.4 A Record in Practice</h3>
+                <p>Consider a simple two-table example for an e-commerce store:</p>
+                <pre><code>customers(customer_id PK, first_name, last_name, email, …)
+orders(order_id PK, customer_id FK→customers.customer_id, product_id, qty, size, order_date, …)</code></pre>
+                <p>To retrieve a buyer's details for a specific order, you would use a <strong>JOIN</strong> on the <code>customer_id</code> column, linking the <code>orders</code> table to the <code>customers</code> table.</p>
+
+                <hr>
+
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">2) Integrity Constraints: Guardrails for Correctness</h2>
+                <h3 class="h4 fw-bold mb-3">2.1 Why constraints matter</h3>
+                <p>Constraints encode business rules directly into the database, preventing bad data at the source. This is far more robust than relying solely on application code, which can have bugs or be circumvented.</p>
+
+                <h3 class="h4 fw-bold mb-3">2.2 NOT NULL &mdash; Completeness</h3>
+                <p>The <strong>NOT NULL</strong> constraint prevents missing values where a value is mandatory. If you try to insert a row without a value for a <strong>NOT NULL</strong> column, the database will throw an error, protecting the integrity of your data.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">CREATE TABLE users (
+  user_id      BIGSERIAL PRIMARY KEY,
+  email        VARCHAR(255) NOT NULL,
+  password_hash TEXT        NOT NULL
+);</code></pre>
+                </div>
+                <p>In this example, both <code>email</code> and <code>password_hash</code> must have a value for every row.</p>
+
+                <h3 class="h4 fw-bold mb-3">2.3 UNIQUE &mdash; No Duplicates</h3>
+                <p>The <strong>UNIQUE</strong> constraint ensures all values in a column or set of columns are distinct. It's used when a column must be unique but isn't the primary key. Unlike a <strong>PRIMARY KEY</strong>, a <strong>UNIQUE</strong> constraint typically allows a single NULL value.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">ALTER TABLE users ADD CONSTRAINT uq_users_email UNIQUE (email);</code></pre>
+                </div>
+                <p>You can also create composite uniqueness, such as <code>UNIQUE (col1, col2)</code>. Most RDBMSs automatically create a unique index to enforce this constraint efficiently.</p>
+
+                <h3 class="h4 fw-bold mb-3">2.4 CHECK &mdash; Domain &amp; Business Rules</h3>
+                <p>The <strong>CHECK</strong> constraint validates that values meet a specified condition, such as being within a certain range or matching a pattern. This is an excellent way to encode business rules directly into your schema.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">CREATE TABLE employees (
+  emp_id   BIGSERIAL PRIMARY KEY,
+  salary   NUMERIC(12,2) NOT NULL,
+  grade    INT           NOT NULL,
+  CONSTRAINT chk_salary_min  CHECK (salary >= 20000),
+  CONSTRAINT chk_grade_range CHECK (grade BETWEEN 1 AND 10)
+);</code></pre>
+                </div>
+                <p><strong>Advanced CHECK (cross-column):</strong> You can also use <strong>CHECK</strong> for more complex, cross-column logic, like ensuring a state field is only 2 characters long when the country is 'USA'.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">ALTER TABLE addresses
+ADD CONSTRAINT chk_state_if_usa
+CHECK (country &lt;&gt; 'USA' OR char_length(state) = 2);</code></pre>
+                </div>
+
+                <hr>
+
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">3) Keys &mdash; The Structural Backbone</h2>
+                <h3 class="h4 fw-bold mb-3">3.1 PRIMARY KEY &mdash; The Official Identifier</h3>
+                <p>A <strong>PRIMARY KEY</strong> is the one official identifier for a table. It must be <strong>UNIQUE</strong> and <strong>NOT NULL</strong>, and there can be exactly one per table. Primary keys are often implemented as a <strong>surrogate key</strong>, such as an auto-incrementing integer or a UUID, for stability.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">CREATE TABLE products (
+  product_id BIGSERIAL PRIMARY KEY,
+  sku        VARCHAR(32) UNIQUE NOT NULL,
+  name       VARCHAR(200) NOT NULL
+);</code></pre>
+                </div>
+                <p>In this example, <code>product_id</code> is the primary key, while the <code>sku</code> (stock keeping unit) is a unique natural key.</p>
+
+                <h3 class="h4 fw-bold mb-3">3.2 FOREIGN KEY &mdash; Referential Integrity</h3>
+                <p>A <strong>FOREIGN KEY</strong> enforces a link between a "child" row and an existing "parent" row in another table. This is how you model <strong>relationships</strong> and enforce <strong>referential integrity</strong>.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">CREATE TABLE orders (
+  order_id    BIGSERIAL PRIMARY KEY,
+  customer_id BIGINT NOT NULL,
+  order_date  DATE   NOT NULL,
+  CONSTRAINT fk_orders_customer
+    FOREIGN KEY (customer_id)
+    REFERENCES customers (customer_id)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT
+);</code></pre>
+                </div>
+                <p>You can define <strong>ON UPDATE</strong> and <strong>ON DELETE</strong> actions to specify how the database should behave when a referenced row is updated or deleted. Common options include <strong>CASCADE</strong> (delete/update child rows) and <strong>RESTRICT</strong> (prevent the delete/update).</p>
+
+                <h3 class="h4 fw-bold mb-3">3.3 Composite Keys</h3>
+                <p>A <strong>composite key</strong> is a primary key that consists of two or more columns. This is used when a single column isn't sufficient to uniquely identify a row, often in <strong>junction tables</strong> that resolve many-to-many relationships.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">CREATE TABLE enrollment (
+  student_id BIGINT NOT NULL,
+  class_id   BIGINT NOT NULL,
+  PRIMARY KEY (student_id, class_id),
+  FOREIGN KEY (student_id) REFERENCES students(student_id),
+  FOREIGN KEY (class_id)   REFERENCES classes(class_id)
+);</code></pre>
+                </div>
+
+                <h3 class="h4 fw-bold mb-3">3.4 PRIMARY KEY vs. UNIQUE</h3>
+                <p>While both enforce uniqueness, they serve different purposes. Here's a crisp comparison:</p>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Primary Key</th>
+                            <th>Unique Constraint</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Purpose</strong></td>
+                            <td>Sole table identifier</td>
+                            <td>Prevent duplicates on other columns</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nullability</strong></td>
+                            <td>No NULLs allowed</td>
+                            <td>Typically one NULL allowed</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Count per table</strong></td>
+                            <td>Exactly one</td>
+                            <td>Many allowed</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Indexing</strong></td>
+                            <td>Usually clustered (vendor-specific)</td>
+                            <td>Non-clustered (typical)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Examples</strong></td>
+                            <td><code>customer_id</code></td>
+                            <td><code>email</code>, <code>ssn</code>, <code>sku</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <!-- 5 Normalization  -->
+                <h2 id="normalization" class="h3 fw-bold border-bottom pb-2 mb-4">5) Normalization — Integrity & Efficiency</h2>
+
+                <h3 class="h4 fw-bold mb-3">5.1 Why Normalize? Anomalies & Data Trust</h3>
+                <p>Normalization organizes data to reduce redundancy and prevent anomalies so downstream analytics are accurate and reproducible:</p>
+                <ul>
+                  <li><strong>Update anomaly:</strong> A single fact (e.g., provider specialty) exists in many rows—one update misses others.</li>
+                  <li><strong>Deletion anomaly:</strong> Deleting an encounter also deletes the only copy of a patient’s demographic detail.</li>
+                  <li><strong>Insertion anomaly:</strong> Can’t add a new ICD code without a “placeholder” encounter row.</li>
+                </ul>
+                <div class="callout mb-3">
+                  <strong>Informatics focus:</strong> In healthcare, normalization ensures codes (ICD-10, LOINC, SNOMED CT, RxNorm) live in authoritative lookup tables, preventing free-text drift and enabling consistent analytics and interoperability.
+                </div>
+
+                <h3 class="h4 fw-bold mb-3">5.2 The Normal Forms (beyond 3NF)</h3>
+                <ul>
+                  <li><strong>1NF:</strong> Atomic columns, no repeating groups (no CSVs in a cell).</li>
+                  <li><strong>2NF:</strong> 1NF + every non-key attribute depends on the <em>whole</em> composite key (no partial dependency).</li>
+                  <li><strong>3NF:</strong> 2NF + no transitive dependency (non-key depends only on the key, not on another non-key).</li>
+                  <li><strong>BCNF (Boyce–Codd):</strong> For every non-trivial functional dependency X→Y, X must be a superkey. Tightens 3NF when overlapping candidate keys exist.</li>
+                  <li><strong>4NF:</strong> Removes multi-valued dependencies (e.g., independent sets like {instrument} and {technician}).</li>
+                  <li><strong>5NF:</strong> Eliminates join dependencies; rarely needed in OLTP but useful in complex reference domains.</li>
+                </ul>
+                <p class="mb-3"><em>Rule of thumb:</em> Target 3NF/BCNF for OLTP. Use 4NF/5NF selectively for highly combinatorial reference models.</p>
+
+                <h3 class="h4 fw-bold mb-3">5.3 Worked Example </h3>
+                <p><strong>Unnormalized Table</strong></p>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Student#</th>
+                            <th>Advisor</th>
+                            <th>Adv_Room</th>
+                            <th>Class1</th>
+                            <th>Class2</th>
+                            <th>Class3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1022</td>
+                            <td>Jones</td>
+                            <td>412</td>
+                            <td>101-07</td>
+                            <td>143-01</td>
+                            <td>159-02</td>
+                        </tr>
+                        <tr>
+                            <td>4123</td>
+                            <td>Smith</td>
+                            <td>216</td>
+                            <td>101-07</td>
+                            <td>143-01</td>
+                            <td>179-04</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><strong>1NF (flatten repeating classes)</strong></p>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Student#</th>
+                            <th>Advisor</th>
+                            <th>Adv_Room</th>
+                            <th>Class#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1022</td><td>Jones</td><td>412</td><td>101-07</td></tr>
+                        <tr><td>1022</td><td>Jones</td><td>412</td><td>143-01</td></tr>
+                        <tr><td>1022</td><td>Jones</td><td>412</td><td>159-02</td></tr>
+                        <tr><td>4123</td><td>Smith</td><td>216</td><td>101-07</td></tr>
+                        <tr><td>4123</td><td>Smith</td><td>216</td><td>143-01</td></tr>
+                        <tr><td>4123</td><td>Smith</td><td>216</td><td>179-04</td></tr>
+                    </tbody>
+                </table>
+
+                <p><strong>2NF (remove partial dependencies)</strong></p>
+                <ul>
+                    <li><code>Students(Student#, Advisor, Adv_Room)</code></li>
+                    <li><code>Registration(Student#, Class#)</code></li>
+                </ul>
+
+                <p><strong>3NF (remove transitive dependencies)</strong></p>
+                <ul>
+                    <li><code>Students(Student#, Advisor)</code></li>
+                    <li><code>Faculty(Name PK, Room, Dept)</code></li>
+                    <li><code>Registration(Student#, Class#)</code></li>
+                </ul>
+
+                <h3 class="h4 fw-bold mb-3">5.4 When to Denormalize (with guardrails)</h3>
+                <p>Denormalize for read-heavy analytics (e.g., pre-aggregates, star schemas). <strong>Risks:</strong> higher write cost, potential inconsistency. <strong>Mitigations:</strong> refresh policies, materialized views, data quality checks, and lineage docs.</p>
+
+                <h3 class="h4 fw-bold mb-3">5.5 Informatics Patterns — Code Systems & Reference Integrity  </h3>
+                <p>Normalize external clinical vocabularies and link by code. Store human-readable labels in the reference table, not duplicated in facts.</p>
+                <div class="code-block">
+                  <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code class="language-sql">-- ICD-10 diagnoses reference (authoritative list)
+CREATE TABLE ref_icd10 (
+  icd10_code   VARCHAR(10) PRIMARY KEY,
+  long_title   VARCHAR(400) NOT NULL
+);
+
+-- LOINC test catalog
+CREATE TABLE ref_loinc (
+  loinc_code   VARCHAR(20) PRIMARY KEY,
+  component    VARCHAR(200),
+  property     VARCHAR(50),
+  scale        VARCHAR(50)
+);
+
+-- Clinical facts reference these codes (no free text duplication)
+CREATE TABLE encounter (
+  encounter_id BIGSERIAL PRIMARY KEY,
+  patient_id   BIGINT NOT NULL,
+  start_time   TIMESTAMP NOT NULL,
+  end_time     TIMESTAMP,
+  CHECK (end_time IS NULL OR end_time &gt;= start_time)
+);
+
+-- Many diagnoses per encounter (N:M)
+CREATE TABLE encounter_dx (
+  encounter_id BIGINT NOT NULL REFERENCES encounter(encounter_id) ON DELETE CASCADE,
+  icd10_code   VARCHAR(10) NOT NULL REFERENCES ref_icd10(icd10_code),
+  dx_rank      INT NOT NULL CHECK (dx_rank BETWEEN 1 AND 30),
+  PRIMARY KEY (encounter_id, icd10_code)
+);
+
+-- Lab results normalized to LOINC
+CREATE TABLE lab_result (
+  lab_result_id BIGSERIAL PRIMARY KEY,
+  encounter_id  BIGINT NOT NULL REFERENCES encounter(encounter_id) ON DELETE CASCADE,
+  loinc_code    VARCHAR(20) NOT NULL REFERENCES ref_loinc(loinc_code),
+  value_num     NUMERIC(12,4),
+  value_text    VARCHAR(200),
+  unit          VARCHAR(32),
+  collected_at  TIMESTAMP NOT NULL
+);</code></pre>
+                </div>
+                <p class="small text-muted">Why it matters: clean joins to <code>ref_icd10</code> / <code>ref_loinc</code> enable robust cohort building and KPI definition without brittle text matching.</p>
+
+                <h3 class="h4 fw-bold mb-3">5.6 Temporal Normalization & Auditability  </h3>
+                <p>Healthcare and finance require time-aware truth. Keep changes with effective windows; don’t overwrite history.</p>
+                <div class="code-block">
+                  <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code class="language-sql">-- Patient demographics with validity (bi-temporal possible)
+CREATE TABLE patient_demographics (
+  patient_id   BIGINT NOT NULL,
+  version_id   BIGSERIAL,
+  mrn          VARCHAR(20) NOT NULL,
+  first_name   VARCHAR(100) NOT NULL,
+  last_name    VARCHAR(100) NOT NULL,
+  birth_date   DATE NOT NULL,
+  valid_from   TIMESTAMP NOT NULL DEFAULT NOW(),
+  valid_to     TIMESTAMP,
+  is_current   BOOLEAN NOT NULL DEFAULT TRUE,
+  PRIMARY KEY (patient_id, version_id),
+  UNIQUE (patient_id, is_current) DEFERRABLE INITIALLY DEFERRED
+);</code></pre>
+                </div>
+                <p class="small text-muted">Pattern: insert new version with <code>is_current=TRUE</code>, set previous row’s <code>valid_to</code> and <code>is_current=FALSE</code>.</p>
+
+                <h3 class="h4 fw-bold mb-3">5.7 Dimensional Modeling for Analytics — Star & Snowflake  </h3>
+                <p>For BI/analytics, model facts (events/measures) and conformed dimensions (who/what/when/where). Choose a clear grain for each fact.</p>
+                <ul>
+                  <li><strong>Star:</strong> fact table links directly to all dimensions (simpler joins).</li>
+                  <li><strong>Snowflake:</strong> some dimensions normalized into sub-dimensions (less redundancy; more joins).</li>
+                  <li><strong>Grain:</strong> e.g., one row per encounter; per encounter-diagnosis; per lab observation.</li>
                 </ul>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- PATIENTS table: subject_id is PRIMARY KEY, name cannot be NULL, age must be positive
-CREATE TABLE PATIENTS (
-    subject_id INT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    age INT CHECK (age >= 0),
-    gender VARCHAR(10)
+                  <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code class="language-sql">-- Dimensions (with SCD2-friendly keys)
+CREATE TABLE dim_patient (
+  patient_sk   BIGSERIAL PRIMARY KEY,
+  patient_id   BIGINT NOT NULL,                 -- business key
+  mrn          VARCHAR(20) NOT NULL,
+  birth_date   DATE NOT NULL,
+  gender       VARCHAR(16),
+  effective_from DATE NOT NULL,
+  effective_to   DATE,
+  is_current     BOOLEAN NOT NULL DEFAULT TRUE
 );
--- ADMISSIONS table: hadm_id is PRIMARY KEY, subject_id is a FOREIGN KEY
-CREATE TABLE ADMISSIONS (
-    hadm_id INT PRIMARY KEY,
-    subject_id INT NOT NULL,
-    admit_time TIMESTAMP NOT NULL,
-    discharge_time TIMESTAMP,
-    diagnosis VARCHAR(255),
-    FOREIGN KEY (subject_id) REFERENCES PATIENTS(subject_id),
-    UNIQUE (subject_id, admit_time) -- Composite key
-);
--- LAB_RESULTS table: lab_id is PRIMARY KEY, hadm_id is a FOREIGN KEY
-CREATE TABLE LAB_RESULTS (
-    lab_id INT PRIMARY KEY,
-    hadm_id INT NOT NULL,
-    test_name VARCHAR(100) NOT NULL,
-    result_value DECIMAL(10, 2),
-    result_unit VARCHAR(20),
-    test_time TIMESTAMP,
-    FOREIGN KEY (hadm_id) REFERENCES ADMISSIONS(hadm_id)
-);</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This SQL creates three interconnected tables. <code>PATIENTS.subject_id</code> is the PRIMARY KEY. <code>ADMISSIONS.subject_id</code> is a FOREIGN KEY linking to <code>PATIENTS</code>. The composite UNIQUE key on <code>(subject_id, admit_time)</code> prevents duplicate admissions at the same time. <code>LAB_RESULTS</code> links to <code>ADMISSIONS</code> via <code>hadm_id</code>.</p>
-                <p><strong>Expanded Example (Retail):</strong> A retail database with <code>Customers</code>, <code>Orders</code>, and <code>Order_Items</code>.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Customers table: customer_id is PRIMARY KEY, email is UNIQUE
-CREATE TABLE Customers (
-    customer_id INT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    join_date DATE
-);
--- Orders table: order_id is PRIMARY KEY, customer_id is FOREIGN KEY
-CREATE TABLE Orders (
-    order_id INT PRIMARY KEY,
-    customer_id INT NOT NULL,
-    order_date DATE NOT NULL,
-    total_amount DECIMAL(10, 2) CHECK (total_amount >= 0),
-    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
-);
--- Order_Items table: links orders to products
-CREATE TABLE Order_Items (
-    item_id INT PRIMARY KEY,
-    order_id INT NOT NULL,
-    product_id INT NOT NULL,
-    quantity INT CHECK (quantity > 0),
-    FOREIGN KEY (order_id) REFERENCES Orders(order_id)
-);</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Here, <code>email</code> is UNIQUE to prevent duplicate customer emails, and <code>CHECK</code> ensures valid quantities and amounts. This structure supports tracking customer purchases efficiently.</p>
 
-                <!-- Database Schemas -->
-                <h3 class="h4 fw-bold mb-3">Database Schemas</h3>
-                <p>A database schema organizes database objects (tables, views, etc.) into logical groups, enhancing organization and security.</p>
+CREATE TABLE dim_provider (
+  provider_sk BIGSERIAL PRIMARY KEY,
+  provider_id BIGINT NOT NULL,                  -- business key
+  npi         VARCHAR(20) UNIQUE NOT NULL,
+  specialty   VARCHAR(100)
+);
+
+CREATE TABLE dim_date (
+  date_sk     INTEGER PRIMARY KEY,              -- yyyymmdd
+  full_date   DATE NOT NULL,
+  year        SMALLINT NOT NULL,
+  month       SMALLINT NOT NULL,
+  day         SMALLINT NOT NULL,
+  week        SMALLINT NOT NULL
+);
+
+CREATE TABLE dim_icd10 (
+  icd10_sk    BIGSERIAL PRIMARY KEY,
+  icd10_code  VARCHAR(10) UNIQUE NOT NULL,
+  long_title  VARCHAR(400) NOT NULL
+);
+
+-- Fact table at encounter grain
+CREATE TABLE fact_encounter (
+  encounter_id BIGINT PRIMARY KEY,              -- optional surrogate also fine
+  patient_sk   BIGINT NOT NULL REFERENCES dim_patient(patient_sk),
+  provider_sk  BIGINT NOT NULL REFERENCES dim_provider(provider_sk),
+  admit_date_sk INTEGER NOT NULL REFERENCES dim_date(date_sk),
+  discharge_date_sk INTEGER,
+  total_charges NUMERIC(12,2),
+  length_of_stay_days NUMERIC(6,2)
+);
+
+-- Bridge table for N:M diagnoses per encounter
+CREATE TABLE bridge_encounter_dx (
+  encounter_id BIGINT NOT NULL REFERENCES fact_encounter(encounter_id) ON DELETE CASCADE,
+  icd10_sk     BIGINT NOT NULL REFERENCES dim_icd10(icd10_sk),
+  dx_rank      INT NOT NULL CHECK (dx_rank BETWEEN 1 AND 30),
+  PRIMARY KEY (encounter_id, icd10_sk)
+);</code></pre>
+                </div>
+                <div class="code-block">
+                  <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code class="language-sql">-- Example analytic query: top 10 diagnoses by encounters in the last 90 days
+SELECT d.long_title, COUNT(*) AS encounters
+FROM bridge_encounter_dx b
+JOIN dim_icd10 d ON d.icd10_sk = b.icd10_sk
+JOIN fact_encounter f ON f.encounter_id = b.encounter_id
+JOIN dim_date dd ON dd.date_sk = f.admit_date_sk
+WHERE dd.full_date &gt;= CURRENT_DATE - INTERVAL '90 days'
+GROUP BY d.long_title
+ORDER BY encounters DESC
+LIMIT 10;</code></pre>
+                </div>
+
+                <h3 class="h4 fw-bold mb-3">5.8 Slowly Changing Dimensions (SCD) — Type 1 vs Type 2  </h3>
                 <ul>
-                    <li><strong>Purpose:</strong> Organizes data, controls access (e.g., only certain users access <code>payroll</code> schema), and avoids naming conflicts.</li>
-                    <li><strong>Example:</strong> In PostgreSQL, the default <code>public</code> schema can be supplemented with custom schemas like <code>healthcare</code> or <code>inventory</code>.</li>
+                  <li><strong>Type 1:</strong> Overwrite old attribute (easy, but loses history).</li>
+                  <li><strong>Type 2:</strong> New row per change with <code>effective_from/to</code>, <code>is_current</code>. Preserves historical truth for time-correct analytics.</li>
+                  <li><strong>Type 3:</strong> Keep limited prior values in extra columns (rare for clinical data).</li>
+                </ul>
+                <p class="small text-muted">Choose SCD strategy per dimension. Patients usually SCD2; code vocab dimensions usually Type 1 (definitions rarely change for the same code).</p>
+
+                <h3 class="h4 fw-bold mb-3">5.9 Practical Denormalization for Analytics  </h3>
+                <ul>
+                  <li><strong>Materialized views:</strong> pre-aggregate daily/weekly metrics; refresh nightly.</li>
+                  <li><strong>Wide export tables:</strong> team-friendly flat tables generated from the normalized core.</li>
+                  <li><strong>Snapshots:</strong> month-end copies of fact tables for audit-ready reproducibility.</li>
                 </ul>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Create a schema for healthcare data
-CREATE SCHEMA healthcare;
--- Create a table within the schema
-CREATE TABLE healthcare.PatientsDemographics (
-    patient_id INT PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50)
-);
--- Set search path for easier querying
-SET search_path TO healthcare, public;
-SELECT * FROM PatientsDemographics;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> The <code>healthcare</code> schema isolates patient data. <code>SET search_path</code> simplifies queries by defaulting to this schema.</p>
-                <p><strong>Expanded Example (University):</strong> A university might use schemas like <code>academics</code> for courses and <code>admin</code> for payroll.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Create schemas for academics and admin
-CREATE SCHEMA academics;
-CREATE SCHEMA admin;
--- Create a Courses table in academics schema
-CREATE TABLE academics.Courses (
-    course_id INT PRIMARY KEY,
-    course_name VARCHAR(100) NOT NULL,
-    credits INT CHECK (credits > 0)
-);
--- Create an Employees table in admin schema
-CREATE TABLE admin.Employees (
-    emp_id INT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    salary DECIMAL(10, 2) CHECK (salary >= 0)
-);</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This separates academic and administrative data, allowing different access controls for faculty and HR staff.</p>
+                  <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code class="language-sql">-- Postgres example: monthly encounter summary (materialized)
+CREATE MATERIALIZED VIEW mv_encounter_monthly AS
+SELECT date_trunc('month', dd.full_date) AS month_start,
+       COUNT(*) AS encounters,
+       SUM(f.total_charges) AS charges
+FROM fact_encounter f
+JOIN dim_date dd ON dd.date_sk = f.admit_date_sk
+GROUP BY 1;
 
-                <!-- Normalization in Database Design -->
-                <h3 class="h4 fw-bold mb-3">Normalization in Database Design</h3>
-                <p>Normalization organizes data to reduce redundancy and improve integrity by breaking tables into smaller, related ones.</p>
+-- REFRESH MATERIALIZED VIEW mv_encounter_monthly;</code></pre>
+                </div>
+
+                <h3 class="h4 fw-bold mb-3">5.10 Governance Tips for Health Analytics  </h3>
                 <ul>
-                    <li><strong>Benefits:</strong>
+                  <li><strong>Lineage:</strong> Record source system and transformation notes for each fact/dimension.</li>
+                  <li><strong>Quality checks:</strong> Null-rate, range checks, foreign key coverage, duplicate code audits.</li>
+                  <li><strong>PII handling:</strong> De-identify exports; restrict schema access; log queries touching PHI.</li>
+                </ul>
+
+                <hr>
+
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">6) ERDs &mdash; Visualize Before You Implement</h2>
+                <p>An <strong>Entity-Relationship Diagram (ERD)</strong> is a visual blueprint of a database. It's a critical tool for planning and communicating your design before writing a single line of SQL.</p>
+                <h3 class="h4 fw-bold mb-3">6.1 Components</h3>
+                <ul>
+                    <li><strong>Entity (Rectangle):</strong> Represents a table.</li>
+                    <li><strong>Attributes (listed in entity):</strong> Represents the columns. Always mark the <strong>PRIMARY KEY (PK)</strong> and <strong>FOREIGN KEY (FK)</strong>.</li>
+                    <li><strong>Relationships (Lines):</strong> Connect entities to show how they relate.</li>
+                </ul>
+                <p>A simple ERD for a retail system looks like this:</p>
+                <pre><code>Customer (customer_id PK, email UNIQUE, first_name, last_name)
+   |
+   | 1:N
+   |
+Order (order_id PK, customer_id FK→Customer.customer_id, order_date)
+   |
+   | 1:N
+   |
+OrderItem (order_id FK, product_id FK, qty, unit_price, PRIMARY KEY(order_id, product_id))
+   ^
+   |
+   N:1
+Product (product_id PK, sku UNIQUE, name, price)</code></pre>
+                
+                <h3 class="h4 fw-bold mb-3">6.2 Cardinality</h3>
+                <p>Cardinality defines the number of instances of one entity that can be associated with the number of instances of another entity.</p>
+                <ul>
+                    <li><strong>1:1 (One-to-One):</strong> Rare, often a sign that you should merge the two tables.</li>
+                    <li><strong>1:N (One-to-Many):</strong> The most common relationship. For example, one customer can have many orders.</li>
+                    <li><strong>N:M (Many-to-Many):</strong> A relationship where many instances of one entity can relate to many instances of another. This is resolved using a <strong>junction table</strong>. For example, many students can enroll in many classes, so a junction table like <code>enrollment</code> is used.</li>
+                </ul>
+
+                <hr>
+
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">7) Best-Practice Checklist</h2>
+                <p>This checklist summarizes what database professionals actually do in practice:</p>
+                <ul>
+                    <li><strong>Planning &amp; modeling:</strong>
                         <ul>
-                            <li>Reduces redundancy, saving storage and preventing inconsistencies.</li>
-                            <li>Ensures integrity; updates occur in one place.</li>
-                            <li>Simplifies maintenance (e.g., updating a department name).</li>
+                            <li>Start with a mission statement and scope.</li>
+                            <li>List entities, attributes, and keys.</li>
+                            <li>Validate the design with stakeholders using ERDs as a contract.</li>
+                            <li>Prefer <strong>surrogate keys</strong> for stability; keep <strong>natural keys</strong> with a <strong>UNIQUE</strong> constraint.</li>
+                            <li>Choose tight data types and add <strong>CHECK</strong> constraints for domain rules.</li>
                         </ul>
                     </li>
-                    <li><strong>Normal Forms:</strong>
+                    <li><strong>Naming &amp; documentation:</strong>
                         <ul>
-                            <li><strong>1NF (First Normal Form):</strong> Atomic values, no repeating groups, unique rows.</li>
-                            <li><strong>2NF (Second Normal Form):</strong> 1NF + all non-key attributes fully depend on the primary key.</li>
-                            <li><strong>3NF (Third Normal Form):</strong> 2NF + no transitive dependencies (non-key attributes depend only on the primary key).</li>
+                            <li>Maintain consistent naming conventions.</li>
+                            <li>Comment tables and columns where supported.</li>
+                            <li>Version your schema (migrations) and keep a changelog.</li>
                         </ul>
                     </li>
-                    <li><strong>Denormalization:</strong> Intentionally adding redundancy for performance, used in analytics but risks inconsistency.</li>
+                    <li><strong>Integrity &amp; performance:</strong>
+                        <ul>
+                            <li>Always enforce <strong>FOREIGN KEY</strong> constraints; never rely solely on app logic.</li>
+                            <li>Index foreign keys and frequent search/filter columns.</li>
+                            <li>Use composite indexes that match your query patterns.</li>
+                            <li>Normalize for OLTP; denormalize for analytics.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Security &amp; governance:</strong>
+                        <ul>
+                            <li>Apply the principle of least privilege.</li>
+                            <li>Protect PII with encryption and auditing.</li>
+                            <li>Establish clear backup, restore, and data retention policies.</li>
+                        </ul>
+                    </li>
                 </ul>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Denormalized survey table
-CREATE TABLE SurveyResponses_Denormalized (
-    response_id INT PRIMARY KEY,
-    respondent_name VARCHAR(100),
-    respondent_age INT,
-    city_id INT,
-    city_name VARCHAR(100),
-    state_name VARCHAR(100),
-    survey_answer TEXT
-);
--- Normalized to 3NF
-CREATE TABLE Cities (
-    city_id INT PRIMARY KEY,
-    city_name VARCHAR(100) NOT NULL,
-    state_name VARCHAR(100) NOT NULL,
-    UNIQUE (city_name, state_name)
-);
-CREATE TABLE SurveyResponses_Normalized (
-    response_id INT PRIMARY KEY,
-    respondent_name VARCHAR(100),
-    respondent_age INT,
-    city_id INT,
-    survey_answer TEXT,
-    FOREIGN KEY (city_id) REFERENCES Cities(city_id)
-);</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> The denormalized table repeats <code>city_name</code> and <code>state_name</code>. Normalizing moves these to a <code>Cities</code> table, reducing redundancy.</p>
-                <p><strong>Expanded Example (Library):</strong> A denormalized table might store book and author details together, but normalization separates them.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Denormalized
-CREATE TABLE Books_Denormalized (
-    book_id INT PRIMARY KEY,
-    title VARCHAR(100),
-    author_name VARCHAR(100),
-    author_birth_year INT,
-    publish_date DATE
-);
--- Normalized to 3NF
-CREATE TABLE Authors (
-    author_id INT PRIMARY KEY,
-    author_name VARCHAR(100) NOT NULL,
-    birth_year INT
-);
-CREATE TABLE Books (
-    book_id INT PRIMARY KEY,
-    title VARCHAR(100) NOT NULL,
-    author_id INT,
-    publish_date DATE,
-    FOREIGN KEY (author_id) REFERENCES Authors(author_id)
-);</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Separating <code>Authors</code> prevents repeating author details for multiple books, simplifying updates.</p>
+                
+                <hr>
 
-                <!-- Entity-Relationship Diagrams (ERDs) -->
-                <h3 class="h4 fw-bold mb-3">Entity-Relationship Diagrams (ERDs)</h3>
-                <p>ERDs visually model database structures, showing entities, attributes, and relationships.</p>
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Lab: Three Exercises + One Project</h2>
+                <p>This lab provides hands-on experience in applying the concepts learned in this module.</p>
+                <h3 class="h4 fw-bold mb-3">Exercise 1 &mdash; Identify entities, keys, and columns (15–20 min)</h3>
+                <p><strong>Prompt:</strong> A bookstore app needs to track customers, books, authors, and purchases. List entities and attributes (with proposed types), choose primary keys, and identify relationships and their cardinalities.</p>
+                <p><strong>Expected Direction (not unique):</strong></p>
                 <ul>
-                    <li><strong>Components:</strong>
-                        <ul>
-                            <li><strong>Entities (Rectangles):</strong> Tables like <code>PATIENTS</code>.</li>
-                            <li><strong>Attributes (Ovals/Text):</strong> Columns like <code>name</code>, with primary keys underlined.</li>
-                            <li><strong>Relationships (Lines):</strong> Use Crow's Foot notation for cardinality.
-                                <ul>
-                                    <li><strong>1:1:</strong> One-to-one (e.g., one patient, one medical record).</li>
-                                    <li><strong>1:N:</strong> One-to-many (e.g., one patient, many admissions).</li>
-                                    <li><strong>M:N:</strong> Many-to-many (e.g., students and courses via enrollments).</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li><strong>Tools:</strong> Draw.io, Lucidchart, dbdiagram.io.</li>
-                    <li><strong>Application:</strong> ERDs aid in designing and communicating complex database structures.</li>
+                    <li><code>Customer(customer_id PK, email UNIQUE, first_name, last_name, created_at)</code></li>
+                    <li><code>Author(author_id PK, name, country)</code></li>
+                    <li><code>Book(book_id PK, isbn UNIQUE, title, published_year, list_price)</code></li>
+                    <li><code>BookAuthor(book_id FK, author_id FK, PRIMARY KEY(book_id, author_id))</code></li>
+                    <li><code>Order(order_id PK, customer_id FK, order_date)</code></li>
+                    <li><code>OrderItem(order_id FK, book_id FK, qty, unit_price, PRIMARY KEY(order_id, book_id))</code></li>
                 </ul>
-                <p><strong>Sample ERD SQL (Hospital System):</strong></p>
+
+                <h3 class="h4 fw-bold mb-3">Exercise 2 &mdash; Write the DDL with constraints (20–25 min)</h3>
+                <p><strong>Prompt:</strong> Implement the schema for <code>Customer</code>, <code>Order</code>, and <code>OrderItem</code> from Exercise 1 with appropriate constraints: <code>email UNIQUE</code>, <code>qty > 0</code>, <code>unit_price &ge; 0</code>, and meaningful <strong>FOREIGN KEY</strong> actions.</p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- SQL for ERD structure
-CREATE TABLE Doctors (
-    doctor_id INT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+                    <pre><code class="language-sql">CREATE TABLE customer (
+  customer_id BIGSERIAL PRIMARY KEY,
+  email       VARCHAR(255) UNIQUE NOT NULL,
+  first_name  VARCHAR(100) NOT NULL,
+  last_name   VARCHAR(100) NOT NULL
 );
-CREATE TABLE Patients (
-    patient_id INT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+
+CREATE TABLE "order" (
+  order_id    BIGSERIAL PRIMARY KEY,
+  customer_id BIGINT NOT NULL
+              REFERENCES customer(customer_id) ON DELETE RESTRICT,
+  order_date  DATE NOT NULL DEFAULT CURRENT_DATE
 );
-CREATE TABLE Appointments (
-    appointment_id INT PRIMARY KEY,
-    doctor_id INT,
-    patient_id INT,
-    appt_date DATE,
-    FOREIGN KEY (doctor_id) REFERENCES Doctors(doctor_id),
-    FOREIGN KEY (patient_id) REFERENCES Patients(patient_id)
+
+CREATE TABLE order_item (
+  order_id   BIGINT NOT NULL
+             REFERENCES "order"(order_id) ON DELETE CASCADE,
+  book_id    BIGINT NOT NULL,
+  qty        INTEGER NOT NULL CHECK (qty > 0),
+  unit_price NUMERIC(10,2) NOT NULL CHECK (unit_price >= 0),
+  PRIMARY KEY (order_id, book_id)
 );</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> This represents a 1:N relationship (one doctor, many appointments) and 1:N (one patient, many appointments).</p>
 
-                <!-- Assessments -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Assessments</h2>
+                <h3 class="h4 fw-bold mb-3">Exercise 3 &mdash; Normalize a messy table (25–30 min)</h3>
+                <p><strong>Prompt:</strong> Normalize the following denormalized "Purchases" table to 3NF. Identify anomalies, split the data into new tables, and provide minimal DDL.</p>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>purchase_id</th>
+                            <th>customer_email</th>
+                            <th>customer_name</th>
+                            <th>book_isbn</th>
+                            <th>book_title</th>
+                            <th>author_name</th>
+                            <th>qty</th>
+                            <th>price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>a@a.com</td>
+                            <td>Alice</td>
+                            <td>978...1</td>
+                            <td>SQL Book</td>
+                            <td>Jones</td>
+                            <td>1</td>
+                            <td>25.00</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>b@b.com</td>
+                            <td>Bob</td>
+                            <td>978...1</td>
+                            <td>SQL Book</td>
+                            <td>Jones</td>
+                            <td>2</td>
+                            <td>25.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>Direction:</strong></p>
+                <ul>
+                    <li>Identify anomalies: Redundant customer, book, and author information.</li>
+                    <li>Split into 3NF tables:
+                        <ul>
+                            <li><code>Customer(customer_id PK, email UNIQUE, name)</code></li>
+                            <li><code>Author(author_id PK, name)</code></li>
+                            <li><code>Book(book_id PK, isbn UNIQUE, title)</code></li>
+                            <li><code>BookAuthor(book_id FK, author_id FK, PK(book_id, author_id))</code></li>
+                            <li><code>Purchase(purchase_id PK, customer_id FK)</code></li>
+                            <li><code>PurchaseItem(purchase_id FK, book_id FK, qty, price, PK(purchase_id, book_id))</code></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3 class="h4 fw-bold mb-3">End-of-Module Project &mdash; Design &amp; Implement a Mini OLTP (60–90 min)</h3>
+                <p><strong>Scenario:</strong> A small clinic needs a system to track patients, appointments, providers, and billed services.</p>
+                <p><strong>Deliverables:</strong></p>
                 <ol>
-                    <li><strong>Conceptual Question:</strong> Explain the difference between a <code>PRIMARY KEY</code> and a <code>UNIQUE</code> constraint. Provide a scenario where you would use a <code>UNIQUE</code> constraint on a column that is not the <code>PRIMARY KEY</code>.</li>
-                    <li><strong>Design Task:</strong> A local animal shelter in Greensboro, NC, wants to track its animals, adoptions, and volunteers.
-                        <ul>
-                            <li>Design a normalized database schema (up to 3NF) for this system. Consider entities like <code>Animals</code>, <code>Adopters</code>, <code>Adoptions</code>, <code>Volunteers</code>, <code>VolunteerShifts</code>.</li>
-                            <li>Define appropriate primary keys, foreign keys, and other constraints for each table.</li>
-                            <li>Draw a simple Entity-Relationship Diagram (ERD) for your design, showing entities and relationships with cardinality.</li>
-                        </ul>
-                    </li>
-                    <li><strong>Expanded Task (Retail):</strong> Design a 3NF schema for a bookstore tracking books, authors, and sales. Provide SQL creation statements and an ERD description.</li>
+                    <li>An ERD with entities, attributes (types), PKs, FKs, and cardinalities.</li>
+                    <li>DDL to create tables with appropriate constraints: <code>Patients</code> (unique MRN), <code>Providers</code> (unique NPI), <code>Appointments</code> (FK to Patient/Provider), <code>Services</code> (catalog), <code>AppointmentService</code> (junction with qty, charge).</li>
+                    <li>Sample data (a few <code>INSERT</code> statements per table).</li>
+                    <li>Two illustrative queries: one to list upcoming appointments with patient and provider names, and another to calculate total charges per patient.</li>
+                    <li>A short paragraph on normalization choices and any intentional denormalization.</li>
                 </ol>
+
+                <p><strong>Starter DDL:</strong></p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">CREATE TABLE patient (
+  patient_id BIGSERIAL PRIMARY KEY,
+  mrn        VARCHAR(20) UNIQUE NOT NULL,
+  first_name VARCHAR(100) NOT NULL,
+  last_name  VARCHAR(100) NOT NULL,
+  dob        DATE NOT NULL
+);
+
+CREATE TABLE provider (
+  provider_id BIGSERIAL PRIMARY KEY,
+  npi         VARCHAR(20) UNIQUE NOT NULL,
+  name        VARCHAR(150) NOT NULL,
+  specialty   VARCHAR(100)
+);
+
+CREATE TABLE appointment (
+  appt_id     BIGSERIAL PRIMARY KEY,
+  patient_id  BIGINT NOT NULL REFERENCES patient(patient_id) ON DELETE CASCADE,
+  provider_id BIGINT NOT NULL REFERENCES provider(provider_id) ON DELETE RESTRICT,
+  appt_time   TIMESTAMP NOT NULL
+);
+
+CREATE TABLE service (
+  service_id  BIGSERIAL PRIMARY KEY,
+  cpt_code    VARCHAR(10) UNIQUE NOT NULL,
+  description VARCHAR(200) NOT NULL,
+  charge      NUMERIC(10,2) NOT NULL CHECK (charge >= 0)
+);
+
+CREATE TABLE appointment_service (
+  appt_id    BIGINT NOT NULL REFERENCES appointment(appt_id) ON DELETE CASCADE,
+  service_id BIGINT NOT NULL REFERENCES service(service_id),
+  qty        INTEGER NOT NULL CHECK (qty > 0),
+  charge     NUMERIC(10,2) NOT NULL CHECK (charge >= 0),
+  PRIMARY KEY (appt_id, service_id)
+);</code></pre>
+                </div>
+                <p><strong>Example Queries:</strong></p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">-- Upcoming appointments (next 7 days)
+SELECT a.appt_time,
+       p.first_name || ' ' || p.last_name AS patient,
+       pr.name AS provider
+FROM appointment a
+JOIN patient  p  ON p.patient_id  = a.patient_id
+JOIN provider pr ON pr.provider_id = a.provider_id
+WHERE a.appt_time >= CURRENT_DATE
+  AND a.appt_time <  CURRENT_DATE + INTERVAL '7 days'
+ORDER BY a.appt_time;
+
+-- Total charges per patient
+SELECT p.patient_id,
+       p.first_name || ' ' || p.last_name AS patient,
+       SUM(asv.qty * asv.charge) AS total_charges
+FROM appointment a
+JOIN patient p           ON p.patient_id = a.patient_id
+JOIN appointment_service asv ON asv.appt_id = a.appt_id
+GROUP BY p.patient_id, p.first_name, p.last_name
+ORDER BY total_charges DESC;</code></pre>
+                </div>
+
+                <hr>
+
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Quick Reference</h2>
+                <p><strong>Column definitions:</strong> <code>column_name DATA_TYPE [NULL | NOT NULL] [DEFAULT expr]</code></p>
+                <p><strong>Table constraints:</strong></p>
+                <pre><code>[CONSTRAINT name] PRIMARY KEY (col[, …])
+[CONSTRAINT name] UNIQUE (col[, …])
+[CONSTRAINT name] CHECK (boolean_expression)
+[CONSTRAINT name] FOREIGN KEY (col[, …])
+  REFERENCES parent_table(parent_col[, …])
+  [ON UPDATE action] [ON DELETE action]</code></pre>
+                <p><strong>Actions (common):</strong> <code>NO ACTION/RESTRICT</code>, <code>CASCADE</code>, <code>SET NULL</code>, <code>SET DEFAULT</code>.</p>
+                <p><strong>Indexing (typical patterns):</strong></p>
+                <pre><code>CREATE INDEX idx_order_customer ON "order"(customer_id);
+CREATE INDEX idx_product_sku ON product(sku);
+CREATE INDEX idx_appointment_time ON appointment(appt_time);</code></pre>
+
+                <hr>
+
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Common Pitfalls</h2>
+                <ul>
+                    <li><strong>No FKs:</strong> This leads to orphan rows. Always declare <strong>FOREIGN KEY</strong> constraints.</li>
+                    <li><strong>Overly wide text types:</strong> Use <strong>VARCHAR(n)</strong> when you know reasonable bounds to save storage and improve performance.</li>
+                    <li><strong>Ambiguous names:</strong> Inconsistent naming slows everyone down—standardize from the beginning.</li>
+                    <li><strong>Everything as TEXT:</strong> You lose validation and performance hints. Always pick proper data types.</li>
+                    <li><strong>Missing CHECKs:</strong> Encode business rules like <code>qty > 0</code> and <code>charge &ge; 0</code>.</li>
+                    <li><strong>Indexes everywhere:</strong> Create targeted indexes for specific queries; measure performance with <code>EXPLAIN/ANALYZE</code>.</li>
+                    <li><strong>Skipping docs:</strong> Add comments to your schema and keep a schema migration log.</li>
+                </ul>
             </div>
         </section>
     </div>
 
-    <!-- Footer -->
     <footer class="bg-light py-3 text-center">
         <p class="text-muted mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
     </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <!-- Highlight.js Initialization -->
     <script>hljs.highlightAll();</script>
-    <!-- Custom Copy Functionality -->
     <script>
         function copyCode(button) {
             const code = button.nextElementSibling.querySelector('code');
             navigator.clipboard.writeText(code.innerText).then(() => {
+                const original = button.textContent;
                 button.textContent = 'Copied!';
-                setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                button.disabled = true;
+                setTimeout(() => { button.textContent = original; button.disabled = false; }, 1600);
             });
         }
     </script>
