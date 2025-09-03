@@ -1,4 +1,4 @@
-<html lang="en"><head>
+An Expert's Guide to Relational Database Design<html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Module 2: Database Concepts</title>
@@ -451,8 +451,8 @@ mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
 
     <div class="container my-5">
         <section class="text-center py-5 bg-white rounded shadow">
-            <h1 class="display-4 fw-bold text-dark">Module 2: An Expert's Guide to Relational Database Design</h1>
-            <p class="lead text-muted">A Comprehensive Teaching Module (Lecture, Lab, and Assessment Ready)</p>
+            <h1 class="display-4 fw-bold text-dark">Module 2: Database Concepts</h1>
+           
         </section>
 
         <section class="my-5">
@@ -759,7 +759,7 @@ mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
                 <h3 class="h4 fw-bold mb-3">5.4 When to Denormalize (with guardrails)</h3>
                 <p>Denormalize for read-heavy analytics (e.g., pre-aggregates, star schemas). <strong>Risks:</strong> higher write cost, potential inconsistency. <strong>Mitigations:</strong> refresh policies, materialized views, data quality checks, and lineage docs.</p>
 
-                <h3 class="h4 fw-bold mb-3">5.5 Informatics Patterns — Code Systems &amp; Reference Integrity (NEW)</h3>
+                <h3 class="h4 fw-bold mb-3">5.5 Informatics Patterns — Code Systems &amp; Reference Integrity  </h3>
                 <p>Normalize external clinical vocabularies and link by code. Store human-readable labels in the reference table, not duplicated in facts.</p>
                 <div class="code-block">
                   <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
@@ -807,7 +807,7 @@ mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
                 </div>
                 <p class="small text-muted">Why it matters: clean joins to <code>ref_icd10</code> / <code>ref_loinc</code> enable robust cohort building and KPI definition without brittle text matching.</p>
 
-                <h3 class="h4 fw-bold mb-3">5.6 Temporal Normalization &amp; Auditability (NEW)</h3>
+                <h3 class="h4 fw-bold mb-3">5.6 Temporal Normalization &amp; Auditability  </h3>
                 <p>Healthcare and finance require time-aware truth. Keep changes with effective windows; don’t overwrite history.</p>
                 <div class="code-block">
                   <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
@@ -828,7 +828,7 @@ mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
                 </div>
                 <p class="small text-muted">Pattern: insert new version with <code>is_current=TRUE</code>, set previous row’s <code>valid_to</code> and <code>is_current=FALSE</code>.</p>
 
-                <h3 class="h4 fw-bold mb-3">5.7 Dimensional Modeling for Analytics — Star &amp; Snowflake (NEW)</h3>
+                <h3 class="h4 fw-bold mb-3">5.7 Dimensional Modeling for Analytics — Star &amp; Snowflake  </h3>
                 <p>For BI/analytics, model facts (events/measures) and conformed dimensions (who/what/when/where). Choose a clear grain for each fact.</p>
                 <ul>
                   <li><strong>Star:</strong> fact table links directly to all dimensions (simpler joins).</li>
@@ -904,7 +904,7 @@ mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
 LIMIT <span class="hljs-number">10</span>;</code></pre>
                 </div>
 
-                <h3 class="h4 fw-bold mb-3">5.8 Slowly Changing Dimensions (SCD) — Type 1 vs Type 2 (NEW)</h3>
+                <h3 class="h4 fw-bold mb-3">5.8 Slowly Changing Dimensions (SCD) — Type 1 vs Type 2  </h3>
                 <ul>
                   <li><strong>Type 1:</strong> Overwrite old attribute (easy, but loses history).</li>
                   <li><strong>Type 2:</strong> New row per change with <code>effective_from/to</code>, <code>is_current</code>. Preserves historical truth for time-correct analytics.</li>
@@ -912,7 +912,7 @@ LIMIT <span class="hljs-number">10</span>;</code></pre>
                 </ul>
                 <p class="small text-muted">Choose SCD strategy per dimension. Patients usually SCD2; code vocab dimensions usually Type 1 (definitions rarely change for the same code).</p>
 
-                <h3 class="h4 fw-bold mb-3">5.9 Practical Denormalization for Analytics (NEW)</h3>
+                <h3 class="h4 fw-bold mb-3">5.9 Practical Denormalization for Analytics  </h3>
                 <ul>
                   <li><strong>Materialized views:</strong> pre-aggregate daily/weekly metrics; refresh nightly.</li>
                   <li><strong>Wide export tables:</strong> team-friendly flat tables generated from the normalized core.</li>
@@ -932,7 +932,7 @@ LIMIT <span class="hljs-number">10</span>;</code></pre>
 <span class="hljs-comment">-- REFRESH MATERIALIZED VIEW mv_encounter_monthly;</span></code></pre>
                 </div>
 
-                <h3 class="h4 fw-bold mb-3">5.10 Governance Tips for Health Analytics (NEW)</h3>
+                <h3 class="h4 fw-bold mb-3">5.10 Governance Tips for Health Analytics  </h3>
                 <ul>
                   <li><strong>Lineage:</strong> Record source system and transformation notes for each fact/dimension.</li>
                   <li><strong>Quality checks:</strong> Null-rate, range checks, foreign key coverage, duplicate code audits.</li>
@@ -1062,7 +1062,7 @@ Product (product_id PK, sku <span class="hljs-keyword">UNIQUE</span>, name, pric
                     <li>A short paragraph on normalization choices and any intentional denormalization.</li>
                 </ol>
 
-                <p><strong>Starter DDL:</strong></p>
+              
                 
                 
                 
