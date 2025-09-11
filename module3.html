@@ -1,592 +1,538 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Module 3: DQL & DML - IAF 603</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <!-- Google Fonts -->
+    <title>Module 3: Data Standards - Health Informatics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Highlight.js for code highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- MathJax CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- Custom MathJax Configuration -->
-    <script src="./js/mathjax.js"></script>
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="./css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .sql-category-card {
-            border-left: 5px solid #007bff;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            background-color: #f8f9fa;
-            border-radius: 0.5rem;
+        body { font-family: 'Inter', sans-serif; background-color: #F8F7F4; color: #333333; }
+        .sidebar-link { transition: all 0.2s ease-in-out; }
+        .sidebar-link.active, .sidebar-link:hover { background-color: #4A7C59; color: #FFFFFF; transform: translateX(4px); }
+        .interop-level { cursor: pointer; transition: all 0.3s ease; }
+        .content-block { line-height: 1.7; }
+        .content-block h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .content-block p { margin-bottom: 1rem; }
+        .content-block ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+        .flow-diagram .flow-box { transition: all 0.3s ease; }
+        .flow-diagram .flow-box:hover { transform: translateY(-4px); box-shadow: 4px 6px rgba(0,0,0,0.1); }
+        .rotate-180 { transform: rotate(180deg); }
+        .section-header { position: relative; }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 50px;
+            height: 3px;
+            background-color: #4A7C59;
+            border-radius: 9999px;
+        }
+
+        /* Interactive Benefits Map */
+        .benefit-map .node {
+            cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .sql-category-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        .benefit-map .node:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        .sql-category-card h4 {
-            color: #007bff;
-            font-weight: bold;
+        .benefit-map .connector {
+            stroke: #4A7C59;
+            stroke-width: 2;
+            transition: stroke-width 0.3s ease;
         }
-        .flow-diagram {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-family: 'Source Code Pro', monospace;
-        }
-        .flow-step {
-            width: 100%;
-            max-width: 300px;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            background-color: #e9ecef;
-            border-radius: 0.25rem;
-            text-align: center;
-            position: relative;
-        }
-        .flow-step:not(:last-child)::after {
-            content: '↓';
-            display: block;
-            margin: 0.5rem 0;
-            font-size: 1.5rem;
-            color: #6c757d;
-        }
-        .flow-step span {
-            font-weight: bold;
-        }
-        .flow-step.active {
-            background-color: #d1e7dd;
-            border: 1px solid #c3e6cb;
+        .benefit-map .node.highlight,
+        .benefit-map .connector.highlight {
+            stroke-width: 4;
+            transform: scale(1.05);
+            font-weight: 600;
         }
     </style>
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="./index.html">IAF 603: Preparing Data for Analytics</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Modules
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="./module1.html">Module 1</a></li>
-                            <li><a class="dropdown-item" href="./module2.html">Module 2</a></li>
-                            <li><a class="dropdown-item" href="./module3.html">Module 3</a></li>
-                            <li><a class="dropdown-item" href="./module4.html">Module 4</a></li>
-                            <li><a class="dropdown-item" href="./module5.html">Module 5</a></li>
-                            <li><a class="dropdown-item" href="./module6.html">Module 6</a></li>
-                            <li><a class="dropdown-item" href="./module7.html">Module 7</a></li>
-                            <li><a class="dropdown-item" href="./module8.html">Module 8</a></li>
-                            <li><a class="dropdown-item" href="./module9.html">Module 9</a></li>
-                            <li><a class="dropdown-item" href="./module10.html">Module 10</a></li>
-                            <li><a class="dropdown-item" href="./module11.html">Module 11</a></li>
-                            <li><a class="dropdown-item" href="./module12.html">Module 12</a></li>
-                            <li><a class="dropdown-item" href="./module13.html">Module 13</a></li>
-                            <li><a class="dropdown-item" href="./module14.html">Module 14</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <!-- Main Content -->
-    <div class="container my-5">
-        <!-- Module Title -->
-        <section class="text-center py-5 bg-white rounded shadow">
-            <h1 class="display-4 fw-bold text-dark">Module 3: PostgreSQL in Action: A Hands-On Guide to DQL and DML</h1>
-        </section>
+<body class="antialiased">
+    <div class="min-h-screen lg:grid lg:grid-cols-12">
+        <!-- Sidebar Navigation -->
+        <aside class="lg:col-span-3 lg:block bg-[#EAE7E1] p-6 lg:fixed lg:h-full lg:w-1/4 xl:w-1/5">
+            <h1 class="text-2xl font-bold text-[#4A7C59]">Health Informatics</h1>
+            <p class="text-sm text-gray-600 mb-8">Master's Course Overview</p>
+            <nav id="sidebar-nav" class="space-y-2">
+                <a href="./index.html" class="sidebar-link block p-3 rounded-lg font-medium">Home</a>
+                <a href="./module1.html" class="sidebar-link block p-3 rounded-lg font-medium">1. Introduction</a>
+                <a href="./module2.html" class="sidebar-link block p-3 rounded-lg font-medium">2. EHR Ecosystem</a>
+                <a href="./module3.html" class="sidebar-link active block p-3 rounded-lg font-medium">3. Data Standards</a>
+                <a href="./module4.html" class="sidebar-link block p-3 rounded-lg font-medium">4. Health Information Exchange</a>
+                <a href="./module5.html" class="sidebar-link block p-3 rounded-lg font-medium">5. Health Data Analytics</a>
+                <a href="./module6.html" class="sidebar-link block p-3 rounded-lg font-medium">6. Clinical Decision Support</a>
+                <a href="./module7.html" class="sidebar-link block p-3 rounded-lg font-medium">7. Safety, Quality & Value</a>
+                <a href="./module8.html" class="sidebar-link block p-3 rounded-lg font-medium">8. Privacy & Security</a>
+            </nav>
+        </aside>
 
-        <!-- Module Content -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <h2>A Comprehensive Analysis of Data Query and Manipulation in SQL: A Foundational Module Expansion</h2>
-                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#setupSection" aria-expanded="false" aria-controls="setupSection">
-                    Show/Hide PostgreSQL Setup
-                </button>
-                <div class="collapse mt-3" id="setupSection">
-                    <p><strong>0. Preparing the Environment in PostgreSQL (pgAdmin 4)</strong></p>
-                    <p>Before exploring queries and manipulations, we need a working database environment. PostgreSQL, with pgAdmin 4 as its management interface, provides a professional yet approachable platform for students from diverse backgrounds. Creating a dedicated database allows us to isolate practice queries from production systems, ensuring safe experimentation. By loading dummy healthcare data, we give students a contextually relevant dataset that mirrors real-world structures—patients, doctors, and admissions. These tables will serve as our foundation for practicing both data retrieval (DQL) and data manipulation (DML).</p>
-                    <p><strong>Step 1 – Create Database</strong></p>
-                    <div class="code-block">
-                        <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                        <pre><code class="language-sql">CREATE DATABASE healthcare_db;</code></pre>
-                    </div>
-                    <p><strong>Step 2 – Create Tables</strong></p>
-                    <div class="code-block">
-                        <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                        <pre><code class="language-sql">\c healthcare_db;
+        <!-- Main Content Area -->
+        <main class="lg:col-span-9 lg:col-start-4 p-6 md:p-10">
+            <section id="module3">
+                <h3 class="text-3xl font-bold text-[#4A7C59] mb-4 section-header">Module 3: Data Standards</h3>
+                <div class="content-block text-gray-700">
+                    <h4>3.1 Definition and Importance</h4>
+                    <p>Data standards in healthcare refer to agreed-upon rules, formats, and terminologies that govern how health information is collected, stored, shared, and interpreted across systems and organizations. These standards ensure consistency, accuracy, and interoperability, allowing different healthcare entities to communicate effectively. The importance of data standards cannot be overstated; they facilitate seamless data exchange, reduce errors, and enable advanced analytics, ultimately improving patient outcomes. During the COVID-19 pandemic, standardized data helped governments monitor vaccination rates and variant spread globally, demonstrating how standards underpin evidence-based decision-making.</p>
 
-CREATE TABLE Patients (
-    subject_id SERIAL PRIMARY KEY,
-    name VARCHAR(100),
-    age INT,
-    gender VARCHAR(10),
-    admission_date DATE
-);
-
-CREATE TABLE Doctors (
-    doctor_id SERIAL PRIMARY KEY,
-    name VARCHAR(100),
-    specialty VARCHAR(50)
-);
-
-CREATE TABLE Admissions (
-    admission_id SERIAL PRIMARY KEY,
-    subject_id INT REFERENCES Patients(subject_id),
-    doctor_id INT REFERENCES Doctors(doctor_id),
-    diagnosis VARCHAR(200),
-    admission_date DATE
-);</code></pre>
-                    </div>
-                    <p><strong>Step 3 – Insert Dummy Data</strong></p>
-                    <div class="code-block">
-                        <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                        <pre><code class="language-sql">INSERT INTO Patients (name, age, gender, admission_date) VALUES
-('Alice Brown', 45, 'Female', '2023-02-10'),
-('Bob Smith', 67, 'Male', '2023-03-15'),
-('Carol Johnson', 34, 'Female', '2023-01-22'),
-('David Lee', 72, 'Male', '2023-05-01');
-
-INSERT INTO Doctors (name, specialty) VALUES
-('Dr. Williams', 'Cardiology'),
-('Dr. Patel', 'Neurology'),
-('Dr. Nguyen', 'Orthopedics');
-
-INSERT INTO Admissions (subject_id, doctor_id, diagnosis, admission_date) VALUES
-(1, 1, 'Hypertension', '2023-02-10'),
-(2, 2, 'Stroke', '2023-03-15'),
-(3, 3, 'Fracture', '2023-01-22'),
-(4, 1, 'Heart Disease', '2023-05-01');</code></pre>
-                    </div>
-                    <p>✅ This environment now supports all subsequent lessons.</p>
+                    <h4>3.2 Historical Overview</h4>
+                    <p>The evolution of health data standards traces back to the late 19th century with precursors to the International Classification of Diseases (ICD). In 1948, the WHO adopted ICD. The 1960s and 1970s saw the rise of computerized systems, prompting digital standards like SNOMED (1965) and LOINC (1994). The 1980s marked the inception of exchange standards with Health Level Seven (HL7) in 1987. Policy milestones like HIPAA (1996) accelerated progress. In the 2010s, Fast Healthcare Interoperability Resources (FHIR) emerged as a modern, API-based standard. By 2025, FHIR has matured, reflecting a shift from rigid messaging to agile, internet-era standards.</p>
                 </div>
 
-                <p><strong>1. Executive Summary and Introduction</strong></p>
-                <p><strong>1.1 Executive Summary</strong></p>
-                <p>This module introduces students to the two essential pillars of SQL: <strong>Data Query Language (DQL)</strong> and <strong>Data Manipulation Language (DML)</strong>. Students will first learn how to extract and explore information from relational tables. They will then progress to altering, updating, and synchronizing records responsibly. Healthcare examples anchor the lessons in real-world relevance, showing how SQL queries power everything from daily patient reports to large-scale analytics pipelines. Through structured explanations, code samples, and guided exercises, students will gradually progress from beginners running simple queries to advanced learners capable of orchestrating complete workflows.</p>
-                <p><strong>1.2 SQL as a Declarative Language</strong></p>
-                <p>SQL is powerful because it is <strong>declarative</strong>: users specify <em>what</em> they want to retrieve or modify, while the database decides <em>how</em> to execute it efficiently. This design separates business logic from execution, enabling scalability across millions of records. SQL is categorized into several sublanguages. <strong>DDL</strong> handles schema design, <strong>DML</strong> handles changes to stored data, and <strong>DQL</strong> retrieves information. Each has its role in maintaining the data ecosystem. For example, DDL might create a Patients table, DML inserts and updates patient rows, while DQL retrieves patient statistics for a report.</p>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="sql-category-card">
-                            <h4>DDL (Structure)</h4>
-                            <p><strong>Purpose:</strong> Defines schema</p>
-                            <p><strong>Commands:</strong> CREATE, ALTER, DROP</p>
-                            <p><strong>Impact:</strong> Schema-level change</p>
-                            <p><strong>Example:</strong> <code>CREATE TABLE Patients...</code></p>
+                <!-- Interactive Flow Diagram -->
+                <div class="bg-white p-8 rounded-xl shadow-lg mt-8 flow-diagram">
+                    <h4 class="text-xl font-semibold text-center mb-6">Comparing Data Exchange Standards</h4>
+                    <div class="grid md:grid-cols-3 gap-8 text-center">
+                        <!-- HL7 v2 -->
+                        <div>
+                            <h5 class="font-bold text-lg mb-4 text-blue-700">HL7 v2 (Messaging)</h5>
+                            <div class="space-y-2">
+                                <div class="flow-box bg-blue-100 p-3 rounded-lg border border-blue-200">EHR A (Event Trigger)</div>
+                                <div class="text-2xl text-blue-400">↓</div>
+                                <div class="flow-box bg-blue-100 p-3 rounded-lg border border-blue-200">"Pipe & Hat" Message</div>
+                                <div class="text-2xl text-blue-400">↓</div>
+                                <div class="flow-box bg-blue-100 p-3 rounded-lg border border-blue-200">EHR B (Point-to-Point)</div>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-4">Legacy workhorse for internal hospital communication. Rigid but efficient for specific tasks.</p>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="sql-category-card">
-                            <h4>DML (Manipulate Data)</h4>
-                            <p><strong>Purpose:</strong> Adds, modifies, removes data rows</p>
-                            <p><strong>Commands:</strong> INSERT, UPDATE, DELETE, MERGE</p>
-                            <p><strong>Impact:</strong> Data-level change</p>
-                            <p><strong>Example:</strong> <code>UPDATE Patients...</code></p>
+                        <!-- C-CDA -->
+                        <div>
+                            <h5 class="font-bold text-lg mb-4 text-green-700">C-CDA (Documents)</h5>
+                            <div class="space-y-2">
+                                <div class="flow-box bg-green-100 p-3 rounded-lg border border-green-200">EHR A (Generates Summary)</div>
+                                <div class="text-2xl text-green-400">↓</div>
+                                <div class="flow-box bg-green-100 p-3 rounded-lg border border-green-200">XML Document (Snapshot)</div>
+                                <div class="text-2xl text-green-400">↓</div>
+                                <div class="flow-box bg-green-100 p-3 rounded-lg border border-green-200">EHR B (Displays Document)</div>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-4">Standard for exchanging entire clinical documents, like a digital fax. Human-readable but not easily computable.</p>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="sql-category-card">
-                            <h4>DQL (Query Data)</h4>
-                            <p><strong>Purpose:</strong> Retrieves data</p>
-                            <p><strong>Commands:</strong> SELECT</p>
-                            <p><strong>Impact:</strong> Read-only</p>
-                            <p><strong>Example:</strong> <code>SELECT * FROM Patients;</code></p>
+                        <!-- FHIR -->
+                        <div>
+                            <h5 class="font-bold text-lg mb-4 text-purple-700">FHIR (API/Resources)</h5>
+                            <div class="space-y-2">
+                                <div class="flow-box bg-purple-100 p-3 rounded-lg border border-purple-200">App (Requests Data)</div>
+                                <div class="text-2xl text-purple-400">↕</div>
+                                <div class="flow-box bg-purple-100 p-3 rounded-lg border border-purple-200">FHIR Server (API)</div>
+                                <div class="text-2xl text-purple-400">↕</div>
+                                <div class="flow-box bg-purple-100 p-3 rounded-lg border border-purple-200">EHR Data (Resources)</div>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-4">Modern, web-based approach for querying discrete data elements. Flexible and developer-friendly.</p>
                         </div>
                     </div>
                 </div>
 
-                <p><strong>2. The Foundational Language: Mastering Data Query (DQL)</strong></p>
-                <p><strong>2.1 SELECT — Retrieving Information</strong></p>
-                <p>The <code>SELECT</code> statement lies at the core of SQL. Conceptually, it acts as a window into the database, allowing us to see stored information without altering it. This makes it a safe and versatile tool for beginners while also being powerful enough for complex analytical tasks. <code>SELECT</code> can return entire tables, chosen columns, or computed values derived from existing data. Practically, <code>SELECT</code> is used daily by analysts, researchers, and data engineers. A hospital administrator may query all patients over 60, while a researcher may calculate average admission ages. The fact that <code>SELECT</code> does not modify underlying data makes it ideal for exploration and reporting.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Select all patients
-SELECT * FROM Patients;
+                <div class="content-block text-gray-700 mt-8">
+                    <h4>3.3 Key Data Standards</h4>
+                    <p>Health data standards are the foundational building blocks for interoperability. They can be broadly categorized into terminologies (for meaning), classifications (for grouping), and exchange protocols (for communication). Below is a more detailed look at the core standards you will encounter.</p>
 
--- Select specific columns
-SELECT name, age FROM Patients;
+                    <!-- SNOMED CT -->
+                    <div class="mb-8">
+                        <h5 class="font-bold text-lg mb-2 text-gray-800">SNOMED CT (Systematized Nomenclature of Medicine Clinical Terms)</h5>
+                        <p class="mb-4">
+                            SNOMED CT is a comprehensive, multilingual clinical healthcare terminology. It provides a common language for clinical documentation, enabling the precise capture of patient data, from diagnoses and symptoms to procedures and body structures. Unlike a simple list, SNOMED CT is a sophisticated, hierarchical system that allows for the semantic interoperability of data—meaning computers can understand the relationship between different clinical concepts (e.g., "fractured wrist" is a type of "fracture"). You can explore this system further at the <a href="https://www.snomed.org/" class="text-blue-600 hover:underline" target="_blank">SNOMED International website</a>.
+                        </p>
+                        <p class="text-sm text-gray-600 mb-2">Example Use: Documenting a diagnosis in an EHR.</p>
+                        <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto border border-gray-200"><code>{
+  "resourceType": "Condition",
+  "id": "example-snomed-ct",
+  "clinicalStatus": {
+    "coding": [{
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "active"
+    }]
+  },
+  "code": {
+    "coding": [{
+      "system": "http://snomed.info/sct",
+      "code": "727041006",
+      "display": "Chronic obstructive pulmonary disease"
+    }]
+  },
+  "subject": {
+    "reference": "Patient/example"
+  }
+}</code></pre>
+                    </div>
 
--- Alias and calculated field
-SELECT subject_id AS PatientID,
-       name AS FullName,
-       (2025 - age) AS EstimatedBirthYear
-FROM Patients;</code></pre>
+                    <!-- ICD -->
+                    <div class="mb-8">
+                        <h5 class="font-bold text-lg mb-2 text-gray-800">ICD (International Classification of Diseases)</h5>
+                        <p class="mb-4">
+                            Developed by the World Health Organization (WHO), ICD is the international standard for health statistics. It is used to classify diseases, injuries, and causes of death. While SNOMED CT is used for rich clinical documentation, ICD is primarily used for administrative and epidemiological purposes, such as billing and national health reporting. The codes are typically alphanumeric and are updated periodically (e.g., ICD-10, ICD-11). You can find more information from the <a href="https://www.who.int/standards/classifications/frequently-asked-questions/icd" class="text-blue-600 hover:underline" target="_blank">WHO's ICD page</a>.
+                        </p>
+                        <p class="text-sm text-gray-600 mb-2">Example Use: Medical billing and reporting.</p>
+                        <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto border border-gray-200"><code>// Simple ICD-10 code representation in a JSON object
+{
+  "coding": [{
+    "system": "http://hl7.org/fhir/sid/icd-10",
+    "code": "J44.9",
+    "display": "Chronic obstructive pulmonary disease, unspecified"
+  }]
+}</code></pre>
+                    </div>
+
+                    <!-- LOINC -->
+                    <div class="mb-8">
+                        <h5 class="font-bold text-lg mb-2 text-gray-800">LOINC (Logical Observation Identifiers Names and Codes)</h5>
+                        <p class="mb-4">
+                            LOINC is a common language for laboratory and clinical observations. It assigns a unique code and name to test results, measurements, and other observations. This standard is crucial for ensuring that a lab result for a "Glucose" test from one system is correctly understood by another, regardless of how the test was named in the originating system. It is a key enabler of interoperability for lab data. The official LOINC website, managed by the Regenstrief Institute, is an excellent resource for exploring the codes: <a href="https://loinc.org/" class="text-blue-600 hover:underline" target="_blank">loinc.org</a>.
+                        </p>
+                        <p class="text-sm text-gray-600 mb-2">Example Use: Standardizing a blood pressure reading.</p>
+                        <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto border border-gray-200"><code>{
+  "resourceType": "Observation",
+  "status": "final",
+  "code": {
+    "coding": [{
+      "system": "http://loinc.org",
+      "code": "8480-6",
+      "display": "Systolic blood pressure"
+    }]
+  },
+  "subject": {
+    "reference": "Patient/example"
+  },
+  "valueQuantity": {
+    "value": 120,
+    "unit": "mm[Hg]",
+    "system": "http://unitsofmeasure.org",
+    "code": "mm[Hg]"
+  }
+}</code></pre>
+                    </div>
+
+                    <!-- HL7 -->
+                    <div class="mb-8">
+                        <h5 class="font-bold text-lg mb-2 text-gray-800">HL7 (Health Level Seven)</h5>
+                        <p class="mb-4">
+                            HL7 is a suite of standards for the exchange, management, and integration of electronic health information. Its most well-known standard, HL7 version 2 (v2), uses a "pipe and hat" delimited messaging format to communicate events, such as a patient being admitted or a lab order being placed. This standard has been the workhorse of hospital information systems for decades. You can find official documentation and information about all HL7 standards, including FHIR, at the <a href="http://www.hl7.org/" class="text-blue-600 hover:underline" target="_blank">HL7 International website</a>.
+                        </p>
+                        <p class="text-sm text-gray-600 mb-2">Example Use: An ADT (Admit, Discharge, Transfer) message.</p>
+                        <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto border border-gray-200"><code>MSH|^~\&|ADTA|A01|ADT|202301010800||ADT^A01|MSG001|P|2.3.1
+EVN|A01|202301010800
+PID|1||12345^5^M11^ADT^A01||DOE^JOHN^MIDDLE||19600101|M|||123 PINE ST^^ANYTOWN^OH^12345|||||||
+PV1||I|2000^2004^01||||1234567^SMITH^JOHN^J|
+</code></pre>
+                    </div>
+
+                    <!-- FHIR -->
+                    <div class="mb-8">
+                        <h5 class="font-bold text-lg mb-2 text-gray-800">FHIR (Fast Healthcare Interoperability Resources)</h5>
+                        <p class="mb-4">
+                            FHIR (pronounced "fire") is the latest generation of HL7 standards. It is designed for modern, web-based applications, using a RESTful API approach and "Resources" which are discrete, modular units of information (e.g., a Patient, a Condition, an Observation). This makes data exchange more flexible, fine-grained, and developer-friendly, supporting mobile health apps and advanced analytics. It is considered the future of healthcare interoperability. The official FHIR documentation and community resources are available at <a href="http://hl7.org/fhir" class="text-blue-600 hover:underline" target="_blank">hl7.org/fhir</a>.
+                        </p>
+                        <p class="text-sm text-gray-600 mb-2">Example Use: Retrieving patient information.</p>
+                        <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto border border-gray-200"><code>// FHIR Patient Resource in JSON format
+{
+  "resourceType": "Patient",
+  "id": "example",
+  "name": [
+    {
+      "given": [
+        "Jane"
+      ],
+      "family": "Smith"
+    }
+  ],
+  "gender": "female",
+  "birthDate": "1990-05-15",
+  "address": [
+    {
+      "line": [
+        "123 Main Street"
+      ],
+      "city": "Anytown",
+      "state": "CA",
+      "postalCode": "90210"
+    }
+  ]
+}</code></pre>
+                    </div>
+
+                    <h4>3.4 Benefits of Data Standards</h4>
+                    <p>Adopting health data standards is no longer just a technical requirement—it's a critical strategy for improving patient care, reducing costs, and driving innovation. These benefits extend beyond simple data sharing to fundamentally change how healthcare is delivered and managed.</p>
+
+                    <div class="mt-8 bg-white rounded-xl shadow-lg p-8 benefit-map">
+                        <h4 class="text-xl font-semibold text-center mb-6">Interactive Benefits Map</h4>
+                        <div class="flex flex-col items-center">
+                            <div id="standard-node" class="node bg-[#4A7C59] text-white p-4 rounded-full text-center text-sm mb-8 w-48">Health Data Standards</div>
+                            
+                            <div class="grid grid-cols-3 gap-8 w-full max-w-2xl">
+                                <div class="flex flex-col items-center">
+                                    <div id="safety-node" class="node bg-red-100 text-red-800 p-4 rounded-lg text-center text-sm w-full h-24 flex items-center justify-center" data-connections="standard-node,analytics-node,cost-node">Improved Patient Safety & Outcomes</div>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div id="efficiency-node" class="node bg-yellow-100 text-yellow-800 p-4 rounded-lg text-center text-sm w-full h-24 flex items-center justify-center" data-connections="standard-node,cost-node">Enhanced Efficiency & Cost Savings</div>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div id="research-node" class="node bg-blue-100 text-blue-800 p-4 rounded-lg text-center text-sm w-full h-24 flex items-center justify-center" data-connections="standard-node,analytics-node">Support for Public Health & Research</div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-8 w-full max-w-xl mt-8">
+                                <div class="flex flex-col items-center">
+                                    <div id="engagement-node" class="node bg-purple-100 text-purple-800 p-4 rounded-lg text-center text-sm w-full h-24 flex items-center justify-center" data-connections="standard-node,safety-node">Empowered Patients & Engagement</div>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div id="analytics-node" class="node bg-gray-100 text-gray-800 p-4 rounded-lg text-center text-sm w-full h-24 flex items-center justify-center" data-connections="standard-node,safety-node,research-node">Foundation for Analytics & AI</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ul class="list-disc pl-6 mb-4 space-y-4 mt-8">
+                        <li>
+                            <strong>Improved Patient Outcomes and Safety:</strong> By providing a comprehensive view of a patient's medical history, standards enable clinicians to make more informed decisions. This leads to more coordinated care, fewer medical errors (such as drug-drug interactions), and a reduction in redundant or unnecessary tests. For example, an emergency room physician can access a patient's current medication list and recent lab results from their primary care provider, preventing a dangerous prescribing error. 
+                        </li>
+                        <li>
+                            <strong>Enhanced Efficiency and Cost Savings:</strong> Standardized data exchange streamlines administrative tasks and clinical workflows. It reduces the time spent manually entering data or sifting through paper records. A 2024 analysis found that a common data model could streamline research by enabling faster integration of data across international partners and mapping of health data from diverse languages. This efficiency translates to significant cost savings for healthcare systems.
+                        </li>
+                        <li>
+                            <strong>Empowered Patients and Greater Engagement:</strong> Modern standards like **FHIR** facilitate secure access to patient data via personal health apps and patient portals. This empowers individuals to take a more active role in their healthcare, from managing chronic conditions to sharing their health information with a new provider. This enhanced patient engagement is linked to better adherence to treatment plans and improved overall health outcomes.
+                        </li>
+                        <li>
+                            <strong>Foundational for Advanced Analytics and AI:</strong> The vast amount of data generated by healthcare systems—often in disparate formats—is difficult to analyze. Standards make data consistent, structured, and "computable," which is the critical first step for advanced analytics, machine learning, and artificial intelligence. This enables organizations to derive actionable insights, predict patient needs, and even develop AI-driven tools for more precise diagnoses and treatment plans.
+                        </li>
+                        <li>
+                            <strong>Support for Public Health and Research:</strong> Standardized data is essential for effective public health surveillance. During the COVID-19 pandemic, standardized data reporting was a key factor in tracking vaccination rates, variant spread, and the effectiveness of public health measures on a global scale. In research, standardized data allows for the aggregation of information from multiple studies, facilitating large-scale, real-world data analyses that can accelerate the development of new treatments and cures.
+                        </li>
+                    </ul>
+                    
+                    <h4>3.5 Challenges and Barriers</h4>
+                    <p>Despite the immense benefits, the widespread adoption of health data standards faces significant hurdles. These challenges often stem from a combination of technical, financial, and organizational barriers that must be addressed to achieve true interoperability.</p>
+                    <ul class="list-disc pl-6 mb-4 space-y-4">
+                        <li>
+                            <strong>Lack of Universal Standardization and Legacy Systems:</strong> While standards like **FHIR** are gaining traction, the healthcare landscape is still fragmented. Many organizations operate using a mix of legacy systems and proprietary data formats that were not designed for interoperability. This forces organizations to use expensive and complex "mapping" processes to translate data between systems, leading to errors and inefficiencies. 
+                        </li>
+                        <li>
+                            <strong>High Implementation Costs:</strong> The financial investment required for upgrading systems and implementing new standards is a major barrier, especially for smaller hospitals and clinics. Costs include not only the price of new software but also hardware upgrades, infrastructure development, and the long-term expense of ongoing maintenance. A 2025 study on EHR implementation costs estimated that projects could range from hundreds of thousands to tens of millions of dollars, depending on the complexity.
+                        </li>
+                        <li>
+                            <strong>Data Quality and Consistency Issues:</strong> Even with a common standard, the quality of the data itself can be a major challenge. Inconsistencies arise from varied data entry practices, different units of measurement (e.g., blood pressure in mmHg vs. kPa), and missing or erroneous information. This can lead to a phenomenon known as "garbage in, garbage out," where even if the data can be technically exchanged, it may not be reliable enough to provide meaningful clinical insights.
+                        </li>
+                        <li>
+                            <strong>Privacy and Security Concerns:</strong> As data becomes more mobile and accessible, the risk of data breaches increases. Healthcare organizations are prime targets for cyberattacks, and a 2024 report by IBM found that the average cost of a healthcare data breach was $9.77 million. Compliance with regulations like **HIPAA** is paramount, but ensuring that data is both securely protected and easily shareable is a difficult balance to strike. You can find more information on health data security on the <a href="https://www.healthit.gov/topic/privacy-security-and-hipaa" class="text-blue-600 hover:underline" target="_blank">HealthIT.gov website</a>.
+                        </li>
+                        <li>
+                            <strong>Organizational and Clinical Resistance to Change:</strong> Implementing new standards requires significant changes to existing workflows and processes. Clinicians, who are already experiencing high rates of burnout, may resist changes that add complexity to their daily routines. Overcoming this "information blocking" and gaining buy-in from all stakeholders—from front-line staff to executives—is a major organizational hurdle.
+                        </li>
+                    </ul>
+
+                    <h4>3.6 Implementation Strategies</h4>
+                    <p>Effective implementation of data standards is a strategic, multi-step process that extends far beyond simply installing new software. A methodical approach is required to navigate the technical and organizational barriers and ensure a successful transition.</p>
+                    <ul class="list-disc pl-6 mb-4 space-y-4">
+                        <li>
+                            <strong>Thorough Assessment and Planning:</strong> Before any work begins, a comprehensive gap analysis is essential. This involves evaluating your current systems and identifying what data exists, how it's formatted, and where it needs to be standardized. The organization must define clear, measurable goals for the project, such as "reduce manual data entry by 30% in the emergency department."
+                        </li>
+                        <li>
+                            <strong>Stakeholder Engagement and Governance:</strong> Securing buy-in from key stakeholders is critical to success. This includes not only IT and administration but also clinicians who will be using the new systems daily. Establishing a formal governance committee that includes representatives from various departments can ensure that goals are aligned and that the new processes meet the needs of those on the front lines.
+                        </li>
+                        <li>
+                            <strong>Phased Rollout and Pilot Programs:</strong> Rather than a single, system-wide launch, a phased approach minimizes disruption and allows for controlled testing. A **pilot program** in a single department (e.g., cardiology) or with a specific use case (e.g., lab order entry) can identify issues and refine the process before a broader rollout. This strategy reduces risk and builds confidence in the new system.
+                        </li>
+                        <li>
+                            <strong>Robust Training and Support:</strong> Training should be a core component of the implementation plan. It should be tailored to different user roles, from administrators to clinicians, and should include both in-person sessions and accessible online resources. Ongoing support and a clear escalation path for technical issues are essential to address user concerns and prevent resistance to change.
+                        </li>
+                        <li>
+                            <strong>Continuous Monitoring and Maintenance:</strong> Implementation is not a one-time event. The healthcare landscape is constantly evolving, with new regulations and emerging standards. A system must be put in place for continuous performance monitoring, security audits, and compliance checks to ensure the system remains effective, up-to-date, and secure. Leveraging tools like terminology servers and data mapping services can help automate parts of this ongoing process.
+                        </li>
+                    </ul>
+
+                    <h4>3.7 Real-World Examples and Case Studies</h4>
+                    <p>Health data standards are no longer theoretical concepts. They are being implemented by leading organizations to fundamentally transform healthcare delivery. The following case studies illustrate how different standards are used to solve real-world problems.</p>
+                    <ul class="list-disc pl-6 mb-4 space-y-4">
+                        <li>
+                            <strong>Apple Health Records: FHIR for Patient Empowerment</strong><br>
+                            Apple's Health Records feature is a prime example of FHIR's impact on patient empowerment. Prior to this, a patient's health data was often fragmented across multiple healthcare providers and EHR systems. By leveraging the FHIR standard, Apple developed a platform that allows patients to securely connect to their healthcare providers' EHRs and download their personal health information—including lab results, medications, immunizations, and vitals—directly to their iPhone's Health app. This gives patients a single, comprehensive view of their medical history, enabling them to share it with new doctors and take a more active role in their own care.
+                        </li>
+                        <li>
+                            <strong>Microsoft Azure API for FHIR: A Platform for Innovation</strong><br>
+                            For developers and healthcare organizations, Microsoft Azure's API for FHIR is a cloud-based service that allows them to build secure, scalable applications on top of FHIR data. This service eliminates the need for organizations to build and maintain their own complex FHIR servers. For example, Partners HealthCare (now Mass General Brigham) used the Azure API to create a secure data lake, centralizing de-identified patient data from various sources for research and analytics. This enabled researchers to gain new insights into population health trends and accelerate medical breakthroughs, all while maintaining strict security and privacy standards.
+                        </li>
+                        <li>
+                            <strong>NHS England's SNOMED CT Adoption: A Unified Language for a Nation</strong><br>
+                            The National Health Service (NHS) in England embarked on a massive, long-term project to standardize clinical records across the entire country using SNOMED CT. Previously, different hospitals and primary care clinics used varying local terminologies, which made it nearly impossible to aggregate data for public health surveillance or analyze outcomes on a national scale. By adopting SNOMED CT, the NHS created a single, standardized clinical language. This allows for seamless data exchange between different providers and has been critical for improving care coordination, monitoring disease spread, and conducting large-scale research projects that were previously not feasible.
+                        </li>
+                        <li>
+                            <strong>U.S. Department of Veterans Affairs: FHIR for Inter-Agency Interoperability</strong><br>
+                            The U.S. Department of Veterans Affairs (VA) and the Department of Defense (DoD) have been working to improve interoperability to ensure service members and veterans have seamless access to their health records. By using the FHIR standard, the VA's health systems can share patient data, such as allergies, medications, and labs, with the DoD and other community providers. This allows for a smooth transition of care as military personnel move from active duty to veteran status and seek care outside the VA system, reducing the risk of medical errors and improving the continuity of care.
+                        </li>
+                    </ul>
+
+                    <h4>3.8 Role in Health Informatics</h4>
+                    <p>Data standards are the foundational layer of health informatics. They serve as the critical bridge that transforms raw, unstructured data into a **structured, computable, and shareable asset**. Without this layer, the advanced applications that define modern health informatics—from population health analytics to clinical decision support—simply couldn't function. Essentially, data standards provide the grammar and vocabulary for the digital health ecosystem, ensuring that every system, device, and application is speaking the same language. This enables health informatics professionals to focus on higher-level tasks, such as designing effective algorithms, identifying health trends, and creating predictive models that ultimately lead to better patient outcomes and more efficient healthcare systems.</p>
+
+                    <h4>3.9 Emerging Trends in 2025</h4>
+                    <p>In 2025, health data standards are not just about exchanging information; they are evolving to power the next generation of healthcare technologies. The following trends highlight the shift towards a more intelligent, interconnected, and patient-centric ecosystem.</p>
+                    <ul class="list-disc pl-6 mb-4 space-y-4">
+                        <li>
+                            <strong>AI-Enhanced Standards for Automated Coding:</strong> Artificial intelligence is being integrated directly into EHR systems to automate the process of clinical documentation and coding. For example, tools are being developed that can analyze a clinician's free-text notes and automatically suggest a corresponding **SNOMED CT** code for a diagnosis or an **ICD** code for billing. This not only increases efficiency but also improves the accuracy of data used for analytics and research.
+                        </li>
+                        <li>
+                            <strong>FHIR for Real-World Data (RWD) and Clinical Trials:</strong> While traditional clinical trials rely on highly structured, controlled data, there is a growing interest in using real-world data from EHRs, patient wearables, and claims databases. The **FHIR** standard is a key enabler of this trend, as it provides a standardized way to extract, organize, and share this diverse RWD for research purposes. This can significantly reduce the time and cost of clinical trials and accelerate the development of new therapies.
+                        </li>
+                        <li>
+                            <strong>IoT and Wearable Device Integration:</strong> The proliferation of Internet of Things (IoT) devices, such as continuous glucose monitors and smartwatches, generates a continuous stream of health data. Standards are evolving to accommodate this new data source. For example, new **LOINC** codes are being created to standardize the measurements from these devices, allowing them to be seamlessly integrated into a patient's EHR and used for remote patient monitoring.
+                        </li>
+                        <li>
+                            <strong>Greater Adoption of Blockchain for Security and Transparency:</strong> While not a data standard itself, blockchain technology is emerging as a solution to enhance the security and integrity of health data exchange. By creating an immutable, decentralized ledger of data transactions, blockchain can provide an auditable trail of who has accessed patient records, addressing a major privacy concern and building greater trust in health information networks.
+                        </li>
+                    </ul>
                 </div>
-                <p>💡 <strong>Exercise:</strong> Retrieve the name and gender of all patients.</p>
-
-                <p><strong>2.2 WHERE — Precision Filtering</strong></p>
-                <p>The <code>WHERE</code> clause is SQL’s precision scalpel. Conceptually, it narrows broad datasets by enforcing conditions. Without it, queries may return overwhelming volumes of irrelevant rows, wasting both time and computational resources. Practically, <code>WHERE</code> is indispensable in healthcare systems. Imagine a hospital looking only for female patients aged 30–50 for a study. Using operators (=, BETWEEN, LIKE, etc.), we can target precisely the rows of interest. Errors often arise when beginners forget <code>WHERE</code>, leading to unintended bulk operations.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Female patients between 30 and 50
-SELECT name, age, gender
-FROM Patients
-WHERE gender = 'Female' AND age BETWEEN 30 AND 50;</code></pre>
-                </div>
-                <p>💡 <strong>Exercise:</strong> Write a query to return all patients whose names begin with “C”.</p>
-
-                <p><strong>2.3 ORDER BY — Structuring Results</strong></p>
-                <p>Query results often need structure. Conceptually, <code>ORDER BY</code> organizes otherwise unordered rows, making results easier to interpret. Sorting transforms raw data into readable, decision-ready outputs. In practice, <code>ORDER BY</code> is frequently used in dashboards, clinical reports, and audits. By sorting admissions by date or patients by age, trends emerge that aid decision-making. PostgreSQL supports multi-column sorting and allows using column aliases for readability.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Sort patients by gender then age
-SELECT name, age, gender
-FROM Patients
-ORDER BY gender ASC, age DESC;</code></pre>
-                </div>
-                <p>💡 <strong>Exercise:</strong> Sort all patients by name (ascending), then by age (descending).</p>
-
-                <p><strong>2.4 Logical Query Processing Order</strong></p>
-                <p>Though queries are written in a human-readable order, PostgreSQL executes them differently. Conceptually, this order defines how raw data becomes a polished result set. Practically, understanding this order prevents common errors. For example, beginners sometimes attempt to use <code>SELECT</code> aliases in <code>WHERE</code> clauses, which fails because filtering occurs before aliasing. By internalizing this execution sequence, analysts can write both correct and optimized queries.</p>
-
-                <div class="flow-diagram my-4">
-                    <div class="flow-step"><span>1.</span> FROM</div>
-                    <div class="flow-step"><span>2.</span> WHERE</div>
-                    <div class="flow-step"><span>3.</span> GROUP BY</div>
-                    <div class="flow-step"><span>4.</span> HAVING</div>
-                    <div class="flow-step"><span>5.</span> SELECT</div>
-                    <div class="flow-step"><span>6.</span> DISTINCT</div>
-                    <div class="flow-step"><span>7.</span> ORDER BY</div>
-                </div>
-
-                <p>💡 <strong>Exercise:</strong> Retrieve all admissions after 2023-01-01 and sort them by doctor ID.</p>
-
-                <h3>3. The Language of Change: An In-Depth Look at DML</h3>
-                <p>While DQL lets us look at data, DML empowers us to change data. Conceptually, this distinction is vital: retrieving data is usually safe, but modifying it carries risks that can affect integrity, analytics, and business operations. In healthcare, a mistaken update could lead to incorrect patient records, missed diagnoses, or compliance violations. Thus, learning DML requires not just syntax but also a respect for transactional control and safety mechanisms. DML includes four key commands: <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, and <code>MERGE</code>. Together, they allow data professionals to populate tables, correct information, remove obsolete records, and synchronize datasets. By practicing these commands in a controlled environment, students learn not only how to execute them, but also how to anticipate and prevent common errors such as unintended bulk changes or data loss.</p>
-
-                <h4>3.1 INSERT — Populating the Database</h4>
-                <p>Conceptually, <code>INSERT</code> is the primary way to add new information into relational tables. When a hospital admits a new patient, an <code>INSERT</code> adds their details into the Patients table. This operation creates a new row in the database and commits it as part of the permanent record. Without <code>INSERT</code>, databases would remain empty shells, unable to store the lifeblood of information that drives organizations. Practically, <code>INSERT</code> can handle one row at a time or multiple rows in a single statement. In PostgreSQL, it also supports inserting results of a <code>SELECT</code> query from another table. This versatility allows both manual data entry and bulk data integration from external sources. Best practices include ensuring data types match, providing all required columns, and using constraints like <code>NOT NULL</code> or <code>UNIQUE</code> to enforce integrity.</p>
-                <p><strong>Syntax</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">INSERT INTO table_name (column1, column2, ...)
-VALUES (value1, value2, ...);</code></pre>
-                </div>
-                <p><strong>Example</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Insert one patient
-INSERT INTO Patients (name, age, gender, admission_date)
-VALUES ('Frank Moore', 40, 'Male', '2023-06-01');
-
--- Insert multiple patients
-INSERT INTO Patients (name, age, gender, admission_date)
-VALUES
-('Grace Hall', 55, 'Female', '2023-07-12'),
-('Henry Adams', 33, 'Male', '2023-08-05');</code></pre>
-                </div>
-                <p>💡 <strong>Exercise:</strong> Insert a new patient record for Ivy Carter (Age 50, Female, admitted on 2023-09-20).</p>
-
-                <h4>3.2 UPDATE — Modifying Existing Data</h4>
-                <p>Conceptually, <code>UPDATE</code> allows us to correct or change information that already exists in the database. Errors in data entry, changes in patient demographics, or adjustments in healthcare codes often require updates. Unlike <code>INSERT</code>, which creates new records, <code>UPDATE</code> operates on existing rows, selectively modifying one or more columns. Practically, the <code>WHERE</code> clause becomes critical in <code>UPDATE</code>. Without it, all rows in the table may be updated—an error that could overwrite hundreds or thousands of records. For example, if a hospital system updated the age column without a <code>WHERE</code> filter, every patient’s age would change, destroying valuable data. Professionals often run a <code>SELECT</code> query first to check which rows meet the condition before executing the <code>UPDATE</code>.</p>
-                <p><strong>Syntax</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">UPDATE table_name
-SET column1 = value1, column2 = value2
-WHERE condition;</code></pre>
-                </div>
-                <p><strong>Example</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Correct Ivy’s age
-UPDATE Patients
-SET age = 51
-WHERE name = 'Ivy Carter';
-
--- Bulk update: Add 1 year to all patients (use cautiously!)
-UPDATE Patients
-SET age = age + 1;</code></pre>
-                </div>
-                <p>💡 <strong>Exercise:</strong> Update “Henry Adams” to “Henry Adamson”.</p>
-
-                <h4>3.3 DELETE — Transactional Removal</h4>
-                <p>Conceptually, <code>DELETE</code> removes records that are no longer needed. In healthcare, this might be used cautiously to remove duplicate entries, test records, or temporary staging data. Because deletion permanently removes data, it must be handled with extreme care, especially in regulated environments where records must be preserved for compliance. Practically, <code>DELETE</code> is very similar to <code>UPDATE</code> in that the <code>WHERE</code> clause is essential. Without it, an entire table can be wiped clean. PostgreSQL provides safety nets such as transactions, allowing professionals to roll back changes if a mistake is detected. A safer alternative in production is sometimes “soft deletion,” where a row is marked inactive instead of being physically removed.</p>
-                <p><strong>Syntax</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">DELETE FROM table_name
-WHERE condition;</code></pre>
-                </div>
-                <p><strong>Example</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Delete one record
-DELETE FROM Patients
-WHERE name = 'Ivy Carter';
-
--- Remove all minors
-DELETE FROM Patients
-WHERE age < 18;</code></pre>
-                </div>
-                <p>💡 <strong>Exercise:</strong> Delete all patients who were admitted before 2023-02-01.</p>
-
-                <h4>3.4 MERGE — Synchronization in One Step (Postgres 15+)</h4>
-                <p>Conceptually, <code>MERGE</code> is a powerful command introduced in PostgreSQL 15. It combines the functionality of <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> into a single operation. This is especially valuable when synchronizing two datasets—for example, when loading a new admissions file into the main Patients table. The database compares source and target, updating matches and inserting non-matches. Practically, <code>MERGE</code> simplifies what used to require multiple steps. However, with power comes complexity. A poorly written <code>MERGE</code> could unintentionally overwrite valid data. Professionals must carefully define matching conditions and test logic on smaller datasets first. When used correctly, <code>MERGE</code> ensures consistency and reduces the risk of missing updates during synchronization.</p>
-                <p><strong>Syntax</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">MERGE INTO target_table t
-USING source_table s
-ON t.key = s.key
-WHEN MATCHED THEN
-    UPDATE SET column1 = s.column1
-WHEN NOT MATCHED THEN
-    INSERT (column1, column2) VALUES (s.column1, s.column2);</code></pre>
-                </div>
-                <p><strong>Example</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">MERGE INTO Patients p
-USING NewAdmissions n
-ON p.name = n.name
-WHEN MATCHED THEN
-    UPDATE SET age = n.age, gender = n.gender
-WHEN NOT MATCHED THEN
-    INSERT (name, age, gender, admission_date)
-    VALUES (n.name, n.age, n.gender, n.admission_date);</code></pre>
-                </div>
-                <p>💡 <strong>Exercise:</strong> Merge records from a new table <code>EmergencyAdmissions</code> into Patients, ensuring ages are updated and new patients are inserted.</p>
-
-                <h3>4. Advanced Integration and Strategic Application</h3>
-                <h4>4.1 SQL in the Data Lifecycle (ETL/ELT)</h4>
-                <p>SQL is not just about querying or modifying tables—it plays a central role in the data lifecycle. Conceptually, most organizations follow <strong>ETL (Extract, Transform, Load)</strong> or <strong>ELT (Extract, Load, Transform)</strong> processes. In both models, SQL is indispensable at multiple stages. In ETL, SQL is used to extract data from source systems, transform it (through filtering, joins, and aggregations), and then load it into a target warehouse. In ELT, SQL becomes even more important because raw data is loaded first, and all transformations are executed inside the database or warehouse using SQL scripts. For healthcare systems, this means pulling raw patient admissions from transactional databases, transforming them into standardized formats, and then loading them into an analytics warehouse where queries like patient outcome analysis can be run.</p>
-                <p><strong>Example Workflow</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Extract subset of admissions
-SELECT *
-FROM Admissions
-WHERE admission_date > '2023-01-01';
-
--- Transform: enrich with doctor info
-SELECT a.admission_id, p.name AS patient_name, d.name AS doctor_name, a.diagnosis
-FROM Admissions a
-JOIN Patients p ON a.subject_id = p.subject_id
-JOIN Doctors d ON a.doctor_id = d.doctor_id;
-
--- Load into analytics staging table
-INSERT INTO Admissions_Staging (admission_id, patient_name, doctor_name, diagnosis)
-SELECT a.admission_id, p.name, d.name, a.diagnosis
-FROM Admissions a
-JOIN Patients p ON a.subject_id = p.subject_id
-JOIN Doctors d ON a.doctor_id = d.doctor_id;</code></pre>
-                </div>
-                <p>💡 <strong>Exercise:</strong> Write an <code>INSERT INTO ... SELECT</code> statement that loads all patients older than 60 into a new table called <code>SeniorPatients</code>.</p>
-
-                <h4>4.2 Role of SQL in Data Warehouses</h4>
-                <p>Data warehouses are designed for analytical workloads, where data is typically historical, structured, and queried frequently. Conceptually, SQL commands serve different roles here: DQL is used to aggregate and report on large datasets. DML ensures that fact and dimension tables remain updated with new data. Practically, healthcare data warehouses might track patient visits across multiple hospitals. <code>MERGE</code> can be used to synchronize new visit records, while complex <code>SELECT</code> statements retrieve aggregated statistics such as average hospital stay length. Warehouses benefit from SQL’s ability to integrate seamlessly with BI tools like Tableau and Power BI.</p>
-                <p><strong>Example</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Average patient age at admission
-SELECT d.specialty, AVG(p.age) AS avg_age
-FROM Admissions a
-JOIN Patients p ON a.subject_id = p.subject_id
-JOIN Doctors d ON a.doctor_id = d.doctor_id
-GROUP BY d.specialty;</code></pre>
-                </div>
-                <p>💡 <strong>Exercise:</strong> Write a query that counts the number of admissions handled by each doctor.</p>
-
-                <h4>4.3 SQL in Data Lakes and Lakehouses</h4>
-                <p>Data lakes store raw, often semi-structured data, while lakehouses combine the flexibility of lakes with the structure of warehouses. Conceptually, SQL is evolving to query not just relational data but also JSON, Parquet, and CSV files in these environments. PostgreSQL supports JSON queries, making it suitable for hybrid use cases. Practically, analysts may need to query clinical notes stored as JSON within a larger dataset. SQL functions allow them to extract fields directly without moving data into another system. Lakehouses (e.g., Delta Lake or Microsoft Fabric) extend this by allowing both structured queries (<code>SELECT</code>) and transactional manipulations (<code>MERGE</code>) in one system.</p>
-                <p><strong>Example</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Example querying JSON data
-CREATE TABLE ClinicalNotes (
-    note_id SERIAL PRIMARY KEY,
-    patient_id INT,
-    note JSONB
-);
-
-INSERT INTO ClinicalNotes (patient_id, note) VALUES
-(1, '{"symptom": "headache", "severity": "mild"}'),
-(2, '{"symptom": "chest pain", "severity": "severe"}');
-
--- Query specific field from JSON
-SELECT patient_id, note->>'symptom' AS symptom, note->>'severity' AS severity
-FROM ClinicalNotes;</code></pre>
-                </div>
-                <p>💡 <strong>Exercise:</strong> Insert a JSON note for patient 3 with symptom “fever” and severity “moderate”, then query only the symptom field.</p>
-
-                <h4>4.4 Performance, Concurrency, and Transactional Control</h4>
-                <p>Conceptually, one of SQL’s greatest strengths is its support for <strong>ACID transactions: Atomicity, Consistency, Isolation, and Durability</strong>. These ensure data remains reliable even when multiple users are reading and writing simultaneously. For example, two doctors updating patient records at the same time must not corrupt data integrity. Practically, PostgreSQL allows developers to manage concurrency using transactions (<code>BEGIN</code>, <code>COMMIT</code>, <code>ROLLBACK</code>) and isolation levels. Indexes and query optimizers further improve performance, ensuring large analytical queries complete in reasonable time. Analysts must balance performance with accuracy, ensuring queries are optimized but not simplified to the point of losing critical insights.</p>
-                <p><strong>Example</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Transaction example
-BEGIN;
-
-UPDATE Patients
-SET age = age + 1
-WHERE subject_id = 1;
-
--- Rollback if mistake detected
-ROLLBACK;
-
--- Commit if correct
-COMMIT;</code></pre>
-                </div>
-                <p>💡 <strong>Exercise:</strong> Demonstrate an <code>UPDATE</code> inside a transaction where you roll back instead of committing.</p>
-
-                <h3>5. Final Module Assignment</h3>
-                <p>This assignment assesses your mastery of DQL, DML, and advanced SQL concepts. Your task is to use the provided PostgreSQL environment to complete a series of real-world data management and analysis tasks. You will be required to demonstrate proficiency in querying data, modifying records, and simulating complex workflows.
-                </p>
-
-                <h4>PostgreSQL Setup and Data</h4>
-                <p>For this assignment, use the `healthcare_db` environment created in the module. If you need to re-create it, use the following DDL and DML scripts.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Database Creation
-CREATE DATABASE healthcare_db;
-\c healthcare_db;
-
--- Table Definitions
-CREATE TABLE Patients (
-    subject_id SERIAL PRIMARY KEY,
-    name VARCHAR(100),
-    age INT,
-    gender VARCHAR(10),
-    admission_date DATE
-);
-
-CREATE TABLE Doctors (
-    doctor_id SERIAL PRIMARY KEY,
-    name VARCHAR(100),
-    specialty VARCHAR(50)
-);
-
-CREATE TABLE Admissions (
-    admission_id SERIAL PRIMARY KEY,
-    subject_id INT REFERENCES Patients(subject_id),
-    doctor_id INT REFERENCES Doctors(doctor_id),
-    diagnosis VARCHAR(200),
-    admission_date DATE
-);
-
-CREATE TABLE ClinicalNotes (
-    note_id SERIAL PRIMARY KEY,
-    patient_id INT,
-    note JSONB
-);
-
--- Data Insertion
-INSERT INTO Patients (name, age, gender, admission_date) VALUES
-('Alice Brown', 45, 'Female', '2023-02-10'),
-('Bob Smith', 67, 'Male', '2023-03-15'),
-('Carol Johnson', 34, 'Female', '2023-01-22'),
-('David Lee', 72, 'Male', '2023-05-01');
-
-INSERT INTO Doctors (name, specialty) VALUES
-('Dr. Williams', 'Cardiology'),
-('Dr. Patel', 'Neurology'),
-('Dr. Nguyen', 'Orthopedics'),
-('Dr. Miller', 'Pediatrics');
-
-INSERT INTO Admissions (subject_id, doctor_id, diagnosis, admission_date) VALUES
-(1, 1, 'Hypertension', '2023-02-10'),
-(2, 2, 'Stroke', '2023-03-15'),
-(3, 3, 'Fracture', '2023-01-22'),
-(4, 1, 'Heart Disease', '2023-05-01'),
-(1, 2, 'Migraine', '2023-02-25');
-
-INSERT INTO ClinicalNotes (patient_id, note) VALUES
-(1, '{"symptom": "headache", "severity": "mild"}'),
-(2, '{"symptom": "chest pain", "severity": "severe"}'),
-(3, '{"symptom": "joint pain", "severity": "moderate"}');</code></pre>
-                </div>
-
-                <h4>Assignment Tasks</h4>
-
-                <p><strong>Part 1: DQL & Basic Analysis</strong></p>
-                <ol>
-                    <li>Write a query to retrieve the name and age of all patients, sorted by age in descending order.</li>
-                    <li>Find all admissions for patients older than 50. Display the patient's name, age, and diagnosis.</li>
-                    <li>Query the `ClinicalNotes` table to find all patients with a `severity` of 'moderate' or 'severe'. Display the patient's ID and the symptom.</li>
-                </ol>
-
-                <p><strong>Part 2: DML & Data Integrity</strong></p>
-                <ol>
-                    <li>Insert a new patient record into the `Patients` table for "Sarah Adams" (Age 28, Female), admitted on '2023-11-15'.</li>
-                    <li>Run a `SELECT` query to verify that "Sarah Adams" was inserted correctly.</li>
-                    <li>Correct "Sarah Adams" age to 29. **First, run a `SELECT` query to find her record to ensure your `WHERE` clause is correct, then run the `UPDATE` statement.**</li>
-                    <li>Delete the record for "David Lee" from the `Patients` table. **Again, run a `SELECT` query first to confirm the record to be deleted, then execute the `DELETE` statement.**</li>
-                    <li>Write a `BEGIN...COMMIT` block to perform a transactional update: Inside the transaction, update "Carol Johnson's" `admission_date` to '2023-01-25'. Then, `ROLLBACK` the transaction. Verify that the date did not change.</li>
-                </ol>
                 
-                <p><strong>Part 3: Advanced Workflows</strong></p>
-                <ol>
-                    <li>**ETL Simulation:** Create a new table `SeniorAdmissions` with columns `patient_name`, `doctor_name`, and `diagnosis`. Write a single `INSERT INTO ... SELECT` query that extracts all admissions for patients over the age of 60, joins them with the `Doctors` table, and loads the patient's name, doctor's name, and diagnosis into the `SeniorAdmissions` table.</li>
-                    <li>**Synchronization with MERGE:** Create a temporary table `NewAdmissions` with the following data:
-                        <div class="code-block">
-                            <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                            <pre><code class="language-sql">CREATE TABLE NewAdmissions (
-    subject_id INT,
-    doctor_id INT,
-    diagnosis VARCHAR(200),
-    admission_date DATE
-);
-
-INSERT INTO NewAdmissions (subject_id, doctor_id, diagnosis, admission_date) VALUES
-(1, 1, 'Asthma', '2023-12-01'), -- This should UPDATE an existing patient
-(5, 3, 'Allergies', '2023-12-05'); -- This should INSERT a new patient</code></pre>
+                <!-- Interactive Levels of Interoperability -->
+                <div class="bg-white p-8 rounded-xl shadow-lg mt-8">
+                    <h4 class="text-xl font-semibold text-center mb-2">Levels of Interoperability</h4>
+                    <p class="text-center text-gray-600 mb-6">Interoperability is achieved in stages, each building on the last. Click a level to explore its meaning.</p>
+                    <div class="space-y-4">
+                        <div id="interop-4" class="interop-level border-l-4 border-purple-500 p-4 bg-purple-50 rounded-r-lg shadow-sm hover:shadow-md flex justify-between items-center">
+                            <h5 class="font-bold text-purple-800">Level 4: Organizational</h5>
+                            <span class="text-purple-500 transition-transform duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
                         </div>
-                        Then, write a `MERGE` statement to update the `diagnosis` for the matching patient and insert the new admission record.
-                    </li>
-                </ol>
+                        <p id="interop-4-text" class="text-sm text-purple-700 hidden px-4">Encompasses governance, policy, legal frameworks, and trust agreements required for seamless data exchange.</p>
 
-                <h3>6. Conclusion</h3>
-                <h4>6.1 Conceptual Reflection</h4>
-                <p>Throughout this module, we explored SQL as both a language of exploration (DQL) and a language of change (DML). Conceptually, these dual roles highlight SQL’s unique position: it not only reveals insights hidden in data but also actively shapes the data itself. DQL empowers analysts to filter, sort, and extract patterns, while DML ensures that data remains current, accurate, and synchronized across systems. In healthcare, this could mean querying all elderly patients for a wellness program (DQL) and updating patient diagnoses after lab results arrive (DML). By studying both languages together, students gain an appreciation for SQL’s breadth and its critical role in maintaining trustworthy data pipelines. This perspective emphasizes that SQL is more than syntax; it is the operating language of modern data ecosystems, from transactional hospital systems to large-scale research warehouses.</p>
-                <h4>6.2 Practical Takeaways</h4>
-                <p>Practically, the module demonstrated how SQL supports the entire data lifecycle: <code>SELECT</code> for retrieving and analyzing data; <code>INSERT</code> for adding new records; <code>UPDATE</code> for correcting and refining existing information; <code>DELETE</code> for carefully removing outdated or incorrect records; and <code>MERGE</code> for synchronizing datasets in complex environments. A recurring theme was the dual role of the <code>WHERE</code> clause. In DQL, it acts as a filter to refine analysis; in DML, it becomes a safeguard against catastrophic errors. Students should now recognize why running a <code>SELECT</code> first is best practice before executing an <code>UPDATE</code> or <code>DELETE</code>. Finally, the complete SQL workflow illustrated how these commands combine to form realistic data processes. From inserting new patients to generating final reports, SQL underpins both operational accuracy and analytical insight.</p>
-                <h4>6.3 Professional Importance</h4>
-                <p>For data professionals—whether analysts, engineers, or managers—mastery of SQL is non-negotiable. It is the common language across databases, business intelligence tools, and cloud architectures. More importantly, it is the skill that ensures data integrity, reproducibility, and trustworthiness. In healthcare, mistakes in SQL queries can lead to misdiagnosis, compliance violations, or lost trust. In business, they can distort revenue models and customer insights. This module therefore positions SQL mastery not only as an academic requirement but as a professional obligation—a skill that defines competence in the data-driven world.</p>
-            </div>
-        </section>
+                        <div id="interop-3" class="interop-level border-l-4 border-blue-500 p-4 bg-blue-50 rounded-r-lg shadow-sm hover:shadow-md flex justify-between items-center">
+                            <h5 class="font-bold text-blue-800">Level 3: Semantic</h5>
+                            <span class="text-blue-500 transition-transform duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        </div>
+                        <p id="interop-3-text" class="text-sm text-blue-700 hidden px-4">Ensures a shared understanding of the *meaning* of data, using standardized terminologies like SNOMED CT. This is the most critical and difficult level to achieve.</p>
+
+                        <div id="interop-2" class="interop-level border-l-4 border-green-500 p-4 bg-green-50 rounded-r-lg shadow-sm hover:shadow-md flex justify-between items-center">
+                            <h5 class="font-bold text-green-800">Level 2: Structural</h5>
+                            <span class="text-green-500 transition-transform duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        </div>
+                        <p id="interop-2-text" class="text-sm text-green-700 hidden px-4">Defines the syntax or format of data exchange (e.g., an HL7 message), ensuring data fields can be correctly interpreted.</p>
+
+                        <div id="interop-1" class="interop-level border-l-4 border-yellow-500 p-4 bg-yellow-50 rounded-r-lg shadow-sm hover:shadow-md flex justify-between items-center">
+                            <h5 class="font-bold text-yellow-800">Level 1: Foundational</h5>
+                            <span class="text-yellow-500 transition-transform duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        </div>
+                        <p id="interop-1-text" class="text-sm text-yellow-700 hidden px-4">Establishes the basic technical connectivity to send and receive data between systems.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl shadow-lg mt-8">
+                    <h4 class="text-xl font-semibold mb-4 section-header">Review Questions</h4>
+                    <ul class="space-y-2 text-gray-700 list-decimal pl-5">
+                        <li>
+                            Explain the fundamental difference between data standards and interoperability. How do the different levels of interoperability (Foundational, Structural, Semantic) align with specific data standards discussed in this module?
+                        </li>
+                        <li>
+                            Compare and contrast HL7 v2 and FHIR. Discuss the historical context for the shift from a messaging-based approach to a resource-based API approach, citing at least one benefit that FHIR provides over its predecessor.
+                        </li>
+                        <li>
+                            Analyze a real-world use case for health data standards. Choose a case study (e.g., Apple Health Records or NHS England's SNOMED CT adoption) and explain how the chosen standard helped overcome a specific challenge.
+                        </li>
+                        <li>
+                            Based on the challenges discussed in this module, propose a strategic implementation plan for a small clinic transitioning to a new EHR system. Your plan should address at least three key barriers, including organizational resistance, and outline a phased approach.
+                        </li>
+                        <li>
+                            How are data standards evolving to support new technologies? Explain the role of data standards in two emerging trends: the use of AI for automated coding and the integration of IoT devices.
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl shadow-lg mt-8">
+                    <h4 class="text-xl font-semibold mb-4 section-header">Suggested Readings</h4>
+                    <ul class="space-y-2 text-gray-700 list-disc pl-5">
+                        <li><a href="https://www.ncbi.nlm.nih.gov/books/NBK216088/" class="text-blue-600 hover:underline" target="_blank">"Health Care Data Standards" (NCBI Bookshelf)</a></li>
+                        <li><a href="https://link.springer.com/book/10.1007/978-3-030-91107-5" class="text-blue-600 hover:underline" target="_blank">"Principles of Health Interoperability: SNOMED CT, HL7 and FHIR" by Tim Benson and Grahame Grieve (Springer)</a></li>
+                        <li><a href="https://www.accessnursing.com/content.aspx?bookid=2049&sectionid=156903672" class="text-blue-600 hover:underline" target="_blank">"Essentials of Nursing Informatics" (Chapter 7: Health Data Standards) (McGraw Hill)</a></li>
+                        <li><a href="https://ohdsi.github.io/TheBookOfOHDSI/" class="text-blue-600 hover:underline" target="_blank">"The Book of OHDSI" (OHDSI GitHub)</a></li>
+                        <li><a href="https://www.ncbi.nlm.nih.gov/books/NBK216089/" class="text-blue-600 hover:underline" target="_blank">"Finding What Works in Health Care: Standards for Systematic Reviews" (NCBI)</a></li>
+                    </ul>
+                </div>
+            </section>
+        </main>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-light py-3 text-center">
-        <p class="text-muted mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
-    </footer>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Interactivity for Levels of Interoperability
+        const interopLevels = document.querySelectorAll('.interop-level');
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <!-- Highlight.js Initialization -->
-    <script>hljs.highlightAll();</script>
-    <!-- Custom Copy Functionality -->
-    <script>
-        function copyCode(button) {
-            const code = button.nextElementSibling.querySelector('code');
-            navigator.clipboard.writeText(code.innerText).then(() => {
-                button.textContent = 'Copied!';
-                setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+        interopLevels.forEach(level => {
+            level.addEventListener('click', () => {
+                const id = level.id;
+                const p = document.getElementById(id + '-text');
+                const arrow = level.querySelector('svg');
+                const isHidden = p.classList.contains('hidden');
+
+                // Hide all other descriptions and reset arrows
+                document.querySelectorAll('.interop-level + p').forEach(otherP => {
+                    otherP.classList.add('hidden');
+                });
+                document.querySelectorAll('.interop-level svg').forEach(otherArrow => {
+                    otherArrow.classList.remove('rotate-180');
+                });
+
+                // Toggle the clicked one
+                if (isHidden) {
+                    p.classList.remove('hidden');
+                    arrow.classList.add('rotate-180');
+                } else {
+                    p.classList.add('hidden');
+                    arrow.classList.remove('rotate-180');
+                }
             });
+        });
+
+        // Interactivity for Benefits Map
+        const benefitsMap = document.querySelector('.benefit-map');
+        const standardNode = document.getElementById('standard-node');
+        const otherNodes = benefitsMap.querySelectorAll('.node:not(#standard-node)');
+
+        function resetHighlights() {
+            benefitsMap.querySelectorAll('.node').forEach(node => node.classList.remove('highlight'));
         }
-    </script>
+
+        standardNode.addEventListener('mouseenter', () => {
+            otherNodes.forEach(node => node.classList.add('highlight'));
+        });
+        standardNode.addEventListener('mouseleave', () => {
+            resetHighlights();
+        });
+
+        otherNodes.forEach(node => {
+            node.addEventListener('mouseenter', () => {
+                resetHighlights();
+                node.classList.add('highlight');
+                const connectedIds = node.dataset.connections.split(',');
+                connectedIds.forEach(id => {
+                    const connectedNode = document.getElementById(id.trim());
+                    if (connectedNode) {
+                        connectedNode.classList.add('highlight');
+                    }
+                });
+            });
+            node.addEventListener('mouseleave', () => {
+                resetHighlights();
+            });
+        });
+    });
+</script>
 </body>
 </html>
