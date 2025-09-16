@@ -108,8 +108,7 @@
                 <h2 class="text-2xl font-bold border-b-2 pb-2 mb-4 mt-8">Introduction to SQL Aggregations</h2>
                 <p>Aggregations in SQL allow you to summarize data across multiple rows, transforming detailed records into meaningful insights. This module builds on the <code>SELECT</code>, <code>WHERE</code>, and <code>ORDER BY</code> clauses from Module 3, introducing aggregate functions like <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, and <code>MAX</code>. The <code>GROUP BY</code> clause organizes data into groups for aggregation, while <code>HAVING</code> filters those groups. These tools are critical for tasks like calculating total sales, average patient ages, or minimum stock levels in real-world scenarios, such as analyzing healthcare trends in Greensboro, NC, or optimizing a local business's inventory.</p>
                 <p>Aggregations are widely used across industries. For example, in healthcare, you might calculate the average length of hospital stays per diagnosis; in retail, total sales by product category; in education, average grades by course. Understanding how to combine these functions with filtering and sorting enhances your ability to extract actionable insights from large datasets efficiently.</p>
-                
-                <!-- Dummy Tables Section -->
+                                <!-- Dummy Tables Section -->
                 <div class="mt-8">
                     <h2 id="dummy-tables-header" class="text-2xl font-bold border-b-2 pb-2 cursor-pointer select-none">
                         Dummy Tables for Practice
@@ -176,12 +175,11 @@ INSERT INTO Employees (emp_id, name, salary, department, hire_date) VALUES
 (5, 'David Wilson', 95000.00, 'Finance', '2024-02-28'),
 (6, 'Emily Davis', 62000.00, 'IT', '2023-09-01'),
 (7, 'Chris Evans', 88000.00, 'HR', '2024-04-05'),
-(8, 'Laura Hall', 72000.00, 'Marketing', '2023-10-10');
-</code></pre>
+(8, 'Laura Hall', 72000.00, 'Marketing', '2023-10-10');</code></pre>
                         </div>
                     </div>
                 </div>
-
+                
                 <!-- How to Use with PgAdmin 4 Section -->
                 <div class="mt-8">
                     <h2 id="pgadmin-header" class="text-2xl font-bold border-b-2 pb-2 cursor-pointer select-none">
@@ -215,7 +213,7 @@ INSERT INTO Employees (emp_id, name, salary, department, hire_date) VALUES
                         </ol>
                     </div>
                 </div>
-
+                
                 <!-- Aggregate Functions -->
                 <h3 class="text-xl font-bold mb-3 mt-6">Aggregate Functions</h3>
                 <p>Aggregate functions process multiple rows to produce a single summary value. Common functions include:</p>
@@ -374,14 +372,14 @@ FROM ADMISSIONS
 GROUP BY diagnosis;
 
 -- Grouping by multiple columns (e.g., patient and diagnosis)
-SELECT
-    subject_id,
-    diagnosis,
+SELECT 
+    subject_id, 
+    diagnosis, 
     COUNT(*) AS AdmissionCount
-FROM
+FROM 
     ADMISSIONS
-GROUP BY
-    subject_id,
+GROUP BY 
+    subject_id, 
     diagnosis;</code></pre>
                 </div>
                 <p><strong>Explanation:</strong> The first query counts admissions per diagnosis, the second calculates average stay length. The third example shows how you can group by multiple columns to get a more granular breakdown, in this case, the number of times each patient had a specific diagnosis.</p>
@@ -424,51 +422,196 @@ HAVING SUM(quantity * price) > 1000;</code></pre>
                 <div class="code-block">
                     <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
                     <pre><code class="language-sql">-- Count the number of sales for each category and a count of high-value sales (> $100)
-SELECT
+SELECT 
     category,
     COUNT(*) AS TotalSales,
     SUM(CASE WHEN price > 100 THEN 1 ELSE 0 END) AS HighValueSales
-FROM
+FROM 
     Sales
-GROUP BY
+GROUP BY 
     category;</code></pre>
                 </div>
                 <p><strong>Explanation:</strong> This query calculates the total number of sales per category and, within the same query, counts how many of those sales were for products priced over $100. The <code>CASE</code> statement acts like a conditional counter within the `SUM` function.</p>
-                
+                                
                 <!-- Advanced Aggregation Techniques -->
                 <h2 class="text-2xl font-bold border-b-2 pb-2 mb-4 mt-8">Advanced Aggregation Techniques</h2>
-                <p>For more complex reporting and data analysis, SQL provides advanced aggregation features that can generate multiple grouping combinations in a single query, significantly simplifying your code.</p>
+                <p>For more complex reporting and data analysis, SQL provides advanced aggregation features that can generate multiple grouping combinations in a single query. This is especially useful for creating summary reports with subtotals at various levels.</p>
 
                 <h3 class="text-xl font-bold mb-3 mt-6"><code>GROUPING SETS</code>, <code>CUBE</code>, and <code>ROLLUP</code></h3>
-                <ul class="list-disc list-inside space-y-1">
-                    <li><strong>GROUPING SETS:</strong> Generates a result set equivalent to the union of two or more `GROUP BY` queries. This allows you to report on multiple levels of aggregation in one go.</li>
-                    <li><strong>ROLLUP:</strong> A shorthand for `GROUPING SETS` that generates subtotals for the hierarchy specified and a grand total. It follows a top-down approach. For example, `ROLLUP(A, B)` generates grouping sets for `(A, B)`, `(A)`, and `()`.</li>
-                    <li><strong>CUBE:</strong> An even more powerful shorthand that generates subtotals for all possible combinations of the specified columns. For `CUBE(A, B)`, it generates grouping sets for `(A, B)`, `(A)`, `(B)`, and `()`.</li>
-                </ul>
+                <p>These powerful clauses are like shortcuts for performing multiple <code>GROUP BY</code> queries and combining their results. They save you from writing many separate queries and then using <code>UNION ALL</code> to combine them. Think of them as tools to create multi-level summary reports.</p>
+
+                <p>Let's use a simpler table to understand these concepts. Consider this **ProductSales** table:</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left table-auto border-collapse border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-3 font-semibold border border-gray-300">category</th>
+                                <th class="p-3 font-semibold border border-gray-300">product</th>
+                                <th class="p-3 font-semibold border border-gray-300">sales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-3 border border-gray-300">Electronics</td><td class="p-3 border border-gray-300">Laptop</td><td class="p-3 border border-gray-300">1000</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Electronics</td><td class="p-3 border border-gray-300">Mouse</td><td class="p-3 border border-gray-300">200</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Home</td><td class="p-3 border border-gray-300">Desk</td><td class="p-3 border border-gray-300">500</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Home</td><td class="p-3 border border-gray-300">Lamp</td><td class="p-3 border border-gray-300">150</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="flex justify-center my-6">
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-lg w-full">
+                        <h4 class="text-xl font-semibold mb-3 text-center">Comparing ROLLUP and CUBE</h4>
+                        <p class="text-center text-sm text-gray-600 mb-4">
+                            `ROLLUP` creates subtotals for a hierarchy, while `CUBE` creates subtotals for all possible combinations.
+                        </p>
+                        <div class="flex flex-col md:flex-row justify-center items-center md:space-x-8">
+                            <div class="p-4 bg-white rounded-lg shadow-md mb-4 md:mb-0 w-full md:w-1/2">
+                                <h5 class="text-lg font-bold text-center mb-2"><code>ROLLUP(A, B)</code></h5>
+                                <p class="text-sm text-center text-gray-500">
+                                    Generates groups for (A, B), (A), and a grand total ().<br/>
+                                    <br/>
+                                </p>
+                                
+                            </div>
+                            <div class="p-4 bg-white rounded-lg shadow-md w-full md:w-1/2">
+                                <h5 class="text-lg font-bold text-center mb-2"><code>CUBE(A, B)</code></h5>
+                                <p class="text-sm text-center text-gray-500">
+                                    Generates groups for all possible combinations: (A, B), (A), (B), and a grand total ().
+                                </p>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="text-lg font-bold mt-4">1. <code>ROLLUP</code> for Hierarchical Summaries</h4>
+                <p>The <code>ROLLUP</code> clause is perfect for when your data has a natural hierarchy, like `category` and `product`. It gives you subtotals for each level of the hierarchy and a grand total.</p>
+                <p class="mt-4">
+                    Running <code>ROLLUP(category, product)</code> on the `ProductSales` table would produce the following result:
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left table-auto border-collapse border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-3 font-semibold border border-gray-300">category</th>
+                                <th class="p-3 font-semibold border border-gray-300">product</th>
+                                <th class="p-3 font-semibold border border-gray-300">TotalSales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-3 border border-gray-300">Electronics</td><td class="p-3 border border-gray-300">Laptop</td><td class="p-3 border border-gray-300">1000</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Electronics</td><td class="p-3 border border-gray-300">Mouse</td><td class="p-3 border border-gray-300">200</td></tr>
+                            <tr><td class="p-3 border border-gray-300 font-bold">Electronics</td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">1200</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Home</td><td class="p-3 border border-gray-300">Desk</td><td class="p-3 border border-gray-300">500</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Home</td><td class="p-3 border border-gray-300">Lamp</td><td class="p-3 border border-gray-300">150</td></tr>
+                            <tr><td class="p-3 border border-gray-300 font-bold">Home</td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">650</td></tr>
+                            <tr><td class="p-3 border border-gray-300 font-bold"></td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">1850</td></tr>
+                        </tbody>
+                    </table>
+                </div>
                 <div class="code-block">
                     <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
-                    <pre><code class="language-sql">-- Using ROLLUP to get subtotals for category and a grand total
-SELECT
-    category,
-    SUM(quantity * price) AS TotalRevenue
-FROM
-    Sales
-GROUP BY ROLLUP(category);
+                    <pre><code class="language-sql">-- Use ROLLUP to get subtotals for categories and a grand total.
+-- The output will have three levels:
+-- 1. Sales by specific category and product.
+-- 2. Subtotals for each category.
+-- 3. A grand total for all sales.
+SELECT 
+    category, 
+    product,
+    SUM(sales) AS TotalSales
+FROM 
+    ProductSales
+GROUP BY ROLLUP(category, product);</code></pre>
+                </div>
+                
 
--- Using GROUPING SETS for specific combinations
-SELECT
+                <h4 class="text-lg font-bold mt-4">2. <code>CUBE</code> for All Combinations</h4>
+                <p>The <code>CUBE</code> clause is more comprehensive. It creates subtotals for every possible combination of the columns you specify, plus a grand total. This is great for multi-dimensional analysis where there's no single hierarchy.</p>
+                <p class="mt-4">
+                    Running <code>CUBE(category, product)</code> on the `ProductSales` table would produce the following result, including subtotals for each category AND each product:
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left table-auto border-collapse border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-3 font-semibold border border-gray-300">category</th>
+                                <th class="p-3 font-semibold border border-gray-300">product</th>
+                                <th class="p-3 font-semibold border border-gray-300">TotalSales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-3 border border-gray-300">Electronics</td><td class="p-3 border border-gray-300">Laptop</td><td class="p-3 border border-gray-300">1000</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Electronics</td><td class="p-3 border border-gray-300">Mouse</td><td class="p-3 border border-gray-300">200</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Home</td><td class="p-3 border border-gray-300">Desk</td><td class="p-3 border border-gray-300">500</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Home</td><td class="p-3 border border-gray-300">Lamp</td><td class="p-3 border border-gray-300">150</td></tr>
+                            <tr><td class="p-3 border border-gray-300 font-bold">Electronics</td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">1200</td></tr>
+                            <tr><td class="p-3 border border-gray-300 font-bold">Home</td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">650</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">Laptop</td><td class="p-3 border border-gray-300 font-bold">1000</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">Mouse</td><td class="p-3 border border-gray-300 font-bold">200</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">Desk</td><td class="p-3 border border-gray-300 font-bold">500</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">Lamp</td><td class="p-3 border border-gray-300 font-bold">150</td></tr>
+                            <tr><td class="p-3 border border-gray-300 font-bold"></td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">1850</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="code-block">
+                    <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
+                    <pre><code class="language-sql">-- Use CUBE to get subtotals for all possible combinations.
+-- The output will include:
+-- - Sales by (category, product)
+-- - Subtotals for each category
+-- - Subtotals for each product
+-- - A grand total
+SELECT 
+    category, 
+    product,
+    SUM(sales) AS TotalSales
+FROM 
+    ProductSales
+GROUP BY CUBE(category, product);</code></pre>
+                </div>
+
+                <h4 class="text-lg font-bold mt-4">3. <code>GROUPING SETS</code> for Specific Reports</h4>
+                <p>When you need to get subtotals for specific, non-hierarchical combinations, <code>GROUPING SETS</code> gives you precise control. It's like manually running multiple `GROUP BY` queries and combining them with <code>UNION ALL</code>, but in a single, more efficient statement. For example, to get total sales by category and also by product, you'd use the following query.</p>
+                <p class="mt-4">
+                    The query below would produce this result:
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left table-auto border-collapse border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-3 font-semibold border border-gray-300">category</th>
+                                <th class="p-3 font-semibold border border-gray-300">product</th>
+                                <th class="p-3 font-semibold border border-gray-300">TotalSales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-3 border border-gray-300">Electronics</td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300">1200</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Home</td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300">650</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300">Laptop</td><td class="p-3 border border-gray-300">1000</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300">Mouse</td><td class="p-3 border border-gray-300">200</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300">Desk</td><td class="p-3 border border-gray-300">500</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300">Lamp</td><td class="p-3 border border-gray-300">150</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="code-block">
+                    <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
+                    <pre><code class="language-sql">-- This query is equivalent to running two separate GROUP BY queries and a total count.
+-- It combines total revenue by category AND total revenue by product in one result set.
+SELECT 
     category,
-    diagnosis,
-    COUNT(*) AS Total
-FROM
-    ADMISSIONS
+    product,
+    SUM(sales) AS TotalSales
+FROM 
+    ProductSales
 GROUP BY GROUPING SETS (
-    (category),
-    (diagnosis),
-    ()
+    (category), -- This gets the total revenue for each category
+    (product)   -- This gets the total revenue for each product
 );</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> The first query uses `ROLLUP` on the `Sales` table to produce a result that shows the revenue per category and a total revenue for all categories. The second query uses `GROUPING SETS` on a hypothetical combined table to show counts grouped by category, by diagnosis, and a grand total.</p>
                 
                 <!-- SQL Window Functions -->
                 <h3 class="text-xl font-bold mb-3 mt-6">SQL Window Functions</h3>
@@ -481,21 +624,21 @@ GROUP BY GROUPING SETS (
                 <div class="code-block">
                     <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
                     <pre><code class="language-sql">-- Ranking employees by salary within each department
-SELECT
-    name,
-    department,
+SELECT 
+    name, 
+    department, 
     salary,
     RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS DepartmentRank
-FROM
+FROM 
     Employees;
 
 -- Calculating the average salary for each department
-SELECT
-    name,
-    department,
+SELECT 
+    name, 
+    department, 
     salary,
     AVG(salary) OVER (PARTITION BY department) AS AvgDepartmentSalary
-FROM
+FROM 
     Employees;</code></pre>
                 </div>
                 <p><strong>Explanation:</strong> The first query uses `RANK()` to assign a rank to each employee based on their salary, but the ranking is reset for each `department`. The second query shows each employee's salary alongside the average salary for their entire department, demonstrating how the window function can provide contextual information without changing the number of rows.</p>
@@ -503,6 +646,7 @@ FROM
                 <!-- Order of Execution -->
                 <h3 class="text-xl font-bold mb-3 mt-6">Order of Execution</h3>
                 <p>SQL executes clauses in a specific, logical order. Understanding this order is crucial for writing correct and efficient queries. The sequence is:</p>
+                
                 <ol class="list-decimal list-inside space-y-1">
                     <li><strong>FROM:</strong> Determines the data source.</li>
                     <li><strong>WHERE:</strong> Filters individual rows from the `FROM` table.</li>
@@ -524,7 +668,7 @@ HAVING COUNT(*) > 1;
 -- SELECT diagnosis, COUNT(*) FROM ADMISSIONS WHERE COUNT(*) > 1 GROUP BY diagnosis; -- Error</code></pre>
                 </div>
                 <p><strong>Explanation:</strong> The invalid query fails because <code>WHERE</code> tries to evaluate `COUNT(*)` on individual rows, which is not possible. The `HAVING` clause, running after `GROUP BY`, correctly performs this filtering on the aggregated results.</p>
-                
+                                
                 <!-- Running Aggregations in Microsoft Fabric -->
                 <h3 class="text-xl font-bold mb-3 mt-6">Running Aggregations in Microsoft Fabric Lakehouse</h3>
                 <p>In Microsoft Fabric, aggregations are executed on large-scale data lakes using SQL endpoints or notebooks, leveraging distributed computing for efficiency. The syntax remains the same, but the performance is optimized for massive datasets. The principles of aggregation are universal, whether you're working with a small local database or a large-scale cloud environment.</p>
@@ -539,7 +683,7 @@ HAVING COUNT(*) > 100
 ORDER BY AvgScore DESC;</code></pre>
                 </div>
                 <p><strong>Explanation:</strong> This aggregates survey scores by city for recent responses, filtering for significant sample sizes. This query demonstrates how the aggregation skills you've learned apply directly to big data analytics platforms.</p>
-                
+                                
                 <!-- Assessments -->
                 <h2 class="text-2xl font-bold border-b-2 pb-2 mb-4 mt-8">Assessments</h2>
                 <ol class="list-decimal list-inside space-y-2">
