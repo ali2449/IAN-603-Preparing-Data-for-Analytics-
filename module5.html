@@ -1,467 +1,416 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Module 5: SQL Logic - IAF 603</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <!-- Google Fonts -->
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Highlight.js for code highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- MathJax CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- Custom MathJax Configuration -->
-    <script src="./js/mathjax.js"></script>
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="./css/styles.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .code-block {
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            @apply bg-gray-600 text-white text-xs px-2 py-1 rounded-md hover:bg-gray-700 transition-colors;
+        }
+        pre {
+            background-color: #282c34 !important;
+            color: #abb2bf !important;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-gray-100 text-gray-800 leading-relaxed">
+
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="./index.html">IAF 603: Preparing Data for Analytics</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Modules
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="./module1.html">Module 1</a></li>
-                            <li><a class="dropdown-item" href="./module2.html">Module 2</a></li>
-                            <li><a class="dropdown-item" href="./module3.html">Module 3</a></li>
-                            <li><a class="dropdown-item" href="./module4.html">Module 4</a></li>
-                            <li><a class="dropdown-item" href="./module5.html">Module 5</a></li>
-                            <li><a class="dropdown-item" href="./module6.html">Module 6</a></li>
-                            <li><a class="dropdown-item" href="./module7.html">Module 7</a></li>
-                            <li><a class="dropdown-item" href="./module8.html">Module 8</a></li>
-                            <li><a class="dropdown-item" href="./module9.html">Module 9</a></li>
-                            <li><a class="dropdown-item" href="./module10.html">Module 10</a></li>
-                            <li><a class="dropdown-item" href="./module11.html">Module 11</a></li>
-                            <li><a class="dropdown-item" href="./module12.html">Module 12</a></li>
-                            <li><a class="dropdown-item" href="./module13.html">Module 13</a></li>
-                            <li><a class="dropdown-item" href="./module14.html">Module 14</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
+    <nav class="bg-white sticky top-0 z-50 shadow-md">
+        <div class="container px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center">
+            <a href="#" class="text-xl font-bold text-gray-900">IAF 603: Preparing Data for Analytics</a>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <div class="container my-5">
+    <div class="container my-8 px-4 sm:px-6 lg:px-8">
+
         <!-- Module Title -->
-        <section class="text-center py-5 bg-white rounded shadow">
-            <h1 class="display-4 fw-bold text-dark">Module 5: SQL Logic</h1>
+        <section class="text-center py-10 bg-white rounded-xl shadow-lg mb-8">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900">Module 5: SQL Logic</h1>
         </section>
 
         <!-- Module Content -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <!-- Learning Objectives -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Learning Objectives</h2>
-                <p>Upon completion of this module, participants will be able to:</p>
-                <ul>
-                    <li>Implement Boolean logic using <code>AND</code>, <code>OR</code>, and <code>NOT</code> operators to create complex SQL conditions.</li>
-                    <li>Handle NULL values effectively using <code>IS NULL</code>, <code>COALESCE</code>, and <code>NULLIF</code> for robust data filtering and transformation.</li>
-                    <li>Use <code>CASE</code> statements to implement conditional logic for categorizing and transforming data.</li>
-                    <li>Combine logical operators, NULL handling, and <code>CASE</code> statements in SQL queries to address real-world data preparation challenges.</li>
-                    <li>Apply these techniques in cloud-based environments like Microsoft Fabric Lakehouse.</li>
+        <div class="space-y-12">
+            
+            <!-- Executive Summary -->
+            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">1. Executive Summary: Bridging Theory and Practice in Data Preparation</h2>
+                <p class="text-gray-700 mb-4 text-justify">This report provides a comprehensive overview of the key data preparation concepts taught in the academic course <strong>IAF 603: Preparing Data for Analytics</strong>. It synthesizes the theoretical foundations of Boolean logic, handling NULL values, and using CASE statements with their practical implementation in a modern, cloud-based data environment. The central case study, focused on a fictional hospital in Greensboro, North Carolina, and its use of Microsoft Fabric Lakehouse, serves as a tangible framework for understanding how these SQL techniques translate into actionable, real-world data solutions for critical healthcare challenges.</p>
+                <p class="text-gray-700 text-justify">The analysis will demonstrate that robust data preparation is not merely a technical task but a critical phase that underpins the reliability and accuracy of all subsequent analytical and machine learning models. The report highlights the non-intuitive nature of SQL's NULL value handling and the transformative power of conditional logic to convert raw data into a clean, analytics-ready format. The Microsoft Fabric platform is presented as a paradigm shift that automates manual infrastructure management, thereby allowing data professionals to focus on the core logic of data transformation itself.</p>
+            </section>
+            
+            <!-- Introduction -->
+            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">2. Introduction: The Strategic Imperative of Data Preparation in Healthcare</h2>
+                <p class="text-gray-700 mb-4 text-justify">The exponential growth of data has made data preparation a foundational skill for any professional in the analytics and data science domains. Raw data, regardless of its volume or velocity, is often incomplete, inconsistent, and ill-suited for direct analysis. In a high-stakes industry like healthcare, where data-driven decisions can directly impact patient care, the need for meticulous and repeatable data preparation workflows is paramount.</p>
+                <p class="text-gray-700 mb-4 text-justify">The graduate-level course, IAF 603: Preparing Data for Analytics, provides a foundational framework for addressing these exact challenges. As a core component of both the Information and Analytics and Data Science concentrations, the course exposes students to best practices for collecting, cleaning, and normalizing data, as well as processing, storing, and managing large datasets. This curriculum mirrors the demands of professional practice, where an analyst must possess a nuanced understanding of how to transform disparate data into a coherent and reliable source for business intelligence and reporting.</p>
+                <p class="text-gray-700 mb-4 text-justify">To transition from academic theory to professional practice, this report utilizes a modern, cloud-based data platform: Microsoft Fabric. Microsoft Fabric represents a unified, end-to-end analytics solution that simplifies traditional data architectures by combining the scalability of a data lake with the performance of a data warehouse into a single "Lakehouse". A key feature of this platform is the automatic generation of a SQL analytics endpoint for every Lakehouse, which provides a familiar T-SQL interface for data professionals to explore and query their data directly, without the need for data movement or complex infrastructure setup.</p>
+                <p class="text-gray-700 text-justify">The concepts discussed throughout this report will be contextualized using a case study of a fictional hospital in Greensboro, North Carolina. The hospital's data environment consists of patient records, visit logs, and billing information, which all require meticulous cleaning and preparation. The examples will be tailored to a healthcare context to demonstrate how the theoretical concepts from IAF 603 can be applied to solve realistic and critical business challenges in a data-driven enterprise.</p>
+            </section>
+            
+            <!-- Sample Datasets -->
+            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">Sample Datasets</h2>
+                <p class="text-gray-700 mb-4 text-justify">The following sample tables are used for all code examples and assessments in this module. Click the button below to show or hide the table contents.</p>
+                <button id="toggle-tables-btn" class="px-6 py-3 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-800 transition-colors">Show Sample Tables</button>
+                <div id="sample-tables-container" class="mt-6 space-y-8 hidden">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">PATIENT_INFO Table</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-500 rounded-lg overflow-hidden">
+                                <thead>
+                                    <tr class="text-xs text-gray-700 uppercase bg-gray-50">
+                                        <th scope="col" class="px-6 py-3">Patient_ID</th>
+                                        <th scope="col" class="px-6 py-3">Patient_Name</th>
+                                        <th scope="col" class="px-6 py-3">Age</th>
+                                        <th scope="col" class="px-6 py-3">Email_Address</th>
+                                        <th scope="col" class="px-6 py-3">Mobile_Phone</th>
+                                        <th scope="col" class="px-6 py-3">Home_Phone</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">101</td><td class="px-6 py-4">John Doe</td><td class="px-6 py-4">65</td><td class="px-6 py-4">john.doe@email.com</td><td class="px-6 py-4">336-555-0101</td><td class="px-6 py-4">NULL</td></tr>
+                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">102</td><td class="px-6 py-4">Jane Smith</td><td class="px-6 py-4">32</td><td class="px-6 py-4">jane.smith@email.com</td><td class="px-6 py-4">336-555-0102</td><td class="px-6 py-4">NULL</td></tr>
+                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">103</td><td class="px-6 py-4">Robert Lee</td><td class="px-6 py-4">48</td><td class="px-6 py-4">NULL</td><td class="px-6 py-4">NULL</td><td class="px-6 py-4">336-555-0103</td></tr>
+                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">104</td><td class="px-6 py-4">Lisa Ray</td><td class="px-6 py-4">71</td><td class="px-6 py-4">NULL</td><td class="px-6 py-4">NULL</td><td class="px-6 py-4">336-555-0104</td></tr>
+                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">105</td><td class="px-6 py-4">Peter Chen</td><td class="px-6 py-4">25</td><td class="px-6 py-4">peter.chen@email.com</td><td class="px-6 py-4">336-555-0105</td><td class="px-6 py-4">NULL</td></tr>
+                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">106</td><td class="px-6 py-4">Susan Gray</td><td class="px-6 py-4">58</td><td class="px-6 py-4">susan.gray@email.com</td><td class="px-6 py-4">NULL</td><td class="px-6 py-4">NULL</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">DIAGNOSTICS Table</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-500 rounded-lg overflow-hidden">
+                                <thead>
+                                    <tr class="text-xs text-gray-700 uppercase bg-gray-50">
+                                        <th scope="col" class="px-6 py-3">Patient_ID</th>
+                                        <th scope="col" class="px-6 py-3">Diagnosis</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">101</td><td class="px-6 py-4">Pneumonia</td></tr>
+                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">102</td><td class="px-6 py-4">Fever</td></tr>
+                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">103</td><td class="px-6 py-4">Kidney Disease</td></tr>
+                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">104</td><td class="px-6 py-4">Diabetes</td></tr>
+                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">105</td><td class="px-6 py-4">Sprained Ankle</td></tr>
+                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">106</td><td class="px-6 py-4">Kidney Disease</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">PATIENT_BILLING Table</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-500 rounded-lg overflow-hidden">
+                                <thead>
+                                    <tr class="text-xs text-gray-700 uppercase bg-gray-50">
+                                        <th scope="col" class="px-6 py-3">Patient_ID</th>
+                                        <th scope="col" class="px-6 py-3">Bill_Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">101</td><td class="px-6 py-4">12000</td></tr>
+                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">102</td><td class="px-6 py-4">7500</td></tr>
+                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">103</td><td class="px-6 py-4">NULL</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">PostgreSQL DDL/DML for Sample Data</h3>
+                    <p class="text-gray-700 mb-4 text-justify">You can use the following script to create and populate the sample tables in a PostgreSQL database.</p>
+                    <button id="toggle-postgres-btn" class="px-6 py-3 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-800 transition-colors">Show PostgreSQL DDL/DML</button>
+                    <div id="postgres-container" class="hidden">
+                        <div class="code-block">
+                            <button class="copy-btn">Copy</button>
+                            <pre><code class="language-sql">-- Create PATIENT_INFO table
+CREATE TABLE PATIENT_INFO (
+    Patient_ID INT,
+    Patient_Name VARCHAR(255),
+    Age INT,
+    Email_Address VARCHAR(255),
+    Mobile_Phone VARCHAR(20),
+    Home_Phone VARCHAR(20)
+);
+
+-- Insert data into PATIENT_INFO
+INSERT INTO PATIENT_INFO (Patient_ID, Patient_Name, Age, Email_Address, Mobile_Phone, Home_Phone) VALUES
+(101, 'John Doe', 65, 'john.doe@email.com', '336-555-0101', NULL),
+(102, 'Jane Smith', 32, 'jane.smith@email.com', '336-555-0102', NULL),
+(103, 'Robert Lee', 48, NULL, NULL, '336-555-0103'),
+(104, 'Lisa Ray', 71, NULL, NULL, '336-555-0104'),
+(105, 'Peter Chen', 25, 'peter.chen@email.com', '336-555-0105', NULL),
+(106, 'Susan Gray', 58, 'susan.gray@email.com', NULL, NULL);
+
+-- Create DIAGNOSTICS table
+CREATE TABLE DIAGNOSTICS (
+    Patient_ID INT,
+    Diagnosis VARCHAR(255)
+);
+
+-- Insert data into DIAGNOSTICS
+INSERT INTO DIAGNOSTICS (Patient_ID, Diagnosis) VALUES
+(101, 'Pneumonia'),
+(102, 'Fever'),
+(103, 'Kidney Disease'),
+(104, 'Diabetes'),
+(105, 'Sprained Ankle'),
+(106, 'Kidney Disease');
+
+-- Create PATIENT_BILLING table
+CREATE TABLE PATIENT_BILLING (
+    Patient_ID INT,
+    Bill_Amount INT
+);
+
+-- Insert data into PATIENT_BILLING
+INSERT INTO PATIENT_BILLING (Patient_ID, Bill_Amount) VALUES
+(101, 12000),
+(102, 7500),
+(103, NULL);</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Foundational Logic -->
+            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">3. Foundational Logic: The Building Blocks of Data Filtering</h2>
+                <p class="text-gray-700 mb-4 text-justify">The bedrock of data preparation and analysis in SQL is <strong>Boolean logic</strong>. This logic is expressed through a set of foundational operators that allow for the precise filtering of data. These operators are essential for constructing a <code>WHERE</code> clause to isolate specific records based on a defined set of conditions.</p>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">3.1. The Core Logical Operators</h3>
+                <p class="text-gray-700 mb-4 text-justify">The three primary Boolean operators are <strong><code>AND</code></strong>, <strong><code>OR</code></strong>, and <strong><code>NOT</code></strong>. These operators allow data professionals to combine multiple conditions to create complex and highly specific query criteria.</p>
+                <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
+                    <li><strong><code>AND</code></strong>: This operator returns a true result only when all conditions it connects are true. It is a restrictive operator, narrowing down the result set to records that meet every single criterion.</li>
+                    <li><strong><code>OR</code></strong>: In contrast to AND, the OR operator returns a true result if at least one of the conditions it connects is true. It is an inclusive operator, broadening the result set to include records that satisfy any of the specified criteria.</li>
+                    <li><strong><code>NOT</code></strong>: This operator is used to negate a condition, returning a true result when the condition being evaluated is false. It is valuable for excluding specific data points from a result set.</li>
                 </ul>
-
-                <!-- Introduction to SQL Logic -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Introduction to SQL Logic</h2>
-                <p>SQL logic enables advanced data filtering and transformation by applying conditional logic to queries. This module dives into Boolean logic (<code>AND</code>, <code>OR</code>, <code>NOT</code>), NULL handling (<code>IS NULL</code>, <code>COALESCE</code>, <code>NULLIF</code>), and <code>CASE</code> statements for conditional transformations. These tools are essential for preparing data for analytics, allowing you to handle complex filtering scenarios, manage missing data, and create derived categories. For example, in a Greensboro hospital, SQL logic can categorize patients by risk level based on age and diagnosis, or in a retail setting, identify high-value customers based on purchase patterns. Mastering these techniques ensures you can tailor data to specific analytical needs.</p>
-                <p>Boolean logic and NULL handling are critical because real-world datasets often contain incomplete or ambiguous data. <code>CASE</code> statements add flexibility, enabling dynamic transformations without external processing. These skills are foundational for later modules on joins, subqueries, and advanced analytics.</p>
-
-                <!-- Boolean Logic in SQL -->
-                <h3 class="h4 fw-bold mb-3">Boolean Logic in SQL</h3>
-                <p>Boolean logic uses <code>AND</code>, <code>OR</code>, and <code>NOT</code> to combine conditions in the <code>WHERE</code> clause, allowing precise filtering.</p>
-                <ul>
-                    <li><strong>AND:</strong> Both conditions must be true (e.g., age > 50 AND diagnosis = 'Pneumonia').</li>
-                    <li><strong>OR:</strong> At least one condition must be true (e.g., gender = 'Female' OR age < 30).</li>
-                    <li><strong>NOT:</strong> Inverts a condition (e.g., NOT diagnosis = 'Flu').</li>
-                    <li><strong>Parentheses:</strong> Control precedence for complex conditions (e.g., (age > 50 OR gender = 'Female') AND diagnosis = 'Pneumonia').</li>
-                </ul>
-                <p><strong>Sample Data (PATIENTS Table):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>subject_id</th>
-                            <th>name</th>
-                            <th>age</th>
-                            <th>gender</th>
-                            <th>blood_type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1001</td>
-                            <td>Alice Smith</td>
-                            <td>45</td>
-                            <td>Female</td>
-                            <td>A+</td>
-                        </tr>
-                        <tr>
-                            <td>1002</td>
-                            <td>Bob Johnson</td>
-                            <td>32</td>
-                            <td>Male</td>
-                            <td>O-</td>
-                        </tr>
-                        <tr>
-                            <td>1003</td>
-                            <td>Carol White</td>
-                            <td>58</td>
-                            <td>Female</td>
-                            <td>AB+</td>
-                        </tr>
-                        <tr>
-                            <td>1004</td>
-                            <td>David Brown</td>
-                            <td>67</td>
-                            <td>Male</td>
-                            <td>B+</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <p class="text-gray-700 mb-4 text-justify">These operators can be combined to create complex logical expressions. Using <strong>parentheses</strong> is a best practice to explicitly define the order of operations and prevent logical errors, especially in multi-layered queries. For example, <code>WHERE (Condition A AND Condition B) OR (Condition C)</code> ensures that the AND operation is performed first, treating the combined result as a single expression before the OR operation is applied.</p>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">3.2. Practical Application of Boolean Logic at a Greensboro Hospital</h3>
+                <p class="text-gray-700 mb-4 text-justify">The public health team at the Greensboro hospital needs to identify a specific patient cohort for a new initiative targeting respiratory illnesses. The team is interested in patients who were admitted in January 2024 with a diagnosis of either 'Fever' or 'Cough' and are adults, not children.</p>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Patients who are female and over 50
-SELECT name, age, gender
-FROM PATIENTS
-WHERE gender = 'Female' AND age > 50;
-
--- Patients who are either under 40 or have blood type O-
-SELECT name, age, blood_type
-FROM PATIENTS
-WHERE age < 40 OR blood_type = 'O-';
-
--- Patients not male with age between 30 and 60
-SELECT name, age, gender
-FROM PATIENTS
-WHERE NOT gender = 'Male' AND age BETWEEN 30 AND 60;</code></pre>
+                    <button class="copy-btn">Copy</button>
+                    <pre><code class="language-sql">-- Query using Boolean operators to filter data
+SELECT
+    P.Patient_ID,
+    P.Patient_Name,
+    P.Age,
+    D.Diagnosis
+FROM
+    PATIENT_INFO AS P
+INNER JOIN
+    DIAGNOSTICS AS D ON P.Patient_ID = D.Patient_ID
+WHERE
+    (P.Age > 18) AND (D.Diagnosis LIKE '%Fever%' OR D.Diagnosis LIKE '%Cough%');</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> The first query targets older female patients, the second includes younger patients or those with O- blood type, and the third excludes males while focusing on a specific age range. Parentheses can enhance clarity in complex conditions.</p>
-                <p><strong>Expanded Example (Sales Table):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>sale_id</th>
-                            <th>product</th>
-                            <th>quantity</th>
-                            <th>price</th>
-                            <th>category</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Laptop</td>
-                            <td>2</td>
-                            <td>800.00</td>
-                            <td>Electronics</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Mouse</td>
-                            <td>5</td>
-                            <td>20.00</td>
-                            <td>Accessories</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Keyboard</td>
-                            <td>3</td>
-                            <td>50.00</td>
-                            <td>Accessories</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Monitor</td>
-                            <td>1</td>
-                            <td>300.00</td>
-                            <td>Electronics</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- High-value electronics sales
-SELECT product, quantity, price
-FROM Sales
-WHERE category = 'Electronics' AND (quantity * price) > 500;
-
--- Non-accessory sales with price < 100 or quantity > 3
-SELECT product, category, (quantity * price) AS TotalCost
-FROM Sales
-WHERE NOT category = 'Accessories' OR quantity > 3;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> The first query identifies high-value electronics sales, using a derived column in the condition. The second excludes accessories or includes high-quantity sales, useful for inventory analysis.</p>
-
-                <!-- NULL Handling in SQL -->
-                <h3 class="h4 fw-bold mb-3">NULL Handling in SQL</h3>
-                <p>NULL represents missing or unknown data in SQL. It requires special handling because it doesn't behave like other values (e.g., <code>NULL = NULL</code> is false). Key functions include <code>IS NULL</code>, <code>COALESCE</code>, and <code>NULLIF</code>.</p>
-                <ul>
-                    <li><strong>IS NULL:</strong> Tests if a column is NULL (e.g., <code>WHERE blood_type IS NULL</code>).</li>
-                    <li><strong>COALESCE:</strong> Returns the first non-NULL value from a list of arguments (e.g., <code>COALESCE(blood_type, 'Unknown')</code>).</li>
-                    <li><strong>NULLIF:</strong> Converts a specified value to NULL (e.g., <code>NULLIF(diagnosis, 'Unknown')</code>).</li>
-                </ul>
-                <p><strong>Sample Data (ADMISSIONS Table):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>hadm_id</th>
-                            <th>subject_id</th>
-                            <th>admit_time</th>
-                            <th>discharge_time</th>
-                            <th>diagnosis</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>101</td>
-                            <td>1001</td>
-                            <td>2025-01-10 08:00:00</td>
-                            <td>2025-01-15 12:00:00</td>
-                            <td>Pneumonia</td>
-                        </tr>
-                        <tr>
-                            <td>102</td>
-                            <td>1002</td>
-                            <td>2025-02-01 14:00:00</td>
-                            <td>NULL</td>
-                            <td>Fracture</td>
-                        </tr>
-                        <tr>
-                            <td>103</td>
-                            <td>1001</td>
-                            <td>2025-03-05 10:00:00</td>
-                            <td>2025-03-12 15:00:00</td>
-                            <td>Unknown</td>
-                        </tr>
-                        <tr>
-                            <td>104</td>
-                            <td>1003</td>
-                            <td>2025-04-10 07:00:00</td>
-                            <td>NULL</td>
-                            <td>Flu</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Find admissions with no discharge time
-SELECT hadm_id, subject_id
-FROM ADMISSIONS
-WHERE discharge_time IS NULL;
-
--- Replace NULL discharge time with 'Ongoing'
-SELECT hadm_id, COALESCE(discharge_time::TEXT, 'Ongoing') AS DischargeStatus
-FROM ADMISSIONS;
-
--- Convert 'Unknown' diagnosis to NULL
-SELECT hadm_id, NULLIF(diagnosis, 'Unknown') AS CleanDiagnosis
-FROM ADMISSIONS;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> <code>IS NULL</code> identifies ongoing hospital stays. <code>COALESCE</code> provides a default for NULLs, improving readability. <code>NULLIF</code> cleans ambiguous data by converting 'Unknown' to NULL.</p>
-                <p><strong>Expanded Example (Employees Table):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>emp_id</th>
-                            <th>name</th>
-                            <th>salary</th>
-                            <th>department</th>
-                            <th>phone</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>John Doe</td>
-                            <td>60000</td>
-                            <td>IT</td>
-                            <td>555-1234</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Jane Smith</td>
-                            <td>75000</td>
-                            <td>HR</td>
-                            <td>NULL</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Mike Johnson</td>
-                            <td>55000</td>
-                            <td>IT</td>
-                            <td>000-0000</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Employees with missing phone numbers
-SELECT name, department
-FROM Employees
-WHERE phone IS NULL;
-
--- Provide default phone number
-SELECT name, COALESCE(phone, 'Not Provided') AS ContactNumber
-FROM Employees;
-
--- Convert invalid phone '000-0000' to NULL
-SELECT name, NULLIF(phone, '000-0000') AS CleanPhone
-FROM Employees;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> These queries handle missing or invalid contact data, ensuring cleaner datasets for HR analysis.</p>
-
-                <!-- CASE Statements: Conditional Logic -->
-                <h3 class="h4 fw-bold mb-3">CASE Statements: Conditional Logic</h3>
-                <p><code>CASE</code> statements introduce if-then-else logic, allowing data transformation and categorization based on conditions.</p>
-                <ul>
-                    <li><strong>Simple CASE:</strong> Matches a column against values (e.g., categorize diagnosis).</li>
-                    <li><strong>Searched CASE:</strong> Uses conditions for flexibility (e.g., categorize by age range).</li>
-                    <li><strong>Use Cases:</strong> Create derived columns, flag records, or simplify complex logic.</li>
+            </section>
+            
+            <!-- The NULL Conundrum -->
+            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">4. The NULL Conundrum: Understanding Three-Valued Logic</h2>
+                <p class="text-gray-700 mb-4 text-justify">The presence of <strong><code>NULL</code></strong> values in a dataset is one of the most common and perplexing challenges in data preparation. A NULL value is not equivalent to a zero, an empty string, or a space; rather, it is a special marker that represents an absence of a value. It can signify that the data is either unknown or not applicable.</p>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">4.1. The Pitfall of Standard Comparisons and Three-Valued Logic</h3>
+                <p class="text-gray-700 mb-4 text-justify">Unlike many other programming languages, SQL operates on a three-valued logic (3VL) system, where conditions can evaluate to <strong>TRUE</strong>, <strong>FALSE</strong>, or <strong>UNKNOWN</strong>. Any standard comparison involving NULL—including <code>NULL = NULL</code> and <code>NULL <> NULL</code>—returns UNKNOWN, not a boolean TRUE or FALSE. This is because it is impossible to know for certain if two unknown values are the same or different. A <code>WHERE</code> clause will only return rows where the condition evaluates to TRUE, so any comparison that results in an UNKNOWN state will cause the row to be excluded from the result set.</p>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">4.2. The Solution: Explicit NULL Operators</h3>
+                <p class="text-gray-700 mb-4 text-justify">To properly handle the absence of data, SQL provides two dedicated operators: <strong><code>IS NULL</code></strong> and <strong><code>IS NOT NULL</code></strong>. These operators bypass the standard comparison logic and explicitly test for the presence or absence of a NULL value, returning a definitive TRUE or FALSE result. For example, the correct way to find patients who have no email on file is to use <code>WHERE Email_Address IS NULL</code>.</p>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">4.3. Expert Strategies for Handling NULLs</h3>
+                <p class="text-gray-700 mb-4 text-justify">Beyond simple checks, modern SQL provides several powerful functions for managing NULL values:</p>
+                <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
+                    <li><strong><code>COALESCE</code></strong>: This is an ANSI-standard function that returns the first non-null expression from a list of arguments. It is highly portable and flexible, perfect for providing a default value when data is missing.</li>
+                    <li><strong><code>NULLIF</code></strong>: This function returns a NULL value if its two arguments are equal; otherwise, it returns the first argument. A practical use case for <code>NULLIF</code> is to prevent division-by-zero errors or to clean up ambiguous values like empty strings (<code>''</code>).</li>
                 </ul>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Categorize patients by age group
-SELECT
-    name,
-    age,
-    CASE
-        WHEN age < 30 THEN 'Young Adult'
-        WHEN age BETWEEN 30 AND 50 THEN 'Adult'
-        WHEN age > 50 THEN 'Senior'
-        ELSE 'Unknown'
-    END AS AgeGroup
-FROM PATIENTS;
+                    <button class="copy-btn">Copy</button>
+                    <pre><code class="language-sql">-- Find all patients with no email address on file
+SELECT Patient_ID, Patient_Name
+FROM PATIENT_INFO
+WHERE Email_Address IS NULL;
 
--- Flag high-risk diagnoses
+-- Create a preferred contact column, providing a fallback
 SELECT
-    hadm_id,
-    diagnosis,
-    CASE diagnosis
-        WHEN 'Pneumonia' THEN 'High Risk'
-        WHEN 'Flu' THEN 'Moderate Risk'
-        ELSE 'Low Risk'
-    END AS RiskLevel
-FROM ADMISSIONS;</code></pre>
+    Patient_ID,
+    COALESCE(Email_Address, Mobile_Phone, Home_Phone, 'No Contact Provided') AS Preferred_Contact
+FROM PATIENT_INFO;</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> The first query categorizes patients into age groups for demographic analysis. The second flags diagnoses by risk, aiding clinical prioritization.</p>
-                <p><strong>Expanded Example (Sales Analysis):</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Categorize sales by value
-SELECT
-    product,
-    (quantity * price) AS TotalCost,
-    CASE
-        WHEN (quantity * price) > 1000 THEN 'High Value'
-        WHEN (quantity * price) BETWEEN 100 AND 1000 THEN 'Medium Value'
-        ELSE 'Low Value'
-    END AS SaleCategory
-FROM Sales;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This categorizes sales for marketing strategies, identifying high-value transactions.</p>
+            </section>
 
-                <!-- Combining SQL Logic -->
-                <h3 class="h4 fw-bold mb-3">Combining Boolean Logic, NULL Handling, and CASE</h3>
-                <p>Combining these tools creates powerful queries for complex data preparation.</p>
+            <!-- Conditional Transformation with CASE -->
+            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">5. Conditional Transformation with CASE Statements</h2>
+                <p class="text-gray-700 mb-4 text-justify">While Boolean logic and NULL functions are used to filter and handle data, <strong><code>CASE</code> statements</strong> are the primary tool for transforming data based on conditional logic. They enable data professionals to create new, derived columns that categorize, standardize, and enrich a dataset.</p>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">5.1. Dynamic Categorization and Data Enrichment</h3>
+                <p class="text-gray-700 mb-4 text-justify">A primary application of a CASE statement is to create a new, derived column that categorizes data based on a defined set of business rules. This process transforms raw, granular data into more meaningful and aggregated categories that are more suitable for high-level reporting and analysis. For example, a hospital's billing department might need to categorize patients' final bill amounts into different tiers.</p>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Complex query: Flag patients with missing discharge or high-risk conditions
+                    <button class="copy-btn">Copy</button>
+                    <pre><code class="language-sql">-- Categorize patient billing into tiers
 SELECT
-    subject_id,
-    diagnosis,
-    COALESCE(discharge_time::TEXT, 'Ongoing') AS DischargeStatus,
+    Patient_ID,
+    Bill_Amount,
     CASE
-        WHEN diagnosis = 'Pneumonia' AND age > 50 THEN 'Critical'
-        WHEN discharge_time IS NULL THEN 'Under Review'
-        ELSE 'Standard'
-    END AS PatientStatus
-FROM ADMISSIONS
-JOIN PATIENTS ON ADMISSIONS.subject_id = PATIENTS.subject_id
-WHERE age > 40 OR diagnosis IN ('Pneumonia', 'Flu');</code></pre>
+        WHEN Bill_Amount >= 10000 THEN 'High-Value'
+        WHEN Bill_Amount BETWEEN 5000 AND 10000 THEN 'Standard'
+        ELSE 'Low-Value'
+    END AS Billing_Tier
+FROM PATIENT_BILLING;</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> This joins tables, handles NULLs with <code>COALESCE</code>, filters with Boolean logic, and categorizes with <code>CASE</code> for patient monitoring.</p>
-                <p><strong>Expanded Example (Employee Bonuses):</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Flag employees for bonus eligibility
-SELECT
-    name,
-    department,
-    salary,
-    COALESCE(phone, 'Not Provided') AS Contact,
-    CASE
-        WHEN salary > 70000 AND department = 'IT' THEN 'Eligible'
-        WHEN phone IS NULL THEN 'Contact Missing'
-        ELSE 'Not Eligible'
-    END AS BonusStatus
-FROM Employees
-WHERE department IN ('IT', 'HR') AND salary > 50000;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Identifies bonus-eligible employees based on salary and department, handling missing contact info.</p>
+            </section>
 
-                <!-- Running Queries in Microsoft Fabric -->
-                <h3 class="h4 fw-bold mb-3">Running Queries in Microsoft Fabric Lakehouse</h3>
-                <p>Microsoft Fabric supports complex SQL logic in its Lakehouse environment, enabling scalable processing of large datasets.</p>
+            <!-- Case Study -->
+            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">6. Case Study: Preparing Hospital Data</h2>
+                <p class="text-gray-700 mb-4 text-justify">This section unifies the concepts of Boolean logic, NULL handling, and CASE statements in a single, practical case study using the Greensboro hospital data. The following queries demonstrate how to apply these concepts to solve real-world healthcare data problems.</p>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Query 1: Identifying High-Risk Patients with Missing Info</h3>
+                <p class="text-gray-700 mb-4 text-justify">Problem: The patient outreach team needs to identify patients who have a high-risk diagnosis (Diabetes or Kidney Disease) and have no email address on file. The query must use Boolean logic to combine the diagnostic conditions and <code>IS NULL</code> to check for the absence of an email address.</p>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Categorize survey responses in Fabric
+                    <button class="copy-btn">Copy</button>
+                    <pre><code class="language-sql">-- Query to find high-risk patients with no email contact
 SELECT
-    respondent_id,
-    satisfaction_score,
-    CASE
-        WHEN satisfaction_score >= 4 THEN 'Positive'
-        WHEN satisfaction_score IS NULL THEN 'Missing'
-        ELSE 'Negative'
-    END AS FeedbackType
-FROM survey_lakehouse.Responses
-WHERE response_date >= '2025-01-01' AND (city = 'Greensboro' OR satisfaction_score IS NULL);</code></pre>
+    P.Patient_ID,
+    P.Patient_Name,
+    D.Diagnosis,
+    P.Email_Address
+FROM
+    PATIENT_INFO AS P
+INNER JOIN
+    DIAGNOSTICS AS D ON P.Patient_ID = D.Patient_ID
+WHERE
+    (D.Diagnosis = 'Diabetes' OR D.Diagnosis = 'Kidney Disease')
+    AND P.Email_Address IS NULL;</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> Categorizes recent survey feedback, handling NULL scores and focusing on Greensboro responses.</p>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mt-6 mb-4">Query 2: Standardizing and Augmenting Patient Information</h3>
+                <p class="text-gray-700 mb-4 text-justify">Problem: The billing department needs a standardized view of patient data to ensure every record has a valid contact method and a simplified billing tier. They require a new `Billing_Tier` column and a `Primary_Contact` column.</p>
+                <div class="code-block">
+                    <button class="copy-btn">Copy</button>
+                    <pre><code class="language-sql">-- Query to standardize patient data for billing
+SELECT
+    P.Patient_ID,
+    P.Patient_Name,
+    B.Bill_Amount,
+    COALESCE(P.Email_Address, P.Mobile_Phone, 'No Contact Info Provided') AS Primary_Contact,
+    CASE
+        WHEN B.Bill_Amount > 10000 THEN 'High-Value'
+        WHEN B.Bill_Amount BETWEEN 5000 AND 10000 THEN 'Standard'
+        ELSE 'Low-Value'
+    END AS Billing_Tier
+FROM
+    PATIENT_INFO AS P
+LEFT JOIN
+    PATIENT_BILLING AS B ON P.Patient_ID = B.Patient_ID;</code></pre>
+                </div>
+            </section>
 
-                <!-- Assessments -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Assessments</h2>
-                <ol>
-                    <li><strong>Conceptual Question:</strong> Explain why <code>NULL = NULL</code> is false in SQL, and how <code>IS NULL</code> and <code>COALESCE</code> address this.</li>
-                    <li><strong>SQL Coding Task:</strong> Using the ADMISSIONS table, write a query to categorize admissions as 'Short Stay' (< 3 days), 'Medium Stay' (3-7 days), or 'Long Stay' (> 7 days), excluding NULL discharge times.</li>
-                    <li><strong>Application Scenario:</strong> For a Greensboro retail store, query the Sales table to flag high-value sales (> $500) in Electronics, handling NULL categories with 'Unknown'.</li>
-                    <li><strong>Expanded Task:</strong> For a university database, query a Students table to categorize students by GPA (High: >3.5, Medium: 2.5-3.5, Low: <2.5), handling NULL GPAs, and filter for students in specific majors.</li>
+            <!-- Interactive SQL Sandbox -->
+            <section class="bg-gray-800 p-6 sm:p-8 rounded-xl shadow-lg text-white">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-100 border-b-2 border-gray-600 pb-4 mb-6">Interactive SQL Sandbox</h2>
+                <p class="text-gray-300 mb-4 text-justify">Practice your queries with our sample datasets! Type your SQL below and click 'Run Query' to see the results. The sample tables are: <code>PATIENT_INFO</code>, <code>DIAGNOSTICS</code>, and <code>PATIENT_BILLING</code>.</p>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-1">
+                        <textarea id="sql-editor" class="w-full h-48 bg-gray-900 text-gray-50 border border-gray-700 rounded-lg p-4 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Type your SQL query here..."></textarea>
+                        <button id="run-btn" class="mt-4 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors">Run Query</button>
+                    </div>
+                    <div class="flex-1">
+                        <div id="results" class="bg-gray-900 text-gray-50 border border-gray-700 rounded-lg p-4 h-full overflow-auto">
+                            <p id="results-message">Results will appear here...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">Assessments</h2>
+                <ol class="space-y-6 text-gray-700">
+                    <li><strong>Conceptual Question:</strong> Explain the difference between <code>NULL</code> and an empty string (<code>''</code>) in SQL, and how to handle both.</li>
+                    <li><strong>SQL Coding Task:</strong> Using the <code>ADMISSIONS</code> table, write a query that calculates the length of stay in days for each admission. The query should use a <code>CASE</code> statement to categorize the stay as 'Short' (< 5 days), 'Medium' (5-10 days), or 'Long' (> 10 days). You must also exclude any admissions without a discharge date.</li>
+                    <li><strong>Application Scenario:</strong> A hospital administrator wants a report on admissions from the past 30 days that have a 'Pneumonia' or 'Flu' diagnosis. The report should show the patient's name and age, and categorize the diagnosis into a 'High-Risk Respiratory' or 'Other' group.</li>
                 </ol>
-            </div>
-        </section>
+                <div class="mt-6">
+                    <button id="toggle-solutions-btn" class="px-6 py-3 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-800 transition-colors">Show Assessment Solutions</button>
+                    <div id="solutions-container" class="mt-6 space-y-6 hidden">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Solution for Question 1</h3>
+                            <p class="text-gray-700 text-justify">A <strong><code>NULL</code></strong> is a marker for missing or unknown data, while an <strong>empty string</strong> (<code>''</code>) is an actual value that represents a zero-length string. They are not the same. You test for <code>NULL</code> using <code>IS NULL</code>, and for an empty string using a standard equality check like <code>= ''</code>. A common practice is to use <code>NULLIF</code> to convert empty strings to <code>NULL</code> values, which can then be handled with other <code>NULL</code>-specific functions like <code>COALESCE</code>.</p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Solution for Question 2</h3>
+                            <div class="code-block">
+                                <button class="copy-btn">Copy</button>
+                                <pre><code class="language-sql">SELECT
+    Admission_ID,
+    JULIANDAY(Discharge_Date) - JULIANDAY(Admission_Date) AS Length_of_Stay,
+    CASE
+        WHEN JULIANDAY(Discharge_Date) - JULIANDAY(Admission_Date) < 5 THEN 'Short Stay'
+        WHEN JULIANDAY(Discharge_Date) - JULIANDAY(Admission_Date) BETWEEN 5 AND 10 THEN 'Medium Stay'
+        ELSE 'Long Stay'
+    END AS Stay_Category
+FROM ADMISSIONS
+WHERE Discharge_Date IS NOT NULL;</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Solution for Question 3</h3>
+                            <div class="code-block">
+                                <button class="copy-btn">Copy</button>
+                                <pre><code class="language-sql">SELECT
+    P.Patient_Name,
+    P.Age,
+    A.Diagnosis,
+    CASE
+        WHEN A.Diagnosis IN ('Pneumonia', 'Flu') THEN 'High-Risk Respiratory'
+        ELSE 'Other'
+    END AS Diagnosis_Category
+FROM ADMISSIONS AS A
+JOIN PATIENTS AS P ON A.Patient_ID = D.Patient_ID
+WHERE
+    A.Admission_Date BETWEEN DATE('now', '-30 days') AND DATE('now')
+    AND (A.Diagnosis = 'Pneumonia' OR A.Diagnosis = 'Flu');</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-light py-3 text-center">
-        <p class="text-muted mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
+    <footer class="bg-white py-6 text-center mt-8 shadow-inner">
+        <p class="text-gray-500 mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
     </footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <!-- Highlight.js Initialization -->
-    <script>hljs.highlightAll();</script>
-    <!-- Custom Copy Functionality -->
+    <!-- SQL.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
     <script>
+        // Copy functionality
         function copyCode(button) {
             const code = button.nextElementSibling.querySelector('code');
             navigator.clipboard.writeText(code.innerText).then(() => {
@@ -469,6 +418,141 @@ WHERE response_date >= '2025-01-01' AND (city = 'Greensboro' OR satisfaction_sco
                 setTimeout(() => { button.textContent = 'Copy'; }, 2000);
             });
         }
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', () => copyCode(button));
+        });
+
+        // Toggle visibility functionality
+        document.getElementById('toggle-tables-btn').addEventListener('click', function() {
+            const container = document.getElementById('sample-tables-container');
+            container.classList.toggle('hidden');
+            this.textContent = container.classList.contains('hidden') ? 'Show Sample Tables' : 'Hide Sample Tables';
+        });
+
+        document.getElementById('toggle-solutions-btn').addEventListener('click', function() {
+            const container = document.getElementById('solutions-container');
+            container.classList.toggle('hidden');
+            this.textContent = container.classList.contains('hidden') ? 'Show Assessment Solutions' : 'Hide Assessment Solutions';
+        });
+
+        document.getElementById('toggle-postgres-btn').addEventListener('click', function() {
+            const container = document.getElementById('postgres-container');
+            container.classList.toggle('hidden');
+            this.textContent = container.classList.contains('hidden') ? 'Show PostgreSQL DDL/DML' : 'Hide PostgreSQL DDL/DML';
+        });
+
+        // Initialize and run the SQL database
+        async function initializeDB() {
+            const sqlPromise = window.initSqlJs({
+                locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${file}`
+            });
+            const SQL = await sqlPromise;
+            const db = new SQL.Database();
+
+            // Create and populate new tables
+            db.exec(`
+                -- Patient_Info table
+                CREATE TABLE PATIENT_INFO (Patient_ID INT, Patient_Name TEXT, Age INT, Email_Address TEXT, Mobile_Phone TEXT, Home_Phone TEXT);
+                INSERT INTO PATIENT_INFO (Patient_ID, Patient_Name, Age, Email_Address, Mobile_Phone, Home_Phone) VALUES
+                (101, 'John Doe', 65, 'john.doe@email.com', '336-555-0101', NULL),
+                (102, 'Jane Smith', 32, 'jane.smith@email.com', '336-555-0102', NULL),
+                (103, 'Robert Lee', 48, NULL, NULL, '336-555-0103'),
+                (104, 'Lisa Ray', 71, NULL, NULL, '336-555-0104'),
+                (105, 'Peter Chen', 25, 'peter.chen@email.com', '336-555-0105', NULL),
+                (106, 'Susan Gray', 58, 'susan.gray@email.com', NULL, NULL);
+
+                -- Diagnostics table
+                CREATE TABLE DIAGNOSTICS (Patient_ID INT, Diagnosis TEXT);
+                INSERT INTO DIAGNOSTICS (Patient_ID, Diagnosis) VALUES
+                (101, 'Pneumonia'),
+                (102, 'Fever'),
+                (103, 'Kidney Disease'),
+                (104, 'Diabetes'),
+                (105, 'Sprained Ankle'),
+                (106, 'Kidney Disease');
+
+                -- Patient_Billing table
+                CREATE TABLE PATIENT_BILLING (Patient_ID INT, Bill_Amount INT);
+                INSERT INTO PATIENT_BILLING (Patient_ID, Bill_Amount) VALUES
+                (101, 12000),
+                (102, 7500),
+                (103, NULL);
+
+                -- Re-creating ADMISSIONS and PATIENTS for assessment questions
+                CREATE TABLE PATIENTS (Patient_ID INTEGER, Patient_Name TEXT, Age INTEGER, Email_Address TEXT);
+                INSERT INTO PATIENTS VALUES
+                (101, 'John Doe', 65, 'john.doe@email.com'),
+                (102, 'Jane Smith', 32, 'jane.smith@email.com'),
+                (103, 'Robert Lee', 48, NULL),
+                (104, 'Lisa Ray', 71, NULL),
+                (105, 'Peter Chen', 25, 'peter.chen@email.com');
+
+                CREATE TABLE ADMISSIONS (Admission_ID INTEGER, Patient_ID INTEGER, Admission_Date TEXT, Discharge_Date TEXT, Diagnosis TEXT);
+                INSERT INTO ADMISSIONS VALUES
+                (201, 101, '2024-01-10', '2024-01-15', 'Pneumonia'),
+                (202, 102, '2024-02-01', NULL, 'Fracture'),
+                (203, 103, '2024-03-05', '2024-03-12', 'Unknown'),
+                (204, 104, '2024-04-10', NULL, 'Flu'),
+                (205, 101, '2024-04-20', '2024-04-22', 'Flu');
+            `);
+
+            const runBtn = document.getElementById('run-btn');
+            const editor = document.getElementById('sql-editor');
+            const resultsDiv = document.getElementById('results');
+
+            runBtn.addEventListener('click', () => {
+                const query = editor.value;
+                if (!query) {
+                    resultsDiv.innerHTML = '<p class="text-gray-400">Please enter a query.</p>';
+                    return;
+                }
+                
+                try {
+                    const res = db.exec(query);
+                    if (res.length === 0) {
+                        resultsDiv.innerHTML = '<p class="text-gray-400">Query executed successfully, no results returned.</p>';
+                        return;
+                    }
+
+                    const table = document.createElement('table');
+                    table.className = 'w-full text-sm text-left text-gray-500 rounded-lg overflow-hidden';
+                    const thead = table.createTHead();
+                    const tbody = table.createTBody();
+
+                    // Create table header
+                    const headerRow = thead.insertRow();
+                    res[0].columns.forEach(col => {
+                        const th = document.createElement('th');
+                        th.textContent = col;
+                        th.className = 'px-4 py-2 font-bold bg-gray-700 text-gray-50';
+                        headerRow.appendChild(th);
+                    });
+
+                    // Create table body
+                    res[0].values.forEach(row => {
+                        const tr = tbody.insertRow();
+                        row.forEach(cell => {
+                            const td = document.createElement('td');
+                            td.textContent = cell === null ? 'NULL' : cell;
+                            td.className = 'px-4 py-2 border-t border-gray-700';
+                            tr.appendChild(td);
+                        });
+                    });
+
+                    resultsDiv.innerHTML = '';
+                    resultsDiv.appendChild(table);
+
+                } catch (error) {
+                    resultsDiv.innerHTML = `<p class="text-red-400">Error: ${error.message}</p>`;
+                }
+            });
+
+            // Initial message
+            resultsDiv.innerHTML = '<p class="text-gray-400">Enter a query above to see the results. For example: <code>SELECT * FROM PATIENT_INFO;</code></p>';
+        }
+
+        initializeDB();
+        hljs.highlightAll();
     </script>
 </body>
 </html>
