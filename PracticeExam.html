@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostgreSQL Learning Lab - Practice Exam</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- CodeMirror for SQL editing -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/sql/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/sql-hint.min.js"></script>
+    
+    <!-- SQL.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+
+        /* Theme Variables */
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --section-bg: #1e293b;
+            --code-bg: #020617;
+            --border-color: #334155;
+            --header-color: #38bdf8;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --error-color: #f87171;
+            --success-color: #34d399;
+            --sample-color: #fbbf24;
+            --module1-color: #10b981;
+            --module2-color: #3b82f6;
+            --module3-color: #8b5cf6;
+            --module4-color: #f59e0b;
+            --module5-color: #ec4899;
+            --mcq-color: #8b5cf6;
+            --learning-color: #0ea5e9;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --text-color: #1e293b;
+            --section-bg: #ffffff;
+            --code-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --header-color: #1d4ed8;
+            --accent-color: #4f46e5;
+            --accent-hover: #4338ca;
+            --error-color: #dc2626;
+            --success-color: #10b981;
+            --sample-color: #d97706;
+            --module1-color: #059669;
+            --module2-color: #2563eb;
+            --module3-color: #7c3aed;
+            --module4-color: #d97706;
+            --module5-color: #db2777;
+            --mcq-color: #7c3aed;
+            --learning-color: #0284c7;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1, h2 {
+            color: var(--header-color);
+        }
+
+        .section-card {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-learning {
+            background-color: var(--learning-color);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-learning:hover {
+            background-color: #0284c7;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--section-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+        }
+        .btn-secondary:hover {
+            background-color: var(--border-color);
+        }
+
+        /* SQL Editor Styling */
+        .sql-editor {
+            width: 100%;
+            height: 150px;
+            background-color: var(--code-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Output area */
+        .output-area {
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            color: var(--text-color);
+            padding: 0.75rem;
+            margin-top: 12px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+        }
+
+        .text-red-400 {
+            color: var(--error-color);
+        }
+        
+        .text-green-400 {
+            color: var(--success-color);
+        }
+        
+        .text-yellow-400 {
+            color: var(--sample-color);
+        }
+        
+        .text-blue-400 {
+            color: var(--learning-color);
+        }
+        
+        .question-number {
+            background-color: var(--learning-color);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+        
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .copy-success {
+            color: var(--success-color);
+            font-weight: bold;
+            display: none;
+        }
+        
+        .code-container {
+            margin-top: 16px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .sample-solution {
+            background-color: var(--code-bg);
+            border: 1px solid var(--sample-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 12px;
+            position: relative;
+        }
+
+        .sample-header {
+            color: var(--sample-color);
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-solution {
+            background: none;
+            border: none;
+            color: var(--sample-color);
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: auto;
+        }
+
+        .solution-content {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .module-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 12px;
+        }
+
+        .module-1 { background-color: var(--module1-color); color: white; }
+        .module-2 { background-color: var(--module2-color); color: white; }
+        .module-3 { background-color: var(--module3-color); color: white; }
+        .module-4 { background-color: var(--module4-color); color: white; }
+        .module-5 { background-color: var(--module5-color); color: white; }
+        .learning-tag { background-color: var(--learning-color); color: white; }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border-color);
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--module1-color), var(--module2-color), var(--module3-color), var(--module4-color), var(--module5-color));
+            transition: width 0.3s ease;
+        }
+
+        .module-section {
+            border-left: 4px solid;
+            padding-left: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .learning-section { border-color: var(--learning-color); }
+
+        .database-schema {
+            background-color: var(--code-bg);
+            border: 1px solid var(--learning-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+        }
+
+        .schema-header {
+            color: var(--learning-color);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-structure {
+            margin-bottom: 1rem;
+        }
+
+        .CodeMirror {
+            height: 150px;
+            border-radius: 0.5rem;
+            margin-top: 12px;
+        }
+
+        /* SQL Engine Status */
+        .sql-engine-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .status-ready {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-loading {
+            background-color: var(--sample-color);
+            color: black;
+        }
+
+        .status-error {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        /* Results Table */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+        }
+
+        .results-table th {
+            background-color: var(--border-color);
+            padding: 6px 8px;
+            text-align: left;
+            border: 1px solid var(--border-color);
+            font-weight: bold;
+        }
+
+        .results-table td {
+            padding: 6px 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .results-table tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        [data-theme="light"] .results-table tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        .query-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .query-success {
+            color: var(--success-color);
+        }
+
+        .query-error {
+            color: var(--error-color);
+        }
+
+        .learning-tip {
+            background-color: var(--learning-color);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+
+        .hint-box {
+            background-color: var(--code-bg);
+            border: 1px solid var(--learning-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .hint-header {
+            color: var(--learning-color);
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* MCQ Styling */
+        .mcq-container {
+            margin: 1rem 0;
+            padding: 1rem;
+            border: 1px solid var(--mcq-color);
+            border-radius: 0.5rem;
+            background-color: var(--section-bg);
+        }
+        
+        .mcq-question {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: var(--mcq-color);
+        }
+        
+        .mcq-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .mcq-option {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .mcq-option:hover {
+            background-color: var(--border-color);
+        }
+        
+        .mcq-option.selected {
+            background-color: var(--mcq-color);
+            color: white;
+        }
+        
+        .mcq-option input {
+            margin-right: 0.5rem;
+        }
+        
+        .mcq-feedback {
+            margin-top: 1rem;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            display: none;
+        }
+        
+        .mcq-correct {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .mcq-incorrect {
+            background-color: var(--error-color);
+            color: white;
+        }
+        
+        /* Timer Styling */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            z-index: 1000;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .timer-warning {
+            color: var(--sample-color);
+        }
+        
+        .timer-critical {
+            color: var(--error-color);
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        /* Copy All Answers Button */
+        .copy-all-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .copy-all-btn {
+            background-color: var(--success-color);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+        
+        .copy-all-btn:hover {
+            background-color: #059669;
+        }
+        
+        /* Exam Controls */
+        .exam-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: var(--section-bg);
+            border-radius: 0.5rem;
+        }
+        
+        .exam-info {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .exam-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .exam-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .exam-stat-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+    
+    <!-- SQL Engine Status -->
+    <div id="sql-engine-status" class="sql-engine-status status-loading">
+        Loading SQL Engine...
+    </div>
+    
+    <!-- Timer -->
+    <div id="timer-container" class="timer-container">
+        <span>⏱️</span>
+        <span id="timer-display">60:00</span>
+    </div>
+    
+    <!-- Copy All Answers Button -->
+    <div class="copy-all-container">
+        <button id="copy-all-btn" class="copy-all-btn">
+            <span>📋</span>
+            <span>Copy All Answers</span>
+        </button>
+    </div>
+    
+    <div class="max-w-6xl mx-auto">
+        <!-- HEADER -->
+        <header class="flex justify-between items-center mb-6 pb-4 border-b border-border-color">
+            <div>
+                <h1 class="text-3xl font-extrabold">PostgreSQL Learning Lab</h1>
+                <p class="text-lg text-gray-400">Practice Exam - Basic SQL Concepts</p>
+                <p class="text-sm text-green-400 mt-1">✓ Real SQL Engine Active (SQL.js)</p>
+                <p class="text-sm text-blue-400 mt-1">🎯 Simple Questions for Beginners</p>
+            </div>
+            <button id="theme-toggle" class="btn-secondary px-4 py-2 rounded-lg font-semibold shadow-md transition-colors">
+                <!-- Text set by JavaScript -->
+            </button>
+        </header>
+
+        <!-- Exam Controls -->
+        <div class="exam-controls">
+            <div class="exam-info">
+                <div class="exam-stat">
+                    <div id="completed-count" class="exam-stat-value">0</div>
+                    <div class="exam-stat-label">Completed</div>
+                </div>
+                <div class="exam-stat">
+                    <div id="total-questions" class="exam-stat-value">10</div>
+                    <div class="exam-stat-label">Total Questions</div>
+                </div>
+                <div class="exam-stat">
+                    <div id="score-display" class="exam-stat-value">0%</div>
+                    <div class="exam-stat-label">Score</div>
+                </div>
+            </div>
+            <div>
+                <button id="submit-exam" class="btn-primary px-4 py-2 rounded-lg font-semibold text-white">
+                    Submit Exam
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div id="main-content">
+            <div class="instructions mb-8 p-4 section-card rounded-xl">
+                <h2 class="text-xl font-bold mb-2">Welcome to PostgreSQL Learning Lab! 🎓</h2>
+                <p class="mb-2">This practice exam covers <strong>basic SQL concepts</strong> across 5 modules suitable for beginners.</p>
+                <p class="mb-2"><span class="text-blue-400 font-bold">Learning Features:</span> Hints, sample solutions, and unlimited attempts!</p>
+                <p class="mb-2"><span class="text-green-400 font-bold">Real SQL Engine:</span> Test your queries instantly in the browser.</p>
+                <p class="mb-2"><span class="text-purple-400 font-bold">Exam Mode:</span> Timer, MCQs, and score tracking!</p>
+                <p>Practice at your own pace and build your SQL skills step by step.</p>
+                
+                <div class="learning-tip mt-4">
+                    💡 <strong>Pro Tip:</strong> Try solving each problem yourself first, then use hints if needed. 
+                    The sample solutions show different approaches to solving the same problem.
+                </div>
+            </div>
+
+            <!-- Quick Test Area -->
+            <div class="section-card p-4 rounded-xl mb-8">
+                <h2 class="text-xl font-bold mb-4">🧪 Database Explorer</h2>
+                <p class="mb-4">Explore the sample database structure and test any SQL query:</p>
+                
+                <div class="code-container">
+                    <textarea id="editor-test" class="sql-editor" placeholder="-- Try: SELECT * FROM students LIMIT 3;">SELECT * FROM students LIMIT 3;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button id="run-test" class="btn-learning px-4 py-2 rounded-lg font-semibold text-white">
+                            Run Query
+                        </button>
+                        <button id="reset-db" class="px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors">
+                            Reset Database
+                        </button>
+                    </div>
+
+                    <div id="output-test" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database Schema Reference -->
+            <div class="database-schema mb-8">
+                <div class="schema-header">📚 Sample Database Schema</div>
+                <div class="table-structure">
+                    <strong>students</strong> (student_id INT, first_name VARCHAR(50), last_name VARCHAR(50), email VARCHAR(100), enrollment_date DATE, major VARCHAR(50))
+                </div>
+                <div class="table-structure">
+                    <strong>courses</strong> (course_id INT, course_name VARCHAR(100), instructor VARCHAR(50), credits INT, department VARCHAR(50))
+                </div>
+                <div class="table-structure">
+                    <strong>enrollments</strong> (enrollment_id INT, student_id INT, course_id INT, enrollment_date DATE, grade VARCHAR(2))
+                </div>
+                <div class="table-structure">
+                    <strong>departments</strong> (department_id INT, department_name VARCHAR(50), head VARCHAR(50), building VARCHAR(50))
+                </div>
+            </div>
+
+            <!-- MCQ Questions Section -->
+            <div class="module-section learning-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--learning-color)">Multiple Choice Questions</h2>
+                
+                <!-- MCQ Question 1 -->
+                <section class="mcq-container">
+                    <div class="question-header">
+                        <div class="question-number">M1</div>
+                        <h2 class="text-xl font-bold">SQL Fundamentals</h2>
+                        <span class="module-tag learning-tag">MCQ</span>
+                    </div>
+                    <div class="mcq-question">
+                        Which SQL statement is used to retrieve data from a database?
+                    </div>
+                    <div class="mcq-options">
+                        <div class="mcq-option" data-option="A">
+                            <input type="radio" name="mcq1" id="mcq1a" value="A">
+                            <label for="mcq1a">GET</label>
+                        </div>
+                        <div class="mcq-option" data-option="B">
+                            <input type="radio" name="mcq1" id="mcq1b" value="B">
+                            <label for="mcq1b">SELECT</label>
+                        </div>
+                        <div class="mcq-option" data-option="C">
+                            <input type="radio" name="mcq1" id="mcq1c" value="C">
+                            <label for="mcq1c">EXTRACT</label>
+                        </div>
+                        <div class="mcq-option" data-option="D">
+                            <input type="radio" name="mcq1" id="mcq1d" value="D">
+                            <label for="mcq1d">OPEN</label>
+                        </div>
+                    </div>
+                    <div id="mcq1-feedback" class="mcq-feedback">
+                        <!-- Feedback will be inserted here -->
+                    </div>
+                </section>
+
+                <!-- MCQ Question 2 -->
+                <section class="mcq-container">
+                    <div class="question-header">
+                        <div class="question-number">M2</div>
+                        <h2 class="text-xl font-bold">Database Concepts</h2>
+                        <span class="module-tag learning-tag">MCQ</span>
+                    </div>
+                    <div class="mcq-question">
+                        What is the purpose of a PRIMARY KEY in a database table?
+                    </div>
+                    <div class="mcq-options">
+                        <div class="mcq-option" data-option="A">
+                            <input type="radio" name="mcq2" id="mcq2a" value="A">
+                            <label for="mcq2a">To make the table load faster</label>
+                        </div>
+                        <div class="mcq-option" data-option="B">
+                            <input type="radio" name="mcq2" id="mcq2b" value="B">
+                            <label for="mcq2b">To uniquely identify each record</label>
+                        </div>
+                        <div class="mcq-option" data-option="C">
+                            <input type="radio" name="mcq2" id="mcq2c" value="C">
+                            <label for="mcq2c">To store large amounts of text</label>
+                        </div>
+                        <div class="mcq-option" data-option="D">
+                            <input type="radio" name="mcq2" id="mcq2d" value="D">
+                            <label for="mcq2d">To create relationships between tables</label>
+                        </div>
+                    </div>
+                    <div id="mcq2-feedback" class="mcq-feedback">
+                        <!-- Feedback will be inserted here -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- MODULE 1: Data Intro -->
+            <div class="module-section" style="border-color: var(--module1-color);">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--module1-color)">Module 1: Data Introduction</h2>
+                
+                <!-- Question 1 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">1</div>
+                        <h2 class="text-xl font-bold">Basic Data Retrieval</h2>
+                        <span class="module-tag module-1">Data Intro</span>
+                    </div>
+                    <p class="mb-4">Retrieve all columns for all students in the database.</p>
+                    
+                    <div class="hint-box">
+                        <div class="hint-header">
+                            💡 Hint
+                            <button class="toggle-solution" data-section="hint1">Show Hint</button>
+                        </div>
+                        <div id="hint1" class="solution-content hidden">
+                            Use SELECT * to get all columns from the students table.
+                        </div>
+                    </div>
+                    
+                    <div class="code-container">
+                        <textarea id="editor1" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-learning px-4 py-2 rounded-lg font-semibold text-white" data-section="1">
+                                Test Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="1">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output1" class="output-area">
+                            Query results will appear here...
+                        </div>
+
+                        <!-- Sample Solution -->
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>Sample Solution</span>
+                                <button class="toggle-solution" data-section="1">Show Solution</button>
+                            </div>
+                            <div id="solution1" class="solution-content hidden">
+SELECT * FROM students;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Question 2 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">2</div>
+                        <h2 class="text-xl font-bold">Specific Column Selection</h2>
+                        <span class="module-tag module-1">Data Intro</span>
+                    </div>
+                    <p class="mb-4">Show only the first names and last names of all students.</p>
+                    
+                    <div class="hint-box">
+                        <div class="hint-header">
+                            💡 Hint
+                            <button class="toggle-solution" data-section="hint2">Show Hint</button>
+                        </div>
+                        <div id="hint2" class="solution-content hidden">
+                            List the specific column names after SELECT instead of using *.
+                        </div>
+                    </div>
+                    
+                    <div class="code-container">
+                        <textarea id="editor2" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-learning px-4 py-2 rounded-lg font-semibold text-white" data-section="2">
+                                Test Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="2">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output2" class="output-area">
+                            Query results will appear here...
+                        </div>
+
+                        <!-- Sample Solution -->
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>Sample Solution</span>
+                                <button class="toggle-solution" data-section="2">Show Solution</button>
+                            </div>
+                            <div id="solution2" class="solution-content hidden">
+SELECT first_name, last_name FROM students;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- MODULE 2: DB Concepts -->
+            <div class="module-section" style="border-color: var(--module2-color);">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--module2-color)">Module 2: Database Concepts</h2>
+
+                <!-- Question 3 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">3</div>
+                        <h2 class="text-xl font-bold">Filtering Data</h2>
+                        <span class="module-tag module-2">DB Concepts</span>
+                    </div>
+                    <p class="mb-4">Find all students who are majoring in "Computer Science".</p>
+                    
+                    <div class="hint-box">
+                        <div class="hint-header">
+                            💡 Hint
+                            <button class="toggle-solution" data-section="hint3">Show Hint</button>
+                        </div>
+                        <div id="hint3" class="solution-content hidden">
+                            Use WHERE clause to filter rows based on a condition.
+                        </div>
+                    </div>
+                    
+                    <div class="code-container">
+                        <textarea id="editor3" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-learning px-4 py-2 rounded-lg font-semibold text-white" data-section="3">
+                                Test Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="3">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output3" class="output-area">
+                            Query results will appear here...
+                        </div>
+
+                        <!-- Sample Solution -->
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>Sample Solution</span>
+                                <button class="toggle-solution" data-section="3">Show Solution</button>
+                            </div>
+                            <div id="solution3" class="solution-content hidden">
+SELECT * FROM students WHERE major = 'Computer Science';
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Question 4 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">4</div>
+                        <h2 class="text-xl font-bold">Sorting Results</h2>
+                        <span class="module-tag module-2">DB Concepts</span>
+                    </div>
+                    <p class="mb-4">List all courses sorted by course name in alphabetical order.</p>
+                    
+                    <div class="hint-box">
+                        <div class="hint-header">
+                            💡 Hint
+                            <button class="toggle-solution" data-section="hint4">Show Hint</button>
+                        </div>
+                        <div id="hint4" class="solution-content hidden">
+                            Use ORDER BY clause to sort the results.
+                        </div>
+                    </div>
+                    
+                    <div class="code-container">
+                        <textarea id="editor4" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-learning px-4 py-2 rounded-lg font-semibold text-white" data-section="4">
+                                Test Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="4">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output4" class="output-area">
+                            Query results will appear here...
+                        </div>
+
+                        <!-- Sample Solution -->
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>Sample Solution</span>
+                                <button class="toggle-solution" data-section="4">Show Solution</button>
+                            </div>
+                            <div id="solution4" class="solution-content hidden">
+SELECT * FROM courses ORDER BY course_name;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- MODULE 3: DQL/DML -->
+            <div class="module-section" style="border-color: var(--module3-color);">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--module3-color)">Module 3: DQL/DML</h2>
+
+                <!-- Question 5 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">5</div>
+                        <h2 class="text-xl font-bold">Basic JOIN Operation</h2>
+                        <span class="module-tag module-3">DQL/DML</span>
+                    </div>
+                    <p class="mb-4">Show student names along with the courses they are enrolled in.</p>
+                    
+                    <div class="hint-box">
+                        <div class="hint-header">
+                            💡 Hint
+                            <button class="toggle-solution" data-section="hint5">Show Hint</button>
+                        </div>
+                        <div id="hint5" class="solution-content hidden">
+                            You need to JOIN students and enrollments tables, then JOIN with courses table.
+                        </div>
+                    </div>
+                    
+                    <div class="code-container">
+                        <textarea id="editor5" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-learning px-4 py-2 rounded-lg font-semibold text-white" data-section="5">
+                                Test Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="5">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output5" class="output-area">
+                            Query results will appear here...
+                        </div>
+
+                        <!-- Sample Solution -->
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>Sample Solution</span>
+                                <button class="toggle-solution" data-section="5">Show Solution</button>
+                            </div>
+                            <div id="solution5" class="solution-content hidden">
+SELECT s.first_name, s.last_name, c.course_name
+FROM students s
+JOIN enrollments e ON s.student_id = e.student_id
+JOIN courses c ON e.course_id = c.course_id;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Question 6 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">6</div>
+                        <h2 class="text-xl font-bold">Data Insertion</h2>
+                        <span class="module-tag module-3">DQL/DML</span>
+                    </div>
+                    <p class="mb-4">Add a new student to the database with the following details:<br>
+                    First Name: "Alex", Last Name: "Johnson", Email: "alex.j@university.edu", Major: "Mathematics"</p>
+                    
+                    <div class="hint-box">
+                        <div class="hint-header">
+                            💡 Hint
+                            <button class="toggle-solution" data-section="hint6">Show Hint</button>
+                        </div>
+                        <div id="hint6" class="solution-content hidden">
+                            Use INSERT INTO statement to add new records to a table.
+                        </div>
+                    </div>
+                    
+                    <div class="code-container">
+                        <textarea id="editor6" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-learning px-4 py-2 rounded-lg font-semibold text-white" data-section="6">
+                                Test Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="6">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output6" class="output-area">
+                            Query results will appear here...
+                        </div>
+
+                        <!-- Sample Solution -->
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>Sample Solution</span>
+                                <button class="toggle-solution" data-section="6">Show Solution</button>
+                            </div>
+                            <div id="solution6" class="solution-content hidden">
+INSERT INTO students (first_name, last_name, email, major)
+VALUES ('Alex', 'Johnson', 'alex.j@university.edu', 'Mathematics');
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- MODULE 4: Aggregations -->
+            <div class="module-section" style="border-color: var(--module4-color);">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--module4-color)">Module 4: Aggregations</h2>
+
+                <!-- Question 7 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">7</div>
+                        <h2 class="text-xl font-bold">Counting Records</h2>
+                        <span class="module-tag module-4">Aggregations</span>
+                    </div>
+                    <p class="mb-4">Count how many students are in the database.</p>
+                    
+                    <div class="hint-box">
+                        <div class="hint-header">
+                            💡 Hint
+                            <button class="toggle-solution" data-section="hint7">Show Hint</button>
+                        </div>
+                        <div id="hint7" class="solution-content hidden">
+                            Use COUNT() function to count the number of rows.
+                        </div>
+                    </div>
+                    
+                    <div class="code-container">
+                        <textarea id="editor7" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-learning px-4 py-2 rounded-lg font-semibold text-white" data-section="7">
+                                Test Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="7">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output7" class="output-area">
+                            Query results will appear here...
+                        </div>
+
+                        <!-- Sample Solution -->
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>Sample Solution</span>
+                                <button class="toggle-solution" data-section="7">Show Solution</button>
+                            </div>
+                            <div id="solution7" class="solution-content hidden">
+SELECT COUNT(*) FROM students;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Question 8 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">8</div>
+                        <h2 class="text-xl font-bold">Grouping Data</h2>
+                        <span class="module-tag module-4">Aggregations</span>
+                    </div>
+                    <p class="mb-4">Count how many students are in each major.</p>
+                    
+                    <div class="hint-box">
+                        <div class="hint-header">
+                            💡 Hint
+                            <button class="toggle-solution" data-section="hint8">Show Hint</button>
+                        </div>
+                        <div id="hint8" class="solution-content hidden">
+                            Use GROUP BY clause with COUNT() function.
+                        </div>
+                    </div>
+                    
+                    <div class="code-container">
+                        <textarea id="editor8" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-learning px-4 py-2 rounded-lg font-semibold text-white" data-section="8">
+                                Test Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="8">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output8" class="output-area">
+                            Query results will appear here...
+                        </div>
+
+                        <!-- Sample Solution -->
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>Sample Solution</span>
+                                <button class="toggle-solution" data-section="8">Show Solution</button>
+                            </div>
+                            <div id="solution8" class="solution-content hidden">
+SELECT major, COUNT(*) as student_count
+FROM students
+GROUP BY major;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- MODULE 5: SQL Logic -->
+            <div class="module-section" style="border-color: var(--module5-color);">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--module5-color)">Module 5: SQL Logic</h2>
+
+                <!-- Question 9 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">9</div>
+                        <h2 class="text-xl font-bold">Multiple Conditions</h2>
+                        <span class="module-tag module-5">SQL Logic</span>
+                    </div>
+                    <p class="mb-4">Find all students who are majoring in "Computer Science" OR "Mathematics".</p>
+                    
+                    <div class="hint-box">
+                        <div class="hint-header">
+                            💡 Hint
+                            <button class="toggle-solution" data-section="hint9">Show Hint</button>
+                        </div>
+                        <div id="hint9" class="solution-content hidden">
+                            Use OR operator in WHERE clause to check multiple conditions.
+                        </div>
+                    </div>
+                    
+                    <div class="code-container">
+                        <textarea id="editor9" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-learning px-4 py-2 rounded-lg font-semibold text-white" data-section="9">
+                                Test Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="9">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output9" class="output-area">
+                            Query results will appear here...
+                        </div>
+
+                        <!-- Sample Solution -->
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>Sample Solution</span>
+                                <button class="toggle-solution" data-section="9">Show Solution</button>
+                            </div>
+                            <div id="solution9" class="solution-content hidden">
+SELECT * FROM students
+WHERE major = 'Computer Science' OR major = 'Mathematics';
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Question 10 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">10</div>
+                        <h2 class="text-xl font-bold">Data Updates</h2>
+                        <span class="module-tag module-5">SQL Logic</span>
+                    </div>
+                    <p class="mb-4">Update the email of the student with student_id = 1 to "new.email@university.edu".</p>
+                    
+                    <div class="hint-box">
+                        <div class="hint-header">
+                            💡 Hint
+                            <button class="toggle-solution" data-section="hint10">Show Hint</button>
+                        </div>
+                        <div id="hint10" class="solution-content hidden">
+                            Use UPDATE statement to modify existing records.
+                        </div>
+                    </div>
+                    
+                    <div class="code-container">
+                        <textarea id="editor10" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-learning px-4 py-2 rounded-lg font-semibold text-white" data-section="10">
+                                Test Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="10">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output10" class="output-area">
+                            Query results will appear here...
+                        </div>
+
+                        <!-- Sample Solution -->
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>Sample Solution</span>
+                                <button class="toggle-solution" data-section="10">Show Solution</button>
+                            </div>
+                            <div id="solution10" class="solution-content hidden">
+UPDATE students
+SET email = 'new.email@university.edu'
+WHERE student_id = 1;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Global Variables ---
+        const TOTAL_QUESTIONS = 10; // 8 SQL + 2 MCQ
+        const EXAM_DURATION = 60 * 60; // 60 minutes in seconds
+        let completedQuestions = new Set();
+        let db = null;
+        let codeMirrorEditors = {};
+        let timerInterval = null;
+        let timeRemaining = EXAM_DURATION;
+        let mcqAnswers = {
+            'mcq1': 'B',
+            'mcq2': 'B'
+        };
+
+        // --- SQL.js Database Functions ---
+
+        // Initialize SQL.js database
+        async function initializeDatabase() {
+            try {
+                updateSQLStatus('Loading SQL Engine...', 'status-loading');
+                
+                const SQL = await initSqlJs({
+                    locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
+                });
+
+                db = new SQL.Database();
+                createSampleDatabase();
+                
+                updateSQLStatus('SQL Engine Ready', 'status-ready');
+                console.log('SQL.js database initialized successfully');
+                
+            } catch (error) {
+                console.error('Failed to initialize database:', error);
+                updateSQLStatus('Database Error', 'status-error');
+            }
+        }
+
+        // Update SQL engine status
+        function updateSQLStatus(message, statusClass) {
+            const statusElement = document.getElementById('sql-engine-status');
+            statusElement.textContent = message;
+            statusElement.className = `sql-engine-status ${statusClass}`;
+        }
+
+        // Create sample database with student data
+        function createSampleDatabase() {
+            // Create tables
+            db.run(`CREATE TABLE IF NOT EXISTS students (
+                student_id INTEGER PRIMARY KEY,
+                first_name VARCHAR(50),
+                last_name VARCHAR(50),
+                email VARCHAR(100),
+                enrollment_date DATE,
+                major VARCHAR(50)
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS courses (
+                course_id INTEGER PRIMARY KEY,
+                course_name VARCHAR(100),
+                instructor VARCHAR(50),
+                credits INTEGER,
+                department VARCHAR(50)
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS enrollments (
+                enrollment_id INTEGER PRIMARY KEY,
+                student_id INTEGER,
+                course_id INTEGER,
+                enrollment_date DATE,
+                grade VARCHAR(2)
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS departments (
+                department_id INTEGER PRIMARY KEY,
+                department_name VARCHAR(50),
+                head VARCHAR(50),
+                building VARCHAR(50)
+            )`);
+
+            // Clear existing data
+            db.run('DELETE FROM students');
+            db.run('DELETE FROM courses');
+            db.run('DELETE FROM enrollments');
+            db.run('DELETE FROM departments');
+
+            // Insert sample data
+            // Students
+            const students = [
+                [1, 'John', 'Smith', 'john.smith@university.edu', '2023-09-01', 'Computer Science'],
+                [2, 'Sarah', 'Johnson', 'sarah.j@university.edu', '2023-09-01', 'Mathematics'],
+                [3, 'Mike', 'Davis', 'mike.davis@university.edu', '2023-09-01', 'Physics'],
+                [4, 'Emily', 'Wilson', 'emily.w@university.edu', '2023-09-01', 'Computer Science'],
+                [5, 'David', 'Brown', 'david.b@university.edu', '2023-09-01', 'Biology'],
+                [6, 'Lisa', 'Garcia', 'lisa.g@university.edu', '2023-09-01', 'Mathematics'],
+                [7, 'Kevin', 'Miller', 'kevin.m@university.edu', '2023-09-01', 'Computer Science'],
+                [8, 'Amy', 'Taylor', 'amy.t@university.edu', '2023-09-01', 'Chemistry']
+            ];
+            
+            const studentStmt = db.prepare("INSERT INTO students VALUES (?, ?, ?, ?, ?, ?)");
+            students.forEach(student => studentStmt.run(student));
+            studentStmt.free();
+
+            // Courses
+            const courses = [
+                [1, 'Introduction to Programming', 'Dr. Smith', 3, 'Computer Science'],
+                [2, 'Calculus I', 'Dr. Johnson', 4, 'Mathematics'],
+                [3, 'Physics Fundamentals', 'Dr. Davis', 4, 'Physics'],
+                [4, 'Biology 101', 'Dr. Wilson', 3, 'Biology'],
+                [5, 'Organic Chemistry', 'Dr. Brown', 4, 'Chemistry'],
+                [6, 'Data Structures', 'Dr. Garcia', 3, 'Computer Science'],
+                [7, 'Linear Algebra', 'Dr. Miller', 3, 'Mathematics'],
+                [8, 'Advanced Physics', 'Dr. Taylor', 4, 'Physics']
+            ];
+            
+            const courseStmt = db.prepare("INSERT INTO courses VALUES (?, ?, ?, ?, ?)");
+            courses.forEach(course => courseStmt.run(course));
+            courseStmt.free();
+
+            // Enrollments
+            const enrollments = [
+                [1, 1, 1, '2023-09-05', 'A'],
+                [2, 1, 6, '2023-09-05', 'B+'],
+                [3, 2, 2, '2023-09-05', 'A-'],
+                [4, 2, 7, '2023-09-05', 'B'],
+                [5, 3, 3, '2023-09-05', 'A'],
+                [6, 3, 8, '2023-09-05', 'B+'],
+                [7, 4, 1, '2023-09-05', 'A'],
+                [8, 4, 6, '2023-09-05', 'A-'],
+                [9, 5, 4, '2023-09-05', 'B'],
+                [10, 6, 2, '2023-09-05', 'A'],
+                [11, 6, 7, '2023-09-05', 'B+'],
+                [12, 7, 1, '2023-09-05', 'A-'],
+                [13, 7, 6, '2023-09-05', 'A'],
+                [14, 8, 5, '2023-09-05', 'B']
+            ];
+            
+            const enrollmentStmt = db.prepare("INSERT INTO enrollments VALUES (?, ?, ?, ?, ?)");
+            enrollments.forEach(enrollment => enrollmentStmt.run(enrollment));
+            enrollmentStmt.free();
+
+            // Departments
+            const departments = [
+                [1, 'Computer Science', 'Dr. Anderson', 'Science Building'],
+                [2, 'Mathematics', 'Dr. Roberts', 'Math Building'],
+                [3, 'Physics', 'Dr. Thompson', 'Science Building'],
+                [4, 'Biology', 'Dr. Martinez', 'Science Building'],
+                [5, 'Chemistry', 'Dr. Clark', 'Science Building']
+            ];
+            
+            const departmentStmt = db.prepare("INSERT INTO departments VALUES (?, ?, ?, ?)");
+            departments.forEach(department => departmentStmt.run(department));
+            departmentStmt.free();
+
+            console.log('Sample database created with student data');
+        }
+
+        // Initialize CodeMirror editors
+        function initializeEditors() {
+            for (let i = 1; i <= 10; i++) {
+                const textarea = document.getElementById(`editor${i}`);
+                if (textarea) {
+                    // Clear any existing CodeMirror instance
+                    if (textarea.nextSibling && textarea.nextSibling.CodeMirror) {
+                        textarea.nextSibling.CodeMirror.toTextArea();
+                    }
+                    
+                    codeMirrorEditors[i] = CodeMirror.fromTextArea(textarea, {
+                        mode: 'sql',
+                        theme: 'monokai',
+                        lineNumbers: true,
+                        indentUnit: 4,
+                        tabSize: 4,
+                        extraKeys: {"Ctrl-Space": "autocomplete"},
+                        hintOptions: {
+                            tables: {
+                                students: ['student_id', 'first_name', 'last_name', 'email', 'enrollment_date', 'major'],
+                                courses: ['course_id', 'course_name', 'instructor', 'credits', 'department'],
+                                enrollments: ['enrollment_id', 'student_id', 'course_id', 'enrollment_date', 'grade'],
+                                departments: ['department_id', 'department_name', 'head', 'building']
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Initialize test editor
+            const testTextarea = document.getElementById('editor-test');
+            if (testTextarea) {
+                codeMirrorEditors['test'] = CodeMirror.fromTextArea(testTextarea, {
+                    mode: 'sql',
+                    theme: 'monokai',
+                    lineNumbers: true,
+                    indentUnit: 4,
+                    tabSize: 4,
+                    extraKeys: {"Ctrl-Space": "autocomplete"},
+                    hintOptions: {
+                        tables: {
+                            students: ['student_id', 'first_name', 'last_name', 'email', 'enrollment_date', 'major'],
+                            courses: ['course_id', 'course_name', 'instructor', 'credits', 'department'],
+                            enrollments: ['enrollment_id', 'student_id', 'course_id', 'enrollment_date', 'grade'],
+                            departments: ['department_id', 'department_name', 'head', 'building']
+                        }
+                    }
+                });
+            }
+        }
+
+        // Get SQL from CodeMirror editor
+        function getSQLFromEditor(sectionId) {
+            if (codeMirrorEditors[sectionId]) {
+                return codeMirrorEditors[sectionId].getValue().trim();
+            }
+            // Fallback to textarea if CodeMirror not available
+            const textarea = document.getElementById(`editor${sectionId}`);
+            return textarea ? textarea.value.trim() : '';
+        }
+
+        // Execute SQL query using SQL.js
+        function executeSQL(sectionId) {
+            if (!db) {
+                showError(sectionId, 'Database not initialized. Please wait for SQL engine to load...');
+                return;
+            }
+
+            const sql = getSQLFromEditor(sectionId);
+            const outputElement = document.getElementById(`output${sectionId}`);
+            
+            outputElement.innerHTML = '';
+            outputElement.classList.remove('text-red-400', 'text-green-400');
+            
+            if (!sql) {
+                showError(sectionId, 'Please write a SQL query first.');
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                const result = db.exec(sql);
+                const endTime = performance.now();
+                
+                displaySQLResult(outputElement, result, sql, endTime - startTime);
+                completedQuestions.add(sectionId);
+                updateProgress();
+                
+            } catch (error) {
+                showError(sectionId, error.message);
+                console.error('SQL Error:', error);
+            }
+        }
+
+        // Execute test query
+        function executeTestQuery() {
+            if (!db) {
+                showError('test', 'Database not initialized. Please wait for SQL engine to load...');
+                return;
+            }
+
+            const sql = codeMirrorEditors['test'] ? codeMirrorEditors['test'].getValue().trim() : document.getElementById('editor-test').value.trim();
+            const outputElement = document.getElementById('output-test');
+            
+            outputElement.innerHTML = '';
+            outputElement.classList.remove('text-red-400', 'text-green-400');
+            
+            if (!sql) {
+                showError('test', 'Please write a SQL query first.');
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                const result = db.exec(sql);
+                const endTime = performance.now();
+                
+                displaySQLResult(outputElement, result, sql, endTime - startTime);
+                
+            } catch (error) {
+                showError('test', error.message);
+                console.error('SQL Error:', error);
+            }
+        }
+
+        // Display SQL results
+        function displaySQLResult(outputElement, result, sql, executionTime) {
+            // Show executed SQL
+            const sqlInfo = document.createElement('div');
+            sqlInfo.className = 'query-info';
+            sqlInfo.innerHTML = `<span>Executed: <code>${sql}</code></span>`;
+            outputElement.appendChild(sqlInfo);
+            
+            // Show success message
+            const successInfo = document.createElement('div');
+            successInfo.className = 'query-info query-success';
+            
+            if (result.length === 0) {
+                successInfo.textContent = '✓ Query executed successfully (no results returned)';
+            } else {
+                const rowCount = result[0].values.length;
+                successInfo.textContent = `✓ Query executed successfully, returned ${rowCount} row(s)`;
+            }
+            outputElement.appendChild(successInfo);
+            
+            // Display results for SELECT queries
+            if (result.length > 0 && result[0].values.length > 0) {
+                const table = document.createElement('table');
+                table.className = 'results-table';
+                
+                // Create header
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                result[0].columns.forEach(col => {
+                    const th = document.createElement('th');
+                    th.textContent = col;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+                
+                // Create body
+                const tbody = document.createElement('tbody');
+                result[0].values.forEach(row => {
+                    const tr = document.createElement('tr');
+                    row.forEach(cell => {
+                        const td = document.createElement('td');
+                        td.textContent = cell;
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+                
+                outputElement.appendChild(table);
+            }
+            
+            // Show execution time
+            const timeInfo = document.createElement('div');
+            timeInfo.className = 'query-info';
+            timeInfo.textContent = `Execution time: ${Math.round(executionTime)}ms`;
+            outputElement.appendChild(timeInfo);
+        }
+
+        // Show error message
+        function showError(sectionId, message) {
+            const outputElement = document.getElementById(`output${sectionId}`);
+            outputElement.innerHTML = `
+                <div class="query-error font-bold">SQL Error:</div>
+                <div>${message}</div>
+                <div class="mt-2 text-sm">Check your SQL syntax and try again.</div>
+            `;
+            outputElement.classList.add('text-red-400');
+        }
+
+        // Reset database
+        function resetDatabase() {
+            if (!db) return;
+            
+            db.close();
+            db = new SQL.Database();
+            createSampleDatabase();
+            
+            // Clear all outputs
+            for (let i = 1; i <= 10; i++) {
+                const outputElement = document.getElementById(`output${i}`);
+                if (outputElement) {
+                    outputElement.textContent = 'Query results will appear here...';
+                    outputElement.classList.remove('text-red-400', 'text-green-400');
+                }
+            }
+            
+            const testOutput = document.getElementById('output-test');
+            testOutput.textContent = 'Test results will appear here...';
+            testOutput.classList.remove('text-red-400', 'text-green-400');
+            
+            console.log('Database reset to initial state');
+        }
+
+        // --- Timer Functions ---
+
+        // Start the exam timer
+        function startTimer() {
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        // Update the timer display
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            document.getElementById('timer-display').textContent = display;
+            
+            // Update timer styling based on remaining time
+            const timerContainer = document.getElementById('timer-container');
+            timerContainer.classList.remove('timer-warning', 'timer-critical');
+            
+            if (timeRemaining <= 600) { // 10 minutes
+                timerContainer.classList.add('timer-critical');
+            } else if (timeRemaining <= 1800) { // 30 minutes
+                timerContainer.classList.add('timer-warning');
+            }
+        }
+
+        // --- MCQ Functions ---
+
+        // Set up MCQ event listeners
+        function setupMCQs() {
+            // Add click handlers to MCQ options
+            document.querySelectorAll('.mcq-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionId = this.closest('.mcq-container').querySelector('.question-number').textContent.replace('M', '');
+                    const selectedOption = this.dataset.option;
+                    
+                    // Clear previous selection for this question
+                    const questionContainer = this.closest('.mcq-container');
+                    questionContainer.querySelectorAll('.mcq-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Select this option
+                    this.classList.add('selected');
+                    this.querySelector('input').checked = true;
+                    
+                    // Check if correct and provide feedback
+                    checkMCQAnswer(questionId, selectedOption);
+                });
+            });
+        }
+
+        // Check MCQ answer and provide feedback
+        function checkMCQAnswer(questionId, selectedOption) {
+            const correctAnswer = mcqAnswers[`mcq${questionId}`];
+            const feedbackElement = document.getElementById(`mcq${questionId}-feedback`);
+            
+            if (selectedOption === correctAnswer) {
+                feedbackElement.textContent = '✓ Correct! Well done.';
+                feedbackElement.className = 'mcq-feedback mcq-correct';
+                completedQuestions.add(`mcq${questionId}`);
+            } else {
+                feedbackElement.textContent = `✗ Incorrect. The correct answer is ${correctAnswer}.`;
+                feedbackElement.className = 'mcq-feedback mcq-incorrect';
+            }
+            
+            feedbackElement.style.display = 'block';
+            updateProgress();
+        }
+
+        // --- Copy All Answers Function ---
+
+        // Copy all answers to clipboard - Only selected MCQ choices and SQL queries
+        function copyAllAnswers() {
+            let allAnswers = "PostgreSQL Learning Lab - My Answers\n";
+            allAnswers += "=====================================\n\n";
+            
+            // Add MCQ answers
+            allAnswers += "MULTIPLE CHOICE QUESTIONS:\n";
+            allAnswers += "---------------------------\n";
+            
+            for (let i = 1; i <= 2; i++) {
+                const questionElement = document.querySelector(`.mcq-container:nth-child(${i}) .mcq-question`);
+                const questionText = questionElement ? questionElement.textContent : `MCQ Question ${i}`;
+                const selectedOption = document.querySelector(`input[name="mcq${i}"]:checked`);
+                
+                allAnswers += `M${i}. ${questionText}\n`;
+                
+                if (selectedOption) {
+                    allAnswers += `My Answer: ${selectedOption.value}\n\n`;
+                } else {
+                    allAnswers += `My Answer: [Not answered]\n\n`;
+                }
+            }
+            
+            // Add SQL queries (only the user's queries, not solutions)
+            allAnswers += "SQL QUERIES:\n";
+            allAnswers += "------------\n";
+            
+            for (let i = 1; i <= 10; i++) {
+                const questionElement = document.querySelector(`#editor${i}`).closest('section').querySelector('p');
+                const questionText = questionElement ? questionElement.textContent : `SQL Question ${i}`;
+                const userQuery = getSQLFromEditor(i);
+                
+                allAnswers += `${i}. ${questionText}\n`;
+                
+                if (userQuery) {
+                    allAnswers += `My Query:\n${userQuery}\n\n`;
+                } else {
+                    allAnswers += `My Query: [Not answered]\n\n`;
+                }
+            }
+            
+            // Copy to clipboard
+            if (copyToClipboard(allAnswers)) {
+                const button = document.getElementById('copy-all-btn');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<span>✓</span><span>Copied!</span>';
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                }, 2000);
+            }
+        }
+
+        // --- Exam Submission ---
+
+        // Submit the exam and calculate score
+        function submitExam() {
+            clearInterval(timerInterval);
+            
+            // Calculate score
+            let score = 0;
+            const totalMCQs = 2;
+            const totalSQL = 8;
+            
+            // Check MCQ answers
+            for (let i = 1; i <= totalMCQs; i++) {
+                const selectedOption = document.querySelector(`input[name="mcq${i}"]:checked`);
+                if (selectedOption && selectedOption.value === mcqAnswers[`mcq${i}`]) {
+                    score++;
+                }
+            }
+            
+            // For SQL questions, we'll just count completed ones
+            // In a real scenario, you'd need to validate the SQL queries
+            const sqlCompleted = Array.from(completedQuestions)
+                .filter(q => !q.startsWith('mcq'))
+                .length;
+            
+            // Calculate percentage
+            const totalScore = score + sqlCompleted;
+            const percentage = Math.round((totalScore / TOTAL_QUESTIONS) * 100);
+            
+            // Update score display
+            document.getElementById('score-display').textContent = `${percentage}%`;
+            
+            // Show completion message
+            alert(`Exam submitted!\n\nMCQ Score: ${score}/${totalMCQs}\nSQL Completed: ${sqlCompleted}/${totalSQL}\nTotal Score: ${totalScore}/${TOTAL_QUESTIONS} (${percentage}%)`);
+        }
+
+        // --- Utility Functions ---
+
+        // Update progress bar
+        function updateProgress() {
+            const progress = (completedQuestions.size / TOTAL_QUESTIONS) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+            document.getElementById('completed-count').textContent = completedQuestions.size;
+        }
+
+        // Helper function for copying text to clipboard
+        function copyToClipboard(text) {
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = text;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            
+            try {
+                document.execCommand('copy');
+                return true;
+            } catch (err) {
+                console.error('Copy command failed:', err);
+                return false;
+            } finally {
+                document.body.removeChild(tempTextArea);
+            }
+        }
+        
+        // Function to copy the code for a specific section
+        function copyCode(sectionId) {
+            const code = getSQLFromEditor(sectionId);
+            if (copyToClipboard(code)) {
+                const button = document.querySelector(`.copy-button[data-section="${sectionId}"]`);
+                const originalText = button.textContent;
+                button.textContent = "Copied!";
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 1500);
+            }
+        }
+
+        // Function to toggle sample solution
+        function toggleSolution(sectionId) {
+            const solutionElement = document.getElementById(`solution${sectionId}`);
+            const button = document.querySelector(`.toggle-solution[data-section="${sectionId}"]`);
+            
+            if (solutionElement.classList.contains('hidden')) {
+                solutionElement.classList.remove('hidden');
+                button.textContent = 'Hide Solution';
+            } else {
+                solutionElement.classList.add('hidden');
+                button.textContent = 'Show Solution';
+            }
+        }
+
+        // Function to toggle hints
+        function toggleHint(sectionId) {
+            const hintElement = document.getElementById(`hint${sectionId}`);
+            const button = document.querySelector(`.toggle-solution[data-section="hint${sectionId}"]`);
+            
+            if (hintElement.classList.contains('hidden')) {
+                hintElement.classList.remove('hidden');
+                button.textContent = 'Hide Hint';
+            } else {
+                hintElement.classList.add('hidden');
+                button.textContent = 'Show Hint';
+            }
+        }
+
+        // Function to set up the Light/Dark Mode toggle
+        function setupThemeToggle() {
+            const toggleButton = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+
+            function updateTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                toggleButton.textContent = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+                localStorage.setItem('theme', theme);
+            }
+
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            updateTheme(savedTheme);
+
+            toggleButton.addEventListener('click', () => {
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                updateTheme(newTheme);
+            });
+        }
+
+        // Initialize the application
+        async function initializeApp() {
+            // Initialize SQL.js database first
+            await initializeDatabase();
+            
+            // Initialize CodeMirror editors
+            initializeEditors();
+            
+            // Set up event listeners for all SQL question buttons
+            for (let i = 1; i <= 10; i++) {
+                document.querySelector(`.run-button[data-section="${i}"]`).addEventListener('click', () => executeSQL(i));
+                document.querySelector(`.copy-button[data-section="${i}"]`).addEventListener('click', () => copyCode(i));
+            }
+            
+            // Set up solution toggles
+            for (let i = 1; i <= 10; i++) {
+                document.querySelector(`.toggle-solution[data-section="${i}"]`).addEventListener('click', () => toggleSolution(i));
+                document.querySelector(`.toggle-solution[data-section="hint${i}"]`).addEventListener('click', () => toggleHint(i));
+            }
+            
+            // Set up test area
+            document.getElementById('run-test').addEventListener('click', executeTestQuery);
+            document.getElementById('reset-db').addEventListener('click', resetDatabase);
+            
+            // Set up theme toggle
+            setupThemeToggle();
+            
+            // Set up MCQs
+            setupMCQs();
+            
+            // Set up copy all answers button
+            document.getElementById('copy-all-btn').addEventListener('click', copyAllAnswers);
+            
+            // Set up exam submission
+            document.getElementById('submit-exam').addEventListener('click', submitExam);
+            
+            // Initialize progress bar
+            updateProgress();
+            
+            // Start the timer
+            startTimer();
+
+            console.log("Learning Lab fully initialized with SQL.js engine");
+        }
+
+        // Initialize when the page loads
+        window.addEventListener('load', initializeApp);
+    </script>
+</body>
+</html>
