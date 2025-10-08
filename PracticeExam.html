@@ -482,6 +482,11 @@
             animation: pulse 1s infinite;
         }
         
+        .timer-expired {
+            color: var(--error-color);
+            background-color: rgba(239, 68, 68, 0.2);
+        }
+        
         @keyframes pulse {
             0% { opacity: 1; }
             50% { opacity: 0.5; }
@@ -494,6 +499,9 @@
             bottom: 20px;
             right: 20px;
             z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
         
         .copy-all-btn {
@@ -512,6 +520,25 @@
         
         .copy-all-btn:hover {
             background-color: #059669;
+        }
+        
+        .reset-timer-btn {
+            background-color: var(--sample-color);
+            color: black;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .reset-timer-btn:hover {
+            background-color: #d97706;
         }
         
         /* Exam Controls */
@@ -545,6 +572,17 @@
             font-size: 0.75rem;
             opacity: 0.8;
         }
+        
+        /* Time Expired Message */
+        .time-expired-message {
+            background-color: var(--error-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            text-align: center;
+            display: none;
+        }
     </style>
 </head>
 <body class="p-4 md:p-8 min-h-screen">
@@ -560,11 +598,15 @@
         <span id="timer-display">60:00</span>
     </div>
     
-    <!-- Copy All Answers Button -->
+    <!-- Copy All Answers & Timer Reset Buttons -->
     <div class="copy-all-container">
         <button id="copy-all-btn" class="copy-all-btn">
             <span>📋</span>
             <span>Copy All Answers</span>
+        </button>
+        <button id="reset-timer-btn" class="reset-timer-btn">
+            <span>🔄</span>
+            <span>Reset Timer</span>
         </button>
     </div>
     
@@ -582,6 +624,11 @@
             </button>
         </header>
 
+        <!-- Time Expired Message -->
+        <div id="time-expired-message" class="time-expired-message">
+            ⏰ Time's up! You can continue practicing, but please copy your answers and submit them in Canvas.
+        </div>
+
         <!-- Exam Controls -->
         <div class="exam-controls">
             <div class="exam-info">
@@ -595,12 +642,12 @@
                 </div>
                 <div class="exam-stat">
                     <div id="score-display" class="exam-stat-value">0%</div>
-                    <div class="exam-stat-label">Score</div>
+                    <div class="exam-stat-label">Progress</div>
                 </div>
             </div>
             <div>
-                <button id="submit-exam" class="btn-primary px-4 py-2 rounded-lg font-semibold text-white">
-                    Submit Exam
+                <button id="show-instructions" class="btn-learning px-4 py-2 rounded-lg font-semibold text-white">
+                    📋 Exam Instructions
                 </button>
             </div>
         </div>
@@ -617,12 +664,11 @@
                 <p class="mb-2">This practice exam covers <strong>basic SQL concepts</strong> across 5 modules suitable for beginners.</p>
                 <p class="mb-2"><span class="text-blue-400 font-bold">Learning Features:</span> Hints, sample solutions, and unlimited attempts!</p>
                 <p class="mb-2"><span class="text-green-400 font-bold">Real SQL Engine:</span> Test your queries instantly in the browser.</p>
-                <p class="mb-2"><span class="text-purple-400 font-bold">Exam Mode:</span> Timer, MCQs, and score tracking!</p>
-                <p>Practice at your own pace and build your SQL skills step by step.</p>
+                <p class="mb-2"><span class="text-purple-400 font-bold">Exam Mode:</span> Timer to help you practice time management!</p>
                 
                 <div class="learning-tip mt-4">
-                    💡 <strong>Pro Tip:</strong> Try solving each problem yourself first, then use hints if needed. 
-                    The sample solutions show different approaches to solving the same problem.
+                    💡 <strong>Important:</strong> This is a practice exam. When you're done, use the "Copy All Answers" button 
+                    and paste your answers in Canvas. The timer is for practice only - you can reset it anytime!
                 </div>
             </div>
 
@@ -1641,7 +1687,7 @@ WHERE student_id = 1;
                 
                 if (timeRemaining <= 0) {
                     clearInterval(timerInterval);
-                    submitExam();
+                    showTimeExpiredMessage();
                 }
             }, 1000);
         }
@@ -1656,13 +1702,46 @@ WHERE student_id = 1;
             
             // Update timer styling based on remaining time
             const timerContainer = document.getElementById('timer-container');
-            timerContainer.classList.remove('timer-warning', 'timer-critical');
+            timerContainer.classList.remove('timer-warning', 'timer-critical', 'timer-expired');
             
-            if (timeRemaining <= 600) { // 10 minutes
+            if (timeRemaining <= 0) {
+                timerContainer.classList.add('timer-expired');
+            } else if (timeRemaining <= 600) { // 10 minutes
                 timerContainer.classList.add('timer-critical');
             } else if (timeRemaining <= 1800) { // 30 minutes
                 timerContainer.classList.add('timer-warning');
             }
+        }
+
+        // Show time expired message
+        function showTimeExpiredMessage() {
+            const messageElement = document.getElementById('time-expired-message');
+            messageElement.style.display = 'block';
+            
+            // Show alert once when time expires
+            setTimeout(() => {
+                alert("⏰ Time's up! You can continue practicing, but please copy your answers and submit them in Canvas.");
+            }, 500);
+        }
+
+        // Reset timer
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timeRemaining = EXAM_DURATION;
+            updateTimerDisplay();
+            startTimer();
+            
+            // Hide time expired message
+            document.getElementById('time-expired-message').style.display = 'none';
+            
+            // Show confirmation
+            const button = document.getElementById('reset-timer-btn');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span>✓</span><span>Timer Reset!</span>';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+            }, 2000);
         }
 
         // --- MCQ Functions ---
@@ -1764,40 +1843,18 @@ WHERE student_id = 1;
             }
         }
 
-        // --- Exam Submission ---
+        // Show exam instructions
+        function showInstructions() {
+            alert(`📋 EXAM INSTRUCTIONS:
 
-        // Submit the exam and calculate score
-        function submitExam() {
-            clearInterval(timerInterval);
-            
-            // Calculate score
-            let score = 0;
-            const totalMCQs = 2;
-            const totalSQL = 8;
-            
-            // Check MCQ answers
-            for (let i = 1; i <= totalMCQs; i++) {
-                const selectedOption = document.querySelector(`input[name="mcq${i}"]:checked`);
-                if (selectedOption && selectedOption.value === mcqAnswers[`mcq${i}`]) {
-                    score++;
-                }
-            }
-            
-            // For SQL questions, we'll just count completed ones
-            // In a real scenario, you'd need to validate the SQL queries
-            const sqlCompleted = Array.from(completedQuestions)
-                .filter(q => !q.startsWith('mcq'))
-                .length;
-            
-            // Calculate percentage
-            const totalScore = score + sqlCompleted;
-            const percentage = Math.round((totalScore / TOTAL_QUESTIONS) * 100);
-            
-            // Update score display
-            document.getElementById('score-display').textContent = `${percentage}%`;
-            
-            // Show completion message
-            alert(`Exam submitted!\n\nMCQ Score: ${score}/${totalMCQs}\nSQL Completed: ${sqlCompleted}/${totalSQL}\nTotal Score: ${totalScore}/${TOTAL_QUESTIONS} (${percentage}%)`);
+1. Complete all 10 questions (2 MCQs + 8 SQL queries)
+2. Use the timer to practice time management
+3. Test your SQL queries using the "Test Query" button
+4. Use hints if you get stuck
+5. When finished, click "Copy All Answers"
+6. Paste your answers in Canvas
+
+Remember: This is a practice exam - you can reset the timer anytime!`);
         }
 
         // --- Utility Functions ---
@@ -1807,6 +1864,7 @@ WHERE student_id = 1;
             const progress = (completedQuestions.size / TOTAL_QUESTIONS) * 100;
             document.getElementById('progress-fill').style.width = `${progress}%`;
             document.getElementById('completed-count').textContent = completedQuestions.size;
+            document.getElementById('score-display').textContent = `${Math.round(progress)}%`;
         }
 
         // Helper function for copying text to clipboard
@@ -1922,8 +1980,11 @@ WHERE student_id = 1;
             // Set up copy all answers button
             document.getElementById('copy-all-btn').addEventListener('click', copyAllAnswers);
             
-            // Set up exam submission
-            document.getElementById('submit-exam').addEventListener('click', submitExam);
+            // Set up timer reset button
+            document.getElementById('reset-timer-btn').addEventListener('click', resetTimer);
+            
+            // Set up instructions button
+            document.getElementById('show-instructions').addEventListener('click', showInstructions);
             
             // Initialize progress bar
             updateProgress();
