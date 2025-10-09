@@ -1,0 +1,1516 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostgreSQL Midterm Exam - Interactive SQL Runner</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- CodeMirror for SQL editing -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/sql/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/sql-hint.min.js"></script>
+    
+    <!-- SQL.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+
+        /* Theme Variables */
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --section-bg: #1e293b;
+            --code-bg: #020617;
+            --border-color: #334155;
+            --header-color: #38bdf8;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --error-color: #f87171;
+            --success-color: #34d399;
+            --sample-color: #fbbf24;
+            --module1-color: #10b981;
+            --module2-color: #3b82f6;
+            --module3-color: #8b5cf6;
+            --module4-color: #f59e0b;
+            --module5-color: #ec4899;
+            --mcq-color: #8b5cf6;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --text-color: #1e293b;
+            --section-bg: #ffffff;
+            --code-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --header-color: #1d4ed8;
+            --accent-color: #4f46e5;
+            --accent-hover: #4338ca;
+            --error-color: #dc2626;
+            --success-color: #10b981;
+            --sample-color: #d97706;
+            --module1-color: #059669;
+            --module2-color: #2563eb;
+            --module3-color: #7c3aed;
+            --module4-color: #d97706;
+            --module5-color: #db2777;
+            --mcq-color: #7c3aed;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1, h2 {
+            color: var(--header-color);
+        }
+
+        .section-card {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--section-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+        }
+        .btn-secondary:hover {
+            background-color: var(--border-color);
+        }
+
+        /* SQL Editor Styling */
+        .sql-editor {
+            width: 100%;
+            height: 200px;
+            background-color: var(--code-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Output area */
+        .output-area {
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            color: var(--text-color);
+            padding: 0.75rem;
+            margin-top: 12px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+        }
+
+        .text-red-400 {
+            color: var(--error-color);
+        }
+        
+        .text-green-400 {
+            color: var(--success-color);
+        }
+        
+        .text-yellow-400 {
+            color: var(--sample-color);
+        }
+        
+        .question-number {
+            background-color: var(--accent-color);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+        
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .copy-success {
+            color: var(--success-color);
+            font-weight: bold;
+            display: none;
+        }
+        
+        .code-container {
+            margin-top: 16px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .sample-solution {
+            background-color: var(--code-bg);
+            border: 1px solid var(--sample-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 12px;
+            position: relative;
+        }
+
+        .sample-header {
+            color: var(--sample-color);
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-solution {
+            background: none;
+            border: none;
+            color: var(--sample-color);
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: auto;
+        }
+
+        .solution-content {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .module-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 12px;
+        }
+
+        .module-1 { background-color: var(--module1-color); color: white; }
+        .module-2 { background-color: var(--module2-color); color: white; }
+        .module-3 { background-color: var(--module3-color); color: white; }
+        .module-4 { background-color: var(--module4-color); color: white; }
+        .module-5 { background-color: var(--module5-color); color: white; }
+        .mcq-tag { background-color: var(--mcq-color); color: white; }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border-color);
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--module1-color), var(--module2-color), var(--module3-color), var(--module4-color), var(--module5-color));
+            transition: width 0.3s ease;
+        }
+
+        .module-section {
+            border-left: 4px solid;
+            padding-left: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .module-1-section { border-color: var(--module1-color); }
+        .module-2-section { border-color: var(--module2-color); }
+        .module-3-section { border-color: var(--module3-color); }
+        .module-4-section { border-color: var(--module4-color); }
+        .module-5-section { border-color: var(--module5-color); }
+
+        /* Multiple Choice Questions Styling */
+        .mcq-container {
+            background-color: var(--section-bg);
+            border: 1px solid var(--mcq-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .mcq-question {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .mcq-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .mcq-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mcq-option:hover {
+            background-color: var(--code-bg);
+            border-color: var(--mcq-color);
+        }
+
+        .mcq-option.selected {
+            background-color: var(--mcq-color);
+            border-color: var(--mcq-color);
+            color: white;
+        }
+
+        .mcq-option input[type="radio"] {
+            margin-top: 0.125rem;
+        }
+
+        .mcq-option label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .mcq-submitted {
+            opacity: 0.7;
+        }
+
+        .mcq-submitted .mcq-option {
+            cursor: not-allowed;
+        }
+
+        .mcq-submitted .mcq-option:not(.selected) {
+            opacity: 0.6;
+        }
+
+        .database-schema {
+            background-color: var(--code-bg);
+            border: 1px solid var(--module1-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+        }
+
+        .schema-header {
+            color: var(--module1-color);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-structure {
+            margin-bottom: 1rem;
+        }
+
+        .CodeMirror {
+            height: 200px;
+            border-radius: 0.5rem;
+            margin-top: 12px;
+        }
+
+        /* SQL Engine Status */
+        .sql-engine-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .status-ready {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-loading {
+            background-color: var(--sample-color);
+            color: black;
+        }
+
+        .status-error {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        /* Results Table */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+        }
+
+        .results-table th {
+            background-color: var(--border-color);
+            padding: 6px 8px;
+            text-align: left;
+            border: 1px solid var(--border-color);
+            font-weight: bold;
+        }
+
+        .results-table td {
+            padding: 6px 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .results-table tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        [data-theme="light"] .results-table tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        .query-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .query-success {
+            color: var(--success-color);
+        }
+
+        .query-error {
+            color: var(--error-color);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+    <div class="max-w-6xl mx-auto">
+        
+        <!-- SQL Engine Status -->
+        <div id="sql-engine-status" class="sql-engine-status status-loading">
+            Loading SQL Engine...
+        </div>
+        
+        <!-- HEADER -->
+        <header class="flex justify-between items-center mb-6 pb-4 border-b border-border-color">
+            <div>
+                <h1 class="text-3xl font-extrabold">PostgreSQL Midterm Exam</h1>
+                <p class="text-lg text-gray-400">IAF 603 - Preparing Data for Analytics</p>
+                <p class="text-sm text-green-400 mt-1">✓ Real SQL Engine Active (SQL.js)</p>
+            </div>
+            <button id="theme-toggle" class="btn-secondary px-4 py-2 rounded-lg font-semibold shadow-md transition-colors">
+                <!-- Text set by JavaScript -->
+            </button>
+        </header>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div id="main-content">
+            <div class="instructions mb-8 p-4 section-card rounded-xl">
+                <h2 class="text-xl font-bold mb-2">Exam Instructions</h2>
+                <p class="mb-2">Complete all SQL questions and multiple choice questions covering Modules 1-5 of IAF 603.</p>
+                <p class="mb-2">Each section includes both SQL exercises and conceptual multiple choice questions aligned with your course modules.</p>
+                <p class="mb-2"><span class="text-yellow-400 font-bold">Sample solution</span> is available for the first SQL question.</p>
+                <p class="mb-2"><span class="text-green-400 font-bold">Real SQL Engine:</span> Write and test your PostgreSQL queries directly in the browser!</p>
+                <p class="mb-2">Select your answers for multiple choice questions - they will be included when you copy all answers.</p>
+                <p>When finished, click <strong>Copy All Answers</strong> to submit your SQL queries and MCQ answers to Canvas.</p>
+                
+                <div class="mt-4 grid grid-cols-2 md:grid-cols-6 gap-2 text-sm">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-module1-color mr-2"></div>
+                        <span>Module 1: Data Intro</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-module2-color mr-2"></div>
+                        <span>Module 2: DB Concepts</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-module3-color mr-2"></div>
+                        <span>Module 3: DQL/DML</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-module4-color mr-2"></div>
+                        <span>Module 4: Aggregations</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-module5-color mr-2"></div>
+                        <span>Module 5: SQL Logic</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-mcq-color mr-2"></div>
+                        <span>Multiple Choice</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Test Area -->
+            <div class="section-card p-4 rounded-xl mb-8">
+                <h2 class="text-xl font-bold mb-4">🧪 Quick SQL Test Area</h2>
+                <p class="mb-4">Test any SQL query against the exam database:</p>
+                
+                <div class="code-container">
+                    <textarea id="editor-test" class="sql-editor" placeholder="-- Try: SELECT * FROM sales_data LIMIT 3;">SELECT * FROM sales_data LIMIT 3;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button id="run-test" class="btn-primary px-4 py-2 rounded-lg font-semibold text-white">
+                            Run Test Query
+                        </button>
+                        <button id="reset-db" class="px-4 py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg font-semibold transition-colors">
+                            Reset Database
+                        </button>
+                    </div>
+
+                    <div id="output-test" class="output-area">
+                        Test results will appear here...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database Schema Reference -->
+            <div class="database-schema mb-8">
+                <div class="schema-header">📊 Analytics Database Schema (Used in Exam)</div>
+                <div class="table-structure">
+                    <strong>sales_data</strong> (sale_id INT, product_id INT, sale_date DATE, quantity INT, unit_price DECIMAL(10,2), region VARCHAR(50), customer_id INT)
+                </div>
+                <div class="table-structure">
+                    <strong>products</strong> (product_id INT, product_name VARCHAR(100), category VARCHAR(50), supplier_id INT, unit_price DECIMAL(10,2))
+                </div>
+                <div class="table-structure">
+                    <strong>customers</strong> (customer_id INT, customer_name VARCHAR(100), email VARCHAR(100), signup_date DATE)
+                </div>
+                <div class="table-structure">
+                    <strong>employees</strong> (emp_id INT, emp_name VARCHAR(100), department VARCHAR(50), salary DECIMAL(10,2), hire_date DATE)
+                </div>
+                <div class="table-structure">
+                    <strong>suppliers</strong> (supplier_id INT, supplier_name VARCHAR(100), country VARCHAR(50))
+                </div>
+            </div>
+
+            <!-- MODULE 2: Database Concepts -->
+            <div class="module-section module-2-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--module2-color)">Module 2: Database Concepts</h2>
+                
+                <!-- Multiple Choice Question 1 -->
+                <div class="mcq-container" id="mcq-container-1">
+                    <div class="question-header">
+                        <div class="question-number">M1</div>
+                        <h2 class="text-xl font-bold">Multiple Choice Question</h2>
+                        <span class="module-tag mcq-tag">Module 2</span>
+                    </div>
+                    <div class="mcq-question">
+                        What is the primary purpose of a PRIMARY KEY constraint in PostgreSQL?
+                    </div>
+                    <div class="mcq-options">
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq1" id="mcq1-a" value="a">
+                            <label for="mcq1-a">To ensure data is sorted alphabetically</label>
+                        </div>
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq1" id="mcq1-b" value="b">
+                            <label for="mcq1-b">To uniquely identify each record in a table</label>
+                        </div>
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq1" id="mcq1-c" value="c">
+                            <label for="mcq1-c">To improve query performance</label>
+                        </div>
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq1" id="mcq1-d" value="d">
+                            <label for="mcq1-d">To create relationships between tables</label>
+                        </div>
+                    </div>
+                    <button class="mt-3 px-4 py-2 bg-gray-600 text-white rounded-lg submit-mcq" data-mcq="1">
+                        Submit Answer
+                    </button>
+                </div>
+
+                <!-- Question 1 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">1</div>
+                        <h2 class="text-xl font-bold">Database Table Creation</h2>
+                        <span class="module-tag module-2">Module 2</span>
+                    </div>
+                    <p class="mb-4">Create a table called "customer_feedback" with columns: feedback_id (integer, primary key), customer_id (integer, not null), feedback_date (date, default current date), rating (integer between 1-5), comments (text). Include appropriate constraints.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor1" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="1">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="1">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output1" class="output-area">
+                            Query results will appear here...
+                        </div>
+
+                        <!-- Sample Solution -->
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>Sample Solution</span>
+                                <button class="toggle-solution" data-section="1">Show Solution</button>
+                            </div>
+                            <div id="solution1" class="solution-content hidden">
+CREATE TABLE customer_feedback (
+    feedback_id INTEGER PRIMARY KEY,
+    customer_id INTEGER NOT NULL,
+    feedback_date DATE DEFAULT CURRENT_DATE,
+    rating INTEGER CHECK (rating BETWEEN 1 AND 5),
+    comments TEXT
+);
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- MODULE 3: DQL and DML -->
+            <div class="module-section module-3-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--module3-color)">Module 3: PostgreSQL in Action - DQL and DML</h2>
+                
+                <!-- Multiple Choice Question 2 -->
+                <div class="mcq-container" id="mcq-container-2">
+                    <div class="question-header">
+                        <div class="question-number">M2</div>
+                        <h2 class="text-xl font-bold">Multiple Choice Question</h2>
+                        <span class="module-tag mcq-tag">Module 3</span>
+                    </div>
+                    <div class="mcq-question">
+                        Which SQL command is used to modify existing data in a table?
+                    </div>
+                    <div class="mcq-options">
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq2" id="mcq2-a" value="a">
+                            <label for="mcq2-a">INSERT</label>
+                        </div>
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq2" id="mcq2-b" value="b">
+                            <label for="mcq2-b">UPDATE</label>
+                        </div>
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq2" id="mcq2-c" value="c">
+                            <label for="mcq2-c">ALTER</label>
+                        </div>
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq2" id="mcq2-d" value="d">
+                            <label for="mcq2-d">MODIFY</label>
+                        </div>
+                    </div>
+                    <button class="mt-3 px-4 py-2 bg-gray-600 text-white rounded-lg submit-mcq" data-mcq="2">
+                        Submit Answer
+                    </button>
+                </div>
+
+                <!-- Question 2 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">2</div>
+                        <h2 class="text-xl font-bold">Data Query Language (DQL)</h2>
+                        <span class="module-tag module-3">Module 3</span>
+                    </div>
+                    <p class="mb-4">Write a SELECT query to find all products that have been sold in quantities greater than 50. Include product name, category, and total quantity sold. Sort by total quantity in descending order.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor2" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="2">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="2">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output2" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Question 3 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">3</div>
+                        <h2 class="text-xl font-bold">Data Manipulation Language (DML)</h2>
+                        <span class="module-tag module-3">Module 3</span>
+                    </div>
+                    <p class="mb-4">Update the salary of all employees in the 'Marketing' department by giving them a 10% raise. Then insert a new employee record for "Sarah Johnson" in the "HR" department with a salary of $65,000.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor3" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="3">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="3">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output3" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- MODULE 4: Aggregations -->
+            <div class="module-section module-4-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--module4-color)">Module 4: SQL Basics II - Aggregations</h2>
+                
+                <!-- Multiple Choice Question 3 -->
+                <div class="mcq-container" id="mcq-container-3">
+                    <div class="question-header">
+                        <div class="question-number">M3</div>
+                        <h2 class="text-xl font-bold">Multiple Choice Question</h2>
+                        <span class="module-tag mcq-tag">Module 4</span>
+                    </div>
+                    <div class="mcq-question">
+                        What is the difference between WHERE and HAVING clauses in SQL?
+                    </div>
+                    <div class="mcq-options">
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq3" id="mcq3-a" value="a">
+                            <label for="mcq3-a">WHERE filters rows before grouping, HAVING filters after grouping</label>
+                        </div>
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq3" id="mcq3-b" value="b">
+                            <label for="mcq3-b">WHERE is for SELECT statements, HAVING is for UPDATE statements</label>
+                        </div>
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq3" id="mcq3-c" value="c">
+                            <label for="mcq3-c">There is no difference</label>
+                        </div>
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq3" id="mcq3-d" value="d">
+                            <label for="mcq3-d">WHERE works with aggregates, HAVING doesn't</label>
+                        </div>
+                    </div>
+                    <button class="mt-3 px-4 py-2 bg-gray-600 text-white rounded-lg submit-mcq" data-mcq="3">
+                        Submit Answer
+                    </button>
+                </div>
+
+                <!-- Question 4 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">4</div>
+                        <h2 class="text-xl font-bold">Sales Aggregation Analysis</h2>
+                        <span class="module-tag module-4">Module 4</span>
+                    </div>
+                    <p class="mb-4">Calculate the total sales revenue by product category for the last quarter. Show category, total revenue, and average sale amount. Only include categories with total revenue over $10,000.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor4" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="4">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="4">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output4" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Question 5 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">5</div>
+                        <h2 class="text-xl font-bold">Customer Analytics</h2>
+                        <span class="module-tag module-4">Module 4</span>
+                    </div>
+                    <p class="mb-4">Find the top 5 customers by total purchase amount. Include customer name, total purchases, and number of orders. Also show what percentage each customer contributes to total revenue.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor5" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="5">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="5">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output5" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- MODULE 5: SQL Logic -->
+            <div class="module-section module-5-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--module5-color)">Module 5: SQL Logic</h2>
+                
+                <!-- Multiple Choice Question 4 -->
+                <div class="mcq-container" id="mcq-container-4">
+                    <div class="question-header">
+                        <div class="question-number">M4</div>
+                        <h2 class="text-xl font-bold">Multiple Choice Question</h2>
+                        <span class="module-tag mcq-tag">Module 5</span>
+                    </div>
+                    <div class="mcq-question">
+                        Which of the following is TRUE about CASE statements in SQL?
+                    </div>
+                    <div class="mcq-options">
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq4" id="mcq4-a" value="a">
+                            <label for="mcq4-a">They can only be used in SELECT clauses</label>
+                        </div>
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq4" id="mcq4-b" value="b">
+                            <label for="mcq4-b">They allow conditional logic similar to if-then-else statements</label>
+                        </div>
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq4" id="mcq4-c" value="c">
+                            <label for="mcq4-c">They automatically create new tables</label>
+                        </div>
+                        <div class="mcq-option">
+                            <input type="radio" name="mcq4" id="mcq4-d" value="d">
+                            <label for="mcq4-d">They are only used for error handling</label>
+                        </div>
+                    </div>
+                    <button class="mt-3 px-4 py-2 bg-gray-600 text-white rounded-lg submit-mcq" data-mcq="4">
+                        Submit Answer
+                    </button>
+                </div>
+
+                <!-- Question 6 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">6</div>
+                        <h2 class="text-xl font-bold">Conditional Logic with CASE</h2>
+                        <span class="module-tag module-5">Module 5</span>
+                    </div>
+                    <p class="mb-4">Create a query that categorizes products based on their price: 'Budget' for prices under $50, 'Mid-range' for $50-$200, and 'Premium' for over $200. Show product name, price, and price category.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor6" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="6">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="6">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output6" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Question 7 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">7</div>
+                        <h2 class="text-xl font-bold">Complex Business Logic</h2>
+                        <span class="module-tag module-5">Module 5</span>
+                    </div>
+                    <p class="mb-4">Write a query that identifies customer segments: 'New' (signed up in last 30 days), 'Active' (made purchase in last 90 days), and 'Inactive' (no purchases in 90 days). Include customer name, signup date, and segment.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor7" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="7">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="7">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output7" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Question 8 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">8</div>
+                        <h2 class="text-xl font-bold">Data Preparation for Analytics</h2>
+                        <span class="module-tag module-5">Module 5</span>
+                    </div>
+                    <p class="mb-4">Create a comprehensive sales report that shows monthly sales trends. Include month, total revenue, compared to previous month (as percentage change), and a trend indicator (↑ for increase, ↓ for decrease).</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor8" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="8">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="8">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output8" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Submission Section -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <h2 class="text-xl font-bold mb-4">Submit Your Exam</h2>
+                <p class="mb-4">Click the button below to copy all your SQL queries and multiple choice answers. Then paste it into Canvas to submit your exam.</p>
+                
+                <div class="flex justify-between items-center">
+                    <button id="copy-all-btn" class="btn-primary px-6 py-3 rounded-lg font-semibold text-white text-lg">
+                        Copy All Answers
+                    </button>
+                    <span id="copy-success" class="copy-success">All answers copied to clipboard!</span>
+                </div>
+                
+                <div class="mt-4">
+                    <textarea id="submission-area" class="w-full h-64 p-4 bg-gray-800 text-white rounded-lg font-mono text-sm" placeholder="Your SQL queries and MCQ answers will appear here..."></textarea>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // --- Global Variables ---
+        const TOTAL_QUESTIONS = 8;
+        const TOTAL_MCQS = 4;
+        let completedQuestions = new Set();
+        let mcqAnswers = {};
+        let db = null;
+        let codeMirrorEditors = {};
+
+        // --- SQL.js Database Functions ---
+
+        // Initialize SQL.js database
+        async function initializeDatabase() {
+            try {
+                updateSQLStatus('Loading SQL Engine...', 'status-loading');
+                
+                const SQL = await initSqlJs({
+                    locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
+                });
+
+                db = new SQL.Database();
+                createSampleDatabase();
+                
+                updateSQLStatus('SQL Engine Ready', 'status-ready');
+                console.log('SQL.js database initialized successfully');
+                
+            } catch (error) {
+                console.error('Failed to initialize database:', error);
+                updateSQLStatus('Database Error', 'status-error');
+            }
+        }
+
+        // Update SQL engine status
+        function updateSQLStatus(message, statusClass) {
+            const statusElement = document.getElementById('sql-engine-status');
+            statusElement.textContent = message;
+            statusElement.className = `sql-engine-status ${statusClass}`;
+        }
+
+        // Create sample database with exam data
+        function createSampleDatabase() {
+            // Create tables
+            db.run(`CREATE TABLE IF NOT EXISTS sales_data (
+                sale_id INTEGER PRIMARY KEY,
+                product_id INTEGER,
+                sale_date DATE,
+                quantity INTEGER,
+                unit_price DECIMAL(10,2),
+                region VARCHAR(50),
+                customer_id INTEGER
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS products (
+                product_id INTEGER PRIMARY KEY,
+                product_name VARCHAR(100),
+                category VARCHAR(50),
+                supplier_id INTEGER,
+                unit_price DECIMAL(10,2)
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS customers (
+                customer_id INTEGER PRIMARY KEY,
+                customer_name VARCHAR(100),
+                email VARCHAR(100),
+                signup_date DATE
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS employees (
+                emp_id INTEGER PRIMARY KEY,
+                emp_name VARCHAR(100),
+                department VARCHAR(50),
+                salary DECIMAL(10,2),
+                hire_date DATE
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS suppliers (
+                supplier_id INTEGER PRIMARY KEY,
+                supplier_name VARCHAR(100),
+                country VARCHAR(50)
+            )`);
+
+            // Clear existing data
+            db.run('DELETE FROM sales_data');
+            db.run('DELETE FROM products');
+            db.run('DELETE FROM customers');
+            db.run('DELETE FROM employees');
+            db.run('DELETE FROM suppliers');
+
+            // Insert sample data
+            // Products
+            const products = [
+                [101, 'Wireless Mouse', 'Electronics', 201, 29.99],
+                [102, 'Mechanical Keyboard', 'Electronics', 201, 89.99],
+                [103, 'Desk Lamp', 'Home', 202, 45.50],
+                [104, 'Office Chair', 'Furniture', 203, 249.99],
+                [105, 'Monitor Stand', 'Electronics', 201, 129.99],
+                [106, 'Webcam', 'Electronics', 201, 79.99],
+                [107, 'Notebook', 'Office', 202, 12.99],
+                [108, 'Desk Organizer', 'Office', 202, 34.99]
+            ];
+            
+            const productStmt = db.prepare("INSERT INTO products VALUES (?, ?, ?, ?, ?)");
+            products.forEach(product => productStmt.run(product));
+            productStmt.free();
+
+            // Customers
+            const customers = [
+                [301, 'John Smith', 'john@example.com', '2023-09-15'],
+                [302, 'Jane Doe', 'jane@example.com', '2023-10-01'],
+                [303, 'Bob Johnson', 'bob@example.com', '2023-08-20'],
+                [304, 'Alice Brown', 'alice@example.com', '2023-10-05'],
+                [305, 'Charlie Wilson', 'charlie@example.com', '2023-07-10'],
+                [306, 'Diana Lee', 'diana@example.com', '2023-11-01'],
+                [307, 'Ethan Davis', 'ethan@example.com', '2023-09-30']
+            ];
+            
+            const custStmt = db.prepare("INSERT INTO customers VALUES (?, ?, ?, ?)");
+            customers.forEach(cust => custStmt.run(cust));
+            custStmt.free();
+
+            // Sales data
+            const sales = [
+                [1, 101, '2023-10-15', 25, 29.99, 'North', 301],
+                [2, 102, '2023-10-16', 60, 89.99, 'South', 302],
+                [3, 103, '2023-10-17', 15, 45.50, 'East', 303],
+                [4, 101, '2023-10-18', 75, 29.99, 'West', 304],
+                [5, 104, '2023-10-19', 45, 249.99, 'North', 305],
+                [6, 102, '2023-10-20', 80, 89.99, 'South', 301],
+                [7, 105, '2023-10-21', 30, 129.99, 'East', 302],
+                [8, 103, '2023-10-22', 55, 45.50, 'West', 306],
+                [9, 106, '2023-10-23', 40, 79.99, 'North', 307],
+                [10, 107, '2023-10-24', 100, 12.99, 'South', 303],
+                [11, 108, '2023-10-25', 25, 34.99, 'East', 304],
+                [12, 101, '2023-10-26', 35, 29.99, 'West', 305],
+                [13, 102, '2023-10-27', 90, 89.99, 'North', 306],
+                [14, 104, '2023-10-28', 20, 249.99, 'South', 307],
+                [15, 105, '2023-10-29', 15, 129.99, 'East', 301]
+            ];
+            
+            const salesStmt = db.prepare("INSERT INTO sales_data VALUES (?, ?, ?, ?, ?, ?, ?)");
+            sales.forEach(sale => salesStmt.run(sale));
+            salesStmt.free();
+
+            // Employees
+            const employees = [
+                [401, 'Michael Scott', 'Management', 75000, '2020-01-15'],
+                [402, 'Dwight Schrute', 'Sales', 60000, '2020-03-20'],
+                [403, 'Pam Beesly', 'Admin', 50000, '2021-06-10'],
+                [404, 'Jim Halpert', 'Marketing', 65000, '2019-11-05'],
+                [405, 'Stanley Hudson', 'Marketing', 62000, '2018-09-12']
+            ];
+            
+            const empStmt = db.prepare("INSERT INTO employees VALUES (?, ?, ?, ?, ?)");
+            employees.forEach(emp => empStmt.run(emp));
+            empStmt.free();
+
+            // Suppliers
+            const suppliers = [
+                [201, 'TechGear Inc', 'USA'],
+                [202, 'HomeGoods Ltd', 'Canada'],
+                [203, 'OfficePro Co', 'USA']
+            ];
+            
+            const supStmt = db.prepare("INSERT INTO suppliers VALUES (?, ?, ?)");
+            suppliers.forEach(sup => supStmt.run(sup));
+            supStmt.free();
+
+            console.log('Sample database created with exam data');
+        }
+
+        // Initialize CodeMirror editors
+        function initializeEditors() {
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const textarea = document.getElementById(`editor${i}`);
+                if (textarea) {
+                    // Clear any existing CodeMirror instance
+                    if (textarea.nextSibling && textarea.nextSibling.CodeMirror) {
+                        textarea.nextSibling.CodeMirror.toTextArea();
+                    }
+                    
+                    codeMirrorEditors[i] = CodeMirror.fromTextArea(textarea, {
+                        mode: 'sql',
+                        theme: 'monokai',
+                        lineNumbers: true,
+                        indentUnit: 4,
+                        tabSize: 4,
+                        extraKeys: {"Ctrl-Space": "autocomplete"},
+                        hintOptions: {
+                            tables: {
+                                sales_data: ['sale_id', 'product_id', 'sale_date', 'quantity', 'unit_price', 'region', 'customer_id'],
+                                products: ['product_id', 'product_name', 'category', 'supplier_id', 'unit_price'],
+                                customers: ['customer_id', 'customer_name', 'email', 'signup_date'],
+                                employees: ['emp_id', 'emp_name', 'department', 'salary', 'hire_date'],
+                                suppliers: ['supplier_id', 'supplier_name', 'country'],
+                                customer_feedback: ['feedback_id', 'customer_id', 'feedback_date', 'rating', 'comments']
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Initialize test editor
+            const testTextarea = document.getElementById('editor-test');
+            if (testTextarea) {
+                codeMirrorEditors['test'] = CodeMirror.fromTextArea(testTextarea, {
+                    mode: 'sql',
+                    theme: 'monokai',
+                    lineNumbers: true,
+                    indentUnit: 4,
+                    tabSize: 4,
+                    extraKeys: {"Ctrl-Space": "autocomplete"},
+                    hintOptions: {
+                        tables: {
+                            sales_data: ['sale_id', 'product_id', 'sale_date', 'quantity', 'unit_price', 'region', 'customer_id'],
+                            products: ['product_id', 'product_name', 'category', 'supplier_id', 'unit_price'],
+                            customers: ['customer_id', 'customer_name', 'email', 'signup_date'],
+                            employees: ['emp_id', 'emp_name', 'department', 'salary', 'hire_date'],
+                            suppliers: ['supplier_id', 'supplier_name', 'country'],
+                            customer_feedback: ['feedback_id', 'customer_id', 'feedback_date', 'rating', 'comments']
+                        }
+                    }
+                });
+            }
+        }
+
+        // Get SQL from CodeMirror editor
+        function getSQLFromEditor(sectionId) {
+            if (codeMirrorEditors[sectionId]) {
+                return codeMirrorEditors[sectionId].getValue().trim();
+            }
+            // Fallback to textarea if CodeMirror not available
+            const textarea = document.getElementById(`editor${sectionId}`);
+            return textarea ? textarea.value.trim() : '';
+        }
+
+        // Execute SQL query using SQL.js
+        function executeSQL(sectionId) {
+            if (!db) {
+                showError(sectionId, 'Database not initialized. Please wait for SQL engine to load...');
+                return;
+            }
+
+            const sql = getSQLFromEditor(sectionId);
+            const outputElement = document.getElementById(`output${sectionId}`);
+            
+            outputElement.innerHTML = '';
+            outputElement.classList.remove('text-red-400', 'text-green-400');
+            
+            if (!sql) {
+                showError(sectionId, 'Please write a SQL query first.');
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                const result = db.exec(sql);
+                const endTime = performance.now();
+                
+                displaySQLResult(outputElement, result, sql, endTime - startTime);
+                completedQuestions.add(sectionId);
+                updateProgress();
+                
+            } catch (error) {
+                showError(sectionId, error.message);
+                console.error('SQL Error:', error);
+            }
+        }
+
+        // Execute test query
+        function executeTestQuery() {
+            if (!db) {
+                showError('test', 'Database not initialized. Please wait for SQL engine to load...');
+                return;
+            }
+
+            const sql = codeMirrorEditors['test'] ? codeMirrorEditors['test'].getValue().trim() : document.getElementById('editor-test').value.trim();
+            const outputElement = document.getElementById('output-test');
+            
+            outputElement.innerHTML = '';
+            outputElement.classList.remove('text-red-400', 'text-green-400');
+            
+            if (!sql) {
+                showError('test', 'Please write a SQL query first.');
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                const result = db.exec(sql);
+                const endTime = performance.now();
+                
+                displaySQLResult(outputElement, result, sql, endTime - startTime);
+                
+            } catch (error) {
+                showError('test', error.message);
+                console.error('SQL Error:', error);
+            }
+        }
+
+        // Display SQL results
+        function displaySQLResult(outputElement, result, sql, executionTime) {
+            // Show executed SQL
+            const sqlInfo = document.createElement('div');
+            sqlInfo.className = 'query-info';
+            sqlInfo.innerHTML = `<span>Executed: <code>${sql}</code></span>`;
+            outputElement.appendChild(sqlInfo);
+            
+            // Show success message
+            const successInfo = document.createElement('div');
+            successInfo.className = 'query-info query-success';
+            
+            if (result.length === 0) {
+                successInfo.textContent = '✓ Query executed successfully (no results returned)';
+            } else {
+                const rowCount = result[0].values.length;
+                successInfo.textContent = `✓ Query executed successfully, returned ${rowCount} row(s)`;
+            }
+            outputElement.appendChild(successInfo);
+            
+            // Display results for SELECT queries
+            if (result.length > 0 && result[0].values.length > 0) {
+                const table = document.createElement('table');
+                table.className = 'results-table';
+                
+                // Create header
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                result[0].columns.forEach(col => {
+                    const th = document.createElement('th');
+                    th.textContent = col;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+                
+                // Create body
+                const tbody = document.createElement('tbody');
+                result[0].values.forEach(row => {
+                    const tr = document.createElement('tr');
+                    row.forEach(cell => {
+                        const td = document.createElement('td');
+                        td.textContent = cell;
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+                
+                outputElement.appendChild(table);
+            }
+            
+            // Show execution time
+            const timeInfo = document.createElement('div');
+            timeInfo.className = 'query-info';
+            timeInfo.textContent = `Execution time: ${Math.round(executionTime)}ms`;
+            outputElement.appendChild(timeInfo);
+        }
+
+        // Show error message
+        function showError(sectionId, message) {
+            const outputElement = document.getElementById(`output${sectionId}`);
+            outputElement.innerHTML = `
+                <div class="query-error font-bold">SQL Error:</div>
+                <div>${message}</div>
+                <div class="mt-2 text-sm">Check your SQL syntax and try again.</div>
+            `;
+            outputElement.classList.add('text-red-400');
+        }
+
+        // Reset database
+        function resetDatabase() {
+            if (!db) return;
+            
+            db.close();
+            db = new SQL.Database();
+            createSampleDatabase();
+            
+            // Clear all outputs
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const outputElement = document.getElementById(`output${i}`);
+                if (outputElement) {
+                    outputElement.textContent = 'Query results will appear here...';
+                    outputElement.classList.remove('text-red-400', 'text-green-400');
+                }
+            }
+            
+            const testOutput = document.getElementById('output-test');
+            testOutput.textContent = 'Test results will appear here...';
+            testOutput.classList.remove('text-red-400', 'text-green-400');
+            
+            console.log('Database reset to initial state');
+        }
+
+        // --- Utility Functions ---
+
+        // Update progress bar
+        function updateProgress() {
+            const codingProgress = (completedQuestions.size / TOTAL_QUESTIONS) * 70;
+            const mcqProgress = (Object.keys(mcqAnswers).length / TOTAL_MCQS) * 30;
+            const totalProgress = codingProgress + mcqProgress;
+            document.getElementById('progress-fill').style.width = `${totalProgress}%`;
+        }
+
+        // Helper function for copying text to clipboard
+        function copyToClipboard(text) {
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = text;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            
+            try {
+                document.execCommand('copy');
+                return true;
+            } catch (err) {
+                console.error('Copy command failed:', err);
+                return false;
+            } finally {
+                document.body.removeChild(tempTextArea);
+            }
+        }
+        
+        // Function to copy the code for a specific section
+        function copyCode(sectionId) {
+            const code = getSQLFromEditor(sectionId);
+            if (copyToClipboard(code)) {
+                const button = document.querySelector(`.copy-button[data-section="${sectionId}"]`);
+                const originalText = button.textContent;
+                button.textContent = "Copied!";
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 1500);
+            }
+        }
+        
+        // Function to copy all answers
+        function copyAllAnswers() {
+            let allCode = "=== SQL QUERIES FOR DATA ANALYTICS ===\n\n";
+            
+            // SQL queries
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const code = getSQLFromEditor(i);
+                allCode += `-- Question ${i}\n${code}\n\n`;
+            }
+            
+            // Multiple choice answers
+            allCode += "=== MULTIPLE CHOICE ANSWERS ===\n\n";
+            for (let i = 1; i <= TOTAL_MCQS; i++) {
+                const answer = mcqAnswers[i] || "Not answered";
+                allCode += `MCQ M${i}: ${answer}\n`;
+            }
+            
+            const submissionArea = document.getElementById('submission-area');
+            submissionArea.value = allCode;
+            
+            if (copyToClipboard(allCode)) {
+                const successMessage = document.getElementById('copy-success');
+                successMessage.style.display = 'block';
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Function to handle multiple choice questions
+        function handleMCQ(mcqId) {
+            const selectedOption = document.querySelector(`input[name="mcq${mcqId}"]:checked`);
+            const container = document.getElementById(`mcq-container-${mcqId}`);
+            
+            if (!selectedOption) {
+                alert("Please select an answer before submitting!");
+                return;
+            }
+
+            const answerText = selectedOption.nextElementSibling.textContent;
+            mcqAnswers[mcqId] = answerText;
+            container.classList.add('mcq-submitted');
+            
+            const options = document.querySelectorAll(`input[name="mcq${mcqId}"]`);
+            options.forEach(opt => {
+                opt.disabled = true;
+            });
+            
+            const submitButton = document.querySelector(`.submit-mcq[data-mcq="${mcqId}"]`);
+            submitButton.textContent = "Answer Submitted";
+            submitButton.disabled = true;
+            
+            updateProgress();
+        }
+
+        // Function to toggle sample solution for first question only
+        function toggleSolution(sectionId) {
+            const solutionElement = document.getElementById(`solution${sectionId}`);
+            const button = document.querySelector(`.toggle-solution[data-section="${sectionId}"]`);
+            
+            if (solutionElement.classList.contains('hidden')) {
+                solutionElement.classList.remove('hidden');
+                button.textContent = 'Hide Solution';
+            } else {
+                solutionElement.classList.add('hidden');
+                button.textContent = 'Show Solution';
+            }
+        }
+
+        // Function to set up the Light/Dark Mode toggle
+        function setupThemeToggle() {
+            const toggleButton = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+
+            function updateTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                toggleButton.textContent = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+                localStorage.setItem('theme', theme);
+            }
+
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            updateTheme(savedTheme);
+
+            toggleButton.addEventListener('click', () => {
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                updateTheme(newTheme);
+            });
+        }
+
+        // Initialize the application
+        async function initializeApp() {
+            // Initialize SQL.js database first
+            await initializeDatabase();
+            
+            // Initialize CodeMirror editors
+            initializeEditors();
+            
+            // Set up event listeners for all SQL question buttons
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                document.querySelector(`.run-button[data-section="${i}"]`).addEventListener('click', () => executeSQL(i));
+                document.querySelector(`.copy-button[data-section="${i}"]`).addEventListener('click', () => copyCode(i));
+            }
+            
+            // Set up multiple choice question handlers
+            for (let i = 1; i <= TOTAL_MCQS; i++) {
+                document.querySelector(`.submit-mcq[data-mcq="${i}"]`).addEventListener('click', () => handleMCQ(i));
+                
+                const options = document.querySelectorAll(`input[name="mcq${i}"]`);
+                options.forEach(option => {
+                    option.addEventListener('change', function() {
+                        const allOptions = document.querySelectorAll(`.mcq-option input[name="mcq${i}"]`);
+                        allOptions.forEach(opt => {
+                            opt.closest('.mcq-option').classList.remove('selected');
+                        });
+                        this.closest('.mcq-option').classList.add('selected');
+                    });
+                });
+            }
+            
+            // Set up solution toggle for first question only
+            document.querySelector('.toggle-solution').addEventListener('click', () => toggleSolution(1));
+            
+            // Set up the copy all button
+            document.getElementById('copy-all-btn').addEventListener('click', copyAllAnswers);
+            
+            // Set up test area
+            document.getElementById('run-test').addEventListener('click', executeTestQuery);
+            document.getElementById('reset-db').addEventListener('click', resetDatabase);
+            
+            // Set up theme toggle
+            setupThemeToggle();
+            
+            // Initialize progress bar
+            updateProgress();
+
+            console.log("Application fully initialized with SQL.js engine");
+        }
+
+        // Initialize when the page loads
+        window.addEventListener('load', initializeApp);
+    </script>
+</body>
+</html>
