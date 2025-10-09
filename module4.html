@@ -4,95 +4,227 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Module 4: SQL Basics II: Aggregations - IAF 603</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <!-- Google Fonts -->
+    <!-- Inter font and Source Code Pro for code -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .code-block {
+            position: relative;
+            background-color: #f4f4f5;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+        .code-block pre {
+            margin: 0;
+            overflow-x: auto;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 0.75rem;
+            line-height: 1;
+        }
+        .text-justify {
+            text-align: justify;
+        }
+    </style>
     <!-- Highlight.js for code highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <!-- MathJax CDN -->
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- Custom MathJax Configuration -->
-    <script src="./js/mathjax.js"></script>
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="./css/styles.css">
 </head>
-<body>
+<body class="bg-gray-100 font-inter">
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="./index.html">IAF 603: Preparing Data for Analytics</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a class="text-xl font-bold text-gray-800" href="./index.html">IAF 603: Preparing Data for Analytics</a>
+            <button id="menu-btn" class="lg:hidden text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <div id="navbar-menu" class="hidden lg:flex lg:items-center lg:w-auto w-full">
+                <ul class="flex flex-col lg:flex-row lg:space-x-8 mt-4 lg:mt-0">
+                    <li><a class="nav-link text-gray-600 hover:text-gray-900" href="./index.html">Home</a></li>
+                    <li class="relative group">
+                        <a class="nav-link text-gray-600 hover:text-gray-900 cursor-pointer" id="modules-dropdown">
                             Modules
+                            <svg class="w-4 h-4 inline ml-1 transform group-hover:rotate-180 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="./module1.html">Module 1</a></li>
-                            <li><a class="dropdown-item" href="./module2.html">Module 2</a></li>
-                            <li><a class="dropdown-item" href="./module3.html">Module 3</a></li>
-                            <li><a class="dropdown-item" href="./module4.html">Module 4</a></li>
-                            <li><a class="dropdown-item" href="./module5.html">Module 5</a></li>
-                            <li><a class="dropdown-item" href="./module6.html">Module 6</a></li>
-                            <li><a class="dropdown-item" href="./module7.html">Module 7</a></li>
-                            <li><a class="dropdown-item" href="./module8.html">Module 8</a></li>
-                            <li><a class="dropdown-item" href="./module9.html">Module 9</a></li>
-                            <li><a class="dropdown-item" href="./module10.html">Module 10</a></li>
-                            <li><a class="dropdown-item" href="./module11.html">Module 11</a></li>
-                            <li><a class="dropdown-item" href="./module12.html">Module 12</a></li>
-                            <li><a class="dropdown-item" href="./module13.html">Module 13</a></li>
-                            <li><a class="dropdown-item" href="./module14.html">Module 14</a></li>
+                        <ul id="dropdown-menu" class="absolute hidden bg-white shadow-lg rounded-md mt-2 w-48 py-2 z-50">
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="./module1.html">Module 1</a></li>
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="./module2.html">Module 2</a></li>
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="./module3.html">Module 3</a></li>
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="./module4.html">Module 4</a></li>
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="./module5.html">Module 5</a></li>
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="./module6.html">Module 6</a></li>
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="./module7.html">Module 7</a></li>
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="./module8.html">Module 8</a></li>
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="./module9.html">Module 9</a></li>
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="./module10.html">Module 10</a></li>
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="./module11.html">Module 11</a></li>
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="./module12.html">Module 12</a></li>
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="./module13.html">Module 13</a></li>
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="./module14.html">Module 14</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html#contact">Contact</a>
-                    </li>
+                    <li><a class="nav-link text-gray-600 hover:text-gray-900" href="./index.html#contact">Contact</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-
     <!-- Main Content -->
-    <div class="container my-5">
+    <div class="container mx-auto my-8 px-4">
         <!-- Module Title -->
-        <section class="text-center py-5 bg-white rounded shadow">
-            <h1 class="display-4 fw-bold text-dark">Module 4: SQL Basics II: Aggregations</h1>
+        <section class="text-center py-10 bg-white rounded-xl shadow-lg">
+            <h1 class="text-4xl sm:text-5xl font-bold text-gray-800">Module 4: SQL Basics II: Aggregations</h1>
         </section>
-
         <!-- Module Content -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
+        <section class="my-8">
+            <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg text-justify">
                 <!-- Learning Objectives -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Learning Objectives</h2>
+                <h2 class="text-2xl font-bold border-b-2 pb-2 mb-4">Learning Objectives</h2>
                 <p>Upon completion of this module, participants will be able to:</p>
-                <ul>
+                <ul class="list-disc list-inside space-y-1">
                     <li>Utilize SQL aggregate functions (<code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code>) to summarize data.</li>
                     <li>Apply the <code>GROUP BY</code> clause to group rows by one or more columns for aggregation.</li>
                     <li>Use the <code>HAVING</code> clause to filter aggregated results.</li>
                     <li>Combine <code>GROUP BY</code> with <code>WHERE</code> and <code>ORDER BY</code> for comprehensive data analysis.</li>
                     <li>Understand the execution order of SQL clauses when using aggregations.</li>
+                    <li>Perform advanced aggregations using <code>GROUPING SETS</code>, <code>CUBE</code>, and <code>ROLLUP</code>.</li>
+                    <li>Use SQL Window Functions to perform calculations across a set of rows without collapsing the result set.</li>
                     <li>Execute aggregate queries in cloud-based environments like Microsoft Fabric Lakehouse.</li>
                 </ul>
-
                 <!-- Introduction to SQL Aggregations -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Introduction to SQL Aggregations</h2>
+                <h2 class="text-2xl font-bold border-b-2 pb-2 mb-4 mt-8">Introduction to SQL Aggregations</h2>
                 <p>Aggregations in SQL allow you to summarize data across multiple rows, transforming detailed records into meaningful insights. This module builds on the <code>SELECT</code>, <code>WHERE</code>, and <code>ORDER BY</code> clauses from Module 3, introducing aggregate functions like <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, and <code>MAX</code>. The <code>GROUP BY</code> clause organizes data into groups for aggregation, while <code>HAVING</code> filters those groups. These tools are critical for tasks like calculating total sales, average patient ages, or minimum stock levels in real-world scenarios, such as analyzing healthcare trends in Greensboro, NC, or optimizing a local business's inventory.</p>
                 <p>Aggregations are widely used across industries. For example, in healthcare, you might calculate the average length of hospital stays per diagnosis; in retail, total sales by product category; in education, average grades by course. Understanding how to combine these functions with filtering and sorting enhances your ability to extract actionable insights from large datasets efficiently.</p>
+                                <!-- Dummy Tables Section -->
+                <div class="mt-8">
+                    <h2 id="dummy-tables-header" class="text-2xl font-bold border-b-2 pb-2 cursor-pointer select-none">
+                        Dummy Tables for Practice
+                        <span class="float-right text-gray-500" id="toggle-icon">+</span>
+                    </h2>
+                    <div id="dummy-tables-content" class="hidden">
+                        <p class="text-justify mt-4">Below are the SQL statements to create and populate the sample tables used in this module. You can copy and paste this code into your preferred SQL environment to follow along with the examples.</p>
+                        <div class="code-block">
+                            <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
+                            <pre><code class="language-sql">
+                                
+DROP TABLE IF EXISTS admissions CASCADE;
+DROP TABLE IF EXISTS customres CASCADE;
+DROP TABLE IF EXISTS Sales CASCADE; 
+DROP TABLE IF EXISTS employees CASCADE;
 
+                                -- Create and populate ADMISSIONS table
+CREATE TABLE ADMISSIONS (
+    hadm_id INT,
+    subject_id INT,
+    admit_time TIMESTAMP,
+    discharge_time TIMESTAMP,
+    diagnosis VARCHAR(255)
+);
+
+INSERT INTO ADMISSIONS (hadm_id, subject_id, admit_time, discharge_time, diagnosis) VALUES
+(101, 1001, '2025-01-10 08:00:00', '2025-01-15 12:00:00', 'Pneumonia'),
+(102, 1002, '2025-02-01 14:00:00', '2025-02-03 09:00:00', 'Fracture'),
+(103, 1001, '2025-03-05 10:00:00', '2025-03-12 15:00:00', 'Pneumonia'),
+(104, 1003, '2025-04-10 07:00:00', '2025-04-11 11:00:00', 'Flu'),
+(105, 1004, '2025-05-15 09:00:00', '2025-05-18 17:00:00', 'Heart Attack'),
+(106, 1005, '2025-06-20 11:00:00', '2025-06-22 10:00:00', 'Pneumonia'),
+(107, 1002, '2025-07-01 08:00:00', '2025-07-05 16:00:00', 'Appendicitis'),
+(108, 1004, '2025-08-01 13:00:00', '2025-08-05 11:00:00', 'Heart Attack');
+
+-- Create and populate Sales table
+CREATE TABLE Sales (
+    sale_id INT,
+    product VARCHAR(255),
+    quantity INT,
+    price DECIMAL(10, 2),
+    category VARCHAR(255)
+);
+
+INSERT INTO Sales (sale_id, product, quantity, price, category) VALUES
+(1, 'Laptop', 2, 800.00, 'Electronics'),
+(2, 'Mouse', 5, 20.00, 'Accessories'),
+(3, 'Keyboard', 3, 50.00, 'Accessories'),
+(4, 'Monitor', 1, 300.00, 'Electronics'),
+(5, 'Smartphone', 2, 600.00, 'Electronics'),
+(6, 'Headphones', 10, 80.00, 'Accessories'),
+(7, 'Webcam', 4, 70.00, 'Accessories'),
+(8, 'External Hard Drive', 3, 120.00, 'Electronics'),
+(9, 'Desk Lamp', 5, 25.00, 'Home Office'),
+(10, 'Wireless Charger', 8, 35.00, 'Electronics');
+
+-- Create and populate Employees table
+CREATE TABLE Employees (
+    emp_id INT,
+    name VARCHAR(255),
+    salary DECIMAL(10, 2),
+    department VARCHAR(255),
+    hire_date DATE
+);
+
+INSERT INTO Employees (emp_id, name, salary, department, hire_date) VALUES
+(1, 'John Doe', 60000.00, 'IT', '2024-01-15'),
+(2, 'Jane Smith', 75000.00, 'HR', '2023-06-20'),
+(3, 'Mike Johnson', 55000.00, 'IT', '2024-03-10'),
+(4, 'Sara Lee', 80000.00, 'Finance', '2023-11-01'),
+(5, 'David Wilson', 95000.00, 'Finance', '2024-02-28'),
+(6, 'Emily Davis', 62000.00, 'IT', '2023-09-01'),
+(7, 'Chris Evans', 88000.00, 'HR', '2024-04-05'),
+(8, 'Laura Hall', 72000.00, 'Marketing', '2023-10-10');</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- How to Use with PgAdmin 4 Section -->
+                <div class="mt-8">
+                    <h2 id="pgadmin-header" class="text-2xl font-bold border-b-2 pb-2 cursor-pointer select-none">
+                        Running SQL in PgAdmin 4
+                        <span class="float-right text-gray-500" id="pgadmin-icon">+</span>
+                    </h2>
+                    <div id="pgadmin-content" class="hidden text-justify">
+                        <p class="mt-4">PgAdmin 4 is a powerful, open-source administration and development platform for PostgreSQL. To use the SQL code from this module, follow these simple steps:</p>
+                        <ol class="list-decimal list-inside space-y-4 mt-4">
+                            <li>
+                                <strong>Install and Launch PgAdmin 4:</strong> Download and install PgAdmin 4 from the official website. Once installed, launch the application.
+                            </li>
+                            <li>
+                                <strong>Connect to a Server:</strong> In the left-hand browser panel, right-click on "Servers" and select "Create" -> "Server." Enter a name for your server and provide the connection details for your PostgreSQL database (e.g., hostname, port, username, and password).
+                            </li>
+                            <li>
+                                <strong>Create a New Database:</strong> Once connected to your server, right-click on "Databases" and select "Create" -> "Database." Name your new database something descriptive, like `iaf603_practice`.
+                            </li>
+                            <li>
+                                <strong>Open the Query Tool:</strong> Double-click on your new database to open it. Then, from the menu bar, select "Tools" -> "Query Tool." This will open the SQL editor where you can write and execute queries.
+                            </li>
+                            <li>
+                                <strong>Copy and Paste the Code:</strong> Go back to the **Dummy Tables for Practice** section above. Click the "Copy" button to copy the entire block of SQL code. Then, paste it into the Query Tool editor in PgAdmin 4.
+                            </li>
+                            <li>
+                                <strong>Execute the Code:</strong> Press the **"Execute/Refresh"** button (a play icon) or use the keyboard shortcut **F5** to run the code. This will create the tables and insert the sample data. You can verify this by refreshing the "Tables" section in the browser panel for your database.
+                            </li>
+                            <li>
+                                <strong>Practice the Queries:</strong> Now you can use the same Query Tool to run the queries from the other sections of this module. This allows you to experiment and see the results firsthand.
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                
                 <!-- Aggregate Functions -->
-                <h3 class="h4 fw-bold mb-3">Aggregate Functions</h3>
+                <h3 class="text-xl font-bold mb-3 mt-6">Aggregate Functions</h3>
                 <p>Aggregate functions process multiple rows to produce a single summary value. Common functions include:</p>
-                <ul>
+                <ul class="list-disc list-inside space-y-1">
                     <li><strong>COUNT:</strong> Counts the number of rows or non-NULL values in a column.</li>
                     <li><strong>SUM:</strong> Adds up numeric values in a column.</li>
                     <li><strong>AVG:</strong> Calculates the average of numeric values.</li>
@@ -100,49 +232,51 @@
                     <li><strong>MAX:</strong> Finds the largest value in a column.</li>
                 </ul>
                 <p><strong>Sample Data (ADMISSIONS Table):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>hadm_id</th>
-                            <th>subject_id</th>
-                            <th>admit_time</th>
-                            <th>discharge_time</th>
-                            <th>diagnosis</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>101</td>
-                            <td>1001</td>
-                            <td>2025-01-10 08:00:00</td>
-                            <td>2025-01-15 12:00:00</td>
-                            <td>Pneumonia</td>
-                        </tr>
-                        <tr>
-                            <td>102</td>
-                            <td>1002</td>
-                            <td>2025-02-01 14:00:00</td>
-                            <td>2025-02-03 09:00:00</td>
-                            <td>Fracture</td>
-                        </tr>
-                        <tr>
-                            <td>103</td>
-                            <td>1001</td>
-                            <td>2025-03-05 10:00:00</td>
-                            <td>2025-03-12 15:00:00</td>
-                            <td>Pneumonia</td>
-                        </tr>
-                        <tr>
-                            <td>104</td>
-                            <td>1003</td>
-                            <td>2025-04-10 07:00:00</td>
-                            <td>2025-04-11 11:00:00</td>
-                            <td>Flu</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left table-auto border-collapse border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-3 font-semibold border border-gray-300">hadm_id</th>
+                                <th class="p-3 font-semibold border border-gray-300">subject_id</th>
+                                <th class="p-3 font-semibold border border-gray-300">admit_time</th>
+                                <th class="p-3 font-semibold border border-gray-300">discharge_time</th>
+                                <th class="p-3 font-semibold border border-gray-300">diagnosis</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="p-3 border border-gray-300">101</td>
+                                <td class="p-3 border border-gray-300">1001</td>
+                                <td class="p-3 border border-gray-300">2025-01-10 08:00:00</td>
+                                <td class="p-3 border border-gray-300">2025-01-15 12:00:00</td>
+                                <td class="p-3 border border-gray-300">Pneumonia</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-gray-300">102</td>
+                                <td class="p-3 border border-gray-300">1002</td>
+                                <td class="p-3 border border-gray-300">2025-02-01 14:00:00</td>
+                                <td class="p-3 border border-gray-300">2025-02-03 09:00:00</td>
+                                <td class="p-3 border border-gray-300">Fracture</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-gray-300">103</td>
+                                <td class="p-3 border border-gray-300">1001</td>
+                                <td class="p-3 border border-gray-300">2025-03-05 10:00:00</td>
+                                <td class="p-3 border border-gray-300">2025-03-12 15:00:00</td>
+                                <td class="p-3 border border-gray-300">Pneumonia</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-gray-300">104</td>
+                                <td class="p-3 border border-gray-300">1003</td>
+                                <td class="p-3 border border-gray-300">2025-04-10 07:00:00</td>
+                                <td class="p-3 border border-gray-300">2025-04-11 11:00:00</td>
+                                <td class="p-3 border border-gray-300">Flu</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
                     <pre><code class="language-sql">-- Count total admissions
 SELECT COUNT(*) AS TotalAdmissions
 FROM ADMISSIONS;
@@ -152,54 +286,70 @@ SELECT COUNT(DISTINCT subject_id) AS UniquePatients
 FROM ADMISSIONS;
 
 -- Calculate average length of stay (in days)
-SELECT AVG(discharge_time - admit_time) AS AvgStayDays
+SELECT AVG(DATEDIFF(day, admit_time, discharge_time)) AS AvgStayDays
 FROM ADMISSIONS;</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> <code>COUNT(*)</code> counts all rows, while <code>COUNT(DISTINCT subject_id)</code> counts unique patients. <code>AVG</code> computes the average stay duration, useful for hospital resource planning.</p>
+                <p><strong>Explanation:</strong> <code>COUNT(*)</code> counts all rows, while <code>COUNT(DISTINCT subject_id)</code> counts unique patients. <code>AVG</code> computes the average stay duration, useful for hospital resource planning. Note that <code>DATEDIFF</code> is often used to calculate time intervals in days.</p>
                 <p><strong>Expanded Example (Sales Table):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>sale_id</th>
-                            <th>product</th>
-                            <th>quantity</th>
-                            <th>price</th>
-                            <th>category</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Laptop</td>
-                            <td>2</td>
-                            <td>800.00</td>
-                            <td>Electronics</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Mouse</td>
-                            <td>5</td>
-                            <td>20.00</td>
-                            <td>Accessories</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Keyboard</td>
-                            <td>3</td>
-                            <td>50.00</td>
-                            <td>Accessories</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Monitor</td>
-                            <td>1</td>
-                            <td>300.00</td>
-                            <td>Electronics</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left table-auto border-collapse border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-3 font-semibold border border-gray-300">sale_id</th>
+                                <th class="p-3 font-semibold border border-gray-300">product</th>
+                                <th class="p-3 font-semibold border border-gray-300">quantity</th>
+                                <th class="p-3 font-semibold border border-gray-300">price</th>
+                                <th class="p-3 font-semibold border border-gray-300">category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="p-3 border border-gray-300">1</td>
+                                <td class="p-3 border border-gray-300">Laptop</td>
+                                <td class="p-3 border border-gray-300">2</td>
+                                <td class="p-3 border border-gray-300">800.00</td>
+                                <td class="p-3 border border-gray-300">Electronics</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-gray-300">2</td>
+                                <td class="p-3 border border-gray-300">Mouse</td>
+                                <td class="p-3 border border-gray-300">5</td>
+                                <td class="p-3 border border-gray-300">20.00</td>
+                                <td class="p-3 border border-gray-300">Accessories</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-gray-300">3</td>
+                                <td class="p-3 border border-gray-300">Keyboard</td>
+                                <td class="p-3 border border-gray-300">3</td>
+                                <td class="p-3 border border-gray-300">50.00</td>
+                                <td class="p-3 border border-gray-300">Accessories</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-gray-300">4</td>
+                                <td class="p-3 border border-gray-300">Monitor</td>
+                                <td class="p-3 border border-gray-300">1</td>
+                                <td class="p-3 border border-gray-300">300.00</td>
+                                <td class="p-3 border border-gray-300">Electronics</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-gray-300">5</td>
+                                <td class="p-3 border border-gray-300">Smartphone</td>
+                                <td class="p-3 border border-gray-300">2</td>
+                                <td class="p-3 border border-gray-300">600.00</td>
+                                <td class="p-3 border border-gray-300">Electronics</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-gray-300">6</td>
+                                <td class="p-3 border border-gray-300">Headphones</td>
+                                <td class="p-3 border border-gray-300">10</td>
+                                <td class="p-3 border border-gray-300">80.00</td>
+                                <td class="p-3 border border-gray-300">Accessories</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
                     <pre><code class="language-sql">-- Total sales value
 SELECT SUM(quantity * price) AS TotalRevenue
 FROM Sales;
@@ -208,55 +358,47 @@ FROM Sales;
 SELECT MIN(price) AS MinPrice, MAX(price) AS MaxPrice
 FROM Sales;</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> <code>SUM</code> calculates total revenue, while <code>MIN</code> and <code>MAX</code> identify price ranges, aiding pricing strategies.</p>
-
+                <p><strong>Explanation:</strong> <code>SUM</code> calculates total revenue, while <code>MIN</code> and <code>MAX</code> identify price ranges, aiding pricing strategies. Notice how the data table has been expanded to better illustrate these functions.</p>
                 <!-- GROUP BY Clause: Grouping Data -->
-                <h3 class="h4 fw-bold mb-3">GROUP BY Clause: Grouping Data</h3>
+                <h3 class="text-xl font-bold mb-3 mt-6">GROUP BY Clause: Grouping Data</h3>
                 <p>The <code>GROUP BY</code> clause groups rows with identical values in specified columns into summary rows, applying aggregate functions to each group.</p>
-                <ul>
+                <ul class="list-disc list-inside space-y-1">
                     <li><strong>Purpose:</strong> Summarize data by categories, e.g., total admissions per diagnosis.</li>
-                    <li><strong>Rules:</strong> Non-aggregated columns in <code>SELECT</code> must appear in <code>GROUP BY</code>.</li>
+                    <li><strong>Rules:</strong> Any column in the <code>SELECT</code> statement that is not an aggregate function must be included in the <code>GROUP BY</code> clause.</li>
                 </ul>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
                     <pre><code class="language-sql">-- Count admissions by diagnosis
 SELECT diagnosis, COUNT(*) AS AdmissionCount
 FROM ADMISSIONS
 GROUP BY diagnosis;
 
 -- Average stay by diagnosis
-SELECT diagnosis, AVG(discharge_time - admit_time) AS AvgStayDays
+SELECT diagnosis, AVG(DATEDIFF(day, admit_time, discharge_time)) AS AvgStayDays
 FROM ADMISSIONS
-GROUP BY diagnosis;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> The first query counts admissions per diagnosis, the second calculates average stay length, both grouped by diagnosis for healthcare analysis.</p>
-                <p><strong>Expanded Example (Sales by Category):</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Total revenue by category
-SELECT category, SUM(quantity * price) AS CategoryRevenue
-FROM Sales
-GROUP BY category;
+GROUP BY diagnosis;
 
--- Count and average price by category
-SELECT
-    category,
-    COUNT(*) AS ProductCount,
-    AVG(price) AS AvgPrice
-FROM Sales
-GROUP BY category;</code></pre>
+-- Grouping by multiple columns (e.g., patient and diagnosis)
+SELECT 
+    subject_id, 
+    diagnosis, 
+    COUNT(*) AS AdmissionCount
+FROM 
+    ADMISSIONS
+GROUP BY 
+    subject_id, 
+    diagnosis;</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> These queries summarize sales performance, helping identify high-value categories or pricing trends.</p>
-
+                <p><strong>Explanation:</strong> The first query counts admissions per diagnosis, the second calculates average stay length. The third example shows how you can group by multiple columns to get a more granular breakdown, in this case, the number of times each patient had a specific diagnosis.</p>
                 <!-- HAVING Clause: Filtering Groups -->
-                <h3 class="h4 fw-bold mb-3">HAVING Clause: Filtering Groups</h3>
-                <p>The <code>HAVING</code> clause filters grouped results, applied after <code>GROUP BY</code>, unlike <code>WHERE</code> which filters individual rows before aggregation.</p>
-                <ul>
+                <h3 class="text-xl font-bold mb-3 mt-6">HAVING Clause: Filtering Groups</h3>
+                <p>The <code>HAVING</code> clause filters grouped results, applied after <code>GROUP BY</code>, unlike <code>WHERE</code> which filters individual rows before aggregation. This is the key difference: <code>WHERE</code> operates on rows, and <code>HAVING</code> operates on groups.</p>
+                <ul class="list-disc list-inside space-y-1">
                     <li><strong>Use Case:</strong> Filter groups based on aggregate values, e.g., only diagnoses with more than 5 admissions.</li>
                     <li><strong>Syntax:</strong> <code>HAVING condition</code>, using aggregates like <code>COUNT(*) > 5</code>.</li>
                 </ul>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
                     <pre><code class="language-sql">-- Diagnoses with more than one admission
 SELECT diagnosis, COUNT(*) AS AdmissionCount
 FROM ADMISSIONS
@@ -264,96 +406,265 @@ GROUP BY diagnosis
 HAVING COUNT(*) > 1;
 
 -- Diagnoses with average stay > 5 days
-SELECT diagnosis, AVG(discharge_time - admit_time) AS AvgStayDays
+SELECT diagnosis, AVG(DATEDIFF(day, admit_time, discharge_time)) AS AvgStayDays
 FROM ADMISSIONS
 GROUP BY diagnosis
-HAVING AVG(discharge_time - admit_time) > INTERVAL '5 days';</code></pre>
+HAVING AVG(DATEDIFF(day, admit_time, discharge_time)) > 5;</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> <code>HAVING</code> filters groups, e.g., only showing diagnoses with multiple admissions or long average stays.</p>
+                <p><strong>Explanation:</strong> <code>HAVING</code> filters groups, e.g., only showing diagnoses with multiple admissions or long average stays. Note that in many SQL dialects, you cannot use an alias like `AvgStayDays` in the `HAVING` clause, so you must repeat the full aggregate function.</p>
                 <p><strong>Expanded Example (High-Value Categories):</strong></p>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
                     <pre><code class="language-sql">-- Categories with total revenue > 1000
 SELECT category, SUM(quantity * price) AS CategoryRevenue
 FROM Sales
 GROUP BY category
 HAVING SUM(quantity * price) > 1000;</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> This identifies high-performing categories for targeted marketing.</p>
+                <p><strong>Explanation:</strong> This identifies high-performing categories for targeted marketing. Notice how the `HAVING` clause filters the results of the `SUM` function.</p>
 
-                <!-- Combining WHERE, GROUP BY, HAVING, and ORDER BY -->
-                <h3 class="h4 fw-bold mb-3">Combining WHERE, GROUP BY, HAVING, and ORDER BY</h3>
-                <p>These clauses work together to filter, group, filter groups, and sort results for comprehensive analysis.</p>
+                <!-- Aggregations with CASE Statements -->
+                <h3 class="text-xl font-bold mb-3 mt-6">Aggregations with <code>CASE</code> Statements</h3>
+                <p>Combining aggregate functions with <code>CASE</code> statements allows you to perform conditional counts and sums. This is extremely useful for analyzing data based on specific conditions without needing multiple queries or complex joins.</p>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Admissions in 2025, grouped by diagnosis, with count > 1, sorted by count
-SELECT diagnosis, COUNT(*) AS AdmissionCount
-FROM ADMISSIONS
-WHERE EXTRACT(YEAR FROM admit_time) = 2025
-GROUP BY diagnosis
-HAVING COUNT(*) > 1
-ORDER BY AdmissionCount DESC;</code></pre>
+                    <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
+                    <pre><code class="language-sql">-- Count the number of sales for each category and a count of high-value sales (> $100)
+SELECT 
+    category,
+    COUNT(*) AS TotalSales,
+    SUM(CASE WHEN price > 100 THEN 1 ELSE 0 END) AS HighValueSales
+FROM 
+    Sales
+GROUP BY 
+    category;</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> <code>WHERE</code> filters 2025 admissions, <code>GROUP BY</code> groups by diagnosis, <code>HAVING</code> keeps frequent diagnoses, and <code>ORDER BY</code> sorts by count.</p>
-                <p><strong>Expanded Example (Employee Salaries):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>emp_id</th>
-                            <th>name</th>
-                            <th>salary</th>
-                            <th>department</th>
-                            <th>hire_date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>John Doe</td>
-                            <td>60000</td>
-                            <td>IT</td>
-                            <td>2024-01-15</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Jane Smith</td>
-                            <td>75000</td>
-                            <td>HR</td>
-                            <td>2023-06-20</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Mike Johnson</td>
-                            <td>55000</td>
-                            <td>IT</td>
-                            <td>2024-03-10</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Sara Lee</td>
-                            <td>80000</td>
-                            <td>Finance</td>
-                            <td>2023-11-01</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <p><strong>Explanation:</strong> This query calculates the total number of sales per category and, within the same query, counts how many of those sales were for products priced over $100. The <code>CASE</code> statement acts like a conditional counter within the `SUM` function.</p>
+                                
+                <!-- Advanced Aggregation Techniques -->
+                <h2 class="text-2xl font-bold border-b-2 pb-2 mb-4 mt-8">Advanced Aggregation Techniques</h2>
+                <p>For more complex reporting and data analysis, SQL provides advanced aggregation features that can generate multiple grouping combinations in a single query. This is especially useful for creating summary reports with subtotals at various levels.</p>
+
+                <h3 class="text-xl font-bold mb-3 mt-6"><code>GROUPING SETS</code>, <code>CUBE</code>, and <code>ROLLUP</code></h3>
+                <p>These powerful clauses are like shortcuts for performing multiple <code>GROUP BY</code> queries and combining their results. They save you from writing many separate queries and then using <code>UNION ALL</code> to combine them. Think of them as tools to create multi-level summary reports.</p>
+
+                <p>Let's use a simpler table to understand these concepts. Consider this **ProductSales** table:</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left table-auto border-collapse border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-3 font-semibold border border-gray-300">category</th>
+                                <th class="p-3 font-semibold border border-gray-300">product</th>
+                                <th class="p-3 font-semibold border border-gray-300">sales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-3 border border-gray-300">Electronics</td><td class="p-3 border border-gray-300">Laptop</td><td class="p-3 border border-gray-300">1000</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Electronics</td><td class="p-3 border border-gray-300">Mouse</td><td class="p-3 border border-gray-300">200</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Home</td><td class="p-3 border border-gray-300">Desk</td><td class="p-3 border border-gray-300">500</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Home</td><td class="p-3 border border-gray-300">Lamp</td><td class="p-3 border border-gray-300">150</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="flex justify-center my-6">
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-lg w-full">
+                        <h4 class="text-xl font-semibold mb-3 text-center">Comparing ROLLUP and CUBE</h4>
+                        <p class="text-center text-sm text-gray-600 mb-4">
+                            `ROLLUP` creates subtotals for a hierarchy, while `CUBE` creates subtotals for all possible combinations.
+                        </p>
+                        <div class="flex flex-col md:flex-row justify-center items-center md:space-x-8">
+                            <div class="p-4 bg-white rounded-lg shadow-md mb-4 md:mb-0 w-full md:w-1/2">
+                                <h5 class="text-lg font-bold text-center mb-2"><code>ROLLUP(A, B)</code></h5>
+                                <p class="text-sm text-center text-gray-500">
+                                    Generates groups for (A, B), (A), and a grand total ().<br/>
+                                    <br/>
+                                </p>
+                                
+                            </div>
+                            <div class="p-4 bg-white rounded-lg shadow-md w-full md:w-1/2">
+                                <h5 class="text-lg font-bold text-center mb-2"><code>CUBE(A, B)</code></h5>
+                                <p class="text-sm text-center text-gray-500">
+                                    Generates groups for all possible combinations: (A, B), (A), (B), and a grand total ().
+                                </p>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="text-lg font-bold mt-4">1. <code>ROLLUP</code> for Hierarchical Summaries</h4>
+                <p>The <code>ROLLUP</code> clause is perfect for when your data has a natural hierarchy, like `category` and `product`. It gives you subtotals for each level of the hierarchy and a grand total.</p>
+                <p class="mt-4">
+                    Running <code>ROLLUP(category, product)</code> on the `ProductSales` table would produce the following result:
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left table-auto border-collapse border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-3 font-semibold border border-gray-300">category</th>
+                                <th class="p-3 font-semibold border border-gray-300">product</th>
+                                <th class="p-3 font-semibold border border-gray-300">TotalSales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-3 border border-gray-300">Electronics</td><td class="p-3 border border-gray-300">Laptop</td><td class="p-3 border border-gray-300">1000</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Electronics</td><td class="p-3 border border-gray-300">Mouse</td><td class="p-3 border border-gray-300">200</td></tr>
+                            <tr><td class="p-3 border border-gray-300 font-bold">Electronics</td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">1200</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Home</td><td class="p-3 border border-gray-300">Desk</td><td class="p-3 border border-gray-300">500</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Home</td><td class="p-3 border border-gray-300">Lamp</td><td class="p-3 border border-gray-300">150</td></tr>
+                            <tr><td class="p-3 border border-gray-300 font-bold">Home</td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">650</td></tr>
+                            <tr><td class="p-3 border border-gray-300 font-bold"></td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">1850</td></tr>
+                        </tbody>
+                    </table>
+                </div>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Average salary by department for employees hired in 2023, with avg > 70000
-SELECT department, AVG(salary) AS AvgSalary
-FROM Employees
-WHERE EXTRACT(YEAR FROM hire_date) = 2023
-GROUP BY department
-HAVING AVG(salary) > 70000
-ORDER BY AvgSalary DESC;</code></pre>
+                    <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
+                    <pre><code class="language-sql">-- Use ROLLUP to get subtotals for categories and a grand total.
+-- The output will have three levels:
+-- 1. Sales by specific category and product.
+-- 2. Subtotals for each category.
+-- 3. A grand total for all sales.
+SELECT 
+    category, 
+    product,
+    SUM(sales) AS TotalSales
+FROM 
+    ProductSales
+GROUP BY ROLLUP(category, product);</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> Filters 2023 hires, groups by department, keeps high-salary departments, and sorts by average salary.</p>
+                
+
+                <h4 class="text-lg font-bold mt-4">2. <code>CUBE</code> for All Combinations</h4>
+                <p>The <code>CUBE</code> clause is more comprehensive. It creates subtotals for every possible combination of the columns you specify, plus a grand total. This is great for multi-dimensional analysis where there's no single hierarchy.</p>
+                <p class="mt-4">
+                    Running <code>CUBE(category, product)</code> on the `ProductSales` table would produce the following result, including subtotals for each category AND each product:
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left table-auto border-collapse border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-3 font-semibold border border-gray-300">category</th>
+                                <th class="p-3 font-semibold border border-gray-300">product</th>
+                                <th class="p-3 font-semibold border border-gray-300">TotalSales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-3 border border-gray-300">Electronics</td><td class="p-3 border border-gray-300">Laptop</td><td class="p-3 border border-gray-300">1000</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Electronics</td><td class="p-3 border border-gray-300">Mouse</td><td class="p-3 border border-gray-300">200</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Home</td><td class="p-3 border border-gray-300">Desk</td><td class="p-3 border border-gray-300">500</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Home</td><td class="p-3 border border-gray-300">Lamp</td><td class="p-3 border border-gray-300">150</td></tr>
+                            <tr><td class="p-3 border border-gray-300 font-bold">Electronics</td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">1200</td></tr>
+                            <tr><td class="p-3 border border-gray-300 font-bold">Home</td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">650</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">Laptop</td><td class="p-3 border border-gray-300 font-bold">1000</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">Mouse</td><td class="p-3 border border-gray-300 font-bold">200</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">Desk</td><td class="p-3 border border-gray-300 font-bold">500</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">Lamp</td><td class="p-3 border border-gray-300 font-bold">150</td></tr>
+                            <tr><td class="p-3 border border-gray-300 font-bold"></td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300 font-bold">1850</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="code-block">
+                    <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
+                    <pre><code class="language-sql">-- Use CUBE to get subtotals for all possible combinations.
+-- The output will include:
+-- - Sales by (category, product)
+-- - Subtotals for each category
+-- - Subtotals for each product
+-- - A grand total
+SELECT 
+    category, 
+    product,
+    SUM(sales) AS TotalSales
+FROM 
+    ProductSales
+GROUP BY CUBE(category, product);</code></pre>
+                </div>
+
+                <h4 class="text-lg font-bold mt-4">3. <code>GROUPING SETS</code> for Specific Reports</h4>
+                <p>When you need to get subtotals for specific, non-hierarchical combinations, <code>GROUPING SETS</code> gives you precise control. It's like manually running multiple `GROUP BY` queries and combining them with <code>UNION ALL</code>, but in a single, more efficient statement. For example, to get total sales by category and also by product, you'd use the following query.</p>
+                <p class="mt-4">
+                    The query below would produce this result:
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left table-auto border-collapse border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-3 font-semibold border border-gray-300">category</th>
+                                <th class="p-3 font-semibold border border-gray-300">product</th>
+                                <th class="p-3 font-semibold border border-gray-300">TotalSales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-3 border border-gray-300">Electronics</td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300">1200</td></tr>
+                            <tr><td class="p-3 border border-gray-300">Home</td><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300">650</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300">Laptop</td><td class="p-3 border border-gray-300">1000</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300">Mouse</td><td class="p-3 border border-gray-300">200</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300">Desk</td><td class="p-3 border border-gray-300">500</td></tr>
+                            <tr><td class="p-3 border border-gray-300"></td><td class="p-3 border border-gray-300">Lamp</td><td class="p-3 border border-gray-300">150</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="code-block">
+                    <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
+                    <pre><code class="language-sql">-- This query is equivalent to running two separate GROUP BY queries and a total count.
+-- It combines total revenue by category AND total revenue by product in one result set.
+SELECT 
+    category,
+    product,
+    SUM(sales) AS TotalSales
+FROM 
+    ProductSales
+GROUP BY GROUPING SETS (
+    (category), -- This gets the total revenue for each category
+    (product)   -- This gets the total revenue for each product
+);</code></pre>
+                </div>
+                
+                <!-- SQL Window Functions -->
+                <h3 class="text-xl font-bold mb-3 mt-6">SQL Window Functions</h3>
+                <p>Window functions perform a calculation across a set of table rows that are somehow related to the current row. This is different from aggregate functions because they do not group rows together and collapse them into a single output row. Instead, they produce a result for each row in the original table. </p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><strong>Syntax:</strong> A window function is called with the <code>OVER()</code> clause. This clause defines the "window" of rows on which the function operates.</li>
+                    <li><strong>PARTITION BY:</strong> Divides the rows into groups for the function to operate on (similar to `GROUP BY`, but without collapsing the rows).</li>
+                    <li><strong>ORDER BY:</strong> Orders the rows within each partition.</li>
+                </ul>
+                <div class="code-block">
+                    <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
+                    <pre><code class="language-sql">-- Ranking employees by salary within each department
+SELECT 
+    name, 
+    department, 
+    salary,
+    RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS DepartmentRank
+FROM 
+    Employees;
+
+-- Calculating the average salary for each department
+SELECT 
+    name, 
+    department, 
+    salary,
+    AVG(salary) OVER (PARTITION BY department) AS AvgDepartmentSalary
+FROM 
+    Employees;</code></pre>
+                </div>
+                <p><strong>Explanation:</strong> The first query uses `RANK()` to assign a rank to each employee based on their salary, but the ranking is reset for each `department`. The second query shows each employee's salary alongside the average salary for their entire department, demonstrating how the window function can provide contextual information without changing the number of rows.</p>
 
                 <!-- Order of Execution -->
-                <h3 class="h4 fw-bold mb-3">Order of Execution</h3>
-                <p>SQL executes clauses in this order: <code>FROM</code>, <code>WHERE</code>, <code>GROUP BY</code>, <code>HAVING</code>, <code>SELECT</code>, <code>ORDER BY</code>. This means <code>HAVING</code> can use aggregates, but <code>WHERE</code> cannot.</p>
+                <h3 class="text-xl font-bold mb-3 mt-6">Order of Execution</h3>
+                <p>SQL executes clauses in a specific, logical order. Understanding this order is crucial for writing correct and efficient queries. The sequence is:</p>
+                
+                <ol class="list-decimal list-inside space-y-1">
+                    <li><strong>FROM:</strong> Determines the data source.</li>
+                    <li><strong>WHERE:</strong> Filters individual rows from the `FROM` table.</li>
+                    <li><strong>GROUP BY:</strong> Groups the filtered rows into summary groups.</li>
+                    <li><strong>HAVING:</strong> Filters the groups created by `GROUP BY`.</li>
+                    <li><strong>SELECT:</strong> Selects the final columns, including aggregated values. This is where window functions are calculated.</li>
+                    <li><strong>ORDER BY:</strong> Sorts the final result set.</li>
+                </ol>
+                <p>A key takeaway is that <code>WHERE</code> cannot filter on aggregated values because it runs before aggregation occurs. Only <code>HAVING</code> can filter on the results of aggregate functions.</p>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
                     <pre><code class="language-sql">-- Valid: Filter groups with HAVING
 SELECT diagnosis, COUNT(*) AS AdmissionCount
 FROM ADMISSIONS
@@ -363,13 +674,13 @@ HAVING COUNT(*) > 1;
 -- Invalid: Can't use aggregate in WHERE
 -- SELECT diagnosis, COUNT(*) FROM ADMISSIONS WHERE COUNT(*) > 1 GROUP BY diagnosis; -- Error</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> <code>HAVING</code> filters after grouping, ensuring correct aggregate-based filtering.</p>
-
+                <p><strong>Explanation:</strong> The invalid query fails because <code>WHERE</code> tries to evaluate `COUNT(*)` on individual rows, which is not possible. The `HAVING` clause, running after `GROUP BY`, correctly performs this filtering on the aggregated results.</p>
+                                
                 <!-- Running Aggregations in Microsoft Fabric -->
-                <h3 class="h4 fw-bold mb-3">Running Aggregations in Microsoft Fabric Lakehouse</h3>
-                <p>In Microsoft Fabric, aggregations are executed on large-scale data lakes using SQL endpoints or notebooks, leveraging distributed computing for efficiency.</p>
+                <h3 class="text-xl font-bold mb-3 mt-6">Running Aggregations in Microsoft Fabric Lakehouse</h3>
+                <p>In Microsoft Fabric, aggregations are executed on large-scale data lakes using SQL endpoints or notebooks, leveraging distributed computing for efficiency. The syntax remains the same, but the performance is optimized for massive datasets. The principles of aggregation are universal, whether you're working with a small local database or a large-scale cloud environment.</p>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <button class="copy-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg">Copy</button>
                     <pre><code class="language-sql">-- Aggregate survey data in Fabric
 SELECT city, AVG(satisfaction_score) AS AvgScore
 FROM survey_lakehouse.Responses
@@ -378,31 +689,31 @@ GROUP BY city
 HAVING COUNT(*) > 100
 ORDER BY AvgScore DESC;</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> This aggregates survey scores by city for recent responses, filtering for significant sample sizes.</p>
-
+                <p><strong>Explanation:</strong> This aggregates survey scores by city for recent responses, filtering for significant sample sizes. This query demonstrates how the aggregation skills you've learned apply directly to big data analytics platforms.</p>
+                                
                 <!-- Assessments -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Assessments</h2>
-                <ol>
-                    <li><strong>Conceptual Question:</strong> Explain the difference between <code>WHERE</code> and <code>HAVING</code>. Provide a scenario where <code>HAVING</code> is necessary.</li>
-                    <li><strong>SQL Coding Task:</strong> Using the Sales table, write a query to find the total revenue and number of sales per category, only for categories with total revenue > 500, sorted by revenue descending.</li>
-                    <li><strong>Application Scenario:</strong> For a Greensboro hospital, query the ADMISSIONS table to find diagnoses with more than 3 admissions in 2025, showing average stay length, sorted by count.</li>
-                    <li><strong>Expanded Task:</strong> For a university database, query a Grades table to calculate average grades by course for students enrolled in 2024, only for courses with > 10 students, sorted by average grade.</li>
+                <h2 class="text-2xl font-bold border-b-2 pb-2 mb-4 mt-8">Assessments</h2>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li><strong>Conceptual Question:</strong> Explain the key difference between the <code>WHERE</code> and <code>HAVING</code> clauses and why this distinction is important for performance and query logic.</li>
+                    <li><strong>SQL Coding Task:</strong> Using the **Sales** table, write a query to find the total revenue and number of unique products sold per category, but only for categories where the total quantity sold is greater than 10. Sort the results by total revenue in descending order.</li>
+                    <li><strong>Application Scenario:</strong> For a university database with a **Grades** table (columns: <code>student_id</code>, <code>course</code>, <code>grade</code>, <code>semester</code>), write a query to find the average grade for each course in the 'Fall 2024' semester, but only for courses with at least 50 students enrolled.</li>
+                    <li><strong>Expanded Task:</strong> Using the **ADMISSIONS** table, write a single query that calculates the total number of admissions for 'Pneumonia' and 'Fracture' diagnoses, separately, by patient (<code>subject_id</code>). The result should have three columns: patient ID, total pneumonia admissions, and total fracture admissions.</li>
+                    <li><strong>Advanced Task:</strong> Using the **Employees** table, write a single query to calculate the average salary for each department and the overall company average salary in the same result set.</li>
                 </ol>
             </div>
         </section>
     </div>
-
     <!-- Footer -->
-    <footer class="bg-light py-3 text-center">
-        <p class="text-muted mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
+    <footer class="bg-white py-4 text-center">
+        <p class="text-gray-500 text-sm mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
     </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <!-- Highlight.js Initialization -->
-    <script>hljs.highlightAll();</script>
-    <!-- Custom Copy Functionality -->
     <script>
+        // Initialize Highlight.js
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+        });
+
+        // Custom Copy functionality
         function copyCode(button) {
             const code = button.nextElementSibling.querySelector('code');
             navigator.clipboard.writeText(code.innerText).then(() => {
@@ -410,6 +721,53 @@ ORDER BY AvgScore DESC;</code></pre>
                 setTimeout(() => { button.textContent = 'Copy'; }, 2000);
             });
         }
+        
+        // Add event listeners for copy buttons
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', () => copyCode(button));
+        });
+
+        // Navbar menu toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const navbarMenu = document.getElementById('navbar-menu');
+        menuBtn.addEventListener('click', () => {
+            navbarMenu.classList.toggle('hidden');
+        });
+
+        // Module dropdown toggle
+        const modulesDropdown = document.getElementById('modules-dropdown');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        modulesDropdown.addEventListener('click', (event) => {
+            event.preventDefault();
+            dropdownMenu.classList.toggle('hidden');
+        });
+
+        // Hide dropdown when clicking outside
+        window.addEventListener('click', (event) => {
+            if (!modulesDropdown.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                dropdownMenu.classList.add('hidden');
+            }
+        });
+
+        // Toggle visibility of the dummy tables section
+        const dummyTablesHeader = document.getElementById('dummy-tables-header');
+        const dummyTablesContent = document.getElementById('dummy-tables-content');
+        const toggleIcon = document.getElementById('toggle-icon');
+
+        dummyTablesHeader.addEventListener('click', () => {
+            const isHidden = dummyTablesContent.classList.toggle('hidden');
+            toggleIcon.textContent = isHidden ? '+' : '−';
+        });
+
+        // Toggle visibility of the PgAdmin 4 section
+        const pgadminHeader = document.getElementById('pgadmin-header');
+        const pgadminContent = document.getElementById('pgadmin-content');
+        const pgadminIcon = document.getElementById('pgadmin-icon');
+
+        pgadminHeader.addEventListener('click', () => {
+            const isHidden = pgadminContent.classList.toggle('hidden');
+            pgadminIcon.textContent = isHidden ? '+' : '−';
+        });
     </script>
 </body>
 </html>

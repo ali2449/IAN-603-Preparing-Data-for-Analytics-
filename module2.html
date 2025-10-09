@@ -1,27 +1,414 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+An Expert's Guide to Relational Database Design<html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Module 2: Database Concepts - IAF 603</title>
-    <!-- Bootstrap CSS -->
+    <title>Module 2: Database Concepts</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Highlight.js for code highlighting -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;family=Source+Code+Pro:wght@400;500;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- MathJax CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- Custom MathJax Configuration -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style>
     <script src="./js/mathjax.js"></script>
-    <!-- Custom Styles -->
     <link rel="stylesheet" href="./css/styles.css">
-</head>
+    <style>
+      .code-block { position: relative; }
+      .copy-btn { position: absolute; top: .5rem; right: .5rem; }
+      .callout { border-left: 4px solid #0d6efd; background: #f6f9ff; padding: 1rem 1.25rem; border-radius: .5rem; }
+      .callout-danger { border-left-color: #dc3545; background: #fff5f5; }
+      .table-sm td, .table-sm th { padding: .4rem .5rem; }
+    </style>
+<style id="MJX-CHTML-styles">
+mjx-container[jax="CHTML"] {
+  line-height: 0;
+}
+
+mjx-container [space="1"] {
+  margin-left: .111em;
+}
+
+mjx-container [space="2"] {
+  margin-left: .167em;
+}
+
+mjx-container [space="3"] {
+  margin-left: .222em;
+}
+
+mjx-container [space="4"] {
+  margin-left: .278em;
+}
+
+mjx-container [space="5"] {
+  margin-left: .333em;
+}
+
+mjx-container [rspace="1"] {
+  margin-right: .111em;
+}
+
+mjx-container [rspace="2"] {
+  margin-right: .167em;
+}
+
+mjx-container [rspace="3"] {
+  margin-right: .222em;
+}
+
+mjx-container [rspace="4"] {
+  margin-right: .278em;
+}
+
+mjx-container [rspace="5"] {
+  margin-right: .333em;
+}
+
+mjx-container [size="s"] {
+  font-size: 70.7%;
+}
+
+mjx-container [size="ss"] {
+  font-size: 50%;
+}
+
+mjx-container [size="Tn"] {
+  font-size: 60%;
+}
+
+mjx-container [size="sm"] {
+  font-size: 85%;
+}
+
+mjx-container [size="lg"] {
+  font-size: 120%;
+}
+
+mjx-container [size="Lg"] {
+  font-size: 144%;
+}
+
+mjx-container [size="LG"] {
+  font-size: 173%;
+}
+
+mjx-container [size="hg"] {
+  font-size: 207%;
+}
+
+mjx-container [size="HG"] {
+  font-size: 249%;
+}
+
+mjx-container [width="full"] {
+  width: 100%;
+}
+
+mjx-box {
+  display: inline-block;
+}
+
+mjx-block {
+  display: block;
+}
+
+mjx-itable {
+  display: inline-table;
+}
+
+mjx-row {
+  display: table-row;
+}
+
+mjx-row > * {
+  display: table-cell;
+}
+
+mjx-mtext {
+  display: inline-block;
+}
+
+mjx-mstyle {
+  display: inline-block;
+}
+
+mjx-merror {
+  display: inline-block;
+  color: red;
+  background-color: yellow;
+}
+
+mjx-mphantom {
+  visibility: hidden;
+}
+
+_::-webkit-full-page-media, _:future, :root mjx-container {
+  will-change: opacity;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-c::before {
+  display: block;
+  width: 0;
+}
+
+.MJX-TEX {
+  font-family: MJXZERO, MJXTEX;
+}
+
+.TEX-B {
+  font-family: MJXZERO, MJXTEX-B;
+}
+
+.TEX-I {
+  font-family: MJXZERO, MJXTEX-I;
+}
+
+.TEX-MI {
+  font-family: MJXZERO, MJXTEX-MI;
+}
+
+.TEX-BI {
+  font-family: MJXZERO, MJXTEX-BI;
+}
+
+.TEX-S1 {
+  font-family: MJXZERO, MJXTEX-S1;
+}
+
+.TEX-S2 {
+  font-family: MJXZERO, MJXTEX-S2;
+}
+
+.TEX-S3 {
+  font-family: MJXZERO, MJXTEX-S3;
+}
+
+.TEX-S4 {
+  font-family: MJXZERO, MJXTEX-S4;
+}
+
+.TEX-A {
+  font-family: MJXZERO, MJXTEX-A;
+}
+
+.TEX-C {
+  font-family: MJXZERO, MJXTEX-C;
+}
+
+.TEX-CB {
+  font-family: MJXZERO, MJXTEX-CB;
+}
+
+.TEX-FR {
+  font-family: MJXZERO, MJXTEX-FR;
+}
+
+.TEX-FRB {
+  font-family: MJXZERO, MJXTEX-FRB;
+}
+
+.TEX-SS {
+  font-family: MJXZERO, MJXTEX-SS;
+}
+
+.TEX-SSB {
+  font-family: MJXZERO, MJXTEX-SSB;
+}
+
+.TEX-SSI {
+  font-family: MJXZERO, MJXTEX-SSI;
+}
+
+.TEX-SC {
+  font-family: MJXZERO, MJXTEX-SC;
+}
+
+.TEX-T {
+  font-family: MJXZERO, MJXTEX-T;
+}
+
+.TEX-V {
+  font-family: MJXZERO, MJXTEX-V;
+}
+
+.TEX-VB {
+  font-family: MJXZERO, MJXTEX-VB;
+}
+
+mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
+  font-family: MJXZERO, MJXTEX-S1, MJXTEX-S4, MJXTEX, MJXTEX-A ! important;
+}
+
+@font-face /* 0 */ {
+  font-family: MJXZERO;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff") format("woff");
+}
+
+@font-face /* 1 */ {
+  font-family: MJXTEX;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+}
+
+@font-face /* 2 */ {
+  font-family: MJXTEX-B;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff");
+}
+
+@font-face /* 3 */ {
+  font-family: MJXTEX-I;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff") format("woff");
+}
+
+@font-face /* 4 */ {
+  font-family: MJXTEX-MI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff");
+}
+
+@font-face /* 5 */ {
+  font-family: MJXTEX-BI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-BoldItalic.woff") format("woff");
+}
+
+@font-face /* 6 */ {
+  font-family: MJXTEX-S1;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size1-Regular.woff") format("woff");
+}
+
+@font-face /* 7 */ {
+  font-family: MJXTEX-S2;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff") format("woff");
+}
+
+@font-face /* 8 */ {
+  font-family: MJXTEX-S3;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size3-Regular.woff") format("woff");
+}
+
+@font-face /* 9 */ {
+  font-family: MJXTEX-S4;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size4-Regular.woff") format("woff");
+}
+
+@font-face /* 10 */ {
+  font-family: MJXTEX-A;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_AMS-Regular.woff") format("woff");
+}
+
+@font-face /* 11 */ {
+  font-family: MJXTEX-C;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Regular.woff") format("woff");
+}
+
+@font-face /* 12 */ {
+  font-family: MJXTEX-CB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Bold.woff") format("woff");
+}
+
+@font-face /* 13 */ {
+  font-family: MJXTEX-FR;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Regular.woff") format("woff");
+}
+
+@font-face /* 14 */ {
+  font-family: MJXTEX-FRB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Bold.woff") format("woff");
+}
+
+@font-face /* 15 */ {
+  font-family: MJXTEX-SS;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Regular.woff") format("woff");
+}
+
+@font-face /* 16 */ {
+  font-family: MJXTEX-SSB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Bold.woff") format("woff");
+}
+
+@font-face /* 17 */ {
+  font-family: MJXTEX-SSI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Italic.woff") format("woff");
+}
+
+@font-face /* 18 */ {
+  font-family: MJXTEX-SC;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Script-Regular.woff") format("woff");
+}
+
+@font-face /* 19 */ {
+  font-family: MJXTEX-T;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Typewriter-Regular.woff") format("woff");
+}
+
+@font-face /* 20 */ {
+  font-family: MJXTEX-V;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Regular.woff") format("woff");
+}
+
+@font-face /* 21 */ {
+  font-family: MJXTEX-VB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Bold.woff") format("woff");
+}
+</style></head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="./index.html">IAF 603: Preparing Data for Analytics</a>
@@ -62,342 +449,674 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container my-5">
-        <!-- Module Title -->
         <section class="text-center py-5 bg-white rounded shadow">
             <h1 class="display-4 fw-bold text-dark">Module 2: Database Concepts</h1>
+           
         </section>
 
-        <!-- Module Content -->
         <section class="my-5">
             <div class="bg-white p-4 rounded shadow">
-                <!-- Learning Objectives -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Learning Objectives</h2>
-                <p>Upon completion of this module, participants will be able to:</p>
-                <ul>
-                    <li>Define and differentiate core relational database components: tables, columns, rows, and data types.</li>
-                    <li>Understand and apply various integrity constraints, including <code>NOT NULL</code>, <code>UNIQUE</code>, and <code>CHECK</code>.</li>
-                    <li>Master the concepts and practical application of primary keys, foreign keys, and composite keys.</li>
-                    <li>Explain the purpose of database schemas and their role in organization and security.</li>
-                    <li>Apply normalization principles (1NF, 2NF, 3NF) to design efficient and robust database structures.</li>
-                    <li>Create and interpret Entity-Relationship Diagrams (ERDs) to visually model database relationships.</li>
-                </ul>
-
-                <!-- Introduction to Database Concepts -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Introduction to Database Concepts</h2>
-                <p>Data preparation often begins with understanding how data is stored and organized. Relational databases, built upon the relational model proposed by E.F. Codd in 1970, remain the backbone of most structured data storage. This module dives into the fundamental building blocks of these databases: tables, keys, and schemas. We will also explore normalization, a crucial design principle that minimizes redundancy and improves data integrity, and Entity-Relationship Diagrams (ERDs), which provide a visual blueprint of a database. A solid grasp of these concepts is essential for anyone working with structured data, enabling efficient querying and robust data management.</p>
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Introduction</h2>
+                <p>This module is designed for students with little to no prior database experience, as well as practitioners who need a rigorous "mental model" for designing OLTP (Online Transaction Processing) systems. It provides a foundational understanding of the relational model, from core components to advanced design principles. A solid grasp of these concepts is essential for anyone working with structured data, enabling efficient querying and robust data management.</p>
                 <p>In practice, consider a hospital system in Greensboro, NC, managing patient records, appointments, and billing. A poorly designed database could lead to errors like duplicate patient entries or mismatched billing records, while a well-structured database ensures accurate and efficient data retrieval for healthcare analytics.</p>
-
-                <!-- Tables, Columns, Rows, and Data Types -->
-                <h3 class="h4 fw-bold mb-3">Tables, Columns, Rows, and Data Types</h3>
-                <p>Relational databases organize data into tables, which are composed of columns (attributes) and rows (records). Each column has a specific data type to enforce consistency.</p>
+                <h3 class="h4 fw-bold border-bottom pb-2 mb-4">Learning Outcomes</h3>
+                <p>By the end of this module, students will be able to:</p>
                 <ul>
-                    <li><strong>Table:</strong> A collection of related data organized into rows and columns, similar to a spreadsheet. E.g., a <code>Customers</code> table for a retail business.</li>
-                    <li><strong>Column (Attribute/Field):</strong> Represents a specific characteristic of the data, with a defined data type (e.g., <code>INT</code>, <code>VARCHAR</code>, <code>DATE</code>).</li>
-                    <li><strong>Row (Record/Tuple):</strong> A single, complete entry in a table, like one customer's details.</li>
-                    <li><strong>Data Types:</strong> Define the kind of data a column can hold (e.g., <code>INT</code> for integers, <code>VARCHAR</code> for strings, <code>DATE</code> for dates, <code>BOOLEAN</code> for true/false). Choosing correct data types prevents errors, like storing a phone number as a number (losing leading zeros).</li>
+                    <li>Explain the relational model and the separation of logical vs. physical design.</li>
+                    <li>Identify entities, attributes, keys, and relationships, choosing data types appropriately.</li>
+                    <li>Enforce correctness with integrity constraints (<strong>NOT NULL</strong>, <strong>UNIQUE</strong>, <strong>CHECK</strong>, <strong>PRIMARY KEY</strong>, <strong>FOREIGN KEY</strong>).</li>
+                    <li>Model relationships using ERDs and implement them with SQL DDL.</li>
+                    <li>Normalize tables to 1NF → 2NF → 3NF and reason about denormalization tradeoffs.</li>
+                    <li>Apply naming, documentation, and governance best practices.</li>
                 </ul>
-                <p><strong>Example:</strong> In a library system, a <code>Books</code> table might have columns <code>isbn</code> (VARCHAR), <code>title</code> (VARCHAR), <code>publish_date</code> (DATE), and <code>available</code> (BOOLEAN). A row represents one book, like {"1234567890", "Data Science Basics", "2023-01-15", true}.</p>
-                <p><strong>Sample Table (Books):</strong></p>
-                <table class="table table-bordered">
+
+                <hr>
+
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">1) Foundational Components of Relational Databases</h2>
+                <h3 class="h4 fw-bold mb-3">1.1 Defining the Relational Model</h3>
+                <p>The core idea of the relational model is that data is represented as relations, which we call <strong>tables</strong>. Each table has a name and is composed of rows and columns.</p>
+                <ul>
+                    <li><strong>Tuple (row):</strong> Represents one record or entity instance.</li>
+                    <li><strong>Attribute (column):</strong> A property shared by all rows in a table.</li>
+                    <li><strong>Key:</strong> A minimal set of attributes that uniquely identifies a row.</li>
+                    <li><strong>Relational algebra:</strong> A set of operations that define how data is manipulated. Declarative querying (e.g., SQL) focuses on <em>what</em> you want, not <em>how</em> to get it.</li>
+                </ul>
+                <p>A key architectural principle is the <strong>separation of logical vs. physical design</strong>. The logical layer defines the tables, views, columns, constraints, and ER diagrams. The physical layer deals with files, pages, indexes, and storage configuration. This separation allows you to evolve physical storage (e.g., move files, rebuild indexes) without changing the logical contracts used by your applications.</p>
+
+                <h3 class="h4 fw-bold mb-3">1.2 Tables, Columns, and Rows</h3>
+                <p>For a cohesive design, you should use one table per distinct entity (e.g., <code>Customer</code>, <code>Order</code>, <code>Product</code>). Rows are instances of that entity (e.g., Customer #123), and columns are the attributes that describe them (e.g., <code>FirstName</code>, <code>Email</code>). It's crucial to keep columns <strong>atomic</strong>, meaning no lists or comma-separated values inside a single cell.</p>
+                <p>Here's a quick contrast:</p>
+                <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>isbn</th>
-                            <th>title</th>
-                            <th>publish_date</th>
-                            <th>available</th>
+                            <th>Comparator</th>
+                            <th>Rows</th>
+                            <th>Columns</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1234567890</td>
-                            <td>Data Science Basics</td>
-                            <td>2023-01-15</td>
-                            <td>true</td>
+                            <td><strong>Description</strong></td>
+                            <td>A single record/entity</td>
+                            <td>A property common to all records</td>
                         </tr>
                         <tr>
-                            <td>0987654321</td>
-                            <td>SQL for Beginners</td>
-                            <td>2022-06-20</td>
-                            <td>false</td>
+                            <td><strong>Orientation</strong></td>
+                            <td>Horizontal (left→right)</td>
+                            <td>Vertical (top→bottom)</td>
                         </tr>
                         <tr>
-                            <td>1122334455</td>
-                            <td>Big Data Analytics</td>
-                            <td>2024-03-10</td>
-                            <td>true</td>
+                            <td><strong>Database name</strong></td>
+                            <td>Record / Tuple</td>
+                            <td>Attribute / Field</td>
                         </tr>
                     </tbody>
                 </table>
 
-                <!-- Integrity Constraints -->
-                <h3 class="h4 fw-bold mb-3">Integrity Constraints</h3>
-                <p>Integrity constraints enforce rules to ensure data accuracy and reliability, critical for maintaining trustworthy databases.</p>
+                <h3 class="h4 fw-bold mb-3">1.3 Data Types</h3>
+                <p>Choosing the right data type is a fundamental step that ensures data integrity and storage efficiency. You should choose types that fit both the domain and any constraints. Common data types include:</p>
                 <ul>
-                    <li><strong>NOT NULL:</strong> Ensures a column cannot be empty (e.g., every patient must have a name).</li>
-                    <li><strong>UNIQUE:</strong> Ensures all values in a column or set of columns are distinct (e.g., no two patients have the same ID).</li>
-                    <li><strong>PRIMARY KEY:</strong> Uniquely identifies each row; must be UNIQUE and NOT NULL (e.g., <code>patient_id</code>).</li>
-                    <li><strong>FOREIGN KEY:</strong> Links a column in one table to a PRIMARY KEY in another, enforcing referential integrity (e.g., an admission references a patient).</li>
-                    <li><strong>CHECK:</strong> Ensures values meet a condition (e.g., <code>age >= 0</code>).</li>
+                    <li><strong>Integer/Bigint:</strong> For IDs and counters.</li>
+                    <li><strong>Decimal(N, d):</strong> For exact numeric types like currency.</li>
+                    <li><strong>Varchar(n):</strong> For bounded text strings.</li>
+                    <li><strong>Text:</strong> For long-form text.</li>
+                    <li><strong>Date/Time/Timestamp:</strong> For storing temporal data.</li>
+                    <li><strong>Boolean:</strong> For true/false values.</li>
+                    <li><strong>UUID:</strong> A universally unique identifier.</li>
+                </ul>
+                <p>A good rule of thumb is to prefer exact numeric types for currency (<strong>DECIMAL</strong>), bound string lengths where appropriate, and use <strong>CHECK</strong> constraints for domain rules (e.g., <code>0 ≤ Discount ≤ 1</code>).</p>
+
+                <h3 class="h4 fw-bold mb-3">1.4 A Record in Practice</h3>
+                <p>Consider a simple two-table example for an e-commerce store:</p>
+                <pre><code data-highlighted="yes" class="hljs language-scss"><span class="hljs-built_in">customers</span>(customer_id PK, first_name, last_name, email, …)
+<span class="hljs-built_in">orders</span>(order_id PK, customer_id FK→customers.customer_id, product_id, qty, size, order_date, …)</code></pre>
+                <p>To retrieve a buyer's details for a specific order, you would use a <strong>JOIN</strong> on the <code>customer_id</code> column, linking the <code>orders</code> table to the <code>customers</code> table.</p>
+
+                <hr>
+
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">2) Integrity Constraints: Guardrails for Correctness</h2>
+                <h3 class="h4 fw-bold mb-3">2.1 Why constraints matter</h3>
+                <p>Constraints encode business rules directly into the database, preventing bad data at the source. This is far more robust than relying solely on application code, which can have bugs or be circumvented.</p>
+
+                <h3 class="h4 fw-bold mb-3">2.2 NOT NULL — Completeness</h3>
+                <p>The <strong>NOT NULL</strong> constraint prevents missing values where a value is mandatory. If you try to insert a row without a value for a <strong>NOT NULL</strong> column, the database will throw an error, protecting the integrity of your data.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> users (
+  user_id      BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  email        <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">255</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  password_hash TEXT        <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>
+);</code></pre>
+                </div>
+                <p>In this example, both <code>email</code> and <code>password_hash</code> must have a value for every row.</p>
+
+                <h3 class="h4 fw-bold mb-3">2.3 UNIQUE — No Duplicates</h3>
+                <p>The <strong>UNIQUE</strong> constraint ensures all values in a column or set of columns are distinct. It's used when a column must be unique but isn't the primary key. Unlike a <strong>PRIMARY KEY</strong>, a <strong>UNIQUE</strong> constraint typically allows a single NULL value.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> users <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">CONSTRAINT</span> uq_users_email <span class="hljs-keyword">UNIQUE</span> (email);</code></pre>
+                </div>
+                <p>You can also create composite uniqueness, such as <code>UNIQUE (col1, col2)</code>. Most RDBMSs automatically create a unique index to enforce this constraint efficiently.</p>
+
+                <h3 class="h4 fw-bold mb-3">2.4 CHECK — Domain &amp; Business Rules</h3>
+                <p>The <strong>CHECK</strong> constraint validates that values meet a specified condition, such as being within a certain range or matching a pattern. This is an excellent way to encode business rules directly into your schema.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> employees (
+  emp_id   BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  salary   <span class="hljs-type">NUMERIC</span>(<span class="hljs-number">12</span>,<span class="hljs-number">2</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  grade    <span class="hljs-type">INT</span>           <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  <span class="hljs-keyword">CONSTRAINT</span> chk_salary_min  <span class="hljs-keyword">CHECK</span> (salary <span class="hljs-operator">&gt;=</span> <span class="hljs-number">20000</span>),
+  <span class="hljs-keyword">CONSTRAINT</span> chk_grade_range <span class="hljs-keyword">CHECK</span> (grade <span class="hljs-keyword">BETWEEN</span> <span class="hljs-number">1</span> <span class="hljs-keyword">AND</span> <span class="hljs-number">10</span>)
+);</code></pre>
+                </div>
+                <p><strong>Advanced CHECK (cross-column):</strong> You can also use <strong>CHECK</strong> for more complex, cross-column logic, like ensuring a state field is only 2 characters long when the country is 'USA'.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> addresses
+<span class="hljs-keyword">ADD</span> <span class="hljs-keyword">CONSTRAINT</span> chk_state_if_usa
+<span class="hljs-keyword">CHECK</span> (country <span class="hljs-operator">&lt;&gt;</span> <span class="hljs-string">'USA'</span> <span class="hljs-keyword">OR</span> <span class="hljs-keyword">char_length</span>(state) <span class="hljs-operator">=</span> <span class="hljs-number">2</span>);</code></pre>
+                </div>
+
+                <hr>
+
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">3) Keys — The Structural Backbone</h2>
+                <h3 class="h4 fw-bold mb-3">3.1 PRIMARY KEY — The Official Identifier</h3>
+                <p>A <strong>PRIMARY KEY</strong> is the one official identifier for a table. It must be <strong>UNIQUE</strong> and <strong>NOT NULL</strong>, and there can be exactly one per table. Primary keys are often implemented as a <strong>surrogate key</strong>, such as an auto-incrementing integer or a UUID, for stability.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> products (
+  product_id BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  sku        <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">32</span>) <span class="hljs-keyword">UNIQUE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  name       <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">200</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>
+);</code></pre>
+                </div>
+                <p>In this example, <code>product_id</code> is the primary key, while the <code>sku</code> (stock keeping unit) is a unique natural key.</p>
+
+                <h3 class="h4 fw-bold mb-3">3.2 FOREIGN KEY — Referential Integrity</h3>
+                <p>A <strong>FOREIGN KEY</strong> enforces a link between a "child" row and an existing "parent" row in another table. This is how you model <strong>relationships</strong> and enforce <strong>referential integrity</strong>.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> orders (
+  order_id    BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  customer_id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  order_date  <span class="hljs-type">DATE</span>   <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  <span class="hljs-keyword">CONSTRAINT</span> fk_orders_customer
+    <span class="hljs-keyword">FOREIGN</span> KEY (customer_id)
+    <span class="hljs-keyword">REFERENCES</span> customers (customer_id)
+    <span class="hljs-keyword">ON</span> <span class="hljs-keyword">UPDATE</span> CASCADE
+    <span class="hljs-keyword">ON</span> <span class="hljs-keyword">DELETE</span> RESTRICT
+);</code></pre>
+                </div>
+                <p>You can define <strong>ON UPDATE</strong> and <strong>ON DELETE</strong> actions to specify how the database should behave when a referenced row is updated or deleted. Common options include <strong>CASCADE</strong> (delete/update child rows) and <strong>RESTRICT</strong> (prevent the delete/update).</p>
+
+                <h3 class="h4 fw-bold mb-3">3.3 Composite Keys</h3>
+                <p>A <strong>composite key</strong> is a primary key that consists of two or more columns. This is used when a single column isn't sufficient to uniquely identify a row, often in <strong>junction tables</strong> that resolve many-to-many relationships.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> enrollment (
+  student_id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  class_id   <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  <span class="hljs-keyword">PRIMARY</span> KEY (student_id, class_id),
+  <span class="hljs-keyword">FOREIGN</span> KEY (student_id) <span class="hljs-keyword">REFERENCES</span> students(student_id),
+  <span class="hljs-keyword">FOREIGN</span> KEY (class_id)   <span class="hljs-keyword">REFERENCES</span> classes(class_id)
+);</code></pre>
+                </div>
+
+                <h3 class="h4 fw-bold mb-3">3.4 PRIMARY KEY vs. UNIQUE</h3>
+                <p>While both enforce uniqueness, they serve different purposes. Here's a crisp comparison:</p>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Primary Key</th>
+                            <th>Unique Constraint</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Purpose</strong></td>
+                            <td>Sole table identifier</td>
+                            <td>Prevent duplicates on other columns</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nullability</strong></td>
+                            <td>No NULLs allowed</td>
+                            <td>Typically one NULL allowed</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Count per table</strong></td>
+                            <td>Exactly one</td>
+                            <td>Many allowed</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Indexing</strong></td>
+                            <td>Usually clustered (vendor-specific)</td>
+                            <td>Non-clustered (typical)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Examples</strong></td>
+                            <td><code>customer_id</code></td>
+                            <td><code>email</code>, <code>ssn</code>, <code>sku</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <!-- 5 Normalization (Revised & Expanded) -->
+                <h2 id="normalization" class="h3 fw-bold border-bottom pb-2 mb-4">5) Normalization — Integrity &amp; Efficiency (Revised for Informatics &amp; Analytics)</h2>
+
+                <h3 class="h4 fw-bold mb-3">5.1 Why Normalize? Anomalies &amp; Data Trust</h3>
+                <p>Normalization organizes data to reduce redundancy and prevent anomalies so downstream analytics are accurate and reproducible:</p>
+                <ul>
+                  <li><strong>Update anomaly:</strong> A single fact (e.g., provider specialty) exists in many rows—one update misses others.</li>
+                  <li><strong>Deletion anomaly:</strong> Deleting an encounter also deletes the only copy of a patient’s demographic detail.</li>
+                  <li><strong>Insertion anomaly:</strong> Can’t add a new ICD code without a “placeholder” encounter row.</li>
+                </ul>
+                <div class="callout mb-3">
+                  <strong>Informatics focus:</strong> In healthcare, normalization ensures codes (ICD-10, LOINC, SNOMED CT, RxNorm) live in authoritative lookup tables, preventing free-text drift and enabling consistent analytics and interoperability.
+                </div>
+
+                <h3 class="h4 fw-bold mb-3">5.2 The Normal Forms (beyond 3NF)</h3>
+                <ul>
+                  <li><strong>1NF:</strong> Atomic columns, no repeating groups (no CSVs in a cell).</li>
+                  <li><strong>2NF:</strong> 1NF + every non-key attribute depends on the <em>whole</em> composite key (no partial dependency).</li>
+                  <li><strong>3NF:</strong> 2NF + no transitive dependency (non-key depends only on the key, not on another non-key).</li>
+                  <li><strong>BCNF (Boyce–Codd):</strong> For every non-trivial functional dependency X→Y, X must be a superkey. Tightens 3NF when overlapping candidate keys exist.</li>
+                  <li><strong>4NF:</strong> Removes multi-valued dependencies (e.g., independent sets like {instrument} and {technician}).</li>
+                  <li><strong>5NF:</strong> Eliminates join dependencies; rarely needed in OLTP but useful in complex reference domains.</li>
+                </ul>
+                <p class="mb-3"><em>Rule of thumb:</em> Target 3NF/BCNF for OLTP. Use 4NF/5NF selectively for highly combinatorial reference models.</p>
+
+                <h3 class="h4 fw-bold mb-3">5.3 Worked Example (Student–Class, step-by-step)</h3>
+                <p><strong>Unnormalized Table</strong></p>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Student#</th>
+                            <th>Advisor</th>
+                            <th>Adv_Room</th>
+                            <th>Class1</th>
+                            <th>Class2</th>
+                            <th>Class3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1022</td>
+                            <td>Jones</td>
+                            <td>412</td>
+                            <td>101-07</td>
+                            <td>143-01</td>
+                            <td>159-02</td>
+                        </tr>
+                        <tr>
+                            <td>4123</td>
+                            <td>Smith</td>
+                            <td>216</td>
+                            <td>101-07</td>
+                            <td>143-01</td>
+                            <td>179-04</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><strong>1NF (flatten repeating classes)</strong></p>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Student#</th>
+                            <th>Advisor</th>
+                            <th>Adv_Room</th>
+                            <th>Class#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1022</td><td>Jones</td><td>412</td><td>101-07</td></tr>
+                        <tr><td>1022</td><td>Jones</td><td>412</td><td>143-01</td></tr>
+                        <tr><td>1022</td><td>Jones</td><td>412</td><td>159-02</td></tr>
+                        <tr><td>4123</td><td>Smith</td><td>216</td><td>101-07</td></tr>
+                        <tr><td>4123</td><td>Smith</td><td>216</td><td>143-01</td></tr>
+                        <tr><td>4123</td><td>Smith</td><td>216</td><td>179-04</td></tr>
+                    </tbody>
+                </table>
+
+                <p><strong>2NF (remove partial dependencies)</strong></p>
+                <ul>
+                    <li><code>Students(Student#, Advisor, Adv_Room)</code></li>
+                    <li><code>Registration(Student#, Class#)</code></li>
+                </ul>
+
+                <p><strong>3NF (remove transitive dependencies)</strong></p>
+                <ul>
+                    <li><code>Students(Student#, Advisor)</code></li>
+                    <li><code>Faculty(Name PK, Room, Dept)</code></li>
+                    <li><code>Registration(Student#, Class#)</code></li>
+                </ul>
+
+                <h3 class="h4 fw-bold mb-3">5.4 When to Denormalize (with guardrails)</h3>
+                <p>Denormalize for read-heavy analytics (e.g., pre-aggregates, star schemas). <strong>Risks:</strong> higher write cost, potential inconsistency. <strong>Mitigations:</strong> refresh policies, materialized views, data quality checks, and lineage docs.</p>
+
+                <h3 class="h4 fw-bold mb-3">5.5 Informatics Patterns — Code Systems &amp; Reference Integrity  </h3>
+                <p>Normalize external clinical vocabularies and link by code. Store human-readable labels in the reference table, not duplicated in facts.</p>
+                <div class="code-block">
+                  <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-comment">-- ICD-10 diagnoses reference (authoritative list)</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> ref_icd10 (
+  icd10_code   <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">10</span>) <span class="hljs-keyword">PRIMARY</span> KEY,
+  long_title   <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">400</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>
+);
+
+<span class="hljs-comment">-- LOINC test catalog</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> ref_loinc (
+  loinc_code   <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">PRIMARY</span> KEY,
+  component    <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">200</span>),
+  property     <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">50</span>),
+  scale        <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">50</span>)
+);
+
+<span class="hljs-comment">-- Clinical facts reference these codes (no free text duplication)</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> encounter (
+  encounter_id BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  patient_id   <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  start_time   <span class="hljs-type">TIMESTAMP</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  end_time     <span class="hljs-type">TIMESTAMP</span>,
+  <span class="hljs-keyword">CHECK</span> (end_time <span class="hljs-keyword">IS</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">OR</span> end_time <span class="hljs-operator">&gt;=</span> start_time)
+);
+
+<span class="hljs-comment">-- Many diagnoses per encounter (N:M)</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> encounter_dx (
+  encounter_id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> encounter(encounter_id) <span class="hljs-keyword">ON</span> <span class="hljs-keyword">DELETE</span> CASCADE,
+  icd10_code   <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">10</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> ref_icd10(icd10_code),
+  dx_rank      <span class="hljs-type">INT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">CHECK</span> (dx_rank <span class="hljs-keyword">BETWEEN</span> <span class="hljs-number">1</span> <span class="hljs-keyword">AND</span> <span class="hljs-number">30</span>),
+  <span class="hljs-keyword">PRIMARY</span> KEY (encounter_id, icd10_code)
+);
+
+<span class="hljs-comment">-- Lab results normalized to LOINC</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> lab_result (
+  lab_result_id BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  encounter_id  <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> encounter(encounter_id) <span class="hljs-keyword">ON</span> <span class="hljs-keyword">DELETE</span> CASCADE,
+  loinc_code    <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> ref_loinc(loinc_code),
+  value_num     <span class="hljs-type">NUMERIC</span>(<span class="hljs-number">12</span>,<span class="hljs-number">4</span>),
+  value_text    <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">200</span>),
+  unit          <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">32</span>),
+  collected_at  <span class="hljs-type">TIMESTAMP</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>
+);</code></pre>
+                </div>
+                <p class="small text-muted">Why it matters: clean joins to <code>ref_icd10</code> / <code>ref_loinc</code> enable robust cohort building and KPI definition without brittle text matching.</p>
+
+                <h3 class="h4 fw-bold mb-3">5.6 Temporal Normalization &amp; Auditability  </h3>
+                <p>Healthcare and finance require time-aware truth. Keep changes with effective windows; don’t overwrite history.</p>
+                <div class="code-block">
+                  <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-comment">-- Patient demographics with validity (bi-temporal possible)</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> patient_demographics (
+  patient_id   <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  version_id   BIGSERIAL,
+  mrn          <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  first_name   <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">100</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  last_name    <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">100</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  birth_date   <span class="hljs-type">DATE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  valid_from   <span class="hljs-type">TIMESTAMP</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> NOW(),
+  valid_to     <span class="hljs-type">TIMESTAMP</span>,
+  is_current   <span class="hljs-type">BOOLEAN</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">TRUE</span>,
+  <span class="hljs-keyword">PRIMARY</span> KEY (patient_id, version_id),
+  <span class="hljs-keyword">UNIQUE</span> (patient_id, is_current) DEFERRABLE INITIALLY DEFERRED
+);</code></pre>
+                </div>
+                <p class="small text-muted">Pattern: insert new version with <code>is_current=TRUE</code>, set previous row’s <code>valid_to</code> and <code>is_current=FALSE</code>.</p>
+
+                <h3 class="h4 fw-bold mb-3">5.7 Dimensional Modeling for Analytics — Star &amp; Snowflake  </h3>
+                <p>For BI/analytics, model facts (events/measures) and conformed dimensions (who/what/when/where). Choose a clear grain for each fact.</p>
+                <ul>
+                  <li><strong>Star:</strong> fact table links directly to all dimensions (simpler joins).</li>
+                  <li><strong>Snowflake:</strong> some dimensions normalized into sub-dimensions (less redundancy; more joins).</li>
+                  <li><strong>Grain:</strong> e.g., one row per encounter; per encounter-diagnosis; per lab observation.</li>
                 </ul>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- PATIENTS table: subject_id is PRIMARY KEY, name cannot be NULL, age must be positive
-CREATE TABLE PATIENTS (
-    subject_id INT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    age INT CHECK (age >= 0),
-    gender VARCHAR(10)
+                  <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-comment">-- Dimensions (with SCD2-friendly keys)</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> dim_patient (
+  patient_sk   BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  patient_id   <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,                 <span class="hljs-comment">-- business key</span>
+  mrn          <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  birth_date   <span class="hljs-type">DATE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  gender       <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">16</span>),
+  effective_from <span class="hljs-type">DATE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  effective_to   <span class="hljs-type">DATE</span>,
+  is_current     <span class="hljs-type">BOOLEAN</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">TRUE</span>
 );
--- ADMISSIONS table: hadm_id is PRIMARY KEY, subject_id is a FOREIGN KEY
-CREATE TABLE ADMISSIONS (
-    hadm_id INT PRIMARY KEY,
-    subject_id INT NOT NULL,
-    admit_time TIMESTAMP NOT NULL,
-    discharge_time TIMESTAMP,
-    diagnosis VARCHAR(255),
-    FOREIGN KEY (subject_id) REFERENCES PATIENTS(subject_id),
-    UNIQUE (subject_id, admit_time) -- Composite key
-);
--- LAB_RESULTS table: lab_id is PRIMARY KEY, hadm_id is a FOREIGN KEY
-CREATE TABLE LAB_RESULTS (
-    lab_id INT PRIMARY KEY,
-    hadm_id INT NOT NULL,
-    test_name VARCHAR(100) NOT NULL,
-    result_value DECIMAL(10, 2),
-    result_unit VARCHAR(20),
-    test_time TIMESTAMP,
-    FOREIGN KEY (hadm_id) REFERENCES ADMISSIONS(hadm_id)
-);</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This SQL creates three interconnected tables. <code>PATIENTS.subject_id</code> is the PRIMARY KEY. <code>ADMISSIONS.subject_id</code> is a FOREIGN KEY linking to <code>PATIENTS</code>. The composite UNIQUE key on <code>(subject_id, admit_time)</code> prevents duplicate admissions at the same time. <code>LAB_RESULTS</code> links to <code>ADMISSIONS</code> via <code>hadm_id</code>.</p>
-                <p><strong>Expanded Example (Retail):</strong> A retail database with <code>Customers</code>, <code>Orders</code>, and <code>Order_Items</code>.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Customers table: customer_id is PRIMARY KEY, email is UNIQUE
-CREATE TABLE Customers (
-    customer_id INT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    join_date DATE
-);
--- Orders table: order_id is PRIMARY KEY, customer_id is FOREIGN KEY
-CREATE TABLE Orders (
-    order_id INT PRIMARY KEY,
-    customer_id INT NOT NULL,
-    order_date DATE NOT NULL,
-    total_amount DECIMAL(10, 2) CHECK (total_amount >= 0),
-    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
-);
--- Order_Items table: links orders to products
-CREATE TABLE Order_Items (
-    item_id INT PRIMARY KEY,
-    order_id INT NOT NULL,
-    product_id INT NOT NULL,
-    quantity INT CHECK (quantity > 0),
-    FOREIGN KEY (order_id) REFERENCES Orders(order_id)
-);</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Here, <code>email</code> is UNIQUE to prevent duplicate customer emails, and <code>CHECK</code> ensures valid quantities and amounts. This structure supports tracking customer purchases efficiently.</p>
 
-                <!-- Database Schemas -->
-                <h3 class="h4 fw-bold mb-3">Database Schemas</h3>
-                <p>A database schema organizes database objects (tables, views, etc.) into logical groups, enhancing organization and security.</p>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> dim_provider (
+  provider_sk BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  provider_id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,                  <span class="hljs-comment">-- business key</span>
+  npi         <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">UNIQUE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  specialty   <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">100</span>)
+);
+
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> dim_date (
+  date_sk     <span class="hljs-type">INTEGER</span> <span class="hljs-keyword">PRIMARY</span> KEY,              <span class="hljs-comment">-- yyyymmdd</span>
+  full_date   <span class="hljs-type">DATE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  <span class="hljs-keyword">year</span>        <span class="hljs-type">SMALLINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  <span class="hljs-keyword">month</span>       <span class="hljs-type">SMALLINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  <span class="hljs-keyword">day</span>         <span class="hljs-type">SMALLINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  week        <span class="hljs-type">SMALLINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>
+);
+
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> dim_icd10 (
+  icd10_sk    BIGSERIAL <span class="hljs-keyword">PRIMARY</span> KEY,
+  icd10_code  <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">10</span>) <span class="hljs-keyword">UNIQUE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  long_title  <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">400</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>
+);
+
+<span class="hljs-comment">-- Fact table at encounter grain</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> fact_encounter (
+  encounter_id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">PRIMARY</span> KEY,              <span class="hljs-comment">-- optional surrogate also fine</span>
+  patient_sk   <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> dim_patient(patient_sk),
+  provider_sk  <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> dim_provider(provider_sk),
+  admit_date_sk <span class="hljs-type">INTEGER</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> dim_date(date_sk),
+  discharge_date_sk <span class="hljs-type">INTEGER</span>,
+  total_charges <span class="hljs-type">NUMERIC</span>(<span class="hljs-number">12</span>,<span class="hljs-number">2</span>),
+  length_of_stay_days <span class="hljs-type">NUMERIC</span>(<span class="hljs-number">6</span>,<span class="hljs-number">2</span>)
+);
+
+<span class="hljs-comment">-- Bridge table for N:M diagnoses per encounter</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> bridge_encounter_dx (
+  encounter_id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> fact_encounter(encounter_id) <span class="hljs-keyword">ON</span> <span class="hljs-keyword">DELETE</span> CASCADE,
+  icd10_sk     <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> dim_icd10(icd10_sk),
+  dx_rank      <span class="hljs-type">INT</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">CHECK</span> (dx_rank <span class="hljs-keyword">BETWEEN</span> <span class="hljs-number">1</span> <span class="hljs-keyword">AND</span> <span class="hljs-number">30</span>),
+  <span class="hljs-keyword">PRIMARY</span> KEY (encounter_id, icd10_sk)
+);</code></pre>
+                </div>
+                <div class="code-block">
+                  <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-comment">-- Example analytic query: top 10 diagnoses by encounters in the last 90 days</span>
+<span class="hljs-keyword">SELECT</span> d.long_title, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">AS</span> encounters
+<span class="hljs-keyword">FROM</span> bridge_encounter_dx b
+<span class="hljs-keyword">JOIN</span> dim_icd10 d <span class="hljs-keyword">ON</span> d.icd10_sk <span class="hljs-operator">=</span> b.icd10_sk
+<span class="hljs-keyword">JOIN</span> fact_encounter f <span class="hljs-keyword">ON</span> f.encounter_id <span class="hljs-operator">=</span> b.encounter_id
+<span class="hljs-keyword">JOIN</span> dim_date dd <span class="hljs-keyword">ON</span> dd.date_sk <span class="hljs-operator">=</span> f.admit_date_sk
+<span class="hljs-keyword">WHERE</span> dd.full_date <span class="hljs-operator">&gt;=</span> <span class="hljs-built_in">CURRENT_DATE</span> <span class="hljs-operator">-</span> <span class="hljs-type">INTERVAL</span> <span class="hljs-string">'90 days'</span>
+<span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> d.long_title
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> encounters <span class="hljs-keyword">DESC</span>
+LIMIT <span class="hljs-number">10</span>;</code></pre>
+                </div>
+
+                <h3 class="h4 fw-bold mb-3">5.8 Slowly Changing Dimensions (SCD) — Type 1 vs Type 2  </h3>
                 <ul>
-                    <li><strong>Purpose:</strong> Organizes data, controls access (e.g., only certain users access <code>payroll</code> schema), and avoids naming conflicts.</li>
-                    <li><strong>Example:</strong> In PostgreSQL, the default <code>public</code> schema can be supplemented with custom schemas like <code>healthcare</code> or <code>inventory</code>.</li>
+                  <li><strong>Type 1:</strong> Overwrite old attribute (easy, but loses history).</li>
+                  <li><strong>Type 2:</strong> New row per change with <code>effective_from/to</code>, <code>is_current</code>. Preserves historical truth for time-correct analytics.</li>
+                  <li><strong>Type 3:</strong> Keep limited prior values in extra columns (rare for clinical data).</li>
+                </ul>
+                <p class="small text-muted">Choose SCD strategy per dimension. Patients usually SCD2; code vocab dimensions usually Type 1 (definitions rarely change for the same code).</p>
+
+                <h3 class="h4 fw-bold mb-3">5.9 Practical Denormalization for Analytics  </h3>
+                <ul>
+                  <li><strong>Materialized views:</strong> pre-aggregate daily/weekly metrics; refresh nightly.</li>
+                  <li><strong>Wide export tables:</strong> team-friendly flat tables generated from the normalized core.</li>
+                  <li><strong>Snapshots:</strong> month-end copies of fact tables for audit-ready reproducibility.</li>
                 </ul>
                 <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Create a schema for healthcare data
-CREATE SCHEMA healthcare;
--- Create a table within the schema
-CREATE TABLE healthcare.PatientsDemographics (
-    patient_id INT PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50)
-);
--- Set search path for easier querying
-SET search_path TO healthcare, public;
-SELECT * FROM PatientsDemographics;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> The <code>healthcare</code> schema isolates patient data. <code>SET search_path</code> simplifies queries by defaulting to this schema.</p>
-                <p><strong>Expanded Example (University):</strong> A university might use schemas like <code>academics</code> for courses and <code>admin</code> for payroll.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Create schemas for academics and admin
-CREATE SCHEMA academics;
-CREATE SCHEMA admin;
--- Create a Courses table in academics schema
-CREATE TABLE academics.Courses (
-    course_id INT PRIMARY KEY,
-    course_name VARCHAR(100) NOT NULL,
-    credits INT CHECK (credits > 0)
-);
--- Create an Employees table in admin schema
-CREATE TABLE admin.Employees (
-    emp_id INT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    salary DECIMAL(10, 2) CHECK (salary >= 0)
-);</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This separates academic and administrative data, allowing different access controls for faculty and HR staff.</p>
+                  <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code class="language-sql hljs" data-highlighted="yes"><span class="hljs-comment">-- Postgres example: monthly encounter summary (materialized)</span>
+<span class="hljs-keyword">CREATE</span> MATERIALIZED <span class="hljs-keyword">VIEW</span> mv_encounter_monthly <span class="hljs-keyword">AS</span>
+<span class="hljs-keyword">SELECT</span> date_trunc(<span class="hljs-string">'month'</span>, dd.full_date) <span class="hljs-keyword">AS</span> month_start,
+       <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">AS</span> encounters,
+       <span class="hljs-built_in">SUM</span>(f.total_charges) <span class="hljs-keyword">AS</span> charges
+<span class="hljs-keyword">FROM</span> fact_encounter f
+<span class="hljs-keyword">JOIN</span> dim_date dd <span class="hljs-keyword">ON</span> dd.date_sk <span class="hljs-operator">=</span> f.admit_date_sk
+<span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">1</span>;
 
-                <!-- Normalization in Database Design -->
-                <h3 class="h4 fw-bold mb-3">Normalization in Database Design</h3>
-                <p>Normalization organizes data to reduce redundancy and improve integrity by breaking tables into smaller, related ones.</p>
+<span class="hljs-comment">-- REFRESH MATERIALIZED VIEW mv_encounter_monthly;</span></code></pre>
+                </div>
+
+                <h3 class="h4 fw-bold mb-3">5.10 Governance Tips for Health Analytics  </h3>
                 <ul>
-                    <li><strong>Benefits:</strong>
+                  <li><strong>Lineage:</strong> Record source system and transformation notes for each fact/dimension.</li>
+                  <li><strong>Quality checks:</strong> Null-rate, range checks, foreign key coverage, duplicate code audits.</li>
+                  <li><strong>PII handling:</strong> De-identify exports; restrict schema access; log queries touching PHI.</li>
+                </ul>
+
+                <hr>
+
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">6) ERDs — Visualize Before You Implement</h2>
+                <p>An <strong>Entity-Relationship Diagram (ERD)</strong> is a visual blueprint of a database. It's a critical tool for planning and communicating your design before writing a single line of SQL.</p>
+                <h3 class="h4 fw-bold mb-3">6.1 Components</h3>
+                <ul>
+                    <li><strong>Entity (Rectangle):</strong> Represents a table.</li>
+                    <li><strong>Attributes (listed in entity):</strong> Represents the columns. Always mark the <strong>PRIMARY KEY (PK)</strong> and <strong>FOREIGN KEY (FK)</strong>.</li>
+                    <li><strong>Relationships (Lines):</strong> Connect entities to show how they relate.</li>
+                </ul>
+                <p>A simple ERD for a retail system looks like this:</p>
+                <pre><code data-highlighted="yes" class="hljs language-sql">Customer (customer_id PK, email <span class="hljs-keyword">UNIQUE</span>, first_name, last_name)
+   <span class="hljs-operator">|</span>
+   <span class="hljs-operator">|</span> <span class="hljs-number">1</span>:N
+   <span class="hljs-operator">|</span>
+<span class="hljs-keyword">Order</span> (order_id PK, customer_id FK→Customer.customer_id, order_date)
+   <span class="hljs-operator">|</span>
+   <span class="hljs-operator">|</span> <span class="hljs-number">1</span>:N
+   <span class="hljs-operator">|</span>
+OrderItem (order_id FK, product_id FK, qty, unit_price, <span class="hljs-keyword">PRIMARY</span> KEY(order_id, product_id))
+   <span class="hljs-operator">^</span>
+   <span class="hljs-operator">|</span>
+   N:<span class="hljs-number">1</span>
+Product (product_id PK, sku <span class="hljs-keyword">UNIQUE</span>, name, price)</code></pre>
+                
+                <h3 class="h4 fw-bold mb-3">6.2 Cardinality</h3>
+                <p>Cardinality defines the number of instances of one entity that can be associated with the number of instances of another entity.</p>
+                <ul>
+                    <li><strong>1:1 (One-to-One):</strong> Rare, often a sign that you should merge the two tables.</li>
+                    <li><strong>1:N (One-to-Many):</strong> The most common relationship. For example, one customer can have many orders.</li>
+                    <li><strong>N:M (Many-to-Many):</strong> A relationship where many instances of one entity can relate to many instances of another. This is resolved using a <strong>junction table</strong>. For example, many students can enroll in many classes, so a junction table like <code>enrollment</code> is used.</li>
+                </ul>
+
+                <hr>
+
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">7) Best-Practice Checklist</h2>
+                <p>This checklist summarizes what database professionals actually do in practice:</p>
+                <ul>
+                    <li><strong>Planning &amp; modeling:</strong>
                         <ul>
-                            <li>Reduces redundancy, saving storage and preventing inconsistencies.</li>
-                            <li>Ensures integrity; updates occur in one place.</li>
-                            <li>Simplifies maintenance (e.g., updating a department name).</li>
+                            <li>Start with a mission statement and scope.</li>
+                            <li>List entities, attributes, and keys.</li>
+                            <li>Validate the design with stakeholders using ERDs as a contract.</li>
+                            <li>Prefer <strong>surrogate keys</strong> for stability; keep <strong>natural keys</strong> with a <strong>UNIQUE</strong> constraint.</li>
+                            <li>Choose tight data types and add <strong>CHECK</strong> constraints for domain rules.</li>
                         </ul>
                     </li>
-                    <li><strong>Normal Forms:</strong>
+                    <li><strong>Naming &amp; documentation:</strong>
                         <ul>
-                            <li><strong>1NF (First Normal Form):</strong> Atomic values, no repeating groups, unique rows.</li>
-                            <li><strong>2NF (Second Normal Form):</strong> 1NF + all non-key attributes fully depend on the primary key.</li>
-                            <li><strong>3NF (Third Normal Form):</strong> 2NF + no transitive dependencies (non-key attributes depend only on the primary key).</li>
+                            <li>Maintain consistent naming conventions.</li>
+                            <li>Comment tables and columns where supported.</li>
+                            <li>Version your schema (migrations) and keep a changelog.</li>
                         </ul>
                     </li>
-                    <li><strong>Denormalization:</strong> Intentionally adding redundancy for performance, used in analytics but risks inconsistency.</li>
+                    <li><strong>Integrity &amp; performance:</strong>
+                        <ul>
+                            <li>Always enforce <strong>FOREIGN KEY</strong> constraints; never rely solely on app logic.</li>
+                            <li>Index foreign keys and frequent search/filter columns.</li>
+                            <li>Use composite indexes that match your query patterns.</li>
+                            <li>Normalize for OLTP; denormalize for analytics.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Security &amp; governance:</strong>
+                        <ul>
+                            <li>Apply the principle of least privilege.</li>
+                            <li>Protect PII with encryption and auditing.</li>
+                            <li>Establish clear backup, restore, and data retention policies.</li>
+                        </ul>
+                    </li>
                 </ul>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Denormalized survey table
-CREATE TABLE SurveyResponses_Denormalized (
-    response_id INT PRIMARY KEY,
-    respondent_name VARCHAR(100),
-    respondent_age INT,
-    city_id INT,
-    city_name VARCHAR(100),
-    state_name VARCHAR(100),
-    survey_answer TEXT
-);
--- Normalized to 3NF
-CREATE TABLE Cities (
-    city_id INT PRIMARY KEY,
-    city_name VARCHAR(100) NOT NULL,
-    state_name VARCHAR(100) NOT NULL,
-    UNIQUE (city_name, state_name)
-);
-CREATE TABLE SurveyResponses_Normalized (
-    response_id INT PRIMARY KEY,
-    respondent_name VARCHAR(100),
-    respondent_age INT,
-    city_id INT,
-    survey_answer TEXT,
-    FOREIGN KEY (city_id) REFERENCES Cities(city_id)
-);</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> The denormalized table repeats <code>city_name</code> and <code>state_name</code>. Normalizing moves these to a <code>Cities</code> table, reducing redundancy.</p>
-                <p><strong>Expanded Example (Library):</strong> A denormalized table might store book and author details together, but normalization separates them.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Denormalized
-CREATE TABLE Books_Denormalized (
-    book_id INT PRIMARY KEY,
-    title VARCHAR(100),
-    author_name VARCHAR(100),
-    author_birth_year INT,
-    publish_date DATE
-);
--- Normalized to 3NF
-CREATE TABLE Authors (
-    author_id INT PRIMARY KEY,
-    author_name VARCHAR(100) NOT NULL,
-    birth_year INT
-);
-CREATE TABLE Books (
-    book_id INT PRIMARY KEY,
-    title VARCHAR(100) NOT NULL,
-    author_id INT,
-    publish_date DATE,
-    FOREIGN KEY (author_id) REFERENCES Authors(author_id)
-);</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Separating <code>Authors</code> prevents repeating author details for multiple books, simplifying updates.</p>
+                
+                <hr>
 
-                <!-- Entity-Relationship Diagrams (ERDs) -->
-                <h3 class="h4 fw-bold mb-3">Entity-Relationship Diagrams (ERDs)</h3>
-                <p>ERDs visually model database structures, showing entities, attributes, and relationships.</p>
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Lab: Three Exercises + One Project</h2>
+                <p>This lab provides hands-on experience in applying the concepts learned in this module.</p>
+                <h3 class="h4 fw-bold mb-3">Exercise 1 — Identify entities, keys, and columns (15–20 min)</h3>
+                <p><strong>Prompt:</strong> A bookstore app needs to track customers, books, authors, and purchases. List entities and attributes (with proposed types), choose primary keys, and identify relationships and their cardinalities.</p>
+                <p><strong>Expected Direction (not unique):</strong></p>
                 <ul>
-                    <li><strong>Components:</strong>
-                        <ul>
-                            <li><strong>Entities (Rectangles):</strong> Tables like <code>PATIENTS</code>.</li>
-                            <li><strong>Attributes (Ovals/Text):</strong> Columns like <code>name</code>, with primary keys underlined.</li>
-                            <li><strong>Relationships (Lines):</strong> Use Crow's Foot notation for cardinality.
-                                <ul>
-                                    <li><strong>1:1:</strong> One-to-one (e.g., one patient, one medical record).</li>
-                                    <li><strong>1:N:</strong> One-to-many (e.g., one patient, many admissions).</li>
-                                    <li><strong>M:N:</strong> Many-to-many (e.g., students and courses via enrollments).</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li><strong>Tools:</strong> Draw.io, Lucidchart, dbdiagram.io.</li>
-                    <li><strong>Application:</strong> ERDs aid in designing and communicating complex database structures.</li>
+                    <li><code>Customer(customer_id PK, email UNIQUE, first_name, last_name, created_at)</code></li>
+                    <li><code>Author(author_id PK, name, country)</code></li>
+                    <li><code>Book(book_id PK, isbn UNIQUE, title, published_year, list_price)</code></li>
+                    <li><code>BookAuthor(book_id FK, author_id FK, PRIMARY KEY(book_id, author_id))</code></li>
+                    <li><code>Order(order_id PK, customer_id FK, order_date)</code></li>
+                    <li><code>OrderItem(order_id FK, book_id FK, qty, unit_price, PRIMARY KEY(order_id, book_id))</code></li>
                 </ul>
-                <p><strong>Sample ERD SQL (Hospital System):</strong></p>
+
+                <h3 class="h4 fw-bold mb-3">Exercise 2 — Write the DDL with constraints (20–25 min)</h3>
+                <p><strong>Prompt:</strong> Implement the schema for <code>Customer</code>, <code>Order</code>, and <code>OrderItem</code> from Exercise 1 with appropriate constraints: <code>email UNIQUE</code>, <code>qty &gt; 0</code>, <code>unit_price ≥ 0</code>, and meaningful <strong>FOREIGN KEY</strong> actions.</p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- SQL for ERD structure
-CREATE TABLE Doctors (
-    doctor_id INT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
-);
-CREATE TABLE Patients (
-    patient_id INT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
-);
-CREATE TABLE Appointments (
-    appointment_id INT PRIMARY KEY,
-    doctor_id INT,
-    patient_id INT,
-    appt_date DATE,
-    FOREIGN KEY (doctor_id) REFERENCES Doctors(doctor_id),
-    FOREIGN KEY (patient_id) REFERENCES Patients(patient_id)
-);</code></pre>
+                    <pre></pre>
                 </div>
-                <p><strong>Explanation:</strong> This represents a 1:N relationship (one doctor, many appointments) and 1:N (one patient, many appointments).</p>
 
-                <!-- Assessments -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Assessments</h2>
+                <h3 class="h4 fw-bold mb-3">Exercise 3 — Normalize a messy table (25–30 min)</h3>
+                <p><strong>Prompt:</strong> Normalize the following denormalized "Purchases" table to 3NF. Identify anomalies, split the data into new tables, and provide minimal DDL.</p>
+                
+                <p><strong>Direction:</strong></p>
+                <ul>
+                    <li>Identify anomalies: Redundant customer, book, and author information.</li>
+                    <li>Split into 3NF tables:
+                        <ul>
+                            <li><code>Customer(customer_id PK, email UNIQUE, name)</code></li>
+                            <li><code>Author(author_id PK, name)</code></li>
+                            <li><code>Book(book_id PK, isbn UNIQUE, title)</code></li>
+                            <li><code>BookAuthor(book_id FK, author_id FK, PK(book_id, author_id))</code></li>
+                            <li><code>Purchase(purchase_id PK, customer_id FK)</code></li>
+                            <li><code>PurchaseItem(purchase_id FK, book_id FK, qty, price, PK(purchase_id, book_id))</code></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3 class="h4 fw-bold mb-3">End-of-Module Project — Design &amp; Implement a Mini OLTP (60–90 min)</h3>
+                <p><strong>Scenario:</strong> A small clinic needs a system to track patients, appointments, providers, and billed services.</p>
+                <p><strong>Deliverables:</strong></p>
                 <ol>
-                    <li><strong>Conceptual Question:</strong> Explain the difference between a <code>PRIMARY KEY</code> and a <code>UNIQUE</code> constraint. Provide a scenario where you would use a <code>UNIQUE</code> constraint on a column that is not the <code>PRIMARY KEY</code>.</li>
-                    <li><strong>Design Task:</strong> A local animal shelter in Greensboro, NC, wants to track its animals, adoptions, and volunteers.
-                        <ul>
-                            <li>Design a normalized database schema (up to 3NF) for this system. Consider entities like <code>Animals</code>, <code>Adopters</code>, <code>Adoptions</code>, <code>Volunteers</code>, <code>VolunteerShifts</code>.</li>
-                            <li>Define appropriate primary keys, foreign keys, and other constraints for each table.</li>
-                            <li>Draw a simple Entity-Relationship Diagram (ERD) for your design, showing entities and relationships with cardinality.</li>
-                        </ul>
-                    </li>
-                    <li><strong>Expanded Task (Retail):</strong> Design a 3NF schema for a bookstore tracking books, authors, and sales. Provide SQL creation statements and an ERD description.</li>
+                    <li>An ERD with entities, attributes (types), PKs, FKs, and cardinalities.</li>
+                    <li>DDL to create tables with appropriate constraints: <code>Patients</code> (unique MRN), <code>Providers</code> (unique NPI), <code>Appointments</code> (FK to Patient/Provider), <code>Services</code> (catalog), <code>AppointmentService</code> (junction with qty, charge).</li>
+                    <li>Sample data (a few <code>INSERT</code> statements per table).</li>
+                    <li>Two illustrative queries: one to list upcoming appointments with patient and provider names, and another to calculate total charges per patient.</li>
+                    <li>A short paragraph on normalization choices and any intentional denormalization.</li>
                 </ol>
+
+              
+                
+                
+                
+
+                <hr>
+
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Quick Reference</h2>
+                <p><strong>Column definitions:</strong> <code>column_name DATA_TYPE [NULL | NOT NULL] [DEFAULT expr]</code></p>
+                <p><strong>Table constraints:</strong></p>
+                <pre><code data-highlighted="yes" class="hljs language-scss"><span class="hljs-selector-attr">[CONSTRAINT name]</span> PRIMARY KEY (col[, …])
+<span class="hljs-selector-attr">[CONSTRAINT name]</span> UNIQUE (col[, …])
+<span class="hljs-selector-attr">[CONSTRAINT name]</span> CHECK (boolean_expression)
+<span class="hljs-selector-attr">[CONSTRAINT name]</span> FOREIGN KEY (col[, …])
+  REFERENCES <span class="hljs-built_in">parent_table</span>(parent_col[, …])
+  <span class="hljs-selector-attr">[ON UPDATE action]</span> <span class="hljs-selector-attr">[ON DELETE action]</span></code></pre>
+                <p><strong>Actions (common):</strong> <code>NO ACTION/RESTRICT</code>, <code>CASCADE</code>, <code>SET NULL</code>, <code>SET DEFAULT</code>.</p>
+                <p><strong>Indexing (typical patterns):</strong></p>
+                <pre><code data-highlighted="yes" class="hljs language-scss">CREATE INDEX idx_order_customer ON "<span class="hljs-attribute">order</span>"(customer_id);
+CREATE INDEX idx_product_sku ON <span class="hljs-built_in">product</span>(sku);
+CREATE INDEX idx_appointment_time ON <span class="hljs-built_in">appointment</span>(appt_time);</code></pre>
+
+                <hr>
+
+                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Common Pitfalls</h2>
+                <ul>
+                    <li><strong>No FKs:</strong> This leads to orphan rows. Always declare <strong>FOREIGN KEY</strong> constraints.</li>
+                    <li><strong>Overly wide text types:</strong> Use <strong>VARCHAR(n)</strong> when you know reasonable bounds to save storage and improve performance.</li>
+                    <li><strong>Ambiguous names:</strong> Inconsistent naming slows everyone down—standardize from the beginning.</li>
+                    <li><strong>Everything as TEXT:</strong> You lose validation and performance hints. Always pick proper data types.</li>
+                    <li><strong>Missing CHECKs:</strong> Encode business rules like <code>qty &gt; 0</code> and <code>charge ≥ 0</code>.</li>
+                    <li><strong>Indexes everywhere:</strong> Create targeted indexes for specific queries; measure performance with <code>EXPLAIN/ANALYZE</code>.</li>
+                    <li><strong>Skipping docs:</strong> Add comments to your schema and keep a schema migration log.</li>
+                </ul>
             </div>
         </section>
     </div>
 
-    <!-- Footer -->
     <footer class="bg-light py-3 text-center">
-        <p class="text-muted mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
+        <p class="text-muted mb-0">© 2025 Ali Noori, UNCG. All rights reserved.</p>
     </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <!-- Highlight.js Initialization -->
     <script>hljs.highlightAll();</script>
-    <!-- Custom Copy Functionality -->
     <script>
         function copyCode(button) {
             const code = button.nextElementSibling.querySelector('code');
             navigator.clipboard.writeText(code.innerText).then(() => {
+                const original = button.textContent;
                 button.textContent = 'Copied!';
-                setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                button.disabled = true;
+                setTimeout(() => { button.textContent = original; button.disabled = false; }, 1600);
             });
         }
     </script>
-</body>
-</html>
+
+
+</body></html>

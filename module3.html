@@ -1,11 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Module 3: SQL Basics I: SELECT, WHERE, ORDER BY - IAF 603</title>
+    <title>Module 3: DQL & DML - IAF 603</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +20,54 @@
     <script src="./js/mathjax.js"></script>
     <!-- Custom Styles -->
     <link rel="stylesheet" href="./css/styles.css">
+    <style>
+        .sql-category-card {
+            border-left: 5px solid #007bff;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .sql-category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .sql-category-card h4 {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Source Code Pro', monospace;
+        }
+        .flow-step {
+            width: 100%;
+            max-width: 300px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background-color: #e9ecef;
+            border-radius: 0.25rem;
+            text-align: center;
+            position: relative;
+        }
+        .flow-step:not(:last-child)::after {
+            content: '↓';
+            display: block;
+            margin: 0.5rem 0;
+            font-size: 1.5rem;
+            color: #6c757d;
+        }
+        .flow-step span {
+            font-weight: bold;
+        }
+        .flow-step.active {
+            background-color: #d1e7dd;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
@@ -61,314 +110,462 @@
             </div>
         </div>
     </nav>
-
     <!-- Main Content -->
     <div class="container my-5">
         <!-- Module Title -->
         <section class="text-center py-5 bg-white rounded shadow">
-            <h1 class="display-4 fw-bold text-dark">Module 3: SQL Basics I: SELECT, WHERE, ORDER BY</h1>
+            <h1 class="display-4 fw-bold text-dark">Module 3: PostgreSQL in Action: A Hands-On Guide to DQL and DML</h1>
         </section>
 
         <!-- Module Content -->
         <section class="my-5">
             <div class="bg-white p-4 rounded shadow">
-                <!-- Learning Objectives -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Learning Objectives</h2>
-                <p>Upon completion of this module, participants will be able to:</p>
-                <ul>
-                    <li>Construct basic SQL <code>SELECT</code> statements to retrieve specific columns or all data from tables.</li>
-                    <li>Utilize column aliasing and create derived columns using arithmetic operations and simple functions.</li>
-                    <li>Implement <code>WHERE</code> clauses with various comparison and logical operators to filter query results precisely.</li>
-                    <li>Apply <code>ORDER BY</code> to sort query outputs in ascending or descending order, including multi-column sorting.</li>
-                    <li>Understand the fundamental order of SQL clause execution.</li>
-                    <li>Execute basic SQL queries in a cloud-based environment like Microsoft Fabric Lakehouse.</li>
-                </ul>
+                <h2>A Comprehensive Analysis of Data Query and Manipulation in SQL: A Foundational Module Expansion</h2>
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#setupSection" aria-expanded="false" aria-controls="setupSection">
+                    Show/Hide PostgreSQL Setup
+                </button>
+                <div class="collapse mt-3" id="setupSection">
+                    <p><strong>0. Preparing the Environment in PostgreSQL (pgAdmin 4)</strong></p>
+                    <p>Before exploring queries and manipulations, we need a working database environment. PostgreSQL, with pgAdmin 4 as its management interface, provides a professional yet approachable platform for students from diverse backgrounds. Creating a dedicated database allows us to isolate practice queries from production systems, ensuring safe experimentation. By loading dummy healthcare data, we give students a contextually relevant dataset that mirrors real-world structures—patients, doctors, and admissions. These tables will serve as our foundation for practicing both data retrieval (DQL) and data manipulation (DML).</p>
+                    <p><strong>Step 1 – Create Database</strong></p>
+                    <div class="code-block">
+                        <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-sql">CREATE DATABASE healthcare_db;</code></pre>
+                    </div>
+                    <p><strong>Step 2 – Create Tables</strong></p>
+                    <div class="code-block">
+                        <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-sql">\c healthcare_db;
 
-                <!-- Introduction to SQL Basics I -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Introduction to SQL Basics I</h2>
-                <p>SQL (Structured Query Language) is the universal language for interacting with relational databases. It's the cornerstone of data preparation, enabling us to extract, filter, and organize data before any deeper analysis can begin. This module introduces the absolute essentials of SQL: the <code>SELECT</code> statement for choosing what data to see, the <code>WHERE</code> clause for filtering out unwanted data, and the <code>ORDER BY</code> clause for arranging the results. We'll also touch upon how these fundamental queries operate within modern cloud data platforms like Microsoft Fabric, which are increasingly common in today's data landscape. Mastering these basics is crucial for building more complex queries later in the course.</p>
-                <p>SQL was developed in the 1970s by IBM and standardized in 1986. Today, it's used in everything from small apps to massive big data systems. For example, in a Greensboro retail business, SQL can query sales data to identify top products; in healthcare, it retrieves patient records for analysis. Understanding these basics allows efficient data handling, reducing processing time and errors.</p>
+CREATE TABLE Patients (
+    subject_id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    age INT,
+    gender VARCHAR(10),
+    admission_date DATE
+);
 
-                <!-- The SELECT Clause: Choosing Your Data -->
-                <h3 class="h4 fw-bold mb-3">The SELECT Clause: Choosing Your Data</h3>
-                <p>The <code>SELECT</code> clause is the first part of almost every SQL query. It specifies which columns you want to retrieve from a table. You can select all columns with <code>*</code>, specific columns by listing them, use aliases with <code>AS</code> for readability, or create derived columns with calculations.</p>
-                <ul>
-                    <li><strong>Selecting All Columns:</strong> Use <code>*</code> to retrieve everything, useful for initial exploration but inefficient for large tables.</li>
-                    <li><strong>Selecting Specific Columns:</strong> List columns separated by commas to focus on relevant data, improving performance.</li>
-                    <li><strong>Column Aliasing:</strong> Rename columns in results for clarity, e.g., <code>subject_id AS PatientID</code>.</li>
-                    <li><strong>Derived Columns:</strong> Compute new values, like <code>age * 12 AS AgeInMonths</code>.</li>
-                </ul>
-                <p><strong>Sample Data (PATIENTS Table):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>subject_id</th>
-                            <th>name</th>
-                            <th>age</th>
-                            <th>gender</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1001</td>
-                            <td>Alice Smith</td>
-                            <td>45</td>
-                            <td>Female</td>
-                        </tr>
-                        <tr>
-                            <td>1002</td>
-                            <td>Bob Johnson</td>
-                            <td>32</td>
-                            <td>Male</td>
-                        </tr>
-                        <tr>
-                            <td>1003</td>
-                            <td>Carol White</td>
-                            <td>58</td>
-                            <td>Female</td>
-                        </tr>
-                        <tr>
-                            <td>1004</td>
-                            <td>David Brown</td>
-                            <td>67</td>
-                            <td>Male</td>
-                        </tr>
-                        <tr>
-                            <td>1005</td>
-                            <td>Eve Davis</td>
-                            <td>29</td>
-                            <td>Female</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- 1. Select all columns from the PATIENTS table
-SELECT *
-FROM PATIENTS;
+CREATE TABLE Doctors (
+    doctor_id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    specialty VARCHAR(50)
+);
 
--- 2. Select specific columns: name and age
-SELECT name, age
-FROM PATIENTS;
+CREATE TABLE Admissions (
+    admission_id SERIAL PRIMARY KEY,
+    subject_id INT REFERENCES Patients(subject_id),
+    doctor_id INT REFERENCES Doctors(doctor_id),
+    diagnosis VARCHAR(200),
+    admission_date DATE
+);</code></pre>
+                    </div>
+                    <p><strong>Step 3 – Insert Dummy Data</strong></p>
+                    <div class="code-block">
+                        <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-sql">INSERT INTO Patients (name, age, gender, admission_date) VALUES
+('Alice Brown', 45, 'Female', '2023-02-10'),
+('Bob Smith', 67, 'Male', '2023-03-15'),
+('Carol Johnson', 34, 'Female', '2023-01-22'),
+('David Lee', 72, 'Male', '2023-05-01');
 
--- 3. Select specific columns with aliases for readability
-SELECT
-    subject_id AS PatientID,
-    name AS FullName,
-    age AS PatientAge
-FROM PATIENTS;
+INSERT INTO Doctors (name, specialty) VALUES
+('Dr. Williams', 'Cardiology'),
+('Dr. Patel', 'Neurology'),
+('Dr. Nguyen', 'Orthopedics');
 
--- 4. Create a derived column: Calculate approximate birth year (assuming current year 2025)
-SELECT
-    name,
-    age,
-    (2025 - age) AS EstimatedBirthYear
-FROM PATIENTS;</code></pre>
+INSERT INTO Admissions (subject_id, doctor_id, diagnosis, admission_date) VALUES
+(1, 1, 'Hypertension', '2023-02-10'),
+(2, 2, 'Stroke', '2023-03-15'),
+(3, 3, 'Fracture', '2023-01-22'),
+(4, 1, 'Heart Disease', '2023-05-01');</code></pre>
+                    </div>
+                    <p>✅ This environment now supports all subsequent lessons.</p>
                 </div>
-                <p><strong>Explanation:</strong> The first query retrieves all data. The second focuses on name and age. The third uses aliases for better readability in reports. The fourth derives a new column with arithmetic, useful for analytics like age groups.</p>
-                <p><strong>Expanded Example (Sales Table):</strong> Imagine a sales table for a Greensboro store.</p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>sale_id</th>
-                            <th>product</th>
-                            <th>quantity</th>
-                            <th>price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Laptop</td>
-                            <td>2</td>
-                            <td>800.00</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Mouse</td>
-                            <td>5</td>
-                            <td>20.00</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Keyboard</td>
-                            <td>3</td>
-                            <td>50.00</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Select product and total cost (derived)
-SELECT
-    product,
-    quantity,
-    price,
-    (quantity * price) AS TotalCost
-FROM Sales;</code></pre>
+
+                <p><strong>1. Executive Summary and Introduction</strong></p>
+                <p><strong>1.1 Executive Summary</strong></p>
+                <p>This module introduces students to the two essential pillars of SQL: <strong>Data Query Language (DQL)</strong> and <strong>Data Manipulation Language (DML)</strong>. Students will first learn how to extract and explore information from relational tables. They will then progress to altering, updating, and synchronizing records responsibly. Healthcare examples anchor the lessons in real-world relevance, showing how SQL queries power everything from daily patient reports to large-scale analytics pipelines. Through structured explanations, code samples, and guided exercises, students will gradually progress from beginners running simple queries to advanced learners capable of orchestrating complete workflows.</p>
+                <p><strong>1.2 SQL as a Declarative Language</strong></p>
+                <p>SQL is powerful because it is <strong>declarative</strong>: users specify <em>what</em> they want to retrieve or modify, while the database decides <em>how</em> to execute it efficiently. This design separates business logic from execution, enabling scalability across millions of records. SQL is categorized into several sublanguages. <strong>DDL</strong> handles schema design, <strong>DML</strong> handles changes to stored data, and <strong>DQL</strong> retrieves information. Each has its role in maintaining the data ecosystem. For example, DDL might create a Patients table, DML inserts and updates patient rows, while DQL retrieves patient statistics for a report.</p>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="sql-category-card">
+                            <h4>DDL (Structure)</h4>
+                            <p><strong>Purpose:</strong> Defines schema</p>
+                            <p><strong>Commands:</strong> CREATE, ALTER, DROP</p>
+                            <p><strong>Impact:</strong> Schema-level change</p>
+                            <p><strong>Example:</strong> <code>CREATE TABLE Patients...</code></p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="sql-category-card">
+                            <h4>DML (Manipulate Data)</h4>
+                            <p><strong>Purpose:</strong> Adds, modifies, removes data rows</p>
+                            <p><strong>Commands:</strong> INSERT, UPDATE, DELETE, MERGE</p>
+                            <p><strong>Impact:</strong> Data-level change</p>
+                            <p><strong>Example:</strong> <code>UPDATE Patients...</code></p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="sql-category-card">
+                            <h4>DQL (Query Data)</h4>
+                            <p><strong>Purpose:</strong> Retrieves data</p>
+                            <p><strong>Commands:</strong> SELECT</p>
+                            <p><strong>Impact:</strong> Read-only</p>
+                            <p><strong>Example:</strong> <code>SELECT * FROM Patients;</code></p>
+                        </div>
+                    </div>
                 </div>
-                <p><strong>Explanation:</strong> This calculates total cost per sale, aiding quick revenue insights without altering the database.</p>
 
-                <!-- The WHERE Clause: Filtering Your Data -->
-                <h3 class="h4 fw-bold mb-3">The WHERE Clause: Filtering Your Data</h3>
-                <p>The <code>WHERE</code> clause filters rows based on conditions, using operators like =, >, <, BETWEEN, LIKE, IN, and logical operators (AND, OR, NOT). It's essential for targeting specific data subsets.</p>
-                <ul>
-                    <li><strong>Comparison Operators:</strong> = (equal), != or <> (not equal), >, >=, <, <=.</li>
-                    <li><strong>Logical Operators:</strong> AND (both true), OR (either true), NOT (inverse).</li>
-                    <li><strong>Special Operators:</strong> BETWEEN (range), LIKE (pattern matching with % wildcard), IN (list match).</li>
-                </ul>
+                <p><strong>2. The Foundational Language: Mastering Data Query (DQL)</strong></p>
+                <p><strong>2.1 SELECT — Retrieving Information</strong></p>
+                <p>The <code>SELECT</code> statement lies at the core of SQL. Conceptually, it acts as a window into the database, allowing us to see stored information without altering it. This makes it a safe and versatile tool for beginners while also being powerful enough for complex analytical tasks. <code>SELECT</code> can return entire tables, chosen columns, or computed values derived from existing data. Practically, <code>SELECT</code> is used daily by analysts, researchers, and data engineers. A hospital administrator may query all patients over 60, while a researcher may calculate average admission ages. The fact that <code>SELECT</code> does not modify underlying data makes it ideal for exploration and reporting.</p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Filter patients older than 50
-SELECT name, age
-FROM PATIENTS
-WHERE age > 50;
+                    <pre><code class="language-sql">-- Select all patients
+SELECT * FROM Patients;
 
--- Filter female patients between ages 30 and 50
+-- Select specific columns
+SELECT name, age FROM Patients;
+
+-- Alias and calculated field
+SELECT subject_id AS PatientID,
+       name AS FullName,
+       (2025 - age) AS EstimatedBirthYear
+FROM Patients;</code></pre>
+                </div>
+                <p>💡 <strong>Exercise:</strong> Retrieve the name and gender of all patients.</p>
+
+                <p><strong>2.2 WHERE — Precision Filtering</strong></p>
+                <p>The <code>WHERE</code> clause is SQL’s precision scalpel. Conceptually, it narrows broad datasets by enforcing conditions. Without it, queries may return overwhelming volumes of irrelevant rows, wasting both time and computational resources. Practically, <code>WHERE</code> is indispensable in healthcare systems. Imagine a hospital looking only for female patients aged 30–50 for a study. Using operators (=, BETWEEN, LIKE, etc.), we can target precisely the rows of interest. Errors often arise when beginners forget <code>WHERE</code>, leading to unintended bulk operations.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">-- Female patients between 30 and 50
 SELECT name, age, gender
-FROM PATIENTS
-WHERE gender = 'Female' AND age BETWEEN 30 AND 50;
-
--- Filter names starting with 'A' or 'B'
-SELECT name
-FROM PATIENTS
-WHERE name LIKE 'A%' OR name LIKE 'B%';</code></pre>
+FROM Patients
+WHERE gender = 'Female' AND age BETWEEN 30 AND 50;</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> The first filters by age. The second combines conditions for targeted demographics. The third uses LIKE for pattern-based search, useful for partial matches.</p>
-                <p><strong>Expanded Example (Employees Table):</strong> A table for UNCG staff.</p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>emp_id</th>
-                            <th>name</th>
-                            <th>salary</th>
-                            <th>department</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>John Doe</td>
-                            <td>60000</td>
-                            <td>IT</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Jane Smith</td>
-                            <td>75000</td>
-                            <td>HR</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Mike Johnson</td>
-                            <td>55000</td>
-                            <td>IT</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Sara Lee</td>
-                            <td>80000</td>
-                            <td>Finance</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <p>💡 <strong>Exercise:</strong> Write a query to return all patients whose names begin with “C”.</p>
+
+                <p><strong>2.3 ORDER BY — Structuring Results</strong></p>
+                <p>Query results often need structure. Conceptually, <code>ORDER BY</code> organizes otherwise unordered rows, making results easier to interpret. Sorting transforms raw data into readable, decision-ready outputs. In practice, <code>ORDER BY</code> is frequently used in dashboards, clinical reports, and audits. By sorting admissions by date or patients by age, trends emerge that aid decision-making. PostgreSQL supports multi-column sorting and allows using column aliases for readability.</p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Employees in IT with salary > 50000
-SELECT name, salary
-FROM Employees
-WHERE department = 'IT' AND salary > 50000;
-
--- Employees not in HR or Finance
-SELECT name, department
-FROM Employees
-WHERE department NOT IN ('HR', 'Finance');</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This filters for high-salary IT staff or excludes certain departments, useful for HR reports.</p>
-
-                <!-- The ORDER BY Clause: Sorting Your Data -->
-                <h3 class="h4 fw-bold mb-3">The ORDER BY Clause: Sorting Your Data</h3>
-                <p>The <code>ORDER BY</code> clause sorts results by one or more columns, in ASC (default) or DESC order. Multi-column sorting prioritizes the first column, then the next.</p>
-                <ul>
-                    <li><strong>Basic Sorting:</strong> Sort by a single column, e.g., age ASC.</li>
-                    <li><strong>Multi-Column:</strong> Sort by multiple, e.g., department ASC, salary DESC.</li>
-                    <li><strong>With Derived Columns:</strong> Sort by aliases or calculations.</li>
-                </ul>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Sort patients by age ascending
-SELECT name, age
-FROM PATIENTS
-ORDER BY age ASC;
-
--- Sort by gender ASC, then age DESC within gender
+                    <pre><code class="language-sql">-- Sort patients by gender then age
 SELECT name, age, gender
-FROM PATIENTS
+FROM Patients
 ORDER BY gender ASC, age DESC;</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> The first sorts youngest to oldest. The second groups by gender, then oldest to youngest within each.</p>
-                <p><strong>Expanded Example (Sales Table):</strong></p>
+                <p>💡 <strong>Exercise:</strong> Sort all patients by name (ascending), then by age (descending).</p>
+
+                <p><strong>2.4 Logical Query Processing Order</strong></p>
+                <p>Though queries are written in a human-readable order, PostgreSQL executes them differently. Conceptually, this order defines how raw data becomes a polished result set. Practically, understanding this order prevents common errors. For example, beginners sometimes attempt to use <code>SELECT</code> aliases in <code>WHERE</code> clauses, which fails because filtering occurs before aliasing. By internalizing this execution sequence, analysts can write both correct and optimized queries.</p>
+
+                <div class="flow-diagram my-4">
+                    <div class="flow-step"><span>1.</span> FROM</div>
+                    <div class="flow-step"><span>2.</span> WHERE</div>
+                    <div class="flow-step"><span>3.</span> GROUP BY</div>
+                    <div class="flow-step"><span>4.</span> HAVING</div>
+                    <div class="flow-step"><span>5.</span> SELECT</div>
+                    <div class="flow-step"><span>6.</span> DISTINCT</div>
+                    <div class="flow-step"><span>7.</span> ORDER BY</div>
+                </div>
+
+                <p>💡 <strong>Exercise:</strong> Retrieve all admissions after 2023-01-01 and sort them by doctor ID.</p>
+
+                <h3>3. The Language of Change: An In-Depth Look at DML</h3>
+                <p>While DQL lets us look at data, DML empowers us to change data. Conceptually, this distinction is vital: retrieving data is usually safe, but modifying it carries risks that can affect integrity, analytics, and business operations. In healthcare, a mistaken update could lead to incorrect patient records, missed diagnoses, or compliance violations. Thus, learning DML requires not just syntax but also a respect for transactional control and safety mechanisms. DML includes four key commands: <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, and <code>MERGE</code>. Together, they allow data professionals to populate tables, correct information, remove obsolete records, and synchronize datasets. By practicing these commands in a controlled environment, students learn not only how to execute them, but also how to anticipate and prevent common errors such as unintended bulk changes or data loss.</p>
+
+                <h4>3.1 INSERT — Populating the Database</h4>
+                <p>Conceptually, <code>INSERT</code> is the primary way to add new information into relational tables. When a hospital admits a new patient, an <code>INSERT</code> adds their details into the Patients table. This operation creates a new row in the database and commits it as part of the permanent record. Without <code>INSERT</code>, databases would remain empty shells, unable to store the lifeblood of information that drives organizations. Practically, <code>INSERT</code> can handle one row at a time or multiple rows in a single statement. In PostgreSQL, it also supports inserting results of a <code>SELECT</code> query from another table. This versatility allows both manual data entry and bulk data integration from external sources. Best practices include ensuring data types match, providing all required columns, and using constraints like <code>NOT NULL</code> or <code>UNIQUE</code> to enforce integrity.</p>
+                <p><strong>Syntax</strong></p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Sort sales by total cost descending
-SELECT product, (quantity * price) AS TotalCost
-FROM Sales
-ORDER BY TotalCost DESC;
-
--- Multi-column: by quantity DESC, then price ASC
-SELECT product, quantity, price
-FROM Sales
-ORDER BY quantity DESC, price ASC;</code></pre>
+                    <pre><code class="language-sql">INSERT INTO table_name (column1, column2, ...)
+VALUES (value1, value2, ...);</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> This identifies highest-value sales or sorts by volume then cost.</p>
-
-                <!-- Order of Execution -->
-                <h3 class="h4 fw-bold mb-3">Order of Execution</h3>
-                <p>SQL clauses execute in a specific order: <code>FROM</code> (source), <code>WHERE</code> (filter), <code>SELECT</code> (project), <code>ORDER BY</code> (sort). This affects how aliases and conditions work—aliases can't be used in <code>WHERE</code> but can in <code>ORDER BY</code>.</p>
-                <p><strong>Example:</strong> You can't filter on an alias in <code>WHERE</code>, but you can sort by it.</p>
+                <p><strong>Example</strong></p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Valid: Sort by alias
-SELECT name, age AS PatientAge
-FROM PATIENTS
-ORDER BY PatientAge DESC;
+                    <pre><code class="language-sql">-- Insert one patient
+INSERT INTO Patients (name, age, gender, admission_date)
+VALUES ('Frank Moore', 40, 'Male', '2023-06-01');
 
--- Invalid: Can't filter by alias in WHERE (use age > 50 instead)
--- SELECT name, age AS PatientAge FROM PATIENTS WHERE PatientAge > 50; -- Error</code></pre>
+-- Insert multiple patients
+INSERT INTO Patients (name, age, gender, admission_date)
+VALUES
+('Grace Hall', 55, 'Female', '2023-07-12'),
+('Henry Adams', 33, 'Male', '2023-08-05');</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> Understanding execution order prevents common errors and optimizes queries.</p>
+                <p>💡 <strong>Exercise:</strong> Insert a new patient record for Ivy Carter (Age 50, Female, admitted on 2023-09-20).</p>
 
-                <!-- Running Queries in Microsoft Fabric -->
-                <h3 class="h4 fw-bold mb-3">Running Queries in Microsoft Fabric Lakehouse</h3>
-                <p>Microsoft Fabric Lakehouse combines data lakes and warehouses for scalable querying. Use notebooks or SQL endpoints to run queries on large datasets.</p>
+                <h4>3.2 UPDATE — Modifying Existing Data</h4>
+                <p>Conceptually, <code>UPDATE</code> allows us to correct or change information that already exists in the database. Errors in data entry, changes in patient demographics, or adjustments in healthcare codes often require updates. Unlike <code>INSERT</code>, which creates new records, <code>UPDATE</code> operates on existing rows, selectively modifying one or more columns. Practically, the <code>WHERE</code> clause becomes critical in <code>UPDATE</code>. Without it, all rows in the table may be updated—an error that could overwrite hundreds or thousands of records. For example, if a hospital system updated the age column without a <code>WHERE</code> filter, every patient’s age would change, destroying valuable data. Professionals often run a <code>SELECT</code> query first to check which rows meet the condition before executing the <code>UPDATE</code>.</p>
+                <p><strong>Syntax</strong></p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Example in Fabric: Query patient data
-SELECT name, age
-FROM lakehouse.PATIENTS
-WHERE age > 40
-ORDER BY age DESC;</code></pre>
+                    <pre><code class="language-sql">UPDATE table_name
+SET column1 = value1, column2 = value2
+WHERE condition;</code></pre>
                 </div>
-                <p><strong>Explanation:</strong> Fabric handles big data; syntax is standard SQL, but optimized for distributed processing.</p>
-                <p><strong>Expanded Example (Survey Data in Fabric):</strong></p>
+                <p><strong>Example</strong></p>
                 <div class="code-block">
                     <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Query survey responses in Fabric
-SELECT respondent_id, answer
-FROM survey_lakehouse.Responses
-WHERE satisfaction_score >= 4
-ORDER BY response_date ASC;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Filters high-satisfaction responses, sorted chronologically for trend analysis.</p>
+                    <pre><code class="language-sql">-- Correct Ivy’s age
+UPDATE Patients
+SET age = 51
+WHERE name = 'Ivy Carter';
 
-                <!-- Assessments -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Assessments</h2>
+-- Bulk update: Add 1 year to all patients (use cautiously!)
+UPDATE Patients
+SET age = age + 1;</code></pre>
+                </div>
+                <p>💡 <strong>Exercise:</strong> Update “Henry Adams” to “Henry Adamson”.</p>
+
+                <h4>3.3 DELETE — Transactional Removal</h4>
+                <p>Conceptually, <code>DELETE</code> removes records that are no longer needed. In healthcare, this might be used cautiously to remove duplicate entries, test records, or temporary staging data. Because deletion permanently removes data, it must be handled with extreme care, especially in regulated environments where records must be preserved for compliance. Practically, <code>DELETE</code> is very similar to <code>UPDATE</code> in that the <code>WHERE</code> clause is essential. Without it, an entire table can be wiped clean. PostgreSQL provides safety nets such as transactions, allowing professionals to roll back changes if a mistake is detected. A safer alternative in production is sometimes “soft deletion,” where a row is marked inactive instead of being physically removed.</p>
+                <p><strong>Syntax</strong></p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">DELETE FROM table_name
+WHERE condition;</code></pre>
+                </div>
+                <p><strong>Example</strong></p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">-- Delete one record
+DELETE FROM Patients
+WHERE name = 'Ivy Carter';
+
+-- Remove all minors
+DELETE FROM Patients
+WHERE age < 18;</code></pre>
+                </div>
+                <p>💡 <strong>Exercise:</strong> Delete all patients who were admitted before 2023-02-01.</p>
+
+                <h4>3.4 MERGE — Synchronization in One Step (Postgres 15+)</h4>
+                <p>Conceptually, <code>MERGE</code> is a powerful command introduced in PostgreSQL 15. It combines the functionality of <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> into a single operation. This is especially valuable when synchronizing two datasets—for example, when loading a new admissions file into the main Patients table. The database compares source and target, updating matches and inserting non-matches. Practically, <code>MERGE</code> simplifies what used to require multiple steps. However, with power comes complexity. A poorly written <code>MERGE</code> could unintentionally overwrite valid data. Professionals must carefully define matching conditions and test logic on smaller datasets first. When used correctly, <code>MERGE</code> ensures consistency and reduces the risk of missing updates during synchronization.</p>
+                <p><strong>Syntax</strong></p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">MERGE INTO target_table t
+USING source_table s
+ON t.key = s.key
+WHEN MATCHED THEN
+    UPDATE SET column1 = s.column1
+WHEN NOT MATCHED THEN
+    INSERT (column1, column2) VALUES (s.column1, s.column2);</code></pre>
+                </div>
+                <p><strong>Example</strong></p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">MERGE INTO Patients p
+USING NewAdmissions n
+ON p.name = n.name
+WHEN MATCHED THEN
+    UPDATE SET age = n.age, gender = n.gender
+WHEN NOT MATCHED THEN
+    INSERT (name, age, gender, admission_date)
+    VALUES (n.name, n.age, n.gender, n.admission_date);</code></pre>
+                </div>
+                <p>💡 <strong>Exercise:</strong> Merge records from a new table <code>EmergencyAdmissions</code> into Patients, ensuring ages are updated and new patients are inserted.</p>
+
+                <h3>4. Advanced Integration and Strategic Application</h3>
+                <h4>4.1 SQL in the Data Lifecycle (ETL/ELT)</h4>
+                <p>SQL is not just about querying or modifying tables—it plays a central role in the data lifecycle. Conceptually, most organizations follow <strong>ETL (Extract, Transform, Load)</strong> or <strong>ELT (Extract, Load, Transform)</strong> processes. In both models, SQL is indispensable at multiple stages. In ETL, SQL is used to extract data from source systems, transform it (through filtering, joins, and aggregations), and then load it into a target warehouse. In ELT, SQL becomes even more important because raw data is loaded first, and all transformations are executed inside the database or warehouse using SQL scripts. For healthcare systems, this means pulling raw patient admissions from transactional databases, transforming them into standardized formats, and then loading them into an analytics warehouse where queries like patient outcome analysis can be run.</p>
+                <p><strong>Example Workflow</strong></p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">-- Extract subset of admissions
+SELECT *
+FROM Admissions
+WHERE admission_date > '2023-01-01';
+
+-- Transform: enrich with doctor info
+SELECT a.admission_id, p.name AS patient_name, d.name AS doctor_name, a.diagnosis
+FROM Admissions a
+JOIN Patients p ON a.subject_id = p.subject_id
+JOIN Doctors d ON a.doctor_id = d.doctor_id;
+
+-- Load into analytics staging table
+INSERT INTO Admissions_Staging (admission_id, patient_name, doctor_name, diagnosis)
+SELECT a.admission_id, p.name, d.name, a.diagnosis
+FROM Admissions a
+JOIN Patients p ON a.subject_id = p.subject_id
+JOIN Doctors d ON a.doctor_id = d.doctor_id;</code></pre>
+                </div>
+                <p>💡 <strong>Exercise:</strong> Write an <code>INSERT INTO ... SELECT</code> statement that loads all patients older than 60 into a new table called <code>SeniorPatients</code>.</p>
+
+                <h4>4.2 Role of SQL in Data Warehouses</h4>
+                <p>Data warehouses are designed for analytical workloads, where data is typically historical, structured, and queried frequently. Conceptually, SQL commands serve different roles here: DQL is used to aggregate and report on large datasets. DML ensures that fact and dimension tables remain updated with new data. Practically, healthcare data warehouses might track patient visits across multiple hospitals. <code>MERGE</code> can be used to synchronize new visit records, while complex <code>SELECT</code> statements retrieve aggregated statistics such as average hospital stay length. Warehouses benefit from SQL’s ability to integrate seamlessly with BI tools like Tableau and Power BI.</p>
+                <p><strong>Example</strong></p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">-- Average patient age at admission
+SELECT d.specialty, AVG(p.age) AS avg_age
+FROM Admissions a
+JOIN Patients p ON a.subject_id = p.subject_id
+JOIN Doctors d ON a.doctor_id = d.doctor_id
+GROUP BY d.specialty;</code></pre>
+                </div>
+                <p>💡 <strong>Exercise:</strong> Write a query that counts the number of admissions handled by each doctor.</p>
+
+                <h4>4.3 SQL in Data Lakes and Lakehouses</h4>
+                <p>Data lakes store raw, often semi-structured data, while lakehouses combine the flexibility of lakes with the structure of warehouses. Conceptually, SQL is evolving to query not just relational data but also JSON, Parquet, and CSV files in these environments. PostgreSQL supports JSON queries, making it suitable for hybrid use cases. Practically, analysts may need to query clinical notes stored as JSON within a larger dataset. SQL functions allow them to extract fields directly without moving data into another system. Lakehouses (e.g., Delta Lake or Microsoft Fabric) extend this by allowing both structured queries (<code>SELECT</code>) and transactional manipulations (<code>MERGE</code>) in one system.</p>
+                <p><strong>Example</strong></p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">-- Example querying JSON data
+CREATE TABLE ClinicalNotes (
+    note_id SERIAL PRIMARY KEY,
+    patient_id INT,
+    note JSONB
+);
+
+INSERT INTO ClinicalNotes (patient_id, note) VALUES
+(1, '{"symptom": "headache", "severity": "mild"}'),
+(2, '{"symptom": "chest pain", "severity": "severe"}');
+
+-- Query specific field from JSON
+SELECT patient_id, note->>'symptom' AS symptom, note->>'severity' AS severity
+FROM ClinicalNotes;</code></pre>
+                </div>
+                <p>💡 <strong>Exercise:</strong> Insert a JSON note for patient 3 with symptom “fever” and severity “moderate”, then query only the symptom field.</p>
+
+                <h4>4.4 Performance, Concurrency, and Transactional Control</h4>
+                <p>Conceptually, one of SQL’s greatest strengths is its support for <strong>ACID transactions: Atomicity, Consistency, Isolation, and Durability</strong>. These ensure data remains reliable even when multiple users are reading and writing simultaneously. For example, two doctors updating patient records at the same time must not corrupt data integrity. Practically, PostgreSQL allows developers to manage concurrency using transactions (<code>BEGIN</code>, <code>COMMIT</code>, <code>ROLLBACK</code>) and isolation levels. Indexes and query optimizers further improve performance, ensuring large analytical queries complete in reasonable time. Analysts must balance performance with accuracy, ensuring queries are optimized but not simplified to the point of losing critical insights.</p>
+                <p><strong>Example</strong></p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">-- Transaction example
+BEGIN;
+
+UPDATE Patients
+SET age = age + 1
+WHERE subject_id = 1;
+
+-- Rollback if mistake detected
+ROLLBACK;
+
+-- Commit if correct
+COMMIT;</code></pre>
+                </div>
+                <p>💡 <strong>Exercise:</strong> Demonstrate an <code>UPDATE</code> inside a transaction where you roll back instead of committing.</p>
+
+                <h3>5. Final Module Assignment</h3>
+                <p>This assignment assesses your mastery of DQL, DML, and advanced SQL concepts. Your task is to use the provided PostgreSQL environment to complete a series of real-world data management and analysis tasks. You will be required to demonstrate proficiency in querying data, modifying records, and simulating complex workflows.
+                </p>
+
+                <h4>PostgreSQL Setup and Data</h4>
+                <p>For this assignment, use the `healthcare_db` environment created in the module. If you need to re-create it, use the following DDL and DML scripts.</p>
+                <div class="code-block">
+                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-sql">-- Database Creation
+CREATE DATABASE healthcare_db;
+\c healthcare_db;
+
+-- Table Definitions
+CREATE TABLE Patients (
+    subject_id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    age INT,
+    gender VARCHAR(10),
+    admission_date DATE
+);
+
+CREATE TABLE Doctors (
+    doctor_id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    specialty VARCHAR(50)
+);
+
+CREATE TABLE Admissions (
+    admission_id SERIAL PRIMARY KEY,
+    subject_id INT REFERENCES Patients(subject_id),
+    doctor_id INT REFERENCES Doctors(doctor_id),
+    diagnosis VARCHAR(200),
+    admission_date DATE
+);
+
+CREATE TABLE ClinicalNotes (
+    note_id SERIAL PRIMARY KEY,
+    patient_id INT,
+    note JSONB
+);
+
+-- Data Insertion
+INSERT INTO Patients (name, age, gender, admission_date) VALUES
+('Alice Brown', 45, 'Female', '2023-02-10'),
+('Bob Smith', 67, 'Male', '2023-03-15'),
+('Carol Johnson', 34, 'Female', '2023-01-22'),
+('David Lee', 72, 'Male', '2023-05-01');
+
+INSERT INTO Doctors (name, specialty) VALUES
+('Dr. Williams', 'Cardiology'),
+('Dr. Patel', 'Neurology'),
+('Dr. Nguyen', 'Orthopedics'),
+('Dr. Miller', 'Pediatrics');
+
+INSERT INTO Admissions (subject_id, doctor_id, diagnosis, admission_date) VALUES
+(1, 1, 'Hypertension', '2023-02-10'),
+(2, 2, 'Stroke', '2023-03-15'),
+(3, 3, 'Fracture', '2023-01-22'),
+(4, 1, 'Heart Disease', '2023-05-01'),
+(1, 2, 'Migraine', '2023-02-25');
+
+INSERT INTO ClinicalNotes (patient_id, note) VALUES
+(1, '{"symptom": "headache", "severity": "mild"}'),
+(2, '{"symptom": "chest pain", "severity": "severe"}'),
+(3, '{"symptom": "joint pain", "severity": "moderate"}');</code></pre>
+                </div>
+
+                <h4>Assignment Tasks</h4>
+
+                <p><strong>Part 1: DQL & Basic Analysis</strong></p>
                 <ol>
-                    <li><strong>Conceptual Question:</strong> Explain the difference between <code>SELECT *</code> and selecting specific columns. When would you use each?</li>
-                    <li><strong>SQL Coding Task:</strong> Using the PATIENTS table, write a query to select names and genders of patients older than 40, sorted by age descending.</li>
-                    <li><strong>Application Scenario:</strong> For a Greensboro library, query a Books table to find titles published after 2020 with 'Data' in the title, sorted by publish date.</li>
+                    <li>Write a query to retrieve the name and age of all patients, sorted by age in descending order.</li>
+                    <li>Find all admissions for patients older than 50. Display the patient's name, age, and diagnosis.</li>
+                    <li>Query the `ClinicalNotes` table to find all patients with a `severity` of 'moderate' or 'severe'. Display the patient's ID and the symptom.</li>
                 </ol>
-                <p>Expanded assessment example: Design a query for a sales database to find products with price > 100, quantity < 10, sorted by price ascending, and explain execution order.</p>
+
+                <p><strong>Part 2: DML & Data Integrity</strong></p>
+                <ol>
+                    <li>Insert a new patient record into the `Patients` table for "Sarah Adams" (Age 28, Female), admitted on '2023-11-15'.</li>
+                    <li>Run a `SELECT` query to verify that "Sarah Adams" was inserted correctly.</li>
+                    <li>Correct "Sarah Adams" age to 29. **First, run a `SELECT` query to find her record to ensure your `WHERE` clause is correct, then run the `UPDATE` statement.**</li>
+                    <li>Delete the record for "David Lee" from the `Patients` table. **Again, run a `SELECT` query first to confirm the record to be deleted, then execute the `DELETE` statement.**</li>
+                    <li>Write a `BEGIN...COMMIT` block to perform a transactional update: Inside the transaction, update "Carol Johnson's" `admission_date` to '2023-01-25'. Then, `ROLLBACK` the transaction. Verify that the date did not change.</li>
+                </ol>
+                
+                <p><strong>Part 3: Advanced Workflows</strong></p>
+                <ol>
+                    <li>**ETL Simulation:** Create a new table `SeniorAdmissions` with columns `patient_name`, `doctor_name`, and `diagnosis`. Write a single `INSERT INTO ... SELECT` query that extracts all admissions for patients over the age of 60, joins them with the `Doctors` table, and loads the patient's name, doctor's name, and diagnosis into the `SeniorAdmissions` table.</li>
+                    <li>**Synchronization with MERGE:** Create a temporary table `NewAdmissions` with the following data:
+                        <div class="code-block">
+                            <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre><code class="language-sql">CREATE TABLE NewAdmissions (
+    subject_id INT,
+    doctor_id INT,
+    diagnosis VARCHAR(200),
+    admission_date DATE
+);
+
+INSERT INTO NewAdmissions (subject_id, doctor_id, diagnosis, admission_date) VALUES
+(1, 1, 'Asthma', '2023-12-01'), -- This should UPDATE an existing patient
+(5, 3, 'Allergies', '2023-12-05'); -- This should INSERT a new patient</code></pre>
+                        </div>
+                        Then, write a `MERGE` statement to update the `diagnosis` for the matching patient and insert the new admission record.
+                    </li>
+                </ol>
+
+                <h3>6. Conclusion</h3>
+                <h4>6.1 Conceptual Reflection</h4>
+                <p>Throughout this module, we explored SQL as both a language of exploration (DQL) and a language of change (DML). Conceptually, these dual roles highlight SQL’s unique position: it not only reveals insights hidden in data but also actively shapes the data itself. DQL empowers analysts to filter, sort, and extract patterns, while DML ensures that data remains current, accurate, and synchronized across systems. In healthcare, this could mean querying all elderly patients for a wellness program (DQL) and updating patient diagnoses after lab results arrive (DML). By studying both languages together, students gain an appreciation for SQL’s breadth and its critical role in maintaining trustworthy data pipelines. This perspective emphasizes that SQL is more than syntax; it is the operating language of modern data ecosystems, from transactional hospital systems to large-scale research warehouses.</p>
+                <h4>6.2 Practical Takeaways</h4>
+                <p>Practically, the module demonstrated how SQL supports the entire data lifecycle: <code>SELECT</code> for retrieving and analyzing data; <code>INSERT</code> for adding new records; <code>UPDATE</code> for correcting and refining existing information; <code>DELETE</code> for carefully removing outdated or incorrect records; and <code>MERGE</code> for synchronizing datasets in complex environments. A recurring theme was the dual role of the <code>WHERE</code> clause. In DQL, it acts as a filter to refine analysis; in DML, it becomes a safeguard against catastrophic errors. Students should now recognize why running a <code>SELECT</code> first is best practice before executing an <code>UPDATE</code> or <code>DELETE</code>. Finally, the complete SQL workflow illustrated how these commands combine to form realistic data processes. From inserting new patients to generating final reports, SQL underpins both operational accuracy and analytical insight.</p>
+                <h4>6.3 Professional Importance</h4>
+                <p>For data professionals—whether analysts, engineers, or managers—mastery of SQL is non-negotiable. It is the common language across databases, business intelligence tools, and cloud architectures. More importantly, it is the skill that ensures data integrity, reproducibility, and trustworthiness. In healthcare, mistakes in SQL queries can lead to misdiagnosis, compliance violations, or lost trust. In business, they can distort revenue models and customer insights. This module therefore positions SQL mastery not only as an academic requirement but as a professional obligation—a skill that defines competence in the data-driven world.</p>
             </div>
         </section>
     </div>
@@ -379,7 +576,7 @@ ORDER BY response_date ASC;</code></pre>
     </footer>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
     <!-- Highlight.js Initialization -->
     <script>hljs.highlightAll();</script>
     <!-- Custom Copy Functionality -->
