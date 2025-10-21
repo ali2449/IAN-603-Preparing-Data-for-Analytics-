@@ -1,344 +1,2013 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Module 7: Subqueries - IAF 603</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Highlight.js for code highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- MathJax CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- Custom MathJax Configuration -->
-    <script src="./js/mathjax.js"></script>
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="./css/styles.css">
+    <title>Module 7: PostgreSQL Subqueries - Health Informatics</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- CodeMirror for SQL editing -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/sql/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/sql-hint.min.js"></script>
+    
+    <!-- SQL.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+
+        /* Theme Variables */
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --section-bg: #1e293b;
+            --code-bg: #020617;
+            --border-color: #334155;
+            --header-color: #38bdf8;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --error-color: #f87171;
+            --success-color: #34d399;
+            --sample-color: #fbbf24;
+            --scalar-color: #10b981;
+            --multirow-color: #3b82f6;
+            --correlated-color: #8b5cf6;
+            --fabric-color: #f59e0b;
+            --practice-color: #ec4899;
+            --advanced-color: #8b5cf6;
+            --performance-color: #f59e0b;
+            --project-color: #06b6d4;
+            --nav-bg: #1e293b;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --text-color: #1e293b;
+            --section-bg: #ffffff;
+            --code-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --header-color: #1d4ed8;
+            --accent-color: #4f46e5;
+            --accent-hover: #4338ca;
+            --error-color: #dc2626;
+            --success-color: #10b981;
+            --sample-color: #d97706;
+            --scalar-color: #059669;
+            --multirow-color: #2563eb;
+            --correlated-color: #7c3aed;
+            --fabric-color: #d97706;
+            --practice-color: #db2777;
+            --advanced-color: #7c3aed;
+            --performance-color: #d97706;
+            --project-color: #0891b2;
+            --nav-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1, h2 {
+            color: var(--header-color);
+        }
+
+        .section-card {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .sql-editor {
+            width: 100%;
+            height: 200px;
+            background-color: var(--code-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .output-area {
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            color: var(--text-color);
+            padding: 0.75rem;
+            margin-top: 12px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+        }
+
+        .question-number {
+            background-color: var(--accent-color);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+        
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .code-container {
+            margin-top: 16px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .sample-solution {
+            background-color: var(--code-bg);
+            border: 1px solid var(--sample-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 12px;
+            position: relative;
+        }
+
+        .sample-header {
+            color: var(--sample-color);
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-solution {
+            background: none;
+            border: none;
+            color: var(--sample-color);
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: auto;
+        }
+
+        .solution-content {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .subquery-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 12px;
+        }
+
+        .scalar-tag { background-color: var(--scalar-color); color: white; }
+        .multirow-tag { background-color: var(--multirow-color); color: white; }
+        .correlated-tag { background-color: var(--correlated-color); color: white; }
+        .practice-tag { background-color: var(--practice-color); color: white; }
+        .project-tag { background-color: var(--project-color); color: white; }
+
+        .subquery-section {
+            border-left: 4px solid;
+            padding-left: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .scalar-section { border-color: var(--scalar-color); }
+        .multirow-section { border-color: var(--multirow-color); }
+        .correlated-section { border-color: var(--correlated-color); }
+        .project-section { border-color: var(--project-color); }
+
+        .database-schema {
+            background-color: var(--code-bg);
+            border: 1px solid var(--scalar-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+        }
+
+        .schema-header {
+            color: var(--scalar-color);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-structure {
+            margin-bottom: 1rem;
+        }
+
+        .CodeMirror {
+            height: 200px;
+            border-radius: 0.5rem;
+            margin-top: 12px;
+        }
+
+        .sql-engine-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .status-ready {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-loading {
+            background-color: var(--sample-color);
+            color: black;
+        }
+
+        .status-error {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+        }
+
+        .results-table th {
+            background-color: var(--border-color);
+            padding: 6px 8px;
+            text-align: left;
+            border: 1px solid var(--border-color);
+            font-weight: bold;
+        }
+
+        .results-table td {
+            padding: 6px 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .query-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .query-success {
+            color: var(--success-color);
+        }
+
+        .learning-objective {
+            background-color: var(--code-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .concept-explanation {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .tip-box {
+            background-color: var(--sample-color);
+            color: black;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .project-scenario {
+            background: linear-gradient(135deg, var(--project-color), var(--correlated-color));
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+        }
+
+        .project-scenario h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-task {
+            background-color: var(--section-bg);
+            border: 2px solid var(--project-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .project-task h4 {
+            color: var(--project-color);
+            margin-bottom: 1rem;
+        }
+
+        .business-context {
+            background-color: var(--code-bg);
+            border-left: 4px solid var(--project-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .project-card {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--project-color);
+        }
+
+        .project-card h4 {
+            color: var(--project-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .complexity {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .complexity-medium { background-color: var(--multirow-color); color: white; }
+        .complexity-high { background-color: var(--correlated-color); color: white; }
+
+        .project-deliverable {
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            margin: 0.5rem 0;
+        }
+
+        .solution-button {
+            background-color: var(--success-color);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .solution-button:hover {
+            background-color: #10b981;
+            transform: translateY(-1px);
+        }
+
+        /* Navigation Styles */
+        .nav-container {
+            background-color: var(--nav-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--header-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--section-bg);
+            min-width: 250px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            z-index: 1;
+            padding: 0.5rem 0;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-link {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .dropdown-link:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .dropdown-link.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .module-number {
+            background-color: var(--accent-color);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 1024px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--nav-bg);
+                flex-direction: column;
+                padding: 1rem;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                border: none;
+                background-color: transparent;
+            }
+        }
+    </style>
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="./index.html">IAF 603: Preparing Data for Analytics</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+<body class="p-4 md:p-8 min-h-screen">
+    <!-- SQL Engine Status -->
+    <div id="sql-engine-status" class="sql-engine-status status-loading">
+        Loading SQL Engine...
+    </div>
+    
+    <!-- Navigation Menu -->
+    <nav class="nav-container">
+        <div class="max-w-6xl mx-auto">
+            <div class="nav-menu">
+                <a href="index.html" class="nav-logo">
+                    <i class="fas fa-database"></i>
+                    PostgreSQL Learning
+                </a>
+                
+                <button class="mobile-menu-btn" id="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="nav-links" id="nav-links">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                    
+                    <div class="dropdown">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-book"></i>
                             Modules
+                            <i class="fas fa-chevron-down"></i>
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="./module1.html">Module 1</a></li>
-                            <li><a class="dropdown-item" href="./module2.html">Module 2</a></li>
-                            <li><a class="dropdown-item" href="./module3.html">Module 3</a></li>
-                            <li><a class="dropdown-item" href="./module4.html">Module 4</a></li>
-                            <li><a class="dropdown-item" href="./module5.html">Module 5</a></li>
-                            <li><a class="dropdown-item" href="./module6.html">Module 6</a></li>
-                            <li><a class="dropdown-item" href="./module7.html">Module 7</a></li>
-                            <li><a class="dropdown-item" href="./module8.html">Module 8</a></li>
-                            <li><a class="dropdown-item" href="./module9.html">Module 9</a></li>
-                            <li><a class="dropdown-item" href="./module10.html">Module 10</a></li>
-                            <li><a class="dropdown-item" href="./module11.html">Module 11</a></li>
-                            <li><a class="dropdown-item" href="./module12.html">Module 12</a></li>
-                            <li><a class="dropdown-item" href="./module13.html">Module 13</a></li>
-                            <li><a class="dropdown-item" href="./module14.html">Module 14</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html#contact">Contact</a>
-                    </li>
-                </ul>
+                        <div class="dropdown-content">
+                            <a href="module1.html" class="dropdown-link">
+                                <span class="module-number">1</span>
+                                Introduction to Data in Informatics
+                            </a>
+                            <a href="module2.html" class="dropdown-link">
+                                <span class="module-number">2</span>
+                                Database Concepts
+                            </a>
+                            <a href="module3.html" class="dropdown-link">
+                                <span class="module-number">3</span>
+                                PostgreSQL in Action: DQL and DML
+                            </a>
+                            <a href="module4.html" class="dropdown-link">
+                                <span class="module-number">4</span>
+                                SQL Basics II: Aggregations
+                            </a>
+                            <a href="module5.html" class="dropdown-link">
+                                <span class="module-number">5</span>
+                                SQL Logic
+                            </a>
+                            <a href="module6.html" class="dropdown-link">
+                                <span class="module-number">6</span>
+                                Joins in SQL
+                            </a>
+                            <a href="module7.html" class="dropdown-link active">
+                                <span class="module-number">7</span>
+                                Subqueries
+                            </a>
+                            <a href="module8.html" class="dropdown-link">
+                                <span class="module-number">8</span>
+                                Strings and Dates
+                            </a>
+                            <a href="module9.html" class="dropdown-link">
+                                <span class="module-number">9</span>
+                                Data Cleaning in SQL
+                            </a>
+                            <a href="module10.html" class="dropdown-link">
+                                <span class="module-number">10</span>
+                                Reshaping Data
+                            </a>
+                            <a href="module11.html" class="dropdown-link">
+                                <span class="module-number">11</span>
+                                Advanced SQL Features
+                            </a>
+                            <a href="module12.html" class="dropdown-link">
+                                <span class="module-number">12</span>
+                                Views and Modular Queries
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-project-diagram"></i>
+                        Projects
+                    </a>
+                    
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-question-circle"></i>
+                        Resources
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container my-5">
-        <!-- Module Title -->
-        <section class="text-center py-5 bg-white rounded shadow">
-            <h1 class="display-4 fw-bold text-dark">Module 7: Subqueries</h1>
-        </section>
-
-        <!-- Module Content -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <!-- Learning Objectives -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Learning Objectives</h2>
-                <p>Upon completion of this module, participants will be able to:</p>
-                <ul>
-                    <li>Learn to use subqueries (scalar, multi-row, correlated) in <code>WHERE</code>, <code>SELECT</code>, and <code>FROM</code> clauses for multi-step data retrieval and comparisons.</li>
-                    <li>Understand the differences between scalar, multi-row, and correlated subqueries and their appropriate use cases.</li>
-                    <li>Apply subqueries in combination with joins, aggregations, and other SQL features for complex data analysis.</li>
-                    <li>Execute subquery-based queries in cloud-based environments like Microsoft Fabric Lakehouse.</li>
-                </ul>
-
-                <!-- Introduction to Subqueries -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Introduction to Subqueries</h2>
-                <p>Subqueries are queries nested within other queries, allowing multi-step data retrieval and comparisons without creating temporary tables. This module covers subqueries in <code>WHERE</code>, <code>SELECT</code>, and <code>FROM</code> clauses, including scalar, multi-row, and correlated types. Subqueries are powerful for complex analysis, such as finding patients with above-average ages or admissions longer than the average stay. In real-world applications, like a Greensboro hospital, subqueries can identify high-risk patients by comparing individual metrics to aggregates. In retail, they can find products priced above the category average.</p>
-                <p>Subqueries enhance query modularity and efficiency, avoiding multiple separate queries. They are especially useful in scenarios where data needs to be compared against derived values, like benchmarks or thresholds calculated on the fly. Understanding subquery types and their performance implications is key for optimizing queries in large datasets.</p>
-
-                <!-- Types of Subqueries -->
-                <h3 class="h4 fw-bold mb-3">Types of Subqueries</h3>
-                <p>Subqueries are classified by their return values and placement: scalar (single value), multi-row (multiple values), and correlated (dependent on the outer query).</p>
-                <ul>
-                    <li><strong>Scalar Subquery:</strong> Returns one row and one column, used in <code>SELECT</code> or <code>WHERE</code> for comparisons.</li>
-                    <li><strong>Multi-Row Subquery:</strong> Returns multiple rows, often used with <code>IN</code>, <code>ANY</code>, or <code>ALL</code> in <code>WHERE</code>.</li>
-                    <li><strong>Correlated Subquery:</strong> References columns from the outer query, executing for each row of the outer query.</li>
-                </ul>
-
-                <!-- Sample Data -->
-                <h4 class="h5 fw-bold mb-2">Sample Data</h4>
-                <p><strong>PATIENTS Table:</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>subject_id</th>
-                            <th>name</th>
-                            <th>age</th>
-                            <th>gender</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1001</td>
-                            <td>Alice Smith</td>
-                            <td>45</td>
-                            <td>Female</td>
-                        </tr>
-                        <tr>
-                            <td>1002</td>
-                            <td>Bob Johnson</td>
-                            <td>32</td>
-                            <td>Male</td>
-                        </tr>
-                        <tr>
-                            <td>1003</td>
-                            <td>Carol White</td>
-                            <td>58</td>
-                            <td>Female</td>
-                        </tr>
-                        <tr>
-                            <td>1004</td>
-                            <td>David Brown</td>
-                            <td>67</td>
-                            <td>Male</td>
-                        </tr>
-                        <tr>
-                            <td>1005</td>
-                            <td>Eve Davis</td>
-                            <td>29</td>
-                            <td>Female</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p><strong>ADMISSIONS Table:</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>hadm_id</th>
-                            <th>subject_id</th>
-                            <th>admit_time</th>
-                            <th>discharge_time</th>
-                            <th>diagnosis</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>101</td>
-                            <td>1001</td>
-                            <td>2025-01-10 08:00:00</td>
-                            <td>2025-01-15 12:00:00</td>
-                            <td>Pneumonia</td>
-                        </tr>
-                        <tr>
-                            <td>102</td>
-                            <td>1002</td>
-                            <td>2025-02-01 14:00:00</td>
-                            <td>2025-02-03 09:00:00</td>
-                            <td>Fracture</td>
-                        </tr>
-                        <tr>
-                            <td>103</td>
-                            <td>1001</td>
-                            <td>2025-03-05 10:00:00</td>
-                            <td>2025-03-12 15:00:00</td>
-                            <td>Pneumonia</td>
-                        </tr>
-                        <tr>
-                            <td>104</td>
-                            <td>1003</td>
-                            <td>2025-04-10 07:00:00</td>
-                            <td>2025-04-11 11:00:00</td>
-                            <td>Flu</td>
-                        </tr>
-                        <tr>
-                            <td>105</td>
-                            <td>1004</td>
-                            <td>2025-05-15 09:00:00</td>
-                            <td>2025-05-20 14:00:00</td>
-                            <td>Heart Disease</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <!-- Subqueries in WHERE Clause -->
-                <h4 class="h5 fw-bold mb-2">Subqueries in WHERE Clause</h4>
-                <p>Subqueries in <code>WHERE</code> filter rows based on results from another query.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Patients older than the average age
-SELECT name, age
-FROM PATIENTS
-WHERE age > (SELECT AVG(age) FROM PATIENTS);</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> The subquery calculates the average age (e.g., 46.2), and the outer query filters patients older than that. This is a scalar subquery.</p>
-                <p><strong>Expanded Example (Patients with Admissions for Pneumonia):</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Patients who have been admitted for Pneumonia
-SELECT name, age
-FROM PATIENTS
-WHERE subject_id IN (SELECT subject_id FROM ADMISSIONS WHERE diagnosis = 'Pneumonia');</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This multi-row subquery finds subject_ids with Pneumonia admissions, then the outer query retrieves those patients' details.</p>
-                <p><strong>Expanded Example (Patients with More Admissions than Average):</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Patients with more admissions than average (correlated)
-SELECT p.name, p.age, 
-       (SELECT COUNT(*) FROM ADMISSIONS a WHERE a.subject_id = p.subject_id) AS AdmissionCount
-FROM PATIENTS p
-WHERE (SELECT COUNT(*) FROM ADMISSIONS a WHERE a.subject_id = p.subject_id) > (SELECT AVG(AdmissionCount) FROM (SELECT COUNT(*) AS AdmissionCount FROM ADMISSIONS GROUP BY subject_id) AS Sub);</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> The correlated subquery counts admissions per patient, and the outer query filters those above average.</p>
-
-                <!-- Subqueries in SELECT Clause -->
-                <h4 class="h5 fw-bold mb-2">Subqueries in SELECT Clause</h4>
-                <p>Subqueries in <code>SELECT</code> add derived columns based on related data.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Patients with their number of admissions
-SELECT name, age,
-       (SELECT COUNT(*) FROM ADMISSIONS a WHERE a.subject_id = p.subject_id) AS AdmissionCount
-FROM PATIENTS p;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This correlated subquery adds an admission count column for each patient.</p>
-                <p><strong>Expanded Example (Patients with Latest Admission Date):</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Patients with their latest admission date
-SELECT name, age,
-       (SELECT MAX(admit_time) FROM ADMISSIONS a WHERE a.subject_id = p.subject_id) AS LatestAdmission
-FROM PATIENTS p;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Uses a scalar subquery to find the most recent admission date per patient.</p>
-
-                <!-- Subqueries in FROM Clause -->
-                <h4 class="h5 fw-bold mb-2">Subqueries in FROM Clause</h4>
-                <p>Subqueries in <code>FROM</code> act as derived tables for further querying.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Average age of patients with multiple admissions
-SELECT AVG(age) AS AvgAgeMultiAdmissions
-FROM (
-    SELECT p.subject_id, p.age
-    FROM PATIENTS p
-    INNER JOIN ADMISSIONS a ON p.subject_id = a.subject_id
-    GROUP BY p.subject_id, p.age
-    HAVING COUNT(a.hadm_id) > 1
-) AS MultiAdmissionPatients;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> The subquery derives patients with multiple admissions, and the outer query averages their ages.</p>
-                <p><strong>Expanded Example (Total Admissions by Gender):</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Total admissions by gender
-SELECT gender, AdmissionCount
-FROM (
-    SELECT p.gender, COUNT(a.hadm_id) AS AdmissionCount
-    FROM PATIENTS p
-    INNER JOIN ADMISSIONS a ON p.subject_id = a.subject_id
-    GROUP BY p.gender
-) AS GenderAdmissions
-ORDER BY AdmissionCount DESC;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> The subquery aggregates admissions by gender, and the outer query sorts the results.</p>
-
-                <!-- Correlated vs. Non-Correlated Subqueries -->
-                <h3 class="h4 fw-bold mb-3">Correlated vs. Non-Correlated Subqueries</h3>
-                <p>Non-correlated subqueries run independently, while correlated ones depend on the outer query, executing per row (potentially slower but powerful).</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Non-correlated: Patients with age above overall average
-SELECT name, age
-FROM PATIENTS
-WHERE age > (SELECT AVG(age) FROM PATIENTS);
-
--- Correlated: Patients with more admissions than average for their gender
-SELECT p.name, p.gender, 
-       (SELECT COUNT(*) FROM ADMISSIONS a WHERE a.subject_id = p.subject_id) AS Count
-FROM PATIENTS p
-WHERE (SELECT COUNT(*) FROM ADMISSIONS a WHERE a.subject_id = p.subject_id) > 
-      (SELECT AVG(AdmissionCount) FROM (
-          SELECT COUNT(*) AS AdmissionCount FROM ADMISSIONS GROUP BY subject_id, 
-          (SELECT gender FROM PATIENTS WHERE subject_id = ADMISSIONS.subject_id)
-      ) AS Sub WHERE Sub.gender = p.gender);</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> The non-correlated runs once, the correlated per patient, comparing to gender-specific averages.</p>
-
-                <!-- Subqueries in Microsoft Fabric -->
-                <h3 class="h4 fw-bold mb-3">Subqueries in Microsoft Fabric Lakehouse</h3>
-                <p>Fabric supports subqueries for big data, optimizing execution across distributed systems.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Survey respondents with above-average scores
-SELECT respondent_id, satisfaction_score
-FROM survey_lakehouse.Responses
-WHERE satisfaction_score > (SELECT AVG(satisfaction_score) FROM survey_lakehouse.Responses);</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Filters high-satisfaction responses using a scalar subquery.</p>
-
-                <!-- Assessments -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Assessments</h2>
-                <ol>
-                    <li><strong>Conceptual Question:</strong> Explain the difference between correlated and non-correlated subqueries. When is a correlated subquery necessary?</li>
-                    <li><strong>SQL Coding Task:</strong> Using PATIENTS and ADMISSIONS, find patients with more admissions than the average number of admissions.</li>
-                    <li><strong>Application Scenario:</strong> For a Greensboro retail store, use a subquery to find products sold more than the average quantity in their category.</li>
-                    <li><strong>Expanded Task:</strong> For a university database, query to find students with GPA higher than the departmental average, using a correlated subquery.</li>
-                </ol>
+    <div class="max-w-6xl mx-auto mt-6">
+        <!-- HEADER -->
+        <header class="flex justify-between items-center mb-6 pb-4 border-b border-border-color">
+            <div>
+                <h1 class="text-3xl font-extrabold">Module 7: PostgreSQL Subqueries</h1>
+                <p class="text-lg text-gray-400">IAF 603 - Health Informatics Applications</p>
+                <p class="text-sm text-green-400 mt-1">✓ Interactive SQL Environment Active</p>
+                <p class="text-sm text-yellow-400 mt-1">🏥 Real Healthcare Database & Practice Project</p>
             </div>
-        </section>
+            <button id="theme-toggle" class="px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold transition-colors">
+                <!-- Text set by JavaScript -->
+            </button>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <div id="main-content">
+            <!-- Introduction -->
+            <section class="mb-8">
+                <div class="instructions p-4 section-card rounded-xl">
+                    <h2 class="text-xl font-bold mb-2">🎯 PostgreSQL Subqueries for Health Informatics</h2>
+                    <p class="mb-4">Master subquery techniques through practical healthcare data analysis scenarios and a comprehensive capstone project.</p>
+                    
+                    <div class="learning-objective">
+                        <h3 class="font-bold mb-2">Learning Objectives</h3>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Write effective scalar, multi-row, and correlated subqueries</li>
+                            <li>Apply subqueries to solve real healthcare analytics problems</li>
+                            <li>Optimize query performance for large medical datasets</li>
+                            <li>Complete a comprehensive health informatics analysis project</li>
+                        </ul>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-2 text-sm mt-4">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-scalar-color mr-2"></div>
+                            <span>Scalar</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-multirow-color mr-2"></div>
+                            <span>Multi-Row</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-correlated-color mr-2"></div>
+                            <span>Correlated</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-practice-color mr-2"></div>
+                            <span>Practice</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-project-color mr-2"></div>
+                            <span>Project</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Test Area -->
+            <div class="section-card p-4 rounded-xl mb-8">
+                <h2 class="text-xl font-bold mb-4">🧪 Interactive SQL Playground</h2>
+                <p class="mb-4">Test queries against the healthcare database. Use this to experiment with subqueries:</p>
+                
+                <div class="code-container">
+                    <textarea id="editor-test" class="sql-editor" placeholder="-- Try: SELECT * FROM patients LIMIT 3;">SELECT * FROM patients LIMIT 3;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button id="run-test" class="btn-primary px-4 py-2 rounded-lg font-semibold text-white">
+                            Run Query
+                        </button>
+                        <button id="reset-db" class="px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors">
+                            Reset Database
+                        </button>
+                    </div>
+
+                    <div id="output-test" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database Schema -->
+            <div class="database-schema mb-8">
+                <div class="schema-header">🏥 Health Informatics Database Schema</div>
+                <div class="table-structure">
+                    <strong>patients</strong> (patient_id, name, age, gender, admission_date)
+                </div>
+                <div class="table-structure">
+                    <strong>admissions</strong> (admission_id, patient_id, admit_date, discharge_date, diagnosis, department)
+                </div>
+                <div class="table-structure">
+                    <strong>lab_results</strong> (test_id, patient_id, test_name, result_value, test_date, normal_range)
+                </div>
+                <div class="table-structure">
+                    <strong>prescriptions</strong> (rx_id, patient_id, medication, dosage, prescribed_date, duration_days)
+                </div>
+                <div class="table-structure">
+                    <strong>medical_staff</strong> (staff_id, name, department, specialization, hire_date)
+                </div>
+                <div class="table-structure">
+                    <strong>patient_vitals</strong> (vital_id, patient_id, vital_name, vital_value, recorded_date)
+                </div>
+            </div>
+
+            <!-- SCALAR SUBQUERIES -->
+            <div class="subquery-section scalar-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--scalar-color)">Scalar Subqueries</h2>
+                
+                <div class="concept-explanation">
+                    <h3 class="font-bold mb-2">Single Value Comparisons</h3>
+                    <p class="mb-3">Scalar subqueries return exactly one value and can be used in SELECT, WHERE, and HAVING clauses for comparisons against aggregates and calculated values.</p>
+                    
+                    <div class="tip-box">
+                        <strong>💡 Healthcare Use:</strong> Compare patient metrics against hospital averages, calculate risk scores, and identify outliers in medical data.
+                    </div>
+                </div>
+
+                <!-- Example 1 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">1</div>
+                        <h2 class="text-xl font-bold">Patients Older Than Average Age</h2>
+                        <span class="subquery-tag scalar-tag">Scalar Subquery</span>
+                    </div>
+                    <p class="mb-4">Find patients who are older than the average age across all patients.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor1" class="sql-editor">SELECT name, age, gender
+FROM patients
+WHERE age > (SELECT AVG(age) FROM patients);</textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="1">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="1">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output1" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Example 2 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">2</div>
+                        <h2 class="text-xl font-bold">Lab Results with Test Averages</h2>
+                        <span class="subquery-tag scalar-tag">Scalar Subquery</span>
+                    </div>
+                    <p class="mb-4">Show all glucose tests with their values compared to the average glucose level.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor2" class="sql-editor">SELECT 
+    patient_id,
+    test_name,
+    result_value,
+    (SELECT AVG(result_value) FROM lab_results WHERE test_name = 'Glucose') as avg_glucose,
+    result_value - (SELECT AVG(result_value) FROM lab_results WHERE test_name = 'Glucose') as difference_from_avg
+FROM lab_results
+WHERE test_name = 'Glucose'
+ORDER BY ABS(difference_from_avg) DESC;</textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="2">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="2">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output2" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- MULTI-ROW SUBQUERIES -->
+            <div class="subquery-section multirow-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--multirow-color)">Multi-Row Subqueries</h2>
+                
+                <div class="concept-explanation">
+                    <h3 class="font-bold mb-2">Set Operations with IN and EXISTS</h3>
+                    <p class="mb-3">Multi-row subqueries return multiple values and work with operators like IN, EXISTS, ANY, and ALL for set-based operations.</p>
+                    
+                    <div class="tip-box">
+                        <strong>💡 Healthcare Use:</strong> Find patients with specific conditions, identify readmissions, and analyze treatment patterns across departments.
+                    </div>
+                </div>
+
+                <!-- Example 3 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">3</div>
+                        <h2 class="text-xl font-bold">Patients with Cardiac Conditions</h2>
+                        <span class="subquery-tag multirow-tag">Multi-Row Subquery</span>
+                    </div>
+                    <p class="mb-4">Find patients who have been admitted with cardiac-related diagnoses.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor3" class="sql-editor">SELECT DISTINCT p.patient_id, p.name, p.age
+FROM patients p
+WHERE p.patient_id IN (
+    SELECT a.patient_id 
+    FROM admissions a 
+    WHERE a.diagnosis LIKE '%cardiac%' OR a.diagnosis LIKE '%heart%'
+);</textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="3">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="3">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output3" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Example 4 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">4</div>
+                        <h2 class="text-xl font-bold">Patients with Multiple Medications</h2>
+                        <span class="subquery-tag multirow-tag">Multi-Row Subquery</span>
+                    </div>
+                    <p class="mb-4">Find patients who are prescribed more than 2 different medications.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor4" class="sql-editor">SELECT p.patient_id, p.name, COUNT(DISTINCT pr.medication) as medication_count
+FROM patients p
+JOIN prescriptions pr ON p.patient_id = pr.patient_id
+GROUP BY p.patient_id, p.name
+HAVING COUNT(DISTINCT pr.medication) > 2
+ORDER BY medication_count DESC;</textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="4">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="4">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output4" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- CORRELATED SUBQUERIES -->
+            <div class="subquery-section correlated-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--correlated-color)">Correlated Subqueries</h2>
+                
+                <div class="concept-explanation">
+                    <h3 class="font-bold mb-2">Row-by-Row Analysis</h3>
+                    <p class="mb-3">Correlated subqueries reference outer query columns and execute for each row, enabling complex comparisons within groups.</p>
+                    
+                    <div class="tip-box">
+                        <strong>💡 Healthcare Use:</strong> Compare individual patient results to department averages, identify longest stays per department, and analyze patient-specific trends.
+                    </div>
+                </div>
+
+                <!-- Example 5 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">5</div>
+                        <h2 class="text-xl font-bold">Abnormal Lab Results by Test Type</h2>
+                        <span class="subquery-tag correlated-tag">Correlated Subquery</span>
+                    </div>
+                    <p class="mb-4">Find lab results that are significantly higher than the average for their specific test type.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor5" class="sql-editor">SELECT 
+    l.patient_id,
+    p.name,
+    l.test_name,
+    l.result_value,
+    (SELECT AVG(result_value) FROM lab_results l2 WHERE l2.test_name = l.test_name) as test_average
+FROM lab_results l
+JOIN patients p ON l.patient_id = p.patient_id
+WHERE l.result_value > 1.5 * (
+    SELECT AVG(result_value) 
+    FROM lab_results l3 
+    WHERE l3.test_name = l.test_name
+);</textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="5">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="5">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output5" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PRACTICE EXERCISES -->
+            <div class="subquery-section" style="border-color: var(--practice-color);">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--practice-color)">Practice Exercises</h2>
+                
+                <div class="concept-explanation">
+                    <h3 class="font-bold mb-2">Apply Your Skills</h3>
+                    <p class="mb-3">Test your understanding with these healthcare analytics challenges.</p>
+                </div>
+
+                <!-- Practice 1 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">P1</div>
+                        <h2 class="text-xl font-bold">Patient Readmission Analysis</h2>
+                        <span class="subquery-tag practice-tag">Practice</span>
+                    </div>
+                    <p class="mb-4">Identify patients who were readmitted within 30 days of discharge.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor6" class="sql-editor" placeholder="-- Write your solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="6">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="6">
+                                Copy Code
+                            </button>
+                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="6">
+                                Show Solution
+                            </button>
+                        </div>
+
+                        <div id="output6" class="output-area">
+                            Query results will appear here...
+                        </div>
+                        
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>💡 Solution</span>
+                                <button class="toggle-solution" data-section="6">Show Solution</button>
+                            </div>
+                            <div id="solution6" class="solution-content hidden">
+-- Find patients readmitted within 30 days
+SELECT DISTINCT p1.patient_id, p1.name, 
+       a1.discharge_date as first_discharge,
+       a2.admit_date as readmission_date,
+       a2.diagnosis as readmission_diagnosis
+FROM patients p1
+JOIN admissions a1 ON p1.patient_id = a1.patient_id
+JOIN admissions a2 ON p1.patient_id = a2.patient_id
+WHERE a2.admit_date > a1.discharge_date
+  AND a2.admit_date <= DATE(a1.discharge_date, '+30 days')
+ORDER BY p1.patient_id, a1.discharge_date;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Practice 2 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">P2</div>
+                        <h2 class="text-xl font-bold">Medication Adherence Report</h2>
+                        <span class="subquery-tag practice-tag">Practice</span>
+                    </div>
+                    <p class="mb-4">Find patients with multiple prescriptions and analyze their medication patterns.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor7" class="sql-editor" placeholder="-- Write your solution here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="7">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="7">
+                                Copy Code
+                            </button>
+                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="7">
+                                Show Solution
+                            </button>
+                        </div>
+
+                        <div id="output7" class="output-area">
+                            Query results will appear here...
+                        </div>
+                        
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>💡 Solution</span>
+                                <button class="toggle-solution" data-section="7">Show Solution</button>
+                            </div>
+                            <div id="solution7" class="solution-content hidden">
+-- Analyze medication patterns for patients with multiple prescriptions
+SELECT 
+    p.patient_id,
+    p.name,
+    COUNT(DISTINCT pr.medication) as total_medications,
+    GROUP_CONCAT(DISTINCT pr.medication) as medication_list,
+    MAX(pr.prescribed_date) as latest_prescription,
+    MIN(pr.prescribed_date) as earliest_prescription,
+    (julianday(MAX(pr.prescribed_date)) - julianday(MIN(pr.prescribed_date))) as treatment_duration_days
+FROM patients p
+JOIN prescriptions pr ON p.patient_id = pr.patient_id
+GROUP BY p.patient_id, p.name
+HAVING COUNT(DISTINCT pr.medication) >= 2
+ORDER BY total_medications DESC, treatment_duration_days DESC;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- HEALTH INFORMATICS PROJECT -->
+            <div class="subquery-section project-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--project-color)">🏥 Health Informatics Capstone Project</h2>
+                
+                <div class="project-scenario">
+                    <h3>Comprehensive Hospital Analytics Dashboard</h3>
+                    <p>You've been hired as a data analyst for General Hospital to build a comprehensive analytics dashboard. Your task is to create SQL queries that provide insights into patient care, department performance, and operational efficiency.</p>
+                </div>
+
+                <div class="business-context">
+                    "The hospital leadership needs data-driven insights to improve patient outcomes, optimize resource allocation, and meet healthcare quality standards. Your analysis will directly impact decision-making for the upcoming fiscal year."
+                </div>
+
+                <div class="project-grid">
+                    <div class="project-card">
+                        <h4>📊 Patient Risk Stratification</h4>
+                        <span class="complexity complexity-medium">Medium Complexity</span>
+                        <p>Develop a patient risk scoring system based on multiple clinical factors.</p>
+                        <div class="project-deliverable">Risk Score Calculation</div>
+                    </div>
+                    <div class="project-card">
+                        <h4>🏥 Department Performance</h4>
+                        <span class="complexity complexity-high">High Complexity</span>
+                        <p>Analyze department efficiency, readmission rates, and resource utilization.</p>
+                        <div class="project-deliverable">Performance Metrics</div>
+                    </div>
+                    <div class="project-card">
+                        <h4>💊 Medication Analytics</h4>
+                        <span class="complexity complexity-medium">Medium Complexity</span>
+                        <p>Identify prescription patterns, potential interactions, and adherence issues.</p>
+                        <div class="project-deliverable">Medication Report</div>
+                    </div>
+                </div>
+
+                <!-- Project Task 1 -->
+                <section class="project-task">
+                    <h4>Project Task 1: Patient Risk Assessment System</h4>
+                    <p class="mb-4">Create a comprehensive risk scoring system that considers age, number of admissions, abnormal lab results, and medication complexity.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor8" class="sql-editor" placeholder="-- Build your patient risk assessment query here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="8">
+                                Run Analysis
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="8">
+                                Copy Code
+                            </button>
+                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="8">
+                                Show Solution
+                            </button>
+                        </div>
+
+                        <div id="output8" class="output-area">
+                            Risk assessment results will appear here...
+                        </div>
+
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>💡 Project Solution</span>
+                                <button class="toggle-solution" data-section="8">Show Solution</button>
+                            </div>
+                            <div id="solution8" class="solution-content hidden">
+-- PATIENT RISK ASSESSMENT SYSTEM
+WITH patient_metrics AS (
+    SELECT 
+        p.patient_id,
+        p.name,
+        p.age,
+        -- Age risk factor (older = higher risk)
+        CASE 
+            WHEN p.age < 30 THEN 1
+            WHEN p.age BETWEEN 30 AND 50 THEN 2
+            WHEN p.age BETWEEN 51 AND 70 THEN 3
+            ELSE 4
+        END as age_risk,
+        
+        -- Admission frequency risk
+        COUNT(DISTINCT a.admission_id) as admission_count,
+        CASE 
+            WHEN COUNT(DISTINCT a.admission_id) = 1 THEN 1
+            WHEN COUNT(DISTINCT a.admission_id) = 2 THEN 2
+            ELSE 3
+        END as admission_risk,
+        
+        -- Lab abnormality risk
+        COUNT(CASE WHEN l.result_value > 1.2 * (
+            SELECT AVG(result_value) 
+            FROM lab_results l2 
+            WHERE l2.test_name = l.test_name
+        ) THEN 1 END) as abnormal_lab_count,
+        CASE 
+            WHEN COUNT(CASE WHEN l.result_value > 1.2 * (
+                SELECT AVG(result_value) 
+                FROM lab_results l2 
+                WHERE l2.test_name = l.test_name
+            ) THEN 1 END) = 0 THEN 1
+            WHEN COUNT(CASE WHEN l.result_value > 1.2 * (
+                SELECT AVG(result_value) 
+                FROM lab_results l2 
+                WHERE l2.test_name = l.test_name
+            ) THEN 1 END) <= 2 THEN 2
+            ELSE 3
+        END as lab_risk,
+        
+        -- Medication complexity risk
+        COUNT(DISTINCT pr.medication) as medication_count,
+        CASE 
+            WHEN COUNT(DISTINCT pr.medication) = 0 THEN 1
+            WHEN COUNT(DISTINCT pr.medication) <= 2 THEN 2
+            ELSE 3
+        END as medication_risk
+        
+    FROM patients p
+    LEFT JOIN admissions a ON p.patient_id = a.patient_id
+    LEFT JOIN lab_results l ON p.patient_id = l.patient_id
+    LEFT JOIN prescriptions pr ON p.patient_id = pr.patient_id
+    GROUP BY p.patient_id, p.name, p.age
+)
+SELECT 
+    patient_id,
+    name,
+    age,
+    admission_count,
+    abnormal_lab_count,
+    medication_count,
+    (age_risk + admission_risk + lab_risk + medication_risk) as total_risk_score,
+    CASE 
+        WHEN (age_risk + admission_risk + lab_risk + medication_risk) <= 6 THEN 'LOW'
+        WHEN (age_risk + admission_risk + lab_risk + medication_risk) <= 9 THEN 'MEDIUM'
+        ELSE 'HIGH'
+    END as risk_level
+FROM patient_metrics
+ORDER BY total_risk_score DESC;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Project Task 2 -->
+                <section class="project-task">
+                    <h4>Project Task 2: Department Performance Dashboard</h4>
+                    <p class="mb-4">Analyze key performance indicators for each department including average length of stay, readmission rates, and patient volume trends.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor9" class="sql-editor" placeholder="-- Build your department performance analysis here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="9">
+                                Run Analysis
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="9">
+                                Copy Code
+                            </button>
+                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="9">
+                                Show Solution
+                            </button>
+                        </div>
+
+                        <div id="output9" class="output-area">
+                            Department performance results will appear here...
+                        </div>
+                        
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>💡 Project Solution</span>
+                                <button class="toggle-solution" data-section="9">Show Solution</button>
+                            </div>
+                            <div id="solution9" class="solution-content hidden">
+-- DEPARTMENT PERFORMANCE DASHBOARD
+WITH department_stats AS (
+    SELECT 
+        department,
+        COUNT(DISTINCT admission_id) as total_admissions,
+        COUNT(DISTINCT patient_id) as unique_patients,
+        AVG(julianday(discharge_date) - julianday(admit_date)) as avg_length_of_stay,
+        
+        -- Readmission rate (patients with multiple admissions)
+        COUNT(DISTINCT CASE WHEN admission_count > 1 THEN patient_id END) as readmitted_patients,
+        ROUND(
+            COUNT(DISTINCT CASE WHEN admission_count > 1 THEN patient_id END) * 100.0 / 
+            COUNT(DISTINCT patient_id), 
+            2
+        ) as readmission_rate_percent,
+        
+        -- Most common diagnosis
+        (SELECT diagnosis 
+         FROM admissions a2 
+         WHERE a2.department = a1.department 
+         GROUP BY diagnosis 
+         ORDER BY COUNT(*) DESC 
+         LIMIT 1) as most_common_diagnosis
+         
+    FROM admissions a1
+    LEFT JOIN (
+        SELECT patient_id, COUNT(*) as admission_count
+        FROM admissions
+        GROUP BY patient_id
+    ) patient_admissions ON a1.patient_id = patient_admissions.patient_id
+    GROUP BY department
+),
+department_medications AS (
+    SELECT 
+        a.department,
+        COUNT(DISTINCT pr.rx_id) as total_prescriptions,
+        COUNT(DISTINCT pr.medication) as unique_medications,
+        AVG(pr.duration_days) as avg_prescription_duration
+    FROM admissions a
+    JOIN prescriptions pr ON a.patient_id = pr.patient_id
+    GROUP BY a.department
+)
+SELECT 
+    ds.department,
+    ds.total_admissions,
+    ds.unique_patients,
+    ROUND(ds.avg_length_of_stay, 1) as avg_length_of_stay_days,
+    ds.readmitted_patients,
+    ds.readmission_rate_percent,
+    ds.most_common_diagnosis,
+    COALESCE(dm.total_prescriptions, 0) as total_prescriptions,
+    COALESCE(dm.unique_medications, 0) as unique_medications,
+    ROUND(COALESCE(dm.avg_prescription_duration, 0), 1) as avg_prescription_days
+FROM department_stats ds
+LEFT JOIN department_medications dm ON ds.department = dm.department
+ORDER BY ds.total_admissions DESC;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Project Task 3 -->
+                <section class="project-task">
+                    <h4>Project Task 3: Medication Safety & Efficiency Analysis</h4>
+                    <p class="mb-4">Identify potential medication safety issues, analyze prescription patterns, and evaluate medication adherence across patient populations.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor10" class="sql-editor" placeholder="-- Build your medication analysis here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="10">
+                                Run Analysis
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="10">
+                                Copy Code
+                            </button>
+                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="10">
+                                Show Solution
+                            </button>
+                        </div>
+
+                        <div id="output10" class="output-area">
+                            Medication analysis results will appear here...
+                        </div>
+                        
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>💡 Project Solution</span>
+                                <button class="toggle-solution" data-section="10">Show Solution</button>
+                            </div>
+                            <div id="solution10" class="solution-content hidden">
+-- MEDICATION SAFETY & EFFICIENCY ANALYSIS
+WITH patient_medication_summary AS (
+    SELECT 
+        p.patient_id,
+        p.name,
+        p.age,
+        COUNT(DISTINCT pr.medication) as total_medications,
+        GROUP_CONCAT(DISTINCT pr.medication) as medication_list,
+        MAX(pr.prescribed_date) as latest_prescription,
+        MIN(pr.prescribed_date) as earliest_prescription,
+        SUM(pr.duration_days) as total_treatment_days,
+        
+        -- Identify potential polypharmacy (5+ medications)
+        CASE WHEN COUNT(DISTINCT pr.medication) >= 5 THEN 1 ELSE 0 END as polypharmacy_flag,
+        
+        -- Calculate medication overlap (simplified)
+        COUNT(DISTINCT CASE 
+            WHEN EXISTS (
+                SELECT 1 
+                FROM prescriptions pr2 
+                WHERE pr2.patient_id = pr.patient_id 
+                AND pr2.medication != pr.medication
+                AND pr2.prescribed_date BETWEEN pr.prescribed_date AND DATE(pr.prescribed_date, '+' || pr.duration_days || ' days')
+            ) THEN pr.medication 
+        END) as overlapping_medications
+        
+    FROM patients p
+    JOIN prescriptions pr ON p.patient_id = pr.patient_id
+    GROUP BY p.patient_id, p.name, p.age
+),
+medication_patterns AS (
+    SELECT 
+        medication,
+        COUNT(DISTINCT patient_id) as total_patients,
+        AVG(dosage) as avg_dosage_numeric,
+        AVG(duration_days) as avg_duration_days,
+        
+        -- Most common department prescribing this medication
+        (SELECT department 
+         FROM admissions a 
+         JOIN prescriptions pr2 ON a.patient_id = pr2.patient_id 
+         WHERE pr2.medication = pr.medication 
+         GROUP BY department 
+         ORDER BY COUNT(*) DESC 
+         LIMIT 1) as most_prescribing_department,
+         
+        -- Average patient age for this medication
+        (SELECT AVG(p.age) 
+         FROM patients p 
+         JOIN prescriptions pr3 ON p.patient_id = pr3.patient_id 
+         WHERE pr3.medication = pr.medication) as avg_patient_age
+         
+    FROM prescriptions pr
+    GROUP BY medication
+)
+SELECT 
+    pms.patient_id,
+    pms.name,
+    pms.age,
+    pms.total_medications,
+    pms.medication_list,
+    pms.total_treatment_days,
+    pms.polypharmacy_flag,
+    pms.overlapping_medications,
+    
+    -- Medication complexity score
+    (pms.total_medications * 2 + pms.overlapping_medications * 3 + pms.polypharmacy_flag * 5) as complexity_score,
+    
+    CASE 
+        WHEN (pms.total_medications * 2 + pms.overlapping_medications * 3 + pms.polypharmacy_flag * 5) <= 10 THEN 'LOW'
+        WHEN (pms.total_medications * 2 + pms.overlapping_medications * 3 + pms.polypharmacy_flag * 5) <= 20 THEN 'MEDIUM'
+        ELSE 'HIGH'
+    END as complexity_level,
+    
+    -- Days since last prescription
+    julianday('now') - julianday(pms.latest_prescription) as days_since_last_rx
+    
+FROM patient_medication_summary pms
+ORDER BY complexity_score DESC, total_medications DESC;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="project-scenario" style="background: linear-gradient(135deg, var(--success-color), var(--scalar-color));">
+                    <h3>🎉 Project Completion</h3>
+                    <p>Congratulations! You've completed the Health Informatics Capstone Project. Your analysis provides valuable insights for hospital leadership and demonstrates advanced SQL subquery skills in a real-world healthcare context.</p>
+                </div>
+            </div>
+
+            <!-- Knowledge Consolidation -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <h2 class="text-xl font-bold mb-4">🧠 Knowledge Consolidation</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-4 border border-green-400 rounded-lg">
+                        <h3 class="font-bold text-green-400 mb-2">✅ Skills Mastered</h3>
+                        <ul class="list-disc list-inside space-y-1 text-sm">
+                            <li>Scalar subqueries for single-value comparisons</li>
+                            <li>Multi-row subqueries with IN and EXISTS</li>
+                            <li>Correlated subqueries for row-specific analysis</li>
+                            <li>Complex healthcare analytics applications</li>
+                            <li>Real-world project implementation</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="p-4 border border-blue-400 rounded-lg">
+                        <h3 class="font-bold text-blue-400 mb-2">🎯 Next Steps</h3>
+                        <ul class="list-disc list-inside space-y-1 text-sm">
+                            <li>Apply these skills to your own healthcare datasets</li>
+                            <li>Explore window functions for advanced analytics</li>
+                            <li>Learn about database performance optimization</li>
+                            <li>Practice with larger, more complex medical databases</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-light py-3 text-center">
-        <p class="text-muted mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <!-- Highlight.js Initialization -->
-    <script>hljs.highlightAll();</script>
-    <!-- Custom Copy Functionality -->
     <script>
-        function copyCode(button) {
-            const code = button.nextElementSibling.querySelector('code');
-            navigator.clipboard.writeText(code.innerText).then(() => {
-                button.textContent = 'Copied!';
-                setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+        // --- Global Variables ---
+        const TOTAL_QUESTIONS = 10;
+        let completedExercises = new Set();
+        let db = null;
+        let codeMirrorEditors = {};
+
+        // --- Navigation Menu Functionality ---
+        function setupNavigation() {
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const navLinks = document.getElementById('nav-links');
+            
+            if (mobileMenuToggle && navLinks) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+            }
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (event) => {
+                if (!event.target.closest('.nav-menu')) {
+                    navLinks.classList.remove('active');
+                }
             });
         }
+
+        // --- SQL.js Database Functions ---
+
+        // Initialize SQL.js database
+        async function initializeDatabase() {
+            try {
+                updateSQLStatus('Loading SQL Engine...', 'status-loading');
+                
+                const SQL = await initSqlJs({
+                    locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
+                });
+
+                db = new SQL.Database();
+                createHealthInformaticsDatabase();
+                
+                updateSQLStatus('SQL Engine Ready', 'status-ready');
+                console.log('SQL.js database initialized successfully');
+                
+            } catch (error) {
+                console.error('Failed to initialize database:', error);
+                updateSQLStatus('Database Error', 'status-error');
+            }
+        }
+
+        // Update SQL engine status
+        function updateSQLStatus(message, statusClass) {
+            const statusElement = document.getElementById('sql-engine-status');
+            statusElement.textContent = message;
+            statusElement.className = `sql-engine-status ${statusClass}`;
+        }
+
+        // Create health informatics database with sample data
+        function createHealthInformaticsDatabase() {
+            // Create tables
+            db.run(`CREATE TABLE IF NOT EXISTS patients (
+                patient_id INTEGER PRIMARY KEY,
+                name VARCHAR(100),
+                age INTEGER,
+                gender VARCHAR(10),
+                admission_date DATE
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS admissions (
+                admission_id INTEGER PRIMARY KEY,
+                patient_id INTEGER,
+                admit_date DATE,
+                discharge_date DATE,
+                diagnosis VARCHAR(100),
+                department VARCHAR(50),
+                FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS lab_results (
+                test_id INTEGER PRIMARY KEY,
+                patient_id INTEGER,
+                test_name VARCHAR(50),
+                result_value DECIMAL(10,2),
+                test_date DATE,
+                normal_range VARCHAR(20),
+                FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS prescriptions (
+                rx_id INTEGER PRIMARY KEY,
+                patient_id INTEGER,
+                medication VARCHAR(100),
+                dosage VARCHAR(50),
+                prescribed_date DATE,
+                duration_days INTEGER,
+                FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS medical_staff (
+                staff_id INTEGER PRIMARY KEY,
+                name VARCHAR(100),
+                department VARCHAR(50),
+                specialization VARCHAR(50),
+                hire_date DATE
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS patient_vitals (
+                vital_id INTEGER PRIMARY KEY,
+                patient_id INTEGER,
+                vital_name VARCHAR(50),
+                vital_value DECIMAL(10,2),
+                recorded_date DATE,
+                FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+            )`);
+
+            // Clear existing data
+            db.run('DELETE FROM patients');
+            db.run('DELETE FROM admissions');
+            db.run('DELETE FROM lab_results');
+            db.run('DELETE FROM prescriptions');
+            db.run('DELETE FROM medical_staff');
+            db.run('DELETE FROM patient_vitals');
+
+            // Insert sample data
+            const patients = [
+                [1001, 'Alice Smith', 45, 'Female', '2023-09-15'],
+                [1002, 'Bob Johnson', 32, 'Male', '2023-10-01'],
+                [1003, 'Carol White', 58, 'Female', '2023-08-20'],
+                [1004, 'David Brown', 67, 'Male', '2023-10-05'],
+                [1005, 'Eve Davis', 29, 'Female', '2023-07-10'],
+                [1006, 'Frank Miller', 71, 'Male', '2023-11-01'],
+                [1007, 'Grace Wilson', 52, 'Female', '2023-09-30'],
+                [1008, 'Henry Taylor', 48, 'Male', '2023-10-15'],
+                [1009, 'Ivy Clark', 63, 'Female', '2023-08-25'],
+                [1010, 'Jack Anderson', 55, 'Male', '2023-11-05']
+            ];
+            
+            const patientStmt = db.prepare("INSERT INTO patients VALUES (?, ?, ?, ?, ?)");
+            patients.forEach(patient => patientStmt.run(patient));
+            patientStmt.free();
+
+            const admissions = [
+                [101, 1001, '2023-10-15', '2023-10-20', 'Pneumonia', 'Internal Medicine'],
+                [102, 1002, '2023-10-16', '2023-10-18', 'Fractured arm', 'Orthopedics'],
+                [103, 1003, '2023-10-17', '2023-10-25', 'Cardiac arrhythmia', 'Cardiology'],
+                [104, 1001, '2023-11-05', '2023-11-12', 'Hypertension', 'Internal Medicine'],
+                [105, 1004, '2023-10-19', '2023-10-26', 'Heart disease', 'Cardiology'],
+                [106, 1005, '2023-10-20', '2023-10-22', 'Migraine', 'Neurology'],
+                [107, 1006, '2023-10-21', '2023-10-28', 'Diabetes complications', 'Endocrinology'],
+                [108, 1007, '2023-10-22', '2023-10-24', 'Asthma', 'Pulmonology'],
+                [109, 1008, '2023-10-23', '2023-10-30', 'Cardiac monitoring', 'Cardiology'],
+                [110, 1009, '2023-10-24', '2023-10-27', 'Joint pain', 'Orthopedics'],
+                [111, 1010, '2023-10-25', '2023-11-02', 'Hypertension', 'Internal Medicine'],
+                [112, 1006, '2023-11-10', '2023-11-15', 'Cardiac assessment', 'Cardiology']
+            ];
+            
+            const admissionStmt = db.prepare("INSERT INTO admissions VALUES (?, ?, ?, ?, ?, ?)");
+            admissions.forEach(admission => admissionStmt.run(admission));
+            admissionStmt.free();
+
+            const labResults = [
+                [201, 1001, 'Glucose', 98, '2023-10-16', '70-110'],
+                [202, 1002, 'Cholesterol', 185, '2023-10-17', '<200'],
+                [203, 1003, 'Glucose', 145, '2023-10-18', '70-110'],
+                [204, 1004, 'Blood Pressure', 150, '2023-10-19', '<140'],
+                [205, 1005, 'Cholesterol', 210, '2023-10-20', '<200'],
+                [206, 1006, 'Glucose', 320, '2023-10-21', '70-110'],
+                [207, 1007, 'Blood Pressure', 128, '2023-10-22', '<140'],
+                [208, 1008, 'Cholesterol', 195, '2023-10-23', '<200'],
+                [209, 1009, 'Glucose', 110, '2023-10-24', '70-110'],
+                [210, 1010, 'Blood Pressure', 142, '2023-10-25', '<140']
+            ];
+            
+            const labStmt = db.prepare("INSERT INTO lab_results VALUES (?, ?, ?, ?, ?, ?)");
+            labResults.forEach(lab => labStmt.run(lab));
+            labStmt.free();
+
+            const prescriptions = [
+                [301, 1001, 'Metformin', '500mg', '2023-10-16', 30],
+                [302, 1002, 'Lisinopril', '10mg', '2023-10-17', 14],
+                [303, 1003, 'Insulin', '20 units', '2023-10-18', 90],
+                [304, 1004, 'Atorvastatin', '40mg', '2023-10-19', 30],
+                [305, 1006, 'Metformin', '1000mg', '2023-10-21', 60],
+                [306, 1006, 'Insulin', '50 units', '2023-10-21', 90],
+                [307, 1001, 'Lisinopril', '5mg', '2023-11-06', 30],
+                [308, 1007, 'Albuterol', '2 puffs', '2023-10-22', 15],
+                [309, 1008, 'Aspirin', '81mg', '2023-10-23', 365],
+                [310, 1009, 'Ibuprofen', '400mg', '2023-10-24', 7]
+            ];
+            
+            const rxStmt = db.prepare("INSERT INTO prescriptions VALUES (?, ?, ?, ?, ?, ?)");
+            prescriptions.forEach(rx => rxStmt.run(rx));
+            rxStmt.free();
+
+            console.log('Health informatics database created with sample data');
+        }
+
+        // Initialize CodeMirror editors
+        function initializeEditors() {
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const textarea = document.getElementById(`editor${i}`);
+                if (textarea) {
+                    codeMirrorEditors[i] = CodeMirror.fromTextArea(textarea, {
+                        mode: 'sql',
+                        theme: 'monokai',
+                        lineNumbers: true,
+                        indentUnit: 4,
+                        tabSize: 4,
+                        extraKeys: {"Ctrl-Space": "autocomplete"},
+                        hintOptions: {
+                            tables: {
+                                patients: ['patient_id', 'name', 'age', 'gender', 'admission_date'],
+                                admissions: ['admission_id', 'patient_id', 'admit_date', 'discharge_date', 'diagnosis', 'department'],
+                                lab_results: ['test_id', 'patient_id', 'test_name', 'result_value', 'test_date', 'normal_range'],
+                                prescriptions: ['rx_id', 'patient_id', 'medication', 'dosage', 'prescribed_date', 'duration_days'],
+                                medical_staff: ['staff_id', 'name', 'department', 'specialization', 'hire_date'],
+                                patient_vitals: ['vital_id', 'patient_id', 'vital_name', 'vital_value', 'recorded_date']
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Initialize test editor
+            const testTextarea = document.getElementById('editor-test');
+            if (testTextarea) {
+                codeMirrorEditors['test'] = CodeMirror.fromTextArea(testTextarea, {
+                    mode: 'sql',
+                    theme: 'monokai',
+                    lineNumbers: true,
+                    indentUnit: 4,
+                    tabSize: 4,
+                    extraKeys: {"Ctrl-Space": "autocomplete"}
+                });
+            }
+        }
+
+        // Get SQL from CodeMirror editor
+        function getSQLFromEditor(sectionId) {
+            if (codeMirrorEditors[sectionId]) {
+                return codeMirrorEditors[sectionId].getValue().trim();
+            }
+            const textarea = document.getElementById(`editor${sectionId}`);
+            return textarea ? textarea.value.trim() : '';
+        }
+
+        // Execute SQL query using SQL.js
+        function executeSQL(sectionId) {
+            if (!db) {
+                showError(sectionId, 'Database not initialized. Please wait for SQL engine to load...');
+                return;
+            }
+
+            const sql = getSQLFromEditor(sectionId);
+            const outputElement = document.getElementById(`output${sectionId}`);
+            
+            outputElement.innerHTML = '';
+            outputElement.classList.remove('text-red-400', 'text-green-400');
+            
+            if (!sql) {
+                showError(sectionId, 'Please write a SQL query first.');
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                const result = db.exec(sql);
+                const endTime = performance.now();
+                
+                displaySQLResult(outputElement, result, sql, endTime - startTime);
+                completedExercises.add(sectionId);
+                
+            } catch (error) {
+                showError(sectionId, error.message);
+                console.error('SQL Error:', error);
+            }
+        }
+
+        // Execute test query
+        function executeTestQuery() {
+            if (!db) {
+                showError('test', 'Database not initialized. Please wait for SQL engine to load...');
+                return;
+            }
+
+            const sql = codeMirrorEditors['test'] ? codeMirrorEditors['test'].getValue().trim() : document.getElementById('editor-test').value.trim();
+            const outputElement = document.getElementById('output-test');
+            
+            outputElement.innerHTML = '';
+            outputElement.classList.remove('text-red-400', 'text-green-400');
+            
+            if (!sql) {
+                showError('test', 'Please write a SQL query first.');
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                const result = db.exec(sql);
+                const endTime = performance.now();
+                
+                displaySQLResult(outputElement, result, sql, endTime - startTime);
+                
+            } catch (error) {
+                showError('test', error.message);
+                console.error('SQL Error:', error);
+            }
+        }
+
+        // Display SQL results
+        function displaySQLResult(outputElement, result, sql, executionTime) {
+            // Show executed SQL
+            const sqlInfo = document.createElement('div');
+            sqlInfo.className = 'query-info';
+            sqlInfo.innerHTML = `<span>Executed: <code>${sql}</code></span>`;
+            outputElement.appendChild(sqlInfo);
+            
+            // Show success message
+            const successInfo = document.createElement('div');
+            successInfo.className = 'query-info query-success';
+            
+            if (result.length === 0) {
+                successInfo.textContent = '✓ Query executed successfully (no results returned)';
+            } else {
+                const rowCount = result[0].values.length;
+                successInfo.textContent = `✓ Query executed successfully, returned ${rowCount} row(s)`;
+            }
+            outputElement.appendChild(successInfo);
+            
+            // Display results for SELECT queries
+            if (result.length > 0 && result[0].values.length > 0) {
+                const table = document.createElement('table');
+                table.className = 'results-table';
+                
+                // Create header
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                result[0].columns.forEach(col => {
+                    const th = document.createElement('th');
+                    th.textContent = col;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+                
+                // Create body
+                const tbody = document.createElement('tbody');
+                result[0].values.forEach(row => {
+                    const tr = document.createElement('tr');
+                    row.forEach(cell => {
+                        const td = document.createElement('td');
+                        td.textContent = cell;
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+                
+                outputElement.appendChild(table);
+            }
+            
+            // Show execution time
+            const timeInfo = document.createElement('div');
+            timeInfo.className = 'query-info';
+            timeInfo.textContent = `Execution time: ${Math.round(executionTime)}ms`;
+            outputElement.appendChild(timeInfo);
+        }
+
+        // Show error message
+        function showError(sectionId, message) {
+            const outputElement = document.getElementById(`output${sectionId}`);
+            outputElement.innerHTML = `
+                <div class="text-red-400 font-bold">SQL Error:</div>
+                <div>${message}</div>
+                <div class="mt-2 text-sm">Check your SQL syntax and try again.</div>
+            `;
+        }
+
+        // Reset database
+        function resetDatabase() {
+            if (!db) return;
+            
+            db.close();
+            db = new SQL.Database();
+            createHealthInformaticsDatabase();
+            
+            // Clear all outputs
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const outputElement = document.getElementById(`output${i}`);
+                if (outputElement) {
+                    outputElement.textContent = 'Query results will appear here...';
+                    outputElement.classList.remove('text-red-400', 'text-green-400');
+                }
+            }
+            
+            const testOutput = document.getElementById('output-test');
+            testOutput.textContent = 'Test results will appear here...';
+            testOutput.classList.remove('text-red-400', 'text-green-400');
+            
+            console.log('Database reset to initial state');
+        }
+
+        // Helper function for copying text to clipboard
+        function copyToClipboard(text) {
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = text;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            
+            try {
+                document.execCommand('copy');
+                return true;
+            } catch (err) {
+                console.error('Copy command failed:', err);
+                return false;
+            } finally {
+                document.body.removeChild(tempTextArea);
+            }
+        }
+        
+        // Function to copy the code for a specific section
+        function copyCode(sectionId) {
+            const code = getSQLFromEditor(sectionId);
+            if (copyToClipboard(code)) {
+                const button = document.querySelector(`.copy-button[data-section="${sectionId}"]`);
+                const originalText = button.textContent;
+                button.textContent = "Copied!";
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 1500);
+            }
+        }
+
+        // Function to toggle solution explanations
+        function toggleSolution(sectionId) {
+            const solutionElement = document.getElementById(`solution${sectionId}`);
+            const button = document.querySelector(`.toggle-solution[data-section="${sectionId}"]`);
+            
+            if (solutionElement.classList.contains('hidden')) {
+                solutionElement.classList.remove('hidden');
+                button.textContent = 'Hide Solution';
+            } else {
+                solutionElement.classList.add('hidden');
+                button.textContent = 'Show Solution';
+            }
+        }
+        
+        // Function to show solution in the editor
+        function showSolution(sectionId) {
+            const solutionElement = document.getElementById(`solution${sectionId}`);
+            const solutionText = solutionElement.textContent.trim();
+            
+            if (codeMirrorEditors[sectionId]) {
+                codeMirrorEditors[sectionId].setValue(solutionText);
+            } else {
+                const textarea = document.getElementById(`editor${sectionId}`);
+                if (textarea) {
+                    textarea.value = solutionText;
+                }
+            }
+            
+            // Show the solution if it's hidden
+            if (solutionElement.classList.contains('hidden')) {
+                toggleSolution(sectionId);
+            }
+        }
+
+        // Function to set up the Light/Dark Mode toggle
+        function setupThemeToggle() {
+            const toggleButton = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+
+            function updateTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                toggleButton.textContent = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+                localStorage.setItem('theme', theme);
+            }
+
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            updateTheme(savedTheme);
+
+            toggleButton.addEventListener('click', () => {
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                updateTheme(newTheme);
+            });
+        }
+
+        // Initialize the application
+        async function initializeApp() {
+            // Set up navigation first
+            setupNavigation();
+            
+            // Initialize SQL.js database first
+            await initializeDatabase();
+            
+            // Initialize CodeMirror editors
+            initializeEditors();
+            
+            // Set up event listeners for all SQL question buttons
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                document.querySelector(`.run-button[data-section="${i}"]`).addEventListener('click', () => executeSQL(i));
+                document.querySelector(`.copy-button[data-section="${i}"]`).addEventListener('click', () => copyCode(i));
+                
+                // Add solution button event listeners for practice and project sections
+                if (i >= 6) { // Practice and project sections start from 6
+                    const solutionButton = document.querySelector(`.solution-button[data-section="${i}"]`);
+                    if (solutionButton) {
+                        solutionButton.addEventListener('click', () => showSolution(i));
+                    }
+                }
+            }
+            
+            // Set up solution toggles
+            document.querySelectorAll('.toggle-solution').forEach(button => {
+                button.addEventListener('click', function() {
+                    const sectionId = this.getAttribute('data-section');
+                    toggleSolution(sectionId);
+                });
+            });
+            
+            // Set up test area
+            document.getElementById('run-test').addEventListener('click', executeTestQuery);
+            document.getElementById('reset-db').addEventListener('click', resetDatabase);
+            
+            // Set up theme toggle
+            setupThemeToggle();
+
+            console.log("Health informatics learning module fully initialized");
+        }
+
+        // Initialize when the page loads
+        window.addEventListener('load', initializeApp);
     </script>
 </body>
 </html>
-</xaiArtifact>
