@@ -1,446 +1,2044 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Module 6: Joins in SQL - IAF 603</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Highlight.js for code highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- MathJax CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- Custom MathJax Configuration -->
-    <script src="./js/mathjax.js"></script>
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="./css/styles.css">
+    <title>Module 6: SQL Joins - Health Informatics</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- CodeMirror for SQL editing -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/sql/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/sql-hint.min.js"></script>
+    
+    <!-- SQL.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+
+        /* Theme Variables */
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --section-bg: #1e293b;
+            --code-bg: #020617;
+            --border-color: #334155;
+            --header-color: #38bdf8;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --error-color: #f87171;
+            --success-color: #34d399;
+            --inner-color: #10b981;
+            --left-color: #3b82f6;
+            --right-color: #8b5cf6;
+            --full-color: #f59e0b;
+            --cross-color: #ec4899;
+            --self-color: #06b6d4;
+            --practice-color: #f59e0b;
+            --project-color: #8b5cf6;
+            --nav-bg: #1e293b;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --text-color: #1e293b;
+            --section-bg: #ffffff;
+            --code-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --header-color: #1d4ed8;
+            --accent-color: #4f46e5;
+            --accent-hover: #4338ca;
+            --error-color: #dc2626;
+            --success-color: #10b981;
+            --inner-color: #059669;
+            --left-color: #2563eb;
+            --right-color: #7c3aed;
+            --full-color: #d97706;
+            --cross-color: #db2777;
+            --self-color: #0891b2;
+            --practice-color: #d97706;
+            --project-color: #7c3aed;
+            --nav-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1, h2 {
+            color: var(--header-color);
+        }
+
+        .section-card {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .sql-editor {
+            width: 100%;
+            height: 200px;
+            background-color: var(--code-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .output-area {
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            color: var(--text-color);
+            padding: 0.75rem;
+            margin-top: 12px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+        }
+
+        .question-number {
+            background-color: var(--accent-color);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+        
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .code-container {
+            margin-top: 16px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .sample-solution {
+            background-color: var(--code-bg);
+            border: 1px solid var(--practice-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 12px;
+            position: relative;
+        }
+
+        .sample-header {
+            color: var(--practice-color);
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-solution {
+            background: none;
+            border: none;
+            color: var(--practice-color);
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: auto;
+        }
+
+        .solution-content {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .join-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 12px;
+        }
+
+        .inner-tag { background-color: var(--inner-color); color: white; }
+        .left-tag { background-color: var(--left-color); color: white; }
+        .right-tag { background-color: var(--right-color); color: white; }
+        .full-tag { background-color: var(--full-color); color: white; }
+        .cross-tag { background-color: var(--cross-color); color: white; }
+        .self-tag { background-color: var(--self-color); color: white; }
+        .practice-tag { background-color: var(--practice-color); color: white; }
+        .project-tag { background-color: var(--project-color); color: white; }
+
+        .join-section {
+            border-left: 4px solid;
+            padding-left: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .inner-section { border-color: var(--inner-color); }
+        .left-section { border-color: var(--left-color); }
+        .right-section { border-color: var(--right-color); }
+        .full-section { border-color: var(--full-color); }
+        .cross-section { border-color: var(--cross-color); }
+        .self-section { border-color: var(--self-color); }
+        .project-section { border-color: var(--project-color); }
+
+        .database-schema {
+            background-color: var(--code-bg);
+            border: 1px solid var(--inner-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+        }
+
+        .schema-header {
+            color: var(--inner-color);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-structure {
+            margin-bottom: 1rem;
+        }
+
+        .CodeMirror {
+            height: 200px;
+            border-radius: 0.5rem;
+            margin-top: 12px;
+        }
+
+        .sql-engine-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .status-ready {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-loading {
+            background-color: var(--practice-color);
+            color: black;
+        }
+
+        .status-error {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+        }
+
+        .results-table th {
+            background-color: var(--border-color);
+            padding: 6px 8px;
+            text-align: left;
+            border: 1px solid var(--border-color);
+            font-weight: bold;
+        }
+
+        .results-table td {
+            padding: 6px 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .query-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .query-success {
+            color: var(--success-color);
+        }
+
+        .learning-objective {
+            background-color: var(--code-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .concept-explanation {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .tip-box {
+            background-color: var(--practice-color);
+            color: black;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .project-scenario {
+            background: linear-gradient(135deg, var(--project-color), var(--full-color));
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+        }
+
+        .project-scenario h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-task {
+            background-color: var(--section-bg);
+            border: 2px solid var(--project-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .project-task h4 {
+            color: var(--project-color);
+            margin-bottom: 1rem;
+        }
+
+        .business-context {
+            background-color: var(--code-bg);
+            border-left: 4px solid var(--project-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .project-card {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--project-color);
+        }
+
+        .project-card h4 {
+            color: var(--project-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .complexity {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .complexity-medium { background-color: var(--left-color); color: white; }
+        .complexity-high { background-color: var(--full-color); color: white; }
+
+        .project-deliverable {
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            margin: 0.5rem 0;
+        }
+
+        .solution-button {
+            background-color: var(--success-color);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .solution-button:hover {
+            background-color: #10b981;
+            transform: translateY(-1px);
+        }
+
+        .join-diagram {
+            background-color: var(--section-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .venn-diagram {
+            display: inline-block;
+            margin: 1rem;
+            text-align: center;
+        }
+
+        .venn-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0.5rem;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .circle-left { background-color: rgba(59, 130, 246, 0.3); border: 2px solid var(--left-color); }
+        .circle-right { background-color: rgba(139, 92, 246, 0.3); border: 2px solid var(--right-color); }
+        .circle-inner { background-color: rgba(16, 185, 129, 0.5); position: absolute; width: 80px; height: 80px; }
+
+        /* Navigation Styles */
+        .nav-container {
+            background-color: var(--nav-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--header-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--section-bg);
+            min-width: 250px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            z-index: 1;
+            padding: 0.5rem 0;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-link {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .dropdown-link:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .dropdown-link.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .module-number {
+            background-color: var(--accent-color);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 1024px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--nav-bg);
+                flex-direction: column;
+                padding: 1rem;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                border: none;
+                background-color: transparent;
+            }
+        }
+    </style>
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="./index.html">IAF 603: Preparing Data for Analytics</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+<body class="p-4 md:p-8 min-h-screen">
+    <!-- SQL Engine Status -->
+    <div id="sql-engine-status" class="sql-engine-status status-loading">
+        Loading SQL Engine...
+    </div>
+    
+    <!-- Navigation Menu -->
+    <nav class="nav-container">
+        <div class="max-w-6xl mx-auto">
+            <div class="nav-menu">
+                <a href="index.html" class="nav-logo">
+                    <i class="fas fa-database"></i>
+                    PostgreSQL Learning
+                </a>
+                
+                <button class="mobile-menu-btn" id="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="nav-links" id="nav-links">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                    
+                    <div class="dropdown">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-book"></i>
                             Modules
+                            <i class="fas fa-chevron-down"></i>
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="./module1.html">Module 1</a></li>
-                            <li><a class="dropdown-item" href="./module2.html">Module 2</a></li>
-                            <li><a class="dropdown-item" href="./module3.html">Module 3</a></li>
-                            <li><a class="dropdown-item" href="./module4.html">Module 4</a></li>
-                            <li><a class="dropdown-item" href="./module5.html">Module 5</a></li>
-                            <li><a class="dropdown-item" href="./module6.html">Module 6</a></li>
-                            <li><a class="dropdown-item" href="./module7.html">Module 7</a></li>
-                            <li><a class="dropdown-item" href="./module8.html">Module 8</a></li>
-                            <li><a class="dropdown-item" href="./module9.html">Module 9</a></li>
-                            <li><a class="dropdown-item" href="./module10.html">Module 10</a></li>
-                            <li><a class="dropdown-item" href="./module11.html">Module 11</a></li>
-                            <li><a class="dropdown-item" href="./module12.html">Module 12</a></li>
-                            <li><a class="dropdown-item" href="./module13.html">Module 13</a></li>
-                            <li><a class="dropdown-item" href="./module14.html">Module 14</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html#contact">Contact</a>
-                    </li>
-                </ul>
+                        <div class="dropdown-content">
+                            <a href="module1.html" class="dropdown-link">
+                                <span class="module-number">1</span>
+                                Introduction to Data in Informatics
+                            </a>
+                            <a href="module2.html" class="dropdown-link">
+                                <span class="module-number">2</span>
+                                Database Concepts
+                            </a>
+                            <a href="module3.html" class="dropdown-link">
+                                <span class="module-number">3</span>
+                                PostgreSQL in Action: DQL and DML
+                            </a>
+                            <a href="module4.html" class="dropdown-link">
+                                <span class="module-number">4</span>
+                                SQL Basics II: Aggregations
+                            </a>
+                            <a href="module5.html" class="dropdown-link">
+                                <span class="module-number">5</span>
+                                SQL Logic
+                            </a>
+                            <a href="module6.html" class="dropdown-link active">
+                                <span class="module-number">6</span>
+                                Joins in SQL
+                            </a>
+                            <a href="module7.html" class="dropdown-link">
+                                <span class="module-number">7</span>
+                                Subqueries
+                            </a>
+                            <a href="module8.html" class="dropdown-link">
+                                <span class="module-number">8</span>
+                                Strings and Dates
+                            </a>
+                            <a href="module9.html" class="dropdown-link">
+                                <span class="module-number">9</span>
+                                Data Cleaning in SQL
+                            </a>
+                            <a href="module10.html" class="dropdown-link">
+                                <span class="module-number">10</span>
+                                Reshaping Data
+                            </a>
+                            <a href="module11.html" class="dropdown-link">
+                                <span class="module-number">11</span>
+                                Advanced SQL Features
+                            </a>
+                            <a href="module12.html" class="dropdown-link">
+                                <span class="module-number">12</span>
+                                Views and Modular Queries
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-project-diagram"></i>
+                        Projects
+                    </a>
+                    
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-question-circle"></i>
+                        Resources
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container my-5">
-        <!-- Module Title -->
-        <section class="text-center py-5 bg-white rounded shadow">
-            <h1 class="display-4 fw-bold text-dark">Module 6: Joins in SQL</h1>
-        </section>
-
-        <!-- Module Content -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <!-- Learning Objectives -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Learning Objectives</h2>
-                <p>Upon completion of this module, participants will be able to:</p>
-                <ul>
-                    <li>Understand the purpose and functionality of different types of SQL joins: <code>INNER JOIN</code>, <code>LEFT JOIN</code>, <code>RIGHT JOIN</code>, <code>FULL OUTER JOIN</code>, <code>SELF JOIN</code>, and <code>CROSS JOIN</code>.</li>
-                    <li>Apply joins to integrate data from multiple tables for comprehensive analysis.</li>
-                    <li>Use join conditions effectively with primary and foreign keys or other matching criteria.</li>
-                    <li>Combine joins with other SQL clauses (<code>WHERE</code>, <code>GROUP BY</code>, etc.) to create complex queries.</li>
-                    <li>Execute join-based queries in cloud-based environments like Microsoft Fabric Lakehouse.</li>
-                </ul>
-
-                <!-- Introduction to Joins in SQL -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Introduction to Joins in SQL</h2>
-                <p>Joins in SQL are powerful tools for combining data from multiple tables, enabling comprehensive analysis by linking related records. This module explores the various types of joins—<code>INNER JOIN</code>, <code>LEFT JOIN</code>, <code>RIGHT JOIN</code>, <code>FULL OUTER JOIN</code>, <code>SELF JOIN</code>, and <code>CROSS JOIN</code>—and their applications in data preparation. Joins are essential in real-world scenarios, such as combining patient demographics with admission records in healthcare or linking customer data with orders in retail. By mastering joins, you can create holistic datasets for analytics, ensuring all relevant information is integrated efficiently.</p>
-                <p>In practice, joins allow you to answer complex questions. For example, in a Greensboro hospital, you might join patient and admission tables to analyze treatment patterns. In a retail context, joining customer and order tables can reveal purchasing trends. Understanding join types and their impact on result sets is critical for avoiding data loss or duplication.</p>
-
-                <!-- Types of Joins -->
-                <h3 class="h4 fw-bold mb-3">Types of Joins</h3>
-                <p>SQL joins combine rows from two or more tables based on a condition, typically involving primary and foreign keys. Each join type determines which rows are included in the result set.</p>
-                <ul>
-                    <li><strong>INNER JOIN:</strong> Returns only rows where there is a match in both tables.</li>
-                    <li><strong>LEFT JOIN (LEFT OUTER JOIN):</strong> Returns all rows from the left table and matched rows from the right; unmatched rows from the right get NULL values.</li>
-                    <li><strong>RIGHT JOIN (RIGHT OUTER JOIN):</strong> Returns all rows from the right table and matched rows from the left; unmatched rows from the left get NULL values.</li>
-                    <li><strong>FULL OUTER JOIN:</strong> Returns all rows from both tables, with NULLs for unmatched rows.</li>
-                    <li><strong>SELF JOIN:</strong> Joins a table to itself, useful for hierarchical or self-referential data.</li>
-                    <li><strong>CROSS JOIN:</strong> Produces a Cartesian product, combining every row from one table with every row from another.</li>
-                </ul>
-
-                <!-- Sample Data -->
-                <h4 class="h5 fw-bold mb-2">Sample Data</h4>
-                <p><strong>PATIENTS Table:</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>subject_id</th>
-                            <th>name</th>
-                            <th>age</th>
-                            <th>gender</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1001</td>
-                            <td>Alice Smith</td>
-                            <td>45</td>
-                            <td>Female</td>
-                        </tr>
-                        <tr>
-                            <td>1002</td>
-                            <td>Bob Johnson</td>
-                            <td>32</td>
-                            <td>Male</td>
-                        </tr>
-                        <tr>
-                            <td>1003</td>
-                            <td>Carol White</td>
-                            <td>58</td>
-                            <td>Female</td>
-                        </tr>
-                        <tr>
-                            <td>1004</td>
-                            <td>David Brown</td>
-                            <td>67</td>
-                            <td>Male</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p><strong>ADMISSIONS Table:</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>hadm_id</th>
-                            <th>subject_id</th>
-                            <th>admit_time</th>
-                            <th>diagnosis</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>101</td>
-                            <td>1001</td>
-                            <td>2025-01-10 08:00:00</td>
-                            <td>Pneumonia</td>
-                        </tr>
-                        <tr>
-                            <td>102</td>
-                            <td>1002</td>
-                            <td>2025-02-01 14:00:00</td>
-                            <td>Fracture</td>
-                        </tr>
-                        <tr>
-                            <td>103</td>
-                            <td>1001</td>
-                            <td>2025-03-05 10:00:00</td>
-                            <td>Pneumonia</td>
-                        </tr>
-                        <tr>
-                            <td>104</td>
-                            <td>1005</td>
-                            <td>2025-04-10 07:00:00</td>
-                            <td>Flu</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <!-- INNER JOIN -->
-                <h4 class="h5 fw-bold mb-2">INNER JOIN</h4>
-                <p><code>INNER JOIN</code> retrieves only the rows with matching values in both tables, excluding unmatched rows.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Match patients with their admissions
-SELECT p.name, p.age, a.hadm_id, a.diagnosis
-FROM PATIENTS p
-INNER JOIN ADMISSIONS a ON p.subject_id = a.subject_id;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This query returns only patients with admissions, linking via <code>subject_id</code>. Patient 1004 and admission for 1005 are excluded since they lack matches.</p>
-                <p><strong>Expanded Example (Retail):</strong></p>
-                <p><strong>Customers Table:</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>customer_id</th>
-                            <th>name</th>
-                            <th>email</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>John Doe</td>
-                            <td>john@example.com</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Jane Smith</td>
-                            <td>jane@example.com</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Mike Lee</td>
-                            <td>mike@example.com</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p><strong>Orders Table:</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>order_id</th>
-                            <th>customer_id</th>
-                            <th>order_date</th>
-                            <th>total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>101</td>
-                            <td>1</td>
-                            <td>2025-01-15</td>
-                            <td>150.00</td>
-                        </tr>
-                        <tr>
-                            <td>102</td>
-                            <td>2</td>
-                            <td>2025-02-20</td>
-                            <td>300.00</td>
-                        </tr>
-                        <tr>
-                            <td>103</td>
-                            <td>4</td>
-                            <td>2025-03-10</td>
-                            <td>200.00</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Customers with orders
-SELECT c.name, c.email, o.order_id, o.total
-FROM Customers c
-INNER JOIN Orders o ON c.customer_id = o.customer_id;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Returns only customers with orders, excluding Mike Lee and order 103 (no matching customer).</p>
-
-                <!-- LEFT JOIN -->
-                <h4 class="h5 fw-bold mb-2">LEFT JOIN</h4>
-                <p><code>LEFT JOIN</code> includes all rows from the left table, with NULLs for unmatched rows from the right table.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- All patients, including those without admissions
-SELECT p.name, p.age, a.hadm_id, a.diagnosis
-FROM PATIENTS p
-LEFT JOIN ADMISSIONS a ON p.subject_id = a.subject_id;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Includes all patients, with NULLs for David Brown (no admissions). Useful for identifying patients without hospital stays.</p>
-                <p><strong>Expanded Example (Retail):</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- All customers, including those without orders
-SELECT c.name, c.email, o.order_id, o.total
-FROM Customers c
-LEFT JOIN Orders o ON c.customer_id = o.customer_id;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Lists all customers, with NULLs for Mike Lee’s orders, helping identify inactive customers.</p>
-
-                <!-- RIGHT JOIN -->
-                <h4 class="h5 fw-bold mb-2">RIGHT JOIN</h4>
-                <p><code>RIGHT JOIN</code> includes all rows from the right table, with NULLs for unmatched rows from the left table.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- All admissions, including unmatched patient IDs
-SELECT p.name, p.age, a.hadm_id, a.diagnosis
-FROM PATIENTS p
-RIGHT JOIN ADMISSIONS a ON p.subject_id = a.subject_id;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Includes all admissions, with NULLs for patient 1005’s details, useful for auditing unmatched records.</p>
-                <p><strong>Expanded Example (Retail):</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- All orders, including unmatched customers
-SELECT c.name, c.email, o.order_id, o.total
-FROM Customers c
-RIGHT JOIN Orders o ON c.customer_id = o.customer_id;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Includes all orders, with NULLs for customer 4, flagging potential data issues.</p>
-
-                <!-- FULL OUTER JOIN -->
-                <h4 class="h5 fw-bold mb-2">FULL OUTER JOIN</h4>
-                <p><code>FULL OUTER JOIN</code> includes all rows from both tables, with NULLs for unmatched rows.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- All patients and admissions, including unmatched
-SELECT p.name, p.age, a.hadm_id, a.diagnosis
-FROM PATIENTS p
-FULL OUTER JOIN ADMISSIONS a ON p.subject_id = a.subject_id;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Includes all patients and admissions, with NULLs for unmatched records (e.g., David Brown and patient 1005).</p>
-                <p><strong>Expanded Example (Retail):</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- All customers and orders, including unmatched
-SELECT c.name, c.email, o.order_id, o.total
-FROM Customers c
-FULL OUTER JOIN Orders o ON c.customer_id = o.customer_id;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Captures all customers and orders, highlighting data gaps for analysis.</p>
-
-                <!-- SELF JOIN -->
-                <h4 class="h5 fw-bold mb-2">SELF JOIN</h4>
-                <p>A <code>SELF JOIN</code> joins a table to itself, useful for hierarchical or comparative data.</p>
-                <p><strong>Employees Table (with Manager):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>emp_id</th>
-                            <th>name</th>
-                            <th>manager_id</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>John Doe</td>
-                            <td>NULL</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Jane Smith</td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Mike Johnson</td>
-                            <td>1</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Employees and their managers
-SELECT e1.name AS Employee, e2.name AS Manager
-FROM Employees e1
-LEFT JOIN Employees e2 ON e1.manager_id = e2.emp_id;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Links employees to their managers using aliases, showing hierarchical relationships.</p>
-
-                <!-- CROSS JOIN -->
-                <h4 class="h5 fw-bold mb-2">CROSS JOIN</h4>
-                <p><code>CROSS JOIN</code> combines every row from one table with every row from another, creating a Cartesian product.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- All possible patient-diagnosis combinations
-SELECT p.name, a.diagnosis
-FROM PATIENTS p
-CROSS JOIN ADMISSIONS a;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Produces all combinations, useful for testing or scenarios requiring exhaustive pairings.</p>
-
-                <!-- Combining Joins with Other Clauses -->
-                <h3 class="h4 fw-bold mb-3">Combining Joins with Other Clauses</h3>
-                <p>Joins work with <code>WHERE</code>, <code>GROUP BY</code>, and <code>ORDER BY</code> for complex queries.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Count admissions per patient for Pneumonia in 2025
-SELECT p.name, COUNT(a.hadm_id) AS AdmissionCount
-FROM PATIENTS p
-INNER JOIN ADMISSIONS a ON p.subject_id = a.subject_id
-WHERE a.diagnosis = 'Pneumonia' AND EXTRACT(YEAR FROM a.admit_time) = 2025
-GROUP BY p.name
-ORDER BY AdmissionCount DESC;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Joins patients and admissions, filters for Pneumonia in 2025, groups by patient, and sorts by admission count.</p>
-                <p><strong>Expanded Example (Retail):</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Total order value by customer for orders > $200
-SELECT c.name, SUM(o.total) AS TotalSpent
-FROM Customers c
-LEFT JOIN Orders o ON c.customer_id = o.customer_id
-WHERE o.total > 200 OR o.total IS NULL
-GROUP BY c.name
-HAVING SUM(o.total) > 200
-ORDER BY TotalSpent DESC;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Identifies high-spending customers, including those without orders, with filtering and aggregation.</p>
-
-                <!-- Joins in Microsoft Fabric -->
-                <h3 class="h4 fw-bold mb-3">Joins in Microsoft Fabric Lakehouse</h3>
-                <p>Microsoft Fabric supports joins on large-scale data, leveraging distributed computing.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Join survey responses with demographics
-SELECT d.respondent_id, d.age, r.satisfaction_score
-FROM survey_lakehouse.Demographics d
-INNER JOIN survey_lakehouse.Responses r ON d.respondent_id = r.respondent_id
-WHERE r.response_date >= '2025-01-01';</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Combines demographic and survey data for recent responses, optimized for big data.</p>
-
-                <!-- Assessments -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Assessments</h2>
-                <ol>
-                    <li><strong>Conceptual Question:</strong> Explain the difference between <code>INNER JOIN</code> and <code>LEFT JOIN</code>. When would you use each?</li>
-                    <li><strong>SQL Coding Task:</strong> Using the PATIENTS and ADMISSIONS tables, write a query to list all patients and their admission diagnoses, including patients without admissions, sorted by name.</li>
-                    <li><strong>Application Scenario:</strong> For a Greensboro library, join Books and Loans tables to find all books and their loan status, including unborrowed books.</li>
-                    <li><strong>Expanded Task:</strong> For a university database, join Students and Enrollments tables to list students and their courses, including students not enrolled, and count enrollments per student.</li>
-                </ol>
+    <div class="max-w-6xl mx-auto mt-6">
+        <!-- HEADER -->
+        <header class="flex justify-between items-center mb-6 pb-4 border-b border-border-color">
+            <div>
+                <h1 class="text-3xl font-extrabold">Module 6: SQL Joins Mastery</h1>
+                <p class="text-lg text-gray-400">IAF 603 - Health Informatics Applications</p>
+                <p class="text-sm text-green-400 mt-1">✓ Interactive SQL Environment Active</p>
+                <p class="text-sm text-yellow-400 mt-1">🏥 Real Healthcare Database & Practice Project</p>
             </div>
-        </section>
+            <button id="theme-toggle" class="px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold transition-colors">
+                <!-- Text set by JavaScript -->
+            </button>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <div id="main-content">
+            <!-- Introduction -->
+            <section class="mb-8">
+                <div class="instructions p-4 section-card rounded-xl">
+                    <h2 class="text-xl font-bold mb-2">🎯 Mastering SQL Joins for Health Data Integration</h2>
+                    <p class="mb-4">Learn to combine data from multiple healthcare tables using different join types to create comprehensive patient profiles and analytics.</p>
+                    
+                    <div class="learning-objective">
+                        <h3 class="font-bold mb-2">Learning Objectives</h3>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Understand and apply INNER, LEFT, RIGHT, and FULL OUTER joins</li>
+                            <li>Master SELF JOINS for hierarchical data and CROSS JOINS for combinations</li>
+                            <li>Combine multiple joins in complex healthcare queries</li>
+                            <li>Complete a patient journey analysis project using joins</li>
+                        </ul>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-7 gap-2 text-sm mt-4">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-inner-color mr-2"></div>
+                            <span>INNER</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-left-color mr-2"></div>
+                            <span>LEFT</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-right-color mr-2"></div>
+                            <span>RIGHT</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-full-color mr-2"></div>
+                            <span>FULL</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-cross-color mr-2"></div>
+                            <span>CROSS</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-self-color mr-2"></div>
+                            <span>SELF</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-project-color mr-2"></div>
+                            <span>Project</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Test Area -->
+            <div class="section-card p-4 rounded-xl mb-8">
+                <h2 class="text-xl font-bold mb-4">🧪 Interactive SQL Playground</h2>
+                <p class="mb-4">Test join queries against the healthcare database. Use this to experiment with different join types:</p>
+                
+                <div class="code-container">
+                    <textarea id="editor-test" class="sql-editor" placeholder="-- Try: SELECT * FROM patients LIMIT 3;">SELECT p.name, a.diagnosis 
+FROM patients p
+LEFT JOIN admissions a ON p.patient_id = a.patient_id
+LIMIT 5;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button id="run-test" class="btn-primary px-4 py-2 rounded-lg font-semibold text-white">
+                            Run Query
+                        </button>
+                        <button id="reset-db" class="px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors">
+                            Reset Database
+                        </button>
+                    </div>
+
+                    <div id="output-test" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database Schema -->
+            <div class="database-schema mb-8">
+                <div class="schema-header">🏥 Health Informatics Database Schema</div>
+                <div class="table-structure">
+                    <strong>patients</strong> (patient_id, name, age, gender, admission_date)
+                </div>
+                <div class="table-structure">
+                    <strong>admissions</strong> (admission_id, patient_id, admit_date, discharge_date, diagnosis, department)
+                </div>
+                <div class="table-structure">
+                    <strong>lab_results</strong> (test_id, patient_id, test_name, result_value, test_date, normal_range)
+                </div>
+                <div class="table-structure">
+                    <strong>prescriptions</strong> (rx_id, patient_id, medication, dosage, prescribed_date, duration_days)
+                </div>
+                <div class="table-structure">
+                    <strong>medical_staff</strong> (staff_id, name, department, specialization, hire_date)
+                </div>
+                <div class="table-structure">
+                    <strong>patient_vitals</strong> (vital_id, patient_id, vital_name, vital_value, recorded_date)
+                </div>
+            </div>
+
+            <!-- INNER JOIN -->
+            <div class="join-section inner-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--inner-color)">INNER JOIN</h2>
+                
+                <div class="concept-explanation">
+                    <h3 class="font-bold mb-2">Matching Records Only</h3>
+                    <p class="mb-3">INNER JOIN returns only the rows where there is a match in both tables. Perfect for finding patients with admissions, or customers with orders.</p>
+                    
+                    <div class="join-diagram">
+                        <div class="venn-diagram">
+                            <div class="venn-circle circle-left">Patients</div>
+                            <div class="venn-circle circle-right">Admissions</div>
+                            <div class="venn-circle circle-inner">INNER JOIN</div>
+                        </div>
+                        <p class="text-sm mt-2">Returns only the overlapping records</p>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <strong>💡 Healthcare Use:</strong> Find patients with lab results, identify medications with prescriptions, match staff with departments.
+                    </div>
+                </div>
+
+                <!-- Example 1 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">1</div>
+                        <h2 class="text-xl font-bold">Patients with Admissions</h2>
+                        <span class="join-tag inner-tag">INNER JOIN</span>
+                    </div>
+                    <p class="mb-4">Find all patients who have been admitted to the hospital along with their admission details.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor1" class="sql-editor">SELECT p.patient_id, p.name, p.age, a.admission_id, a.diagnosis, a.department
+FROM patients p
+INNER JOIN admissions a ON p.patient_id = a.patient_id
+ORDER BY p.name;</textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="1">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="1">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output1" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Example 2 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">2</div>
+                        <h2 class="text-xl font-bold">Lab Results with Patient Details</h2>
+                        <span class="join-tag inner-tag">INNER JOIN</span>
+                    </div>
+                    <p class="mb-4">Get all lab test results along with patient demographic information.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor2" class="sql-editor">SELECT p.name, p.age, p.gender, l.test_name, l.result_value, l.normal_range
+FROM patients p
+INNER JOIN lab_results l ON p.patient_id = l.patient_id
+WHERE l.test_name = 'Glucose'
+ORDER BY l.result_value DESC;</textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="2">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="2">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output2" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- LEFT JOIN -->
+            <div class="join-section left-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--left-color)">LEFT JOIN</h2>
+                
+                <div class="concept-explanation">
+                    <h3 class="font-bold mb-2">All Records from Left Table</h3>
+                    <p class="mb-3">LEFT JOIN returns all rows from the left table, with matching rows from the right table. If no match exists, NULL values are returned for right table columns.</p>
+                    
+                    <div class="join-diagram">
+                        <div class="venn-diagram">
+                            <div class="venn-circle circle-left">Patients</div>
+                            <div class="venn-circle circle-right">Admissions</div>
+                        </div>
+                        <p class="text-sm mt-2">Returns all patients + matching admissions</p>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <strong>💡 Healthcare Use:</strong> Find patients without admissions, identify medications without prescriptions, list all staff regardless of department assignments.
+                    </div>
+                </div>
+
+                <!-- Example 3 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">3</div>
+                        <h2 class="text-xl font-bold">All Patients with Admission Status</h2>
+                        <span class="join-tag left-tag">LEFT JOIN</span>
+                    </div>
+                    <p class="mb-4">List all patients and show their admission information if they have been admitted.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor3" class="sql-editor">SELECT p.patient_id, p.name, p.age, 
+       a.diagnosis, 
+       CASE WHEN a.admission_id IS NULL THEN 'No Admissions' ELSE 'Has Admissions' END as admission_status
+FROM patients p
+LEFT JOIN admissions a ON p.patient_id = a.patient_id
+ORDER BY admission_status, p.name;</textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="3">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="3">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output3" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Example 4 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">4</div>
+                        <h2 class="text-xl font-bold">Patients Without Lab Results</h2>
+                        <span class="join-tag left-tag">LEFT JOIN</span>
+                    </div>
+                    <p class="mb-4">Identify patients who have no lab test results recorded.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor4" class="sql-editor">SELECT p.patient_id, p.name, p.age, p.gender
+FROM patients p
+LEFT JOIN lab_results l ON p.patient_id = l.patient_id
+WHERE l.test_id IS NULL
+ORDER BY p.name;</textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="4">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="4">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output4" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- RIGHT JOIN & FULL OUTER JOIN -->
+            <div class="join-section right-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--right-color)">RIGHT JOIN & FULL OUTER JOIN</h2>
+                
+                <div class="concept-explanation">
+                    <h3 class="font-bold mb-2">Complete Data Coverage</h3>
+                    <p class="mb-3">RIGHT JOIN returns all rows from the right table. FULL OUTER JOIN returns all rows when there's a match in either table.</p>
+                    
+                    <div class="join-diagram">
+                        <div class="venn-diagram">
+                            <div class="venn-circle circle-left">Patients</div>
+                            <div class="venn-circle circle-right">Admissions</div>
+                        </div>
+                        <p class="text-sm mt-2">RIGHT JOIN: All admissions + matching patients<br>FULL JOIN: All patients + all admissions</p>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <strong>💡 Healthcare Use:</strong> Find admissions without patient records, identify data quality issues, get complete picture of all records.
+                    </div>
+                </div>
+
+                <!-- Example 5 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">5</div>
+                        <h2 class="text-xl font-bold">Admissions with Patient Details</h2>
+                        <span class="join-tag right-tag">RIGHT JOIN</span>
+                    </div>
+                    <p class="mb-4">Show all admissions, including those that might not have matching patient records (data quality check).</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor5" class="sql-editor">SELECT a.admission_id, a.diagnosis, a.department,
+       p.name, p.age,
+       CASE WHEN p.patient_id IS NULL THEN 'Missing Patient Record' ELSE 'Record Found' END as patient_status
+FROM patients p
+RIGHT JOIN admissions a ON p.patient_id = a.patient_id
+ORDER BY patient_status, a.admission_id;</textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="5">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="5">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output5" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Example 6 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">6</div>
+                        <h2 class="text-xl font-bold">Complete Patient-Admission View</h2>
+                        <span class="join-tag full-tag">FULL OUTER JOIN</span>
+                    </div>
+                    <p class="mb-4">Get a complete view of all patients and all admissions, showing relationships where they exist.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor6" class="sql-editor">SELECT 
+    COALESCE(p.patient_id, a.patient_id) as patient_id,
+    p.name, 
+    p.age,
+    a.admission_id,
+    a.diagnosis,
+    CASE 
+        WHEN p.patient_id IS NULL THEN 'Admission only'
+        WHEN a.admission_id IS NULL THEN 'Patient only' 
+        ELSE 'Has both'
+    END as record_type
+FROM patients p
+FULL OUTER JOIN admissions a ON p.patient_id = a.patient_id
+ORDER BY record_type, COALESCE(p.patient_id, a.patient_id);</textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="6">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="6">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output6" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- CROSS JOIN & SELF JOIN -->
+            <div class="join-section cross-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--cross-color)">CROSS JOIN & SELF JOIN</h2>
+                
+                <div class="concept-explanation">
+                    <h3 class="font-bold mb-2">Specialized Join Operations</h3>
+                    <p class="mb-3">CROSS JOIN creates all possible combinations between tables. SELF JOIN allows a table to be joined with itself for hierarchical or comparative analysis.</p>
+                    
+                    <div class="tip-box">
+                        <strong>💡 Healthcare Use:</strong> Generate all possible treatment combinations, find staff in the same department, analyze patient readmission patterns.
+                    </div>
+                </div>
+
+                <!-- Example 7 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">7</div>
+                        <h2 class="text-xl font-bold">Staff Department Relationships</h2>
+                        <span class="join-tag self-tag">SELF JOIN</span>
+                    </div>
+                    <p class="mb-4">Find staff members who work in the same department (creating a colleague network).</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor7" class="sql-editor">SELECT 
+    s1.name as staff_member,
+    s1.department,
+    s1.specialization,
+    s2.name as colleague,
+    s2.specialization as colleague_specialization
+FROM medical_staff s1
+INNER JOIN medical_staff s2 ON s1.department = s2.department AND s1.staff_id != s2.staff_id
+ORDER BY s1.department, s1.name, s2.name;</textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="7">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="7">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output7" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Example 8 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">8</div>
+                        <h2 class="text-xl font-bold">Patient Readmission Analysis</h2>
+                        <span class="join-tag self-tag">SELF JOIN</span>
+                    </div>
+                    <p class="mb-4">Identify patients with multiple admissions and analyze the time between admissions.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor8" class="sql-editor">SELECT 
+    a1.patient_id,
+    p.name,
+    a1.admission_id as first_admission,
+    a1.diagnosis as first_diagnosis,
+    a2.admission_id as second_admission,
+    a2.diagnosis as second_diagnosis,
+    JULIANDAY(a2.admit_date) - JULIANDAY(a1.discharge_date) as days_between_admissions
+FROM admissions a1
+INNER JOIN admissions a2 ON a1.patient_id = a2.patient_id AND a1.admission_id < a2.admission_id
+INNER JOIN patients p ON a1.patient_id = p.patient_id
+WHERE JULIANDAY(a2.admit_date) - JULIANDAY(a1.discharge_date) BETWEEN 1 AND 90
+ORDER BY days_between_admissions DESC;</textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="8">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="8">
+                                Copy Code
+                            </button>
+                        </div>
+
+                        <div id="output8" class="output-area">
+                            Query results will appear here...
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PRACTICE EXERCISES -->
+            <div class="join-section" style="border-color: var(--practice-color);">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--practice-color)">Practice Exercises</h2>
+                
+                <div class="concept-explanation">
+                    <h3 class="font-bold mb-2">Apply Your Join Skills</h3>
+                    <p class="mb-3">Test your understanding with these healthcare analytics challenges.</p>
+                </div>
+
+                <!-- Practice 1 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">P1</div>
+                        <h2 class="text-xl font-bold">Patient Comprehensive Profile</h2>
+                        <span class="join-tag practice-tag">Practice</span>
+                    </div>
+                    <p class="mb-4">Create a comprehensive patient profile that includes demographic information, admission history, lab results, and prescriptions.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor9" class="sql-editor" placeholder="-- Write your comprehensive patient profile query here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="9">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="9">
+                                Copy Code
+                            </button>
+                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="9">
+                                Show Solution
+                            </button>
+                        </div>
+
+                        <div id="output9" class="output-area">
+                            Query results will appear here...
+                        </div>
+                        
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>💡 Solution</span>
+                                <button class="toggle-solution" data-section="9">Show Solution</button>
+                            </div>
+                            <div id="solution9" class="solution-content hidden">
+-- Comprehensive Patient Profile
+SELECT 
+    p.patient_id,
+    p.name,
+    p.age,
+    p.gender,
+    COUNT(DISTINCT a.admission_id) as total_admissions,
+    COUNT(DISTINCT l.test_id) as total_lab_tests,
+    COUNT(DISTINCT pr.rx_id) as total_prescriptions,
+    GROUP_CONCAT(DISTINCT a.diagnosis) as diagnoses,
+    GROUP_CONCAT(DISTINCT pr.medication) as medications
+FROM patients p
+LEFT JOIN admissions a ON p.patient_id = a.patient_id
+LEFT JOIN lab_results l ON p.patient_id = l.patient_id
+LEFT JOIN prescriptions pr ON p.patient_id = pr.patient_id
+GROUP BY p.patient_id, p.name, p.age, p.gender
+ORDER BY total_admissions DESC, p.name;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Practice 2 -->
+                <section class="section-card p-4 rounded-xl mb-8">
+                    <div class="question-header">
+                        <div class="question-number">P2</div>
+                        <h2 class="text-xl font-bold">Department Performance Analysis</h2>
+                        <span class="join-tag practice-tag">Practice</span>
+                    </div>
+                    <p class="mb-4">Analyze department performance by joining admissions with medical staff and calculating key metrics.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor10" class="sql-editor" placeholder="-- Write your department performance analysis here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="10">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="10">
+                                Copy Code
+                            </button>
+                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="10">
+                                Show Solution
+                            </button>
+                        </div>
+
+                        <div id="output10" class="output-area">
+                            Query results will appear here...
+                        </div>
+                        
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>💡 Solution</span>
+                                <button class="toggle-solution" data-section="10">Show Solution</button>
+                            </div>
+                            <div id="solution10" class="solution-content hidden">
+-- Department Performance Analysis
+SELECT 
+    a.department,
+    COUNT(DISTINCT a.admission_id) as total_admissions,
+    COUNT(DISTINCT a.patient_id) as unique_patients,
+    COUNT(DISTINCT ms.staff_id) as staff_count,
+    ROUND(AVG(JULIANDAY(a.discharge_date) - JULIANDAY(a.admit_date)), 1) as avg_length_of_stay,
+    GROUP_CONCAT(DISTINCT ms.specialization) as specializations
+FROM admissions a
+LEFT JOIN medical_staff ms ON a.department = ms.department
+GROUP BY a.department
+ORDER BY total_admissions DESC;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PATIENT JOURNEY ANALYSIS PROJECT -->
+            <div class="join-section project-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--project-color)">🏥 Patient Journey Analysis Project</h2>
+                
+                <div class="project-scenario">
+                    <h3>Comprehensive Patient Care Pathway Analysis</h3>
+                    <p>You've been tasked with analyzing patient journeys through the healthcare system. Your goal is to create a comprehensive view of patient care from admission through treatment and follow-up.</p>
+                </div>
+
+                <div class="business-context">
+                    "Hospital leadership needs to understand patient care pathways to improve treatment outcomes, optimize resource allocation, and enhance patient satisfaction. Your analysis will help identify bottlenecks and opportunities for process improvement."
+                </div>
+
+                <div class="project-grid">
+                    <div class="project-card">
+                        <h4>📊 Admission to Discharge Timeline</h4>
+                        <span class="complexity complexity-medium">Medium Complexity</span>
+                        <p>Track patient movement from admission through various departments to discharge.</p>
+                        <div class="project-deliverable">Care Timeline Analysis</div>
+                    </div>
+                    <div class="project-card">
+                        <h4>🏥 Treatment Pathway Mapping</h4>
+                        <span class="complexity complexity-high">High Complexity</span>
+                        <p>Map diagnostic tests, treatments, and medications throughout patient stay.</p>
+                        <div class="project-deliverable">Pathway Visualization</div>
+                    </div>
+                    <div class="project-card">
+                        <h4>💊 Medication Adherence Tracking</h4>
+                        <span class="complexity complexity-medium">Medium Complexity</span>
+                        <p>Analyze prescription patterns and medication administration throughout care.</p>
+                        <div class="project-deliverable">Adherence Report</div>
+                    </div>
+                </div>
+
+                <!-- Project Task 1 -->
+                <section class="project-task">
+                    <h4>Project Task 1: Patient Care Timeline Analysis</h4>
+                    <p class="mb-4">Create a comprehensive timeline of patient care, showing admissions, lab tests, and prescriptions in chronological order.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor11" class="sql-editor" placeholder="-- Build your patient care timeline query here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="11">
+                                Run Analysis
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="11">
+                                Copy Code
+                            </button>
+                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="11">
+                                Show Solution
+                            </button>
+                        </div>
+
+                        <div id="output11" class="output-area">
+                            Patient journey results will appear here...
+                        </div>
+
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>💡 Project Solution</span>
+                                <button class="toggle-solution" data-section="11">Show Solution</button>
+                            </div>
+                            <div id="solution11" class="solution-content hidden">
+-- PATIENT CARE TIMELINE ANALYSIS
+WITH patient_timeline AS (
+    -- Admissions
+    SELECT 
+        patient_id,
+        admit_date as event_date,
+        'Admission' as event_type,
+        diagnosis as event_details,
+        department
+    FROM admissions
+    
+    UNION ALL
+    
+    -- Lab Tests
+    SELECT 
+        patient_id,
+        test_date as event_date,
+        'Lab Test' as event_type,
+        test_name || ': ' || result_value as event_details,
+        NULL as department
+    FROM lab_results
+    
+    UNION ALL
+    
+    -- Prescriptions
+    SELECT 
+        patient_id,
+        prescribed_date as event_date,
+        'Prescription' as event_type,
+        medication || ' - ' || dosage as event_details,
+        NULL as department
+    FROM prescriptions
+)
+SELECT 
+    p.name,
+    p.age,
+    p.gender,
+    tl.event_date,
+    tl.event_type,
+    tl.event_details,
+    tl.department
+FROM patient_timeline tl
+INNER JOIN patients p ON tl.patient_id = p.patient_id
+ORDER BY p.name, tl.event_date;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Project Task 2 -->
+                <section class="project-task">
+                    <h4>Project Task 2: Department Cross-Referral Analysis</h4>
+                    <p class="mb-4">Analyze how patients move between departments and identify common referral patterns.</p>
+                    
+                    <div class="code-container">
+                        <textarea id="editor12" class="sql-editor" placeholder="-- Build your department referral analysis here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="12">
+                                Run Analysis
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="12">
+                                Copy Code
+                            </button>
+                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="12">
+                                Show Solution
+                            </button>
+                        </div>
+
+                        <div id="output12" class="output-area">
+                            Department referral results will appear here...
+                        </div>
+                        
+                        <div class="sample-solution">
+                            <div class="sample-header">
+                                <span>💡 Project Solution</span>
+                                <button class="toggle-solution" data-section="12">Show Solution</button>
+                            </div>
+                            <div id="solution12" class="solution-content hidden">
+-- DEPARTMENT CROSS-REFERRAL ANALYSIS
+WITH patient_department_sequence AS (
+    SELECT 
+        patient_id,
+        department,
+        admit_date,
+        LEAD(department) OVER (PARTITION BY patient_id ORDER BY admit_date) as next_department,
+        LEAD(admit_date) OVER (PARTITION BY patient_id ORDER BY admit_date) as next_admit_date
+    FROM admissions
+)
+SELECT 
+    pds.department as from_department,
+    pds.next_department as to_department,
+    COUNT(*) as referral_count,
+    ROUND(AVG(JULIANDAY(pds.next_admit_date) - JULIANDAY(pds.admit_date)), 1) as avg_days_between
+FROM patient_department_sequence pds
+WHERE pds.next_department IS NOT NULL
+  AND pds.department != pds.next_department
+GROUP BY pds.department, pds.next_department
+ORDER BY referral_count DESC;
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="project-scenario" style="background: linear-gradient(135deg, var(--success-color), var(--inner-color));">
+                    <h3>🎉 Project Completion</h3>
+                    <p>Congratulations! You've completed the Patient Journey Analysis Project. Your analysis provides valuable insights into patient care pathways and demonstrates advanced SQL join skills in a real-world healthcare context.</p>
+                </div>
+            </div>
+
+            <!-- Knowledge Consolidation -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <h2 class="text-xl font-bold mb-4">🧠 Knowledge Consolidation</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-4 border border-green-400 rounded-lg">
+                        <h3 class="font-bold text-green-400 mb-2">✅ Skills Mastered</h3>
+                        <ul class="list-disc list-inside space-y-1 text-sm">
+                            <li>INNER JOIN for matching records</li>
+                            <li>LEFT/RIGHT JOIN for inclusive data</li>
+                            <li>FULL OUTER JOIN for complete coverage</li>
+                            <li>SELF JOIN for hierarchical analysis</li>
+                            <li>Multiple table joins in complex queries</li>
+                            <li>Real-world healthcare applications</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="p-4 border border-blue-400 rounded-lg">
+                        <h3 class="font-bold text-blue-400 mb-2">🎯 Next Steps</h3>
+                        <ul class="list-disc list-inside space-y-1 text-sm">
+                            <li>Apply these skills to your own healthcare datasets</li>
+                            <li>Explore subqueries in Module 7 for advanced filtering</li>
+                            <li>Learn about query performance optimization</li>
+                            <li>Practice with larger, more complex medical databases</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-light py-3 text-center">
-        <p class="text-muted mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <!-- Highlight.js Initialization -->
-    <script>hljs.highlightAll();</script>
-    <!-- Custom Copy Functionality -->
     <script>
-        function copyCode(button) {
-            const code = button.nextElementSibling.querySelector('code');
-            navigator.clipboard.writeText(code.innerText).then(() => {
-                button.textContent = 'Copied!';
-                setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+        // --- Global Variables ---
+        const TOTAL_QUESTIONS = 12;
+        let completedExercises = new Set();
+        let db = null;
+        let codeMirrorEditors = {};
+
+        // --- Navigation Menu Functionality ---
+        function setupNavigation() {
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const navLinks = document.getElementById('nav-links');
+            
+            if (mobileMenuToggle && navLinks) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+            }
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (event) => {
+                if (!event.target.closest('.nav-menu')) {
+                    navLinks.classList.remove('active');
+                }
             });
         }
+
+        // --- SQL.js Database Functions ---
+
+        // Initialize SQL.js database
+        async function initializeDatabase() {
+            try {
+                updateSQLStatus('Loading SQL Engine...', 'status-loading');
+                
+                const SQL = await initSqlJs({
+                    locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
+                });
+
+                db = new SQL.Database();
+                createHealthInformaticsDatabase();
+                
+                updateSQLStatus('SQL Engine Ready', 'status-ready');
+                console.log('SQL.js database initialized successfully');
+                
+            } catch (error) {
+                console.error('Failed to initialize database:', error);
+                updateSQLStatus('Database Error', 'status-error');
+            }
+        }
+
+        // Update SQL engine status
+        function updateSQLStatus(message, statusClass) {
+            const statusElement = document.getElementById('sql-engine-status');
+            statusElement.textContent = message;
+            statusElement.className = `sql-engine-status ${statusClass}`;
+        }
+
+        // Create health informatics database with sample data
+        function createHealthInformaticsDatabase() {
+            // Create tables
+            db.run(`CREATE TABLE IF NOT EXISTS patients (
+                patient_id INTEGER PRIMARY KEY,
+                name VARCHAR(100),
+                age INTEGER,
+                gender VARCHAR(10),
+                admission_date DATE
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS admissions (
+                admission_id INTEGER PRIMARY KEY,
+                patient_id INTEGER,
+                admit_date DATE,
+                discharge_date DATE,
+                diagnosis VARCHAR(100),
+                department VARCHAR(50),
+                FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS lab_results (
+                test_id INTEGER PRIMARY KEY,
+                patient_id INTEGER,
+                test_name VARCHAR(50),
+                result_value DECIMAL(10,2),
+                test_date DATE,
+                normal_range VARCHAR(20),
+                FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS prescriptions (
+                rx_id INTEGER PRIMARY KEY,
+                patient_id INTEGER,
+                medication VARCHAR(100),
+                dosage VARCHAR(50),
+                prescribed_date DATE,
+                duration_days INTEGER,
+                FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS medical_staff (
+                staff_id INTEGER PRIMARY KEY,
+                name VARCHAR(100),
+                department VARCHAR(50),
+                specialization VARCHAR(50),
+                hire_date DATE
+            )`);
+
+            db.run(`CREATE TABLE IF NOT EXISTS patient_vitals (
+                vital_id INTEGER PRIMARY KEY,
+                patient_id INTEGER,
+                vital_name VARCHAR(50),
+                vital_value DECIMAL(10,2),
+                recorded_date DATE,
+                FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+            )`);
+
+            // Clear existing data
+            db.run('DELETE FROM patients');
+            db.run('DELETE FROM admissions');
+            db.run('DELETE FROM lab_results');
+            db.run('DELETE FROM prescriptions');
+            db.run('DELETE FROM medical_staff');
+            db.run('DELETE FROM patient_vitals');
+
+            // Insert sample data
+            const patients = [
+                [1001, 'Alice Smith', 45, 'Female', '2023-09-15'],
+                [1002, 'Bob Johnson', 32, 'Male', '2023-10-01'],
+                [1003, 'Carol White', 58, 'Female', '2023-08-20'],
+                [1004, 'David Brown', 67, 'Male', '2023-10-05'],
+                [1005, 'Eve Davis', 29, 'Female', '2023-07-10'],
+                [1006, 'Frank Miller', 71, 'Male', '2023-11-01'],
+                [1007, 'Grace Wilson', 52, 'Female', '2023-09-30'],
+                [1008, 'Henry Taylor', 48, 'Male', '2023-10-15'],
+                [1009, 'Ivy Clark', 63, 'Female', '2023-08-25'],
+                [1010, 'Jack Anderson', 55, 'Male', '2023-11-05']
+            ];
+            
+            const patientStmt = db.prepare("INSERT INTO patients VALUES (?, ?, ?, ?, ?)");
+            patients.forEach(patient => patientStmt.run(patient));
+            patientStmt.free();
+
+            const admissions = [
+                [101, 1001, '2023-10-15', '2023-10-20', 'Pneumonia', 'Internal Medicine'],
+                [102, 1002, '2023-10-16', '2023-10-18', 'Fractured arm', 'Orthopedics'],
+                [103, 1003, '2023-10-17', '2023-10-25', 'Cardiac arrhythmia', 'Cardiology'],
+                [104, 1001, '2023-11-05', '2023-11-12', 'Hypertension', 'Internal Medicine'],
+                [105, 1004, '2023-10-19', '2023-10-26', 'Heart disease', 'Cardiology'],
+                [106, 1005, '2023-10-20', '2023-10-22', 'Migraine', 'Neurology'],
+                [107, 1006, '2023-10-21', '2023-10-28', 'Diabetes complications', 'Endocrinology'],
+                [108, 1007, '2023-10-22', '2023-10-24', 'Asthma', 'Pulmonology'],
+                [109, 1008, '2023-10-23', '2023-10-30', 'Cardiac monitoring', 'Cardiology'],
+                [110, 1009, '2023-10-24', '2023-10-27', 'Joint pain', 'Orthopedics'],
+                [111, 1010, '2023-10-25', '2023-11-02', 'Hypertension', 'Internal Medicine'],
+                [112, 1006, '2023-11-10', '2023-11-15', 'Cardiac assessment', 'Cardiology']
+            ];
+            
+            const admissionStmt = db.prepare("INSERT INTO admissions VALUES (?, ?, ?, ?, ?, ?)");
+            admissions.forEach(admission => admissionStmt.run(admission));
+            admissionStmt.free();
+
+            const labResults = [
+                [201, 1001, 'Glucose', 98, '2023-10-16', '70-110'],
+                [202, 1002, 'Cholesterol', 185, '2023-10-17', '<200'],
+                [203, 1003, 'Glucose', 145, '2023-10-18', '70-110'],
+                [204, 1004, 'Blood Pressure', 150, '2023-10-19', '<140'],
+                [205, 1005, 'Cholesterol', 210, '2023-10-20', '<200'],
+                [206, 1006, 'Glucose', 320, '2023-10-21', '70-110'],
+                [207, 1007, 'Blood Pressure', 128, '2023-10-22', '<140'],
+                [208, 1008, 'Cholesterol', 195, '2023-10-23', '<200'],
+                [209, 1009, 'Glucose', 110, '2023-10-24', '70-110'],
+                [210, 1010, 'Blood Pressure', 142, '2023-10-25', '<140'],
+                [211, 1001, 'Hemoglobin', 14.2, '2023-10-16', '12-16'],
+                [212, 1003, 'Hemoglobin', 11.8, '2023-10-18', '12-16']
+            ];
+            
+            const labStmt = db.prepare("INSERT INTO lab_results VALUES (?, ?, ?, ?, ?, ?)");
+            labResults.forEach(lab => labStmt.run(lab));
+            labStmt.free();
+
+            const prescriptions = [
+                [301, 1001, 'Metformin', '500mg', '2023-10-16', 30],
+                [302, 1002, 'Lisinopril', '10mg', '2023-10-17', 14],
+                [303, 1003, 'Insulin', '20 units', '2023-10-18', 90],
+                [304, 1004, 'Atorvastatin', '40mg', '2023-10-19', 30],
+                [305, 1006, 'Metformin', '1000mg', '2023-10-21', 60],
+                [306, 1006, 'Insulin', '50 units', '2023-10-21', 90],
+                [307, 1001, 'Lisinopril', '5mg', '2023-11-06', 30],
+                [308, 1007, 'Albuterol', '2 puffs', '2023-10-22', 15],
+                [309, 1008, 'Aspirin', '81mg', '2023-10-23', 365],
+                [310, 1009, 'Ibuprofen', '400mg', '2023-10-24', 7]
+            ];
+            
+            const rxStmt = db.prepare("INSERT INTO prescriptions VALUES (?, ?, ?, ?, ?, ?)");
+            prescriptions.forEach(rx => rxStmt.run(rx));
+            rxStmt.free();
+
+            const medicalStaff = [
+                [501, 'Dr. Sarah Chen', 'Cardiology', 'Cardiologist', '2020-03-15'],
+                [502, 'Dr. Michael Rodriguez', 'Internal Medicine', 'Internist', '2019-07-22'],
+                [503, 'Dr. Emily Watson', 'Orthopedics', 'Orthopedic Surgeon', '2021-01-10'],
+                [504, 'Dr. James Kim', 'Neurology', 'Neurologist', '2018-11-30'],
+                [505, 'Dr. Lisa Thompson', 'Endocrinology', 'Endocrinologist', '2022-05-18'],
+                [506, 'Dr. Robert Brown', 'Pulmonology', 'Pulmonologist', '2020-09-05'],
+                [507, 'Dr. Amanda Garcia', 'Cardiology', 'Cardiac Electrophysiologist', '2021-08-12']
+            ];
+            
+            const staffStmt = db.prepare("INSERT INTO medical_staff VALUES (?, ?, ?, ?, ?)");
+            medicalStaff.forEach(staff => staffStmt.run(staff));
+            staffStmt.free();
+
+            console.log('Health informatics database created with sample data');
+        }
+
+        // Initialize CodeMirror editors
+        function initializeEditors() {
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const textarea = document.getElementById(`editor${i}`);
+                if (textarea) {
+                    codeMirrorEditors[i] = CodeMirror.fromTextArea(textarea, {
+                        mode: 'sql',
+                        theme: 'monokai',
+                        lineNumbers: true,
+                        indentUnit: 4,
+                        tabSize: 4,
+                        extraKeys: {"Ctrl-Space": "autocomplete"},
+                        hintOptions: {
+                            tables: {
+                                patients: ['patient_id', 'name', 'age', 'gender', 'admission_date'],
+                                admissions: ['admission_id', 'patient_id', 'admit_date', 'discharge_date', 'diagnosis', 'department'],
+                                lab_results: ['test_id', 'patient_id', 'test_name', 'result_value', 'test_date', 'normal_range'],
+                                prescriptions: ['rx_id', 'patient_id', 'medication', 'dosage', 'prescribed_date', 'duration_days'],
+                                medical_staff: ['staff_id', 'name', 'department', 'specialization', 'hire_date'],
+                                patient_vitals: ['vital_id', 'patient_id', 'vital_name', 'vital_value', 'recorded_date']
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Initialize test editor
+            const testTextarea = document.getElementById('editor-test');
+            if (testTextarea) {
+                codeMirrorEditors['test'] = CodeMirror.fromTextArea(testTextarea, {
+                    mode: 'sql',
+                    theme: 'monokai',
+                    lineNumbers: true,
+                    indentUnit: 4,
+                    tabSize: 4,
+                    extraKeys: {"Ctrl-Space": "autocomplete"}
+                });
+            }
+        }
+
+        // Get SQL from CodeMirror editor
+        function getSQLFromEditor(sectionId) {
+            if (codeMirrorEditors[sectionId]) {
+                return codeMirrorEditors[sectionId].getValue().trim();
+            }
+            const textarea = document.getElementById(`editor${sectionId}`);
+            return textarea ? textarea.value.trim() : '';
+        }
+
+        // Execute SQL query using SQL.js
+        function executeSQL(sectionId) {
+            if (!db) {
+                showError(sectionId, 'Database not initialized. Please wait for SQL engine to load...');
+                return;
+            }
+
+            const sql = getSQLFromEditor(sectionId);
+            const outputElement = document.getElementById(`output${sectionId}`);
+            
+            outputElement.innerHTML = '';
+            outputElement.classList.remove('text-red-400', 'text-green-400');
+            
+            if (!sql) {
+                showError(sectionId, 'Please write a SQL query first.');
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                const result = db.exec(sql);
+                const endTime = performance.now();
+                
+                displaySQLResult(outputElement, result, sql, endTime - startTime);
+                completedExercises.add(sectionId);
+                
+            } catch (error) {
+                showError(sectionId, error.message);
+                console.error('SQL Error:', error);
+            }
+        }
+
+        // Execute test query
+        function executeTestQuery() {
+            if (!db) {
+                showError('test', 'Database not initialized. Please wait for SQL engine to load...');
+                return;
+            }
+
+            const sql = codeMirrorEditors['test'] ? codeMirrorEditors['test'].getValue().trim() : document.getElementById('editor-test').value.trim();
+            const outputElement = document.getElementById('output-test');
+            
+            outputElement.innerHTML = '';
+            outputElement.classList.remove('text-red-400', 'text-green-400');
+            
+            if (!sql) {
+                showError('test', 'Please write a SQL query first.');
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                const result = db.exec(sql);
+                const endTime = performance.now();
+                
+                displaySQLResult(outputElement, result, sql, endTime - startTime);
+                
+            } catch (error) {
+                showError('test', error.message);
+                console.error('SQL Error:', error);
+            }
+        }
+
+        // Display SQL results
+        function displaySQLResult(outputElement, result, sql, executionTime) {
+            // Show executed SQL
+            const sqlInfo = document.createElement('div');
+            sqlInfo.className = 'query-info';
+            sqlInfo.innerHTML = `<span>Executed: <code>${sql}</code></span>`;
+            outputElement.appendChild(sqlInfo);
+            
+            // Show success message
+            const successInfo = document.createElement('div');
+            successInfo.className = 'query-info query-success';
+            
+            if (result.length === 0) {
+                successInfo.textContent = '✓ Query executed successfully (no results returned)';
+            } else {
+                const rowCount = result[0].values.length;
+                successInfo.textContent = `✓ Query executed successfully, returned ${rowCount} row(s)`;
+            }
+            outputElement.appendChild(successInfo);
+            
+            // Display results for SELECT queries
+            if (result.length > 0 && result[0].values.length > 0) {
+                const table = document.createElement('table');
+                table.className = 'results-table';
+                
+                // Create header
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                result[0].columns.forEach(col => {
+                    const th = document.createElement('th');
+                    th.textContent = col;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+                
+                // Create body
+                const tbody = document.createElement('tbody');
+                result[0].values.forEach(row => {
+                    const tr = document.createElement('tr');
+                    row.forEach(cell => {
+                        const td = document.createElement('td');
+                        td.textContent = cell;
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+                
+                outputElement.appendChild(table);
+            }
+            
+            // Show execution time
+            const timeInfo = document.createElement('div');
+            timeInfo.className = 'query-info';
+            timeInfo.textContent = `Execution time: ${Math.round(executionTime)}ms`;
+            outputElement.appendChild(timeInfo);
+        }
+
+        // Show error message
+        function showError(sectionId, message) {
+            const outputElement = document.getElementById(`output${sectionId}`);
+            outputElement.innerHTML = `
+                <div class="text-red-400 font-bold">SQL Error:</div>
+                <div>${message}</div>
+                <div class="mt-2 text-sm">Check your SQL syntax and try again.</div>
+            `;
+        }
+
+        // Reset database
+        function resetDatabase() {
+            if (!db) return;
+            
+            db.close();
+            db = new SQL.Database();
+            createHealthInformaticsDatabase();
+            
+            // Clear all outputs
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const outputElement = document.getElementById(`output${i}`);
+                if (outputElement) {
+                    outputElement.textContent = 'Query results will appear here...';
+                    outputElement.classList.remove('text-red-400', 'text-green-400');
+                }
+            }
+            
+            const testOutput = document.getElementById('output-test');
+            testOutput.textContent = 'Test results will appear here...';
+            testOutput.classList.remove('text-red-400', 'text-green-400');
+            
+            console.log('Database reset to initial state');
+        }
+
+        // Helper function for copying text to clipboard
+        function copyToClipboard(text) {
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = text;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            
+            try {
+                document.execCommand('copy');
+                return true;
+            } catch (err) {
+                console.error('Copy command failed:', err);
+                return false;
+            } finally {
+                document.body.removeChild(tempTextArea);
+            }
+        }
+        
+        // Function to copy the code for a specific section
+        function copyCode(sectionId) {
+            const code = getSQLFromEditor(sectionId);
+            if (copyToClipboard(code)) {
+                const button = document.querySelector(`.copy-button[data-section="${sectionId}"]`);
+                const originalText = button.textContent;
+                button.textContent = "Copied!";
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 1500);
+            }
+        }
+
+        // Function to toggle solution explanations
+        function toggleSolution(sectionId) {
+            const solutionElement = document.getElementById(`solution${sectionId}`);
+            const button = document.querySelector(`.toggle-solution[data-section="${sectionId}"]`);
+            
+            if (solutionElement.classList.contains('hidden')) {
+                solutionElement.classList.remove('hidden');
+                button.textContent = 'Hide Solution';
+            } else {
+                solutionElement.classList.add('hidden');
+                button.textContent = 'Show Solution';
+            }
+        }
+        
+        // Function to show solution in the editor
+        function showSolution(sectionId) {
+            const solutionElement = document.getElementById(`solution${sectionId}`);
+            const solutionText = solutionElement.textContent.trim();
+            
+            if (codeMirrorEditors[sectionId]) {
+                codeMirrorEditors[sectionId].setValue(solutionText);
+            } else {
+                const textarea = document.getElementById(`editor${sectionId}`);
+                if (textarea) {
+                    textarea.value = solutionText;
+                }
+            }
+            
+            // Show the solution if it's hidden
+            if (solutionElement.classList.contains('hidden')) {
+                toggleSolution(sectionId);
+            }
+        }
+
+        // Function to set up the Light/Dark Mode toggle
+        function setupThemeToggle() {
+            const toggleButton = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+
+            function updateTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                toggleButton.textContent = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+                localStorage.setItem('theme', theme);
+            }
+
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            updateTheme(savedTheme);
+
+            toggleButton.addEventListener('click', () => {
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                updateTheme(newTheme);
+            });
+        }
+
+        // Initialize the application
+        async function initializeApp() {
+            // Set up navigation first
+            setupNavigation();
+            
+            // Initialize SQL.js database first
+            await initializeDatabase();
+            
+            // Initialize CodeMirror editors
+            initializeEditors();
+            
+            // Set up event listeners for all SQL question buttons
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                document.querySelector(`.run-button[data-section="${i}"]`).addEventListener('click', () => executeSQL(i));
+                document.querySelector(`.copy-button[data-section="${i}"]`).addEventListener('click', () => copyCode(i));
+                
+                // Add solution button event listeners for practice and project sections
+                if (i >= 9) { // Practice and project sections start from 9
+                    const solutionButton = document.querySelector(`.solution-button[data-section="${i}"]`);
+                    if (solutionButton) {
+                        solutionButton.addEventListener('click', () => showSolution(i));
+                    }
+                }
+            }
+            
+            // Set up solution toggles
+            document.querySelectorAll('.toggle-solution').forEach(button => {
+                button.addEventListener('click', function() {
+                    const sectionId = this.getAttribute('data-section');
+                    toggleSolution(sectionId);
+                });
+            });
+            
+            // Set up test area
+            document.getElementById('run-test').addEventListener('click', executeTestQuery);
+            document.getElementById('reset-db').addEventListener('click', resetDatabase);
+            
+            // Set up theme toggle
+            setupThemeToggle();
+
+            console.log("SQL Joins learning module fully initialized");
+        }
+
+        // Initialize when the page loads
+        window.addEventListener('load', initializeApp);
     </script>
 </body>
 </html>
