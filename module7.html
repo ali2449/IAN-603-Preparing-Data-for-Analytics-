@@ -17,8 +17,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/sql-hint.min.js"></script>
     
-    <!-- SQL.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    <!-- AlaSQL Library -->
+    <script src="https://cdn.jsdelivr.net/npm/alasql@0.6"></script>
     
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -750,6 +750,7 @@
                 <p class="text-lg text-gray-400">IAF 603 - Health Informatics Applications</p>
                 <p class="text-sm text-green-400 mt-1">✓ Interactive SQL Environment Active</p>
                 <p class="text-sm text-yellow-400 mt-1">🏥 Real Healthcare Database & Practice Project</p>
+                <p class="text-sm text-blue-400 mt-1">🔧 Powered by AlaSQL - Full ANY/SOME Support</p>
             </div>
             <button id="theme-toggle" class="px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold transition-colors">
                 <!-- Text set by JavaScript -->
@@ -997,8 +998,8 @@ JOIN admissions a ON p.patient_id = a.patient_id
 WHERE p.patient_id IN (
     SELECT DISTINCT patient_id 
     FROM admissions 
-    WHERE diagnosis ILIKE '%cardiac%' 
-       OR diagnosis ILIKE '%heart%'
+    WHERE diagnosis LIKE '%cardiac%' 
+       OR diagnosis LIKE '%heart%'
        OR department = 'Cardiology'
 )
 ORDER BY p.age DESC;</textarea>
@@ -1054,26 +1055,15 @@ ORDER BY p.age DESC;</textarea>
                             <h4 class="font-bold text-green-300 mb-3">Healthcare Example:</h4>
                             <div class="code-container">
                                 <textarea id="editor4" class="sql-editor">-- Find patients with abnormal lab results using EXISTS
-SELECT p.patient_id, p.name, p.age,
-       (SELECT COUNT(*) FROM lab_results lr 
-        WHERE lr.patient_id = p.patient_id 
-        AND lr.result_value > (
-            SELECT AVG(result_value) * 1.2 
-            FROM lab_results lr2 
-            WHERE lr2.test_name = lr.test_name
-        )) as abnormal_count
+SELECT p.patient_id, p.name, p.age
 FROM patients p
 WHERE EXISTS (
     SELECT 1 
     FROM lab_results lr 
     WHERE lr.patient_id = p.patient_id 
-    AND lr.result_value > (
-        SELECT AVG(result_value) * 1.2 
-        FROM lab_results lr2 
-        WHERE lr2.test_name = lr.test_name
-    )
+    AND lr.result_value > 150  -- Simplified threshold for AlaSQL
 )
-ORDER BY abnormal_count DESC;</textarea>
+ORDER BY p.age DESC;</textarea>
                                 
                                 <div class="action-buttons">
                                     <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="4">
@@ -1217,10 +1207,7 @@ ORDER BY p1.age DESC;</textarea>
                             <h4 class="font-bold text-red-300 mb-3">Healthcare Example:</h4>
                             <div class="code-container">
                                 <textarea id="editor6" class="sql-editor">-- Find patients older than ALL cardiology patients using ALL
-SELECT p1.patient_id, p1.name, p1.age, p1.gender,
-       (SELECT MAX(age) FROM patients p2 
-        JOIN admissions a ON p2.patient_id = a.patient_id 
-        WHERE a.department = 'Cardiology') as max_cardio_age
+SELECT p1.patient_id, p1.name, p1.age, p1.gender
 FROM patients p1
 WHERE p1.age > ALL (
     SELECT p2.age
@@ -1335,26 +1322,17 @@ ORDER BY p1.age DESC;</textarea>
                                 <button class="toggle-solution bg-yellow-700 hover:bg-yellow-600 px-3 py-1 rounded text-sm" data-section="7">Show Solution</button>
                             </div>
                             <div id="solution7" class="solution-content hidden bg-gray-900 p-4 rounded-b-lg">
--- Complex patient identification using multiple operators
+-- Complex patient identification using multiple operators (AlaSQL compatible)
 SELECT p.patient_id, p.name, p.age,
        (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) as admission_count,
        (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) as medication_count
 FROM patients p
 WHERE p.age > (SELECT AVG(age) FROM patients)  -- Scalar subquery
-  AND EXISTS (                                  -- EXISTS for admissions
-      SELECT 1 FROM admissions a 
-      WHERE a.patient_id = p.patient_id 
-      GROUP BY a.patient_id 
-      HAVING COUNT(*) > 1
-  )
+  AND (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) > 1
   AND EXISTS (                                  -- EXISTS for abnormal labs
       SELECT 1 FROM lab_results lr 
       WHERE lr.patient_id = p.patient_id 
-      AND lr.result_value > (
-          SELECT AVG(result_value) * 1.2 
-          FROM lab_results lr2 
-          WHERE lr2.test_name = lr.test_name
-      )
+      AND lr.result_value > 150  -- Simplified threshold
   )
   AND (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) > 1
 ORDER BY admission_count DESC, medication_count DESC;</div>
@@ -1435,7 +1413,17 @@ WHERE l.result_value > 1.5 * (
                     <p class="mb-4">Identify patients who were readmitted within 30 days of discharge.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor9" class="sql-editor" placeholder="-- Write your solution here..."></textarea>
+                        <textarea id="editor9" class="sql-editor" placeholder="-- Write your solution here...">-- Find patients readmitted within 30 days (AlaSQL compatible)
+SELECT DISTINCT p1.patient_id, p1.name, 
+       a1.discharge_date as first_discharge,
+       a2.admit_date as readmission_date,
+       (a2.admit_date - a1.discharge_date) as days_between
+FROM patients p1
+JOIN admissions a1 ON p1.patient_id = a1.patient_id
+JOIN admissions a2 ON p1.patient_id = a2.patient_id
+WHERE a2.admit_date > a1.discharge_date
+  AND (a2.admit_date - a1.discharge_date) <= 30
+ORDER BY p1.patient_id, a1.discharge_date;</textarea>
                         
                         <div class="action-buttons">
                             <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="9">
@@ -1459,18 +1447,17 @@ WHERE l.result_value > 1.5 * (
                                 <button class="toggle-solution" data-section="9">Show Solution</button>
                             </div>
                             <div id="solution9" class="solution-content hidden">
--- Find patients readmitted within 30 days
+-- Find patients readmitted within 30 days (AlaSQL compatible)
 SELECT DISTINCT p1.patient_id, p1.name, 
        a1.discharge_date as first_discharge,
        a2.admit_date as readmission_date,
-       a2.diagnosis as readmission_diagnosis
+       (a2.admit_date - a1.discharge_date) as days_between
 FROM patients p1
 JOIN admissions a1 ON p1.patient_id = a1.patient_id
 JOIN admissions a2 ON p1.patient_id = a2.patient_id
 WHERE a2.admit_date > a1.discharge_date
-  AND a2.admit_date <= DATE(a1.discharge_date, '+30 days')
-ORDER BY p1.patient_id, a1.discharge_date;
-                            </div>
+  AND (a2.admit_date - a1.discharge_date) <= 30
+ORDER BY p1.patient_id, a1.discharge_date;</div>
                         </div>
                     </div>
                 </section>
@@ -1485,7 +1472,18 @@ ORDER BY p1.patient_id, a1.discharge_date;
                     <p class="mb-4">Find patients with multiple prescriptions and analyze their medication patterns.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor10" class="sql-editor" placeholder="-- Write your solution here..."></textarea>
+                        <textarea id="editor10" class="sql-editor" placeholder="-- Write your solution here...">-- Analyze medication patterns for patients with multiple prescriptions
+SELECT 
+    p.patient_id,
+    p.name,
+    COUNT(DISTINCT pr.medication) as total_medications,
+    MAX(pr.prescribed_date) as latest_prescription,
+    MIN(pr.prescribed_date) as earliest_prescription
+FROM patients p
+JOIN prescriptions pr ON p.patient_id = pr.patient_id
+GROUP BY p.patient_id, p.name
+HAVING COUNT(DISTINCT pr.medication) >= 2
+ORDER BY total_medications DESC;</textarea>
                         
                         <div class="action-buttons">
                             <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="10">
@@ -1514,16 +1512,13 @@ SELECT
     p.patient_id,
     p.name,
     COUNT(DISTINCT pr.medication) as total_medications,
-    GROUP_CONCAT(DISTINCT pr.medication) as medication_list,
     MAX(pr.prescribed_date) as latest_prescription,
-    MIN(pr.prescribed_date) as earliest_prescription,
-    (julianday(MAX(pr.prescribed_date)) - julianday(MIN(pr.prescribed_date))) as treatment_duration_days
+    MIN(pr.prescribed_date) as earliest_prescription
 FROM patients p
 JOIN prescriptions pr ON p.patient_id = pr.patient_id
 GROUP BY p.patient_id, p.name
 HAVING COUNT(DISTINCT pr.medication) >= 2
-ORDER BY total_medications DESC, treatment_duration_days DESC;
-                            </div>
+ORDER BY total_medications DESC;</div>
                         </div>
                     </div>
                 </section>
@@ -1569,7 +1564,83 @@ ORDER BY total_medications DESC, treatment_duration_days DESC;
                     <p class="mb-4">Create a comprehensive risk scoring system that considers age, number of admissions, abnormal lab results, and medication complexity.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor11" class="sql-editor" placeholder="-- Build your patient risk assessment query here..."></textarea>
+                        <textarea id="editor11" class="sql-editor" placeholder="-- Build your patient risk assessment query here...">-- PATIENT RISK ASSESSMENT SYSTEM (AlaSQL compatible)
+SELECT 
+    p.patient_id,
+    p.name,
+    p.age,
+    (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) as admission_count,
+    (SELECT COUNT(*) FROM lab_results lr WHERE lr.patient_id = p.patient_id AND lr.result_value > 150) as abnormal_lab_count,
+    (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) as medication_count,
+    -- Calculate risk score
+    (CASE 
+        WHEN p.age < 30 THEN 1
+        WHEN p.age BETWEEN 30 AND 50 THEN 2
+        WHEN p.age BETWEEN 51 AND 70 THEN 3
+        ELSE 4
+    END +
+    CASE 
+        WHEN (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) = 1 THEN 1
+        WHEN (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) = 2 THEN 2
+        ELSE 3
+    END +
+    CASE 
+        WHEN (SELECT COUNT(*) FROM lab_results lr WHERE lr.patient_id = p.patient_id AND lr.result_value > 150) = 0 THEN 1
+        WHEN (SELECT COUNT(*) FROM lab_results lr WHERE lr.patient_id = p.patient_id AND lr.result_value > 150) <= 2 THEN 2
+        ELSE 3
+    END +
+    CASE 
+        WHEN (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) = 0 THEN 1
+        WHEN (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) <= 2 THEN 2
+        ELSE 3
+    END) as total_risk_score,
+    CASE 
+        WHEN (CASE 
+            WHEN p.age < 30 THEN 1
+            WHEN p.age BETWEEN 30 AND 50 THEN 2
+            WHEN p.age BETWEEN 51 AND 70 THEN 3
+            ELSE 4
+        END +
+        CASE 
+            WHEN (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) = 1 THEN 1
+            WHEN (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) = 2 THEN 2
+            ELSE 3
+        END +
+        CASE 
+            WHEN (SELECT COUNT(*) FROM lab_results lr WHERE lr.patient_id = p.patient_id AND lr.result_value > 150) = 0 THEN 1
+            WHEN (SELECT COUNT(*) FROM lab_results lr WHERE lr.patient_id = p.patient_id AND lr.result_value > 150) <= 2 THEN 2
+            ELSE 3
+        END +
+        CASE 
+            WHEN (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) = 0 THEN 1
+            WHEN (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) <= 2 THEN 2
+            ELSE 3
+        END) <= 6 THEN 'LOW'
+        WHEN (CASE 
+            WHEN p.age < 30 THEN 1
+            WHEN p.age BETWEEN 30 AND 50 THEN 2
+            WHEN p.age BETWEEN 51 AND 70 THEN 3
+            ELSE 4
+        END +
+        CASE 
+            WHEN (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) = 1 THEN 1
+            WHEN (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) = 2 THEN 2
+            ELSE 3
+        END +
+        CASE 
+            WHEN (SELECT COUNT(*) FROM lab_results lr WHERE lr.patient_id = p.patient_id AND lr.result_value > 150) = 0 THEN 1
+            WHEN (SELECT COUNT(*) FROM lab_results lr WHERE lr.patient_id = p.patient_id AND lr.result_value > 150) <= 2 THEN 2
+            ELSE 3
+        END +
+        CASE 
+            WHEN (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) = 0 THEN 1
+            WHEN (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) <= 2 THEN 2
+            ELSE 3
+        END) <= 9 THEN 'MEDIUM'
+        ELSE 'HIGH'
+    END as risk_level
+FROM patients p
+ORDER BY total_risk_score DESC;</textarea>
                         
                         <div class="action-buttons">
                             <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="11">
@@ -1593,78 +1664,83 @@ ORDER BY total_medications DESC, treatment_duration_days DESC;
                                 <button class="toggle-solution" data-section="11">Show Solution</button>
                             </div>
                             <div id="solution11" class="solution-content hidden">
--- PATIENT RISK ASSESSMENT SYSTEM
-WITH patient_metrics AS (
-    SELECT 
-        p.patient_id,
-        p.name,
-        p.age,
-        -- Age risk factor (older = higher risk)
-        CASE 
+-- PATIENT RISK ASSESSMENT SYSTEM (AlaSQL compatible)
+SELECT 
+    p.patient_id,
+    p.name,
+    p.age,
+    (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) as admission_count,
+    (SELECT COUNT(*) FROM lab_results lr WHERE lr.patient_id = p.patient_id AND lr.result_value > 150) as abnormal_lab_count,
+    (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) as medication_count,
+    -- Calculate risk score
+    (CASE 
+        WHEN p.age < 30 THEN 1
+        WHEN p.age BETWEEN 30 AND 50 THEN 2
+        WHEN p.age BETWEEN 51 AND 70 THEN 3
+        ELSE 4
+    END +
+    CASE 
+        WHEN (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) = 1 THEN 1
+        WHEN (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) = 2 THEN 2
+        ELSE 3
+    END +
+    CASE 
+        WHEN (SELECT COUNT(*) FROM lab_results lr WHERE lr.patient_id = p.patient_id AND lr.result_value > 150) = 0 THEN 1
+        WHEN (SELECT COUNT(*) FROM lab_results lr WHERE lr.patient_id = p.patient_id AND lr.result_value > 150) <= 2 THEN 2
+        ELSE 3
+    END +
+    CASE 
+        WHEN (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) = 0 THEN 1
+        WHEN (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) <= 2 THEN 2
+        ELSE 3
+    END) as total_risk_score,
+    CASE 
+        WHEN (CASE 
             WHEN p.age < 30 THEN 1
             WHEN p.age BETWEEN 30 AND 50 THEN 2
             WHEN p.age BETWEEN 51 AND 70 THEN 3
             ELSE 4
-        END as age_risk,
-        
-        -- Admission frequency risk
-        COUNT(DISTINCT a.admission_id) as admission_count,
+        END +
         CASE 
-            WHEN COUNT(DISTINCT a.admission_id) = 1 THEN 1
-            WHEN COUNT(DISTINCT a.admission_id) = 2 THEN 2
+            WHEN (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) = 1 THEN 1
+            WHEN (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) = 2 THEN 2
             ELSE 3
-        END as admission_risk,
-        
-        -- Lab abnormality risk
-        COUNT(CASE WHEN l.result_value > 1.2 * (
-            SELECT AVG(result_value) 
-            FROM lab_results l2 
-            WHERE l2.test_name = l.test_name
-        ) THEN 1 END) as abnormal_lab_count,
+        END +
         CASE 
-            WHEN COUNT(CASE WHEN l.result_value > 1.2 * (
-                SELECT AVG(result_value) 
-                FROM lab_results l2 
-                WHERE l2.test_name = l.test_name
-            ) THEN 1 END) = 0 THEN 1
-            WHEN COUNT(CASE WHEN l.result_value > 1.2 * (
-                SELECT AVG(result_value) 
-                FROM lab_results l2 
-                WHERE l2.test_name = l.test_name
-            ) THEN 1 END) <= 2 THEN 2
+            WHEN (SELECT COUNT(*) FROM lab_results lr WHERE lr.patient_id = p.patient_id AND lr.result_value > 150) = 0 THEN 1
+            WHEN (SELECT COUNT(*) FROM lab_results lr WHERE lr.patient_id = p.patient_id AND lr.result_value > 150) <= 2 THEN 2
             ELSE 3
-        END as lab_risk,
-        
-        -- Medication complexity risk
-        COUNT(DISTINCT pr.medication) as medication_count,
+        END +
         CASE 
-            WHEN COUNT(DISTINCT pr.medication) = 0 THEN 1
-            WHEN COUNT(DISTINCT pr.medication) <= 2 THEN 2
+            WHEN (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) = 0 THEN 1
+            WHEN (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) <= 2 THEN 2
             ELSE 3
-        END as medication_risk
-        
-    FROM patients p
-    LEFT JOIN admissions a ON p.patient_id = a.patient_id
-    LEFT JOIN lab_results l ON p.patient_id = l.patient_id
-    LEFT JOIN prescriptions pr ON p.patient_id = pr.patient_id
-    GROUP BY p.patient_id, p.name, p.age
-)
-SELECT 
-    patient_id,
-    name,
-    age,
-    admission_count,
-    abnormal_lab_count,
-    medication_count,
-    (age_risk + admission_risk + lab_risk + medication_risk) as total_risk_score,
-    CASE 
-        WHEN (age_risk + admission_risk + lab_risk + medication_risk) <= 6 THEN 'LOW'
-        WHEN (age_risk + admission_risk + lab_risk + medication_risk) <= 9 THEN 'MEDIUM'
+        END) <= 6 THEN 'LOW'
+        WHEN (CASE 
+            WHEN p.age < 30 THEN 1
+            WHEN p.age BETWEEN 30 AND 50 THEN 2
+            WHEN p.age BETWEEN 51 AND 70 THEN 3
+            ELSE 4
+        END +
+        CASE 
+            WHEN (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) = 1 THEN 1
+            WHEN (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) = 2 THEN 2
+            ELSE 3
+        END +
+        CASE 
+            WHEN (SELECT COUNT(*) FROM lab_results lr WHERE lr.patient_id = p.patient_id AND lr.result_value > 150) = 0 THEN 1
+            WHEN (SELECT COUNT(*) FROM lab_results lr WHERE lr.patient_id = p.patient_id AND lr.result_value > 150) <= 2 THEN 2
+            ELSE 3
+        END +
+        CASE 
+            WHEN (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) = 0 THEN 1
+            WHEN (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) <= 2 THEN 2
+            ELSE 3
+        END) <= 9 THEN 'MEDIUM'
         ELSE 'HIGH'
     END as risk_level
-FROM patient_metrics
-ORDER BY total_risk_score DESC;
-                            </div>
+FROM patients p
+ORDER BY total_risk_score DESC;</div>
                         </div>
                     </div>
                 </section>
@@ -1675,7 +1751,26 @@ ORDER BY total_risk_score DESC;
                     <p class="mb-4">Analyze key performance indicators for each department including average length of stay, readmission rates, and patient volume trends.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor12" class="sql-editor" placeholder="-- Build your department performance analysis here..."></textarea>
+                        <textarea id="editor12" class="sql-editor" placeholder="-- Build your department performance analysis here...">-- DEPARTMENT PERFORMANCE DASHBOARD (AlaSQL compatible)
+SELECT 
+    department,
+    COUNT(DISTINCT admission_id) as total_admissions,
+    COUNT(DISTINCT patient_id) as unique_patients,
+    AVG(discharge_date - admit_date) as avg_length_of_stay,
+    COUNT(DISTINCT CASE WHEN admission_count > 1 THEN patient_id END) as readmitted_patients,
+    ROUND(
+        COUNT(DISTINCT CASE WHEN admission_count > 1 THEN patient_id END) * 100.0 / 
+        COUNT(DISTINCT patient_id), 
+        2
+    ) as readmission_rate_percent
+FROM admissions a
+LEFT JOIN (
+    SELECT patient_id, COUNT(*) as admission_count
+    FROM admissions
+    GROUP BY patient_id
+) patient_admissions ON a.patient_id = patient_admissions.patient_id
+GROUP BY department
+ORDER BY total_admissions DESC;</textarea>
                         
                         <div class="action-buttons">
                             <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="12">
@@ -1699,63 +1794,26 @@ ORDER BY total_risk_score DESC;
                                 <button class="toggle-solution" data-section="12">Show Solution</button>
                             </div>
                             <div id="solution12" class="solution-content hidden">
--- DEPARTMENT PERFORMANCE DASHBOARD
-WITH department_stats AS (
-    SELECT 
-        department,
-        COUNT(DISTINCT admission_id) as total_admissions,
-        COUNT(DISTINCT patient_id) as unique_patients,
-        AVG(julianday(discharge_date) - julianday(admit_date)) as avg_length_of_stay,
-        
-        -- Readmission rate (patients with multiple admissions)
-        COUNT(DISTINCT CASE WHEN admission_count > 1 THEN patient_id END) as readmitted_patients,
-        ROUND(
-            COUNT(DISTINCT CASE WHEN admission_count > 1 THEN patient_id END) * 100.0 / 
-            COUNT(DISTINCT patient_id), 
-            2
-        ) as readmission_rate_percent,
-        
-        -- Most common diagnosis
-        (SELECT diagnosis 
-         FROM admissions a2 
-         WHERE a2.department = a1.department 
-         GROUP BY diagnosis 
-         ORDER BY COUNT(*) DESC 
-         LIMIT 1) as most_common_diagnosis
-         
-    FROM admissions a1
-    LEFT JOIN (
-        SELECT patient_id, COUNT(*) as admission_count
-        FROM admissions
-        GROUP BY patient_id
-    ) patient_admissions ON a1.patient_id = patient_admissions.patient_id
-    GROUP BY department
-),
-department_medications AS (
-    SELECT 
-        a.department,
-        COUNT(DISTINCT pr.rx_id) as total_prescriptions,
-        COUNT(DISTINCT pr.medication) as unique_medications,
-        AVG(pr.duration_days) as avg_prescription_duration
-    FROM admissions a
-    JOIN prescriptions pr ON a.patient_id = pr.patient_id
-    GROUP BY a.department
-)
+-- DEPARTMENT PERFORMANCE DASHBOARD (AlaSQL compatible)
 SELECT 
-    ds.department,
-    ds.total_admissions,
-    ds.unique_patients,
-    ROUND(ds.avg_length_of_stay, 1) as avg_length_of_stay_days,
-    ds.readmitted_patients,
-    ds.readmission_rate_percent,
-    ds.most_common_diagnosis,
-    COALESCE(dm.total_prescriptions, 0) as total_prescriptions,
-    COALESCE(dm.unique_medications, 0) as unique_medications,
-    ROUND(COALESCE(dm.avg_prescription_duration, 0), 1) as avg_prescription_days
-FROM department_stats ds
-LEFT JOIN department_medications dm ON ds.department = dm.department
-ORDER BY ds.total_admissions DESC;
-                            </div>
+    department,
+    COUNT(DISTINCT admission_id) as total_admissions,
+    COUNT(DISTINCT patient_id) as unique_patients,
+    AVG(discharge_date - admit_date) as avg_length_of_stay,
+    COUNT(DISTINCT CASE WHEN admission_count > 1 THEN patient_id END) as readmitted_patients,
+    ROUND(
+        COUNT(DISTINCT CASE WHEN admission_count > 1 THEN patient_id END) * 100.0 / 
+        COUNT(DISTINCT patient_id), 
+        2
+    ) as readmission_rate_percent
+FROM admissions a
+LEFT JOIN (
+    SELECT patient_id, COUNT(*) as admission_count
+    FROM admissions
+    GROUP BY patient_id
+) patient_admissions ON a.patient_id = patient_admissions.patient_id
+GROUP BY department
+ORDER BY total_admissions DESC;</div>
                         </div>
                     </div>
                 </section>
@@ -1766,7 +1824,22 @@ ORDER BY ds.total_admissions DESC;
                     <p class="mb-4">Identify potential medication safety issues, analyze prescription patterns, and evaluate medication adherence across patient populations.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor13" class="sql-editor" placeholder="-- Build your medication analysis here..."></textarea>
+                        <textarea id="editor13" class="sql-editor" placeholder="-- Build your medication analysis here...">-- MEDICATION SAFETY & EFFICIENCY ANALYSIS (AlaSQL compatible)
+SELECT 
+    p.patient_id,
+    p.name,
+    p.age,
+    COUNT(DISTINCT pr.medication) as total_medications,
+    COUNT(DISTINCT pr.medication) * 2 as complexity_score,
+    CASE 
+        WHEN COUNT(DISTINCT pr.medication) * 2 <= 10 THEN 'LOW'
+        WHEN COUNT(DISTINCT pr.medication) * 2 <= 20 THEN 'MEDIUM'
+        ELSE 'HIGH'
+    END as complexity_level
+FROM patients p
+JOIN prescriptions pr ON p.patient_id = pr.patient_id
+GROUP BY p.patient_id, p.name, p.age
+ORDER BY complexity_score DESC, total_medications DESC;</textarea>
                         
                         <div class="action-buttons">
                             <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="13">
@@ -1790,86 +1863,22 @@ ORDER BY ds.total_admissions DESC;
                                 <button class="toggle-solution" data-section="13">Show Solution</button>
                             </div>
                             <div id="solution13" class="solution-content hidden">
--- MEDICATION SAFETY & EFFICIENCY ANALYSIS
-WITH patient_medication_summary AS (
-    SELECT 
-        p.patient_id,
-        p.name,
-        p.age,
-        COUNT(DISTINCT pr.medication) as total_medications,
-        GROUP_CONCAT(DISTINCT pr.medication) as medication_list,
-        MAX(pr.prescribed_date) as latest_prescription,
-        MIN(pr.prescribed_date) as earliest_prescription,
-        SUM(pr.duration_days) as total_treatment_days,
-        
-        -- Identify potential polypharmacy (5+ medications)
-        CASE WHEN COUNT(DISTINCT pr.medication) >= 5 THEN 1 ELSE 0 END as polypharmacy_flag,
-        
-        -- Calculate medication overlap (simplified)
-        COUNT(DISTINCT CASE 
-            WHEN EXISTS (
-                SELECT 1 
-                FROM prescriptions pr2 
-                WHERE pr2.patient_id = pr.patient_id 
-                AND pr2.medication != pr.medication
-                AND pr2.prescribed_date BETWEEN pr.prescribed_date AND DATE(pr.prescribed_date, '+' || pr.duration_days || ' days')
-            ) THEN pr.medication 
-        END) as overlapping_medications
-        
-    FROM patients p
-    JOIN prescriptions pr ON p.patient_id = pr.patient_id
-    GROUP BY p.patient_id, p.name, p.age
-),
-medication_patterns AS (
-    SELECT 
-        medication,
-        COUNT(DISTINCT patient_id) as total_patients,
-        AVG(dosage) as avg_dosage_numeric,
-        AVG(duration_days) as avg_duration_days,
-        
-        -- Most common department prescribing this medication
-        (SELECT department 
-         FROM admissions a 
-         JOIN prescriptions pr2 ON a.patient_id = pr2.patient_id 
-         WHERE pr2.medication = pr.medication 
-         GROUP BY department 
-         ORDER BY COUNT(*) DESC 
-         LIMIT 1) as most_prescribing_department,
-         
-        -- Average patient age for this medication
-        (SELECT AVG(p.age) 
-         FROM patients p 
-         JOIN prescriptions pr3 ON p.patient_id = pr3.patient_id 
-         WHERE pr3.medication = pr.medication) as avg_patient_age
-         
-    FROM prescriptions pr
-    GROUP BY medication
-)
+-- MEDICATION SAFETY & EFFICIENCY ANALYSIS (AlaSQL compatible)
 SELECT 
-    pms.patient_id,
-    pms.name,
-    pms.age,
-    pms.total_medications,
-    pms.medication_list,
-    pms.total_treatment_days,
-    pms.polypharmacy_flag,
-    pms.overlapping_medications,
-    
-    -- Medication complexity score
-    (pms.total_medications * 2 + pms.overlapping_medications * 3 + pms.polypharmacy_flag * 5) as complexity_score,
-    
+    p.patient_id,
+    p.name,
+    p.age,
+    COUNT(DISTINCT pr.medication) as total_medications,
+    COUNT(DISTINCT pr.medication) * 2 as complexity_score,
     CASE 
-        WHEN (pms.total_medications * 2 + pms.overlapping_medications * 3 + pms.polypharmacy_flag * 5) <= 10 THEN 'LOW'
-        WHEN (pms.total_medications * 2 + pms.overlapping_medications * 3 + pms.polypharmacy_flag * 5) <= 20 THEN 'MEDIUM'
+        WHEN COUNT(DISTINCT pr.medication) * 2 <= 10 THEN 'LOW'
+        WHEN COUNT(DISTINCT pr.medication) * 2 <= 20 THEN 'MEDIUM'
         ELSE 'HIGH'
-    END as complexity_level,
-    
-    -- Days since last prescription
-    julianday('now') - julianday(pms.latest_prescription) as days_since_last_rx
-    
-FROM patient_medication_summary pms
-ORDER BY complexity_score DESC, total_medications DESC;
-                            </div>
+    END as complexity_level
+FROM patients p
+JOIN prescriptions pr ON p.patient_id = pr.patient_id
+GROUP BY p.patient_id, p.name, p.age
+ORDER BY complexity_score DESC, total_medications DESC;</div>
                         </div>
                     </div>
                 </section>
@@ -1890,6 +1899,8 @@ ORDER BY complexity_score DESC, total_medications DESC;
                         <ul class="list-disc list-inside space-y-1 text-sm">
                             <li>Scalar subqueries for single-value comparisons</li>
                             <li>Multi-row subqueries with IN and EXISTS</li>
+                            <li>ANY/SOME operators for partial comparisons</li>
+                            <li>ALL operator for complete comparisons</li>
                             <li>Correlated subqueries for row-specific analysis</li>
                             <li>Complex healthcare analytics applications</li>
                             <li>Real-world project implementation</li>
@@ -1914,7 +1925,6 @@ ORDER BY complexity_score DESC, total_medications DESC;
         // --- Global Variables ---
         const TOTAL_QUESTIONS = 13;
         let completedExercises = new Set();
-        let db = null;
         let codeMirrorEditors = {};
 
         // --- Navigation Menu Functionality ---
@@ -1936,22 +1946,22 @@ ORDER BY complexity_score DESC, total_medications DESC;
             });
         }
 
-        // --- SQL.js Database Functions ---
+        // --- AlaSQL Database Functions ---
 
-        // Initialize SQL.js database
+        // Initialize AlaSQL database
         async function initializeDatabase() {
             try {
                 updateSQLStatus('Loading SQL Engine...', 'status-loading');
                 
-                const SQL = await initSqlJs({
-                    locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
-                });
-
-                db = new SQL.Database();
+                // AlaSQL is already loaded via CDN
+                if (typeof alasql === 'undefined') {
+                    throw new Error('AlaSQL library failed to load');
+                }
+                
                 createHealthInformaticsDatabase();
                 
                 updateSQLStatus('SQL Engine Ready', 'status-ready');
-                console.log('SQL.js database initialized successfully');
+                console.log('AlaSQL database initialized successfully');
                 
             } catch (error) {
                 console.error('Failed to initialize database:', error);
@@ -1968,69 +1978,65 @@ ORDER BY complexity_score DESC, total_medications DESC;
 
         // Create health informatics database with sample data
         function createHealthInformaticsDatabase() {
+            // Clear existing data
+            alasql('DROP TABLE IF EXISTS patients');
+            alasql('DROP TABLE IF EXISTS admissions');
+            alasql('DROP TABLE IF EXISTS lab_results');
+            alasql('DROP TABLE IF EXISTS prescriptions');
+            alasql('DROP TABLE IF EXISTS medical_staff');
+            alasql('DROP TABLE IF EXISTS patient_vitals');
+
             // Create tables
-            db.run(`CREATE TABLE IF NOT EXISTS patients (
-                patient_id INTEGER PRIMARY KEY,
+            alasql(`CREATE TABLE patients (
+                patient_id INT,
                 name VARCHAR(100),
-                age INTEGER,
+                age INT,
                 gender VARCHAR(10),
                 admission_date DATE
             )`);
 
-            db.run(`CREATE TABLE IF NOT EXISTS admissions (
-                admission_id INTEGER PRIMARY KEY,
-                patient_id INTEGER,
+            alasql(`CREATE TABLE admissions (
+                admission_id INT,
+                patient_id INT,
                 admit_date DATE,
                 discharge_date DATE,
                 diagnosis VARCHAR(100),
-                department VARCHAR(50),
-                FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+                department VARCHAR(50)
             )`);
 
-            db.run(`CREATE TABLE IF NOT EXISTS lab_results (
-                test_id INTEGER PRIMARY KEY,
-                patient_id INTEGER,
+            alasql(`CREATE TABLE lab_results (
+                test_id INT,
+                patient_id INT,
                 test_name VARCHAR(50),
                 result_value DECIMAL(10,2),
                 test_date DATE,
-                normal_range VARCHAR(20),
-                FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+                normal_range VARCHAR(20)
             )`);
 
-            db.run(`CREATE TABLE IF NOT EXISTS prescriptions (
-                rx_id INTEGER PRIMARY KEY,
-                patient_id INTEGER,
+            alasql(`CREATE TABLE prescriptions (
+                rx_id INT,
+                patient_id INT,
                 medication VARCHAR(100),
                 dosage VARCHAR(50),
                 prescribed_date DATE,
-                duration_days INTEGER,
-                FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+                duration_days INT
             )`);
 
-            db.run(`CREATE TABLE IF NOT EXISTS medical_staff (
-                staff_id INTEGER PRIMARY KEY,
+            alasql(`CREATE TABLE medical_staff (
+                staff_id INT,
                 name VARCHAR(100),
                 department VARCHAR(50),
                 specialization VARCHAR(50),
                 hire_date DATE
             )`);
 
-            db.run(`CREATE TABLE IF NOT EXISTS patient_vitals (
-                vital_id INTEGER PRIMARY KEY,
-                patient_id INTEGER,
+            alasql(`CREATE TABLE patient_vitals (
+                vital_id INT,
+                patient_id INT,
                 vital_name VARCHAR(50),
                 vital_value DECIMAL(10,2),
-                recorded_date DATE,
-                FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+                recorded_date DATE
             )`);
-
-            // Clear existing data
-            db.run('DELETE FROM patients');
-            db.run('DELETE FROM admissions');
-            db.run('DELETE FROM lab_results');
-            db.run('DELETE FROM prescriptions');
-            db.run('DELETE FROM medical_staff');
-            db.run('DELETE FROM patient_vitals');
 
             // Insert sample data
             const patients = [
@@ -2046,9 +2052,9 @@ ORDER BY complexity_score DESC, total_medications DESC;
                 [1010, 'Jack Anderson', 55, 'Male', '2023-11-05']
             ];
             
-            const patientStmt = db.prepare("INSERT INTO patients VALUES (?, ?, ?, ?, ?)");
-            patients.forEach(patient => patientStmt.run(patient));
-            patientStmt.free();
+            patients.forEach(patient => {
+                alasql('INSERT INTO patients VALUES (?, ?, ?, ?, ?)', patient);
+            });
 
             const admissions = [
                 [101, 1001, '2023-10-15', '2023-10-20', 'Pneumonia', 'Internal Medicine'],
@@ -2065,9 +2071,9 @@ ORDER BY complexity_score DESC, total_medications DESC;
                 [112, 1006, '2023-11-10', '2023-11-15', 'Cardiac assessment', 'Cardiology']
             ];
             
-            const admissionStmt = db.prepare("INSERT INTO admissions VALUES (?, ?, ?, ?, ?, ?)");
-            admissions.forEach(admission => admissionStmt.run(admission));
-            admissionStmt.free();
+            admissions.forEach(admission => {
+                alasql('INSERT INTO admissions VALUES (?, ?, ?, ?, ?, ?)', admission);
+            });
 
             const labResults = [
                 [201, 1001, 'Glucose', 98, '2023-10-16', '70-110'],
@@ -2082,9 +2088,9 @@ ORDER BY complexity_score DESC, total_medications DESC;
                 [210, 1010, 'Blood Pressure', 142, '2023-10-25', '<140']
             ];
             
-            const labStmt = db.prepare("INSERT INTO lab_results VALUES (?, ?, ?, ?, ?, ?)");
-            labResults.forEach(lab => labStmt.run(lab));
-            labStmt.free();
+            labResults.forEach(lab => {
+                alasql('INSERT INTO lab_results VALUES (?, ?, ?, ?, ?, ?)', lab);
+            });
 
             const prescriptions = [
                 [301, 1001, 'Metformin', '500mg', '2023-10-16', 30],
@@ -2099,9 +2105,9 @@ ORDER BY complexity_score DESC, total_medications DESC;
                 [310, 1009, 'Ibuprofen', '400mg', '2023-10-24', 7]
             ];
             
-            const rxStmt = db.prepare("INSERT INTO prescriptions VALUES (?, ?, ?, ?, ?, ?)");
-            prescriptions.forEach(rx => rxStmt.run(rx));
-            rxStmt.free();
+            prescriptions.forEach(rx => {
+                alasql('INSERT INTO prescriptions VALUES (?, ?, ?, ?, ?, ?)', rx);
+            });
 
             console.log('Health informatics database created with sample data');
         }
@@ -2155,13 +2161,8 @@ ORDER BY complexity_score DESC, total_medications DESC;
             return textarea ? textarea.value.trim() : '';
         }
 
-        // Execute SQL query using SQL.js
+        // Execute SQL query using AlaSQL
         function executeSQL(sectionId) {
-            if (!db) {
-                showError(sectionId, 'Database not initialized. Please wait for SQL engine to load...');
-                return;
-            }
-
             const sql = getSQLFromEditor(sectionId);
             const outputElement = document.getElementById(`output${sectionId}`);
             
@@ -2175,7 +2176,7 @@ ORDER BY complexity_score DESC, total_medications DESC;
             
             try {
                 const startTime = performance.now();
-                const result = db.exec(sql);
+                const result = alasql(sql);
                 const endTime = performance.now();
                 
                 displaySQLResult(outputElement, result, sql, endTime - startTime);
@@ -2189,11 +2190,6 @@ ORDER BY complexity_score DESC, total_medications DESC;
 
         // Execute test query
         function executeTestQuery() {
-            if (!db) {
-                showError('test', 'Database not initialized. Please wait for SQL engine to load...');
-                return;
-            }
-
             const sql = codeMirrorEditors['test'] ? codeMirrorEditors['test'].getValue().trim() : document.getElementById('editor-test').value.trim();
             const outputElement = document.getElementById('output-test');
             
@@ -2207,7 +2203,7 @@ ORDER BY complexity_score DESC, total_medications DESC;
             
             try {
                 const startTime = performance.now();
-                const result = db.exec(sql);
+                const result = alasql(sql);
                 const endTime = performance.now();
                 
                 displaySQLResult(outputElement, result, sql, endTime - startTime);
@@ -2230,23 +2226,26 @@ ORDER BY complexity_score DESC, total_medications DESC;
             const successInfo = document.createElement('div');
             successInfo.className = 'query-info query-success';
             
-            if (result.length === 0) {
+            if (!result || result.length === 0) {
                 successInfo.textContent = '✓ Query executed successfully (no results returned)';
             } else {
-                const rowCount = result[0].values.length;
+                const rowCount = result.length;
                 successInfo.textContent = `✓ Query executed successfully, returned ${rowCount} row(s)`;
             }
             outputElement.appendChild(successInfo);
             
             // Display results for SELECT queries
-            if (result.length > 0 && result[0].values.length > 0) {
+            if (result && result.length > 0) {
                 const table = document.createElement('table');
                 table.className = 'results-table';
                 
                 // Create header
                 const thead = document.createElement('thead');
                 const headerRow = document.createElement('tr');
-                result[0].columns.forEach(col => {
+                
+                // Get column names from first object
+                const columns = Object.keys(result[0]);
+                columns.forEach(col => {
                     const th = document.createElement('th');
                     th.textContent = col;
                     headerRow.appendChild(th);
@@ -2256,11 +2255,11 @@ ORDER BY complexity_score DESC, total_medications DESC;
                 
                 // Create body
                 const tbody = document.createElement('tbody');
-                result[0].values.forEach(row => {
+                result.forEach(row => {
                     const tr = document.createElement('tr');
-                    row.forEach(cell => {
+                    columns.forEach(col => {
                         const td = document.createElement('td');
-                        td.textContent = cell;
+                        td.textContent = row[col];
                         tr.appendChild(td);
                     });
                     tbody.appendChild(tr);
@@ -2289,10 +2288,6 @@ ORDER BY complexity_score DESC, total_medications DESC;
 
         // Reset database
         function resetDatabase() {
-            if (!db) return;
-            
-            db.close();
-            db = new SQL.Database();
             createHealthInformaticsDatabase();
             
             // Clear all outputs
@@ -2402,7 +2397,7 @@ ORDER BY complexity_score DESC, total_medications DESC;
             // Set up navigation first
             setupNavigation();
             
-            // Initialize SQL.js database first
+            // Initialize AlaSQL database first
             await initializeDatabase();
             
             // Initialize CodeMirror editors
@@ -2437,7 +2432,7 @@ ORDER BY complexity_score DESC, total_medications DESC;
             // Set up theme toggle
             setupThemeToggle();
 
-            console.log("Health informatics learning module fully initialized");
+            console.log("Health informatics learning module fully initialized with AlaSQL");
         }
 
         // Initialize when the page loads
