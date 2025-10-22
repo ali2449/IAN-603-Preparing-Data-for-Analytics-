@@ -47,6 +47,8 @@
             --practice-color: #f59e0b;
             --project-color: #8b5cf6;
             --nav-bg: #1e293b;
+            --hint-color: #fbbf24;
+            --progress-color: #10b981;
         }
 
         [data-theme="light"] {
@@ -69,6 +71,8 @@
             --practice-color: #d97706;
             --project-color: #7c3aed;
             --nav-bg: #ffffff;
+            --hint-color: #d97706;
+            --progress-color: #059669;
         }
 
         body {
@@ -342,12 +346,6 @@
             padding: 2rem;
             border-radius: 1rem;
             margin: 2rem 0;
-        }
-
-        .project-scenario h3 {
-            color: white;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
         }
 
         .project-task {
@@ -775,6 +773,110 @@
             border-radius: 0 0.5rem 0.5rem 0;
         }
 
+        /* NEW ENHANCEMENT STYLES */
+        .hint-box {
+            background-color: var(--hint-color);
+            color: black;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--progress-color);
+            transition: width 0.5s ease;
+        }
+
+        .schema-explorer {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .schema-table {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .schema-table:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .schema-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .schema-column {
+            background-color: var(--border-color);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .schema-column:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .query-plan {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+        }
+
+        .plan-header {
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .challenge-mode {
+            background: linear-gradient(135deg, var(--error-color), var(--cross-color));
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .attempt-counter {
+            display: inline-block;
+            background-color: var(--error-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+
         @media (max-width: 1024px) {
             .nav-links {
                 display: none;
@@ -801,6 +903,38 @@
                 box-shadow: none;
                 border: none;
                 background-color: transparent;
+            }
+
+            .visualization-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .join-animation {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .table-visualization {
+                font-size: 10px;
+            }
+            
+            .result-row {
+                grid-template-columns: repeat(2, 1fr);
+                font-size: 10px;
+            }
+            
+            .action-buttons {
+                flex-wrap: wrap;
+            }
+            
+            .action-buttons button {
+                flex: 1 1 45%;
+                margin: 0.25rem;
+            }
+
+            .schema-columns {
+                justify-content: center;
             }
         }
     </style>
@@ -910,6 +1044,17 @@
                 <p class="text-lg text-gray-400">IAF 603 - Health Informatics Applications</p>
                 <p class="text-sm text-green-400 mt-1">✓ Interactive SQL Environment Active</p>
                 <p class="text-sm text-yellow-400 mt-1">🏥 Real Healthcare Database & Practice Project</p>
+                
+                <!-- Progress Tracker -->
+                <div class="mt-4">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span>Module Progress</span>
+                        <span id="progress-text">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
             </div>
             <button id="theme-toggle" class="px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold transition-colors">
                 <!-- Text set by JavaScript -->
@@ -967,6 +1112,15 @@
                 </div>
             </section>
 
+            <!-- Interactive Schema Explorer -->
+            <div class="schema-explorer mb-8">
+                <h2 class="text-xl font-bold mb-4">🔍 Interactive Schema Explorer</h2>
+                <p class="mb-4">Click on tables and columns to insert them into your SQL queries:</p>
+                <div id="schema-explorer-content">
+                    <!-- Schema content will be dynamically inserted -->
+                </div>
+            </div>
+
             <!-- Quick Test Area -->
             <div class="section-card p-4 rounded-xl mb-8">
                 <h2 class="text-xl font-bold mb-4">🧪 Interactive SQL Playground</h2>
@@ -984,6 +1138,9 @@ LIMIT 5;</textarea>
                         </button>
                         <button id="reset-db" class="px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors">
                             Reset Database
+                        </button>
+                        <button id="toggle-challenge" class="px-4 py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg font-semibold transition-colors">
+                            Challenge Mode: Off
                         </button>
                     </div>
 
@@ -1728,6 +1885,30 @@ ORDER BY days_between_admissions DESC;</textarea>
                     </div>
                     <p class="mb-4">Create a comprehensive patient profile that includes demographic information, admission history, lab results, and prescriptions.</p>
                     
+                    <!-- Hint Box -->
+                    <div class="hint-box">
+                        <div class="flex justify-between items-center">
+                            <span><strong>💡 Need a hint?</strong></span>
+                            <button class="hint-button px-3 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded text-sm" data-section="9">
+                                Show Hint
+                            </button>
+                        </div>
+                        <div id="hint9" class="hidden mt-2">
+                            <div class="hint-level" data-level="1">
+                                <strong>Hint 1:</strong> Start by selecting the basic patient information from the patients table.
+                            </div>
+                            <div class="hint-level hidden" data-level="2">
+                                <strong>Hint 2:</strong> Use LEFT JOINs to include all patients, even those without admissions, lab results, or prescriptions.
+                            </div>
+                            <div class="hint-level hidden" data-level="3">
+                                <strong>Hint 3:</strong> Consider using COUNT() with DISTINCT to avoid double-counting when patients have multiple records.
+                            </div>
+                            <div class="hint-level hidden" data-level="4">
+                                <strong>Hint 4:</strong> GROUP_CONCAT() can help combine multiple diagnosis or medication values into a single string.
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="code-container">
                         <textarea id="editor9" class="sql-editor" placeholder="-- Write your comprehensive patient profile query here..."></textarea>
                         
@@ -1783,6 +1964,30 @@ ORDER BY total_admissions DESC, p.name;
                         <span class="join-tag practice-tag">Practice</span>
                     </div>
                     <p class="mb-4">Analyze department performance by joining admissions with medical staff and calculating key metrics.</p>
+                    
+                    <!-- Hint Box -->
+                    <div class="hint-box">
+                        <div class="flex justify-between items-center">
+                            <span><strong>💡 Need a hint?</strong></span>
+                            <button class="hint-button px-3 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded text-sm" data-section="10">
+                                Show Hint
+                            </button>
+                        </div>
+                        <div id="hint10" class="hidden mt-2">
+                            <div class="hint-level" data-level="1">
+                                <strong>Hint 1:</strong> Focus on aggregating data by department from the admissions table.
+                            </div>
+                            <div class="hint-level hidden" data-level="2">
+                                <strong>Hint 2:</strong> Calculate average length of stay using date functions on admit_date and discharge_date.
+                            </div>
+                            <div class="hint-level hidden" data-level="3">
+                                <strong>Hint 3:</strong> Count distinct patients to avoid double-counting when patients have multiple admissions.
+                            </div>
+                            <div class="hint-level hidden" data-level="4">
+                                <strong>Hint 4:</strong> Use GROUP_CONCAT() to show all specializations available in each department.
+                            </div>
+                        </div>
+                    </div>
                     
                     <div class="code-container">
                         <textarea id="editor10" class="sql-editor" placeholder="-- Write your department performance analysis here..."></textarea>
@@ -1866,6 +2071,12 @@ ORDER BY total_admissions DESC;
                     <h4>Project Task 1: Patient Care Timeline Analysis</h4>
                     <p class="mb-4">Create a comprehensive timeline of patient care, showing admissions, lab tests, and prescriptions in chronological order.</p>
                     
+                    <!-- Challenge Mode Indicator -->
+                    <div id="challenge-indicator-11" class="challenge-mode hidden">
+                        <strong>Challenge Mode Active</strong> - Schema hidden, limited attempts remaining: 
+                        <span class="attempt-counter" id="attempts-11">3</span>
+                    </div>
+                    
                     <div class="code-container">
                         <textarea id="editor11" class="sql-editor" placeholder="-- Build your patient care timeline query here..."></textarea>
                         
@@ -1944,6 +2155,12 @@ ORDER BY p.name, tl.event_date;
                 <section class="project-task">
                     <h4>Project Task 2: Department Cross-Referral Analysis</h4>
                     <p class="mb-4">Analyze how patients move between departments and identify common referral patterns.</p>
+                    
+                    <!-- Challenge Mode Indicator -->
+                    <div id="challenge-indicator-12" class="challenge-mode hidden">
+                        <strong>Challenge Mode Active</strong> - Schema hidden, limited attempts remaining: 
+                        <span class="attempt-counter" id="attempts-12">3</span>
+                    </div>
                     
                     <div class="code-container">
                         <textarea id="editor12" class="sql-editor" placeholder="-- Build your department referral analysis here..."></textarea>
@@ -2038,6 +2255,17 @@ ORDER BY referral_count DESC;
         let completedExercises = new Set();
         let db = null;
         let codeMirrorEditors = {};
+        let challengeMode = false;
+        let attemptCounters = {};
+
+        // Learning progress tracking
+        const learningProgress = {
+            completedSections: new Set(),
+            timeSpent: {},
+            firstAttempt: {},
+            successfulAttempts: {},
+            hintUsage: {}
+        };
 
         // --- Navigation Menu Functionality ---
         function setupNavigation() {
@@ -2293,11 +2521,64 @@ ORDER BY referral_count DESC;
             return textarea ? textarea.value.trim() : '';
         }
 
+        // Enhanced error handling
+        function enhanceErrorMessages(error) {
+            const commonErrors = {
+                'no such table': 'Table not found. Check the database schema above.',
+                'no such column': 'Column not found. Verify column names in the schema.',
+                'syntax error': 'SQL syntax error. Check your query structure.',
+                'ambiguous column name': 'Column name exists in multiple tables. Use table aliases.',
+                'misuse of aggregate': 'Aggregate functions need GROUP BY clause for non-aggregated columns.'
+            };
+            
+            for (const [key, message] of Object.entries(commonErrors)) {
+                if (error.message.toLowerCase().includes(key)) {
+                    return `${message}\n\nTechnical details: ${error.message}`;
+                }
+            }
+            
+            return error.message;
+        }
+
+        // Query performance visualization
+        function showQueryPlan(sql) {
+            try {
+                // SQL.js doesn't support EXPLAIN QUERY PLAN, so we'll simulate it
+                // In a real implementation, this would analyze the query
+                const planOutput = document.createElement('div');
+                planOutput.className = 'query-plan';
+                planOutput.innerHTML = `
+                    <div class="plan-header">Query Analysis:</div>
+                    <div>This query will scan the necessary tables and perform the specified join operation.</div>
+                    <div class="mt-2"><strong>Tip:</strong> Use WHERE clauses to limit results and improve performance.</div>
+                `;
+                return planOutput;
+            } catch (e) {
+                console.log('Could not generate query plan');
+            }
+            return null;
+        }
+
         // Execute SQL query using SQL.js
         function executeSQL(sectionId) {
             if (!db) {
                 showError(sectionId, 'Database not initialized. Please wait for SQL engine to load...');
                 return;
+            }
+
+            // Check challenge mode attempts
+            if (challengeMode && (sectionId === 11 || sectionId === 12)) {
+                if (!attemptCounters[sectionId]) {
+                    attemptCounters[sectionId] = 3;
+                }
+                
+                if (attemptCounters[sectionId] <= 0) {
+                    showError(sectionId, 'No attempts remaining in Challenge Mode. Please turn off Challenge Mode to continue.');
+                    return;
+                }
+                
+                attemptCounters[sectionId]--;
+                document.getElementById(`attempts-${sectionId}`).textContent = attemptCounters[sectionId];
             }
 
             const sql = getSQLFromEditor(sectionId);
@@ -2316,12 +2597,17 @@ ORDER BY referral_count DESC;
                 const result = db.exec(sql);
                 const endTime = performance.now();
                 
-                displaySQLResult(outputElement, result, sql, endTime - startTime);
-                completedExercises.add(sectionId);
+                displaySQLResult(outputElement, result, sql, endTime - startTime, sectionId);
+                trackProgress(sectionId, true);
+                
+                // Update progress UI
+                updateProgressUI();
                 
             } catch (error) {
-                showError(sectionId, error.message);
+                const enhancedError = enhanceErrorMessages(error);
+                showError(sectionId, enhancedError);
                 console.error('SQL Error:', error);
+                trackProgress(sectionId, false);
             }
         }
 
@@ -2348,21 +2634,30 @@ ORDER BY referral_count DESC;
                 const result = db.exec(sql);
                 const endTime = performance.now();
                 
-                displaySQLResult(outputElement, result, sql, endTime - startTime);
+                displaySQLResult(outputElement, result, sql, endTime - startTime, 'test');
                 
             } catch (error) {
-                showError('test', error.message);
+                const enhancedError = enhanceErrorMessages(error);
+                showError('test', enhancedError);
                 console.error('SQL Error:', error);
             }
         }
 
         // Display SQL results
-        function displaySQLResult(outputElement, result, sql, executionTime) {
+        function displaySQLResult(outputElement, result, sql, executionTime, sectionId) {
             // Show executed SQL
             const sqlInfo = document.createElement('div');
             sqlInfo.className = 'query-info';
             sqlInfo.innerHTML = `<span>Executed: <code>${sql}</code></span>`;
             outputElement.appendChild(sqlInfo);
+            
+            // Show query plan for complex queries
+            if (sql.toLowerCase().includes('join') && sectionId !== 'test') {
+                const plan = showQueryPlan(sql);
+                if (plan) {
+                    outputElement.appendChild(plan);
+                }
+            }
             
             // Show success message
             const successInfo = document.createElement('div');
@@ -2512,6 +2807,194 @@ ORDER BY referral_count DESC;
             if (solutionElement.classList.contains('hidden')) {
                 toggleSolution(sectionId);
             }
+        }
+
+        // Progressive hint system
+        function setupHintSystem() {
+            const exerciseHints = {
+                9: [
+                    "Start by selecting the basic patient information from the patients table.",
+                    "Use LEFT JOINs to include all patients, even those without admissions, lab results, or prescriptions.",
+                    "Consider using COUNT() with DISTINCT to avoid double-counting when patients have multiple records.",
+                    "GROUP_CONCAT() can help combine multiple diagnosis or medication values into a single string."
+                ],
+                10: [
+                    "Focus on aggregating data by department from the admissions table.",
+                    "Calculate average length of stay using date functions on admit_date and discharge_date.",
+                    "Count distinct patients to avoid double-counting when patients have multiple admissions.",
+                    "Use GROUP_CONCAT() to show all specializations available in each department."
+                ]
+            };
+
+            document.querySelectorAll('.hint-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const sectionId = this.getAttribute('data-section');
+                    const hintElement = document.getElementById(`hint${sectionId}`);
+                    const hints = exerciseHints[sectionId];
+                    
+                    if (!hints) return;
+                    
+                    // Track hint usage
+                    if (!learningProgress.hintUsage[sectionId]) {
+                        learningProgress.hintUsage[sectionId] = 0;
+                    }
+                    learningProgress.hintUsage[sectionId]++;
+                    
+                    // Show next hint level
+                    const currentLevel = learningProgress.hintUsage[sectionId];
+                    const hintLevels = hintElement.querySelectorAll('.hint-level');
+                    
+                    hintLevels.forEach((level, index) => {
+                        if (index < currentLevel) {
+                            level.classList.remove('hidden');
+                        } else {
+                            level.classList.add('hidden');
+                        }
+                    });
+                    
+                    // Show the hint box if hidden
+                    if (hintElement.classList.contains('hidden')) {
+                        hintElement.classList.remove('hidden');
+                    }
+                    
+                    // Hide button if all hints shown
+                    if (currentLevel >= hints.length) {
+                        this.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Interactive Schema Explorer
+        function setupSchemaExplorer() {
+            const schemaData = {
+                patients: ['patient_id', 'name', 'age', 'gender', 'admission_date'],
+                admissions: ['admission_id', 'patient_id', 'admit_date', 'discharge_date', 'diagnosis', 'department'],
+                lab_results: ['test_id', 'patient_id', 'test_name', 'result_value', 'test_date', 'normal_range'],
+                prescriptions: ['rx_id', 'patient_id', 'medication', 'dosage', 'prescribed_date', 'duration_days'],
+                medical_staff: ['staff_id', 'name', 'department', 'specialization', 'hire_date'],
+                patient_vitals: ['vital_id', 'patient_id', 'vital_name', 'vital_value', 'recorded_date']
+            };
+            
+            const explorerContent = document.getElementById('schema-explorer-content');
+            explorerContent.innerHTML = Object.entries(schemaData).map(([table, columns]) => `
+                <div class="schema-table" onclick="insertTableName('${table}')">
+                    <strong>${table}</strong>
+                    <div class="schema-columns">
+                        ${columns.map(col => `<span class="schema-column" onclick="event.stopPropagation(); insertColumnName('${table}', '${col}')">${col}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Insert table name into active editor
+        function insertTableName(tableName) {
+            // For simplicity, insert into test editor
+            const editor = codeMirrorEditors['test'];
+            if (editor) {
+                const doc = editor.getDoc();
+                const cursor = doc.getCursor();
+                doc.replaceRange(tableName, cursor);
+                editor.focus();
+            }
+        }
+
+        // Insert column name into active editor
+        function insertColumnName(tableName, columnName) {
+            // For simplicity, insert into test editor
+            const editor = codeMirrorEditors['test'];
+            if (editor) {
+                const doc = editor.getDoc();
+                const cursor = doc.getCursor();
+                doc.replaceRange(`${tableName}.${columnName}`, cursor);
+                editor.focus();
+            }
+        }
+
+        // Learning progress tracking
+        function trackProgress(sectionId, success) {
+            learningProgress.completedSections.add(sectionId);
+            
+            if (!learningProgress.firstAttempt[sectionId]) {
+                learningProgress.firstAttempt[sectionId] = new Date().toISOString();
+            }
+            
+            if (success) {
+                learningProgress.successfulAttempts[sectionId] = 
+                    (learningProgress.successfulAttempts[sectionId] || 0) + 1;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('sqlJoinsProgress', JSON.stringify(learningProgress));
+        }
+
+        // Update progress UI
+        function updateProgressUI() {
+            const progress = (learningProgress.completedSections.size / TOTAL_QUESTIONS) * 100;
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            
+            if (progressFill && progressText) {
+                progressFill.style.width = `${progress}%`;
+                progressText.textContent = `${Math.round(progress)}%`;
+            }
+        }
+
+        // Load progress from localStorage
+        function loadProgress() {
+            const savedProgress = localStorage.getItem('sqlJoinsProgress');
+            if (savedProgress) {
+                const parsed = JSON.parse(savedProgress);
+                Object.assign(learningProgress, parsed);
+                
+                // Convert Set from array (JSON doesn't support Sets)
+                if (parsed.completedSections && Array.isArray(parsed.completedSections)) {
+                    learningProgress.completedSections = new Set(parsed.completedSections);
+                }
+                
+                updateProgressUI();
+            }
+        }
+
+        // Challenge mode toggle
+        function setupChallengeMode() {
+            const toggleButton = document.getElementById('toggle-challenge');
+            
+            toggleButton.addEventListener('click', function() {
+                challengeMode = !challengeMode;
+                
+                if (challengeMode) {
+                    this.textContent = 'Challenge Mode: On';
+                    this.classList.remove('bg-red-500', 'hover:bg-red-400');
+                    this.classList.add('bg-green-600', 'hover:bg-green-500');
+                    
+                    // Hide schema explorer and database schema
+                    document.querySelector('.schema-explorer').classList.add('hidden');
+                    document.querySelector('.database-schema').classList.add('hidden');
+                    
+                    // Show challenge indicators for project tasks
+                    document.getElementById('challenge-indicator-11').classList.remove('hidden');
+                    document.getElementById('challenge-indicator-12').classList.remove('hidden');
+                    
+                    // Reset attempt counters
+                    attemptCounters[11] = 3;
+                    attemptCounters[12] = 3;
+                    document.getElementById('attempts-11').textContent = '3';
+                    document.getElementById('attempts-12').textContent = '3';
+                } else {
+                    this.textContent = 'Challenge Mode: Off';
+                    this.classList.remove('bg-green-600', 'hover:bg-green-500');
+                    this.classList.add('bg-red-500', 'hover:bg-red-400');
+                    
+                    // Show schema explorer and database schema
+                    document.querySelector('.schema-explorer').classList.remove('hidden');
+                    document.querySelector('.database-schema').classList.remove('hidden');
+                    
+                    // Hide challenge indicators
+                    document.getElementById('challenge-indicator-11').classList.add('hidden');
+                    document.getElementById('challenge-indicator-12').classList.add('hidden');
+                }
+            });
         }
 
         // Interactive Join Comparison
@@ -2670,6 +3153,9 @@ ORDER BY referral_count DESC;
             // Set up navigation first
             setupNavigation();
             
+            // Load progress from localStorage
+            loadProgress();
+            
             // Initialize SQL.js database first
             await initializeDatabase();
             
@@ -2708,7 +3194,16 @@ ORDER BY referral_count DESC;
             // Set up join comparison
             setupJoinComparison();
 
-            console.log("SQL Joins learning module fully initialized with enhanced visualizations");
+            // Set up hint system
+            setupHintSystem();
+
+            // Set up schema explorer
+            setupSchemaExplorer();
+
+            // Set up challenge mode
+            setupChallengeMode();
+
+            console.log("SQL Joins learning module fully initialized with enhanced visualizations and features");
         }
 
         // Initialize when the page loads
