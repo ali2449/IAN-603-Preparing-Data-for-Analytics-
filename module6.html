@@ -577,6 +577,204 @@
             cursor: pointer;
         }
 
+        /* NEW VISUALIZATION STYLES */
+        .visualization-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+            align-items: start;
+        }
+        
+        @media (max-width: 1024px) {
+            .visualization-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .table-visualization {
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .table-header {
+            background: var(--accent-color);
+            color: white;
+            padding: 0.75rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .table-cell {
+            padding: 0.5rem;
+            border-right: 1px solid var(--border-color);
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+        }
+        
+        .table-cell:last-child {
+            border-right: none;
+        }
+        
+        .table-cell.header {
+            background: var(--code-bg);
+            font-weight: bold;
+        }
+        
+        .join-result {
+            background: var(--section-bg);
+            border: 2px solid var(--inner-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+        
+        .result-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+        }
+        
+        .result-row.header {
+            background: var(--inner-color);
+            color: white;
+            font-weight: bold;
+            border-radius: 0.25rem;
+        }
+        
+        .match-true {
+            background: rgba(16, 185, 129, 0.2);
+        }
+        
+        .match-false {
+            background: rgba(248, 113, 113, 0.2);
+            color: #666;
+        }
+        
+        .null-value {
+            color: #888;
+            font-style: italic;
+        }
+        
+        .join-animation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .table-box {
+            padding: 1rem;
+            border: 2px solid;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .join-arrow {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+        
+        .venn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2rem 0;
+        }
+        
+        .venn-combined {
+            position: relative;
+            width: 300px;
+            height: 200px;
+        }
+        
+        .venn-left {
+            position: absolute;
+            left: 0;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.3);
+            border: 2px solid var(--left-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .venn-right {
+            position: absolute;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(139, 92, 246, 0.3);
+            border: 2px solid var(--right-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .venn-overlap {
+            position: absolute;
+            left: 75px;
+            top: 25px;
+            width: 150px;
+            height: 150px;
+            background: rgba(16, 185, 129, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .step {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border-color);
+            cursor: pointer;
+        }
+        
+        .step.active {
+            background: var(--accent-color);
+        }
+        
+        .join-explanation {
+            background: var(--code-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
         @media (max-width: 1024px) {
             .nav-links {
                 display: none;
@@ -818,7 +1016,7 @@ LIMIT 5;</textarea>
                 </div>
             </div>
 
-            <!-- INNER JOIN -->
+            <!-- INNER JOIN with Enhanced Visualization -->
             <div class="join-section inner-section">
                 <h2 class="text-2xl font-bold mb-4" style="color: var(--inner-color)">INNER JOIN</h2>
                 
@@ -826,13 +1024,111 @@ LIMIT 5;</textarea>
                     <h3 class="font-bold mb-2">Matching Records Only</h3>
                     <p class="mb-3">INNER JOIN returns only the rows where there is a match in both tables. Perfect for finding patients with admissions, or customers with orders.</p>
                     
-                    <div class="join-diagram">
-                        <div class="venn-diagram">
-                            <div class="venn-circle circle-left">Patients</div>
-                            <div class="venn-circle circle-right">Admissions</div>
-                            <div class="venn-circle circle-inner">INNER JOIN</div>
+                    <div class="join-explanation">
+                        <strong>Visual Explanation:</strong> Only patients who have admissions will appear in the results.
+                    </div>
+
+                    <!-- Enhanced Visualization -->
+                    <div class="visualization-container">
+                        <div class="table-visualization">
+                            <div class="table-header">Patients Table</div>
+                            <div class="table-row">
+                                <div class="table-cell header">patient_id</div>
+                                <div class="table-cell header">name</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">1001</div>
+                                <div class="table-cell">Alice Smith</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">1002</div>
+                                <div class="table-cell">Bob Johnson</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">1003</div>
+                                <div class="table-cell">Carol White</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">1004</div>
+                                <div class="table-cell">David Brown</div>
+                            </div>
                         </div>
-                        <p class="text-sm mt-2">Returns only the overlapping records</p>
+                        
+                        <div class="table-visualization">
+                            <div class="table-header">Admissions Table</div>
+                            <div class="table-row">
+                                <div class="table-cell header">admission_id</div>
+                                <div class="table-cell header">patient_id</div>
+                                <div class="table-cell header">diagnosis</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">101</div>
+                                <div class="table-cell">1001</div>
+                                <div class="table-cell">Pneumonia</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">102</div>
+                                <div class="table-cell">1002</div>
+                                <div class="table-cell">Fractured arm</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">103</div>
+                                <div class="table-cell">1005</div>
+                                <div class="table-cell">Cardiac issue</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Join Animation -->
+                    <div class="join-animation">
+                        <div class="table-box" style="border-color: var(--left-color);">Patients</div>
+                        <div class="join-arrow">⮕ INNER JOIN ⮕</div>
+                        <div class="table-box" style="border-color: var(--right-color);">Admissions</div>
+                        <div class="join-arrow">⮕</div>
+                        <div class="table-box" style="border-color: var(--inner-color);">Result</div>
+                    </div>
+
+                    <!-- Venn Diagram -->
+                    <div class="venn-container">
+                        <div class="venn-combined">
+                            <div class="venn-left">Patients</div>
+                            <div class="venn-right">Admissions</div>
+                            <div class="venn-overlap">INNER JOIN</div>
+                        </div>
+                    </div>
+
+                    <!-- Result Table -->
+                    <div class="join-result">
+                        <div class="result-row header">
+                            <div>patient_id</div>
+                            <div>name</div>
+                            <div>admission_id</div>
+                            <div>diagnosis</div>
+                        </div>
+                        <div class="result-row match-true">
+                            <div>1001</div>
+                            <div>Alice Smith</div>
+                            <div>101</div>
+                            <div>Pneumonia</div>
+                        </div>
+                        <div class="result-row match-true">
+                            <div>1002</div>
+                            <div>Bob Johnson</div>
+                            <div>102</div>
+                            <div>Fractured arm</div>
+                        </div>
+                        <div class="result-row match-false">
+                            <div>1003</div>
+                            <div>Carol White</div>
+                            <div class="null-value">NULL</div>
+                            <div class="null-value">NULL</div>
+                        </div>
+                        <div class="result-row match-false">
+                            <div>1004</div>
+                            <div>David Brown</div>
+                            <div class="null-value">NULL</div>
+                            <div class="null-value">NULL</div>
+                        </div>
                     </div>
                     
                     <div class="tip-box">
@@ -902,20 +1198,91 @@ ORDER BY l.result_value DESC;</textarea>
                 </section>
             </div>
 
-            <!-- LEFT JOIN -->
+            <!-- LEFT JOIN with Enhanced Visualization -->
             <div class="join-section left-section">
                 <h2 class="text-2xl font-bold mb-4" style="color: var(--left-color)">LEFT JOIN</h2>
                 
                 <div class="concept-explanation">
                     <h3 class="font-bold mb-2">All Records from Left Table</h3>
                     <p class="mb-3">LEFT JOIN returns all rows from the left table, with matching rows from the right table. If no match exists, NULL values are returned for right table columns.</p>
-                    
-                    <div class="join-diagram">
-                        <div class="venn-diagram">
-                            <div class="venn-circle circle-left">Patients</div>
-                            <div class="venn-circle circle-right">Admissions</div>
+
+                    <!-- Enhanced Visualization -->
+                    <div class="visualization-container">
+                        <div class="table-visualization">
+                            <div class="table-header">Patients Table (Left)</div>
+                            <div class="table-row">
+                                <div class="table-cell header">patient_id</div>
+                                <div class="table-cell header">name</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">1001</div>
+                                <div class="table-cell">Alice Smith</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">1002</div>
+                                <div class="table-cell">Bob Johnson</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">1003</div>
+                                <div class="table-cell">Carol White</div>
+                            </div>
                         </div>
-                        <p class="text-sm mt-2">Returns all patients + matching admissions</p>
+                        
+                        <div class="table-visualization">
+                            <div class="table-header">Lab Results (Right)</div>
+                            <div class="table-row">
+                                <div class="table-cell header">test_id</div>
+                                <div class="table-cell header">patient_id</div>
+                                <div class="table-cell header">test_name</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">201</div>
+                                <div class="table-cell">1001</div>
+                                <div class="table-cell">Glucose</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">202</div>
+                                <div class="table-cell">1002</div>
+                                <div class="table-cell">Cholesterol</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Join Animation -->
+                    <div class="join-animation">
+                        <div class="table-box" style="border-color: var(--left-color); background: rgba(59, 130, 246, 0.1);">Patients</div>
+                        <div class="join-arrow">⮕ LEFT JOIN ⮕</div>
+                        <div class="table-box" style="border-color: var(--right-color);">Lab Results</div>
+                        <div class="join-arrow">⮕</div>
+                        <div class="table-box" style="border-color: var(--left-color); background: rgba(59, 130, 246, 0.1);">Result</div>
+                    </div>
+
+                    <!-- Result Table -->
+                    <div class="join-result">
+                        <div class="result-row header">
+                            <div>patient_id</div>
+                            <div>name</div>
+                            <div>test_id</div>
+                            <div>test_name</div>
+                        </div>
+                        <div class="result-row match-true">
+                            <div>1001</div>
+                            <div>Alice Smith</div>
+                            <div>201</div>
+                            <div>Glucose</div>
+                        </div>
+                        <div class="result-row match-true">
+                            <div>1002</div>
+                            <div>Bob Johnson</div>
+                            <div>202</div>
+                            <div>Cholesterol</div>
+                        </div>
+                        <div class="result-row match-false">
+                            <div>1003</div>
+                            <div>Carol White</div>
+                            <div class="null-value">NULL</div>
+                            <div class="null-value">NULL</div>
+                        </div>
                     </div>
                     
                     <div class="tip-box">
@@ -987,20 +1354,97 @@ ORDER BY p.name;</textarea>
                 </section>
             </div>
 
-            <!-- RIGHT JOIN & FULL OUTER JOIN -->
+            <!-- RIGHT JOIN & FULL OUTER JOIN with Enhanced Visualization -->
             <div class="join-section right-section">
                 <h2 class="text-2xl font-bold mb-4" style="color: var(--right-color)">RIGHT JOIN & FULL OUTER JOIN</h2>
                 
                 <div class="concept-explanation">
                     <h3 class="font-bold mb-2">Complete Data Coverage</h3>
                     <p class="mb-3">RIGHT JOIN returns all rows from the right table. FULL OUTER JOIN returns all rows when there's a match in either table.</p>
-                    
-                    <div class="join-diagram">
-                        <div class="venn-diagram">
-                            <div class="venn-circle circle-left">Patients</div>
-                            <div class="venn-circle circle-right">Admissions</div>
+
+                    <!-- Enhanced Visualization -->
+                    <div class="visualization-container">
+                        <div class="table-visualization">
+                            <div class="table-header">Patients Table</div>
+                            <div class="table-row">
+                                <div class="table-cell header">patient_id</div>
+                                <div class="table-cell header">name</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">1001</div>
+                                <div class="table-cell">Alice Smith</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">1002</div>
+                                <div class="table-cell">Bob Johnson</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">1003</div>
+                                <div class="table-cell">Carol White</div>
+                            </div>
                         </div>
-                        <p class="text-sm mt-2">RIGHT JOIN: All admissions + matching patients<br>FULL JOIN: All patients + all admissions</p>
+                        
+                        <div class="table-visualization">
+                            <div class="table-header">Admissions Table</div>
+                            <div class="table-row">
+                                <div class="table-cell header">admission_id</div>
+                                <div class="table-cell header">patient_id</div>
+                                <div class="table-cell header">diagnosis</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">101</div>
+                                <div class="table-cell">1001</div>
+                                <div class="table-cell">Pneumonia</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">102</div>
+                                <div class="table-cell">1004</div>
+                                <div class="table-cell">Fractured arm</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Join Animation -->
+                    <div class="join-animation">
+                        <div class="table-box" style="border-color: var(--left-color);">Patients</div>
+                        <div class="join-arrow">⮕ FULL JOIN ⮕</div>
+                        <div class="table-box" style="border-color: var(--right-color);">Admissions</div>
+                        <div class="join-arrow">⮕</div>
+                        <div class="table-box" style="border-color: var(--full-color);">All Records</div>
+                    </div>
+
+                    <!-- Result Table -->
+                    <div class="join-result">
+                        <div class="result-row header">
+                            <div>patient_id</div>
+                            <div>name</div>
+                            <div>admission_id</div>
+                            <div>diagnosis</div>
+                        </div>
+                        <div class="result-row match-true">
+                            <div>1001</div>
+                            <div>Alice Smith</div>
+                            <div>101</div>
+                            <div>Pneumonia</div>
+                        </div>
+                        <div class="result-row match-false">
+                            <div>1002</div>
+                            <div>Bob Johnson</div>
+                            <div class="null-value">NULL</div>
+                            <div class="null-value">NULL</div>
+                        </div>
+                        <div class="result-row match-false">
+                            <div>1003</div>
+                            <div>Carol White</div>
+                            <div class="null-value">NULL</div>
+                            <div class="null-value">NULL</div>
+                        </div>
+                        <div class="result-row match-false">
+                            <div class="null-value">NULL</div>
+                            <div class="null-value">NULL</div>
+                            <div>102</div>
+                            <div>Fractured arm</div>
+                        </div>
                     </div>
                     
                     <div class="tip-box">
@@ -1081,16 +1525,95 @@ ORDER BY record_type, COALESCE(p.patient_id, a.patient_id);</textarea>
                 </section>
             </div>
 
-            <!-- CROSS JOIN & SELF JOIN -->
+            <!-- CROSS JOIN & SELF JOIN with Enhanced Visualization -->
             <div class="join-section cross-section">
                 <h2 class="text-2xl font-bold mb-4" style="color: var(--cross-color)">CROSS JOIN & SELF JOIN</h2>
                 
                 <div class="concept-explanation">
                     <h3 class="font-bold mb-2">Specialized Join Operations</h3>
                     <p class="mb-3">CROSS JOIN creates all possible combinations between tables. SELF JOIN allows a table to be joined with itself for hierarchical or comparative analysis.</p>
+
+                    <!-- Enhanced Visualization -->
+                    <div class="visualization-container">
+                        <div class="table-visualization">
+                            <div class="table-header">Medical Staff Table</div>
+                            <div class="table-row">
+                                <div class="table-cell header">staff_id</div>
+                                <div class="table-cell header">name</div>
+                                <div class="table-cell header">department</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">501</div>
+                                <div class="table-cell">Dr. Sarah Chen</div>
+                                <div class="table-cell">Cardiology</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">502</div>
+                                <div class="table-cell">Dr. Michael Rodriguez</div>
+                                <div class="table-cell">Internal Medicine</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">503</div>
+                                <div class="table-cell">Dr. Emily Watson</div>
+                                <div class="table-cell">Cardiology</div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-visualization">
+                            <div class="table-header">Same Table (Aliased)</div>
+                            <div class="table-row">
+                                <div class="table-cell header">staff_id</div>
+                                <div class="table-cell header">name</div>
+                                <div class="table-cell header">department</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">501</div>
+                                <div class="table-cell">Dr. Sarah Chen</div>
+                                <div class="table-cell">Cardiology</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">502</div>
+                                <div class="table-cell">Dr. Michael Rodriguez</div>
+                                <div class="table-cell">Internal Medicine</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">503</div>
+                                <div class="table-cell">Dr. Emily Watson</div>
+                                <div class="table-cell">Cardiology</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Join Animation -->
+                    <div class="join-animation">
+                        <div class="table-box" style="border-color: var(--self-color);">Staff s1</div>
+                        <div class="join-arrow">⮕ SELF JOIN ⮕</div>
+                        <div class="table-box" style="border-color: var(--self-color);">Staff s2</div>
+                        <div class="join-arrow">⮕</div>
+                        <div class="table-box" style="border-color: var(--self-color);">Colleagues</div>
+                    </div>
+
+                    <!-- Result Table -->
+                    <div class="join-result">
+                        <div class="result-row header">
+                            <div>staff_member</div>
+                            <div>department</div>
+                            <div>colleague</div>
+                        </div>
+                        <div class="result-row match-true">
+                            <div>Dr. Sarah Chen</div>
+                            <div>Cardiology</div>
+                            <div>Dr. Emily Watson</div>
+                        </div>
+                        <div class="result-row match-true">
+                            <div>Dr. Emily Watson</div>
+                            <div>Cardiology</div>
+                            <div>Dr. Sarah Chen</div>
+                        </div>
+                    </div>
                     
                     <div class="tip-box">
-                        <strong>💡 Healthcare Use:</strong> Generate all possible treatment combinations, find staff in the same department, analyze patient readmission patterns.
+                        <strong>💡 Healthcare Use:</strong> Find staff in the same department, analyze patient readmission patterns, compare treatment outcomes.
                     </div>
                 </div>
 
@@ -1168,6 +1691,24 @@ ORDER BY days_between_admissions DESC;</textarea>
                     </div>
                 </section>
             </div>
+
+            <!-- Interactive Join Comparison -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <h2 class="text-xl font-bold mb-4">🔄 Interactive Join Comparison</h2>
+                
+                <div class="join-comparison">
+                    <div class="step-indicator">
+                        <div class="step active" data-step="1">INNER</div>
+                        <div class="step" data-step="2">LEFT</div>
+                        <div class="step" data-step="3">RIGHT</div>
+                        <div class="step" data-step="4">FULL</div>
+                    </div>
+                    
+                    <div id="join-comparison-viz" class="mt-4">
+                        <!-- Dynamic visualization will be inserted here -->
+                    </div>
+                </div>
+            </section>
 
             <!-- PRACTICE EXERCISES -->
             <div class="join-section" style="border-color: var(--practice-color);">
@@ -1973,6 +2514,136 @@ ORDER BY referral_count DESC;
             }
         }
 
+        // Interactive Join Comparison
+        function setupJoinComparison() {
+            const steps = document.querySelectorAll('.step');
+            const vizContainer = document.getElementById('join-comparison-viz');
+            
+            const joinData = {
+                1: { 
+                    type: 'INNER JOIN', 
+                    color: 'var(--inner-color)', 
+                    description: 'Only matching records from both tables' 
+                },
+                2: { 
+                    type: 'LEFT JOIN', 
+                    color: 'var(--left-color)', 
+                    description: 'All records from left table + matching from right' 
+                },
+                3: { 
+                    type: 'RIGHT JOIN', 
+                    color: 'var(--right-color)', 
+                    description: 'All records from right table + matching from left' 
+                },
+                4: { 
+                    type: 'FULL OUTER JOIN', 
+                    color: 'var(--full-color)', 
+                    description: 'All records from both tables' 
+                }
+            };
+            
+            function updateVisualization(step) {
+                const data = joinData[step];
+                vizContainer.innerHTML = `
+                    <div class="text-center mb-4">
+                        <h3 class="text-xl font-bold" style="color: ${data.color}">${data.type}</h3>
+                        <p class="text-gray-400">${data.description}</p>
+                    </div>
+                    <div class="visualization-container">
+                        <div class="table-visualization">
+                            <div class="table-header">Patients</div>
+                            <div class="table-row">
+                                <div class="table-cell header">ID</div>
+                                <div class="table-cell header">Name</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">1001</div>
+                                <div class="table-cell">Alice</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">1002</div>
+                                <div class="table-cell">Bob</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">1003</div>
+                                <div class="table-cell">Carol</div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-visualization">
+                            <div class="table-header">Admissions</div>
+                            <div class="table-row">
+                                <div class="table-cell header">ID</div>
+                                <div class="table-cell header">Patient ID</div>
+                                <div class="table-cell header">Diagnosis</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">101</div>
+                                <div class="table-cell">1001</div>
+                                <div class="table-cell">Pneumonia</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-cell">102</div>
+                                <div class="table-cell">1004</div>
+                                <div class="table-cell">Fracture</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="join-result mt-4">
+                        <div class="result-row header">
+                            <div>Patient ID</div>
+                            <div>Name</div>
+                            <div>Admission ID</div>
+                            <div>Diagnosis</div>
+                        </div>
+                        ${generateResultRows(step)}
+                    </div>
+                `;
+            }
+            
+            function generateResultRows(step) {
+                const rows = {
+                    1: [ // INNER JOIN
+                        '<div class="result-row match-true"><div>1001</div><div>Alice</div><div>101</div><div>Pneumonia</div></div>'
+                    ],
+                    2: [ // LEFT JOIN
+                        '<div class="result-row match-true"><div>1001</div><div>Alice</div><div>101</div><div>Pneumonia</div></div>',
+                        '<div class="result-row match-false"><div>1002</div><div>Bob</div><div class="null-value">NULL</div><div class="null-value">NULL</div></div>',
+                        '<div class="result-row match-false"><div>1003</div><div>Carol</div><div class="null-value">NULL</div><div class="null-value">NULL</div></div>'
+                    ],
+                    3: [ // RIGHT JOIN
+                        '<div class="result-row match-true"><div>1001</div><div>Alice</div><div>101</div><div>Pneumonia</div></div>',
+                        '<div class="result-row match-false"><div class="null-value">NULL</div><div class="null-value">NULL</div><div>102</div><div>Fracture</div></div>'
+                    ],
+                    4: [ // FULL OUTER JOIN
+                        '<div class="result-row match-true"><div>1001</div><div>Alice</div><div>101</div><div>Pneumonia</div></div>',
+                        '<div class="result-row match-false"><div>1002</div><div>Bob</div><div class="null-value">NULL</div><div class="null-value">NULL</div></div>',
+                        '<div class="result-row match-false"><div>1003</div><div>Carol</div><div class="null-value">NULL</div><div class="null-value">NULL</div></div>',
+                        '<div class="result-row match-false"><div class="null-value">NULL</div><div class="null-value">NULL</div><div>102</div><div>Fracture</div></div>'
+                    ]
+                };
+                
+                return rows[step].join('');
+            }
+            
+            steps.forEach(step => {
+                step.addEventListener('click', function() {
+                    const stepNum = this.getAttribute('data-step');
+                    
+                    // Update active step
+                    steps.forEach(s => s.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update visualization
+                    updateVisualization(stepNum);
+                });
+            });
+            
+            // Initialize with first step
+            updateVisualization(1);
+        }
+
         // Function to set up the Light/Dark Mode toggle
         function setupThemeToggle() {
             const toggleButton = document.getElementById('theme-toggle');
@@ -2034,7 +2705,10 @@ ORDER BY referral_count DESC;
             // Set up theme toggle
             setupThemeToggle();
 
-            console.log("SQL Joins learning module fully initialized");
+            // Set up join comparison
+            setupJoinComparison();
+
+            console.log("SQL Joins learning module fully initialized with enhanced visualizations");
         }
 
         // Initialize when the page loads
