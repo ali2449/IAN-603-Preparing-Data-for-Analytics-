@@ -542,6 +542,70 @@
             cursor: pointer;
         }
 
+        /* Multi-Row Section Styles */
+        .concept-card {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        .operator-section {
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .operator-header {
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+
+        .operator-content {
+            border: 1px solid var(--border-color);
+            border-top: none;
+        }
+
+        .visual-example {
+            border-left: 4px solid;
+        }
+
+        .flow-steps {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 1rem 0;
+        }
+
+        .flow-step {
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            text-align: center;
+            flex: 1;
+            margin: 0 0.25rem;
+            font-size: 0.8rem;
+        }
+
+        .flow-arrow {
+            padding: 0 0.5rem;
+            color: var(--text-color);
+            font-weight: bold;
+        }
+
+        .comparison-table {
+            border-collapse: collapse;
+        }
+
+        .comparison-table th, .comparison-table td {
+            border: 1px solid var(--border-color);
+        }
+
+        .summary-section table {
+            border-collapse: collapse;
+        }
+
+        .summary-section th, .summary-section td {
+            border: 1px solid var(--border-color);
+        }
+
         @media (max-width: 1024px) {
             .nav-links {
                 display: none;
@@ -568,6 +632,15 @@
                 box-shadow: none;
                 border: none;
                 background-color: transparent;
+            }
+
+            .flow-steps {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
             }
         }
     </style>
@@ -850,83 +923,444 @@ ORDER BY ABS(difference_from_avg) DESC;</textarea>
                 </section>
             </div>
 
-            <!-- MULTI-ROW SUBQUERIES -->
+            <!-- MULTI-ROW SUBQUERIES - ENHANCED SECTION -->
             <div class="subquery-section multirow-section">
-                <h2 class="text-2xl font-bold mb-4" style="color: var(--multirow-color)">Multi-Row Subqueries</h2>
+                <h2 class="text-2xl font-bold mb-6" style="color: var(--multirow-color)">
+                    <i class="fas fa-layer-group mr-3"></i>Multi-Row Subqueries
+                </h2>
                 
-                <div class="concept-explanation">
-                    <h3 class="font-bold mb-2">Set Operations with IN and EXISTS</h3>
-                    <p class="mb-3">Multi-row subqueries return multiple values and work with operators like IN, EXISTS, ANY, and ALL for set-based operations.</p>
+                <!-- Overview Card -->
+                <div class="concept-card bg-gradient-to-r from-blue-900 to-purple-900 p-6 rounded-xl mb-8">
+                    <h3 class="text-xl font-bold mb-3 text-white">Set Operations with IN, EXISTS, ANY, and ALL</h3>
+                    <p class="text-blue-100 mb-4">Multi-row subqueries return multiple values and work with operators for powerful set-based operations. Master these to analyze patient groups, treatment patterns, and department comparisons.</p>
                     
-                    <div class="tip-box">
-                        <strong>💡 Healthcare Use:</strong> Find patients with specific conditions, identify readmissions, and analyze treatment patterns across departments.
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div class="bg-white bg-opacity-20 p-3 rounded-lg text-center">
+                            <div class="text-white font-bold">IN</div>
+                            <div class="text-blue-200 text-xs">Set Membership</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-3 rounded-lg text-center">
+                            <div class="text-white font-bold">EXISTS</div>
+                            <div class="text-blue-200 text-xs">Existence Check</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-3 rounded-lg text-center">
+                            <div class="text-white font-bold">ANY/SOME</div>
+                            <div class="text-blue-200 text-xs">Partial Comparison</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-3 rounded-lg text-center">
+                            <div class="text-white font-bold">ALL</div>
+                            <div class="text-blue-200 text-xs">Total Comparison</div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Example 3 -->
-                <section class="section-card p-4 rounded-xl mb-8">
-                    <div class="question-header">
-                        <div class="question-number">3</div>
-                        <h2 class="text-xl font-bold">Patients with Cardiac Conditions</h2>
-                        <span class="subquery-tag multirow-tag">Multi-Row Subquery</span>
+                <!-- IN Operator Section -->
+                <div class="operator-section mb-8">
+                    <div class="operator-header bg-blue-800 text-white p-4 rounded-t-lg">
+                        <i class="fas fa-search mr-2"></i>
+                        <span class="font-bold">IN Operator - Set Membership Check</span>
                     </div>
-                    <p class="mb-4">Find patients who have been admitted with cardiac-related diagnoses.</p>
                     
-                    <div class="code-container">
-                        <textarea id="editor3" class="sql-editor">SELECT DISTINCT p.patient_id, p.name, p.age
+                    <div class="operator-content bg-gray-800 p-6 rounded-b-lg">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-bold text-blue-300 mb-3">How IN Works:</h4>
+                                <p class="text-gray-300 mb-4">Checks if a value matches ANY value in a list or subquery result. Returns TRUE if match found.</p>
+                                
+                                <div class="visual-example bg-gray-900 p-4 rounded-lg mb-4">
+                                    <div class="text-sm text-gray-400 mb-2">Example Logic:</div>
+                                    <code class="text-green-400">patient_id IN (1003, 1004, 1006)</code>
+                                    <div class="text-xs text-gray-500 mt-2">≡ patient_id = 1003 OR patient_id = 1004 OR patient_id = 1006</div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-bold text-blue-300 mb-3">Visual Flow:</h4>
+                                <div class="flow-steps">
+                                    <div class="flow-step bg-blue-600 text-white">1. Execute Subquery</div>
+                                    <div class="flow-arrow">→</div>
+                                    <div class="flow-step bg-blue-600 text-white">2. Get Result Set</div>
+                                    <div class="flow-arrow">→</div>
+                                    <div class="flow-step bg-blue-600 text-white">3. Check Membership</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Example Query -->
+                        <div class="mt-6">
+                            <h4 class="font-bold text-blue-300 mb-3">Healthcare Example:</h4>
+                            <div class="code-container">
+                                <textarea id="editor3" class="sql-editor">-- Find patients with cardiac conditions using IN
+SELECT p.patient_id, p.name, p.age, a.diagnosis
 FROM patients p
+JOIN admissions a ON p.patient_id = a.patient_id
 WHERE p.patient_id IN (
-    SELECT a.patient_id 
-    FROM admissions a 
-    WHERE a.diagnosis LIKE '%cardiac%' OR a.diagnosis LIKE '%heart%'
-);</textarea>
-                        
-                        <div class="action-buttons">
-                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="3">
-                                Run Query
-                            </button>
-                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="3">
-                                Copy Code
-                            </button>
-                        </div>
-
-                        <div id="output3" class="output-area">
-                            Query results will appear here...
+    SELECT DISTINCT patient_id 
+    FROM admissions 
+    WHERE diagnosis ILIKE '%cardiac%' 
+       OR diagnosis ILIKE '%heart%'
+       OR department = 'Cardiology'
+)
+ORDER BY p.age DESC;</textarea>
+                                
+                                <div class="action-buttons">
+                                    <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="3">
+                                        Run Query
+                                    </button>
+                                    <button class="copy-button px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg font-semibold transition-colors" data-section="3">
+                                        Copy Code
+                                    </button>
+                                </div>
+                                <div id="output3" class="output-area">Query results will appear here...</div>
+                            </div>
                         </div>
                     </div>
-                </section>
+                </div>
 
-                <!-- Example 4 -->
-                <section class="section-card p-4 rounded-xl mb-8">
-                    <div class="question-header">
-                        <div class="question-number">4</div>
-                        <h2 class="text-xl font-bold">Patients with Multiple Medications</h2>
-                        <span class="subquery-tag multirow-tag">Multi-Row Subquery</span>
+                <!-- EXISTS Operator Section -->
+                <div class="operator-section mb-8">
+                    <div class="operator-header bg-green-800 text-white p-4 rounded-t-lg">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span class="font-bold">EXISTS Operator - Correlated Existence Check</span>
                     </div>
-                    <p class="mb-4">Find patients who are prescribed more than 2 different medications.</p>
                     
-                    <div class="code-container">
-                        <textarea id="editor4" class="sql-editor">SELECT p.patient_id, p.name, COUNT(DISTINCT pr.medication) as medication_count
-FROM patients p
-JOIN prescriptions pr ON p.patient_id = pr.patient_id
-GROUP BY p.patient_id, p.name
-HAVING COUNT(DISTINCT pr.medication) > 2
-ORDER BY medication_count DESC;</textarea>
-                        
-                        <div class="action-buttons">
-                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="4">
-                                Run Query
-                            </button>
-                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="4">
-                                Copy Code
-                            </button>
+                    <div class="operator-content bg-gray-800 p-6 rounded-b-lg">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-bold text-green-300 mb-3">How EXISTS Works:</h4>
+                                <p class="text-gray-300 mb-4">Checks if subquery returns ANY rows. More efficient than IN for large datasets - stops at first match.</p>
+                                
+                                <div class="visual-example bg-gray-900 p-4 rounded-lg mb-4">
+                                    <div class="text-sm text-gray-400 mb-2">Performance Advantage:</div>
+                                    <div class="text-xs text-green-400">EXISTS stops at first match</div>
+                                    <div class="text-xs text-red-400">IN processes all results</div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-bold text-green-300 mb-3">Execution Pattern:</h4>
+                                <div class="flow-steps">
+                                    <div class="flow-step bg-green-600 text-white">For each row</div>
+                                    <div class="flow-arrow">→</div>
+                                    <div class="flow-step bg-green-600 text-white">Run subquery</div>
+                                    <div class="flow-arrow">→</div>
+                                    <div class="flow-step bg-green-600 text-white">Check if any rows</div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div id="output4" class="output-area">
-                            Query results will appear here...
+                        <!-- Example Query -->
+                        <div class="mt-6">
+                            <h4 class="font-bold text-green-300 mb-3">Healthcare Example:</h4>
+                            <div class="code-container">
+                                <textarea id="editor4" class="sql-editor">-- Find patients with abnormal lab results using EXISTS
+SELECT p.patient_id, p.name, p.age,
+       (SELECT COUNT(*) FROM lab_results lr 
+        WHERE lr.patient_id = p.patient_id 
+        AND lr.result_value > (
+            SELECT AVG(result_value) * 1.2 
+            FROM lab_results lr2 
+            WHERE lr2.test_name = lr.test_name
+        )) as abnormal_count
+FROM patients p
+WHERE EXISTS (
+    SELECT 1 
+    FROM lab_results lr 
+    WHERE lr.patient_id = p.patient_id 
+    AND lr.result_value > (
+        SELECT AVG(result_value) * 1.2 
+        FROM lab_results lr2 
+        WHERE lr2.test_name = lr.test_name
+    )
+)
+ORDER BY abnormal_count DESC;</textarea>
+                                
+                                <div class="action-buttons">
+                                    <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="4">
+                                        Run Query
+                                    </button>
+                                    <button class="copy-button px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg font-semibold transition-colors" data-section="4">
+                                        Copy Code
+                                    </button>
+                                </div>
+                                <div id="output4" class="output-area">Query results will appear here...</div>
+                            </div>
                         </div>
                     </div>
-                </section>
+                </div>
+
+                <!-- ANY/SOME Operator Section -->
+                <div class="operator-section mb-8">
+                    <div class="operator-header bg-yellow-600 text-white p-4 rounded-t-lg">
+                        <i class="fas fa-balance-scale mr-2"></i>
+                        <span class="font-bold">ANY/SOME Operator - Partial Set Comparison</span>
+                    </div>
+                    
+                    <div class="operator-content bg-gray-800 p-6 rounded-b-lg">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-bold text-yellow-300 mb-3">How ANY Works:</h4>
+                                <p class="text-gray-300 mb-4">Returns TRUE if comparison is true for ANY element in the set. SOME is alias for ANY.</p>
+                                
+                                <div class="visual-example bg-gray-900 p-4 rounded-lg mb-4">
+                                    <div class="text-sm text-gray-400 mb-2">Example:</div>
+                                    <code class="text-yellow-400">age > ANY(30, 40, 50)</code>
+                                    <div class="text-xs text-gray-500 mt-2">≡ age > 30 OR age > 40 OR age > 50</div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-bold text-yellow-300 mb-3">Comparison Table:</h4>
+                                <div class="comparison-table bg-gray-900 p-3 rounded text-xs">
+                                    <div class="grid grid-cols-4 gap-2 mb-2 font-bold">
+                                        <div>Age</div>
+                                        <div>Set</div>
+                                        <div>Check</div>
+                                        <div>Result</div>
+                                    </div>
+                                    <div class="grid grid-cols-4 gap-2 text-green-400">
+                                        <div>45</div>
+                                        <div>[30,40,50]</div>
+                                        <div>45 > ANY?</div>
+                                        <div>✅ TRUE</div>
+                                    </div>
+                                    <div class="grid grid-cols-4 gap-2 text-red-400">
+                                        <div>25</div>
+                                        <div>[30,40,50]</div>
+                                        <div>25 > ANY?</div>
+                                        <div>❌ FALSE</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Example Query -->
+                        <div class="mt-6">
+                            <h4 class="font-bold text-yellow-300 mb-3">Healthcare Example:</h4>
+                            <div class="code-container">
+                                <textarea id="editor5" class="sql-editor">-- Find patients older than SOME cardiology patients using ANY
+SELECT p1.patient_id, p1.name, p1.age, p1.gender
+FROM patients p1
+WHERE p1.age > ANY (
+    SELECT p2.age
+    FROM patients p2
+    JOIN admissions a ON p2.patient_id = a.patient_id
+    WHERE a.department = 'Cardiology'
+    AND p2.age IS NOT NULL
+)
+AND p1.patient_id NOT IN (
+    SELECT patient_id FROM admissions WHERE department = 'Cardiology'
+)
+ORDER BY p1.age DESC;</textarea>
+                                
+                                <div class="action-buttons">
+                                    <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="5">
+                                        Run Query
+                                    </button>
+                                    <button class="copy-button px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg font-semibold transition-colors" data-section="5">
+                                        Copy Code
+                                    </button>
+                                </div>
+                                <div id="output5" class="output-area">Query results will appear here...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ALL Operator Section -->
+                <div class="operator-section mb-8">
+                    <div class="operator-header bg-red-800 text-white p-4 rounded-t-lg">
+                        <i class="fas fa-trophy mr-2"></i>
+                        <span class="font-bold">ALL Operator - Total Set Comparison</span>
+                    </div>
+                    
+                    <div class="operator-content bg-gray-800 p-6 rounded-b-lg">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-bold text-red-300 mb-3">How ALL Works:</h4>
+                                <p class="text-gray-300 mb-4">Returns TRUE only if comparison is true for ALL elements in the set. Most restrictive operator.</p>
+                                
+                                <div class="visual-example bg-gray-900 p-4 rounded-lg mb-4">
+                                    <div class="text-sm text-gray-400 mb-2">Example:</div>
+                                    <code class="text-red-400">age > ALL(30, 40, 50)</code>
+                                    <div class="text-xs text-gray-500 mt-2">≡ age > 30 AND age > 40 AND age > 50</div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-bold text-red-300 mb-3">Comparison Table:</h4>
+                                <div class="comparison-table bg-gray-900 p-3 rounded text-xs">
+                                    <div class="grid grid-cols-4 gap-2 mb-2 font-bold">
+                                        <div>Age</div>
+                                        <div>Set</div>
+                                        <div>Check</div>
+                                        <div>Result</div>
+                                    </div>
+                                    <div class="grid grid-cols-4 gap-2 text-green-400">
+                                        <div>55</div>
+                                        <div>[30,40,50]</div>
+                                        <div>55 > ALL?</div>
+                                        <div>✅ TRUE</div>
+                                    </div>
+                                    <div class="grid grid-cols-4 gap-2 text-red-400">
+                                        <div>45</div>
+                                        <div>[30,40,50]</div>
+                                        <div>45 > ALL?</div>
+                                        <div>❌ FALSE</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Example Query -->
+                        <div class="mt-6">
+                            <h4 class="font-bold text-red-300 mb-3">Healthcare Example:</h4>
+                            <div class="code-container">
+                                <textarea id="editor6" class="sql-editor">-- Find patients older than ALL cardiology patients using ALL
+SELECT p1.patient_id, p1.name, p1.age, p1.gender,
+       (SELECT MAX(age) FROM patients p2 
+        JOIN admissions a ON p2.patient_id = a.patient_id 
+        WHERE a.department = 'Cardiology') as max_cardio_age
+FROM patients p1
+WHERE p1.age > ALL (
+    SELECT p2.age
+    FROM patients p2
+    JOIN admissions a ON p2.patient_id = a.patient_id
+    WHERE a.department = 'Cardiology'
+    AND p2.age IS NOT NULL
+)
+ORDER BY p1.age DESC;</textarea>
+                                
+                                <div class="action-buttons">
+                                    <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="6">
+                                        Run Query
+                                    </button>
+                                    <button class="copy-button px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg font-semibold transition-colors" data-section="6">
+                                        Copy Code
+                                    </button>
+                                </div>
+                                <div id="output6" class="output-area">Query results will appear here...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Operator Comparison Summary -->
+                <div class="summary-section bg-gray-800 p-6 rounded-xl mb-8">
+                    <h3 class="text-xl font-bold mb-4 text-white">
+                        <i class="fas fa-chart-bar mr-2"></i>Operator Comparison Guide
+                    </h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-300">
+                            <thead class="text-xs uppercase bg-gray-700">
+                                <tr>
+                                    <th class="px-4 py-3">Operator</th>
+                                    <th class="px-4 py-3">Returns TRUE When</th>
+                                    <th class="px-4 py-3">Use Case</th>
+                                    <th class="px-4 py-3">Performance</th>
+                                    <th class="px-4 py-3">Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-700">
+                                    <td class="px-4 py-3 font-mono bg-blue-900">IN</td>
+                                    <td class="px-4 py-3">Value equals any in set</td>
+                                    <td class="px-4 py-3">Set membership checks</td>
+                                    <td class="px-4 py-3">Good for small sets</td>
+                                    <td class="px-4 py-3 font-mono text-xs">id IN (1,2,3)</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="px-4 py-3 font-mono bg-green-900">EXISTS</td>
+                                    <td class="px-4 py-3">Subquery returns any rows</td>
+                                    <td class="px-4 py-3">Correlated existence checks</td>
+                                    <td class="px-4 py-3">Best for large data</td>
+                                    <td class="px-4 py-3 font-mono text-xs">EXISTS(subquery)</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="px-4 py-3 font-mono bg-yellow-900">ANY</td>
+                                    <td class="px-4 py-3">Comparison true for any element</td>
+                                    <td class="px-4 py-3">Partial comparisons</td>
+                                    <td class="px-4 py-3">Moderate</td>
+                                    <td class="px-4 py-3 font-mono text-xs">age > ANY(subquery)</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="px-4 py-3 font-mono bg-red-900">ALL</td>
+                                    <td class="px-4 py-3">Comparison true for all elements</td>
+                                    <td class="px-4 py-3">Strict comparisons</td>
+                                    <td class="px-4 py-3">Moderate</td>
+                                    <td class="px-4 py-3 font-mono text-xs">age > ALL(subquery)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Practice Exercise -->
+                <div class="practice-section bg-gradient-to-r from-purple-800 to-pink-800 p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4 text-white">
+                        <i class="fas fa-dumbbell mr-2"></i>Practice Exercise
+                    </h3>
+                    
+                    <div class="bg-white bg-opacity-10 p-4 rounded-lg mb-4">
+                        <h4 class="font-bold text-white mb-2">Challenge: Find Complex Patients</h4>
+                        <p class="text-purple-200 text-sm">Find patients who meet ALL these criteria:</p>
+                        <ul class="text-purple-200 text-sm list-disc list-inside mt-2">
+                            <li>Have multiple admissions (>1)</li>
+                            <li>Have abnormal lab results</li>
+                            <li>Are prescribed multiple medications</li>
+                            <li>Are above average age</li>
+                        </ul>
+                    </div>
+
+                    <div class="code-container">
+                        <textarea id="editor7" class="sql-editor" placeholder="-- Write your solution using multi-row operators..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="7">
+                                Run Query
+                            </button>
+                            <button class="copy-button px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg font-semibold transition-colors" data-section="7">
+                                Copy Code
+                            </button>
+                            <button class="solution-button px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold transition-colors" data-section="7">
+                                Show Solution
+                            </button>
+                        </div>
+                        <div id="output7" class="output-area">Your results will appear here...</div>
+                        
+                        <div class="sample-solution mt-4">
+                            <div class="sample-header bg-yellow-600 text-white p-3 rounded-t-lg">
+                                <span>💡 Solution Approach</span>
+                                <button class="toggle-solution bg-yellow-700 hover:bg-yellow-600 px-3 py-1 rounded text-sm" data-section="7">Show Solution</button>
+                            </div>
+                            <div id="solution7" class="solution-content hidden bg-gray-900 p-4 rounded-b-lg">
+-- Complex patient identification using multiple operators
+SELECT p.patient_id, p.name, p.age,
+       (SELECT COUNT(*) FROM admissions a WHERE a.patient_id = p.patient_id) as admission_count,
+       (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) as medication_count
+FROM patients p
+WHERE p.age > (SELECT AVG(age) FROM patients)  -- Scalar subquery
+  AND EXISTS (                                  -- EXISTS for admissions
+      SELECT 1 FROM admissions a 
+      WHERE a.patient_id = p.patient_id 
+      GROUP BY a.patient_id 
+      HAVING COUNT(*) > 1
+  )
+  AND EXISTS (                                  -- EXISTS for abnormal labs
+      SELECT 1 FROM lab_results lr 
+      WHERE lr.patient_id = p.patient_id 
+      AND lr.result_value > (
+          SELECT AVG(result_value) * 1.2 
+          FROM lab_results lr2 
+          WHERE lr2.test_name = lr.test_name
+      )
+  )
+  AND (SELECT COUNT(DISTINCT medication) FROM prescriptions pr WHERE pr.patient_id = p.patient_id) > 1
+ORDER BY admission_count DESC, medication_count DESC;</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- CORRELATED SUBQUERIES -->
@@ -942,17 +1376,17 @@ ORDER BY medication_count DESC;</textarea>
                     </div>
                 </div>
 
-                <!-- Example 5 -->
+                <!-- Example 8 -->
                 <section class="section-card p-4 rounded-xl mb-8">
                     <div class="question-header">
-                        <div class="question-number">5</div>
+                        <div class="question-number">8</div>
                         <h2 class="text-xl font-bold">Abnormal Lab Results by Test Type</h2>
                         <span class="subquery-tag correlated-tag">Correlated Subquery</span>
                     </div>
                     <p class="mb-4">Find lab results that are significantly higher than the average for their specific test type.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor5" class="sql-editor">SELECT 
+                        <textarea id="editor8" class="sql-editor">SELECT 
     l.patient_id,
     p.name,
     l.test_name,
@@ -967,15 +1401,15 @@ WHERE l.result_value > 1.5 * (
 );</textarea>
                         
                         <div class="action-buttons">
-                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="5">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="8">
                                 Run Query
                             </button>
-                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="5">
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="8">
                                 Copy Code
                             </button>
                         </div>
 
-                        <div id="output5" class="output-area">
+                        <div id="output8" class="output-area">
                             Query results will appear here...
                         </div>
                     </div>
@@ -1001,30 +1435,30 @@ WHERE l.result_value > 1.5 * (
                     <p class="mb-4">Identify patients who were readmitted within 30 days of discharge.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor6" class="sql-editor" placeholder="-- Write your solution here..."></textarea>
+                        <textarea id="editor9" class="sql-editor" placeholder="-- Write your solution here..."></textarea>
                         
                         <div class="action-buttons">
-                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="6">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="9">
                                 Run Query
                             </button>
-                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="6">
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="9">
                                 Copy Code
                             </button>
-                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="6">
+                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="9">
                                 Show Solution
                             </button>
                         </div>
 
-                        <div id="output6" class="output-area">
+                        <div id="output9" class="output-area">
                             Query results will appear here...
                         </div>
                         
                         <div class="sample-solution">
                             <div class="sample-header">
                                 <span>💡 Solution</span>
-                                <button class="toggle-solution" data-section="6">Show Solution</button>
+                                <button class="toggle-solution" data-section="9">Show Solution</button>
                             </div>
-                            <div id="solution6" class="solution-content hidden">
+                            <div id="solution9" class="solution-content hidden">
 -- Find patients readmitted within 30 days
 SELECT DISTINCT p1.patient_id, p1.name, 
        a1.discharge_date as first_discharge,
@@ -1051,30 +1485,30 @@ ORDER BY p1.patient_id, a1.discharge_date;
                     <p class="mb-4">Find patients with multiple prescriptions and analyze their medication patterns.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor7" class="sql-editor" placeholder="-- Write your solution here..."></textarea>
+                        <textarea id="editor10" class="sql-editor" placeholder="-- Write your solution here..."></textarea>
                         
                         <div class="action-buttons">
-                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="7">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="10">
                                 Run Query
                             </button>
-                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="7">
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="10">
                                 Copy Code
                             </button>
-                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="7">
+                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="10">
                                 Show Solution
                             </button>
                         </div>
 
-                        <div id="output7" class="output-area">
+                        <div id="output10" class="output-area">
                             Query results will appear here...
                         </div>
                         
                         <div class="sample-solution">
                             <div class="sample-header">
                                 <span>💡 Solution</span>
-                                <button class="toggle-solution" data-section="7">Show Solution</button>
+                                <button class="toggle-solution" data-section="10">Show Solution</button>
                             </div>
-                            <div id="solution7" class="solution-content hidden">
+                            <div id="solution10" class="solution-content hidden">
 -- Analyze medication patterns for patients with multiple prescriptions
 SELECT 
     p.patient_id,
@@ -1135,30 +1569,30 @@ ORDER BY total_medications DESC, treatment_duration_days DESC;
                     <p class="mb-4">Create a comprehensive risk scoring system that considers age, number of admissions, abnormal lab results, and medication complexity.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor8" class="sql-editor" placeholder="-- Build your patient risk assessment query here..."></textarea>
+                        <textarea id="editor11" class="sql-editor" placeholder="-- Build your patient risk assessment query here..."></textarea>
                         
                         <div class="action-buttons">
-                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="8">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="11">
                                 Run Analysis
                             </button>
-                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="8">
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="11">
                                 Copy Code
                             </button>
-                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="8">
+                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="11">
                                 Show Solution
                             </button>
                         </div>
 
-                        <div id="output8" class="output-area">
+                        <div id="output11" class="output-area">
                             Risk assessment results will appear here...
                         </div>
 
                         <div class="sample-solution">
                             <div class="sample-header">
                                 <span>💡 Project Solution</span>
-                                <button class="toggle-solution" data-section="8">Show Solution</button>
+                                <button class="toggle-solution" data-section="11">Show Solution</button>
                             </div>
-                            <div id="solution8" class="solution-content hidden">
+                            <div id="solution11" class="solution-content hidden">
 -- PATIENT RISK ASSESSMENT SYSTEM
 WITH patient_metrics AS (
     SELECT 
@@ -1241,30 +1675,30 @@ ORDER BY total_risk_score DESC;
                     <p class="mb-4">Analyze key performance indicators for each department including average length of stay, readmission rates, and patient volume trends.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor9" class="sql-editor" placeholder="-- Build your department performance analysis here..."></textarea>
+                        <textarea id="editor12" class="sql-editor" placeholder="-- Build your department performance analysis here..."></textarea>
                         
                         <div class="action-buttons">
-                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="9">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="12">
                                 Run Analysis
                             </button>
-                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="9">
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="12">
                                 Copy Code
                             </button>
-                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="9">
+                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="12">
                                 Show Solution
                             </button>
                         </div>
 
-                        <div id="output9" class="output-area">
+                        <div id="output12" class="output-area">
                             Department performance results will appear here...
                         </div>
                         
                         <div class="sample-solution">
                             <div class="sample-header">
                                 <span>💡 Project Solution</span>
-                                <button class="toggle-solution" data-section="9">Show Solution</button>
+                                <button class="toggle-solution" data-section="12">Show Solution</button>
                             </div>
-                            <div id="solution9" class="solution-content hidden">
+                            <div id="solution12" class="solution-content hidden">
 -- DEPARTMENT PERFORMANCE DASHBOARD
 WITH department_stats AS (
     SELECT 
@@ -1332,30 +1766,30 @@ ORDER BY ds.total_admissions DESC;
                     <p class="mb-4">Identify potential medication safety issues, analyze prescription patterns, and evaluate medication adherence across patient populations.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor10" class="sql-editor" placeholder="-- Build your medication analysis here..."></textarea>
+                        <textarea id="editor13" class="sql-editor" placeholder="-- Build your medication analysis here..."></textarea>
                         
                         <div class="action-buttons">
-                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="10">
+                            <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="13">
                                 Run Analysis
                             </button>
-                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="10">
+                            <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="13">
                                 Copy Code
                             </button>
-                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="10">
+                            <button class="solution-button px-4 py-2 rounded-lg font-semibold text-white" data-section="13">
                                 Show Solution
                             </button>
                         </div>
 
-                        <div id="output10" class="output-area">
+                        <div id="output13" class="output-area">
                             Medication analysis results will appear here...
                         </div>
                         
                         <div class="sample-solution">
                             <div class="sample-header">
                                 <span>💡 Project Solution</span>
-                                <button class="toggle-solution" data-section="10">Show Solution</button>
+                                <button class="toggle-solution" data-section="13">Show Solution</button>
                             </div>
-                            <div id="solution10" class="solution-content hidden">
+                            <div id="solution13" class="solution-content hidden">
 -- MEDICATION SAFETY & EFFICIENCY ANALYSIS
 WITH patient_medication_summary AS (
     SELECT 
@@ -1478,7 +1912,7 @@ ORDER BY complexity_score DESC, total_medications DESC;
 
     <script>
         // --- Global Variables ---
-        const TOTAL_QUESTIONS = 10;
+        const TOTAL_QUESTIONS = 13;
         let completedExercises = new Set();
         let db = null;
         let codeMirrorEditors = {};
@@ -1980,7 +2414,7 @@ ORDER BY complexity_score DESC, total_medications DESC;
                 document.querySelector(`.copy-button[data-section="${i}"]`).addEventListener('click', () => copyCode(i));
                 
                 // Add solution button event listeners for practice and project sections
-                if (i >= 6) { // Practice and project sections start from 6
+                if (i >= 7) { // Practice and project sections start from 7
                     const solutionButton = document.querySelector(`.solution-button[data-section="${i}"]`);
                     if (solutionButton) {
                         solutionButton.addEventListener('click', () => showSolution(i));
