@@ -1,401 +1,1794 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Module 8: Strings and Dates - IAF 603</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Highlight.js for code highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- MathJax CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- Custom MathJax Configuration -->
-    <script src="./js/mathjax.js"></script>
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="./css/styles.css">
+    <title>Module 8: Strings and Dates - PostgreSQL Data Preparation</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- CodeMirror for SQL editing -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/sql/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/sql-hint.min.js"></script>
+    
+    <!-- AlaSQL Library -->
+    <script src="https://cdn.jsdelivr.net/npm/alasql@0.6"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+
+        /* Theme Variables */
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --section-bg: #1e293b;
+            --code-bg: #020617;
+            --border-color: #334155;
+            --header-color: #38bdf8;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --error-color: #f87171;
+            --success-color: #34d399;
+            --sample-color: #fbbf24;
+            --string-color: #10b981;
+            --date-color: #3b82f6;
+            --combined-color: #8b5cf6;
+            --practice-color: #ec4899;
+            --fabric-color: #f59e0b;
+            --nav-bg: #1e293b;
+            --warning-color: #f59e0b;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --text-color: #1e293b;
+            --section-bg: #ffffff;
+            --code-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --header-color: #1d4ed8;
+            --accent-color: #4f46e5;
+            --accent-hover: #4338ca;
+            --error-color: #dc2626;
+            --success-color: #10b981;
+            --sample-color: #d97706;
+            --string-color: #059669;
+            --date-color: #2563eb;
+            --combined-color: #7c3aed;
+            --practice-color: #db2777;
+            --fabric-color: #d97706;
+            --nav-bg: #ffffff;
+            --warning-color: #d97706;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1, h2 {
+            color: var(--header-color);
+        }
+
+        .section-card {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .sql-editor {
+            width: 100%;
+            height: 200px;
+            background-color: var(--code-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .output-area {
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            color: var(--text-color);
+            padding: 0.75rem;
+            margin-top: 12px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+        }
+
+        .question-number {
+            background-color: var(--accent-color);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+        
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .code-container {
+            margin-top: 16px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .sample-solution {
+            background-color: var(--code-bg);
+            border: 1px solid var(--sample-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 12px;
+            position: relative;
+        }
+
+        .sample-header {
+            color: var(--sample-color);
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-solution {
+            background: none;
+            border: none;
+            color: var(--sample-color);
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: auto;
+        }
+
+        .solution-content {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .function-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 12px;
+        }
+
+        .string-tag { background-color: var(--string-color); color: white; }
+        .date-tag { background-color: var(--date-color); color: white; }
+        .combined-tag { background-color: var(--combined-color); color: white; }
+        .practice-tag { background-color: var(--practice-color); color: white; }
+        .fabric-tag { background-color: var(--fabric-color); color: white; }
+
+        .function-section {
+            border-left: 4px solid;
+            padding-left: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .string-section { border-color: var(--string-color); }
+        .date-section { border-color: var(--date-color); }
+        .combined-section { border-color: var(--combined-color); }
+        .fabric-section { border-color: var(--fabric-color); }
+
+        .database-schema {
+            background-color: var(--code-bg);
+            border: 1px solid var(--string-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+        }
+
+        .schema-header {
+            color: var(--string-color);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-structure {
+            margin-bottom: 1rem;
+        }
+
+        .CodeMirror {
+            height: 200px;
+            border-radius: 0.5rem;
+            margin-top: 12px;
+        }
+
+        .sql-engine-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .status-ready {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-loading {
+            background-color: var(--sample-color);
+            color: black;
+        }
+
+        .status-error {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+        }
+
+        .results-table th {
+            background-color: var(--border-color);
+            padding: 6px 8px;
+            text-align: left;
+            border: 1px solid var(--border-color);
+            font-weight: bold;
+        }
+
+        .results-table td {
+            padding: 6px 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .query-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .query-success {
+            color: var(--success-color);
+        }
+
+        .learning-objective {
+            background-color: var(--code-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .concept-explanation {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .tip-box {
+            background-color: var(--sample-color);
+            color: black;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .function-card {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .function-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .function-card.string-card { border-color: var(--string-color); }
+        .function-card.date-card { border-color: var(--date-color); }
+
+        .function-card h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .function-syntax {
+            background-color: var(--code-bg);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.8rem;
+            margin: 0.5rem 0;
+        }
+
+        .complexity {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .complexity-basic { background-color: var(--string-color); color: white; }
+        .complexity-intermediate { background-color: var(--date-color); color: white; }
+        .complexity-advanced { background-color: var(--combined-color); color: white; }
+
+        .solution-button {
+            background-color: var(--success-color);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .solution-button:hover {
+            background-color: #10b981;
+            transform: translateY(-1px);
+        }
+
+        /* Navigation Styles */
+        .nav-container {
+            background-color: var(--nav-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--header-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--section-bg);
+            min-width: 250px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            z-index: 1;
+            padding: 0.5rem 0;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-link {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .dropdown-link:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .dropdown-link.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .module-number {
+            background-color: var(--accent-color);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .postgres-warning {
+            background-color: var(--warning-color);
+            color: black;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .postgres-warning i {
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--nav-bg);
+                flex-direction: column;
+                padding: 1rem;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                border: none;
+                background-color: transparent;
+            }
+
+            .function-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="./index.html">IAF 603: Preparing Data for Analytics</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+<body class="p-4 md:p-8 min-h-screen">
+    <!-- SQL Engine Status -->
+    <div id="sql-engine-status" class="sql-engine-status status-loading">
+        Loading SQL Engine...
+    </div>
+    
+    <!-- Navigation Menu -->
+    <nav class="nav-container">
+        <div class="max-w-6xl mx-auto">
+            <div class="nav-menu">
+                <a href="index.html" class="nav-logo">
+                    <i class="fas fa-database"></i>
+                    IAF 603: Data Analytics
+                </a>
+                
+                <button class="mobile-menu-btn" id="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="nav-links" id="nav-links">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                    
+                    <div class="dropdown">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-book"></i>
                             Modules
+                            <i class="fas fa-chevron-down"></i>
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="./module1.html">Module 1</a></li>
-                            <li><a class="dropdown-item" href="./module2.html">Module 2</a></li>
-                            <li><a class="dropdown-item" href="./module3.html">Module 3</a></li>
-                            <li><a class="dropdown-item" href="./module4.html">Module 4</a></li>
-                            <li><a class="dropdown-item" href="./module5.html">Module 5</a></li>
-                            <li><a class="dropdown-item" href="./module6.html">Module 6</a></li>
-                            <li><a class="dropdown-item" href="./module7.html">Module 7</a></li>
-                            <li><a class="dropdown-item" href="./module8.html">Module 8</a></li>
-                            <li><a class="dropdown-item" href="./module9.html">Module 9</a></li>
-                            <li><a class="dropdown-item" href="./module10.html">Module 10</a></li>
-                            <li><a class="dropdown-item" href="./module11.html">Module 11</a></li>
-                            <li><a class="dropdown-item" href="./module12.html">Module 12</a></li>
-                            <li><a class="dropdown-item" href="./module13.html">Module 13</a></li>
-                            <li><a class="dropdown-item" href="./module14.html">Module 14</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html#contact">Contact</a>
-                    </li>
-                </ul>
+                        <div class="dropdown-content">
+                            <a href="module1.html" class="dropdown-link">
+                                <span class="module-number">1</span>
+                                Introduction to Data
+                            </a>
+                            <a href="module2.html" class="dropdown-link">
+                                <span class="module-number">2</span>
+                                Database Concepts
+                            </a>
+                            <a href="module3.html" class="dropdown-link">
+                                <span class="module-number">3</span>
+                                SQL Basics I
+                            </a>
+                            <a href="module4.html" class="dropdown-link">
+                                <span class="module-number">4</span>
+                                SQL Aggregations
+                            </a>
+                            <a href="module5.html" class="dropdown-link">
+                                <span class="module-number">5</span>
+                                SQL Logic
+                            </a>
+                            <a href="module6.html" class="dropdown-link">
+                                <span class="module-number">6</span>
+                                SQL Joins
+                            </a>
+                            <a href="module7.html" class="dropdown-link">
+                                <span class="module-number">7</span>
+                                Subqueries
+                            </a>
+                            <a href="module8.html" class="dropdown-link active">
+                                <span class="module-number">8</span>
+                                Strings and Dates
+                            </a>
+                            <a href="module9.html" class="dropdown-link">
+                                <span class="module-number">9</span>
+                                Data Cleaning
+                            </a>
+                            <a href="module10.html" class="dropdown-link">
+                                <span class="module-number">10</span>
+                                Reshaping Data
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-project-diagram"></i>
+                        Projects
+                    </a>
+                    
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-question-circle"></i>
+                        Resources
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container my-5">
-        <!-- Module Title -->
-        <section class="text-center py-5 bg-white rounded shadow">
-            <h1 class="display-4 fw-bold text-dark">Module 8: Strings and Dates</h1>
+    <div class="max-w-6xl mx-auto mt-6">
+        <!-- HEADER -->
+        <header class="flex justify-between items-center mb-6 pb-4 border-b border-border-color">
+            <div>
+                <h1 class="text-3xl font-extrabold">Module 8: Strings and Dates</h1>
+                <p class="text-lg text-gray-400">IAF 603 - Preparing Data for Analytics</p>
+                <p class="text-sm text-green-400 mt-1">✓ Interactive SQL Environment Active</p>
+                <p class="text-sm text-yellow-400 mt-1">📊 Real Healthcare & Business Datasets</p>
+                <p class="text-sm text-blue-400 mt-1">🔧 Hybrid Execution - Run in Browser or PostgreSQL</p>
+            </div>
+            <button id="theme-toggle" class="px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold transition-colors">
+                <!-- Text set by JavaScript -->
+            </button>
+        </header>
+
+        <!-- Introduction -->
+        <section class="mb-8">
+            <div class="instructions p-4 section-card rounded-xl">
+                <h2 class="text-xl font-bold mb-2">🎯 Mastering String and Date Functions</h2>
+                <p class="mb-4">Learn essential SQL functions for cleaning and transforming text and temporal data to prepare them for analytics.</p>
+                
+                <div class="learning-objective">
+                    <h3 class="font-bold mb-2">Learning Objectives</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Master SQL string functions (UPPER, LOWER, TRIM, CONCAT, SUBSTRING, REPLACE)</li>
+                        <li>Utilize SQL date functions (EXTRACT, DATE_TRUNC, DATEADD, DATEDIFF)</li>
+                        <li>Apply string and date functions with other SQL clauses for data preparation</li>
+                        <li>Handle common data quality issues in strings and dates</li>
+                        <li>Execute operations in both browser and PostgreSQL environments</li>
+                    </ul>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-2 text-sm mt-4">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-string-color mr-2"></div>
+                        <span>String Functions</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-date-color mr-2"></div>
+                        <span>Date Functions</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-combined-color mr-2"></div>
+                        <span>Combined</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-practice-color mr-2"></div>
+                        <span>Practice</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-fabric-color mr-2"></div>
+                        <span>PostgreSQL</span>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <!-- Module Content -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <!-- Learning Objectives -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Learning Objectives</h2>
-                <p>Upon completion of this module, participants will be able to:</p>
-                <ul>
-                    <li>Master SQL string functions (<code>UPPER</code>, <code>LOWER</code>, <code>TRIM</code>, <code>CONCAT</code>, <code>SUBSTRING</code>, <code>REPLACE</code>) for cleaning and transforming text data.</li>
-                    <li>Utilize SQL date functions (<code>EXTRACT</code>, <code>DATE_TRUNC</code>, <code>DATEADD</code>, <code>DATEDIFF</code>) to manipulate and analyze temporal data.</li>
-                    <li>Apply string and date functions in combination with other SQL clauses for data preparation.</li>
-                    <li>Handle common data quality issues in strings and dates, such as inconsistent formats or extra spaces.</li>
-                    <li>Execute string and date operations in cloud-based environments like Microsoft Fabric Lakehouse.</li>
-                </ul>
-
-                <!-- Introduction to Strings and Dates -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Introduction to Strings and Dates</h2>
-                <p>Text and temporal data are ubiquitous in databases but often require cleaning and transformation to be analysis-ready. This module focuses on SQL string functions (<code>UPPER</code>, <code>TRIM</code>, <code>CONCAT</code>, etc.) and date functions (<code>EXTRACT</code>, <code>DATE_TRUNC</code>, etc.) to standardize and manipulate these data types. These skills are critical for preparing data in real-world scenarios, such as cleaning patient names in a Greensboro hospital database or standardizing transaction dates in a retail system. By mastering these functions, you can ensure consistency, extract meaningful components, and derive new features for analytics.</p>
-                <p>String and date manipulation is often the first step in data preparation. For example, inconsistent formats (e.g., "2025-01-01" vs. "01/01/2025") or extra spaces in names can break queries or skew results. These functions enable precise data cleaning, making datasets reliable for downstream analysis in fields like healthcare, business, and informatics.</p>
-
-                <!-- String Functions -->
-                <h3 class="h4 fw-bold mb-3">String Functions</h3>
-                <p>SQL string functions manipulate text data, addressing issues like case inconsistency, extra spaces, or formatting errors.</p>
-                <ul>
-                    <li><strong>UPPER/LOWER:</strong> Converts text to uppercase or lowercase for consistency.</li>
-                    <li><strong>TRIM/LTRIM/RTRIM:</strong> Removes leading/trailing spaces.</li>
-                    <li><strong>CONCAT:</strong> Combines strings (or use <code>||</code> in some databases).</li>
-                    <li><strong>SUBSTRING:</strong> Extracts a portion of a string.</li>
-                    <li><strong>REPLACE:</strong> Replaces occurrences of a substring.</li>
-                    <li><strong>LENGTH:</strong> Returns the length of a string.</li>
-                </ul>
-                <p><strong>Sample Data (PATIENTS Table):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>subject_id</th>
-                            <th>name</th>
-                            <th>email</th>
-                            <th>address</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1001</td>
-                            <td>Alice Smith  </td>
-                            <td>alice.smith@email.com</td>
-                            <td>123 Main St, Greensboro</td>
-                        </tr>
-                        <tr>
-                            <td>1002</td>
-                            <td>Bob JOHNSON</td>
-                            <td>bob.johnson@email.com</td>
-                            <td>456 Oak Ave, greensboro</td>
-                        </tr>
-                        <tr>
-                            <td>1003</td>
-                            <td>Carol White</td>
-                            <td>carol.white@email.com</td>
-                            <td>789 Pine Rd, GSO</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Standardize names and extract domain
-SELECT
-    TRIM(UPPER(name)) AS CleanName,
-    SUBSTRING(email FROM POSITION('@' IN email) + 1) AS EmailDomain
-FROM PATIENTS;
-
--- Combine name and address
-SELECT
-    CONCAT(name, ', ', address) AS FullContact,
-    LENGTH(address) AS AddressLength
-FROM PATIENTS;
-
--- Replace 'GSO' with 'Greensboro' in address
-SELECT
-    name,
-    REPLACE(address, 'GSO', 'Greensboro') AS CleanAddress
-FROM PATIENTS;</code></pre>
+        <!-- Quick Test Area -->
+        <div class="section-card p-4 rounded-xl mb-8">
+            <h2 class="text-xl font-bold mb-4">🧪 Interactive SQL Playground</h2>
+            <p class="mb-4">Test string and date functions against the sample databases:</p>
+            
+            <div class="code-container">
+                <textarea id="editor-test" class="sql-editor" placeholder="-- Try: SELECT UPPER(name) FROM patients LIMIT 3;">SELECT UPPER(name) as uppercase_name, LENGTH(name) as name_length FROM patients LIMIT 3;</textarea>
+                
+                <div class="action-buttons">
+                    <button id="run-test" class="btn-primary px-4 py-2 rounded-lg font-semibold text-white">
+                        Run Query
+                    </button>
+                    <button id="reset-db" class="px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors">
+                        Reset Database
+                    </button>
                 </div>
-                <p><strong>Explanation:</strong> The first query standardizes names (removes spaces, converts to uppercase) and extracts email domains. The second combines name and address and measures address length. The third corrects inconsistent city abbreviations.</p>
-                <p><strong>Expanded Example (Products Table):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>product_id</th>
-                            <th>product_name</th>
-                            <th>description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Laptop   </td>
-                            <td>High-performance laptop</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>MOUSE</td>
-                            <td>Wireless Mouse</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Keyboard</td>
-                            <td>Mechanical KB</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Clean product names and extract keywords
-SELECT
-    TRIM(LOWER(product_name)) AS CleanProductName,
-    REPLACE(description, 'KB', 'Keyboard') AS CleanDescription
-FROM Products;
 
--- Create product code
-SELECT
-    product_name,
-    CONCAT(SUBSTRING(product_name FROM 1 FOR 3), '_', product_id::TEXT) AS ProductCode
-FROM Products;</code></pre>
+                <div id="output-test" class="output-area">
+                    Query results will appear here...
                 </div>
-                <p><strong>Explanation:</strong> The first query standardizes product names and descriptions, correcting abbreviations. The second creates a unique product code by combining the first three letters of the name with the ID.</p>
+            </div>
+        </div>
 
-                <!-- Date Functions -->
-                <h3 class="h4 fw-bold mb-3">Date Functions</h3>
-                <p>Date functions manipulate temporal data, extracting components or calculating differences for analysis.</p>
-                <ul>
-                    <li><strong>EXTRACT:</strong> Retrieves a specific part of a date (e.g., year, month).</li>
-                    <li><strong>DATE_TRUNC:</strong> Truncates a date to a specified precision (e.g., day, month).</li>
-                    <li><strong>DATEADD/INTERVAL:</strong> Adds time to a date.</li>
-                    <li><strong>DATEDIFF/INTERVAL:</strong> Calculates the difference between dates.</li>
-                </ul>
-                <p><strong>Sample Data (ADMISSIONS Table):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>hadm_id</th>
-                            <th>subject_id</th>
-                            <th>admit_time</th>
-                            <th>discharge_time</th>
-                            <th>diagnosis</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>101</td>
-                            <td>1001</td>
-                            <td>2025-01-10 08:15:00</td>
-                            <td>2025-01-15 12:00:00</td>
-                            <td>Pneumonia</td>
-                        </tr>
-                        <tr>
-                            <td>102</td>
-                            <td>1002</td>
-                            <td>2025-02-01 14:30:00</td>
-                            <td>2025-02-03 09:00:00</td>
-                            <td>Fracture</td>
-                        </tr>
-                        <tr>
-                            <td>103</td>
-                            <td>1001</td>
-                            <td>2025-03-05 10:45:00</td>
-                            <td>2025-03-12 15:00:00</td>
-                            <td>Pneumonia</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Extract year and month of admission
-SELECT
-    hadm_id,
-    EXTRACT(YEAR FROM admit_time) AS AdmitYear,
-    EXTRACT(MONTH FROM admit_time) AS AdmitMonth
-FROM ADMISSIONS;
+        <!-- Database Schema -->
+        <div class="database-schema mb-8">
+            <div class="schema-header">🏥 Healthcare Database Schema</div>
+            <div class="table-structure">
+                <strong>patients</strong> (subject_id, name, email, address, admission_date)
+            </div>
+            <div class="table-structure">
+                <strong>admissions</strong> (hadm_id, subject_id, admit_time, discharge_time, diagnosis)
+            </div>
+            <div class="table-structure">
+                <strong>products</strong> (product_id, product_name, description, price)
+            </div>
+            <div class="table-structure">
+                <strong>orders</strong> (order_id, customer_id, order_date, total_amount)
+            </div>
+        </div>
 
--- Truncate to month
-SELECT
-    hadm_id,
-    DATE_TRUNC('month', admit_time) AS AdmitMonth
-FROM ADMISSIONS;
-
--- Calculate stay length
-SELECT
-    hadm_id,
-    (discharge_time - admit_time) AS StayLength
-FROM ADMISSIONS;
-
--- Add 30 days to admit time
-SELECT
-    hadm_id,
-    admit_time + INTERVAL '30 days' AS FollowUpDate
-FROM ADMISSIONS;</code></pre>
+        <!-- STRING FUNCTIONS SECTION -->
+        <div class="function-section string-section">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--string-color)">
+                <i class="fas fa-text-height mr-3"></i>String Functions
+            </h2>
+            
+            <div class="concept-explanation">
+                <h3 class="font-bold mb-2">Text Data Manipulation</h3>
+                <p class="mb-3">SQL string functions manipulate text data to address issues like case inconsistency, extra spaces, or formatting errors.</p>
+                
+                <div class="tip-box">
+                    <strong>💡 Real-World Use:</strong> Clean patient names in healthcare databases, standardize product descriptions in retail systems, and format email addresses for marketing campaigns.
                 </div>
-                <p><strong>Explanation:</strong> <code>EXTRACT</code> isolates year and month for temporal analysis. <code>DATE_TRUNC</code> groups by month. <code>INTERVAL</code> calculates stay length or follow-up dates, critical for healthcare planning.</p>
-                <p><strong>Expanded Example (Orders Table):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>order_id</th>
-                            <th>customer_id</th>
-                            <th>order_date</th>
-                            <th>total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>101</td>
-                            <td>1</td>
-                            <td>2025-01-15 09:00:00</td>
-                            <td>150.00</td>
-                        </tr>
-                        <tr>
-                            <td>102</td>
-                            <td>2</td>
-                            <td>2025-02-20 14:30:00</td>
-                            <td>300.00</td>
-                        </tr>
-                        <tr>
-                            <td>103</td>
-                            <td>1</td>
-                            <td>2025-03-10 11:00:00</td>
-                            <td>200.00</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Extract quarter and calculate shipping deadline
-SELECT
-    order_id,
-    EXTRACT(QUARTER FROM order_date) AS OrderQuarter,
-    DATE_TRUNC('day', order_date) AS OrderDay,
-    order_date + INTERVAL '7 days' AS ShippingDeadline
-FROM Orders;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Extracts quarter for seasonal analysis and calculates shipping deadlines, useful for logistics.</p>
+            </div>
 
-                <!-- Combining String and Date Functions -->
-                <h3 class="h4 fw-bold mb-3">Combining String and Date Functions</h3>
-                <p>Combining these functions with joins and other clauses enhances data preparation.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Clean patient names and filter by 2025 admissions
-SELECT
-    TRIM(UPPER(p.name)) AS CleanName,
-    a.hadm_id,
-    DATE_TRUNC('month', a.admit_time) AS AdmitMonth,
-    (a.discharge_time - a.admit_time) AS StayLength
-FROM PATIENTS p
-JOIN ADMISSIONS a ON p.subject_id = a.subject_id
-WHERE EXTRACT(YEAR FROM a.admit_time) = 2025;</code></pre>
+            <!-- String Functions Grid -->
+            <div class="function-grid mb-8">
+                <div class="function-card string-card">
+                    <h4 class="font-bold text-string-color">UPPER/LOWER</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Converts text to uppercase or lowercase for consistency</p>
+                    <div class="function-syntax">UPPER(column_name)<br>LOWER(column_name)</div>
                 </div>
-                <p><strong>Explanation:</strong> Cleans names, groups admissions by month, and calculates stay length for 2025 data.</p>
-                <p><strong>Expanded Example (Customer Orders):</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Format customer email and order details
-SELECT
-    CONCAT(LOWER(c.name), '@', SUBSTRING(c.email FROM POSITION('@' IN c.email) + 1)) AS CleanEmail,
-    o.order_id,
-    DATE_TRUNC('month', o.order_date) AS OrderMonth
-FROM Customers c
-JOIN Orders o ON c.customer_id = o.customer_id
-WHERE o.order_date >= '2025-01-01';</code></pre>
+                
+                <div class="function-card string-card">
+                    <h4 class="font-bold text-string-color">TRIM/LTRIM/RTRIM</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Removes leading/trailing spaces from text</p>
+                    <div class="function-syntax">TRIM(column_name)<br>LTRIM(column_name)</div>
                 </div>
-                <p><strong>Explanation:</strong> Standardizes email formats and groups orders by month for recent transactions.</p>
+                
+                <div class="function-card string-card">
+                    <h4 class="font-bold text-string-color">CONCAT</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Combines multiple strings together</p>
+                    <div class="function-syntax">CONCAT(str1, str2, ...)</div>
+                </div>
+                
+                <div class="function-card string-card">
+                    <h4 class="font-bold text-string-color">SUBSTRING</h4>
+                    <span class="complexity complexity-intermediate">Intermediate</span>
+                    <p class="text-sm mb-2">Extracts a portion of a string</p>
+                    <div class="function-syntax">SUBSTRING(column FROM start FOR length)</div>
+                </div>
+                
+                <div class="function-card string-card">
+                    <h4 class="font-bold text-string-color">REPLACE</h4>
+                    <span class="complexity complexity-intermediate">Intermediate</span>
+                    <p class="text-sm mb-2">Replaces occurrences of a substring</p>
+                    <div class="function-syntax">REPLACE(column, 'old', 'new')</div>
+                </div>
+                
+                <div class="function-card string-card">
+                    <h4 class="font-bold text-string-color">LENGTH</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Returns the length of a string</p>
+                    <div class="function-syntax">LENGTH(column_name)</div>
+                </div>
+            </div>
 
-                <!-- Common Data Quality Issues -->
-                <h3 class="h4 fw-bold mb-3">Common Data Quality Issues</h3>
-                <p>Strings often have extra spaces, mixed cases, or typos. Dates may have inconsistent formats or invalid values. These functions address such issues.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Clean inconsistent addresses
+            <!-- Example 1: Basic String Functions -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">1</div>
+                    <h2 class="text-xl font-bold">Standardize Patient Names and Extract Email Domains</h2>
+                    <span class="function-tag string-tag">String Functions</span>
+                </div>
+                <p class="mb-4">Clean patient names (uppercase, no spaces) and extract email domains for analysis.</p>
+                
+                <div class="code-container">
+                    <textarea id="editor1" class="sql-editor">-- Standardize names and extract email domains
 SELECT
     subject_id,
-    REPLACE(TRIM(address), 'greensboro', 'Greensboro') AS StandardizedAddress
-FROM PATIENTS;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Ensures consistent city naming for analysis.</p>
+    TRIM(UPPER(name)) AS CleanName,
+    SUBSTRING(email, POSITION('@' IN email) + 1) AS EmailDomain,
+    LENGTH(name) AS NameLength
+FROM patients
+ORDER BY CleanName;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="1">
+                            Run Query
+                        </button>
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="1">
+                            Copy Code
+                        </button>
+                    </div>
 
-                <!-- String and Date Functions in Microsoft Fabric -->
-                <h3 class="h4 fw-bold mb-3">String and Date Functions in Microsoft Fabric Lakehouse</h3>
-                <p>Fabric supports these functions for large-scale data cleaning.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Clean survey responses in Fabric
+                    <div id="output1" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Example 2: String Concatenation and Replacement -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">2</div>
+                    <h2 class="text-xl font-bold">Combine Name with Address and Clean City Names</h2>
+                    <span class="function-tag string-tag">String Functions</span>
+                </div>
+                <p class="mb-4">Create full contact information and standardize city names in addresses.</p>
+                
+                <div class="code-container">
+                    <textarea id="editor2" class="sql-editor">-- Combine name with address and clean city names
 SELECT
-    TRIM(UPPER(respondent_name)) AS CleanName,
-    EXTRACT(YEAR FROM response_date) AS ResponseYear
-FROM survey_lakehouse.Responses
-WHERE response_date >= '2025-01-01';</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Standardizes names and extracts year for survey analysis.</p>
+    subject_id,
+    name,
+    CONCAT(name, ' - ', address) AS FullContact,
+    REPLACE(REPLACE(LOWER(address), 'greensboro', 'Greensboro'), 'gso', 'Greensboro') AS StandardizedAddress,
+    LENGTH(address) AS AddressLength
+FROM patients
+ORDER BY AddressLength DESC;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="2">
+                            Run Query
+                        </button>
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="2">
+                            Copy Code
+                        </button>
+                    </div>
 
-                <!-- Assessments -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Assessments</h2>
-                <ol>
-                    <li><strong>Conceptual Question:</strong> Explain the difference between <code>TRIM</code> and <code>REPLACE</code>. When would you use each?</li>
-                    <li><strong>SQL Coding Task:</strong> Using the PATIENTS and ADMISSIONS tables, clean patient names (uppercase, no spaces) and calculate stay length for 2025 admissions.</li>
-                    <li><strong>Application Scenario:</strong> For a Greensboro retail store, clean product descriptions by replacing abbreviations and extract order month from Orders.</li>
-                    <li><strong>Expanded Task:</strong> For a university database, clean student names and calculate time since enrollment for students enrolled after 2023.</li>
-                </ol>
+                    <div id="output2" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Example 3: Product Data Cleaning -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">3</div>
+                    <h2 class="text-xl font-bold">Clean Product Names and Descriptions</h2>
+                    <span class="function-tag string-tag">String Functions</span>
+                </div>
+                <p class="mb-4">Standardize product data by cleaning names and replacing abbreviations in descriptions.</p>
+                
+                <div class="code-container">
+                    <textarea id="editor3" class="sql-editor">-- Clean product names and descriptions
+SELECT
+    product_id,
+    TRIM(LOWER(product_name)) AS CleanProductName,
+    REPLACE(REPLACE(LOWER(description), 'kb', 'keyboard'), 'mouse', 'Mouse') AS CleanDescription,
+    CONCAT(SUBSTRING(product_name, 1, 3), '_', product_id) AS ProductCode
+FROM products
+ORDER BY product_id;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="3">
+                            Run Query
+                        </button>
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="3">
+                            Copy Code
+                        </button>
+                    </div>
+
+                    <div id="output3" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- DATE FUNCTIONS SECTION -->
+        <div class="function-section date-section">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--date-color)">
+                <i class="fas fa-calendar-alt mr-3"></i>Date Functions
+            </h2>
+            
+            <div class="concept-explanation">
+                <h3 class="font-bold mb-2">Temporal Data Manipulation</h3>
+                <p class="mb-3">Date functions manipulate temporal data, extracting components or calculating differences for time-based analysis.</p>
+                
+                <div class="tip-box">
+                    <strong>💡 Real-World Use:</strong> Calculate patient length of stay in hospitals, analyze seasonal trends in retail sales, and determine project timelines in business analytics.
+                </div>
+            </div>
+
+            <!-- Date Functions Grid -->
+            <div class="function-grid mb-8">
+                <div class="function-card date-card">
+                    <h4 class="font-bold text-date-color">EXTRACT</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Retrieves specific parts of a date (year, month, day)</p>
+                    <div class="function-syntax">EXTRACT(YEAR FROM date)<br>EXTRACT(MONTH FROM date)</div>
+                </div>
+                
+                <div class="function-card date-card">
+                    <h4 class="font-bold text-date-color">DATE_TRUNC</h4>
+                    <span class="complexity complexity-intermediate">Intermediate</span>
+                    <p class="text-sm mb-2">Truncates date to specified precision</p>
+                    <div class="function-syntax">DATE_TRUNC('month', date)</div>
+                </div>
+                
+                <div class="function-card date-card">
+                    <h4 class="font-bold text-date-color">DATE Arithmetic</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Add/subtract time intervals from dates</p>
+                    <div class="function-syntax">date + INTERVAL '7 days'<br>date2 - date1</div>
+                </div>
+                
+                <div class="function-card date-card">
+                    <h4 class="font-bold text-date-color">CURRENT_DATE</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Returns current date</p>
+                    <div class="function-syntax">CURRENT_DATE</div>
+                </div>
+            </div>
+
+            <!-- Example 4: Basic Date Extraction -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">4</div>
+                    <h2 class="text-xl font-bold">Extract Admission Date Components</h2>
+                    <span class="function-tag date-tag">Date Functions</span>
+                </div>
+                <p class="mb-4">Analyze admission patterns by extracting year, month, and day components.</p>
+                
+                <div class="postgres-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span><strong>PostgreSQL Required:</strong> EXTRACT with DOW and DATE_TRUNC functions require PostgreSQL. Copy and run in pgAdmin or psql.</span>
+                </div>
+                
+                <div class="code-container">
+                    <textarea id="editor4" class="sql-editor">-- Extract admission date components
+SELECT
+    hadm_id,
+    subject_id,
+    admit_time,
+    EXTRACT(YEAR FROM admit_time) AS AdmitYear,
+    EXTRACT(MONTH FROM admit_time) AS AdmitMonth,
+    EXTRACT(DAY FROM admit_time) AS AdmitDay,
+    EXTRACT(DOW FROM admit_time) AS DayOfWeek  -- 0=Sunday, 6=Saturday
+FROM admissions
+ORDER BY admit_time;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="4">
+                            Copy for PostgreSQL
+                        </button>
+                    </div>
+
+                    <div id="output4" class="output-area">
+                        This query requires PostgreSQL-specific functions. Please copy and run in pgAdmin or psql.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Example 5: Date Calculations -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">5</div>
+                    <h2 class="text-xl font-bold">Calculate Patient Stay Length and Follow-up Dates</h2>
+                    <span class="function-tag date-tag">Date Functions</span>
+                </div>
+                <p class="mb-4">Determine length of hospital stays and calculate follow-up appointment dates.</p>
+                
+                <div class="postgres-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span><strong>PostgreSQL Required:</strong> DATE_TRUNC and INTERVAL arithmetic require PostgreSQL. Copy and run in pgAdmin or psql.</span>
+                </div>
+                
+                <div class="code-container">
+                    <textarea id="editor5" class="sql-editor">-- Calculate stay length and follow-up dates
+SELECT
+    hadm_id,
+    subject_id,
+    admit_time,
+    discharge_time,
+    (discharge_time - admit_time) AS StayLengthDays,
+    admit_time + INTERVAL '30 days' AS FollowUpDate,
+    DATE_TRUNC('month', admit_time) AS AdmitMonth
+FROM admissions
+WHERE discharge_time IS NOT NULL
+ORDER BY StayLengthDays DESC;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="5">
+                            Copy for PostgreSQL
+                        </button>
+                    </div>
+
+                    <div id="output5" class="output-area">
+                        This query requires PostgreSQL-specific functions. Please copy and run in pgAdmin or psql.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Example 6: Order Date Analysis -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">6</div>
+                    <h2 class="text-xl font-bold">Analyze Order Patterns by Time</h2>
+                    <span class="function-tag date-tag">Date Functions</span>
+                </div>
+                <p class="mb-4">Extract temporal patterns from order data for business intelligence.</p>
+                
+                <div class="postgres-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span><strong>PostgreSQL Required:</strong> EXTRACT with QUARTER and DATE_TRUNC functions require PostgreSQL. Copy and run in pgAdmin or psql.</span>
+                </div>
+                
+                <div class="code-container">
+                    <textarea id="editor6" class="sql-editor">-- Analyze order patterns by time
+SELECT
+    order_id,
+    customer_id,
+    order_date,
+    EXTRACT(YEAR FROM order_date) AS OrderYear,
+    EXTRACT(MONTH FROM order_date) AS OrderMonth,
+    EXTRACT(QUARTER FROM order_date) AS OrderQuarter,
+    DATE_TRUNC('week', order_date) AS OrderWeek,
+    order_date + INTERVAL '7 days' AS ShippingDeadline,
+    total_amount
+FROM orders
+ORDER BY order_date DESC;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="6">
+                            Copy for PostgreSQL
+                        </button>
+                    </div>
+
+                    <div id="output6" class="output-area">
+                        This query requires PostgreSQL-specific functions. Please copy and run in pgAdmin or psql.
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- COMBINED FUNCTIONS SECTION -->
+        <div class="function-section combined-section">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--combined-color)">
+                <i class="fas fa-layer-group mr-3"></i>Combining String and Date Functions
+            </h2>
+            
+            <div class="concept-explanation">
+                <h3 class="font-bold mb-2">Integrated Data Preparation</h3>
+                <p class="mb-3">Combine string and date functions with other SQL clauses to create comprehensive data preparation workflows.</p>
+                
+                <div class="tip-box">
+                    <strong>💡 Real-World Use:</strong> Create standardized reports with clean text and proper date formatting, build customer profiles with demographic and temporal data, and prepare datasets for machine learning.
+                </div>
+            </div>
+
+            <!-- Example 7: Combined Patient Analysis -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">7</div>
+                    <h2 class="text-xl font-bold">Comprehensive Patient Profile Analysis</h2>
+                    <span class="function-tag combined-tag">Combined Functions</span>
+                </div>
+                <p class="mb-4">Create detailed patient profiles with cleaned data and temporal analysis.</p>
+                
+                <div class="postgres-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span><strong>PostgreSQL Required:</strong> Multiple PostgreSQL functions in this query require PostgreSQL. Copy and run in pgAdmin or psql.</span>
+                </div>
+                
+                <div class="code-container">
+                    <textarea id="editor7" class="sql-editor">-- Comprehensive patient profile analysis
+SELECT
+    TRIM(UPPER(p.name)) AS CleanName,
+    SUBSTRING(p.email, POSITION('@' IN p.email) + 1) AS EmailDomain,
+    REPLACE(REPLACE(LOWER(p.address), 'greensboro', 'Greensboro'), 'gso', 'Greensboro') AS StandardizedAddress,
+    a.hadm_id,
+    DATE_TRUNC('month', a.admit_time) AS AdmitMonth,
+    EXTRACT(YEAR FROM a.admit_time) AS AdmitYear,
+    (a.discharge_time - a.admit_time) AS StayLengthDays,
+    CONCAT('Stay: ', (a.discharge_time - a.admit_time), ' days') AS StaySummary
+FROM patients p
+JOIN admissions a ON p.subject_id = a.subject_id
+WHERE EXTRACT(YEAR FROM a.admit_time) = 2025
+ORDER BY StayLengthDays DESC;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="7">
+                            Copy for PostgreSQL
+                        </button>
+                    </div>
+
+                    <div id="output7" class="output-area">
+                        This query requires PostgreSQL-specific functions. Please copy and run in pgAdmin or psql.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Example 8: Customer Order Analysis -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">8</div>
+                    <h2 class="text-xl font-bold">Customer Order Timeline Analysis</h2>
+                    <span class="function-tag combined-tag">Combined Functions</span>
+                </div>
+                <p class="mb-4">Analyze customer behavior with cleaned contact info and order timing.</p>
+                
+                <div class="postgres-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span><strong>PostgreSQL Required:</strong> INITCAP, DATE_TRUNC, EXTRACT with QUARTER, and TO_CHAR functions require PostgreSQL. Copy and run in pgAdmin or psql.</span>
+                </div>
+                
+                <div class="code-container">
+                    <textarea id="editor8" class="sql-editor">-- Customer order timeline analysis
+SELECT
+    TRIM(INITCAP(c.name)) AS CleanCustomerName,
+    CONCAT(LOWER(SUBSTRING(c.name, 1, 1)), SUBSTRING(c.email, POSITION('@' IN c.email))) AS StandardizedEmail,
+    o.order_id,
+    DATE_TRUNC('month', o.order_date) AS OrderMonth,
+    EXTRACT(QUARTER FROM o.order_date) AS OrderQuarter,
+    o.order_date + INTERVAL '14 days' AS ExpectedDelivery,
+    CONCAT('Order #', o.order_id, ' - Q', EXTRACT(QUARTER FROM o.order_date)) AS OrderIdentifier,
+    o.total_amount
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.order_date >= '2025-01-01'
+ORDER BY o.order_date DESC, o.total_amount DESC;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="8">
+                            Copy for PostgreSQL
+                        </button>
+                    </div>
+
+                    <div id="output8" class="output-area">
+                        This query requires PostgreSQL-specific functions. Please copy and run in pgAdmin or psql.
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ADVANCED POSTGRESQL SECTION -->
+        <div class="function-section fabric-section">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--fabric-color)">
+                <i class="fas fa-rocket mr-3"></i>Advanced PostgreSQL Functions
+            </h2>
+            
+            <div class="concept-explanation">
+                <h3 class="font-bold mb-2">Advanced Data Manipulation</h3>
+                <p class="mb-3">Use PostgreSQL's advanced string and date functions for complex data transformation tasks.</p>
+            </div>
+
+            <!-- Advanced String Functions -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">9</div>
+                    <h2 class="text-xl font-bold">Advanced String Processing</h2>
+                    <span class="function-tag fabric-tag">Advanced Functions</span>
+                </div>
+                <p class="mb-4">Use regular expressions and advanced string functions for complex text processing.</p>
+                
+                <div class="postgres-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span><strong>PostgreSQL Required:</strong> REGEXP_REPLACE, SPLIT_PART, and REVERSE functions require PostgreSQL. Copy and run in pgAdmin or psql.</span>
+                </div>
+                
+                <div class="code-container">
+                    <textarea id="editor9" class="sql-editor">-- Advanced string processing with regular expressions
+SELECT
+    subject_id,
+    name,
+    -- Extract first and last names
+    SPLIT_PART(TRIM(name), ' ', 1) AS FirstName,
+    REVERSE(SPLIT_PART(REVERSE(TRIM(name)), ' ', 1)) AS LastName,
+    -- Clean email with regex
+    REGEXP_REPLACE(email, '[^a-zA-Z0-9@._-]', '', 'g') AS CleanEmail,
+    -- Extract domain and username
+    SPLIT_PART(email, '@', 1) AS EmailUser,
+    SPLIT_PART(email, '@', 2) AS EmailDomain
+FROM patients
+WHERE email IS NOT NULL;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="9">
+                            Copy for PostgreSQL
+                        </button>
+                    </div>
+
+                    <div id="output9" class="output-area">
+                        This query requires PostgreSQL-specific functions. Please copy and run in pgAdmin or psql.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Advanced Date Functions -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">10</div>
+                    <h2 class="text-xl font-bold">Advanced Date Analysis</h2>
+                    <span class="function-tag fabric-tag">Advanced Functions</span>
+                </div>
+                <p class="mb-4">Use advanced date functions for complex temporal analysis and reporting.</p>
+                
+                <div class="postgres-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span><strong>PostgreSQL Required:</strong> AGE, DATE_PART, and TO_CHAR functions require PostgreSQL. Copy and run in pgAdmin or psql.</span>
+                </div>
+                
+                <div class="code-container">
+                    <textarea id="editor10" class="sql-editor">-- Advanced date analysis and formatting
+SELECT
+    hadm_id,
+    subject_id,
+    admit_time,
+    discharge_time,
+    -- Detailed date breakdown
+    EXTRACT(EPOCH FROM (discharge_time - admit_time)) / 86400 AS StayLengthDays,
+    DATE_PART('year', AGE(discharge_time, admit_time)) AS Years,
+    DATE_PART('month', AGE(discharge_time, admit_time)) AS Months,
+    DATE_PART('day', AGE(discharge_time, admit_time)) AS Days,
+    -- Business day calculations (excluding weekends)
+    CASE 
+        WHEN EXTRACT(DOW FROM admit_time) IN (0, 6) THEN 'Weekend Admission'
+        ELSE 'Weekday Admission'
+    END AS AdmissionType,
+    -- Formatted dates for reporting
+    TO_CHAR(admit_time, 'FMMonth DD, YYYY') AS FormattedAdmit,
+    TO_CHAR(discharge_time, 'YYYY-MM-DD HH24:MI') AS FormattedDischarge
+FROM admissions
+WHERE discharge_time IS NOT NULL
+ORDER BY admit_time DESC;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="10">
+                            Copy for PostgreSQL
+                        </button>
+                    </div>
+
+                    <div id="output10" class="output-area">
+                        This query requires PostgreSQL-specific functions. Please copy and run in pgAdmin or psql.
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- KNOWLEDGE CONSOLIDATION -->
+        <section class="section-card p-4 rounded-xl mb-8">
+            <h2 class="text-xl font-bold mb-4">🧠 Knowledge Consolidation</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="p-4 border border-green-400 rounded-lg">
+                    <h3 class="font-bold text-green-400 mb-2">✅ Skills Mastered</h3>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>String functions: UPPER, LOWER, TRIM, CONCAT, SUBSTRING, REPLACE</li>
+                        <li>Date functions: EXTRACT, DATE_TRUNC, date arithmetic</li>
+                        <li>Combining functions for comprehensive data cleaning</li>
+                        <li>Handling common data quality issues</li>
+                        <li>Applying functions in both browser and PostgreSQL environments</li>
+                    </ul>
+                </div>
+                
+                <div class="p-4 border border-blue-400 rounded-lg">
+                    <h3 class="font-bold text-blue-400 mb-2">🎯 Next Steps</h3>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>Apply these skills to your own datasets</li>
+                        <li>Explore regular expressions for advanced text processing</li>
+                        <li>Learn about time series analysis with date functions</li>
+                        <li>Practice with larger, more complex datasets</li>
+                        <li>Explore window functions for advanced analytics</li>
+                    </ul>
+                </div>
             </div>
         </section>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-light py-3 text-center">
-        <p class="text-muted mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <!-- Highlight.js Initialization -->
-    <script>hljs.highlightAll();</script>
-    <!-- Custom Copy Functionality -->
     <script>
-        function copyCode(button) {
-            const code = button.nextElementSibling.querySelector('code');
-            navigator.clipboard.writeText(code.innerText).then(() => {
-                button.textContent = 'Copied!';
-                setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+        // --- Global Variables ---
+        const TOTAL_QUESTIONS = 10;
+        let completedExercises = new Set();
+        let codeMirrorEditors = {};
+
+        // --- Navigation Menu Functionality ---
+        function setupNavigation() {
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const navLinks = document.getElementById('nav-links');
+            
+            if (mobileMenuToggle && navLinks) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+            }
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (event) => {
+                if (!event.target.closest('.nav-menu')) {
+                    navLinks.classList.remove('active');
+                }
             });
         }
+
+        // --- AlaSQL Database Functions ---
+
+        // Initialize AlaSQL database
+        async function initializeDatabase() {
+            try {
+                updateSQLStatus('Loading SQL Engine...', 'status-loading');
+                
+                // AlaSQL is already loaded via CDN
+                if (typeof alasql === 'undefined') {
+                    throw new Error('AlaSQL library failed to load');
+                }
+                
+                createSampleDatabases();
+                
+                updateSQLStatus('SQL Engine Ready', 'status-ready');
+                console.log('AlaSQL database initialized successfully');
+                
+            } catch (error) {
+                console.error('Failed to initialize database:', error);
+                updateSQLStatus('Database Error', 'status-error');
+            }
+        }
+
+        // Update SQL engine status
+        function updateSQLStatus(message, statusClass) {
+            const statusElement = document.getElementById('sql-engine-status');
+            statusElement.textContent = message;
+            statusElement.className = `sql-engine-status ${statusClass}`;
+        }
+
+        // Create sample databases with string and date data
+        function createSampleDatabases() {
+            // Clear existing data
+            alasql('DROP TABLE IF EXISTS patients');
+            alasql('DROP TABLE IF EXISTS admissions');
+            alasql('DROP TABLE IF EXISTS products');
+            alasql('DROP TABLE IF EXISTS orders');
+            alasql('DROP TABLE IF EXISTS customers');
+
+            // Create tables
+            alasql(`CREATE TABLE patients (
+                subject_id INT,
+                name VARCHAR(100),
+                email VARCHAR(100),
+                address VARCHAR(200),
+                admission_date DATE
+            )`);
+
+            alasql(`CREATE TABLE admissions (
+                hadm_id INT,
+                subject_id INT,
+                admit_time DATE,
+                discharge_time DATE,
+                diagnosis VARCHAR(100)
+            )`);
+
+            alasql(`CREATE TABLE products (
+                product_id INT,
+                product_name VARCHAR(100),
+                description VARCHAR(200),
+                price DECIMAL(10,2)
+            )`);
+
+            alasql(`CREATE TABLE orders (
+                order_id INT,
+                customer_id INT,
+                order_date DATE,
+                total_amount DECIMAL(10,2)
+            )`);
+
+            alasql(`CREATE TABLE customers (
+                customer_id INT,
+                name VARCHAR(100),
+                email VARCHAR(100),
+                address VARCHAR(200),
+                signup_date DATE
+            )`);
+
+            // Insert sample data for patients
+            const patients = [
+                [1001, 'Alice Smith', 'alice.smith@email.com', '123 Main St, Greensboro', '2023-09-15'],
+                [1002, 'Bob JOHNSON', 'bob.johnson@email.com', '456 Oak Ave, greensboro', '2023-10-01'],
+                [1003, 'Carol White', 'carol.white@email.com', '789 Pine Rd, GSO', '2023-08-20'],
+                [1004, 'David  Brown  ', 'david.brown@email.com', '101 Elm St, Greensboro', '2023-11-05'],
+                [1005, 'EVE DAVIS', 'eve.davis@email.com', '202 Maple Dr, GSO', '2023-07-10']
+            ];
+            
+            patients.forEach(patient => {
+                alasql('INSERT INTO patients VALUES (?, ?, ?, ?, ?)', patient);
+            });
+
+            // Insert sample data for admissions
+            const admissions = [
+                [101, 1001, '2025-01-10', '2025-01-15', 'Pneumonia'],
+                [102, 1002, '2025-02-01', '2025-02-03', 'Fracture'],
+                [103, 1001, '2025-03-05', '2025-03-12', 'Pneumonia'],
+                [104, 1003, '2025-01-20', '2025-01-25', 'Infection'],
+                [105, 1004, '2025-02-15', '2025-02-20', 'Surgery']
+            ];
+            
+            admissions.forEach(admission => {
+                alasql('INSERT INTO admissions VALUES (?, ?, ?, ?, ?)', admission);
+            });
+
+            // Insert sample data for products
+            const products = [
+                [1, 'Laptop', 'High-performance laptop', 999.99],
+                [2, 'MOUSE', 'Wireless Mouse', 29.99],
+                [3, 'Keyboard', 'Mechanical KB', 79.99],
+                [4, 'Monitor', '27-inch 4K monitor', 399.99],
+                [5, '  Headphones  ', 'Noise-cancelling headphones', 199.99]
+            ];
+            
+            products.forEach(product => {
+                alasql('INSERT INTO products VALUES (?, ?, ?, ?)', product);
+            });
+
+            // Insert sample data for orders
+            const orders = [
+                [101, 1, '2025-01-15', 150.00],
+                [102, 2, '2025-02-20', 300.00],
+                [103, 1, '2025-03-10', 200.00],
+                [104, 3, '2025-01-25', 450.00],
+                [105, 2, '2025-02-28', 125.00]
+            ];
+            
+            orders.forEach(order => {
+                alasql('INSERT INTO orders VALUES (?, ?, ?, ?)', order);
+            });
+
+            // Insert sample data for customers
+            const customers = [
+                [1, 'John Doe', 'john.doe@email.com', '123 Main St, NY', '2024-01-15'],
+                [2, 'JANE SMITH', 'jane.smith@email.com', '456 Oak Ave, CA', '2024-02-20'],
+                [3, 'Bob Johnson', 'bob.johnson@email.com', '789 Pine Rd, NY', '2024-03-10']
+            ];
+            
+            customers.forEach(customer => {
+                alasql('INSERT INTO customers VALUES (?, ?, ?, ?, ?)', customer);
+            });
+
+            console.log('Sample databases created with string and date data');
+        }
+
+        // Initialize CodeMirror editors
+        function initializeEditors() {
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const textarea = document.getElementById(`editor${i}`);
+                if (textarea) {
+                    codeMirrorEditors[i] = CodeMirror.fromTextArea(textarea, {
+                        mode: 'sql',
+                        theme: 'monokai',
+                        lineNumbers: true,
+                        indentUnit: 4,
+                        tabSize: 4,
+                        extraKeys: {"Ctrl-Space": "autocomplete"},
+                        hintOptions: {
+                            tables: {
+                                patients: ['subject_id', 'name', 'email', 'address', 'admission_date'],
+                                admissions: ['hadm_id', 'subject_id', 'admit_time', 'discharge_time', 'diagnosis'],
+                                products: ['product_id', 'product_name', 'description', 'price'],
+                                orders: ['order_id', 'customer_id', 'order_date', 'total_amount'],
+                                customers: ['customer_id', 'name', 'email', 'address', 'signup_date']
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Initialize test editor
+            const testTextarea = document.getElementById('editor-test');
+            if (testTextarea) {
+                codeMirrorEditors['test'] = CodeMirror.fromTextArea(testTextarea, {
+                    mode: 'sql',
+                    theme: 'monokai',
+                    lineNumbers: true,
+                    indentUnit: 4,
+                    tabSize: 4,
+                    extraKeys: {"Ctrl-Space": "autocomplete"}
+                });
+            }
+        }
+
+        // Get SQL from CodeMirror editor
+        function getSQLFromEditor(sectionId) {
+            if (codeMirrorEditors[sectionId]) {
+                return codeMirrorEditors[sectionId].getValue().trim();
+            }
+            const textarea = document.getElementById(`editor${sectionId}`);
+            return textarea ? textarea.value.trim() : '';
+        }
+
+        // Check if query requires PostgreSQL
+        function requiresPostgreSQL(sql) {
+            const postgresFunctions = [
+                'INITCAP', 'DATE_TRUNC', 'DATE_PART', 'AGE', 'TO_CHAR', 
+                'REGEXP_REPLACE', 'SPLIT_PART', 'REVERSE', 'EXTRACT.*DOW',
+                'EXTRACT.*QUARTER', 'INTERVAL'
+            ];
+            
+            return postgresFunctions.some(func => {
+                const regex = new RegExp(func, 'i');
+                return regex.test(sql);
+            });
+        }
+
+        // Execute SQL query using AlaSQL
+        function executeSQL(sectionId) {
+            const sql = getSQLFromEditor(sectionId);
+            const outputElement = document.getElementById(`output${sectionId}`);
+            
+            outputElement.innerHTML = '';
+            outputElement.classList.remove('text-red-400', 'text-green-400');
+            
+            if (!sql) {
+                showError(sectionId, 'Please write a SQL query first.');
+                return;
+            }
+            
+            // Check if this query requires PostgreSQL
+            if (requiresPostgreSQL(sql)) {
+                outputElement.innerHTML = `
+                    <div class="postgres-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>This query uses PostgreSQL-specific functions that require a full PostgreSQL environment. Please copy and run in pgAdmin or psql.</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                const result = alasql(sql);
+                const endTime = performance.now();
+                
+                displaySQLResult(outputElement, result, sql, endTime - startTime);
+                completedExercises.add(sectionId);
+                
+            } catch (error) {
+                showError(sectionId, error.message);
+                console.error('SQL Error:', error);
+            }
+        }
+
+        // Execute test query
+        function executeTestQuery() {
+            const sql = codeMirrorEditors['test'] ? codeMirrorEditors['test'].getValue().trim() : document.getElementById('editor-test').value.trim();
+            const outputElement = document.getElementById('output-test');
+            
+            outputElement.innerHTML = '';
+            outputElement.classList.remove('text-red-400', 'text-green-400');
+            
+            if (!sql) {
+                showError('test', 'Please write a SQL query first.');
+                return;
+            }
+            
+            // Check if this query requires PostgreSQL
+            if (requiresPostgreSQL(sql)) {
+                outputElement.innerHTML = `
+                    <div class="postgres-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>This query uses PostgreSQL-specific functions that require a full PostgreSQL environment. Please copy and run in pgAdmin or psql.</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                const result = alasql(sql);
+                const endTime = performance.now();
+                
+                displaySQLResult(outputElement, result, sql, endTime - startTime);
+                
+            } catch (error) {
+                showError('test', error.message);
+                console.error('SQL Error:', error);
+            }
+        }
+
+        // Display SQL results
+        function displaySQLResult(outputElement, result, sql, executionTime) {
+            // Show executed SQL
+            const sqlInfo = document.createElement('div');
+            sqlInfo.className = 'query-info';
+            sqlInfo.innerHTML = `<span>Executed: <code>${sql}</code></span>`;
+            outputElement.appendChild(sqlInfo);
+            
+            // Show success message
+            const successInfo = document.createElement('div');
+            successInfo.className = 'query-info query-success';
+            
+            if (!result || result.length === 0) {
+                successInfo.textContent = '✓ Query executed successfully (no results returned)';
+            } else {
+                const rowCount = result.length;
+                successInfo.textContent = `✓ Query executed successfully, returned ${rowCount} row(s)`;
+            }
+            outputElement.appendChild(successInfo);
+            
+            // Display results for SELECT queries
+            if (result && result.length > 0) {
+                const table = document.createElement('table');
+                table.className = 'results-table';
+                
+                // Create header
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                
+                // Get column names from first object
+                const columns = Object.keys(result[0]);
+                columns.forEach(col => {
+                    const th = document.createElement('th');
+                    th.textContent = col;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+                
+                // Create body
+                const tbody = document.createElement('tbody');
+                result.forEach(row => {
+                    const tr = document.createElement('tr');
+                    columns.forEach(col => {
+                        const td = document.createElement('td');
+                        td.textContent = row[col];
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+                
+                outputElement.appendChild(table);
+            }
+            
+            // Show execution time
+            const timeInfo = document.createElement('div');
+            timeInfo.className = 'query-info';
+            timeInfo.textContent = `Execution time: ${Math.round(executionTime)}ms`;
+            outputElement.appendChild(timeInfo);
+        }
+
+        // Show error message
+        function showError(sectionId, message) {
+            const outputElement = document.getElementById(`output${sectionId}`);
+            outputElement.innerHTML = `
+                <div class="text-red-400 font-bold">SQL Error:</div>
+                <div>${message}</div>
+                <div class="mt-2 text-sm">Check your SQL syntax and try again.</div>
+            `;
+        }
+
+        // Reset database
+        function resetDatabase() {
+            createSampleDatabases();
+            
+            // Clear all outputs
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const outputElement = document.getElementById(`output${i}`);
+                if (outputElement) {
+                    outputElement.textContent = 'Query results will appear here...';
+                    outputElement.classList.remove('text-red-400', 'text-green-400');
+                }
+            }
+            
+            const testOutput = document.getElementById('output-test');
+            testOutput.textContent = 'Test results will appear here...';
+            testOutput.classList.remove('text-red-400', 'text-green-400');
+            
+            console.log('Database reset to initial state');
+        }
+
+        // Helper function for copying text to clipboard
+        function copyToClipboard(text) {
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = text;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            
+            try {
+                document.execCommand('copy');
+                return true;
+            } catch (err) {
+                console.error('Copy command failed:', err);
+                return false;
+            } finally {
+                document.body.removeChild(tempTextArea);
+            }
+        }
+        
+        // Function to copy the code for a specific section
+        function copyCode(sectionId) {
+            const code = getSQLFromEditor(sectionId);
+            if (copyToClipboard(code)) {
+                const button = document.querySelector(`.copy-button[data-section="${sectionId}"]`);
+                const originalText = button.textContent;
+                button.textContent = "Copied!";
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 1500);
+            }
+        }
+
+        // Function to set up the Light/Dark Mode toggle
+        function setupThemeToggle() {
+            const toggleButton = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+
+            function updateTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                toggleButton.textContent = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+                localStorage.setItem('theme', theme);
+            }
+
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            updateTheme(savedTheme);
+
+            toggleButton.addEventListener('click', () => {
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                updateTheme(newTheme);
+            });
+        }
+
+        // Initialize the application
+        async function initializeApp() {
+            // Set up navigation first
+            setupNavigation();
+            
+            // Initialize AlaSQL database first
+            await initializeDatabase();
+            
+            // Initialize CodeMirror editors
+            initializeEditors();
+            
+            // Set up event listeners for all SQL question buttons
+            for (let i = 1; i <= 3; i++) {
+                // Examples 1-3 can run in browser
+                document.querySelector(`.run-button[data-section="${i}"]`).addEventListener('click', () => executeSQL(i));
+                document.querySelector(`.copy-button[data-section="${i}"]`).addEventListener('click', () => copyCode(i));
+            }
+            
+            // Examples 4-10 require PostgreSQL - only copy buttons
+            for (let i = 4; i <= TOTAL_QUESTIONS; i++) {
+                document.querySelector(`.copy-button[data-section="${i}"]`).addEventListener('click', () => copyCode(i));
+            }
+            
+            // Set up test area
+            document.getElementById('run-test').addEventListener('click', executeTestQuery);
+            document.getElementById('reset-db').addEventListener('click', resetDatabase);
+            
+            // Set up theme toggle
+            setupThemeToggle();
+
+            console.log("Module 8: Strings and Dates fully initialized with hybrid execution");
+        }
+
+        // Initialize when the page loads
+        window.addEventListener('load', initializeApp);
     </script>
 </body>
 </html>
