@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -42,7 +43,6 @@
             --module4-color: #f59e0b;
             --module5-color: #ec4899;
             --mcq-color: #8b5cf6;
-            --warning-color: #f59e0b;
         }
 
         [data-theme="light"] {
@@ -63,7 +63,6 @@
             --module4-color: #d97706;
             --module5-color: #db2777;
             --mcq-color: #7c3aed;
-            --warning-color: #d97706;
         }
 
         body {
@@ -424,130 +423,22 @@
         .query-error {
             color: var(--error-color);
         }
-
-        /* Timer Styles */
-        .timer-container {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background-color: var(--section-bg);
-            border: 2px solid var(--warning-color);
-            border-radius: 8px;
-            padding: 12px 16px;
-            z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .timer-display {
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--warning-color);
-            text-align: center;
-        }
-
-        .timer-warning {
-            color: var(--error-color);
-            animation: pulse 1s infinite;
-        }
-
-        .timer-expired {
-            color: var(--error-color);
-            animation: blink 0.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        /* Exam Lock Overlay */
-        .exam-lock-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .lock-message {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            color: var(--error-color);
-        }
-
-        .lock-submessage {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            max-width: 600px;
-        }
-
-        .exam-disabled {
-            pointer-events: none;
-            opacity: 0.6;
-            user-select: none;
-        }
-
-        .fullscreen-warning {
-            background-color: var(--warning-color);
-            color: black;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
     </style>
 </head>
 <body class="p-4 md:p-8 min-h-screen">
-    <!-- Timer Container -->
-    <div class="timer-container">
-        <div class="timer-display" id="timer-display">02:00:00</div>
-        <div class="text-xs text-center mt-1">Time Remaining</div>
-    </div>
-
-    <!-- Exam Lock Overlay (Hidden by default) -->
-    <div id="exam-lock-overlay" class="exam-lock-overlay hidden">
-        <div class="fullscreen-warning">EXAM TIME EXPIRED</div>
-        <div class="lock-message">⏰ Time's Up!</div>
-        <div class="lock-submessage">
-            The exam time has ended. Your answers have been automatically submitted. 
-            Please close this browser tab.
-        </div>
-        <div class="text-lg mt-4">
-            <strong>Note:</strong> Further interaction with the exam is disabled.
-        </div>
-    </div>
-    
-    <!-- SQL Engine Status -->
-    <div id="sql-engine-status" class="sql-engine-status status-loading">
-        Loading SQL Engine...
-    </div>
-    
     <div class="max-w-6xl mx-auto">
+        
+        <!-- SQL Engine Status -->
+        <div id="sql-engine-status" class="sql-engine-status status-loading">
+            Loading SQL Engine...
+        </div>
+        
         <!-- HEADER -->
         <header class="flex justify-between items-center mb-6 pb-4 border-b border-border-color">
             <div>
                 <h1 class="text-3xl font-extrabold">PostgreSQL Midterm Exam</h1>
                 <p class="text-lg text-gray-400">IAF 603 - Preparing Data for Analytics</p>
                 <p class="text-sm text-green-400 mt-1">✓ Real SQL Engine Active (SQL.js)</p>
-                <p class="text-sm text-yellow-400 mt-1">⏰ 2-Hour Time Limit - Auto-submits when time expires</p>
             </div>
             <button id="theme-toggle" class="btn-secondary px-4 py-2 rounded-lg font-semibold shadow-md transition-colors">
                 <!-- Text set by JavaScript -->
@@ -564,7 +455,8 @@
             <div class="instructions mb-8 p-4 section-card rounded-xl">
                 <h2 class="text-xl font-bold mb-2">Exam Instructions</h2>
                 <p class="mb-2">Complete all SQL questions and multiple choice questions covering Modules 1-5 of IAF 603.</p>
-                <p class="mb-2"><span class="text-yellow-400 font-bold">Time Limit:</span> 2 hours - The exam will auto-submit when time expires</p>
+                <p class="mb-2">Each section includes both SQL exercises and conceptual multiple choice questions aligned with your course modules.</p>
+                <p class="mb-2"><span class="text-yellow-400 font-bold">Sample solution</span> is available for the first SQL question.</p>
                 <p class="mb-2"><span class="text-green-400 font-bold">Real SQL Engine:</span> Write and test your PostgreSQL queries directly in the browser!</p>
                 <p class="mb-2">Select your answers for multiple choice questions - they will be included when you copy all answers.</p>
                 <p>When finished, click <strong>Copy All Answers</strong> to submit your SQL queries and MCQ answers to Canvas.</p>
@@ -609,7 +501,7 @@
                         <button id="run-test" class="btn-primary px-4 py-2 rounded-lg font-semibold text-white">
                             Run Test Query
                         </button>
-                        <button id="reset-db" class="px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors">
+                        <button id="reset-db" class="px-4 py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg font-semibold transition-colors">
                             Reset Database
                         </button>
                     </div>
@@ -687,7 +579,13 @@
                     <p class="mb-4">Create a table called "customer_feedback" with columns: feedback_id (integer, primary key), customer_id (integer, not null), feedback_date (date, default current date), rating (integer between 1-5), comments (text). Include appropriate constraints.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor1" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        <textarea id="editor1" class="sql-editor" placeholder="-- Write your SQL solution here...">CREATE TABLE customer_feedback (
+    feedback_id INTEGER PRIMARY KEY,
+    customer_id INTEGER NOT NULL,
+    feedback_date DATE DEFAULT CURRENT_DATE,
+    rating INTEGER CHECK (rating BETWEEN 1 AND 5),
+    comments TEXT
+);</textarea>
                         
                         <div class="action-buttons">
                             <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="1">
@@ -769,7 +667,12 @@ CREATE TABLE customer_feedback (
                     <p class="mb-4">Write a SELECT query to find all products that have been sold in quantities greater than 50. Include product name, category, and total quantity sold. Sort by total quantity in descending order.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor2" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        <textarea id="editor2" class="sql-editor" placeholder="-- Write your SQL solution here...">SELECT p.product_name, p.category, SUM(s.quantity) as total_quantity
+FROM products p
+JOIN sales_data s ON p.product_id = s.product_id
+GROUP BY p.product_name, p.category
+HAVING SUM(s.quantity) > 50
+ORDER BY total_quantity DESC;</textarea>
                         
                         <div class="action-buttons">
                             <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="2">
@@ -796,7 +699,17 @@ CREATE TABLE customer_feedback (
                     <p class="mb-4">Update the salary of all employees in the 'Marketing' department by giving them a 10% raise. Then insert a new employee record for "Sarah Johnson" in the "HR" department with a salary of $65,000.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor3" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        <textarea id="editor3" class="sql-editor" placeholder="-- Write your SQL solution here...">-- Update marketing salaries
+UPDATE employees 
+SET salary = salary * 1.1 
+WHERE department = 'Marketing';
+
+-- Insert new employee
+INSERT INTO employees (emp_id, emp_name, department, salary, hire_date)
+VALUES (406, 'Sarah Johnson', 'HR', 65000, date('now'));
+
+-- Verify the changes
+SELECT * FROM employees WHERE department IN ('Marketing', 'HR');</textarea>
                         
                         <div class="action-buttons">
                             <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="3">
@@ -861,7 +774,16 @@ CREATE TABLE customer_feedback (
                     <p class="mb-4">Calculate the total sales revenue by product category for the last quarter. Show category, total revenue, and average sale amount. Only include categories with total revenue over $10,000.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor4" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        <textarea id="editor4" class="sql-editor" placeholder="-- Write your SQL solution here...">SELECT 
+    p.category,
+    SUM(s.quantity * s.unit_price) as total_revenue,
+    AVG(s.unit_price) as avg_sale_amount
+FROM products p
+JOIN sales_data s ON p.product_id = s.product_id
+WHERE s.sale_date >= date('now', '-3 months')
+GROUP BY p.category
+HAVING total_revenue > 10000
+ORDER BY total_revenue DESC;</textarea>
                         
                         <div class="action-buttons">
                             <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="4">
@@ -888,7 +810,27 @@ CREATE TABLE customer_feedback (
                     <p class="mb-4">Find the top 5 customers by total purchase amount. Include customer name, total purchases, and number of orders. Also show what percentage each customer contributes to total revenue.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor5" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        <textarea id="editor5" class="sql-editor" placeholder="-- Write your SQL solution here...">WITH customer_totals AS (
+    SELECT 
+        c.customer_name,
+        SUM(s.quantity * s.unit_price) as total_purchases,
+        COUNT(DISTINCT s.sale_id) as order_count
+    FROM customers c
+    JOIN sales_data s ON c.customer_id = s.customer_id
+    GROUP BY c.customer_id, c.customer_name
+),
+total_revenue AS (
+    SELECT SUM(total_purchases) as overall_total
+    FROM customer_totals
+)
+SELECT 
+    ct.customer_name,
+    ct.total_purchases,
+    ct.order_count,
+    ROUND((ct.total_purchases / tr.overall_total) * 100, 2) as percentage
+FROM customer_totals ct, total_revenue tr
+ORDER BY ct.total_purchases DESC
+LIMIT 5;</textarea>
                         
                         <div class="action-buttons">
                             <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="5">
@@ -953,7 +895,16 @@ CREATE TABLE customer_feedback (
                     <p class="mb-4">Create a query that categorizes products based on their price: 'Budget' for prices under $50, 'Mid-range' for $50-$200, and 'Premium' for over $200. Show product name, price, and price category.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor6" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        <textarea id="editor6" class="sql-editor" placeholder="-- Write your SQL solution here...">SELECT 
+    product_name,
+    unit_price as price,
+    CASE 
+        WHEN unit_price < 50 THEN 'Budget'
+        WHEN unit_price BETWEEN 50 AND 200 THEN 'Mid-range'
+        ELSE 'Premium'
+    END as price_category
+FROM products
+ORDER BY unit_price DESC;</textarea>
                         
                         <div class="action-buttons">
                             <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="6">
@@ -980,7 +931,20 @@ CREATE TABLE customer_feedback (
                     <p class="mb-4">Write a query that identifies customer segments: 'New' (signed up in last 30 days), 'Active' (made purchase in last 90 days), and 'Inactive' (no purchases in 90 days). Include customer name, signup date, and segment.</p>
                     
                     <div class="code-container">
-                        <textarea id="editor7" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        <textarea id="editor7" class="sql-editor" placeholder="-- Write your SQL solution here...">SELECT 
+    c.customer_name,
+    c.signup_date,
+    CASE 
+        WHEN c.signup_date >= date('now', '-30 days') THEN 'New'
+        WHEN EXISTS (
+            SELECT 1 FROM sales_data s 
+            WHERE s.customer_id = c.customer_id 
+            AND s.sale_date >= date('now', '-90 days')
+        ) THEN 'Active'
+        ELSE 'Inactive'
+    END as segment
+FROM customers c
+ORDER BY c.signup_date DESC;</textarea>
                         
                         <div class="action-buttons">
                             <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="7">
@@ -1007,7 +971,35 @@ CREATE TABLE customer_feedback (
                     <p class="mb-4">Create a comprehensive sales report that shows monthly sales trends. Include month, total revenue, compared to previous month (as percentage change), and a trend indicator (↑ for increase, ↓ for decrease).</p>
                     
                     <div class="code-container">
-                        <textarea id="editor8" class="sql-editor" placeholder="-- Write your SQL solution here..."></textarea>
+                        <textarea id="editor8" class="sql-editor" placeholder="-- Write your SQL solution here...">WITH monthly_sales AS (
+    SELECT 
+        strftime('%Y-%m', sale_date) as month,
+        SUM(quantity * unit_price) as monthly_revenue
+    FROM sales_data
+    GROUP BY strftime('%Y-%m', sale_date)
+),
+sales_with_prev AS (
+    SELECT
+        month,
+        monthly_revenue,
+        LAG(monthly_revenue) OVER (ORDER BY month) as prev_month_revenue
+    FROM monthly_sales
+)
+SELECT
+    month,
+    monthly_revenue,
+    prev_month_revenue,
+    CASE 
+        WHEN prev_month_revenue IS NULL THEN NULL
+        ELSE ROUND(((monthly_revenue - prev_month_revenue) / prev_month_revenue) * 100, 2)
+    END as percentage_change,
+    CASE 
+        WHEN monthly_revenue > COALESCE(prev_month_revenue, 0) THEN '↑'
+        WHEN monthly_revenue < COALESCE(prev_month_revenue, 0) THEN '↓'
+        ELSE '→'
+    END as trend
+FROM sales_with_prev
+ORDER BY month;</textarea>
                         
                         <div class="action-buttons">
                             <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="8">
@@ -1052,92 +1044,6 @@ CREATE TABLE customer_feedback (
         let mcqAnswers = {};
         let db = null;
         let codeMirrorEditors = {};
-        let examTimer = null;
-        let timeRemaining = 2 * 60 * 60; // 2 hours in seconds
-        let examActive = true;
-
-        // --- Timer Functions ---
-
-        // Start the exam timer
-        function startExamTimer() {
-            examTimer = setInterval(() => {
-                timeRemaining--;
-                updateTimerDisplay();
-                
-                // Show warning when 5 minutes remaining
-                if (timeRemaining === 5 * 60) {
-                    showTimeWarning();
-                }
-                
-                // Auto-submit when time expires
-                if (timeRemaining <= 0) {
-                    clearInterval(examTimer);
-                    lockExam();
-                }
-            }, 1000);
-        }
-
-        // Update timer display
-        function updateTimerDisplay() {
-            const hours = Math.floor(timeRemaining / 3600);
-            const minutes = Math.floor((timeRemaining % 3600) / 60);
-            const seconds = timeRemaining % 60;
-            
-            const timerDisplay = document.getElementById('timer-display');
-            const formattedTime = 
-                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            timerDisplay.textContent = formattedTime;
-            
-            // Change color based on time remaining
-            if (timeRemaining <= 5 * 60) { // 5 minutes or less
-                timerDisplay.className = 'timer-display timer-warning';
-            } else if (timeRemaining <= 0) {
-                timerDisplay.className = 'timer-display timer-expired';
-            } else {
-                timerDisplay.className = 'timer-display';
-            }
-        }
-
-        // Show warning when time is running out
-        function showTimeWarning() {
-            alert('⚠️ WARNING: Only 5 minutes remaining! Please save your work and prepare to submit.');
-        }
-
-        // Lock the exam and auto-submit
-        function lockExam() {
-            examActive = false;
-            
-            // Auto-submit answers
-            copyAllAnswers();
-            
-            // Show lock overlay
-            const lockOverlay = document.getElementById('exam-lock-overlay');
-            lockOverlay.classList.remove('hidden');
-            
-            // Disable all interactive elements
-            document.getElementById('main-content').classList.add('exam-disabled');
-            
-            // Disable all buttons and inputs
-            const interactiveElements = document.querySelectorAll('button, input, textarea, .CodeMirror');
-            interactiveElements.forEach(element => {
-                element.disabled = true;
-                element.style.pointerEvents = 'none';
-            });
-            
-            // Prevent keyboard shortcuts
-            document.addEventListener('keydown', preventAllKeys, true);
-            document.addEventListener('contextmenu', preventAllKeys, true);
-            
-            console.log('Exam locked - time expired');
-        }
-
-        // Prevent all keyboard and mouse actions
-        function preventAllKeys(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            return false;
-        }
 
         // --- SQL.js Database Functions ---
 
@@ -1367,11 +1273,6 @@ CREATE TABLE customer_feedback (
 
         // Execute SQL query using SQL.js
         function executeSQL(sectionId) {
-            if (!examActive) {
-                alert('Exam time has expired. Further interaction is disabled.');
-                return;
-            }
-
             if (!db) {
                 showError(sectionId, 'Database not initialized. Please wait for SQL engine to load...');
                 return;
@@ -1405,11 +1306,6 @@ CREATE TABLE customer_feedback (
 
         // Execute test query
         function executeTestQuery() {
-            if (!examActive) {
-                alert('Exam time has expired. Further interaction is disabled.');
-                return;
-            }
-
             if (!db) {
                 showError('test', 'Database not initialized. Please wait for SQL engine to load...');
                 return;
@@ -1511,11 +1407,6 @@ CREATE TABLE customer_feedback (
 
         // Reset database
         function resetDatabase() {
-            if (!examActive) {
-                alert('Exam time has expired. Further interaction is disabled.');
-                return;
-            }
-
             if (!db) return;
             
             db.close();
@@ -1568,11 +1459,6 @@ CREATE TABLE customer_feedback (
         
         // Function to copy the code for a specific section
         function copyCode(sectionId) {
-            if (!examActive) {
-                alert('Exam time has expired. Further interaction is disabled.');
-                return;
-            }
-
             const code = getSQLFromEditor(sectionId);
             if (copyToClipboard(code)) {
                 const button = document.querySelector(`.copy-button[data-section="${sectionId}"]`);
@@ -1615,11 +1501,6 @@ CREATE TABLE customer_feedback (
 
         // Function to handle multiple choice questions
         function handleMCQ(mcqId) {
-            if (!examActive) {
-                alert('Exam time has expired. Further interaction is disabled.');
-                return;
-            }
-
             const selectedOption = document.querySelector(`input[name="mcq${mcqId}"]:checked`);
             const container = document.getElementById(`mcq-container-${mcqId}`);
             
@@ -1646,11 +1527,6 @@ CREATE TABLE customer_feedback (
 
         // Function to toggle sample solution for first question only
         function toggleSolution(sectionId) {
-            if (!examActive) {
-                alert('Exam time has expired. Further interaction is disabled.');
-                return;
-            }
-
             const solutionElement = document.getElementById(`solution${sectionId}`);
             const button = document.querySelector(`.toggle-solution[data-section="${sectionId}"]`);
             
@@ -1686,10 +1562,6 @@ CREATE TABLE customer_feedback (
 
         // Initialize the application
         async function initializeApp() {
-            // Start the exam timer
-            startExamTimer();
-            updateTimerDisplay();
-            
             // Initialize SQL.js database first
             await initializeDatabase();
             
@@ -1734,7 +1606,7 @@ CREATE TABLE customer_feedback (
             // Initialize progress bar
             updateProgress();
 
-            console.log("Application fully initialized with SQL.js engine and timer");
+            console.log("Application fully initialized with SQL.js engine");
         }
 
         // Initialize when the page loads
