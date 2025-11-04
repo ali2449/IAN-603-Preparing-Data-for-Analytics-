@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 9: PostgreSQL Date and Time Functions - Health Informatics</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- CodeMirror for SQL editing -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/sql/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/sql-hint.min.js"></script>
+    
+    <!-- AlaSQL Library -->
+    <script src="https://cdn.jsdelivr.net/npm/alasql@0.6"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+
+        /* Theme Variables */
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --section-bg: #1e293b;
+            --code-bg: #020617;
+            --border-color: #334155;
+            --header-color: #38bdf8;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --error-color: #f87171;
+            --success-color: #34d399;
+            --sample-color: #fbbf24;
+            --date-color: #3b82f6;
+            --time-color: #8b5cf6;
+            --interval-color: #ec4899;
+            --advanced-color: #f59e0b;
+            --healthcare-color: #10b981;
+            --nav-bg: #1e293b;
+            --warning-color: #f59e0b;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --text-color: #1e293b;
+            --section-bg: #ffffff;
+            --code-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --header-color: #1d4ed8;
+            --accent-color: #4f46e5;
+            --accent-hover: #4338ca;
+            --error-color: #dc2626;
+            --success-color: #10b981;
+            --sample-color: #d97706;
+            --date-color: #2563eb;
+            --time-color: #7c3aed;
+            --interval-color: #db2777;
+            --advanced-color: #d97706;
+            --healthcare-color: #059669;
+            --nav-bg: #ffffff;
+            --warning-color: #d97706;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1, h2 {
+            color: var(--header-color);
+        }
+
+        .section-card {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .sql-editor {
+            width: 100%;
+            height: 200px;
+            background-color: var(--code-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .output-area {
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            color: var(--text-color);
+            padding: 0.75rem;
+            margin-top: 12px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+        }
+
+        .question-number {
+            background-color: var(--accent-color);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+        
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .code-container {
+            margin-top: 16px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .sample-solution {
+            background-color: var(--code-bg);
+            border: 1px solid var(--sample-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 12px;
+            position: relative;
+        }
+
+        .sample-header {
+            color: var(--sample-color);
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-solution {
+            background: none;
+            border: none;
+            color: var(--sample-color);
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: auto;
+        }
+
+        .solution-content {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .function-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 12px;
+        }
+
+        .date-tag { background-color: var(--date-color); color: white; }
+        .time-tag { background-color: var(--time-color); color: white; }
+        .interval-tag { background-color: var(--interval-color); color: white; }
+        .advanced-tag { background-color: var(--advanced-color); color: white; }
+        .healthcare-tag { background-color: var(--healthcare-color); color: white; }
+
+        .function-section {
+            border-left: 4px solid;
+            padding-left: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .date-section { border-color: var(--date-color); }
+        .time-section { border-color: var(--time-color); }
+        .interval-section { border-color: var(--interval-color); }
+        .advanced-section { border-color: var(--advanced-color); }
+
+        .database-schema {
+            background-color: var(--code-bg);
+            border: 1px solid var(--date-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+        }
+
+        .schema-header {
+            color: var(--date-color);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-structure {
+            margin-bottom: 1rem;
+        }
+
+        .CodeMirror {
+            height: 200px;
+            border-radius: 0.5rem;
+            margin-top: 12px;
+        }
+
+        .sql-engine-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .status-ready {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-loading {
+            background-color: var(--sample-color);
+            color: black;
+        }
+
+        .status-error {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+        }
+
+        .results-table th {
+            background-color: var(--border-color);
+            padding: 6px 8px;
+            text-align: left;
+            border: 1px solid var(--border-color);
+            font-weight: bold;
+        }
+
+        .results-table td {
+            padding: 6px 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .query-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .query-success {
+            color: var(--success-color);
+        }
+
+        .learning-objective {
+            background-color: var(--code-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .concept-explanation {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .tip-box {
+            background-color: var(--sample-color);
+            color: black;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .function-card {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .function-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .function-card.date-card { border-color: var(--date-color); }
+        .function-card.time-card { border-color: var(--time-color); }
+        .function-card.interval-card { border-color: var(--interval-color); }
+
+        .function-card h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .function-syntax {
+            background-color: var(--code-bg);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.8rem;
+            margin: 0.5rem 0;
+        }
+
+        .complexity {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .complexity-basic { background-color: var(--date-color); color: white; }
+        .complexity-intermediate { background-color: var(--time-color); color: white; }
+        .complexity-advanced { background-color: var(--interval-color); color: white; }
+
+        .solution-button {
+            background-color: var(--success-color);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .solution-button:hover {
+            background-color: #10b981;
+            transform: translateY(-1px);
+        }
+
+        /* Navigation Styles */
+        .nav-container {
+            background-color: var(--nav-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--header-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--section-bg);
+            min-width: 250px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            z-index: 1;
+            padding: 0.5rem 0;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-link {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .dropdown-link:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .dropdown-link.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .module-number {
+            background-color: var(--accent-color);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .postgres-warning {
+            background-color: var(--warning-color);
+            color: black;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .postgres-warning i {
+            font-size: 1.2rem;
+        }
+
+        .healthcare-scenario {
+            background-color: var(--healthcare-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 1024px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--nav-bg);
+                flex-direction: column;
+                padding: 1rem;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                border: none;
+                background-color: transparent;
+            }
+
+            .function-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+    <!-- SQL Engine Status -->
+    <div id="sql-engine-status" class="sql-engine-status status-loading">
+        Loading SQL Engine...
+    </div>
+    
+    <!-- Navigation Menu -->
+    <nav class="nav-container">
+        <div class="max-w-6xl mx-auto">
+            <div class="nav-menu">
+                <a href="index.html" class="nav-logo">
+                    <i class="fas fa-database"></i>
+                    IAF 603: Data Analytics
+                </a>
+                
+                <button class="mobile-menu-btn" id="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="nav-links" id="nav-links">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                    
+                    <div class="dropdown">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-book"></i>
+                            Modules
+                            <i class="fas fa-chevron-down"></i>
+                        </a>
+                        <div class="dropdown-content">
+                            <a href="module1.html" class="dropdown-link">
+                                <span class="module-number">1</span>
+                                Introduction to Data
+                            </a>
+                            <a href="module2.html" class="dropdown-link">
+                                <span class="module-number">2</span>
+                                Database Concepts
+                            </a>
+                            <a href="module3.html" class="dropdown-link">
+                                <span class="module-number">3</span>
+                                SQL Basics I
+                            </a>
+                            <a href="module4.html" class="dropdown-link">
+                                <span class="module-number">4</span>
+                                SQL Aggregations
+                            </a>
+                            <a href="module5.html" class="dropdown-link">
+                                <span class="module-number">5</span>
+                                SQL Logic
+                            </a>
+                            <a href="module6.html" class="dropdown-link">
+                                <span class="module-number">6</span>
+                                SQL Joins
+                            </a>
+                            <a href="module7.html" class="dropdown-link">
+                                <span class="module-number">7</span>
+                                Subqueries
+                            </a>
+                            <a href="module8.html" class="dropdown-link">
+                                <span class="module-number">8</span>
+                                Strings and Dates
+                            </a>
+                            <a href="module9.html" class="dropdown-link active">
+                                <span class="module-number">9</span>
+                                Date and Time Functions
+                            </a>
+                            <a href="module10.html" class="dropdown-link">
+                                <span class="module-number">10</span>
+                                Data Cleaning
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-project-diagram"></i>
+                        Projects
+                    </a>
+                    
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-question-circle"></i>
+                        Resources
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto mt-6">
+        <!-- HEADER -->
+        <header class="flex justify-between items-center mb-6 pb-4 border-b border-border-color">
+            <div>
+                <h1 class="text-3xl font-extrabold">Module 9: PostgreSQL Date and Time Functions</h1>
+                <p class="text-lg text-gray-400">IAF 603 - Health Informatics Applications</p>
+                <p class="text-sm text-green-400 mt-1">🏥 Real Healthcare Scenarios</p>
+                <p class="text-sm text-yellow-400 mt-1">⏰ Advanced Temporal Analytics</p>
+                <p class="text-sm text-blue-400 mt-1">🔧 PostgreSQL-Specific Functions</p>
+            </div>
+            <button id="theme-toggle" class="px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold transition-colors">
+                <!-- Text set by JavaScript -->
+            </button>
+        </header>
+
+        <!-- Introduction -->
+        <section class="mb-8">
+            <div class="instructions p-4 section-card rounded-xl">
+                <h2 class="text-xl font-bold mb-2">🎯 Mastering PostgreSQL Date and Time Functions</h2>
+                <p class="mb-4">Learn advanced PostgreSQL temporal functions for healthcare analytics, patient timeline analysis, and clinical decision support.</p>
+                
+                <div class="learning-objective">
+                    <h3 class="font-bold mb-2">Learning Objectives</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Master PostgreSQL date/time extraction and manipulation functions</li>
+                        <li>Understand timezone handling in distributed healthcare systems</li>
+                        <li>Learn interval calculations for clinical timelines and medication schedules</li>
+                        <li>Apply temporal functions to real-world healthcare scenarios</li>
+                        <li>Generate time series for health analytics and operational planning</li>
+                    </ul>
+                </div>
+
+                <div class="healthcare-scenario">
+                    <h3 class="font-bold mb-2">🏥 Healthcare Context</h3>
+                    <p>This module uses real healthcare scenarios including patient admissions, medication schedules, lab results, and clinical encounters to demonstrate PostgreSQL's powerful date and time capabilities.</p>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-2 text-sm mt-4">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-date-color mr-2"></div>
+                        <span>Date Functions</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-time-color mr-2"></div>
+                        <span>Time Functions</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-interval-color mr-2"></div>
+                        <span>Intervals</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-advanced-color mr-2"></div>
+                        <span>Advanced</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-healthcare-color mr-2"></div>
+                        <span>Healthcare</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Test Area -->
+        <div class="section-card p-4 rounded-xl mb-8">
+            <h2 class="text-xl font-bold mb-4">🧪 Interactive SQL Playground</h2>
+            <p class="mb-4">Test PostgreSQL date and time functions against the healthcare database:</p>
+            
+            <div class="code-container">
+                <textarea id="editor-test" class="sql-editor" placeholder="-- Try: SELECT EXTRACT(YEAR FROM admission_time) FROM encounters LIMIT 3;">SELECT 
+    patient_id,
+    admission_time,
+    EXTRACT(YEAR FROM admission_time) AS admission_year,
+    EXTRACT(MONTH FROM admission_time) AS admission_month
+FROM encounters 
+LIMIT 5;</textarea>
+                
+                <div class="action-buttons">
+                    <button id="run-test" class="btn-primary px-4 py-2 rounded-lg font-semibold text-white">
+                        Run Query
+                    </button>
+                    <button id="reset-db" class="px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors">
+                        Reset Database
+                    </button>
+                </div>
+
+                <div id="output-test" class="output-area">
+                    Query results will appear here...
+                </div>
+            </div>
+        </div>
+
+        <!-- Healthcare Database Schema -->
+        <div class="database-schema mb-8">
+            <div class="schema-header">🏥 Healthcare Database Schema</div>
+            <div class="table-structure">
+                <strong>patients</strong> (patient_id, first_name, last_name, date_of_birth, gender, created_at)
+            </div>
+            <div class="table-structure">
+                <strong>encounters</strong> (encounter_id, patient_id, encounter_type, admission_time, discharge_time, department, diagnosis_code)
+            </div>
+            <div class="table-structure">
+                <strong>medications</strong> (medication_id, patient_id, medication_name, administration_time, frequency, next_dose_time, status)
+            </div>
+            <div class="table-structure">
+                <strong>lab_results</strong> (lab_id, patient_id, test_name, collection_time, result_time, test_value, flag)
+            </div>
+        </div>
+
+        <!-- DATE FUNCTIONS SECTION -->
+        <div class="function-section date-section">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--date-color)">
+                <i class="fas fa-calendar-day mr-3"></i>Date Functions
+            </h2>
+            
+            <div class="concept-explanation">
+                <h3 class="font-bold mb-2">Date Manipulation and Extraction</h3>
+                <p class="mb-3">PostgreSQL date functions extract components from dates, calculate differences, and manipulate temporal data for healthcare analytics.</p>
+                
+                <div class="tip-box">
+                    <strong>💡 Healthcare Applications:</strong> Calculate patient ages, analyze admission patterns by season, determine length of stay, and track disease progression over time.
+                </div>
+            </div>
+
+            <!-- Date Functions Grid -->
+            <div class="function-grid mb-8">
+                <div class="function-card date-card">
+                    <h4 class="font-bold text-date-color">EXTRACT</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Extract specific components from dates (year, month, day, quarter)</p>
+                    <div class="function-syntax">EXTRACT(YEAR FROM date)<br>EXTRACT(MONTH FROM date)<br>EXTRACT(QUARTER FROM date)</div>
+                </div>
+                
+                <div class="function-card date-card">
+                    <h4 class="font-bold text-date-color">DATE_PART</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Alternative syntax for extracting date components</p>
+                    <div class="function-syntax">DATE_PART('year', date)<br>DATE_PART('month', date)</div>
+                </div>
+                
+                <div class="function-card date-card">
+                    <h4 class="font-bold text-date-color">AGE</h4>
+                    <span class="complexity complexity-intermediate">Intermediate</span>
+                    <p class="text-sm mb-2">Calculate age between two dates or from birth date</p>
+                    <div class="function-syntax">AGE(date_of_birth)<br>AGE(end_date, start_date)</div>
+                </div>
+                
+                <div class="function-card date-card">
+                    <h4 class="font-bold text-date-color">DATE_TRUNC</h4>
+                    <span class="complexity complexity-intermediate">Intermediate</span>
+                    <p class="text-sm mb-2">Truncate date to specified precision</p>
+                    <div class="function-syntax">DATE_TRUNC('month', date)<br>DATE_TRUNC('week', date)</div>
+                </div>
+            </div>
+
+            <!-- Example 1: Patient Age Calculation -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">1</div>
+                    <h2 class="text-xl font-bold">Calculate Patient Ages and Age Groups</h2>
+                    <span class="function-tag date-tag">Date Functions</span>
+                    <span class="function-tag healthcare-tag">Healthcare</span>
+                </div>
+                <p class="mb-4">Calculate current patient ages, age in different units, and categorize into clinical age groups.</p>
+                
+                <div class="code-container">
+                    <textarea id="editor1" class="sql-editor">-- Comprehensive patient age analysis
+SELECT 
+    patient_id,
+    first_name || ' ' || last_name AS patient_name,
+    date_of_birth,
+    gender,
+    
+    -- Age calculations
+    AGE(date_of_birth) AS exact_age_interval,
+    EXTRACT(YEAR FROM AGE(date_of_birth)) AS current_age_years,
+    EXTRACT(MONTH FROM AGE(date_of_birth)) AS current_age_months,
+    
+    -- Clinical age categories
+    CASE 
+        WHEN AGE(date_of_birth) < INTERVAL '18 years' THEN 'Pediatric'
+        WHEN AGE(date_of_birth) < INTERVAL '35 years' THEN 'Young Adult'
+        WHEN AGE(date_of_birth) < INTERVAL '50 years' THEN 'Adult'
+        WHEN AGE(date_of_birth) < INTERVAL '65 years' THEN 'Middle Age'
+        ELSE 'Geriatric'
+    END AS age_cohort,
+    
+    -- Birth date components for epidemiological studies
+    EXTRACT(YEAR FROM date_of_birth) AS birth_year,
+    EXTRACT(MONTH FROM date_of_birth) AS birth_month,
+    EXTRACT(QUARTER FROM date_of_birth) AS birth_quarter
+    
+FROM patients
+ORDER BY current_age_years DESC, patient_name;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="1">
+                            Run Query
+                        </button>
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="1">
+                            Copy Code
+                        </button>
+                    </div>
+
+                    <div id="output1" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Example 2: Admission Pattern Analysis -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">2</div>
+                    <h2 class="text-xl font-bold">Analyze Hospital Admission Patterns</h2>
+                    <span class="function-tag date-tag">Date Functions</span>
+                    <span class="function-tag healthcare-tag">Healthcare</span>
+                </div>
+                <p class="mb-4">Extract temporal patterns from admission data for operational planning and resource allocation.</p>
+                
+                <div class="code-container">
+                    <textarea id="editor2" class="sql-editor">-- Admission pattern analysis with date functions
+SELECT 
+    encounter_id,
+    patient_id,
+    encounter_type,
+    admission_time,
+    discharge_time,
+    
+    -- Date components
+    EXTRACT(YEAR FROM admission_time) AS admit_year,
+    EXTRACT(MONTH FROM admission_time) AS admit_month,
+    EXTRACT(DAY FROM admission_time) AS admit_day,
+    EXTRACT(DOW FROM admission_time) AS day_of_week, -- 0=Sunday, 6=Saturday
+    EXTRACT(QUARTER FROM admission_time) AS admit_quarter,
+    
+    -- Seasonal analysis
+    CASE 
+        WHEN EXTRACT(MONTH FROM admission_time) IN (12, 1, 2) THEN 'Winter'
+        WHEN EXTRACT(MONTH FROM admission_time) IN (3, 4, 5) THEN 'Spring'
+        WHEN EXTRACT(MONTH FROM admission_time) IN (6, 7, 8) THEN 'Summer'
+        ELSE 'Fall'
+    END AS admission_season,
+    
+    -- Time-based categorization
+    CASE 
+        WHEN EXTRACT(HOUR FROM admission_time) BETWEEN 6 AND 17 THEN 'Day Shift'
+        ELSE 'Night Shift'
+    END AS admission_shift
+    
+FROM encounters
+ORDER BY admission_time DESC;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="2">
+                            Run Query
+                        </button>
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="2">
+                            Copy Code
+                        </button>
+                    </div>
+
+                    <div id="output2" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- TIME FUNCTIONS SECTION -->
+        <div class="function-section time-section">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--time-color)">
+                <i class="fas fa-clock mr-3"></i>Time Functions
+            </h2>
+            
+            <div class="concept-explanation">
+                <h3 class="font-bold mb-2">Time Manipulation and Timezone Handling</h3>
+                <p class="mb-3">PostgreSQL time functions handle time extraction, timezone conversions, and temporal calculations for precise healthcare timing.</p>
+                
+                <div class="tip-box">
+                    <strong>💡 Healthcare Applications:</strong> Medication administration timing, lab result turnaround times, multi-timezone telemedicine coordination, and clinical event sequencing.
+                </div>
+            </div>
+
+            <!-- Time Functions Grid -->
+            <div class="function-grid mb-8">
+                <div class="function-card time-card">
+                    <h4 class="font-bold text-time-color">EXTRACT (Time)</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Extract time components (hour, minute, second)</p>
+                    <div class="function-syntax">EXTRACT(HOUR FROM timestamp)<br>EXTRACT(MINUTE FROM timestamp)</div>
+                </div>
+                
+                <div class="function-card time-card">
+                    <h4 class="font-bold text-time-color">AT TIME ZONE</h4>
+                    <span class="complexity complexity-intermediate">Intermediate</span>
+                    <p class="text-sm mb-2">Convert between timezones</p>
+                    <div class="function-syntax">timestamp AT TIME ZONE 'UTC'<br>timestamp AT TIME ZONE 'America/New_York'</div>
+                </div>
+                
+                <div class="function-card time-card">
+                    <h4 class="font-bold text-time-color">CURRENT_TIMESTAMP</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Get current date and time with timezone</p>
+                    <div class="function-syntax">CURRENT_TIMESTAMP<br>LOCALTIMESTAMP</div>
+                </div>
+                
+                <div class="function-card time-card">
+                    <h4 class="font-bold text-time-color">TIMEZONE</h4>
+                    <span class="complexity complexity-intermediate">Intermediate</span>
+                    <p class="text-sm mb-2">Convert to specific timezone</p>
+                    <div class="function-syntax">TIMEZONE('America/New_York', timestamp)</div>
+                </div>
+            </div>
+
+            <!-- Example 3: Timezone Management -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">3</div>
+                    <h2 class="text-xl font-bold">Multi-Timezone Healthcare Coordination</h2>
+                    <span class="function-tag time-tag">Time Functions</span>
+                    <span class="function-tag healthcare-tag">Healthcare</span>
+                </div>
+                <p class="mb-4">Manage healthcare events across different timezones for distributed healthcare systems and telemedicine.</p>
+                
+                <div class="code-container">
+                    <textarea id="editor3" class="sql-editor">-- Multi-timezone healthcare coordination
+SELECT 
+    encounter_id,
+    patient_id,
+    admission_time AS utc_time,
+    
+    -- Convert to different timezones
+    admission_time AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York' AS est_time,
+    admission_time AT TIME ZONE 'UTC' AT TIME ZONE 'America/Chicago' AS cst_time,
+    admission_time AT TIME ZONE 'UTC' AT TIME ZONE 'America/Los_Angeles' AS pst_time,
+    admission_time AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/London' AS gmt_time,
+    
+    -- Extract time components
+    EXTRACT(HOUR FROM admission_time) AS utc_hour,
+    EXTRACT(HOUR FROM admission_time AT TIME ZONE 'America/New_York') AS est_hour,
+    
+    -- Time-based analysis
+    CASE 
+        WHEN EXTRACT(HOUR FROM admission_time AT TIME ZONE 'America/New_York') BETWEEN 7 AND 18 
+        THEN 'Business Hours'
+        ELSE 'After Hours'
+    END AS local_time_category,
+    
+    encounter_type,
+    department
+    
+FROM encounters
+ORDER BY admission_time DESC
+LIMIT 10;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="3">
+                            Run Query
+                        </button>
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="3">
+                            Copy Code
+                        </button>
+                    </div>
+
+                    <div id="output3" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Example 4: Medication Timing Analysis -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">4</div>
+                    <h2 class="text-xl font-bold">Medication Administration Timing Analysis</h2>
+                    <span class="function-tag time-tag">Time Functions</span>
+                    <span class="function-tag healthcare-tag">Healthcare</span>
+                </div>
+                <p class="mb-4">Analyze medication administration patterns and calculate next dose timing for clinical scheduling.</p>
+                
+                <div class="code-container">
+                    <textarea id="editor4" class="sql-editor">-- Medication timing and scheduling analysis
+SELECT 
+    medication_id,
+    patient_id,
+    medication_name,
+    administration_time,
+    
+    -- Time component analysis
+    EXTRACT(HOUR FROM administration_time) AS administration_hour,
+    EXTRACT(MINUTE FROM administration_time) AS administration_minute,
+    
+    -- Shift-based categorization
+    CASE 
+        WHEN EXTRACT(HOUR FROM administration_time) BETWEEN 6 AND 13 THEN 'Morning Shift'
+        WHEN EXTRACT(HOUR FROM administration_time) BETWEEN 14 AND 21 THEN 'Evening Shift'
+        ELSE 'Night Shift'
+    END AS administration_shift,
+    
+    -- Frequency analysis
+    frequency,
+    next_dose_time,
+    
+    -- Time until next dose
+    next_dose_time - CURRENT_TIMESTAMP AS time_until_next_dose,
+    
+    -- Administration regularity check
+    CASE 
+        WHEN EXTRACT(MINUTE FROM administration_time) BETWEEN 0 AND 14 THEN 'On Time (0-14 min)'
+        WHEN EXTRACT(MINUTE FROM administration_time) BETWEEN 15 AND 29 THEN 'Slightly Late (15-29 min)'
+        WHEN EXTRACT(MINUTE FROM administration_time) BETWEEN 30 AND 44 THEN 'Late (30-44 min)'
+        ELSE 'Very Late (45+ min)'
+    END AS timing_accuracy
+    
+FROM medications
+WHERE status = 'Active'
+ORDER BY administration_time DESC;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="4">
+                            Run Query
+                        </button>
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="4">
+                            Copy Code
+                        </button>
+                    </div>
+
+                    <div id="output4" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- INTERVAL FUNCTIONS SECTION -->
+        <div class="function-section interval-section">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--interval-color)">
+                <i class="fas fa-hourglass-half mr-3"></i>Interval Calculations
+            </h2>
+            
+            <div class="concept-explanation">
+                <h3 class="font-bold mb-2">Time Interval Calculations</h3>
+                <p class="mb-3">PostgreSQL interval functions calculate durations, add/subtract time periods, and manage temporal relationships in healthcare workflows.</p>
+                
+                <div class="tip-box">
+                    <strong>💡 Healthcare Applications:</strong> Calculate length of stay, determine readmission windows, schedule follow-up appointments, and analyze treatment durations.
+                </div>
+            </div>
+
+            <!-- Interval Functions Grid -->
+            <div class="function-grid mb-8">
+                <div class="function-card interval-card">
+                    <h4 class="font-bold text-interval-color">Interval Arithmetic</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Add/subtract intervals from dates</p>
+                    <div class="function-syntax">date + INTERVAL '7 days'<br>timestamp - INTERVAL '2 hours'</div>
+                </div>
+                
+                <div class="function-card interval-card">
+                    <h4 class="font-bold text-interval-color">Date Subtraction</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Calculate difference between dates</p>
+                    <div class="function-syntax">date2 - date1<br>AGE(date2, date1)</div>
+                </div>
+                
+                <div class="function-card interval-card">
+                    <h4 class="font-bold text-interval-color">Generate Series</h4>
+                    <span class="complexity complexity-advanced">Advanced</span>
+                    <p class="text-sm mb-2">Generate time series for reporting</p>
+                    <div class="function-syntax">GENERATE_SERIES(start, end, interval)</div>
+                </div>
+                
+                <div class="function-card interval-card">
+                    <h4 class="font-bold text-interval-color">OVERLAPS</h4>
+                    <span class="complexity complexity-advanced">Advanced</span>
+                    <p class="text-sm mb-2">Check for temporal overlaps</p>
+                    <div class="function-syntax">(start1, end1) OVERLAPS (start2, end2)</div>
+                </div>
+            </div>
+
+            <!-- Example 5: Length of Stay Analysis -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">5</div>
+                    <h2 class="text-xl font-bold">Hospital Length of Stay Analysis</h2>
+                    <span class="function-tag interval-tag">Interval Functions</span>
+                    <span class="function-tag healthcare-tag">Healthcare</span>
+                </div>
+                <p class="mb-4">Calculate and analyze patient length of stay with detailed interval calculations.</p>
+                
+                <div class="code-container">
+                    <textarea id="editor5" class="sql-editor">-- Comprehensive length of stay analysis
+SELECT 
+    encounter_id,
+    patient_id,
+    encounter_type,
+    admission_time,
+    discharge_time,
+    department,
+    diagnosis_code,
+    
+    -- Basic length of stay
+    (discharge_time - admission_time) AS los_interval,
+    EXTRACT(DAYS FROM (discharge_time - admission_time)) AS los_days,
+    EXTRACT(HOURS FROM (discharge_time - admission_time)) AS los_hours,
+    
+    -- Detailed breakdown
+    DATE_PART('days', AGE(discharge_time, admission_time)) AS total_days,
+    DATE_PART('hours', AGE(discharge_time, admission_time)) % 24 AS remaining_hours,
+    DATE_PART('minutes', AGE(discharge_time, admission_time)) % 60 AS remaining_minutes,
+    
+    -- Categorization
+    CASE 
+        WHEN (discharge_time - admission_time) < INTERVAL '1 day' THEN 'Short Stay (<1 day)'
+        WHEN (discharge_time - admission_time) < INTERVAL '3 days' THEN 'Medium Stay (1-3 days)'
+        WHEN (discharge_time - admission_time) < INTERVAL '7 days' THEN 'Long Stay (3-7 days)'
+        ELSE 'Extended Stay (7+ days)'
+    END AS stay_category,
+    
+    -- Readmission window calculation
+    discharge_time + INTERVAL '30 days' AS readmission_monitoring_end
+    
+FROM encounters
+WHERE discharge_time IS NOT NULL
+ORDER BY los_days DESC, admission_time;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="5">
+                            Run Query
+                        </button>
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="5">
+                            Copy Code
+                        </button>
+                    </div>
+
+                    <div id="output5" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Example 6: Medication Schedule Projection -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">6</div>
+                    <h2 class="text-xl font-bold">Medication Schedule Projection and Adherence</h2>
+                    <span class="function-tag interval-tag">Interval Functions</span>
+                    <span class="function-tag healthcare-tag">Healthcare</span>
+                </div>
+                <p class="mb-4">Project future medication schedules and analyze adherence patterns using interval calculations.</p>
+                
+                <div class="code-container">
+                    <textarea id="editor6" class="sql-editor">-- Medication schedule projection and adherence analysis
+SELECT 
+    medication_id,
+    patient_id,
+    medication_name,
+    dosage,
+    administration_time AS initial_dose,
+    frequency,
+    
+    -- Project next 5 doses
+    administration_time + 1 * frequency AS dose_1,
+    administration_time + 2 * frequency AS dose_2,
+    administration_time + 3 * frequency AS dose_3,
+    administration_time + 4 * frequency AS dose_4,
+    administration_time + 5 * frequency AS dose_5,
+    
+    -- Frequency analysis
+    CASE 
+        WHEN frequency = INTERVAL '24 hours' THEN 'Once Daily (QD)'
+        WHEN frequency = INTERVAL '12 hours' THEN 'Twice Daily (BID)'
+        WHEN frequency = INTERVAL '8 hours' THEN 'Three Times Daily (TID)'
+        WHEN frequency = INTERVAL '6 hours' THEN 'Four Times Daily (QID)'
+        WHEN frequency = INTERVAL '4 hours' THEN 'Six Times Daily (Q4H)'
+        ELSE 'Custom Frequency'
+    END AS frequency_description,
+    
+    -- Doses per day calculation
+    ROUND(EXTRACT(EPOCH FROM INTERVAL '24 hours') / 
+          EXTRACT(EPOCH FROM frequency))::integer AS doses_per_day,
+    
+    -- Treatment duration so far
+    CURRENT_TIMESTAMP - administration_time AS treatment_duration_so_far,
+    
+    -- Doses administered so far (estimate)
+    FLOOR(EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - administration_time)) / 
+          EXTRACT(EPOCH FROM frequency))::integer + 1 AS estimated_doses_administered
+    
+FROM medications
+WHERE status = 'Active'
+ORDER BY patient_id, medication_name, initial_dose;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="6">
+                            Run Query
+                        </button>
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="6">
+                            Copy Code
+                        </button>
+                    </div>
+
+                    <div id="output6" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ADVANCED FUNCTIONS SECTION -->
+        <div class="function-section advanced-section">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--advanced-color)">
+                <i class="fas fa-rocket mr-3"></i>Advanced Temporal Analytics
+            </h2>
+            
+            <div class="concept-explanation">
+                <h3 class="font-bold mb-2">Advanced PostgreSQL Date/Time Features</h3>
+                <p class="mb-3">Leverage PostgreSQL's advanced temporal features for complex healthcare analytics, time series generation, and clinical research.</p>
+            </div>
+
+            <!-- Example 7: Time Series Generation -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">7</div>
+                    <h2 class="text-xl font-bold">Healthcare Time Series Analysis</h2>
+                    <span class="function-tag advanced-tag">Advanced Functions</span>
+                    <span class="function-tag healthcare-tag">Healthcare</span>
+                </div>
+                <p class="mb-4">Generate time series for operational reporting and trend analysis in healthcare.</p>
+                
+                <div class="code-container">
+                    <textarea id="editor7" class="sql-editor">-- Healthcare time series generation and analysis
+WITH date_series AS (
+    SELECT generate_series(
+        date_trunc('month', CURRENT_DATE) - INTERVAL '6 months',
+        date_trunc('month', CURRENT_DATE) + INTERVAL '1 month',
+        INTERVAL '1 month'
+    )::date AS report_month
+),
+monthly_metrics AS (
+    SELECT 
+        ds.report_month,
+        
+        -- Monthly encounter volumes
+        COUNT(e.encounter_id) AS monthly_encounters,
+        COUNT(DISTINCT e.patient_id) AS monthly_unique_patients,
+        
+        -- Encounter type distribution
+        COUNT(CASE WHEN e.encounter_type = 'Emergency' THEN 1 END) AS emergency_visits,
+        COUNT(CASE WHEN e.encounter_type = 'Inpatient' THEN 1 END) AS inpatient_admissions,
+        COUNT(CASE WHEN e.encounter_type = 'Outpatient' THEN 1 END) AS outpatient_visits,
+        
+        -- Department metrics
+        COUNT(CASE WHEN e.department = 'ER' THEN 1 END) AS er_encounters,
+        COUNT(CASE WHEN e.department = 'Cardiology' THEN 1 END) AS cardiology_encounters,
+        
+        -- Operational metrics
+        ROUND(AVG(
+            CASE 
+                WHEN e.discharge_time IS NOT NULL 
+                THEN EXTRACT(EPOCH FROM (e.discharge_time - e.admission_time))/3600 
+                ELSE NULL 
+            END
+        )::numeric, 2) AS avg_length_of_stay_hours
+        
+    FROM date_series ds
+    LEFT JOIN encounters e 
+        ON date_trunc('month', e.admission_time)::date = ds.report_month
+    GROUP BY ds.report_month
+)
+
+SELECT 
+    report_month,
+    
+    -- Basic volumes
+    monthly_encounters,
+    monthly_unique_patients,
+    
+    -- Percentage calculations
+    ROUND(100.0 * emergency_visits / NULLIF(monthly_encounters, 0), 1) AS emergency_percent,
+    ROUND(100.0 * inpatient_admissions / NULLIF(monthly_encounters, 0), 1) AS inpatient_percent,
+    
+    -- Moving averages for trend analysis
+    ROUND(AVG(monthly_encounters) OVER (
+        ORDER BY report_month 
+        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+    )::numeric, 1) AS three_month_avg_encounters,
+    
+    -- Month-over-month growth
+    LAG(monthly_encounters, 1) OVER (ORDER BY report_month) AS previous_month_encounters,
+    CASE 
+        WHEN LAG(monthly_encounters, 1) OVER (ORDER BY report_month) IS NOT NULL
+        THEN ROUND(
+            100.0 * (monthly_encounters - LAG(monthly_encounters, 1) OVER (ORDER BY report_month)) /
+            NULLIF(LAG(monthly_encounters, 1) OVER (ORDER BY report_month), 0),
+            1
+        )
+        ELSE NULL
+    END AS month_over_month_growth_percent,
+    
+    avg_length_of_stay_hours
+    
+FROM monthly_metrics
+ORDER BY report_month;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="7">
+                            Run Query
+                        </button>
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="7">
+                            Copy Code
+                        </button>
+                    </div>
+
+                    <div id="output7" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Example 8: 30-Day Readmission Analysis -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">8</div>
+                    <h2 class="text-xl font-bold">30-Day Readmission Risk Analysis</h2>
+                    <span class="function-tag advanced-tag">Advanced Functions</span>
+                    <span class="function-tag healthcare-tag">Healthcare</span>
+                </div>
+                <p class="mb-4">Identify patients with 30-day readmissions and analyze readmission patterns for quality improvement.</p>
+                
+                <div class="code-container">
+                    <textarea id="editor8" class="sql-editor">-- 30-day readmission risk analysis
+WITH encounter_sequence AS (
+    SELECT 
+        e.encounter_id,
+        e.patient_id,
+        p.first_name || ' ' || p.last_name AS patient_name,
+        e.encounter_type,
+        e.admission_time,
+        e.discharge_time,
+        e.department,
+        e.diagnosis_code,
+        
+        -- Previous encounter details
+        LAG(e.discharge_time) OVER (
+            PARTITION BY e.patient_id 
+            ORDER BY e.admission_time
+        ) AS previous_discharge,
+        
+        LAG(e.encounter_type) OVER (
+            PARTITION BY e.patient_id 
+            ORDER BY e.admission_time
+        ) AS previous_encounter_type,
+        
+        LAG(e.diagnosis_code) OVER (
+            PARTITION BY e.patient_id 
+            ORDER BY e.admission_time
+        ) AS previous_diagnosis,
+        
+        -- Calculate days since previous discharge
+        CASE 
+            WHEN LAG(e.discharge_time) OVER (
+                PARTITION BY e.patient_id 
+                ORDER BY e.admission_time
+            ) IS NOT NULL
+            THEN EXTRACT(DAYS FROM (e.admission_time - LAG(e.discharge_time) OVER (
+                PARTITION BY e.patient_id 
+                ORDER BY e.admission_time
+            )))
+            ELSE NULL
+        END AS days_since_last_discharge,
+        
+        -- Readmission classification
+        CASE 
+            WHEN LAG(e.discharge_time) OVER (
+                PARTITION BY e.patient_id 
+                ORDER BY e.admission_time
+            ) IS NOT NULL 
+            AND (e.admission_time - LAG(e.discharge_time) OVER (
+                PARTITION BY e.patient_id 
+                ORDER BY e.admission_time
+            )) <= INTERVAL '30 days'
+            THEN '30-day Readmission'
+            WHEN LAG(e.discharge_time) OVER (
+                PARTITION BY e.patient_id 
+                ORDER BY e.admission_time
+            ) IS NOT NULL
+            THEN 'Readmission after 30 days'
+            ELSE 'First Admission or No Previous Discharge'
+        END AS readmission_status
+        
+    FROM encounters e
+    JOIN patients p ON e.patient_id = p.patient_id
+    WHERE e.discharge_time IS NOT NULL
+)
+
+SELECT 
+    patient_name,
+    encounter_type,
+    department,
+    diagnosis_code,
+    admission_time,
+    discharge_time,
+    previous_discharge,
+    days_since_last_discharge,
+    readmission_status,
+    
+    -- Length of stay for current encounter
+    EXTRACT(DAYS FROM (discharge_time - admission_time)) AS length_of_stay_days,
+    
+    -- Risk stratification
+    CASE 
+        WHEN readmission_status = '30-day Readmission' 
+             AND previous_diagnosis = diagnosis_code
+        THEN 'High Risk - Same Cause Readmission'
+        WHEN readmission_status = '30-day Readmission'
+        THEN 'Medium Risk - Different Cause Readmission'
+        ELSE 'Low Risk'
+    END AS readmission_risk_level,
+    
+    -- Follow-up timing analysis
+    CASE 
+        WHEN readmission_status = '30-day Readmission'
+        THEN discharge_time + INTERVAL '7 days'
+        ELSE discharge_time + INTERVAL '30 days'
+    END AS recommended_follow_up
+    
+FROM encounter_sequence
+WHERE previous_discharge IS NOT NULL
+ORDER BY days_since_last_discharge, patient_name;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="8">
+                            Run Query
+                        </button>
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="8">
+                            Copy Code
+                        </button>
+                    </div>
+
+                    <div id="output8" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- KNOWLEDGE CONSOLIDATION -->
+        <section class="section-card p-4 rounded-xl mb-8">
+            <h2 class="text-xl font-bold mb-4">🧠 Knowledge Consolidation</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="p-4 border border-green-400 rounded-lg">
+                    <h3 class="font-bold text-green-400 mb-2">✅ PostgreSQL Date/Time Skills Mastered</h3>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>EXTRACT and DATE_PART for component extraction</li>
+                        <li>AGE function for patient age calculations</li>
+                        <li>DATE_TRUNC for temporal aggregation</li>
+                        <li>AT TIME ZONE for multi-timezone coordination</li>
+                        <li>Interval arithmetic for medication scheduling</li>
+                        <li>GENERATE_SERIES for time series analysis</li>
+                        <li>OVERLAPS for temporal relationship checking</li>
+                    </ul>
+                </div>
+                
+                <div class="p-4 border border-blue-400 rounded-lg">
+                    <h3 class="font-bold text-blue-400 mb-2">🎯 Healthcare Applications</h3>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>Patient age calculation and demographic analysis</li>
+                        <li>Length of stay and readmission analysis</li>
+                        <li>Medication scheduling and adherence monitoring</li>
+                        <li>Multi-timezone telemedicine coordination</li>
+                        <li>Operational reporting and resource planning</li>
+                        <li>Clinical quality metrics and trend analysis</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-6 p-4 border border-purple-400 rounded-lg">
+                <h3 class="font-bold text-purple-400 mb-2">📊 Ready for Real Healthcare Analytics</h3>
+                <p class="text-sm">You now have the PostgreSQL date and time skills needed for advanced healthcare analytics, clinical research, and operational reporting in health informatics environments.</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // --- Global Variables ---
+        const TOTAL_QUESTIONS = 8;
+        let completedExercises = new Set();
+        let codeMirrorEditors = {};
+
+        // --- Navigation Menu Functionality ---
+        function setupNavigation() {
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const navLinks = document.getElementById('nav-links');
+            
+            if (mobileMenuToggle && navLinks) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+            }
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (event) => {
+                if (!event.target.closest('.nav-menu')) {
+                    navLinks.classList.remove('active');
+                }
+            });
+        }
+
+        // --- AlaSQL Database Functions ---
+
+        // Initialize AlaSQL database
+        async function initializeDatabase() {
+            try {
+                updateSQLStatus('Loading SQL Engine...', 'status-loading');
+                
+                // AlaSQL is already loaded via CDN
+                if (typeof alasql === 'undefined') {
+                    throw new Error('AlaSQL library failed to load');
+                }
+                
+                createHealthcareDatabase();
+                
+                updateSQLStatus('SQL Engine Ready', 'status-ready');
+                console.log('Healthcare database initialized successfully');
+                
+            } catch (error) {
+                console.error('Failed to initialize database:', error);
+                updateSQLStatus('Database Error', 'status-error');
+            }
+        }
+
+        // Update SQL engine status
+        function updateSQLStatus(message, statusClass) {
+            const statusElement = document.getElementById('sql-engine-status');
+            statusElement.textContent = message;
+            statusElement.className = `sql-engine-status ${statusClass}`;
+        }
+
+        // Create healthcare database with temporal data
+        function createHealthcareDatabase() {
+            // Clear existing data
+            alasql('DROP TABLE IF EXISTS patients');
+            alasql('DROP TABLE IF EXISTS encounters');
+            alasql('DROP TABLE IF EXISTS medications');
+            alasql('DROP TABLE IF EXISTS lab_results');
+
+            // Create healthcare tables
+            alasql(`CREATE TABLE patients (
+                patient_id INT,
+                first_name VARCHAR(50),
+                last_name VARCHAR(50),
+                date_of_birth DATE,
+                gender VARCHAR(10),
+                created_at TIMESTAMP
+            )`);
+
+            alasql(`CREATE TABLE encounters (
+                encounter_id INT,
+                patient_id INT,
+                encounter_type VARCHAR(20),
+                admission_time TIMESTAMP,
+                discharge_time TIMESTAMP,
+                department VARCHAR(50),
+                diagnosis_code VARCHAR(20)
+            )`);
+
+            alasql(`CREATE TABLE medications (
+                medication_id INT,
+                patient_id INT,
+                medication_name VARCHAR(100),
+                dosage VARCHAR(50),
+                administration_time TIMESTAMP,
+                frequency VARCHAR(20),
+                next_dose_time TIMESTAMP,
+                status VARCHAR(20)
+            )`);
+
+            alasql(`CREATE TABLE lab_results (
+                lab_id INT,
+                patient_id INT,
+                test_name VARCHAR(100),
+                collection_time TIMESTAMP,
+                result_time TIMESTAMP,
+                test_value DECIMAL(10,2),
+                unit VARCHAR(20),
+                flag VARCHAR(10)
+            )`);
+
+            // Insert sample patient data
+            const patients = [
+                [1, 'John', 'Smith', '1985-03-15', 'Male', '2024-01-01 08:00:00'],
+                [2, 'Maria', 'Garcia', '1978-07-22', 'Female', '2024-01-01 08:00:00'],
+                [3, 'David', 'Chen', '1992-11-30', 'Male', '2024-01-01 08:00:00'],
+                [4, 'Sarah', 'Johnson', '1965-09-14', 'Female', '2024-01-01 08:00:00'],
+                [5, 'James', 'Wilson', '1988-12-03', 'Male', '2024-01-01 08:00:00'],
+                [6, 'Lisa', 'Brown', '1972-04-18', 'Female', '2024-01-01 08:00:00'],
+                [7, 'Robert', 'Davis', '1958-06-25', 'Male', '2024-01-01 08:00:00'],
+                [8, 'Emily', 'Martinez', '1995-01-08', 'Female', '2024-01-01 08:00:00']
+            ];
+            
+            patients.forEach(patient => {
+                alasql('INSERT INTO patients VALUES (?, ?, ?, ?, ?, ?)', patient);
+            });
+
+            // Insert sample encounter data
+            const encounters = [
+                [101, 1, 'Emergency', '2024-01-15 08:30:00', '2024-01-15 14:45:00', 'ER', 'I20.9'],
+                [102, 2, 'Outpatient', '2024-01-16 09:15:00', '2024-01-16 10:30:00', 'Cardiology', 'Z01.810'],
+                [103, 3, 'Inpatient', '2024-01-14 22:15:00', '2024-01-17 11:20:00', 'Internal Medicine', 'J18.9'],
+                [104, 1, 'Outpatient', '2024-01-20 13:45:00', '2024-01-20 14:30:00', 'Cardiology', 'Z09'],
+                [105, 4, 'Emergency', '2024-01-18 03:20:00', '2024-01-18 08:10:00', 'ER', 'R10.9'],
+                [106, 5, 'Outpatient', '2024-01-19 10:00:00', '2024-01-19 11:15:00', 'Orthopedics', 'M25.561'],
+                [107, 6, 'Urgent Care', '2024-01-21 16:30:00', '2024-01-21 18:45:00', 'Urgent Care', 'R50.9'],
+                [108, 7, 'Inpatient', '2024-01-22 11:20:00', '2024-01-25 09:30:00', 'Cardiology', 'I10'],
+                [109, 8, 'Telehealth', '2024-01-23 14:00:00', '2024-01-23 14:45:00', 'Primary Care', 'Z71.9'],
+                [110, 1, 'Emergency', '2024-02-01 20:15:00', '2024-02-02 02:30:00', 'ER', 'J45.901']
+            ];
+            
+            encounters.forEach(encounter => {
+                alasql('INSERT INTO encounters VALUES (?, ?, ?, ?, ?, ?, ?)', encounter);
+            });
+
+            // Insert sample medication data
+            const medications = [
+                [1, 1, 'Aspirin', '81 mg', '2024-01-15 09:00:00', '24 hours', '2024-01-16 09:00:00', 'Completed'],
+                [2, 1, 'Lisinopril', '10 mg', '2024-01-15 09:00:00', '12 hours', '2024-01-15 21:00:00', 'Completed'],
+                [3, 3, 'Amoxicillin', '500 mg', '2024-01-15 08:00:00', '8 hours', '2024-01-15 16:00:00', 'Completed'],
+                [4, 3, 'Albuterol', '2.5 mg', '2024-01-15 08:30:00', '6 hours', '2024-01-15 14:30:00', 'Completed'],
+                [5, 4, 'Ibuprofen', '400 mg', '2024-01-18 04:00:00', '6 hours', '2024-01-18 10:00:00', 'Completed'],
+                [6, 5, 'Acetaminophen', '650 mg', '2024-01-19 10:30:00', '8 hours', '2024-01-19 18:30:00', 'Active'],
+                [7, 7, 'Amlodipine', '5 mg', '2024-01-22 12:00:00', '24 hours', '2024-01-23 12:00:00', 'Active'],
+                [8, 1, 'Prednisone', '20 mg', '2024-02-01 21:00:00', '24 hours', '2024-02-02 21:00:00', 'Active']
+            ];
+            
+            medications.forEach(medication => {
+                alasql('INSERT INTO medications VALUES (?, ?, ?, ?, ?, ?, ?, ?)', medication);
+            });
+
+            // Insert sample lab results
+            const labResults = [
+                [1, 1, 'Blood Pressure', '2024-01-15 08:45:00', '2024-01-15 08:50:00', 135.00, 'mmHg', 'High'],
+                [2, 1, 'Total Cholesterol', '2024-01-15 09:30:00', '2024-01-16 14:00:00', 185.00, 'mg/dL', 'Normal'],
+                [3, 1, 'Troponin', '2024-01-15 09:00:00', '2024-01-15 10:30:00', 0.02, 'ng/mL', 'Normal'],
+                [4, 3, 'White Blood Cells', '2024-01-15 07:30:00', '2024-01-15 08:15:00', 12.50, '10^3/uL', 'High'],
+                [5, 3, 'CRP', '2024-01-16 06:45:00', '2024-01-16 10:30:00', 45.20, 'mg/L', 'High'],
+                [6, 4, 'Lipase', '2024-01-18 04:30:00', '2024-01-18 06:45:00', 150.00, 'U/L', 'High'],
+                [7, 5, 'ESR', '2024-01-19 10:15:00', '2024-01-19 13:20:00', 28.00, 'mm/hr', 'High'],
+                [8, 7, 'Blood Pressure', '2024-01-22 11:30:00', '2024-01-22 11:35:00', 165.00, 'mmHg', 'Critical'],
+                [9, 7, 'Creatinine', '2024-01-22 12:00:00', '2024-01-22 15:30:00', 1.35, 'mg/dL', 'High'],
+                [10, 1, 'Oxygen Saturation', '2024-02-01 20:30:00', '2024-02-01 20:35:00', 92.00, '%', 'Low']
+            ];
+            
+            labResults.forEach(lab => {
+                alasql('INSERT INTO lab_results VALUES (?, ?, ?, ?, ?, ?, ?, ?)', lab);
+            });
+
+            console.log('Healthcare database created with temporal data');
+        }
+
+        // Initialize CodeMirror editors
+        function initializeEditors() {
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const textarea = document.getElementById(`editor${i}`);
+                if (textarea) {
+                    codeMirrorEditors[i] = CodeMirror.fromTextArea(textarea, {
+                        mode: 'sql',
+                        theme: 'monokai',
+                        lineNumbers: true,
+                        indentUnit: 4,
+                        tabSize: 4,
+                        extraKeys: {"Ctrl-Space": "autocomplete"},
+                        hintOptions: {
+                            tables: {
+                                patients: ['patient_id', 'first_name', 'last_name', 'date_of_birth', 'gender', 'created_at'],
+                                encounters: ['encounter_id', 'patient_id', 'encounter_type', 'admission_time', 'discharge_time', 'department', 'diagnosis_code'],
+                                medications: ['medication_id', 'patient_id', 'medication_name', 'dosage', 'administration_time', 'frequency', 'next_dose_time', 'status'],
+                                lab_results: ['lab_id', 'patient_id', 'test_name', 'collection_time', 'result_time', 'test_value', 'unit', 'flag']
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Initialize test editor
+            const testTextarea = document.getElementById('editor-test');
+            if (testTextarea) {
+                codeMirrorEditors['test'] = CodeMirror.fromTextArea(testTextarea, {
+                    mode: 'sql',
+                    theme: 'monokai',
+                    lineNumbers: true,
+                    indentUnit: 4,
+                    tabSize: 4,
+                    extraKeys: {"Ctrl-Space": "autocomplete"}
+                });
+            }
+        }
+
+        // Get SQL from CodeMirror editor
+        function getSQLFromEditor(sectionId) {
+            if (codeMirrorEditors[sectionId]) {
+                return codeMirrorEditors[sectionId].getValue().trim();
+            }
+            const textarea = document.getElementById(`editor${sectionId}`);
+            return textarea ? textarea.value.trim() : '';
+        }
+
+        // Check if query requires PostgreSQL
+        function requiresPostgreSQL(sql) {
+            const postgresFunctions = [
+                'EXTRACT.*DOW', 'EXTRACT.*QUARTER', 'DATE_TRUNC', 'DATE_PART', 
+                'AGE', 'AT TIME ZONE', 'TIMEZONE', 'INTERVAL', 'OVERLAPS',
+                'GENERATE_SERIES'
+            ];
+            
+            return postgresFunctions.some(func => {
+                const regex = new RegExp(func, 'i');
+                return regex.test(sql);
+            });
+        }
+
+        // Execute SQL query using AlaSQL
+        function executeSQL(sectionId) {
+            const sql = getSQLFromEditor(sectionId);
+            const outputElement = document.getElementById(`output${sectionId}`);
+            
+            outputElement.innerHTML = '';
+            outputElement.classList.remove('text-red-400', 'text-green-400');
+            
+            if (!sql) {
+                showError(sectionId, 'Please write a SQL query first.');
+                return;
+            }
+            
+            // Check if this query requires PostgreSQL
+            if (requiresPostgreSQL(sql)) {
+                outputElement.innerHTML = `
+                    <div class="postgres-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>This query uses PostgreSQL-specific functions that require a full PostgreSQL environment. Please copy and run in pgAdmin or psql.</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                const result = alasql(sql);
+                const endTime = performance.now();
+                
+                displaySQLResult(outputElement, result, sql, endTime - startTime);
+                completedExercises.add(sectionId);
+                
+            } catch (error) {
+                showError(sectionId, error.message);
+                console.error('SQL Error:', error);
+            }
+        }
+
+        // Execute test query
+        function executeTestQuery() {
+            const sql = codeMirrorEditors['test'] ? codeMirrorEditors['test'].getValue().trim() : document.getElementById('editor-test').value.trim();
+            const outputElement = document.getElementById('output-test');
+            
+            outputElement.innerHTML = '';
+            outputElement.classList.remove('text-red-400', 'text-green-400');
+            
+            if (!sql) {
+                showError('test', 'Please write a SQL query first.');
+                return;
+            }
+            
+            // Check if this query requires PostgreSQL
+            if (requiresPostgreSQL(sql)) {
+                outputElement.innerHTML = `
+                    <div class="postgres-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>This query uses PostgreSQL-specific functions that require a full PostgreSQL environment. Please copy and run in pgAdmin or psql.</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                const result = alasql(sql);
+                const endTime = performance.now();
+                
+                displaySQLResult(outputElement, result, sql, endTime - startTime);
+                
+            } catch (error) {
+                showError('test', error.message);
+                console.error('SQL Error:', error);
+            }
+        }
+
+        // Display SQL results
+        function displaySQLResult(outputElement, result, sql, executionTime) {
+            // Show executed SQL
+            const sqlInfo = document.createElement('div');
+            sqlInfo.className = 'query-info';
+            sqlInfo.innerHTML = `<span>Executed: <code>${sql}</code></span>`;
+            outputElement.appendChild(sqlInfo);
+            
+            // Show success message
+            const successInfo = document.createElement('div');
+            successInfo.className = 'query-info query-success';
+            
+            if (!result || result.length === 0) {
+                successInfo.textContent = '✓ Query executed successfully (no results returned)';
+            } else {
+                const rowCount = result.length;
+                successInfo.textContent = `✓ Query executed successfully, returned ${rowCount} row(s)`;
+            }
+            outputElement.appendChild(successInfo);
+            
+            // Display results for SELECT queries
+            if (result && result.length > 0) {
+                const table = document.createElement('table');
+                table.className = 'results-table';
+                
+                // Create header
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                
+                // Get column names from first object
+                const columns = Object.keys(result[0]);
+                columns.forEach(col => {
+                    const th = document.createElement('th');
+                    th.textContent = col;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+                
+                // Create body
+                const tbody = document.createElement('tbody');
+                result.forEach(row => {
+                    const tr = document.createElement('tr');
+                    columns.forEach(col => {
+                        const td = document.createElement('td');
+                        td.textContent = row[col];
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+                
+                outputElement.appendChild(table);
+            }
+            
+            // Show execution time
+            const timeInfo = document.createElement('div');
+            timeInfo.className = 'query-info';
+            timeInfo.textContent = `Execution time: ${Math.round(executionTime)}ms`;
+            outputElement.appendChild(timeInfo);
+        }
+
+        // Show error message
+        function showError(sectionId, message) {
+            const outputElement = document.getElementById(`output${sectionId}`);
+            outputElement.innerHTML = `
+                <div class="text-red-400 font-bold">SQL Error:</div>
+                <div>${message}</div>
+                <div class="mt-2 text-sm">Check your SQL syntax and try again.</div>
+            `;
+        }
+
+        // Reset database
+        function resetDatabase() {
+            createHealthcareDatabase();
+            
+            // Clear all outputs
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const outputElement = document.getElementById(`output${i}`);
+                if (outputElement) {
+                    outputElement.textContent = 'Query results will appear here...';
+                    outputElement.classList.remove('text-red-400', 'text-green-400');
+                }
+            }
+            
+            const testOutput = document.getElementById('output-test');
+            testOutput.textContent = 'Test results will appear here...';
+            testOutput.classList.remove('text-red-400', 'text-green-400');
+            
+            console.log('Healthcare database reset to initial state');
+        }
+
+        // Helper function for copying text to clipboard
+        function copyToClipboard(text) {
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = text;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            
+            try {
+                document.execCommand('copy');
+                return true;
+            } catch (err) {
+                console.error('Copy command failed:', err);
+                return false;
+            } finally {
+                document.body.removeChild(tempTextArea);
+            }
+        }
+        
+        // Function to copy the code for a specific section
+        function copyCode(sectionId) {
+            const code = getSQLFromEditor(sectionId);
+            if (copyToClipboard(code)) {
+                const button = document.querySelector(`.copy-button[data-section="${sectionId}"]`);
+                const originalText = button.textContent;
+                button.textContent = "Copied!";
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 1500);
+            }
+        }
+
+        // Function to set up the Light/Dark Mode toggle
+        function setupThemeToggle() {
+            const toggleButton = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+
+            function updateTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                toggleButton.textContent = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+                localStorage.setItem('theme', theme);
+            }
+
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            updateTheme(savedTheme);
+
+            toggleButton.addEventListener('click', () => {
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                updateTheme(newTheme);
+            });
+        }
+
+        // Initialize the application
+        async function initializeApp() {
+            // Set up navigation first
+            setupNavigation();
+            
+            // Initialize AlaSQL database first
+            await initializeDatabase();
+            
+            // Initialize CodeMirror editors
+            initializeEditors();
+            
+            // Set up event listeners for all SQL question buttons
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                document.querySelector(`.run-button[data-section="${i}"]`).addEventListener('click', () => executeSQL(i));
+                document.querySelector(`.copy-button[data-section="${i}"]`).addEventListener('click', () => copyCode(i));
+            }
+            
+            // Set up test area
+            document.getElementById('run-test').addEventListener('click', executeTestQuery);
+            document.getElementById('reset-db').addEventListener('click', resetDatabase);
+            
+            // Set up theme toggle
+            setupThemeToggle();
+
+            console.log("Module 9: PostgreSQL Date and Time Functions fully initialized");
+        }
+
+        // Initialize when the page loads
+        window.addEventListener('load', initializeApp);
+    </script>
+</body>
+</html>
