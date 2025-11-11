@@ -1,458 +1,2139 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Module 9: Data Cleaning in SQL - IAF 603</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Highlight.js for code highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- MathJax CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- Custom MathJax Configuration -->
-    <script src="./js/mathjax.js"></script>
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="./css/styles.css">
+    <title>Module 9: Data Cleaning - PostgreSQL Data Preparation</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- CodeMirror for SQL editing -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/sql/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/sql-hint.min.js"></script>
+    
+    <!-- AlaSQL Library -->
+    <script src="https://cdn.jsdelivr.net/npm/alasql@0.6"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+
+        /* Theme Variables */
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --section-bg: #1e293b;
+            --code-bg: #020617;
+            --border-color: #334155;
+            --header-color: #38bdf8;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --error-color: #f87171;
+            --success-color: #34d399;
+            --sample-color: #fbbf24;
+            --missing-color: #10b981;
+            --standardize-color: #3b82f6;
+            --duplicate-color: #8b5cf6;
+            --validation-color: #ec4899;
+            --practice-color: #f59e0b;
+            --nav-bg: #1e293b;
+            --warning-color: #f59e0b;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --text-color: #1e293b;
+            --section-bg: #ffffff;
+            --code-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --header-color: #1d4ed8;
+            --accent-color: #4f46e5;
+            --accent-hover: #4338ca;
+            --error-color: #dc2626;
+            --success-color: #10b981;
+            --sample-color: #d97706;
+            --missing-color: #059669;
+            --standardize-color: #2563eb;
+            --duplicate-color: #7c3aed;
+            --validation-color: #db2777;
+            --practice-color: #d97706;
+            --nav-bg: #ffffff;
+            --warning-color: #d97706;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1, h2 {
+            color: var(--header-color);
+        }
+
+        .section-card {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .sql-editor {
+            width: 100%;
+            height: 200px;
+            background-color: var(--code-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .output-area {
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            color: var(--text-color);
+            padding: 0.75rem;
+            margin-top: 12px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+        }
+
+        .question-number {
+            background-color: var(--accent-color);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+        
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .code-container {
+            margin-top: 16px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .sample-solution {
+            background-color: var(--code-bg);
+            border: 1px solid var(--sample-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 12px;
+            position: relative;
+        }
+
+        .sample-header {
+            color: var(--sample-color);
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-solution {
+            background: none;
+            border: none;
+            color: var(--sample-color);
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: auto;
+        }
+
+        .solution-content {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .function-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 12px;
+        }
+
+        .missing-tag { background-color: var(--missing-color); color: white; }
+        .standardize-tag { background-color: var(--standardize-color); color: white; }
+        .duplicate-tag { background-color: var(--duplicate-color); color: white; }
+        .validation-tag { background-color: var(--validation-color); color: white; }
+        .practice-tag { background-color: var(--practice-color); color: white; }
+        .fabric-tag { background-color: var(--practice-color); color: white; }
+
+        .function-section {
+            border-left: 4px solid;
+            padding-left: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .missing-section { border-color: var(--missing-color); }
+        .standardize-section { border-color: var(--standardize-color); }
+        .duplicate-section { border-color: var(--duplicate-color); }
+        .validation-section { border-color: var(--validation-color); }
+        .fabric-section { border-color: var(--practice-color); }
+
+        .database-schema {
+            background-color: var(--code-bg);
+            border: 1px solid var(--missing-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+        }
+
+        .schema-header {
+            color: var(--missing-color);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-structure {
+            margin-bottom: 1rem;
+        }
+
+        .CodeMirror {
+            height: 200px;
+            border-radius: 0.5rem;
+            margin-top: 12px;
+        }
+
+        .sql-engine-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .status-ready {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-loading {
+            background-color: var(--sample-color);
+            color: black;
+        }
+
+        .status-error {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+        }
+
+        .results-table th {
+            background-color: var(--border-color);
+            padding: 6px 8px;
+            text-align: left;
+            border: 1px solid var(--border-color);
+            font-weight: bold;
+        }
+
+        .results-table td {
+            padding: 6px 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .query-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .query-success {
+            color: var(--success-color);
+        }
+
+        .learning-objective {
+            background-color: var(--code-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .concept-explanation {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .tip-box {
+            background-color: var(--sample-color);
+            color: black;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .function-card {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .function-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .function-card.missing-card { border-color: var(--missing-color); }
+        .function-card.standardize-card { border-color: var(--standardize-color); }
+        .function-card.duplicate-card { border-color: var(--duplicate-color); }
+
+        .function-card h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .function-syntax {
+            background-color: var(--code-bg);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.8rem;
+            margin: 0.5rem 0;
+        }
+
+        .complexity {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .complexity-basic { background-color: var(--missing-color); color: white; }
+        .complexity-intermediate { background-color: var(--standardize-color); color: white; }
+        .complexity-advanced { background-color: var(--duplicate-color); color: white; }
+
+        .solution-button {
+            background-color: var(--success-color);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .solution-button:hover {
+            background-color: #10b981;
+            transform: translateY(-1px);
+        }
+
+        /* Navigation Styles */
+        .nav-container {
+            background-color: var(--nav-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--header-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--section-bg);
+            min-width: 250px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            z-index: 1;
+            padding: 0.5rem 0;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-link {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .dropdown-link:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .dropdown-link.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .module-number {
+            background-color: var(--accent-color);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .postgres-warning {
+            background-color: var(--warning-color);
+            color: black;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .postgres-warning i {
+            font-size: 1.2rem;
+        }
+
+        .data-quality-score {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .score-excellent { background-color: var(--success-color); color: white; }
+        .score-good { background-color: var(--sample-color); color: black; }
+        .score-fair { background-color: var(--warning-color); color: black; }
+        .score-poor { background-color: var(--error-color); color: white; }
+
+        @media (max-width: 1024px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--nav-bg);
+                flex-direction: column;
+                padding: 1rem;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                border: none;
+                background-color: transparent;
+            }
+
+            .function-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="./index.html">IAF 603: Preparing Data for Analytics</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+<body class="p-4 md:p-8 min-h-screen">
+    <!-- SQL Engine Status -->
+    <div id="sql-engine-status" class="sql-engine-status status-loading">
+        Loading SQL Engine...
+    </div>
+    
+    <!-- Navigation Menu -->
+    <nav class="nav-container">
+        <div class="max-w-6xl mx-auto">
+            <div class="nav-menu">
+                <a href="index.html" class="nav-logo">
+                    <i class="fas fa-database"></i>
+                    IAF 603: Data Analytics
+                </a>
+                
+                <button class="mobile-menu-btn" id="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="nav-links" id="nav-links">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                    
+                    <div class="dropdown">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-book"></i>
                             Modules
+                            <i class="fas fa-chevron-down"></i>
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="./module1.html">Module 1</a></li>
-                            <li><a class="dropdown-item" href="./module2.html">Module 2</a></li>
-                            <li><a class="dropdown-item" href="./module3.html">Module 3</a></li>
-                            <li><a class="dropdown-item" href="./module4.html">Module 4</a></li>
-                            <li><a class="dropdown-item" href="./module5.html">Module 5</a></li>
-                            <li><a class="dropdown-item" href="./module6.html">Module 6</a></li>
-                            <li><a class="dropdown-item" href="./module7.html">Module 7</a></li>
-                            <li><a class="dropdown-item" href="./module8.html">Module 8</a></li>
-                            <li><a class="dropdown-item" href="./module9.html">Module 9</a></li>
-                            <li><a class="dropdown-item" href="./module10.html">Module 10</a></li>
-                            <li><a class="dropdown-item" href="./module11.html">Module 11</a></li>
-                            <li><a class="dropdown-item" href="./module12.html">Module 12</a></li>
-                            <li><a class="dropdown-item" href="./module13.html">Module 13</a></li>
-                            <li><a class="dropdown-item" href="./module14.html">Module 14</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html#contact">Contact</a>
-                    </li>
-                </ul>
+                        <div class="dropdown-content">
+                            <a href="module1.html" class="dropdown-link">
+                                <span class="module-number">1</span>
+                                Introduction to Data
+                            </a>
+                            <a href="module2.html" class="dropdown-link">
+                                <span class="module-number">2</span>
+                                Database Concepts
+                            </a>
+                            <a href="module3.html" class="dropdown-link">
+                                <span class="module-number">3</span>
+                                SQL Basics I
+                            </a>
+                            <a href="module4.html" class="dropdown-link">
+                                <span class="module-number">4</span>
+                                SQL Aggregations
+                            </a>
+                            <a href="module5.html" class="dropdown-link">
+                                <span class="module-number">5</span>
+                                SQL Logic
+                            </a>
+                            <a href="module6.html" class="dropdown-link">
+                                <span class="module-number">6</span>
+                                SQL Joins
+                            </a>
+                            <a href="module7.html" class="dropdown-link">
+                                <span class="module-number">7</span>
+                                Subqueries
+                            </a>
+                            <a href="module8.html" class="dropdown-link">
+                                <span class="module-number">8</span>
+                                Strings and Dates
+                            </a>
+                            <a href="module9.html" class="dropdown-link active">
+                                <span class="module-number">9</span>
+                                Data Cleaning
+                            </a>
+                            <a href="module10.html" class="dropdown-link">
+                                <span class="module-number">10</span>
+                                Reshaping Data
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-project-diagram"></i>
+                        Projects
+                    </a>
+                    
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-question-circle"></i>
+                        Resources
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container my-5">
-        <!-- Module Title -->
-        <section class="text-center py-5 bg-white rounded shadow">
-            <h1 class="display-4 fw-bold text-dark">Module 9: Data Cleaning in SQL</h1>
+    <div class="max-w-6xl mx-auto mt-6">
+        <!-- HEADER -->
+        <header class="flex justify-between items-center mb-6 pb-4 border-b border-border-color">
+            <div>
+                <h1 class="text-3xl font-extrabold">Module 9: Data Cleaning in PostgreSQL</h1>
+                <p class="text-lg text-gray-400">IAF 603 - Preparing Data for Analytics</p>
+                <p class="text-sm text-green-400 mt-1">✓ Interactive SQL Environment Active</p>
+                <p class="text-sm text-yellow-400 mt-1">🧹 Real Data Cleaning Scenarios</p>
+                <p class="text-sm text-blue-400 mt-1">🔧 Hybrid Execution - Run in Browser or PostgreSQL</p>
+            </div>
+            <button id="theme-toggle" class="px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold transition-colors">
+                <!-- Text set by JavaScript -->
+            </button>
+        </header>
+
+        <!-- Introduction -->
+        <section class="mb-8">
+            <div class="instructions p-4 section-card rounded-xl">
+                <h2 class="text-xl font-bold mb-2">🎯 Mastering Data Cleaning Techniques</h2>
+                <p class="mb-4">Learn essential PostgreSQL techniques for detecting and correcting corrupt, inaccurate, or inconsistent data from datasets.</p>
+                
+                <div class="learning-objective">
+                    <h3 class="font-bold mb-2">Learning Objectives</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Identify and handle missing data using COALESCE and NULL handling</li>
+                        <li>Standardize data formats across text, numbers, and categories</li>
+                        <li>Detect and remove duplicate records using advanced techniques</li>
+                        <li>Implement data validation constraints and quality checks</li>
+                        <li>Create automated data cleaning functions and workflows</li>
+                        <li>Generate data quality assessment reports</li>
+                    </ul>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-6 gap-2 text-sm mt-4">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-missing-color mr-2"></div>
+                        <span>Missing Data</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-standardize-color mr-2"></div>
+                        <span>Standardization</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-duplicate-color mr-2"></div>
+                        <span>Duplicates</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-validation-color mr-2"></div>
+                        <span>Validation</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-practice-color mr-2"></div>
+                        <span>Practice</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-practice-color mr-2"></div>
+                        <span>PostgreSQL</span>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <!-- Module Content -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <!-- Learning Objectives -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Learning Objectives</h2>
-                <p>Upon completion of this module, participants will be able to:</p>
-                <ul>
-                    <li>Develop strategies for removing duplicates in SQL using <code>DISTINCT</code> and <code>ROW_NUMBER()</code>.</li>
-                    <li>Handle missing values effectively using <code>COALESCE</code>, <code>IS NULL</code>, and conditional logic.</li>
-                    <li>Normalize text data to ensure consistency using string functions like <code>UPPER</code>, <code>TRIM</code>, and <code>REPLACE</code>.</li>
-                    <li>Apply data cleaning techniques in combination with joins, aggregations, and other SQL features for comprehensive data preparation.</li>
-                    <li>Execute data cleaning operations in cloud-based environments like Microsoft Fabric Lakehouse.</li>
-                </ul>
-
-                <!-- Introduction to Data Cleaning in SQL -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Introduction to Data Cleaning in SQL</h2>
-                <p>Data cleaning is a critical step in preparing datasets for analysis, addressing issues like duplicates, missing values, and inconsistent formats. This module explores SQL techniques such as <code>DISTINCT</code>, <code>ROW_NUMBER()</code>, and <code>COALESCE</code>, alongside string functions from Module 8, to clean data effectively. In real-world scenarios, such as managing patient records in a Greensboro hospital or sales data for a local retailer, clean data ensures accurate insights. For example, duplicate patient entries can skew treatment statistics, while inconsistent product names can disrupt inventory analysis. Mastering these techniques ensures datasets are reliable and ready for advanced analytics.</p>
-                <p>Data cleaning in SQL is powerful because it allows in-database transformations, reducing the need for external tools. By combining these methods with joins and aggregations, you can create robust data preparation pipelines. This module emphasizes practical strategies to handle common data quality issues, ensuring consistency, completeness, and accuracy.</p>
-
-                <!-- Sample Data -->
-                <h3 class="h4 fw-bold mb-3">Sample Data</h3>
-                <p><strong>PATIENTS Table:</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>subject_id</th>
-                            <th>name</th>
-                            <th>email</th>
-                            <th>address</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1001</td>
-                            <td>Alice Smith  </td>
-                            <td>alice.smith@email.com</td>
-                            <td>123 Main St, Greensboro</td>
-                        </tr>
-                        <tr>
-                            <td>1001</td>
-                            <td>Alice SMITH</td>
-                            <td>alice.smith@email.com</td>
-                            <td>123 Main St, GSO</td>
-                        </tr>
-                        <tr>
-                            <td>1002</td>
-                            <td>Bob Johnson</td>
-                            <td>NULL</td>
-                            <td>456 Oak Ave, greensboro</td>
-                        </tr>
-                        <tr>
-                            <td>1003</td>
-                            <td>Carol White</td>
-                            <td>carol.white@email.com</td>
-                            <td>NULL</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p><strong>ADMISSIONS Table:</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>hadm_id</th>
-                            <th>subject_id</th>
-                            <th>admit_time</th>
-                            <th>diagnosis</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>101</td>
-                            <td>1001</td>
-                            <td>2025-01-10 08:00:00</td>
-                            <td>Pneumonia</td>
-                        </tr>
-                        <tr>
-                            <td>101</td>
-                            <td>1001</td>
-                            <td>2025-01-10 08:00:00</td>
-                            <td>Pneumonia</td>
-                        </tr>
-                        <tr>
-                            <td>102</td>
-                            <td>1002</td>
-                            <td>2025-02-01 14:00:00</td>
-                            <td>Fracture</td>
-                        </tr>
-                        <tr>
-                            <td>103</td>
-                            <td>1003</td>
-                            <td>2025-03-05 10:00:00</td>
-                            <td>NULL</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <!-- Removing Duplicates -->
-                <h3 class="h4 fw-bold mb-3">Removing Duplicates</h3>
-                <p>Duplicates can distort analysis, such as overcounting admissions. Use <code>DISTINCT</code> for simple deduplication or <code>ROW_NUMBER()</code> for more complex scenarios.</p>
-                <ul>
-                    <li><strong>DISTINCT:</strong> Removes duplicate rows based on selected columns.</li>
-                    <li><strong>ROW_NUMBER():</strong> Assigns a unique number to rows within a partition, allowing identification of duplicates.</li>
-                </ul>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Remove duplicate admissions using DISTINCT
-SELECT DISTINCT hadm_id, subject_id, admit_time, diagnosis
-FROM ADMISSIONS;
-
--- Remove duplicates using ROW_NUMBER()
-WITH RankedAdmissions AS (
-    SELECT
-        hadm_id,
-        subject_id,
-        admit_time,
-        diagnosis,
-        ROW_NUMBER() OVER (PARTITION BY hadm_id, subject_id, admit_time, diagnosis ORDER BY hadm_id) AS rn
-    FROM ADMISSIONS
-)
-SELECT hadm_id, subject_id, admit_time, diagnosis
-FROM RankedAdmissions
-WHERE rn = 1;</code></pre>
+        <!-- Quick Test Area -->
+        <div class="section-card p-4 rounded-xl mb-8">
+            <h2 class="text-xl font-bold mb-4">🧪 Interactive Data Cleaning Playground</h2>
+            <p class="mb-4">Test data cleaning functions against the sample databases:</p>
+            
+            <div class="code-container">
+                <textarea id="editor-test" class="sql-editor" placeholder="-- Try: Check for missing data in customers table">-- Check for missing data in customers table
+SELECT 
+    COUNT(*) as total_rows,
+    COUNT(name) as name_count,
+    COUNT(email) as email_count,
+    COUNT(phone) as phone_count
+FROM customers;</textarea>
+                
+                <div class="action-buttons">
+                    <button id="run-test" class="btn-primary px-4 py-2 rounded-lg font-semibold text-white">
+                        Run Query
+                    </button>
+                    <button id="reset-db" class="px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors">
+                        Reset Database
+                    </button>
                 </div>
-                <p><strong>Explanation:</strong> <code>DISTINCT</code> removes exact duplicate admission rows. <code>ROW_NUMBER()</code> assigns numbers within groups of identical rows, keeping only the first instance (rn = 1).</p>
-                <p><strong>Expanded Example (Sales Table):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>sale_id</th>
-                            <th>product</th>
-                            <th>quantity</th>
-                            <th>price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Laptop</td>
-                            <td>2</td>
-                            <td>800.00</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Laptop</td>
-                            <td>2</td>
-                            <td>800.00</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Mouse</td>
-                            <td>5</td>
-                            <td>20.00</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Remove duplicate sales
-WITH RankedSales AS (
-    SELECT
-        sale_id,
-        product,
-        quantity,
+
+                <div id="output-test" class="output-area">
+                    Query results will appear here...
+                </div>
+            </div>
+        </div>
+
+        <!-- Database Schema -->
+        <div class="database-schema mb-8">
+            <div class="schema-header">🏥 Healthcare & Business Database Schema</div>
+            <div class="table-structure">
+                <strong>customers</strong> (id, name, email, phone, address, signup_date)
+            </div>
+            <div class="table-structure">
+                <strong>products</strong> (id, product_name, category, description, price, stock_quantity)
+            </div>
+            <div class="table-structure">
+                <strong>orders</strong> (id, customer_id, order_date, total_amount, status)
+            </div>
+            <div class="table-structure">
+                <strong>messy_customers</strong> (id, full_name, email, phone, signup_date) - For cleaning exercises
+            </div>
+        </div>
+
+        <!-- MISSING DATA SECTION -->
+        <div class="function-section missing-section">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--missing-color)">
+                <i class="fas fa-search mr-3"></i>Handling Missing Data
+            </h2>
+            
+            <div class="concept-explanation">
+                <h3 class="font-bold mb-2">Identifying and Managing NULL Values</h3>
+                <p class="mb-3">Missing data can significantly impact analysis results. Learn to identify, quantify, and properly handle NULL values in your datasets.</p>
+                
+                <div class="tip-box">
+                    <strong>💡 Real-World Use:</strong> Handle incomplete customer profiles, manage missing product information, and ensure data completeness for analytics and reporting.
+                </div>
+            </div>
+
+            <!-- Missing Data Functions Grid -->
+            <div class="function-grid mb-8">
+                <div class="function-card missing-card">
+                    <h4 class="font-bold text-missing-color">COALESCE</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Returns first non-NULL value from list</p>
+                    <div class="function-syntax">COALESCE(column, default_value)</div>
+                </div>
+                
+                <div class="function-card missing-card">
+                    <h4 class="font-bold text-missing-color">NULLIF</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Returns NULL if values are equal</p>
+                    <div class="function-syntax">NULLIF(column, '')</div>
+                </div>
+                
+                <div class="function-card missing-card">
+                    <h4 class="font-bold text-missing-color">COUNT Analysis</h4>
+                    <span class="complexity complexity-basic">Basic</span>
+                    <p class="text-sm mb-2">Identify missing values in columns</p>
+                    <div class="function-syntax">COUNT(*) - COUNT(column)</div>
+                </div>
+                
+                <div class="function-card missing-card">
+                    <h4 class="font-bold text-missing-color">CASE with NULL</h4>
+                    <span class="complexity complexity-intermediate">Intermediate</span>
+                    <p class="text-sm mb-2">Conditional NULL handling</p>
+                    <div class="function-syntax">CASE WHEN column IS NULL THEN...</div>
+                </div>
+            </div>
+
+            <!-- Example 1: Missing Data Analysis -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">1</div>
+                    <h2 class="text-xl font-bold">Comprehensive Missing Data Analysis</h2>
+                    <span class="function-tag missing-tag">Missing Data</span>
+                </div>
+                <p class="mb-4">Analyze missing data patterns across multiple tables and columns.</p>
+                
+                <div class="code-container">
+                    <textarea id="editor1" class="sql-editor">-- Comprehensive missing data analysis
+-- Customer data completeness
+SELECT 
+    'customers' as table_name,
+    COUNT(*) as total_rows,
+    COUNT(name) as name_count,
+    COUNT(email) as email_count,
+    COUNT(phone) as phone_count,
+    ROUND(COUNT(name) * 100.0 / COUNT(*), 2) as name_completeness,
+    ROUND(COUNT(email) * 100.0 / COUNT(*), 2) as email_completeness,
+    ROUND(COUNT(phone) * 100.0 / COUNT(*), 2) as phone_completeness
+FROM customers
+
+UNION ALL
+
+-- Product data completeness
+SELECT 
+    'products' as table_name,
+    COUNT(*) as total_rows,
+    COUNT(product_name) as name_count,
+    COUNT(category) as category_count,
+    COUNT(price) as price_count,
+    ROUND(COUNT(product_name) * 100.0 / COUNT(*), 2) as name_completeness,
+    ROUND(COUNT(category) * 100.0 / COUNT(*), 2) as category_completeness,
+    ROUND(COUNT(price) * 100.0 / COUNT(*), 2) as price_completeness
+FROM products
+
+ORDER BY table_name;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="1">
+                            Run Query
+                        </button>
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="1">
+                            Copy Code
+                        </button>
+                    </div>
+
+                    <div id="output1" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Example 2: Handling NULL Values -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">2</div>
+                    <h2 class="text-xl font-bold">Practical NULL Value Handling</h2>
+                    <span class="function-tag missing-tag">Missing Data</span>
+                </div>
+                <p class="mb-4">Use COALESCE and CASE statements to handle missing values in customer data.</p>
+                
+                <div class="code-container">
+                    <textarea id="editor2" class="sql-editor">-- Practical NULL value handling with COALESCE and CASE
+SELECT 
+    id,
+    name,
+    -- Handle missing email with COALESCE
+    COALESCE(email, 'no-email@example.com') as safe_email,
+    
+    -- Handle missing phone with conditional logic
+    CASE 
+        WHEN phone IS NULL THEN 'No phone provided'
+        WHEN TRIM(phone) = '' THEN 'Empty phone number'
+        ELSE phone
+    END as phone_status,
+    
+    -- Multiple fallback values with COALESCE
+    COALESCE(NULLIF(TRIM(address), ''), 'Address not provided', 'Unknown location') as safe_address,
+    
+    -- Calculate completeness score
+    CASE 
+        WHEN name IS NOT NULL AND email IS NOT NULL AND phone IS NOT NULL THEN 'Complete'
+        WHEN name IS NOT NULL AND (email IS NOT NULL OR phone IS NOT NULL) THEN 'Partial'
+        ELSE 'Incomplete'
+    END as data_quality
+    
+FROM customers
+ORDER BY 
+    CASE 
+        WHEN data_quality = 'Complete' THEN 1
+        WHEN data_quality = 'Partial' THEN 2
+        ELSE 3
+    END, id;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="2">
+                            Run Query
+                        </button>
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="2">
+                            Copy Code
+                        </button>
+                    </div>
+
+                    <div id="output2" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- STANDARDIZATION SECTION -->
+        <div class="function-section standardize-section">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--standardize-color)">
+                <i class="fas fa-cogs mr-3"></i>Standardizing Data Formats
+            </h2>
+            
+            <div class="concept-explanation">
+                <h3 class="font-bold mb-2">Creating Consistent Data Formats</h3>
+                <p class="mb-3">Standardize text, numbers, and categorical data to ensure consistency across your dataset for reliable analysis.</p>
+                
+                <div class="tip-box">
+                    <strong>💡 Real-World Use:</strong> Standardize customer names, product categories, phone numbers, and addresses for consistent reporting and analysis.
+                </div>
+            </div>
+
+            <!-- Example 3: Text Standardization -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">3</div>
+                    <h2 class="text-xl font-bold">Text Data Standardization</h2>
+                    <span class="function-tag standardize-tag">Standardization</span>
+                </div>
+                <p class="mb-4">Clean and standardize text data including names, emails, and product information.</p>
+                
+                <div class="postgres-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span><strong>PostgreSQL Required:</strong> INITCAP and REGEXP_REPLACE functions require PostgreSQL. Copy and run in pgAdmin or psql.</span>
+                </div>
+                
+                <div class="code-container">
+                    <textarea id="editor3" class="sql-editor">-- Text data standardization with PostgreSQL functions
+SELECT 
+    id,
+    -- Original messy data
+    name as original_name,
+    email as original_email,
+    
+    -- Standardized name: trim, proper case, remove extra spaces
+    INITCAP(LOWER(TRIM(name))) as clean_name,
+    
+    -- Standardized email: lowercase, trim
+    LOWER(TRIM(email)) as clean_email,
+    
+    -- Extract domain from email
+    CASE 
+        WHEN POSITION('@' IN email) > 0 
+        THEN SPLIT_PART(LOWER(TRIM(email)), '@', 2)
+        ELSE 'Invalid email'
+    END as email_domain,
+    
+    -- Remove special characters and extra spaces from names
+    REGEXP_REPLACE(TRIM(name), '[^a-zA-Z0-9\s]', '', 'g') as name_alphanumeric
+    
+FROM customers
+WHERE name IS NOT NULL
+ORDER BY clean_name;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="3">
+                            Copy for PostgreSQL
+                        </button>
+                    </div>
+
+                    <div id="output3" class="output-area">
+                        This query requires PostgreSQL-specific functions. Please copy and run in pgAdmin or psql.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Example 4: Categorical Data Standardization -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">4</div>
+                    <h2 class="text-xl font-bold">Categorical Data Standardization</h2>
+                    <span class="function-tag standardize-tag">Standardization</span>
+                </div>
+                <p class="mb-4">Standardize product categories and create consistent classification systems.</p>
+                
+                <div class="code-container">
+                    <textarea id="editor4" class="sql-editor">-- Categorical data standardization
+SELECT 
+    id,
+    product_name,
+    category as original_category,
+    
+    -- Standardize category names
+    CASE 
+        WHEN LOWER(category) LIKE '%electronic%' OR LOWER(category) LIKE '%tech%' THEN 'Electronics'
+        WHEN LOWER(category) LIKE '%cloth%' OR LOWER(category) LIKE '%apparel%' THEN 'Clothing'
+        WHEN LOWER(category) LIKE '%book%' OR LOWER(category) LIKE '%literature%' THEN 'Books'
+        WHEN LOWER(category) LIKE '%home%' OR LOWER(category) LIKE '%garden%' THEN 'Home & Garden'
+        WHEN LOWER(category) IS NULL OR TRIM(category) = '' THEN 'Uncategorized'
+        ELSE 'Other'
+    END as standardized_category,
+    
+    -- Price standardization and validation
+    price as original_price,
+    CASE 
+        WHEN price IS NULL THEN 0.00
+        WHEN price < 0 THEN ABS(price)  -- Handle negative prices
+        ELSE price
+    END as clean_price,
+    
+    -- Stock quantity standardization
+    CASE 
+        WHEN stock_quantity IS NULL THEN 0
+        WHEN stock_quantity < 0 THEN 0
+        ELSE stock_quantity
+    END as clean_stock
+
+FROM products
+ORDER BY standardized_category, clean_price DESC;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="4">
+                            Run Query
+                        </button>
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="4">
+                            Copy Code
+                        </button>
+                    </div>
+
+                    <div id="output4" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- DUPLICATE HANDLING SECTION -->
+        <div class="function-section duplicate-section">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--duplicate-color)">
+                <i class="fas fa-copy mr-3"></i>Removing Duplicates
+            </h2>
+            
+            <div class="concept-explanation">
+                <h3 class="font-bold mb-2">Identifying and Eliminating Duplicate Records</h3>
+                <p class="mb-3">Duplicate data can skew analysis results and waste storage. Learn advanced techniques to find and remove duplicates while preserving data integrity.</p>
+            </div>
+
+            <!-- Example 5: Duplicate Detection -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">5</div>
+                    <h2 class="text-xl font-bold">Advanced Duplicate Detection</h2>
+                    <span class="function-tag duplicate-tag">Duplicate Handling</span>
+                </div>
+                <p class="mb-4">Identify duplicate records using multiple matching strategies and similarity thresholds.</p>
+                
+                <div class="postgres-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span><strong>PostgreSQL Required:</strong> ROW_NUMBER() and window functions require PostgreSQL. Copy and run in pgAdmin or psql.</span>
+                </div>
+                
+                <div class="code-container">
+                    <textarea id="editor5" class="sql-editor">-- Advanced duplicate detection with multiple strategies
+WITH duplicate_analysis AS (
+    SELECT 
+        id,
+        name,
+        email,
+        phone,
+        -- Exact duplicate detection
+        COUNT(*) OVER (PARTITION BY LOWER(TRIM(name)), LOWER(TRIM(email))) as exact_duplicates,
+        
+        -- Fuzzy duplicate detection (similar names)
+        COUNT(*) OVER (PARTITION BY 
+            CASE 
+                WHEN LENGTH(TRIM(name)) > 5 THEN SUBSTRING(LOWER(TRIM(name)), 1, 5)
+                ELSE LOWER(TRIM(name))
+            END
+        ) as fuzzy_name_duplicates,
+        
+        -- Phone-based duplicates
+        COUNT(*) OVER (PARTITION BY 
+            REGEXP_REPLACE(phone, '[^\d]', '', 'g')
+        ) as phone_duplicates,
+        
+        -- Row number for keeping one instance
+        ROW_NUMBER() OVER (
+            PARTITION BY LOWER(TRIM(name)), LOWER(TRIM(email)) 
+            ORDER BY id
+        ) as duplicate_rank
+        
+    FROM customers
+    WHERE name IS NOT NULL
+)
+SELECT 
+    id,
+    name,
+    email,
+    phone,
+    exact_duplicates,
+    fuzzy_name_duplicates,
+    phone_duplicates,
+    duplicate_rank,
+    CASE 
+        WHEN exact_duplicates > 1 THEN 'Exact Duplicate'
+        WHEN fuzzy_name_duplicates > 3 THEN 'Potential Fuzzy Duplicate'
+        WHEN phone_duplicates > 1 THEN 'Phone Duplicate'
+        ELSE 'Unique'
+    END as duplicate_status
+FROM duplicate_analysis
+ORDER BY exact_duplicates DESC, fuzzy_name_duplicates DESC, id;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="5">
+                            Copy for PostgreSQL
+                        </button>
+                    </div>
+
+                    <div id="output5" class="output-area">
+                        This query requires PostgreSQL-specific functions. Please copy and run in pgAdmin or psql.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Example 6: Duplicate Removal -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">6</div>
+                    <h2 class="text-xl font-bold">Duplicate Removal Strategies</h2>
+                    <span class="function-tag duplicate-tag">Duplicate Handling</span>
+                </div>
+                <p class="mb-4">Implement different strategies for removing duplicates while preserving the most complete records.</p>
+                
+                <div class="postgres-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span><strong>PostgreSQL Required:</strong> Window functions and complex DELETE operations require PostgreSQL. Copy and run in pgAdmin or psql.</span>
+                </div>
+                
+                <div class="code-container">
+                    <textarea id="editor6" class="sql-editor">-- Duplicate removal strategies
+-- Method 1: Create clean table keeping most complete records
+CREATE TABLE customers_clean AS
+WITH ranked_customers AS (
+    SELECT *,
+        -- Score record completeness
+        (CASE WHEN name IS NOT NULL THEN 1 ELSE 0 END +
+         CASE WHEN email IS NOT NULL THEN 1 ELSE 0 END +
+         CASE WHEN phone IS NOT NULL THEN 1 ELSE 0 END +
+         CASE WHEN address IS NOT NULL THEN 1 ELSE 0 END) as completeness_score,
+        
+        -- Rank by completeness and recency
+        ROW_NUMBER() OVER (
+            PARTITION BY LOWER(TRIM(name)), LOWER(TRIM(email))
+            ORDER BY 
+                (CASE WHEN name IS NOT NULL THEN 1 ELSE 0 END +
+                 CASE WHEN email IS NOT NULL THEN 1 ELSE 0 END +
+                 CASE WHEN phone IS NOT NULL THEN 1 ELSE 0 END +
+                 CASE WHEN address IS NOT NULL THEN 1 ELSE 0 END) DESC,
+                signup_date DESC
+        ) as keep_priority
+    FROM customers
+)
+SELECT 
+    id, name, email, phone, address, signup_date,
+    completeness_score
+FROM ranked_customers
+WHERE keep_priority = 1;
+
+-- Verify results
+SELECT 
+    'Original' as dataset,
+    COUNT(*) as record_count
+FROM customers
+
+UNION ALL
+
+SELECT 
+    'Cleaned' as dataset,
+    COUNT(*) as record_count
+FROM customers_clean;
+
+-- Show duplicate reduction
+SELECT 
+    COUNT(*) - (SELECT COUNT(*) FROM customers_clean) as duplicates_removed,
+    ROUND((COUNT(*) - (SELECT COUNT(*) FROM customers_clean)) * 100.0 / COUNT(*), 2) as reduction_percentage
+FROM customers;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="6">
+                            Copy for PostgreSQL
+                        </button>
+                    </div>
+
+                    <div id="output6" class="output-area">
+                        This query requires PostgreSQL-specific functions. Please copy and run in pgAdmin or psql.
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- VALIDATION SECTION -->
+        <div class="function-section validation-section">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--validation-color)">
+                <i class="fas fa-check-circle mr-3"></i>Data Validation and Constraints
+            </h2>
+            
+            <div class="concept-explanation">
+                <h3 class="font-bold mb-2">Ensuring Data Quality and Integrity</h3>
+                <p class="mb-3">Implement validation rules and constraints to maintain data quality and prevent future data issues.</p>
+            </div>
+
+            <!-- Example 7: Data Validation Queries -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">7</div>
+                    <h2 class="text-xl font-bold">Comprehensive Data Validation</h2>
+                    <span class="function-tag validation-tag">Validation</span>
+                </div>
+                <p class="mb-4">Create validation queries to identify data quality issues across multiple domains.</p>
+                
+                <div class="postgres-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span><strong>PostgreSQL Required:</strong> Regular expressions and advanced validation require PostgreSQL. Copy and run in pgAdmin or psql.</span>
+                </div>
+                
+                <div class="code-container">
+                    <textarea id="editor7" class="sql-editor">-- Comprehensive data validation queries
+-- Email validation
+SELECT 
+    'Invalid Email' as issue_type,
+    id,
+    name,
+    email as problematic_value
+FROM customers
+WHERE email IS NOT NULL 
+  AND email !~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+
+UNION ALL
+
+-- Phone number validation (US format)
+SELECT 
+    'Invalid Phone' as issue_type,
+    id,
+    name,
+    phone as problematic_value
+FROM customers
+WHERE phone IS NOT NULL 
+  AND REGEXP_REPLACE(phone, '[^\d]', '', 'g') !~ '^\d{10}$'
+
+UNION ALL
+
+-- Negative prices
+SELECT 
+    'Negative Price' as issue_type,
+    id,
+    product_name,
+    price::text as problematic_value
+FROM products
+WHERE price < 0
+
+UNION ALL
+
+-- Future dates
+SELECT 
+    'Future Date' as issue_type,
+    id,
+    name,
+    signup_date::text as problematic_value
+FROM customers
+WHERE signup_date > CURRENT_DATE
+
+UNION ALL
+
+-- Extreme values (outliers)
+SELECT 
+    'Price Outlier' as issue_type,
+    id,
+    product_name,
+    price::text as problematic_value
+FROM products
+WHERE price > (SELECT AVG(price) * 3 FROM products WHERE price > 0)
+
+ORDER BY issue_type, id;
+
+-- Data quality summary
+SELECT 
+    issue_type,
+    COUNT(*) as issue_count,
+    ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM customers), 2) as percentage_of_customers
+FROM (
+    SELECT 'Invalid Email' as issue_type, id FROM customers 
+    WHERE email IS NOT NULL AND email !~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+    UNION ALL
+    SELECT 'Invalid Phone' as issue_type, id FROM customers 
+    WHERE phone IS NOT NULL AND REGEXP_REPLACE(phone, '[^\d]', '', 'g') !~ '^\d{10}$'
+    UNION ALL
+    SELECT 'Future Signup' as issue_type, id FROM customers WHERE signup_date > CURRENT_DATE
+) issues
+GROUP BY issue_type
+ORDER BY issue_count DESC;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="7">
+                            Copy for PostgreSQL
+                        </button>
+                    </div>
+
+                    <div id="output7" class="output-area">
+                        This query requires PostgreSQL-specific functions. Please copy and run in pgAdmin or psql.
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- PRACTICAL EXERCISES SECTION -->
+        <div class="function-section fabric-section">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--practice-color)">
+                <i class="fas fa-hands mr-3"></i>Practical Exercises
+            </h2>
+            
+            <div class="concept-explanation">
+                <h3 class="font-bold mb-2">Real-World Data Cleaning Scenarios</h3>
+                <p class="mb-3">Apply data cleaning techniques to realistic business scenarios with messy data.</p>
+            </div>
+
+            <!-- Example 8: Customer Data Cleaning Exercise -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">8</div>
+                    <h2 class="text-xl font-bold">Complete Customer Data Cleaning</h2>
+                    <span class="function-tag practice-tag">Practice Exercise</span>
+                </div>
+                <p class="mb-4">Clean a messy customer dataset with multiple data quality issues.</p>
+                
+                <div class="postgres-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span><strong>PostgreSQL Required:</strong> Multiple PostgreSQL functions in this exercise require PostgreSQL. Copy and run in pgAdmin or psql.</span>
+                </div>
+                
+                <div class="code-container">
+                    <textarea id="editor8" class="sql-editor">-- Complete customer data cleaning exercise
+-- Step 1: Create and populate messy customer table
+CREATE TABLE messy_customers (
+    id SERIAL PRIMARY KEY,
+    full_name VARCHAR(100),
+    email VARCHAR(100),
+    phone VARCHAR(20),
+    signup_date VARCHAR(20)
+);
+
+-- Insert sample messy data
+INSERT INTO messy_customers (full_name, email, phone, signup_date) VALUES
+('  JOHN DOE  ', 'JOHN@EXAMPLE.COM', '(555) 123-4567', '2023-01-15'),
+('jane smith', 'jane.smith@email.com', '555.987.6543', '01/20/2023'),
+('bob johnson', NULL, '5551112233', '2023-02-28'),
+('Alice Brown', 'alice.brown@test.com', NULL, '03/15/2023'),
+('  carol  wilson  ', 'CAROL@TEST.COM', '(555) 444-5555', 'invalid_date'),
+('David Lee', 'david.lee@example.com', '555-999-8888', '2023-04-01'),
+('  ', 'empty.name@test.com', '5550001111', '2023-05-10'),  -- Empty name
+('Duplicate User', 'duplicate@test.com', '5551112222', '2023-06-15'),
+('Duplicate User', 'duplicate@test.com', '5551112222', '2023-06-15');  -- Actual duplicate
+
+-- Step 2: Comprehensive data cleaning
+CREATE TABLE clean_customers AS
+WITH cleaned_data AS (
+    SELECT 
+        id,
+        -- Clean name: trim, remove extra spaces, proper case, handle empty names
+        CASE 
+            WHEN TRIM(full_name) = '' THEN 'Unknown Customer'
+            ELSE INITCAP(REGEXP_REPLACE(TRIM(full_name), '\s+', ' ', 'g'))
+        END as clean_name,
+        
+        -- Clean email: lowercase, handle NULLs, basic validation
+        CASE 
+            WHEN email IS NULL OR TRIM(email) = '' THEN 'unknown@example.com'
+            WHEN email !~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$' THEN 'invalid@example.com'
+            ELSE LOWER(TRIM(email))
+        END as clean_email,
+        
+        -- Clean phone: remove non-digits, handle NULLs, standardize format
+        CASE 
+            WHEN phone IS NULL OR TRIM(phone) = '' THEN '0000000000'
+            ELSE REGEXP_REPLACE(phone, '[^\d]', '', 'g')
+        END as clean_phone,
+        
+        -- Clean date: handle multiple formats and invalid dates
+        CASE 
+            WHEN signup_date ~ '^\d{4}-\d{2}-\d{2}$' 
+                 AND (signup_date || ' 00:00:00')::TIMESTAMP IS NOT NULL
+            THEN (signup_date || ' 00:00:00')::TIMESTAMP
+            
+            WHEN signup_date ~ '^\d{1,2}/\d{1,2}/\d{4}$'
+                 AND TO_DATE(signup_date, 'MM/DD/YYYY') IS NOT NULL
+            THEN TO_DATE(signup_date, 'MM/DD/YYYY')::TIMESTAMP
+            
+            ELSE CURRENT_TIMESTAMP  -- Default for invalid dates
+        END as clean_signup_date,
+        
+        -- Data quality scoring
+        (CASE WHEN TRIM(full_name) != '' THEN 25 ELSE 0 END +
+         CASE WHEN email IS NOT NULL AND email ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$' THEN 25 ELSE 0 END +
+         CASE WHEN phone IS NOT NULL AND LENGTH(REGEXP_REPLACE(phone, '[^\d]', '', 'g')) = 10 THEN 25 ELSE 0 END +
+         CASE WHEN signup_date ~ '^\d{4}-\d{2}-\d{2}$' OR signup_date ~ '^\d{1,2}/\d{1,2}/\d{4}$' THEN 25 ELSE 0 END) as data_quality_score
+        
+    FROM messy_customers
+),
+deduplicated AS (
+    SELECT *,
+        ROW_NUMBER() OVER (
+            PARTITION BY clean_email, clean_name 
+            ORDER BY data_quality_score DESC, id
+        ) as duplicate_rank
+    FROM cleaned_data
+)
+SELECT 
+    id,
+    clean_name,
+    clean_email,
+    clean_phone,
+    clean_signup_date,
+    data_quality_score,
+    CASE 
+        WHEN data_quality_score >= 90 THEN 'Excellent'
+        WHEN data_quality_score >= 75 THEN 'Good'
+        WHEN data_quality_score >= 60 THEN 'Fair'
+        ELSE 'Poor'
+    END as data_quality_rating
+FROM deduplicated
+WHERE duplicate_rank = 1  -- Remove duplicates
+ORDER BY data_quality_score DESC, clean_name;
+
+-- Step 3: Verify cleaning results
+SELECT 'Original Messy Data' as dataset, COUNT(*) as record_count FROM messy_customers
+UNION ALL
+SELECT 'Cleaned Data' as dataset, COUNT(*) as record_count FROM clean_customers;
+
+-- Show data quality distribution
+SELECT 
+    data_quality_rating,
+    COUNT(*) as record_count,
+    ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM clean_customers), 2) as percentage
+FROM clean_customers
+GROUP BY data_quality_rating
+ORDER BY 
+    CASE data_quality_rating
+        WHEN 'Excellent' THEN 1
+        WHEN 'Good' THEN 2
+        WHEN 'Fair' THEN 3
+        ELSE 4
+    END;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="8">
+                            Copy for PostgreSQL
+                        </button>
+                    </div>
+
+                    <div id="output8" class="output-area">
+                        This exercise requires PostgreSQL-specific functions. Please copy and run in pgAdmin or psql.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Example 9: Data Quality Assessment -->
+            <section class="section-card p-4 rounded-xl mb-8">
+                <div class="question-header">
+                    <div class="question-number">9</div>
+                    <h2 class="text-xl font-bold">Data Quality Assessment Report</h2>
+                    <span class="function-tag practice-tag">Practice Exercise</span>
+                </div>
+                <p class="mb-4">Generate comprehensive data quality reports for business stakeholders.</p>
+                
+                <div class="code-container">
+                    <textarea id="editor9" class="sql-editor">-- Data quality assessment report
+WITH product_quality AS (
+    SELECT 
+        id,
+        product_name,
         price,
-        ROW_NUMBER() OVER (PARTITION BY sale_id, product, quantity, price ORDER BY sale_id) AS rn
-    FROM Sales
+        category,
+        description,
+        stock_quantity,
+        
+        -- Quality scores (0-100)
+        CASE 
+            WHEN product_name IS NOT NULL AND LENGTH(TRIM(product_name)) > 0 THEN 25
+            ELSE 0
+        END as name_score,
+        
+        CASE 
+            WHEN price IS NOT NULL AND price > 0 THEN 25
+            ELSE 0
+        END as price_score,
+        
+        CASE 
+            WHEN category IS NOT NULL AND LENGTH(TRIM(category)) > 0 THEN 25
+            ELSE 0
+        END as category_score,
+        
+        CASE 
+            WHEN description IS NOT NULL AND LENGTH(TRIM(description)) > 10 THEN 25
+            ELSE 0
+        END as description_score
+        
+    FROM products
+),
+quality_summary AS (
+    SELECT 
+        id,
+        product_name,
+        price,
+        category,
+        (name_score + price_score + category_score + description_score) as total_quality_score,
+        CASE 
+            WHEN (name_score + price_score + category_score + description_score) >= 90 THEN 'Excellent'
+            WHEN (name_score + price_score + category_score + description_score) >= 75 THEN 'Good'
+            WHEN (name_score + price_score + category_score + description_score) >= 60 THEN 'Fair'
+            ELSE 'Poor'
+        END as quality_rating,
+        
+        -- Specific issues
+        CASE WHEN name_score = 0 THEN 'Missing product name' END as name_issue,
+        CASE WHEN price_score = 0 THEN 'Invalid price' END as price_issue,
+        CASE WHEN category_score = 0 THEN 'Missing category' END as category_issue,
+        CASE WHEN description_score = 0 THEN 'Poor description' END as description_issue
+        
+    FROM product_quality
 )
-SELECT sale_id, product, quantity, price
-FROM RankedSales
-WHERE rn = 1;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Deduplicates sales records, ensuring accurate revenue calculations.</p>
+SELECT 
+    id,
+    product_name,
+    price,
+    category,
+    total_quality_score,
+    quality_rating,
+    -- Combine all issues into array
+    ARRAY[
+        name_issue,
+        price_issue, 
+        category_issue,
+        description_issue
+    ] as data_issues,
+    
+    -- Action required
+    CASE 
+        WHEN quality_rating = 'Excellent' THEN 'No action needed'
+        WHEN quality_rating = 'Good' THEN 'Review suggested'
+        WHEN quality_rating = 'Fair' THEN 'Action required'
+        ELSE 'Immediate action required'
+    END as action_required
+    
+FROM quality_summary
+ORDER BY total_quality_score ASC, product_name;
 
-                <!-- Handling Missing Values -->
-                <h3 class="h4 fw-bold mb-3">Handling Missing Values</h3>
-                <p>Missing values (NULLs) can skew analysis. Use <code>IS NULL</code> to identify them, <code>COALESCE</code> to provide defaults, and <code>CASE</code> for conditional handling.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Identify patients with missing email or address
-SELECT subject_id, name
-FROM PATIENTS
-WHERE email IS NULL OR address IS NULL;
+-- Overall data quality summary
+SELECT 
+    quality_rating,
+    COUNT(*) as product_count,
+    ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM products), 2) as percentage,
+    ROUND(AVG(total_quality_score), 2) as avg_quality_score
+FROM (
+    SELECT 
+        CASE 
+            WHEN (CASE WHEN product_name IS NOT NULL THEN 25 ELSE 0 END +
+                  CASE WHEN price IS NOT NULL AND price > 0 THEN 25 ELSE 0 END +
+                  CASE WHEN category IS NOT NULL THEN 25 ELSE 0 END +
+                  CASE WHEN description IS NOT NULL AND LENGTH(description) > 10 THEN 25 ELSE 0 END) >= 90 THEN 'Excellent'
+            WHEN (CASE WHEN product_name IS NOT NULL THEN 25 ELSE 0 END +
+                  CASE WHEN price IS NOT NULL AND price > 0 THEN 25 ELSE 0 END +
+                  CASE WHEN category IS NOT NULL THEN 25 ELSE 0 END +
+                  CASE WHEN description IS NOT NULL AND LENGTH(description) > 10 THEN 25 ELSE 0 END) >= 75 THEN 'Good'
+            WHEN (CASE WHEN product_name IS NOT NULL THEN 25 ELSE 0 END +
+                  CASE WHEN price IS NOT NULL AND price > 0 THEN 25 ELSE 0 END +
+                  CASE WHEN category IS NOT NULL THEN 25 ELSE 0 END +
+                  CASE WHEN description IS NOT NULL AND LENGTH(description) > 10 THEN 25 ELSE 0 END) >= 60 THEN 'Fair'
+            ELSE 'Poor'
+        END as quality_rating,
+        (CASE WHEN product_name IS NOT NULL THEN 25 ELSE 0 END +
+         CASE WHEN price IS NOT NULL AND price > 0 THEN 25 ELSE 0 END +
+         CASE WHEN category IS NOT NULL THEN 25 ELSE 0 END +
+         CASE WHEN description IS NOT NULL AND LENGTH(description) > 10 THEN 25 ELSE 0 END) as total_quality_score
+    FROM products
+) quality_data
+GROUP BY quality_rating
+ORDER BY 
+    CASE quality_rating
+        WHEN 'Excellent' THEN 1
+        WHEN 'Good' THEN 2
+        WHEN 'Fair' THEN 3
+        ELSE 4
+    END;</textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="run-button btn-primary px-4 py-2 rounded-lg font-semibold text-white" data-section="9">
+                            Run Query
+                        </button>
+                        <button class="copy-button px-4 py-2 bg-slate-500 hover:bg-slate-400 text-white rounded-lg font-semibold transition-colors" data-section="9">
+                            Copy Code
+                        </button>
+                    </div>
 
--- Replace NULL email with 'Not Provided'
-SELECT subject_id, COALESCE(email, 'Not Provided') AS CleanEmail
-FROM PATIENTS;
+                    <div id="output9" class="output-area">
+                        Query results will appear here...
+                    </div>
+                </div>
+            </section>
+        </div>
 
--- Replace NULL diagnosis with 'Pending'
-SELECT hadm_id, COALESCE(diagnosis, 'Pending') AS CleanDiagnosis
-FROM ADMISSIONS;</code></pre>
+        <!-- KNOWLEDGE CONSOLIDATION -->
+        <section class="section-card p-4 rounded-xl mb-8">
+            <h2 class="text-xl font-bold mb-4">🧠 Knowledge Consolidation</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="p-4 border border-green-400 rounded-lg">
+                    <h3 class="font-bold text-green-400 mb-2">✅ Skills Mastered</h3>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>Missing data identification and handling with COALESCE, NULLIF</li>
+                        <li>Text and categorical data standardization techniques</li>
+                        <li>Advanced duplicate detection and removal strategies</li>
+                        <li>Data validation using constraints and regular expressions</li>
+                        <li>Automated data cleaning workflows and functions</li>
+                        <li>Data quality assessment and reporting</li>
+                    </ul>
                 </div>
-                <p><strong>Explanation:</strong> The first query finds incomplete patient records. <code>COALESCE</code> provides defaults for missing emails and diagnoses, ensuring consistent data.</p>
-                <p><strong>Expanded Example (Orders Table):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>order_id</th>
-                            <th>customer_id</th>
-                            <th>order_date</th>
-                            <th>total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>101</td>
-                            <td>1</td>
-                            <td>2025-01-15</td>
-                            <td>150.00</td>
-                        </tr>
-                        <tr>
-                            <td>102</td>
-                            <td>2</td>
-                            <td>NULL</td>
-                            <td>300.00</td>
-                        </tr>
-                        <tr>
-                            <td>103</td>
-                            <td>1</td>
-                            <td>2025-03-10</td>
-                            <td>NULL</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Replace NULL order_date with current date
-SELECT order_id, COALESCE(order_date, CURRENT_DATE) AS CleanOrderDate
-FROM Orders;
+                
+                <div class="p-4 border border-blue-400 rounded-lg">
+                    <h3 class="font-bold text-blue-400 mb-2">🎯 Best Practices</h3>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>Always backup data before cleaning operations</li>
+                        <li>Document cleaning steps for reproducibility</li>
+                        <li>Test cleaning on data subsets first</li>
+                        <li>Use transactions for data consistency</li>
+                        <li>Create constraints to prevent future issues</li>
+                        <li>Monitor data quality regularly</li>
+                        <li>Keep original data and create cleaned versions</li>
+                    </ul>
+                </div>
+            </div>
 
--- Flag orders with missing total
-SELECT
-    order_id,
-    CASE
-        WHEN total IS NULL THEN 'Missing'
-        ELSE 'Valid'
-    END AS TotalStatus
-FROM Orders;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Handles missing order dates and flags missing totals for retail analysis.</p>
-
-                <!-- Normalizing Text Data -->
-                <h3 class="h4 fw-bold mb-3">Normalizing Text Data</h3>
-                <p>Text normalization ensures consistency using functions like <code>UPPER</code>, <code>TRIM</code>, and <code>REPLACE</code>.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Standardize patient names and addresses
-SELECT
-    subject_id,
-    TRIM(UPPER(name)) AS CleanName,
-    REPLACE(UPPER(address), 'GSO', 'GREENSBORO') AS CleanAddress
-FROM PATIENTS;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Removes spaces, converts names to uppercase, and standardizes city names.</p>
-                <p><strong>Expanded Example (Products Table):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>product_id</th>
-                            <th>product_name</th>
-                            <th>category</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Laptop   </td>
-                            <td>ELECTRONICS</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>MOUSE</td>
-                            <td>Accessories </td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Keyboard</td>
-                            <td>Electronics</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Normalize product names and categories
-SELECT
-    product_id,
-    TRIM(LOWER(product_name)) AS CleanProductName,
-    TRIM(UPPER(category)) AS CleanCategory
-FROM Products;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Standardizes product names to lowercase and categories to uppercase, ensuring uniformity.</p>
-
-                <!-- Combining Cleaning Techniques -->
-                <h3 class="h4 fw-bold mb-3">Combining Cleaning Techniques</h3>
-                <p>Combine deduplication, NULL handling, and text normalization with joins for robust cleaning.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Clean patient data and join with admissions
-WITH CleanPatients AS (
-    SELECT DISTINCT
-        subject_id,
-        TRIM(UPPER(name)) AS CleanName,
-        COALESCE(email, 'Not Provided') AS CleanEmail,
-        REPLACE(COALESCE(address, 'Unknown'), 'GSO', 'GREENSBORO') AS CleanAddress
-    FROM PATIENTS
-)
-SELECT
-    cp.CleanName,
-    cp.CleanEmail,
-    cp.CleanAddress,
-    a.diagnosis
-FROM CleanPatients cp
-LEFT JOIN ADMISSIONS a ON cp.subject_id = a.subject_id;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Deduplicates patients, standardizes names and addresses, handles NULLs, and joins with admissions for a clean dataset.</p>
-                <p><strong>Expanded Example (Sales and Customers):</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Clean and join customer and sales data
-WITH CleanCustomers AS (
-    SELECT DISTINCT
-        customer_id,
-        TRIM(LOWER(name)) AS CleanName,
-        COALESCE(email, 'Not Provided') AS CleanEmail
-    FROM Customers
-)
-SELECT
-    cc.CleanName,
-    cc.CleanEmail,
-    SUM(s.quantity * s.price) AS TotalRevenue
-FROM CleanCustomers cc
-LEFT JOIN Sales s ON cc.customer_id = s.customer_id
-GROUP BY cc.CleanName, cc.CleanEmail;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Cleans customer data and aggregates sales revenue, ensuring accurate reporting.</p>
-
-                <!-- Data Cleaning in Microsoft Fabric -->
-                <h3 class="h4 fw-bold mb-3">Data Cleaning in Microsoft Fabric Lakehouse</h3>
-                <p>Fabric supports scalable data cleaning with SQL.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Clean survey data in Fabric
-WITH CleanResponses AS (
-    SELECT DISTINCT
-        respondent_id,
-        TRIM(UPPER(respondent_name)) AS CleanName,
-        COALESCE(satisfaction_score, 0) AS CleanScore
-    FROM survey_lakehouse.Responses
-)
-SELECT CleanName, AVG(CleanScore) AS AvgScore
-FROM CleanResponses
-GROUP BY CleanName;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Deduplicates and cleans survey data, averaging scores for analysis.</p>
-
-                <!-- Assessments -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Assessments</h2>
-                <ol>
-                    <li><strong>Conceptual Question:</strong> Explain the difference between <code>DISTINCT</code> and <code>ROW_NUMBER()</code> for deduplication. When is <code>ROW_NUMBER()</code> preferred?</li>
-                    <li><strong>SQL Coding Task:</strong> Using the PATIENTS table, write a query to deduplicate records based on subject_id and email, standardizing names and handling NULL addresses.</li>
-                    <li><strong>Application Scenario:</strong> For a Greensboro retailer, clean the Products table by removing duplicates and standardizing category names, then join with Sales to calculate total revenue.</li>
-                    <li><strong>Expanded Task:</strong> For a university database, deduplicate student records, handle missing GPAs, and standardize major names, then join with Enrollments to count courses per student.</li>
-                </ol>
+            <div class="mt-6 p-4 border border-purple-400 rounded-lg">
+                <h3 class="font-bold text-purple-400 mb-2">🚀 Next Steps</h3>
+                <ul class="list-disc list-inside space-y-1 text-sm">
+                    <li>Apply these techniques to your own datasets</li>
+                    <li>Explore advanced regular expressions for complex pattern matching</li>
+                    <li>Learn about automated ETL processes and data pipelines</li>
+                    <li>Study data profiling and statistical analysis techniques</li>
+                    <li>Explore integration with data visualization tools</li>
+                    <li>Practice with larger, more complex real-world datasets</li>
+                </ul>
             </div>
         </section>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-light py-3 text-center">
-        <p class="text-muted mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <!-- Highlight.js Initialization -->
-    <script>hljs.highlightAll();</script>
-    <!-- Custom Copy Functionality -->
     <script>
-        function copyCode(button) {
-            const code = button.nextElementSibling.querySelector('code');
-            navigator.clipboard.writeText(code.innerText).then(() => {
-                button.textContent = 'Copied!';
-                setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+        // --- Global Variables ---
+        const TOTAL_QUESTIONS = 9;
+        let completedExercises = new Set();
+        let codeMirrorEditors = {};
+
+        // --- Navigation Menu Functionality ---
+        function setupNavigation() {
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const navLinks = document.getElementById('nav-links');
+            
+            if (mobileMenuToggle && navLinks) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+            }
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (event) => {
+                if (!event.target.closest('.nav-menu')) {
+                    navLinks.classList.remove('active');
+                }
             });
         }
+
+        // --- AlaSQL Database Functions ---
+
+        // Initialize AlaSQL database
+        async function initializeDatabase() {
+            try {
+                updateSQLStatus('Loading SQL Engine...', 'status-loading');
+                
+                // AlaSQL is already loaded via CDN
+                if (typeof alasql === 'undefined') {
+                    throw new Error('AlaSQL library failed to load');
+                }
+                
+                createSampleDatabases();
+                
+                updateSQLStatus('SQL Engine Ready', 'status-ready');
+                console.log('AlaSQL database initialized successfully');
+                
+            } catch (error) {
+                console.error('Failed to initialize database:', error);
+                updateSQLStatus('Database Error', 'status-error');
+            }
+        }
+
+        // Update SQL engine status
+        function updateSQLStatus(message, statusClass) {
+            const statusElement = document.getElementById('sql-engine-status');
+            statusElement.textContent = message;
+            statusElement.className = `sql-engine-status ${statusClass}`;
+        }
+
+        // Create sample databases with messy data for cleaning exercises
+        function createSampleDatabases() {
+            // Clear existing data
+            alasql('DROP TABLE IF EXISTS customers');
+            alasql('DROP TABLE IF EXISTS products');
+            alasql('DROP TABLE IF EXISTS orders');
+            alasql('DROP TABLE IF EXISTS messy_customers');
+
+            // Create tables
+            alasql(`CREATE TABLE customers (
+                id INT,
+                name VARCHAR(100),
+                email VARCHAR(100),
+                phone VARCHAR(20),
+                address VARCHAR(200),
+                signup_date DATE
+            )`);
+
+            alasql(`CREATE TABLE products (
+                id INT,
+                product_name VARCHAR(100),
+                category VARCHAR(50),
+                description VARCHAR(200),
+                price DECIMAL(10,2),
+                stock_quantity INT
+            )`);
+
+            alasql(`CREATE TABLE orders (
+                id INT,
+                customer_id INT,
+                order_date DATE,
+                total_amount DECIMAL(10,2),
+                status VARCHAR(20)
+            )`);
+
+            // Insert sample messy customer data
+            const customers = [
+                [1, 'John Doe', 'john.doe@email.com', '(555) 123-4567', '123 Main St', '2023-01-15'],
+                [2, 'Jane Smith', 'jane.smith@email.com', '555.987.6543', '456 Oak Ave', '2023-02-20'],
+                [3, 'Bob Johnson', null, '5551112233', null, '2023-03-10'],
+                [4, 'Alice Brown', 'alice.brown@test.com', null, '789 Pine Rd', '2023-04-05'],
+                [5, 'CAROL WILSON', 'CAROL@TEST.COM', '(555) 444-5555', '101 Elm St', '2023-05-12'],
+                [6, '  David Lee  ', 'david.lee@example.com', '555-999-8888', '202 Maple Dr', '2023-06-18'],
+                [7, null, 'empty.name@test.com', '5550001111', '303 Birch Ln', '2023-07-22'],
+                [8, 'Duplicate User', 'duplicate@test.com', '5551112222', '404 Spruce St', '2023-08-30'],
+                [9, 'Duplicate User', 'duplicate@test.com', '5551112222', '404 Spruce St', '2023-08-30'],
+                [10, 'test user', 'invalid-email', '123', '', '2023-09-15']
+            ];
+            
+            customers.forEach(customer => {
+                alasql('INSERT INTO customers VALUES (?, ?, ?, ?, ?, ?)', customer);
+            });
+
+            // Insert sample product data with quality issues
+            const products = [
+                [1, 'Laptop Computer', 'Electronics', 'High-performance laptop with 16GB RAM', 999.99, 10],
+                [2, 'Wireless Mouse', 'electronics', 'Ergonomic wireless mouse', 29.99, 25],
+                [3, 'Keyboard', null, 'Mechanical keyboard', 79.99, 15],
+                [4, 'Monitor', 'Electronics', '27 inch 4K monitor', -399.99, 8], // Negative price
+                [5, 'Headphones', 'AUDIO', 'Noise-cancelling headphones', 199.99, null],
+                [6, '', 'Electronics', 'Tablet device', 299.99, 5], // Empty product name
+                [7, 'Desk Lamp', 'Home Office', 'LED desk lamp', 49.99, 30],
+                [8, 'Notebook', 'stationery', 'Spiral notebook', null, 100], // Null price
+                [9, 'Pen Set', 'Stationery', 'Set of 5 pens', 12.99, 50]
+            ];
+            
+            products.forEach(product => {
+                alasql('INSERT INTO products VALUES (?, ?, ?, ?, ?, ?)', product);
+            });
+
+            // Insert sample order data
+            const orders = [
+                [101, 1, '2023-10-01', 150.00, 'shipped'],
+                [102, 2, '2023-10-02', 300.00, 'pending'],
+                [103, 1, '2023-10-03', 200.00, 'delivered'],
+                [104, 3, '2023-10-04', 450.00, 'shipped'],
+                [105, 2, '2023-10-05', 125.00, 'cancelled']
+            ];
+            
+            orders.forEach(order => {
+                alasql('INSERT INTO orders VALUES (?, ?, ?, ?, ?)', order);
+            });
+
+            console.log('Sample databases created with messy data for cleaning exercises');
+        }
+
+        // Initialize CodeMirror editors
+        function initializeEditors() {
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const textarea = document.getElementById(`editor${i}`);
+                if (textarea) {
+                    codeMirrorEditors[i] = CodeMirror.fromTextArea(textarea, {
+                        mode: 'sql',
+                        theme: 'monokai',
+                        lineNumbers: true,
+                        indentUnit: 4,
+                        tabSize: 4,
+                        extraKeys: {"Ctrl-Space": "autocomplete"},
+                        hintOptions: {
+                            tables: {
+                                customers: ['id', 'name', 'email', 'phone', 'address', 'signup_date'],
+                                products: ['id', 'product_name', 'category', 'description', 'price', 'stock_quantity'],
+                                orders: ['id', 'customer_id', 'order_date', 'total_amount', 'status'],
+                                messy_customers: ['id', 'full_name', 'email', 'phone', 'signup_date']
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Initialize test editor
+            const testTextarea = document.getElementById('editor-test');
+            if (testTextarea) {
+                codeMirrorEditors['test'] = CodeMirror.fromTextArea(testTextarea, {
+                    mode: 'sql',
+                    theme: 'monokai',
+                    lineNumbers: true,
+                    indentUnit: 4,
+                    tabSize: 4,
+                    extraKeys: {"Ctrl-Space": "autocomplete"}
+                });
+            }
+        }
+
+        // Get SQL from CodeMirror editor
+        function getSQLFromEditor(sectionId) {
+            if (codeMirrorEditors[sectionId]) {
+                return codeMirrorEditors[sectionId].getValue().trim();
+            }
+            const textarea = document.getElementById(`editor${sectionId}`);
+            return textarea ? textarea.value.trim() : '';
+        }
+
+        // Check if query requires PostgreSQL
+        function requiresPostgreSQL(sql) {
+            const postgresFunctions = [
+                'INITCAP', 'REGEXP_REPLACE', 'ROW_NUMBER', 'TO_DATE', 
+                'PARTITION BY', 'OVER\\(', 'SPLIT_PART', 'ARRAY\\[',
+                'CREATE TABLE.*AS', 'CREATE OR REPLACE FUNCTION',
+                'LANGUAGE plpgsql', 'RETURNS TABLE', 'RETURN QUERY'
+            ];
+            
+            return postgresFunctions.some(func => {
+                const regex = new RegExp(func, 'i');
+                return regex.test(sql);
+            });
+        }
+
+        // Execute SQL query using AlaSQL
+        function executeSQL(sectionId) {
+            const sql = getSQLFromEditor(sectionId);
+            const outputElement = document.getElementById(`output${sectionId}`);
+            
+            outputElement.innerHTML = '';
+            outputElement.classList.remove('text-red-400', 'text-green-400');
+            
+            if (!sql) {
+                showError(sectionId, 'Please write a SQL query first.');
+                return;
+            }
+            
+            // Check if this query requires PostgreSQL
+            if (requiresPostgreSQL(sql)) {
+                outputElement.innerHTML = `
+                    <div class="postgres-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>This query uses PostgreSQL-specific functions that require a full PostgreSQL environment. Please copy and run in pgAdmin or psql.</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                const result = alasql(sql);
+                const endTime = performance.now();
+                
+                displaySQLResult(outputElement, result, sql, endTime - startTime);
+                completedExercises.add(sectionId);
+                
+            } catch (error) {
+                showError(sectionId, error.message);
+                console.error('SQL Error:', error);
+            }
+        }
+
+        // Execute test query
+        function executeTestQuery() {
+            const sql = codeMirrorEditors['test'] ? codeMirrorEditors['test'].getValue().trim() : document.getElementById('editor-test').value.trim();
+            const outputElement = document.getElementById('output-test');
+            
+            outputElement.innerHTML = '';
+            outputElement.classList.remove('text-red-400', 'text-green-400');
+            
+            if (!sql) {
+                showError('test', 'Please write a SQL query first.');
+                return;
+            }
+            
+            // Check if this query requires PostgreSQL
+            if (requiresPostgreSQL(sql)) {
+                outputElement.innerHTML = `
+                    <div class="postgres-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>This query uses PostgreSQL-specific functions that require a full PostgreSQL environment. Please copy and run in pgAdmin or psql.</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                const result = alasql(sql);
+                const endTime = performance.now();
+                
+                displaySQLResult(outputElement, result, sql, endTime - startTime);
+                
+            } catch (error) {
+                showError('test', error.message);
+                console.error('SQL Error:', error);
+            }
+        }
+
+        // Display SQL results
+        function displaySQLResult(outputElement, result, sql, executionTime) {
+            // Show executed SQL
+            const sqlInfo = document.createElement('div');
+            sqlInfo.className = 'query-info';
+            sqlInfo.innerHTML = `<span>Executed: <code>${sql}</code></span>`;
+            outputElement.appendChild(sqlInfo);
+            
+            // Show success message
+            const successInfo = document.createElement('div');
+            successInfo.className = 'query-info query-success';
+            
+            if (!result || result.length === 0) {
+                successInfo.textContent = '✓ Query executed successfully (no results returned)';
+            } else {
+                const rowCount = result.length;
+                successInfo.textContent = `✓ Query executed successfully, returned ${rowCount} row(s)`;
+            }
+            outputElement.appendChild(successInfo);
+            
+            // Display results for SELECT queries
+            if (result && result.length > 0) {
+                const table = document.createElement('table');
+                table.className = 'results-table';
+                
+                // Create header
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                
+                // Get column names from first object
+                const columns = Object.keys(result[0]);
+                columns.forEach(col => {
+                    const th = document.createElement('th');
+                    th.textContent = col;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+                
+                // Create body
+                const tbody = document.createElement('tbody');
+                result.forEach(row => {
+                    const tr = document.createElement('tr');
+                    columns.forEach(col => {
+                        const td = document.createElement('td');
+                        td.textContent = row[col];
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+                
+                outputElement.appendChild(table);
+            }
+            
+            // Show execution time
+            const timeInfo = document.createElement('div');
+            timeInfo.className = 'query-info';
+            timeInfo.textContent = `Execution time: ${Math.round(executionTime)}ms`;
+            outputElement.appendChild(timeInfo);
+        }
+
+        // Show error message
+        function showError(sectionId, message) {
+            const outputElement = document.getElementById(`output${sectionId}`);
+            outputElement.innerHTML = `
+                <div class="text-red-400 font-bold">SQL Error:</div>
+                <div>${message}</div>
+                <div class="mt-2 text-sm">Check your SQL syntax and try again.</div>
+            `;
+        }
+
+        // Reset database
+        function resetDatabase() {
+            createSampleDatabases();
+            
+            // Clear all outputs
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const outputElement = document.getElementById(`output${i}`);
+                if (outputElement) {
+                    outputElement.textContent = 'Query results will appear here...';
+                    outputElement.classList.remove('text-red-400', 'text-green-400');
+                }
+            }
+            
+            const testOutput = document.getElementById('output-test');
+            testOutput.textContent = 'Test results will appear here...';
+            testOutput.classList.remove('text-red-400', 'text-green-400');
+            
+            console.log('Database reset to initial state');
+        }
+
+        // Helper function for copying text to clipboard
+        function copyToClipboard(text) {
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = text;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            
+            try {
+                document.execCommand('copy');
+                return true;
+            } catch (err) {
+                console.error('Copy command failed:', err);
+                return false;
+            } finally {
+                document.body.removeChild(tempTextArea);
+            }
+        }
+        
+        // Function to copy the code for a specific section
+        function copyCode(sectionId) {
+            const code = getSQLFromEditor(sectionId);
+            if (copyToClipboard(code)) {
+                const button = document.querySelector(`.copy-button[data-section="${sectionId}"]`);
+                const originalText = button.textContent;
+                button.textContent = "Copied!";
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 1500);
+            }
+        }
+
+        // Function to set up the Light/Dark Mode toggle
+        function setupThemeToggle() {
+            const toggleButton = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+
+            function updateTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                toggleButton.textContent = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+                localStorage.setItem('theme', theme);
+            }
+
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            updateTheme(savedTheme);
+
+            toggleButton.addEventListener('click', () => {
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                updateTheme(newTheme);
+            });
+        }
+
+        // Initialize the application
+        async function initializeApp() {
+            // Set up navigation first
+            setupNavigation();
+            
+            // Initialize AlaSQL database first
+            await initializeDatabase();
+            
+            // Initialize CodeMirror editors
+            initializeEditors();
+            
+            // Set up event listeners for all SQL question buttons
+            for (let i = 1; i <= 4; i++) {
+                if (i !== 3) { // Skip example 3 (requires PostgreSQL)
+                    document.querySelector(`.run-button[data-section="${i}"]`).addEventListener('click', () => executeSQL(i));
+                }
+                document.querySelector(`.copy-button[data-section="${i}"]`).addEventListener('click', () => copyCode(i));
+            }
+            
+            // Example 9 can run in browser
+            document.querySelector(`.run-button[data-section="9"]`).addEventListener('click', () => executeSQL(9));
+            document.querySelector(`.copy-button[data-section="9"]`).addEventListener('click', () => copyCode(9));
+            
+            // Examples 3,5-8 require PostgreSQL - only copy buttons
+            for (let i of [3,5,6,7,8]) {
+                document.querySelector(`.copy-button[data-section="${i}"]`).addEventListener('click', () => copyCode(i));
+            }
+            
+            // Set up test area
+            document.getElementById('run-test').addEventListener('click', executeTestQuery);
+            document.getElementById('reset-db').addEventListener('click', resetDatabase);
+            
+            // Set up theme toggle
+            setupThemeToggle();
+
+            console.log("Module 9: Data Cleaning fully initialized with hybrid execution");
+        }
+
+        // Initialize when the page loads
+        window.addEventListener('load', initializeApp);
     </script>
 </body>
 </html>
