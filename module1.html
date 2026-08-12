@@ -3,105 +3,917 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="IAN 603 Module 1: Understanding Data in Informatics – Expanded tutorial covering data organization, quality, measurement scales, encoding, and more.">
-    <title>Module 1: Understanding Data in Informatics – IAN 603</title>
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+    <meta name="description" content="IAN 603 Module 1: Understanding Data in Informatics - data organization, quality, measurement scales, analytical decisions, Python preparation, and database storage.">
+    <title>Module 1: Understanding Data in Informatics | IAN 603</title>
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%8A%3C/text%3E%3C/svg%3E">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" id="hljs-theme">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
+
     <style>
         :root {
-            --bg-color: #0f172a; --text-color: #e2e8f0; --section-bg: #1e293b; --border-color: #334155;
-            --header-color: #38bdf8; --accent-color: #6366f1; --accent-hover: #4f46e5; --muted-color: #94a3b8;
-            --code-bg: #0f172a; --table-stripe: rgba(255,255,255,0.03);
-            --alert-info-bg: #1e3a5f; --alert-info-border: #3b82f6; --alert-warning-bg: #4a3a1e; --alert-warning-border: #f59e0b;
-            --alert-secondary-bg: #1e293b; --alert-secondary-border: #475569;
-            --hero-bg: linear-gradient(135deg, #0a1929, #1a2942); --hero-text: #ffffff;
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --section-bg: #1e293b;
+            --section-alt-bg: #172033;
+            --border-color: #334155;
+            --header-color: #38bdf8;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --success-color: #34d399;
+            --danger-color: #f87171;
+            --warning-color: #fbbf24;
+            --uncg-blue: #0c2340;
+            --uncg-gold: #cf9b2f;
+            --muted-color: #94a3b8;
+            --light-color: #f1f5f9;
+            --code-bg: #0b1120;
+            --table-stripe: rgba(255, 255, 255, 0.035);
+            --alert-info-bg: #172c4d;
+            --alert-info-border: #3b82f6;
+            --alert-warning-bg: #453516;
+            --alert-warning-border: #f59e0b;
+            --alert-secondary-bg: #182235;
+            --alert-secondary-border: #64748b;
+            --alert-success-bg: #12352e;
+            --alert-success-border: #10b981;
+            --hero-bg: linear-gradient(135deg, #07182d 0%, #0c2340 50%, #26365e 100%);
+            --hero-text: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.22);
         }
+
         [data-theme="light"] {
-            --bg-color: #f1f5f9; --text-color: #1e293b; --section-bg: #ffffff; --border-color: #e2e8f0;
-            --header-color: #1d4ed8; --accent-color: #4f46e5; --accent-hover: #4338ca; --muted-color: #64748b;
-            --code-bg: #f8fafc; --table-stripe: rgba(0,0,0,0.02);
-            --alert-info-bg: #dbeafe; --alert-info-border: #3b82f6; --alert-warning-bg: #fffbeb; --alert-warning-border: #f59e0b;
-            --alert-secondary-bg: #f1f5f9; --alert-secondary-border: #cbd5e1;
-            --hero-bg: linear-gradient(135deg, #e0e7ff, #c7d2fe); --hero-text: #1e293b;
+            --bg-color: #f1f5f9;
+            --text-color: #1e293b;
+            --section-bg: #ffffff;
+            --section-alt-bg: #f8fafc;
+            --border-color: #d7e0eb;
+            --header-color: #1d4ed8;
+            --accent-color: #4f46e5;
+            --accent-hover: #4338ca;
+            --success-color: #047857;
+            --danger-color: #b91c1c;
+            --warning-color: #b45309;
+            --muted-color: #64748b;
+            --light-color: #f8fafc;
+            --code-bg: #f8fafc;
+            --table-stripe: rgba(15, 23, 42, 0.035);
+            --alert-info-bg: #dbeafe;
+            --alert-info-border: #3b82f6;
+            --alert-warning-bg: #fffbeb;
+            --alert-warning-border: #f59e0b;
+            --alert-secondary-bg: #f1f5f9;
+            --alert-secondary-border: #94a3b8;
+            --alert-success-bg: #d1fae5;
+            --alert-success-border: #10b981;
+            --hero-bg: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 55%, #fef3c7 100%);
+            --hero-text: #13243a;
+            --shadow-color: rgba(15, 23, 42, 0.12);
         }
 
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.3s, color 0.3s; }
-        .text-muted { color: var(--muted-color) !important; }
-        .bg-white { background-color: var(--section-bg) !important; }
-        .shadow { box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important; }
-        h1, h2, h3, h4, h5, h6 { color: var(--header-color); }
-        p, li, td, th { color: var(--text-color); }
-        .table { color: var(--text-color); }
-        .table-bordered, .table-bordered th, .table-bordered td { border-color: var(--border-color); }
-        .table-light { background-color: var(--section-bg); }
-        .table-striped tbody tr:nth-of-type(odd) { background-color: var(--table-stripe); }
-        pre { background-color: var(--code-bg) !important; border: 1px solid var(--border-color); }
-        code { color: var(--text-color); }
-        .alert { background-color: var(--alert-info-bg); border-color: var(--alert-info-border); color: var(--text-color); }
-        .alert-warning { background-color: var(--alert-warning-bg); border-color: var(--alert-warning-border); }
-        .alert-secondary { background-color: var(--alert-secondary-bg); border-color: var(--alert-secondary-border); }
-        .border { border-color: var(--border-color) !important; }
-        .btn-outline-primary { color: var(--accent-color); border-color: var(--accent-color); }
-        .btn-outline-primary:hover { background-color: var(--accent-color); color: white; }
-
-        .nav-container { background-color: var(--section-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
-        .nav-menu { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
-        .nav-logo { font-weight: 800; font-size: 1.5rem; color: var(--header-color); display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
-        .nav-links-list { display: flex; align-items: center; gap: 0.5rem; list-style: none; margin: 0; padding: 0; }
-        .nav-link { color: var(--text-color); text-decoration: none; font-weight: 500; padding: 0.5rem 1rem; border-radius: 0.5rem; display: flex; align-items: center; gap: 0.5rem; background: none; border: none; cursor: pointer; font-size: inherit; font-family: inherit; }
-        .nav-link:hover, .nav-link:focus-visible { background-color: var(--accent-color); color: white; }
-        .dropdown { position: relative; }
-        .dropdown-content { display: none; position: absolute; top: 100%; left: 0; background-color: var(--section-bg); min-width: 280px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); border-radius: 0.5rem; border: 1px solid var(--border-color); padding: 0.5rem 0; z-index: 10; }
-        .dropdown:hover .dropdown-content, .dropdown:focus-within .dropdown-content { display: block; }
-        .dropdown-link { display: block; padding: 0.75rem 1.5rem; color: var(--text-color); text-decoration: none; display: flex; align-items: center; gap: 0.75rem; white-space: nowrap; }
-        .dropdown-link:hover, .dropdown-link:focus { background-color: var(--accent-color); color: white; }
-        .module-number { background-color: var(--accent-color); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; flex-shrink: 0; }
-        .mobile-menu-btn { display: none; background: none; border: none; color: var(--text-color); font-size: 1.5rem; cursor: pointer; }
-        .theme-toggle-btn { background: none; border: none; color: var(--text-color); cursor: pointer; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; }
-        .theme-toggle-btn:hover { background-color: var(--accent-color); color: white; }
-        @media (max-width: 1024px) {
-            .nav-links-list { display: none; position: absolute; top: 100%; left: 0; right: 0; background-color: var(--section-bg); flex-direction: column; padding: 1rem; border-bottom: 1px solid var(--border-color); }
-            .nav-links-list.active { display: flex; }
-            .mobile-menu-btn { display: block; }
-            .dropdown-content { position: static; box-shadow: none; border: none; padding-left: 1rem; }
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 96px;
         }
 
-        .hero-section { background: var(--hero-bg); color: var(--hero-text); padding: 3rem 0; border-radius: 1rem; margin: 2rem 0; }
-        .hero-section h1 { color: var(--hero-text); }
-        .hero-section p { color: var(--hero-text); opacity: 0.9; }
-        .hero-logo { max-height: 80px; background: rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 16px; display: inline-block; }
-        footer { background-color: var(--section-bg); border-top: 1px solid var(--border-color); }
-        .copy-btn { background: none; border: none; color: var(--accent-color); cursor: pointer; font-size: 0.9rem; padding: 0.25rem 0.5rem; }
-        .copy-btn:hover { text-decoration: underline; }
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        a {
+            color: var(--header-color);
+        }
+
+        a:hover {
+            color: var(--accent-color);
+        }
+
+        p,
+        li,
+        td,
+        th,
+        label,
+        .accordion-body,
+        .form-check-label {
+            color: var(--text-color);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: var(--header-color);
+            font-weight: 700;
+        }
+
+        code,
+        pre {
+            font-family: "Source Code Pro", monospace;
+        }
+
+        code:not(pre code) {
+            color: var(--text-color);
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--border-color);
+            border-radius: 0.3rem;
+            padding: 0.08rem 0.3rem;
+        }
+
+        pre {
+            background-color: var(--code-bg) !important;
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+            overflow: auto;
+        }
+
+        .skip-link {
+            position: absolute;
+            left: 0.75rem;
+            top: -5rem;
+            z-index: 2000;
+            background: var(--section-bg);
+            color: var(--text-color);
+            border: 2px solid var(--accent-color);
+            border-radius: 0.4rem;
+            padding: 0.6rem 0.85rem;
+        }
+
+        .skip-link:focus {
+            top: 0.75rem;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--uncg-gold);
+            outline-offset: 3px;
+        }
+
+        .text-muted {
+            color: var(--muted-color) !important;
+        }
+
+        .bg-white,
+        .bg-light {
+            background-color: var(--section-bg) !important;
+        }
+
+        .border,
+        .table-bordered,
+        .table-bordered th,
+        .table-bordered td {
+            border-color: var(--border-color) !important;
+        }
+
+        .shadow,
+        .shadow-sm {
+            box-shadow: 0 8px 24px var(--shadow-color) !important;
+        }
+
+        .table {
+            color: var(--text-color);
+            margin-bottom: 0;
+        }
+
+        .table > :not(caption) > * > * {
+            background-color: transparent;
+            color: var(--text-color);
+            border-color: var(--border-color);
+            vertical-align: top;
+        }
+
+        .table thead th,
+        .table-light th,
+        .table-light td {
+            background-color: var(--section-alt-bg) !important;
+            color: var(--text-color) !important;
+        }
+
+        .table-striped > tbody > tr:nth-of-type(odd) > * {
+            background-color: var(--table-stripe);
+        }
+
+        .nav-container {
+            background-color: var(--section-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        .nav-menu {
+            min-height: 74px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            color: var(--header-color);
+            font-weight: 800;
+            font-size: 1.15rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            white-space: nowrap;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--uncg-blue), var(--accent-color));
+            border: 2px solid var(--uncg-gold);
+        }
+
+        .nav-links-list {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-link,
+        .theme-toggle-btn {
+            color: var(--text-color);
+            background: none;
+            border: none;
+            border-radius: 0.55rem;
+            padding: 0.55rem 0.75rem;
+            font: inherit;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link:focus-visible,
+        .theme-toggle-btn:hover,
+        .theme-toggle-btn:focus-visible {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: calc(100% + 0.25rem);
+            left: 0;
+            min-width: 315px;
+            max-height: 70vh;
+            overflow-y: auto;
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+            padding: 0.45rem;
+            box-shadow: 0 12px 30px var(--shadow-color);
+        }
+
+        .dropdown:hover .dropdown-content,
+        .dropdown:focus-within .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.65rem 0.75rem;
+            border-radius: 0.5rem;
+        }
+
+        .dropdown-link:hover,
+        .dropdown-link:focus-visible {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .module-number {
+            width: 25px;
+            height: 25px;
+            flex: 0 0 25px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--accent-color);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 1.45rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 0.45rem;
+        }
+
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+            background: var(--hero-bg);
+            color: var(--hero-text);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 1.25rem;
+            margin: 2rem 0;
+            padding: 3.2rem 2rem;
+            box-shadow: 0 18px 45px var(--shadow-color);
+        }
+
+        .hero-section::after {
+            content: "";
+            position: absolute;
+            width: 330px;
+            height: 330px;
+            right: -115px;
+            top: -135px;
+            border-radius: 50%;
+            background: rgba(207, 155, 47, 0.12);
+        }
+
+        .hero-section h1,
+        .hero-section p,
+        .hero-section .hero-kicker,
+        .hero-section .hero-meta,
+        .hero-section .essential-question {
+            color: var(--hero-text);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-kicker {
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .course-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.45rem 0.75rem;
+            background: rgba(255, 255, 255, 0.11);
+            border: 1px solid rgba(255, 255, 255, 0.23);
+            border-radius: 999px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .essential-question {
+            max-width: 870px;
+            margin: 1.35rem auto 0;
+            padding: 1rem 1.2rem;
+            border-left: 4px solid var(--uncg-gold);
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 0 0.75rem 0.75rem 0;
+            text-align: left;
+        }
+
+        .section-shell {
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            padding: clamp(1.2rem, 2.5vw, 2rem);
+            margin-bottom: 1.6rem;
+            scroll-margin-top: 94px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.9rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.35rem;
+        }
+
+        .section-icon {
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            border-radius: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(99, 102, 241, 0.14);
+            color: var(--header-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-heading h2 {
+            margin-bottom: 0.15rem;
+        }
+
+        .section-heading p {
+            margin-bottom: 0;
+            color: var(--muted-color);
+        }
+
+        .toc-panel {
+            position: sticky;
+            top: 94px;
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.9rem;
+            padding: 1rem;
+            max-height: calc(100vh - 115px);
+            overflow-y: auto;
+        }
+
+        .toc-panel h2 {
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-list a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.5rem 0.55rem;
+            border-radius: 0.45rem;
+            font-size: 0.9rem;
+        }
+
+        .toc-list a:hover,
+        .toc-list a.active {
+            background-color: rgba(99, 102, 241, 0.18);
+            color: var(--header-color);
+        }
+
+        .toc-list .toc-index {
+            color: var(--muted-color);
+            font-size: 0.75rem;
+            font-weight: 800;
+            min-width: 1.5rem;
+        }
+
+        .roadmap-card,
+        .concept-card,
+        .example-card,
+        .case-card,
+        .takeaway-card {
+            height: 100%;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            padding: 1rem;
+        }
+
+        .roadmap-card {
+            position: relative;
+            padding-top: 3.15rem;
+        }
+
+        .roadmap-number {
+            position: absolute;
+            top: 0.9rem;
+            left: 1rem;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+        }
+
+        .layer-label {
+            display: inline-block;
+            color: #ffffff;
+            background: var(--accent-color);
+            border-radius: 999px;
+            padding: 0.2rem 0.55rem;
+            font-size: 0.74rem;
+            font-weight: 800;
+            margin-bottom: 0.55rem;
+        }
+
+        .concept-arrow {
+            color: var(--muted-color);
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        .badge-soft-primary,
+        .badge-soft-success,
+        .badge-soft-warning,
+        .badge-soft-danger,
+        .badge-soft-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            border-radius: 999px;
+            padding: 0.32rem 0.58rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .badge-soft-primary {
+            color: var(--header-color);
+            background: rgba(59, 130, 246, 0.14);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+        }
+
+        .badge-soft-success {
+            color: var(--success-color);
+            background: rgba(16, 185, 129, 0.13);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+
+        .badge-soft-warning {
+            color: var(--warning-color);
+            background: rgba(245, 158, 11, 0.13);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+
+        .badge-soft-danger {
+            color: var(--danger-color);
+            background: rgba(239, 68, 68, 0.13);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
+
+        .badge-soft-secondary {
+            color: var(--muted-color);
+            background: rgba(100, 116, 139, 0.13);
+            border: 1px solid rgba(100, 116, 139, 0.35);
+        }
+
+        .alert {
+            color: var(--text-color);
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 0.75rem;
+        }
+
+        .alert-info {
+            background: var(--alert-info-bg);
+            border-color: var(--alert-info-border);
+        }
+
+        .alert-warning {
+            background: var(--alert-warning-bg);
+            border-color: var(--alert-warning-border);
+        }
+
+        .alert-secondary {
+            background: var(--alert-secondary-bg);
+            border-color: var(--alert-secondary-border);
+        }
+
+        .alert-success {
+            background: var(--alert-success-bg);
+            border-color: var(--alert-success-border);
+        }
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 0.7rem;
+            margin: 1rem 0;
+        }
+
+        .workflow-step {
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem 0.55rem;
+        }
+
+        .workflow-step i {
+            display: block;
+            color: var(--header-color);
+            font-size: 1.25rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .decision-table th:first-child,
+        .decision-table td:first-child {
+            min-width: 125px;
+        }
+
+        .copy-wrap {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.6rem;
+            z-index: 2;
+            border: 1px solid var(--border-color);
+            background: var(--section-bg);
+            color: var(--header-color);
+            border-radius: 0.45rem;
+            padding: 0.25rem 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .copy-btn:hover {
+            color: #ffffff;
+            background: var(--accent-color);
+        }
+
+        .accordion-item,
+        .accordion-button,
+        .accordion-body {
+            background-color: var(--section-alt-bg);
+            color: var(--text-color);
+            border-color: var(--border-color);
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: rgba(99, 102, 241, 0.15);
+            color: var(--header-color);
+            box-shadow: inset 0 -1px 0 var(--border-color);
+        }
+
+        .accordion-button::after {
+            filter: var(--accordion-icon-filter, none);
+        }
+
+        [data-theme="dark"] .accordion-button::after {
+            filter: invert(1) grayscale(1) brightness(1.8);
+        }
+
+        .btn-outline-primary {
+            color: var(--header-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-outline-primary:hover,
+        .btn-outline-primary:focus-visible {
+            color: #ffffff;
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus-visible {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            position: relative;
+            padding-left: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .checklist li::before {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+        }
+
+        .mistake-table .looks-like {
+            color: var(--warning-color);
+            font-weight: 700;
+        }
+
+        .mistake-table .actually {
+            color: var(--success-color);
+            font-weight: 700;
+        }
+
+        .mini-note {
+            color: var(--muted-color);
+            font-size: 0.9rem;
+        }
+
+        .key-term {
+            border-bottom: 1px dotted var(--header-color);
+            cursor: help;
+        }
+
+        .footer {
+            background: var(--section-bg);
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem;
+            width: 44px;
+            height: 44px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            z-index: 1100;
+        }
+
+        .back-to-top.show {
+            display: inline-flex;
+        }
+
+        @media (max-width: 1199.98px) {
+            .nav-links-list {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                padding: 0.8rem;
+                background: var(--section-bg);
+                border-bottom: 1px solid var(--border-color);
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-links-list.active {
+                display: flex;
+            }
+
+            .nav-link,
+            .theme-toggle-btn {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .mobile-menu-btn {
+                display: inline-flex;
+            }
+
+            .dropdown-content {
+                position: static;
+                min-width: 0;
+                max-height: none;
+                box-shadow: none;
+                margin-top: 0.25rem;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .toc-panel {
+                position: static;
+                max-height: none;
+                margin-bottom: 1.3rem;
+            }
+
+            .workflow {
+                grid-template-columns: 1fr;
+            }
+
+            .concept-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .hero-section {
+                padding: 2rem 1.1rem;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .section-shell {
+                padding: 1rem;
+            }
+
+            .section-heading {
+                flex-direction: column;
+            }
+
+            .table-responsive {
+                border: 1px solid var(--border-color);
+                border-radius: 0.65rem;
+            }
+        }
+
+        @media print {
+            .nav-container,
+            .toc-panel,
+            .copy-btn,
+            .back-to-top,
+            .theme-toggle-btn,
+            .mobile-menu-btn,
+            .btn {
+                display: none !important;
+            }
+
+            body,
+            .section-shell,
+            .roadmap-card,
+            .concept-card,
+            .example-card,
+            .case-card,
+            .takeaway-card,
+            .accordion-item,
+            .accordion-button,
+            .accordion-body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                box-shadow: none !important;
+            }
+
+            p,
+            li,
+            td,
+            th,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                color: #000000 !important;
+            }
+
+            .collapse:not(.show) {
+                display: block !important;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
     <nav class="nav-container" aria-label="Main navigation">
         <div class="container">
             <div class="nav-menu">
-                <a href="index.html" class="nav-logo">
-                    <i class="fas fa-database"></i>
-                    IAN 603 - Data Analytics
+                <a href="index.html" class="nav-logo" aria-label="IAN 603 home">
+                    <span class="brand-mark" aria-hidden="true"><i class="fas fa-database"></i></span>
+                    <span>IAN 603 - Data Analytics</span>
                 </a>
+
                 <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-expanded="false" aria-controls="nav-links-list" aria-label="Toggle navigation menu">
-                    <i class="fas fa-bars"></i>
+                    <i class="fas fa-bars" aria-hidden="true"></i>
                 </button>
+
                 <ul class="nav-links-list" id="nav-links-list" role="list">
-                    <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="index.html" class="nav-link"><i class="fas fa-home" aria-hidden="true"></i> Home</a></li>
                     <li class="dropdown">
                         <button class="nav-link dropdown-trigger" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-book"></i> Modules <i class="fas fa-chevron-down"></i>
+                            <i class="fas fa-book-open" aria-hidden="true"></i> Modules <i class="fas fa-chevron-down" aria-hidden="true"></i>
                         </button>
                         <div class="dropdown-content" role="menu">
-                            <a href="module1.html" class="dropdown-link"><span class="module-number">1</span> Introduction to Data</a>
+                            <a href="module1.html" class="dropdown-link" aria-current="page"><span class="module-number">1</span> Understanding Data</a>
                             <a href="module2.html" class="dropdown-link"><span class="module-number">2</span> Database Concepts</a>
                             <a href="module3.html" class="dropdown-link"><span class="module-number">3</span> PostgreSQL in Action</a>
                             <a href="module4.html" class="dropdown-link"><span class="module-number">4</span> SQL Aggregations</a>
@@ -112,601 +924,1143 @@
                             <a href="module9.html" class="dropdown-link"><span class="module-number">9</span> Data Cleaning</a>
                             <a href="module10.html" class="dropdown-link"><span class="module-number">10</span> Reshaping Data</a>
                             <a href="module11.html" class="dropdown-link"><span class="module-number">11</span> Advanced SQL</a>
-                            <a href="module12.html" class="dropdown-link"><span class="module-number">12</span> Views & Modular Queries</a>
+                            <a href="module12.html" class="dropdown-link"><span class="module-number">12</span> Views and Modular Queries</a>
                             <a href="module13.html" class="dropdown-link"><span class="module-number">13</span> Spark SQL</a>
                             <a href="module14.html" class="dropdown-link"><span class="module-number">14</span> Final Project</a>
                         </div>
                     </li>
-                    <li><a href="index.html#resources" class="nav-link"><i class="fas fa-tools"></i> Resources</a></li>
-                    <li><a href="index.html#contact" class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
-                    <li><a href="postgre.html" class="nav-link"><i class="fas fa-download"></i> PostgreSQL Guide</a></li>
-                    <li><button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark/light theme"><i class="fas fa-moon"></i> <span class="d-none d-md-inline">Theme</span></button></li>
+                    <li><a href="#guided-lab" class="nav-link"><i class="fas fa-laptop-code" aria-hidden="true"></i> Lab</a></li>
+                    <li><a href="#assessment" class="nav-link"><i class="fas fa-clipboard-check" aria-hidden="true"></i> Self-Check</a></li>
+                    <li><a href="postgre.html" class="nav-link"><i class="fas fa-download" aria-hidden="true"></i> PostgreSQL Guide</a></li>
+                    <li>
+                        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Switch to light theme">
+                            <i class="fas fa-sun" aria-hidden="true"></i> <span>Theme</span>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container my-5">
-        <!-- Hero -->
-        <section class="hero-section text-center">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <img src="https://logodix.com/logo/1830480.jpg" alt="UNCG Logo" class="hero-logo img-fluid mb-4">
-                    <h1 class="display-4 fw-bold">Module 1: Understanding Data in Informatics</h1>
-                    <p class="lead">A guided tour through data organization, quality, measurement scales, and the decisions that transform raw data into trusted insights.</p>
-                    <p><small>Updated: August 26, 2026</small></p>
-                </div>
+    <header class="container">
+        <section class="hero-section text-center" aria-labelledby="module-title">
+            <div class="course-badge"><i class="fas fa-graduation-cap" aria-hidden="true"></i> UNC Greensboro | IAN 603</div>
+            <p class="hero-kicker mb-2">Module 1</p>
+            <h1 id="module-title" class="display-4 fw-bold">Understanding Data in Informatics</h1>
+            <p class="lead mb-2">From data organization and quality to measurement, visualization, encoding, and storage.</p>
+            <p class="hero-meta small mb-0"><i class="far fa-calendar-alt me-1" aria-hidden="true"></i> Updated: August 11, 2026</p>
+            <div class="essential-question">
+                <strong><i class="fas fa-circle-question me-2" aria-hidden="true"></i>Essential Question</strong><br>
+                How do the structure, quality, and meaning of data determine how we store, summarize, visualize, and prepare it?
             </div>
         </section>
+    </header>
 
-        <!-- ========== START HERE ========== -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Start Here</h2>
+    <main id="main-content" class="container pb-4">
+        <div class="row g-4">
+            <aside class="col-lg-3" aria-label="Module contents">
+                <nav class="toc-panel">
+                    <h2><i class="fas fa-list-ul me-2" aria-hidden="true"></i>Module Contents</h2>
+                    <ul class="toc-list">
+                        <li><a href="#start-here"><span class="toc-index">00</span> Start Here</a></li>
+                        <li><a href="#organization"><span class="toc-index">01</span> How Data Is Organized</a></li>
+                        <li><a href="#quality"><span class="toc-index">02</span> Is the Data Trustworthy?</a></li>
+                        <li><a href="#variable-meaning"><span class="toc-index">03</span> What Does the Variable Mean?</a></li>
+                        <li><a href="#decisions"><span class="toc-index">04</span> From Type to Decision</a></li>
+                        <li><a href="#guided-lab"><span class="toc-index">05</span> Guided Python Lab</a></li>
+                        <li><a href="#database-preview"><span class="toc-index">06</span> Database Storage Preview</a></li>
+                        <li><a href="#applied-cases"><span class="toc-index">07</span> Applied Cases</a></li>
+                        <li><a href="#assessment"><span class="toc-index">08</span> Assessment and Closure</a></li>
+                    </ul>
+                    <hr class="border-secondary">
+                    <p class="small text-muted mb-2">Suggested learning path</p>
+                    <p class="small mb-0">Understand the data &rarr; assess quality &rarr; classify variables &rarr; choose an analytical treatment &rarr; implement it.</p>
+                </nav>
+            </aside>
 
-                <h3 class="h5 fw-bold">❓ Essential Question</h3>
-                <p><em>“Why does understanding the <strong>type</strong> and <strong>scale</strong> of data matter for every step of an analytics project—from storage and cleaning to modeling and interpretation?”</em></p>
-                <p>When you can answer this question, you’ll be able to choose the right database, pick the appropriate chart, select a model that makes sense, and avoid embarrassing mistakes like averaging ZIP codes. This module builds that foundation.</p>
+            <div class="col-lg-9">
+                <section id="start-here" class="section-shell" aria-labelledby="start-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-play"></i></span>
+                        <div>
+                            <h2 id="start-heading" class="h3">Start Here</h2>
+                            <p>Establish the module goal, distinguish the major meanings of "data type," and preview the running case.</p>
+                        </div>
+                    </div>
 
-                <h3 class="h5 fw-bold mt-4">🎯 Learning Objectives</h3>
-                <ul class="mb-3">
-                    <li>Classify data as structured, semi‑structured, or unstructured and identify common sources.</li>
-                    <li>Apply six data‑quality dimensions to profile a dataset and decide what to clean first.</li>
-                    <li>Explain the four measurement scales (NOIR) and link them to valid statistics and visuals.</li>
-                    <li>Distinguish discrete from continuous numeric data and select sensible models.</li>
-                    <li>Use Python (pandas, scikit‑learn) to inspect, encode, and scale features.</li>
-                    <li>Translate analytical data types into SQL column types and write basic constraints.</li>
-                </ul>
+                    <h3 class="h5">Learning Objectives</h3>
+                    <p>By the end of this module, you will be able to:</p>
+                    <ol>
+                        <li>Distinguish data organization - structured, semi-structured, and unstructured - from variable measurement type.</li>
+                        <li>Evaluate a dataset using accuracy, completeness, consistency, timeliness, uniqueness, and validity.</li>
+                        <li>Classify variables as nominal, ordinal, interval, or ratio and distinguish discrete counts from continuous measurements.</li>
+                        <li>Select defensible summaries, visualizations, and encodings based on variable meaning.</li>
+                        <li>Use pandas and scikit-learn to assign categorical types, encode variables, normalize JSON, and scale selected numeric features.</li>
+                        <li>Explain how analytical meaning differs from a pandas dtype or SQL storage type.</li>
+                    </ol>
 
-                <h3 class="h5 fw-bold mt-4">🗺 Module Roadmap</h3>
-                <ol class="mb-3">
-                    <li>How data is organized (structured → unstructured)</li>
-                    <li>Is the data trustworthy? (data quality)</li>
-                    <li>What does each variable mean? (measurement scales)</li>
-                    <li>From type to decision (stats, viz, encoding)</li>
-                    <li>Guided Python lab</li>
-                    <li>Database storage preview</li>
-                    <li>Applied cases (healthcare, e‑commerce)</li>
-                    <li>Finish: self‑check, key takeaways, glossary</li>
-                </ol>
+                    <h3 class="h5 mt-4">One Phrase, Four Different Questions</h3>
+                    <p>The phrase <em>data type</em> is often used loosely. In this module, keep these four layers separate.</p>
 
-                <h3 class="h5 fw-bold mt-4">📋 Running Dataset</h3>
-                <p>We’ll use a tiny <strong>patients</strong> table throughout this module. It’s small enough to understand instantly but contains many of the data types and quality pitfalls you’ll meet in the real world.</p>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-sm align-middle">
-                        <thead class="table-light">
-                            <tr><th>patient_id</th><th>dob</th><th>sex</th><th>blood_type</th><th>zip</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>1001</td><td>1985-05-15</td><td>F</td><td>A+</td><td>27401</td></tr>
-                            <tr><td>1002</td><td>1990-03-22</td><td>M</td><td>O-</td><td>27214</td></tr>
-                            <tr><td>1003</td><td>1978-11-07</td><td>F</td><td>AB+</td><td>27410</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <p class="small">Later we’ll pretend some values are missing or wrong to practice quality checks.</p>
-            </div>
-        </section>
+                    <div class="row g-3 align-items-stretch">
+                        <div class="col-md-6 col-xl-3">
+                            <div class="concept-card">
+                                <span class="layer-label">Layer 1</span>
+                                <h4 class="h6">Data Organization</h4>
+                                <p class="small mb-1"><strong>Question:</strong> How is the dataset organized?</p>
+                                <p class="small mb-0">Structured, semi-structured, or unstructured</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-3">
+                            <div class="concept-card">
+                                <span class="layer-label">Layer 2</span>
+                                <h4 class="h6">Measurement Scale</h4>
+                                <p class="small mb-1"><strong>Question:</strong> What do a variable's values mean?</p>
+                                <p class="small mb-0">Nominal, ordinal, interval, or ratio</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-3">
+                            <div class="concept-card">
+                                <span class="layer-label">Layer 3</span>
+                                <h4 class="h6">Numeric Behavior</h4>
+                                <p class="small mb-1"><strong>Question:</strong> Is the numeric value counted or measured?</p>
+                                <p class="small mb-0">Discrete or continuous</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-3">
+                            <div class="concept-card">
+                                <span class="layer-label">Layer 4</span>
+                                <h4 class="h6">Technical Representation</h4>
+                                <p class="small mb-1"><strong>Question:</strong> How is the value stored?</p>
+                                <p class="small mb-0">pandas dtype, file format, or SQL column type</p>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- ========== PART 1: HOW DATA IS ORGANIZED ========== -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Part 1: How Data Is Organized</h2>
-                <p>Data comes in three broad forms, and the way it’s organized dictates how we store, query, and clean it. Think of it as the “container” that holds your information.</p>
+                    <div class="alert alert-warning mt-4" role="note">
+                        <strong><i class="fas fa-triangle-exclamation me-2" aria-hidden="true"></i>Core distinction:</strong>
+                        A variable's storage type does not determine its analytical meaning. A ZIP code may be stored as an integer but is still a nominal category. A satisfaction score may be stored as an integer but is still ordinal.
+                    </div>
 
-                <h3 class="h5 fw-bold">Structured Data</h3>
-                <p>Structured data lives in <strong>tables</strong> with rows and columns, like an Excel spreadsheet or a relational database table. Every column has a defined type (e.g., integer, date, text), and the schema is known ahead of time. This makes it easy to query with SQL and to validate with constraints.</p>
-                <ul>
-                    <li><strong>Where you find it:</strong> Relational databases (PostgreSQL, MySQL), data warehouses (Snowflake, BigQuery), CSV files, Parquet files.</li>
-                    <li><strong>Examples:</strong> EHR tables (<code>patients</code>, <code>encounters</code>), retail orders, financial transactions.</li>
-                    <li><strong>Prep focus:</strong> Ensuring correct data types, handling NULLs, maintaining referential integrity, deduplication.</li>
-                </ul>
+                    <h3 class="h5 mt-4">Running Case: Patient Encounter Data</h3>
+                    <p>We will reuse the following small example throughout the module so that each new idea builds on the previous one.</p>
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle">
+                            <caption class="visually-hidden">Sample patient encounter variables and values</caption>
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Variable</th>
+                                    <th scope="col">Example Value</th>
+                                    <th scope="col">Initial Question</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><code>patient_id</code></td><td>P1001</td><td>Identifier or quantity?</td></tr>
+                                <tr><td><code>triage_level</code></td><td>Urgent</td><td>Is there a meaningful order?</td></tr>
+                                <tr><td><code>temperature_c</code></td><td>38.2</td><td>Does zero mean "none"?</td></tr>
+                                <tr><td><code>er_visits</code></td><td>3</td><td>Count or measurement?</td></tr>
+                                <tr><td><code>device_payload</code></td><td>Nested JSON</td><td>How is this record organized?</td></tr>
+                                <tr><td><code>clinical_note</code></td><td>Free text</td><td>Can it be queried as a table immediately?</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-                <h3 class="h5 fw-bold mt-4">Semi‑Structured Data</h3>
-                <p>Semi‑structured data has a <strong>flexible</strong> format, often self‑describing (like JSON or XML). It doesn’t enforce a rigid schema – some fields may be missing, and the same field might hold a number in one record and a string in another (though hopefully not!).</p>
-                <ul>
-                    <li><strong>Where you find it:</strong> REST API responses, log files, IoT sensor streams, NoSQL document stores (MongoDB).</li>
-                    <li><strong>Prep focus:</strong> Parsing, flattening nested objects, inferring schema, and aligning units/keys across records.</li>
-                </ul>
-                <div class="position-relative border rounded">
-                    <button class="btn btn-sm copy-btn position-absolute end-0 m-2" onclick="copyCode(this)">Copy</button>
-                    <pre class="m-0 p-3"><code class="language-json">{
+                    <div class="accordion mt-4" id="warmupAccordion">
+                        <div class="accordion-item">
+                            <h3 class="accordion-header" id="warmupHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#warmupCollapse" aria-expanded="false" aria-controls="warmupCollapse">
+                                    Warm-Up: Make a Prediction Before Continuing
+                                </button>
+                            </h3>
+                            <div id="warmupCollapse" class="accordion-collapse collapse" aria-labelledby="warmupHeading" data-bs-parent="#warmupAccordion">
+                                <div class="accordion-body">
+                                    <ol class="mb-0">
+                                        <li>Which variable is clearly nominal?</li>
+                                        <li>Which variable is an ordered category?</li>
+                                        <li>Which variable is a count?</li>
+                                        <li>Which values might require special parsing before analysis?</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="organization" class="section-shell" aria-labelledby="organization-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-sitemap"></i></span>
+                        <div>
+                            <h2 id="organization-heading" class="h3">1. How Data Is Organized</h2>
+                            <p>Classify the form of the dataset before classifying individual variables inside it.</p>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <article class="example-card">
+                                <span class="badge-soft-primary mb-2"><i class="fas fa-table" aria-hidden="true"></i> Structured</span>
+                                <h3 class="h5">Predefined Schema</h3>
+                                <p>Data follows a stable arrangement of rows, columns, and defined fields.</p>
+                                <p class="small mb-1"><strong>Common locations:</strong></p>
+                                <p class="small">PostgreSQL, MySQL, SQL Server, data warehouses, CSV, and Parquet files.</p>
+                                <p class="small mb-1"><strong>Running-case example:</strong></p>
+                                <p class="small mb-0"><code>patients</code>, <code>encounters</code>, and <code>labs</code> tables.</p>
+                            </article>
+                        </div>
+                        <div class="col-md-4">
+                            <article class="example-card">
+                                <span class="badge-soft-warning mb-2"><i class="fas fa-code" aria-hidden="true"></i> Semi-Structured</span>
+                                <h3 class="h5">Flexible, Self-Describing Fields</h3>
+                                <p>Records contain labels or tags, but fields may be nested, optional, or inconsistent across records.</p>
+                                <p class="small mb-1"><strong>Common locations:</strong></p>
+                                <p class="small">API payloads, logs, IoT streams, document stores, and data lakes.</p>
+                                <p class="small mb-1"><strong>Running-case example:</strong></p>
+                                <p class="small mb-0">A wearable-device JSON payload with nested metrics.</p>
+                            </article>
+                        </div>
+                        <div class="col-md-4">
+                            <article class="example-card">
+                                <span class="badge-soft-secondary mb-2"><i class="fas fa-file-waveform" aria-hidden="true"></i> Unstructured</span>
+                                <h3 class="h5">No Fixed Tabular Schema</h3>
+                                <p>The content does not naturally arrive as rows and columns.</p>
+                                <p class="small mb-1"><strong>Common locations:</strong></p>
+                                <p class="small">Clinical notes, PDFs, DICOM images, audio, video, and social posts.</p>
+                                <p class="small mb-1"><strong>Running-case example:</strong></p>
+                                <p class="small mb-0">A free-text discharge note or diagnostic image.</p>
+                            </article>
+                        </div>
+                    </div>
+
+                    <h3 class="h5 mt-4">Structured Example</h3>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped align-middle">
+                            <caption class="visually-hidden">Structured patient records</caption>
+                            <thead class="table-light">
+                                <tr><th scope="col">patient_id</th><th scope="col">dob</th><th scope="col">sex</th><th scope="col">blood_type</th><th scope="col">zip</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>1001</td><td>1985-05-15</td><td>F</td><td>A+</td><td>27401</td></tr>
+                                <tr><td>1002</td><td>1990-03-22</td><td>M</td><td>O-</td><td>27214</td></tr>
+                                <tr><td>1003</td><td>1978-11-07</td><td>F</td><td>AB+</td><td>27410</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="h5 mt-4">Semi-Structured Example</h3>
+                    <div class="copy-wrap">
+                        <button class="copy-btn" type="button" onclick="copyCode(this)" aria-label="Copy JSON example">Copy</button>
+                        <pre class="m-0 p-3"><code class="language-json">{
   "patient_id": "P1001",
   "timestamp": "2025-07-28T10:30:00Z",
-  "metrics": {"hr": 72, "steps": 500, "sleep_hours": 7.5},
-  "location": {"lat": 36.07, "lon": -79.79}
+  "metrics": {
+    "heart_rate": 72,
+    "steps": 500,
+    "sleep_hours": 7.5
+  },
+  "location": {
+    "lat": 36.07,
+    "lon": -79.79
+  }
 }</code></pre>
-                </div>
-                <p class="mt-2">Notice how <code>sleep_hours</code> could be missing in another record, or an extra field like <code>spo2</code> could appear. That’s the “semi” part.</p>
+                    </div>
+                    <p class="mini-note mt-2">A second record might add <code>spo2</code> or omit <code>sleep_hours</code>. That flexibility is useful, but it creates a schema-management task.</p>
 
-                <h3 class="h5 fw-bold mt-4">Unstructured Data</h3>
-                <p>Unstructured data has <strong>no predefined model</strong> at all – think of the text in a physician’s note, the pixels in an X‑ray image, or the waveform of a customer call. It’s the richest but also the hardest to analyse directly with traditional SQL.</p>
-                <ul>
-                    <li><strong>Where you find it:</strong> Clinical notes, PDFs, DICOM medical images, audio recordings, social media posts.</li>
-                    <li><strong>Prep focus:</strong> Converting raw content into structured features using NLP (tokenization, named entity recognition), computer vision, or automatic speech recognition.</li>
-                </ul>
-                <div class="alert alert-secondary mt-2">
-                    <i class="fas fa-info-circle me-1"></i> <strong>NIST definition:</strong> Structured data has a well‑defined model; unstructured data does not; semi‑structured data sits in between.
-                </div>
+                    <div class="alert alert-info mt-4" role="note">
+                        <strong><i class="fas fa-layer-group me-2" aria-hidden="true"></i>The 3Vs in context:</strong>
+                        Modern data is often described by <strong>Volume</strong>, <strong>Velocity</strong>, and <strong>Variety</strong>. Variety is the mixture of structured, semi-structured, and unstructured data that informatics professionals must integrate.
+                    </div>
 
-                <h3 class="h5 fw-bold mt-4">Volume, Velocity, and Variety (the 3 Vs)</h3>
-                <p>Doug Laney (Gartner) coined the “3 Vs” to describe big data challenges:</p>
-                <ul>
-                    <li><strong>Volume</strong> – sheer amount of data (terabytes/petabytes).</li>
-                    <li><strong>Velocity</strong> – speed at which new data arrives (real‑time streams).</li>
-                    <li><strong>Variety</strong> – the mix of structured, semi‑structured, and unstructured sources.</li>
-                </ul>
-                <p>In this course, you’ll deal most with <em>variety</em>: learning to handle all three shapes of data and prepare them for analytics.</p>
-            </div>
-        </section>
+                    <div class="alert alert-success mb-0" role="note">
+                        <strong>Checkpoint:</strong> "Structured" describes the organization of a dataset. It does not mean that every column is numeric, clean, or ready for analysis.
+                    </div>
+                </section>
 
-        <!-- ========== PART 2: IS THE DATA TRUSTWORTHY? ========== -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Part 2: Is the Data Trustworthy?</h2>
-                <p>Before you analyse anything, ask: “Can I trust this data?” Six universally‑recognised quality dimensions help you answer that.</p>
-
-                <h3 class="h5 fw-bold">Six Data‑Quality Dimensions</h3>
-                <div class="table-responsive">
-                    <table class="table table-bordered align-middle">
-                        <thead class="table-light">
-                            <tr><th>Dimension</th><th>Question</th><th>Example Issue</th><th>How to Check (SQL/Python idea)</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><strong>Accuracy</strong></td><td>Is the data correct?</td><td>Weight = 500 kg (typo)</td><td>Range checks (weight between 0‑400)</td></tr>
-                            <tr><td><strong>Completeness</strong></td><td>Are all required fields present?</td><td>20% of blood types are NULL</td><td><code>COUNT(*) - COUNT(blood_type)</code></td></tr>
-                            <tr><td><strong>Consistency</strong></td><td>Is the same info uniform across sources?</td><td>Date of birth stored as <code>1985-05-15</code> and <code>05/15/85</code></td><td>Compare column formats, use regex</td></tr>
-                            <tr><td><strong>Timeliness</strong></td><td>Is the data fresh enough for the task?</td><td>Using last year’s census for a real‑time dashboard</td><td>Check <code>MAX(timestamp)</code> vs. current date</td></tr>
-                            <tr><td><strong>Uniqueness</strong></td><td>Are there duplicate records?</td><td>Same patient appears twice with different IDs</td><td>Group by natural key, count > 1</td></tr>
-                            <tr><td><strong>Validity</strong></td><td>Does data obey defined rules?</td><td>Gender column contains “Unknown” when only M/F allowed</td><td><code>SELECT DISTINCT sex FROM patients</code></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <h3 class="h5 fw-bold mt-4">Data‑Profiling Workflow</h3>
-                <p>Profiling is the systematic examination of your data. A simple but effective five‑step recipe:</p>
-                <ol>
-                    <li><strong>Scan</strong> – row counts, column names, inferred types (<code>df.info()</code>, <code>df.shape</code>).</li>
-                    <li><strong>Missingness</strong> – percentage of NULLs per column (<code>df.isnull().mean()*100</code>).</li>
-                    <li><strong>Uniqueness</strong> – duplicate rows, primary key violations (<code>df.duplicated()</code>).</li>
-                    <li><strong>Distributions</strong> – min, max, mean, quartiles, distinct counts (<code>df.describe(include='all')</code>).</li>
-                    <li><strong>Rules</strong> – check domain constraints (e.g., age > 0, blood type in allowed list).</li>
-                </ol>
-                <div class="alert alert-info small">
-                    <i class="fas fa-lightbulb me-1"></i> <strong>Pro tip:</strong> Profiling should be your <em>first</em> step on any new dataset, before you write a single line of cleaning code.
-                </div>
-
-                <h3 class="h5 fw-bold mt-4">Guided Quality Scenario</h3>
-                <p>Imagine our running dataset gains a <code>heart_rate</code> column with these values: 72, -1, 0, 200, and a blank cell. Which dimensions are violated?</p>
-                <ul>
-                    <li><strong>Accuracy</strong> – -1 and 0 are physiologically impossible for a living person; 200 is suspiciously high.</li>
-                    <li><strong>Completeness</strong> – the blank cell means missing data.</li>
-                    <li><strong>Validity</strong> – heart rate should be a positive integer, not negative.</li>
-                </ul>
-                <p>What would you do? Check ranges, possibly replace impossible values with NULLs, and flag those records for further investigation. (We’ll dive deep into cleaning in Module 9.)</p>
-            </div>
-        </section>
-
-        <!-- ========== PART 3: WHAT DOES EACH VARIABLE MEAN? ========== -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Part 3: What Does Each Variable Mean?</h2>
-                <p>Now we shift from the container to the contents. Every column in your dataset carries a <strong>measurement scale</strong>. The scale determines which operations are mathematically defensible.</p>
-
-                <h3 class="h5 fw-bold">Categorical vs. Numeric – The First Split</h3>
-                <p>At the highest level, variables are either <strong>categorical</strong> (labels or groups) or <strong>numeric</strong> (quantities). But be careful: ZIP codes look numeric yet are categories; a satisfaction score of 1‑5 is categorical (ordinal) even though it’s stored as a number.</p>
-
-                <h3 class="h5 fw-bold mt-4">Nominal Scale</h3>
-                <ul>
-                    <li><strong>Definition:</strong> Unordered categories – no ranking.</li>
-                    <li><strong>Examples:</strong> Blood type (A+, O-), device type, eye color, country.</li>
-                    <li><strong>Valid stats:</strong> Counts, mode, proportions, chi‑square tests.</li>
-                    <li><strong>Visuals:</strong> Bar chart (sorted by frequency), mosaic plot.</li>
-                    <li><strong>Encoding:</strong> One‑hot (dummy) encoding; group rare categories into “Other”.</li>
-                </ul>
-
-                <h3 class="h5 fw-bold mt-4">Ordinal Scale</h3>
-                <ul>
-                    <li><strong>Definition:</strong> Ordered categories, but the gaps between levels are unknown or unequal.</li>
-                    <li><strong>Examples:</strong> Education level (HS, BS, MS, PhD), satisfaction survey (1‑5), movie ratings (1 star to 5 stars).</li>
-                    <li><strong>Valid stats:</strong> Median, interquartile range (IQR), percentiles, rank‑based tests (Mann‑Whitney).</li>
-                    <li><strong>Visuals:</strong> Ordered bar chart, median‑IQR dot plot.</li>
-                    <li><strong>Caution:</strong> Reporting a mean of “3.2” for a Likert item assumes equal gaps – if you do it, document the assumption and check robustness with non‑parametric tests.</li>
-                    <li><strong>Encoding:</strong> Ordinal integer mapping <em>with a documented order</em>; or treat as nominal with one‑hot if order is uncertain.</li>
-                </ul>
-
-                <h3 class="h5 fw-bold mt-4">Interval Scale</h3>
-                <ul>
-                    <li><strong>Definition:</strong> Numeric, equal differences between values, but <strong>no true zero</strong> (zero does not mean “none”).</li>
-                    <li><strong>Examples:</strong> Temperature in °C or °F, calendar year, pH.</li>
-                    <li><strong>Valid stats:</strong> Mean, standard deviation, correlation – <em>ratios</em> are meaningless (e.g., 20°C is not “twice as hot” as 10°C).</li>
-                    <li><strong>Visuals:</strong> Histogram, line chart.</li>
-                </ul>
-
-                <h3 class="h5 fw-bold mt-4">Ratio Scale</h3>
-                <ul>
-                    <li><strong>Definition:</strong> Numeric, equal differences, <strong>true zero</strong> (zero means absence).</li>
-                    <li><strong>Examples:</strong> Age, weight, income, distance, counts (number of visits).</li>
-                    <li><strong>Valid stats:</strong> All arithmetic operations, including ratios (e.g., $100 is twice $50).</li>
-                    <li><strong>Visuals:</strong> Histogram, box plot, violin plot, scatter plot.</li>
-                </ul>
-
-                <h3 class="h5 fw-bold mt-4">Discrete vs. Continuous (Both Usually Ratio)</h3>
-                <p>Numeric variables can be further divided by how they are generated:</p>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="border rounded p-3 h-100">
-                            <h6 class="fw-bold">Discrete (Counts)</h6>
-                            <p>Arises from <strong>counting</strong>. Only takes integer values (0,1,2,…). Examples: ER visits, purchases, number of defects. Usually a ratio scale. Model with Poisson, Negative Binomial; check for zero‑inflation.</p>
+                <section id="quality" class="section-shell" aria-labelledby="quality-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-shield-halved"></i></span>
+                        <div>
+                            <h2 id="quality-heading" class="h3">2. Is the Data Trustworthy?</h2>
+                            <p>Before selecting statistics or models, assess whether the data is fit for the intended purpose.</p>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="border rounded p-3 h-100">
-                            <h6 class="fw-bold">Continuous (Measurements)</h6>
-                            <p>Arises from <strong>measuring</strong>. Can take any value within an interval (though instruments limit precision). Examples: height, lab results, time spent. Linear regression, GAMs, log transforms for heavy tails.</p>
-                        </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle">
+                            <caption class="visually-hidden">Six data quality dimensions</caption>
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Dimension</th>
+                                    <th scope="col">Question</th>
+                                    <th scope="col">Example Issue</th>
+                                    <th scope="col">Possible Response</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Accuracy</strong></td>
+                                    <td>Does the value reflect reality?</td>
+                                    <td>Patient weight recorded as 500 kg.</td>
+                                    <td>Range checks, source verification, and review of data-entry rules.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Completeness</strong></td>
+                                    <td>Are required values present?</td>
+                                    <td><code>blood_type</code> is missing for 20% of records.</td>
+                                    <td>Required-field rules, missingness analysis, imputation, or explicit flags.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Consistency</strong></td>
+                                    <td>Is the same information represented the same way?</td>
+                                    <td>Dates appear as <code>1985-05-15</code> and <code>05/15/85</code>.</td>
+                                    <td>Standardized formats, shared definitions, and referential integrity.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Timeliness</strong></td>
+                                    <td>Is the data current enough for the task?</td>
+                                    <td>Last month's census powers a real-time dashboard.</td>
+                                    <td>Refresh schedules, timestamps, and data-latency documentation.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Uniqueness</strong></td>
+                                    <td>Does each real-world entity appear as intended?</td>
+                                    <td>The same patient appears twice under different IDs.</td>
+                                    <td>Deduplication, unique constraints, and entity resolution.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Validity</strong></td>
+                                    <td>Does the value conform to an appropriate documented rule?</td>
+                                    <td><code>encounter_status</code> contains "finished" although the approved values are "scheduled," "completed," and "cancelled."</td>
+                                    <td>Domain lists, <code>CHECK</code> constraints, regular expressions, and validation tests.</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-                <div class="alert alert-secondary small mt-3">
-                    <strong>Edge case:</strong> Heart rate stored as an integer is still a continuous phenomenon – don’t let the storage type fool you.
-                </div>
 
-                <h3 class="h5 fw-bold mt-4">Common Classification Mistakes 🚩</h3>
-                <ul>
-                    <li><strong>Treating ZIP codes as numeric</strong> – a mean ZIP code is nonsense.</li>
-                    <li><strong>Using mean for skewed ordinal data</strong> – better to report median and IQR.</li>
-                    <li><strong>Storing currency as FLOAT</strong> – floating‑point errors can cost cents (or millions). Use DECIMAL/NUMERIC.</li>
-                    <li><strong>Assuming all integers are discrete</strong> – always think about the underlying phenomenon.</li>
-                </ul>
-            </div>
-        </section>
+                    <p class="mini-note mt-3">These dimensions overlap. A blank required field is incomplete and may also be invalid. The acceptable quality threshold depends on the decision the data will support.</p>
 
-        <!-- ========== PART 4: FROM TYPE TO DECISION ========== -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Part 4: From Type to Decision</h2>
-                <p>Now that you can classify a variable, how do you choose the right summary, chart, and encoding?</p>
-
-                <h3 class="h5 fw-bold">Summary Statistics at a Glance</h3>
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered">
-                        <thead class="table-light">
-                            <tr><th>Scale</th><th>Center</th><th>Spread</th><th>Relationship</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Nominal</td><td>Mode</td><td>Proportion</td><td>Chi‑square</td></tr>
-                            <tr><td>Ordinal</td><td>Median</td><td>IQR</td><td>Rank correlation</td></tr>
-                            <tr><td>Interval</td><td>Mean</td><td>SD</td><td>Pearson r</td></tr>
-                            <tr><td>Ratio</td><td>Mean or median</td><td>SD or IQR</td><td>Pearson r (all arithmetic OK)</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <h3 class="h5 fw-bold mt-4">Visualization Cheat Sheet</h3>
-                <ul>
-                    <li><strong>Nominal:</strong> Bar chart (sorted by frequency); pie charts are often harder to read.</li>
-                    <li><strong>Ordinal:</strong> Ordered bar chart; median‑IQR dot plot to show spread.</li>
-                    <li><strong>Interval / Ratio:</strong> Histogram for shape, box/violin for comparing groups, scatter for two variables.</li>
-                </ul>
-
-                <h3 class="h5 fw-bold mt-4">Encoding: Turning Categories into Numbers</h3>
-                <p>Most machine‑learning models require numeric inputs. Here’s a practical mapping:</p>
-                <div class="table-responsive">
-                    <table class="table table-bordered align-middle">
-                        <thead class="table-light">
-                            <tr><th>Scale</th><th>Recommended Encoding</th><th>Why?</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Nominal</td><td>One‑hot (drop first category)</td><td>No ordinal relationship; avoids dummy variable trap.</td></tr>
-                            <tr><td>Ordinal</td><td>Integer mapping <strong>or</strong> one‑hot</td><td>Integer preserves order; one‑hot ignores it (safe if order is weak).</td></tr>
-                            <tr><td>Interval / Ratio</td><td>Keep as numeric; standardize (z‑score) for distance‑based models</td><td>Preserves magnitude; scaling prevents features from dominating.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <p class="small">Example: <code>member_tier</code> {Bronze, Silver, Gold, Platinum} – ordinal map → 0,1,2,3; one‑hot creates three columns (Silver, Gold, Platinum) with Bronze as reference.</p>
-
-                <h3 class="h5 fw-bold mt-4">Decision Guide – A Simple Flowchart</h3>
-                <div class="border rounded p-3 bg-light">
-                    <p class="fw-bold mb-1">Is there a natural order?</p>
-                    <ul class="mb-2">
-                        <li>No → <strong>Nominal</strong> → one‑hot encoding.</li>
-                        <li>Yes → Are the gaps equal?
-                            <ul>
-                                <li>No → <strong>Ordinal</strong> → ordered integer (carefully) or one‑hot.</li>
-                                <li>Yes → Does zero mean “none”?
-                                    <ul>
-                                        <li>No → <strong>Interval</strong> → keep numeric, scale.</li>
-                                        <li>Yes → <strong>Ratio</strong> → keep numeric, all operations valid.</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- ========== PART 5: GUIDED PYTHON LAB ========== -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Part 5: Guided Python Lab</h2>
-                <p>Let’s walk through the essential steps you’ll perform on almost any tabular dataset using pandas and scikit‑learn.</p>
-
-                <h3 class="h5 fw-bold">1. Inspect and Profile</h3>
-                <p>We start by loading the data and getting a quick overview.</p>
-                <div class="position-relative border rounded">
-                    <button class="btn btn-sm copy-btn position-absolute end-0 m-2" onclick="copyCode(this)">Copy</button>
-                    <pre class="m-0 p-3"><code class="language-python">import pandas as pd
-df = pd.read_csv('patients.csv')
-print(df.shape)           # rows, columns
-print(df.info())          # column names, non-null counts, dtypes
-print(df.describe(include='all'))  # stats for all columns
-print(df.isnull().mean()*100)     # percent missing per column</code></pre>
-                </div>
-
-                <h3 class="h5 fw-bold mt-4">2. Assign pandas Dtypes</h3>
-                <p>Setting correct types early prevents silent errors later.</p>
-                <div class="position-relative border rounded">
-                    <button class="btn btn-sm copy-btn position-absolute end-0 m-2" onclick="copyCode(this)">Copy</button>
-                    <pre class="m-0 p-3"><code class="language-python"># Nominal: convert to category (saves memory)
-df['sex'] = df['sex'].astype('category')
-df['blood_type'] = df['blood_type'].astype('category')
-
-# Ordinal: define the order explicitly
-from pandas.api.types import CategoricalDtype
-edu_order = CategoricalDtype(categories=['HS','BS','MS','PhD'], ordered=True)
-df['edu_level'] = df['edu_level'].astype(edu_order)</code></pre>
-                </div>
-
-                <h3 class="h5 fw-bold mt-4">3. Encode Categories</h3>
-                <p>Convert categories to numbers for modeling.</p>
-                <div class="position-relative border rounded">
-                    <button class="btn btn-sm copy-btn position-absolute end-0 m-2" onclick="copyCode(this)">Copy</button>
-                    <pre class="m-0 p-3"><code class="language-python">from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder
-
-# Ordinal encoding (respects order)
-enc = OrdinalEncoder(categories=[['Bronze','Silver','Gold','Platinum']])
-df['tier_code'] = enc.fit_transform(df[['member_tier']]).astype(int)
-
-# One-hot encoding (drop='first' to avoid dummy trap)
-ohe = OneHotEncoder(drop='first', sparse_output=False)
-gender_oh = ohe.fit_transform(df[['gender']])
-# Add to DataFrame (F is dropped, M column remains)
-df['gender_M'] = gender_oh  # 1 if male, 0 if female</code></pre>
-                </div>
-
-                <h3 class="h5 fw-bold mt-4">4. Scale Numeric Features</h3>
-                <p>Many models (SVM, k‑NN, neural nets) expect features on a similar scale. Standardization (z‑score) is a common choice.</p>
-                <div class="position-relative border rounded">
-                    <button class="btn btn-sm copy-btn position-absolute end-0 m-2" onclick="copyCode(this)">Copy</button>
-                    <pre class="m-0 p-3"><code class="language-python">from sklearn.preprocessing import StandardScaler
-scaler = StandardScaler()
-num_cols = ['age', 'temp_c', 'er_visits']
-df[[c + '_z' for c in num_cols]] = scaler.fit_transform(df[num_cols])
-# Now each scaled column has mean=0, std=1</code></pre>
-                </div>
-
-                <h3 class="h5 fw-bold mt-4">5. Normalize JSON (Semi‑Structured)</h3>
-                <p>When you receive nested JSON, flatten it into a table.</p>
-                <div class="position-relative border rounded">
-                    <button class="btn btn-sm copy-btn position-absolute end-0 m-2" onclick="copyCode(this)">Copy</button>
-                    <pre class="m-0 p-3"><code class="language-python">from pandas import json_normalize
-records = [
-  {"patient_id":"P1001","metrics":{"hr":72,"steps":500},"location":{"lat":36.07,"lon":-79.79}},
-  {"patient_id":"P1002","metrics":{"hr":65,"steps":900,"spo2":0.97}}
-]
-flat = json_normalize(records, sep='_')
-print(flat.columns)  # patient_id, metrics_hr, metrics_steps, metrics_spo2, location_lat, location_lon</code></pre>
-                </div>
-            </div>
-        </section>
-
-        <!-- ========== PART 6: DATABASE STORAGE PREVIEW ========== -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Part 6: Database Storage Preview</h2>
-                <p>When you store data in a relational database, the measurement scale suggests the right SQL type and the constraints that protect integrity.</p>
-
-                <h3 class="h5 fw-bold">Analytical Meaning → SQL Type</h3>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead class="table-light">
-                            <tr><th>Scale</th><th>Recommended SQL Type</th><th>Why?</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Nominal</td><td>VARCHAR / TEXT</td><td>Flexible; add CHECK to limit to allowed values.</td></tr>
-                            <tr><td>Ordinal</td><td>SMALLINT or VARCHAR + CHECK</td><td>Small integer with a lookup table, or text with constraint.</td></tr>
-                            <tr><td>Interval</td><td>INTEGER / FLOAT / DATE</td><td>Numerical precision; DATE/TIMESTAMP for calendar values.</td></tr>
-                            <tr><td>Ratio (continuous)</td><td>DECIMAL / NUMERIC</td><td>Exact arithmetic – mandatory for money.</td></tr>
-                            <tr><td>Ratio (count)</td><td>INTEGER / BIGINT</td><td>Whole numbers; add CHECK(value >= 0).</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <h3 class="h5 fw-bold mt-4">Basic Constraints in Action</h3>
-                <div class="position-relative border rounded">
-                    <button class="btn btn-sm copy-btn position-absolute end-0 m-2" onclick="copyCode(this)">Copy</button>
-                    <pre class="m-0 p-3"><code class="language-sql">-- A well‑constrained orders table
-CREATE TABLE orders (
-    order_id BIGSERIAL PRIMARY KEY,
-    customer_id BIGINT NOT NULL,
-    order_date DATE NOT NULL,
-    total_amount NUMERIC(12,2) NOT NULL CHECK (total_amount >= 0),
-    currency CHAR(3) NOT NULL CHECK (currency IN ('USD','EUR','GBP'))
-);
-
--- Lookup table for ordinal tiers
-CREATE TABLE membership_tier (
-    tier_code SMALLINT PRIMARY KEY,
-    tier_label VARCHAR(20) UNIQUE NOT NULL,
-    tier_rank SMALLINT NOT NULL CHECK (tier_rank BETWEEN 1 AND 4)
-);</code></pre>
-                </div>
-                <p class="small mt-2">These constraints guarantee that no negative amounts or invalid currencies sneak into your database.</p>
-            </div>
-        </section>
-
-        <!-- ========== PART 7: APPLIED CASES ========== -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Part 7: Applied Cases</h2>
-                <p>Let’s put the whole framework to work in two realistic scenarios.</p>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="border rounded p-3 h-100">
-                            <h5 class="fw-bold">🏥 Healthcare</h5>
-                            <p><strong>Goal:</strong> Predict patient length of stay (LOS) in days.</p>
-                            <ul class="small">
-                                <li><strong>Outcome:</strong> LOS → ratio (discrete count of days).</li>
-                                <li><strong>Predictors:</strong>
-                                    <ul>
-                                        <li>Diagnosis code (nominal) → one‑hot encoding.</li>
-                                        <li>Pain score 0‑10 (ordinal) → treat as ordinal, maybe integer encode.</li>
-                                        <li>Temperature °C (interval) → keep numeric, scale.</li>
-                                        <li>Age (ratio) → keep numeric, scale.</li>
-                                        <li>Comorbidity count (ratio discrete) → consider Poisson model.</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Quality check:</strong> Look for impossible values (negative pain, age > 120).</li>
-                                <li><strong>Visual:</strong> Box plot of LOS by diagnosis group.</li>
-                            </ul>
-                        </div>
+                    <h3 class="h5 mt-4">A Practical Quality Workflow</h3>
+                    <div class="workflow" aria-label="Data quality workflow">
+                        <div class="workflow-step"><i class="fas fa-magnifying-glass-chart" aria-hidden="true"></i><strong>1. Profile</strong><br><span class="small">Summarize fields, ranges, and missingness.</span></div>
+                        <div class="workflow-step"><i class="fas fa-bug" aria-hidden="true"></i><strong>2. Detect</strong><br><span class="small">Flag anomalies, duplicates, and rule violations.</span></div>
+                        <div class="workflow-step"><i class="fas fa-user-doctor" aria-hidden="true"></i><strong>3. Investigate</strong><br><span class="small">Check source systems and domain context.</span></div>
+                        <div class="workflow-step"><i class="fas fa-scale-balanced" aria-hidden="true"></i><strong>4. Decide</strong><br><span class="small">Correct, retain, exclude, impute, or flag.</span></div>
+                        <div class="workflow-step"><i class="fas fa-file-signature" aria-hidden="true"></i><strong>5. Document</strong><br><span class="small">Record rules, changes, and remaining limitations.</span></div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="border rounded p-3 h-100">
-                            <h5 class="fw-bold">🛒 E‑Commerce</h5>
-                            <p><strong>Goal:</strong> Predict number of purchases in the next 30 days.</p>
-                            <ul class="small">
-                                <li><strong>Outcome:</strong> Purchases → ratio (count).</li>
-                                <li><strong>Predictors:</strong>
-                                    <ul>
-                                        <li>Device type (nominal) → one‑hot.</li>
-                                        <li>Membership tier (ordinal) → ordinal integer mapping.</li>
-                                        <li>Session duration (ratio) → log transform if skewed.</li>
-                                        <li>Weekday (nominal cyclical) → one‑hot or sine/cosine encoding.</li>
-                                    </ul>
-                                </li>
-                                <li><strong>SQL tip:</strong> Store revenue in NUMERIC, not FLOAT.</li>
-                                <li><strong>Visual:</strong> Scatter plot of session duration vs. purchases.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- ========== FINISH ========== -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Finish</h2>
-
-                <h3 class="h5 fw-bold">✅ Self‑Check</h3>
-                <ol>
-                    <li>Classify: Education level, temperature (°C), income, ER visits, satisfaction 1‑5, ZIP code.</li>
-                    <li>Encode <code>member_tier</code> (Bronze, Silver, Gold, Platinum) two ways and explain the trade‑off.</li>
-                    <li>Choose a visualization for a nominal variable and a numeric variable. Justify your choice.</li>
-                    <li>You see <code>heart_rate</code> values: 72, -1, 0, 200, blank. Which quality dimensions are violated? What do you do?</li>
-                </ol>
-                <p><a class="btn btn-outline-primary btn-sm" data-bs-toggle="collapse" href="#answers1">Show sample answers</a></p>
-                <div class="collapse" id="answers1">
-                    <div class="card card-body">
-                        <ul>
-                            <li>Education → Ordinal; Temperature → Interval; Income → Ratio (continuous); ER visits → Ratio (discrete count); Satisfaction → Ordinal; ZIP → Nominal.</li>
-                            <li>Ordinal mapping (0,1,2,3) preserves order; one‑hot (3 columns) treats them as independent, losing order information but safe for linear models that assume no ordering.</li>
-                            <li>Nominal: bar chart; numeric: histogram/box plot. Bar chart shows frequency of categories; histogram reveals distribution shape.</li>
-                            <li>Accuracy (impossible values), Completeness (blank), Validity (negative). Remove or flag, impute if reasonable, set domain rules.</li>
+                    <div class="case-card mt-4">
+                        <h3 class="h5"><i class="fas fa-heart-pulse me-2" aria-hidden="true"></i>Quality Scenario: Heart Rate</h3>
+                        <p>A <code>heart_rate</code> column contains <code>72</code>, <code>-1</code>, <code>0</code>, <code>200</code>, and a blank value.</p>
+                        <ul class="mb-0">
+                            <li><code>-1</code> and possibly <code>0</code> violate validity rules and may be inaccurate.</li>
+                            <li>The blank value creates a completeness problem.</li>
+                            <li><code>200</code> may be valid in a specific clinical context; investigate before labeling it an error.</li>
+                            <li>Do not automatically delete every unusual value. Use domain knowledge and preserve an audit trail.</li>
                         </ul>
                     </div>
-                </div>
+                </section>
 
-                <h3 class="h5 fw-bold mt-4">🚀 Applied Challenge</h3>
-                <p>Take the running dataset (patients) and introduce three quality issues: (1) a duplicate patient row, (2) a missing blood type, (3) an invalid ZIP code (<code>00000</code>). Write a Python script (or SQL statements) that detects each issue and describes how you would fix it.</p>
+                <section id="variable-meaning" class="section-shell" aria-labelledby="meaning-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-ruler-combined"></i></span>
+                        <div>
+                            <h2 id="meaning-heading" class="h3">3. What Does Each Variable Mean?</h2>
+                            <p>Measurement scales define the operations, summaries, and comparisons that are defensible.</p>
+                        </div>
+                    </div>
 
-                <h3 class="h5 fw-bold mt-4">📌 Key Takeaways</h3>
-                <ul>
-                    <li>Data organization (structured/semi/unstructured) guides your initial toolset.</li>
-                    <li>Always profile your data using the six quality dimensions before analysis.</li>
-                    <li>Measurement scales (nominal, ordinal, interval, ratio) are the backbone of all valid statistical and visualization choices.</li>
-                    <li>Encoding must align with both the scale and the model’s assumptions.</li>
-                    <li>Database types and constraints preserve data meaning and integrity at the storage level.</li>
-                </ul>
+                    <h3 class="h5">First Split: Categorical or Numeric?</h3>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="concept-card">
+                                <span class="badge-soft-primary mb-2">Categorical</span>
+                                <p class="mb-1">Values represent labels, groups, or ordered levels.</p>
+                                <p class="small mb-0"><strong>Subtypes:</strong> nominal and ordinal</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="concept-card">
+                                <span class="badge-soft-success mb-2">Numeric</span>
+                                <p class="mb-1">Values represent quantities for which arithmetic may be meaningful.</p>
+                                <p class="small mb-0"><strong>Subtypes:</strong> interval and ratio</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h3 class="h5 fw-bold mt-4">📖 Glossary</h3>
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered">
-                        <thead class="table-light"><tr><th>Term</th><th>Definition</th></tr></thead>
-                        <tbody>
-                            <tr><td>Structured data</td><td>Tabular data with a fixed schema.</td></tr>
-                            <tr><td>Semi‑structured data</td><td>Self‑describing formats (JSON, XML) with flexible fields.</td></tr>
-                            <tr><td>Unstructured data</td><td>Data with no predefined model (text, images, audio).</td></tr>
-                            <tr><td>Nominal scale</td><td>Unordered categories.</td></tr>
-                            <tr><td>Ordinal scale</td><td>Ordered categories with unequal or unknown gaps.</td></tr>
-                            <tr><td>Interval scale</td><td>Numeric, equal intervals, no true zero.</td></tr>
-                            <tr><td>Ratio scale</td><td>Numeric, equal intervals, true zero.</td></tr>
-                            <tr><td>Discrete variable</td><td>Arises from counting; integer values.</td></tr>
-                            <tr><td>Continuous variable</td><td>Arises from measurement; can take any value in an interval.</td></tr>
-                            <tr><td>One‑hot encoding</td><td>Creates k‑1 binary columns for a nominal feature.</td></tr>
-                            <tr><td>Ordinal encoding</td><td>Maps ordered categories to integers respecting rank.</td></tr>
-                            <tr><td>Data profiling</td><td>Systematic examination of data to assess structure and quality.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered align-middle">
+                            <caption class="visually-hidden">Measurement scales and appropriate analysis</caption>
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Scale</th>
+                                    <th scope="col">Ordered?</th>
+                                    <th scope="col">Equal Differences?</th>
+                                    <th scope="col">True Zero?</th>
+                                    <th scope="col">Examples</th>
+                                    <th scope="col">Useful Summaries</th>
+                                    <th scope="col">Typical Visuals</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Nominal</strong><br><span class="small">Categorical</span></td>
+                                    <td>No</td>
+                                    <td>No</td>
+                                    <td>No</td>
+                                    <td>Blood type, device type, ZIP code, patient ID</td>
+                                    <td>Counts, proportions, mode; &chi;<sup>2</sup> procedures</td>
+                                    <td>Bar chart, mosaic plot</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Ordinal</strong><br><span class="small">Categorical</span></td>
+                                    <td>Yes</td>
+                                    <td>Not guaranteed</td>
+                                    <td>No</td>
+                                    <td>Triage level, education level, satisfaction 1-5</td>
+                                    <td>Counts, median, percentiles, IQR; rank procedures</td>
+                                    <td>Ordered bars, median/IQR plots</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Interval</strong><br><span class="small">Numeric</span></td>
+                                    <td>Yes</td>
+                                    <td>Yes</td>
+                                    <td>No</td>
+                                    <td>Temperature in C or F, calendar year</td>
+                                    <td>Mean, standard deviation, correlation; ratios are not meaningful</td>
+                                    <td>Histogram, line chart</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Ratio</strong><br><span class="small">Numeric</span></td>
+                                    <td>Yes</td>
+                                    <td>Yes</td>
+                                    <td>Yes</td>
+                                    <td>Age, weight, income, distance, elapsed time, counts</td>
+                                    <td>All arithmetic, including ratios when appropriate</td>
+                                    <td>Histogram, box plot, violin plot, scatterplot</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-                <h3 class="h5 fw-bold mt-4">📚 References</h3>
-                <ol class="small">
-                    <li>Stevens, S. S. (1946). <em>On the Theory of Scales of Measurement</em>.</li>
-                    <li>NIST Big Data Interoperability Framework, Vol. 1.</li>
-                    <li>DAMA‑DMBOK2, Chapter 13: Data Quality.</li>
-                    <li>pandas documentation – <code>CategoricalDtype</code> and categorical user guide.</li>
-                    <li>scikit‑learn documentation – <code>OrdinalEncoder</code>, <code>StandardScaler</code>.</li>
-                    <li>PostgreSQL documentation – monetary types and constraints.</li>
-                </ol>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6">
+                            <div class="example-card">
+                                <h3 class="h5">Nominal: Different, Not Ordered</h3>
+                                <p>Blood type categories differ, but A+ is not "greater than" O-.</p>
+                                <p class="small mb-0"><strong>Common mistake:</strong> Treating numeric-looking identifiers such as ZIP codes as quantities.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="example-card">
+                                <h3 class="h5">Ordinal: Ordered, Unequal Gaps</h3>
+                                <p>Triage levels have a meaningful sequence, but the distance from "non-urgent" to "urgent" is not guaranteed to equal the distance from "urgent" to "emergent."</p>
+                                <p class="small mb-0"><strong>Common mistake:</strong> Assuming integer codes automatically create equal numerical spacing.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h3 class="h5 fw-bold mt-4">🔜 Module 2 Preview</h3>
-                <p>In the next module, you’ll learn how to design relational databases – turning the conceptual data types and scales into a concrete schema with primary keys, foreign keys, and normalization rules.</p>
-                <a href="module2.html" class="btn btn-primary btn-sm mt-2">Go to Module 2 <i class="fas fa-arrow-right ms-1"></i></a>
+                    <div class="alert alert-warning mt-3" role="note">
+                        <strong>Likert caution:</strong> A single 1-5 item is ordinal. Means are commonly reported, but medians, IQRs, and rank-based methods are safer when the distribution is skewed or the response scale is coarse. A validated multi-item composite may sometimes be treated as approximately interval, but that decision should be justified and checked for robustness.
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6">
+                            <div class="example-card">
+                                <h3 class="h5">Interval: Equal Differences, No True Zero</h3>
+                                <p>A 5-degree change in Celsius has a consistent meaning, but 20 C is not twice as hot as 10 C.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="example-card">
+                                <h3 class="h5">Ratio: Equal Differences and True Zero</h3>
+                                <p>Zero ER visits means no visits. Four visits are twice as many as two visits.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="h5 mt-4">Numeric Variables: Discrete or Continuous?</h3>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="case-card">
+                                <span class="badge-soft-primary mb-2">Discrete Counts</span>
+                                <ul class="mb-0">
+                                    <li>Arise from counting: 0, 1, 2, and so on.</li>
+                                    <li>Examples: visits, purchases, readmissions, defects.</li>
+                                    <li>Fractions are generally not meaningful for the individual count.</li>
+                                    <li>Counts are usually ratio-scale variables because zero means none.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="case-card">
+                                <span class="badge-soft-success mb-2">Continuous Measurements</span>
+                                <ul class="mb-0">
+                                    <li>Arise from measurement and can, conceptually, take values within a range.</li>
+                                    <li>Examples: height, laboratory values, duration, and income.</li>
+                                    <li>Observed precision depends on the measuring instrument.</li>
+                                    <li>A continuous phenomenon may still be stored as an integer.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-secondary mt-3" role="note">
+                        <strong>Concept over storage:</strong> Heart rate may be stored as an integer, but it measures a continuous physiological phenomenon. Classify the concept, not merely the file's dtype.
+                    </div>
+
+                    <h3 class="h5 mt-4">Common Classification Traps</h3>
+                    <div class="table-responsive">
+                        <table class="table table-bordered mistake-table align-middle">
+                            <caption class="visually-hidden">Variables that are commonly misclassified</caption>
+                            <thead class="table-light">
+                                <tr><th scope="col">Variable</th><th scope="col">It Looks Like</th><th scope="col">It Is Better Treated As</th><th scope="col">Why</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>ZIP code</td><td class="looks-like">A number</td><td class="actually">Nominal</td><td>The digits label a geographic area; arithmetic on ZIP codes has no useful meaning.</td></tr>
+                                <tr><td>Patient ID</td><td class="looks-like">An integer</td><td class="actually">Nominal identifier</td><td>The value identifies a record rather than measuring an amount.</td></tr>
+                                <tr><td>Satisfaction 1-5</td><td class="looks-like">Numeric</td><td class="actually">Ordinal</td><td>The levels are ordered, but equal spacing is not guaranteed.</td></tr>
+                                <tr><td>Heart rate stored as integer</td><td class="looks-like">Discrete</td><td class="actually">Continuous phenomenon</td><td>The integer reflects recording precision, not the underlying concept.</td></tr>
+                                <tr><td>ER visits</td><td class="looks-like">Integer</td><td class="actually">Discrete ratio count</td><td>The variable is created by counting events and has a meaningful zero.</td></tr>
+                                <tr><td>Temperature in Celsius</td><td class="looks-like">Ratio quantity</td><td class="actually">Interval</td><td>Differences are meaningful, but zero is not the absence of temperature.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="decisions" class="section-shell" aria-labelledby="decisions-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-route"></i></span>
+                        <div>
+                            <h2 id="decisions-heading" class="h3">4. From Type to Analytical Decision</h2>
+                            <p>Use the meaning of the variable to guide summaries, visualizations, and preprocessing choices.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered decision-table align-middle">
+                            <caption class="visually-hidden">Decision guide by variable type</caption>
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Variable Type</th>
+                                    <th scope="col">Useful Summaries</th>
+                                    <th scope="col">Typical Visualizations</th>
+                                    <th scope="col">Common Encoding or Preparation</th>
+                                    <th scope="col">Key Caution</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Nominal</strong></td>
+                                    <td>Counts, percentages, mode</td>
+                                    <td>Bar chart, mosaic plot</td>
+                                    <td>One-hot encoding; group rare levels only with justification</td>
+                                    <td>Do not invent an order.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Ordinal</strong></td>
+                                    <td>Counts, median, percentiles, IQR</td>
+                                    <td>Ordered bar chart, median/IQR display</td>
+                                    <td>Ordered categorical dtype or documented ordinal codes</td>
+                                    <td>Do not assume equal gaps without evidence.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Interval / Ratio Continuous</strong></td>
+                                    <td>Mean and SD when suitable; median and IQR for skewed data</td>
+                                    <td>Histogram, box plot, violin plot, scatterplot</td>
+                                    <td>Keep numeric; standardize for selected models; consider justified transformations</td>
+                                    <td>Check skew, outliers, units, and precision.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Ratio Count</strong></td>
+                                    <td>Counts, rates, proportion of zeros, median, IQR</td>
+                                    <td>Bar plot, histogram, count distribution</td>
+                                    <td>Keep as a nonnegative integer; preserve exposure or time-at-risk information</td>
+                                    <td>Counts are often skewed and may contain many zeros.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="h5 mt-4">Encoding Example: Membership Tier</h3>
+                    <p>Suppose <code>member_tier</code> has the ordered levels Bronze, Silver, Gold, and Platinum. The right representation depends on the analytical purpose and the model.</p>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm text-center align-middle">
+                            <caption class="visually-hidden">Corrected one-hot and ordinal encoding example</caption>
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Original</th>
+                                    <th scope="col">Silver</th>
+                                    <th scope="col">Gold</th>
+                                    <th scope="col">Platinum</th>
+                                    <th scope="col">Ordinal Code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Bronze</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                                <tr><td>Silver</td><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+                                <tr><td>Gold</td><td>0</td><td>1</td><td>0</td><td>2</td></tr>
+                                <tr><td>Platinum</td><td>0</td><td>0</td><td>1</td><td>3</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="mini-note mt-2">With <code>drop="first"</code>, Bronze is the reference category and is represented by zeros in the three generated dummy columns. It is not a fourth generated column.</p>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6">
+                            <div class="concept-card">
+                                <h3 class="h5">One-Hot Representation</h3>
+                                <p>Creates separate indicator columns and does not impose a numerical distance between categories.</p>
+                                <p class="small mb-0"><strong>Common use:</strong> nominal variables and models that should not infer order from a single integer code.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="concept-card">
+                                <h3 class="h5">Ordinal Representation</h3>
+                                <p>Maps ordered levels to documented codes that preserve rank.</p>
+                                <p class="small mb-0"><strong>Caution:</strong> Codes such as 0, 1, 2, 3 may imply equal spacing to some models. Confirm that the model and interpretation are appropriate.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion mt-4" id="lookingAheadAccordion">
+                        <div class="accordion-item">
+                            <h3 class="accordion-header" id="lookingAheadHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#lookingAheadCollapse" aria-expanded="false" aria-controls="lookingAheadCollapse">
+                                    Looking Ahead: Models and Advanced Encodings
+                                </button>
+                            </h3>
+                            <div id="lookingAheadCollapse" class="accordion-collapse collapse" aria-labelledby="lookingAheadHeading" data-bs-parent="#lookingAheadAccordion">
+                                <div class="accordion-body">
+                                    <p>Different outcome types often lead to different model families. Count outcomes may motivate Poisson, negative binomial, or zero-inflated models. Continuous outcomes may motivate linear or generalized additive models, sometimes with transformations for heavy tails.</p>
+                                    <p class="mb-0">High-cardinality categories may motivate target or mean encoding, but these methods require careful cross-validation to prevent information leakage. Treat these as advanced topics rather than default Module 1 techniques.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="guided-lab" class="section-shell" aria-labelledby="lab-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-laptop-code"></i></span>
+                        <div>
+                            <h2 id="lab-heading" class="h3">5. Guided Python Lab</h2>
+                            <p>Apply the conceptual decisions to one small dataset using pandas and scikit-learn.</p>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info" role="note">
+                        <strong>Lab goal:</strong> Inspect the data first, document what each variable means, and only then assign dtypes or encodings. Technical transformations should follow the conceptual classification - not replace it.
+                    </div>
+
+                    <h3 class="h5 mt-4">Step 1: Create and Inspect the Dataset</h3>
+                    <div class="copy-wrap">
+                        <button class="copy-btn" type="button" onclick="copyCode(this)" aria-label="Copy Python setup code">Copy</button>
+                        <pre class="m-0 p-3"><code class="language-python">import pandas as pd
+
+encounters = pd.DataFrame({
+    "patient_id": ["P1001", "P1002", "P1003", "P1004", "P1005"],
+    "sex": ["F", "M", "F", "F", "M"],
+    "triage_level": ["Non-urgent", "Urgent", "Emergent", "Urgent", "Non-urgent"],
+    "temperature_c": [37.0, 39.1, 38.2, 36.8, 37.4],
+    "er_visits": [0, 3, 2, 5, 1],
+    "member_tier": ["Bronze", "Silver", "Gold", "Platinum", "Silver"]
+})
+
+print(encounters.head())
+print(encounters.info())
+print(encounters.isna().sum())
+print(encounters.nunique())</code></pre>
+                    </div>
+
+                    <div class="case-card mt-3">
+                        <h4 class="h6">Before You Transform Anything</h4>
+                        <ul class="mb-0">
+                            <li><code>patient_id</code>: nominal identifier</li>
+                            <li><code>sex</code>: nominal category as defined in this dataset</li>
+                            <li><code>triage_level</code>: ordinal category</li>
+                            <li><code>temperature_c</code>: interval, conceptually continuous</li>
+                            <li><code>er_visits</code>: ratio-scale discrete count</li>
+                            <li><code>member_tier</code>: ordinal category</li>
+                        </ul>
+                    </div>
+
+                    <h3 class="h5 mt-4">Step 2: Assign Meaningful pandas Dtypes</h3>
+                    <div class="copy-wrap">
+                        <button class="copy-btn" type="button" onclick="copyCode(this)" aria-label="Copy dtype code">Copy</button>
+                        <pre class="m-0 p-3"><code class="language-python">from pandas.api.types import CategoricalDtype
+
+# Nominal categories
+encounters["sex"] = encounters["sex"].astype("category")
+
+# Ordered categorical variables
+triage_order = CategoricalDtype(
+    categories=["Non-urgent", "Urgent", "Emergent"],
+    ordered=True
+)
+tier_order = CategoricalDtype(
+    categories=["Bronze", "Silver", "Gold", "Platinum"],
+    ordered=True
+)
+
+encounters["triage_level"] = encounters["triage_level"].astype(triage_order)
+encounters["member_tier"] = encounters["member_tier"].astype(tier_order)
+
+# Keep identifiers as strings rather than quantities
+encounters["patient_id"] = encounters["patient_id"].astype("string")
+
+print(encounters.dtypes)</code></pre>
+                    </div>
+
+                    <h3 class="h5 mt-4">Step 3: Encode Categories and Scale Selected Numeric Features</h3>
+                    <div class="copy-wrap">
+                        <button class="copy-btn" type="button" onclick="copyCode(this)" aria-label="Copy preprocessing code">Copy</button>
+                        <pre class="m-0 p-3"><code class="language-python">from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
+
+# One-hot encode the nominal variable.
+# With two levels and drop="first", one indicator column is produced.
+one_hot = OneHotEncoder(drop="first", sparse_output=False, handle_unknown="ignore")
+sex_matrix = one_hot.fit_transform(encounters[["sex"]])
+sex_columns = one_hot.get_feature_names_out(["sex"])
+encounters[sex_columns] = sex_matrix
+
+# Encode membership tier with an explicit documented order.
+tier_encoder = OrdinalEncoder(
+    categories=[["Bronze", "Silver", "Gold", "Platinum"]]
+)
+encounters["tier_code"] = (
+    tier_encoder.fit_transform(encounters[["member_tier"]])
+    .astype(int)
+)
+
+# Standardization may be useful for models that are sensitive to scale.
+# Fit on training data only in a real predictive workflow.
+scaler = StandardScaler()
+numeric_features = ["temperature_c", "er_visits"]
+scaled = scaler.fit_transform(encounters[numeric_features])
+encounters[["temperature_z", "er_visits_z"]] = scaled
+
+print(encounters)</code></pre>
+                    </div>
+
+                    <div class="alert alert-warning mt-3" role="note">
+                        <strong>Prevent leakage:</strong> In predictive modeling, fit encoders and scalers on the training data and apply the fitted transformations to validation and test data. Do not fit preprocessing steps on the full dataset before evaluation.
+                    </div>
+
+                    <h3 class="h5 mt-4">Step 4: Flatten Semi-Structured JSON</h3>
+                    <div class="copy-wrap">
+                        <button class="copy-btn" type="button" onclick="copyCode(this)" aria-label="Copy JSON normalization code">Copy</button>
+                        <pre class="m-0 p-3"><code class="language-python">from pandas import json_normalize
+
+records = [
+    {
+        "patient_id": "P1001",
+        "metrics": {"heart_rate": 72, "steps": 500},
+        "location": {"lat": 36.07, "lon": -79.79}
+    },
+    {
+        "patient_id": "P1002",
+        "metrics": {"heart_rate": 65, "steps": 900, "spo2": 0.97}
+    }
+]
+
+flat = json_normalize(records, sep="_")
+print(flat)
+
+# Expected columns include:
+# patient_id, metrics_heart_rate, metrics_steps, metrics_spo2,
+# location_lat, and location_lon</code></pre>
+                    </div>
+
+                    <h3 class="h5 mt-4">Step 5: Add Basic Quality Checks</h3>
+                    <div class="copy-wrap">
+                        <button class="copy-btn" type="button" onclick="copyCode(this)" aria-label="Copy quality check code">Copy</button>
+                        <pre class="m-0 p-3"><code class="language-python"># Completeness
+print(encounters.isna().sum())
+
+# Uniqueness of the identifier
+assert encounters["patient_id"].is_unique, "Duplicate patient_id values found"
+
+# Simple validity checks for this teaching dataset
+assert encounters["temperature_c"].between(30, 45).all(), "Review temperature range"
+assert encounters["er_visits"].ge(0).all(), "ER visits cannot be negative"
+
+# Frequency review for categorical values
+print(encounters["triage_level"].value_counts(dropna=False).sort_index())</code></pre>
+                    </div>
+
+                    <div class="alert alert-success mt-4 mb-0" role="note">
+                        <strong>Lab takeaway:</strong> The analytical classification determines what a variable means; the pandas dtype and encoding determine how software represents that meaning for a particular task.
+                    </div>
+                </section>
+
+                <section id="database-preview" class="section-shell" aria-labelledby="database-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-database"></i></span>
+                        <div>
+                            <h2 id="database-heading" class="h3">6. Database Storage Preview</h2>
+                            <p>Connect analytical meaning to practical storage without treating the two as identical.</p>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning" role="note">
+                        <strong>Measurement scale informs analysis; precision and application requirements inform storage.</strong>
+                        For example, currency may require exact <code>NUMERIC</code> arithmetic, while an approximate physical measurement may reasonably use a floating-point type.
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle">
+                            <caption class="visually-hidden">Suggested PostgreSQL storage types by data purpose</caption>
+                            <thead class="table-light">
+                                <tr><th scope="col">Data Purpose</th><th scope="col">Possible PostgreSQL Type</th><th scope="col">Practical Note</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Identifier</td><td><code>BIGINT</code>, <code>UUID</code>, or <code>TEXT</code></td><td>Do not perform arithmetic merely because an identifier contains digits.</td></tr>
+                                <tr><td>Nominal label</td><td><code>TEXT</code>, <code>VARCHAR</code>, or lookup-table key</td><td>Use a documented domain and consider a reference table.</td></tr>
+                                <tr><td>Ordered category</td><td><code>SMALLINT</code> plus lookup table, or constrained <code>TEXT</code></td><td>Store both the label and the intended order in a documented design.</td></tr>
+                                <tr><td>Count</td><td><code>INTEGER</code> or <code>BIGINT</code></td><td>Add a nonnegative constraint when the domain requires it.</td></tr>
+                                <tr><td>Exact decimal, such as money</td><td><code>NUMERIC(p,s)</code></td><td>Use exact arithmetic rather than floating-point approximations.</td></tr>
+                                <tr><td>Approximate measurement</td><td><code>REAL</code> or <code>DOUBLE PRECISION</code></td><td>Select precision based on the instrument and application.</td></tr>
+                                <tr><td>Calendar or event time</td><td><code>DATE</code>, <code>TIME</code>, or <code>TIMESTAMP</code></td><td>Use dedicated temporal types so calendar meaning is preserved.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="h5 mt-4">Short Constraint Example</h3>
+                    <div class="copy-wrap">
+                        <button class="copy-btn" type="button" onclick="copyCode(this)" aria-label="Copy SQL example">Copy</button>
+                        <pre class="m-0 p-3"><code class="language-sql">CREATE TABLE encounters (
+    encounter_id BIGSERIAL PRIMARY KEY,
+    patient_id TEXT NOT NULL,
+    encounter_date DATE NOT NULL,
+    triage_level TEXT NOT NULL
+        CHECK (triage_level IN ('Non-urgent', 'Urgent', 'Emergent')),
+    temperature_c DOUBLE PRECISION
+        CHECK (temperature_c BETWEEN 30 AND 45),
+    er_visits INTEGER NOT NULL
+        CHECK (er_visits >= 0),
+    total_charge NUMERIC(12, 2)
+        CHECK (total_charge >= 0)
+);</code></pre>
+                    </div>
+
+                    <p class="mini-note mt-3 mb-0">This is a preview. Module 2 develops database concepts, and Module 3 applies them in PostgreSQL.</p>
+                </section>
+
+                <section id="applied-cases" class="section-shell" aria-labelledby="cases-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-briefcase"></i></span>
+                        <div>
+                            <h2 id="cases-heading" class="h3">7. Applied Cases</h2>
+                            <p>Classify variables first, then justify summaries, visualizations, encodings, and storage choices.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion" id="caseAccordion">
+                        <div class="accordion-item">
+                            <h3 class="accordion-header" id="healthcareCaseHeading">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#healthcareCase" aria-expanded="true" aria-controls="healthcareCase">
+                                    Case A: Healthcare Encounters
+                                </button>
+                            </h3>
+                            <div id="healthcareCase" class="accordion-collapse collapse show" aria-labelledby="healthcareCaseHeading" data-bs-parent="#caseAccordion">
+                                <div class="accordion-body">
+                                    <p><strong>Variables:</strong> diagnosis code, pain score 0-10, temperature C, age, comorbidity count, length of stay, and 30-day readmissions.</p>
+                                    <h4 class="h6">Your Task</h4>
+                                    <ol>
+                                        <li>Classify each variable by measurement scale.</li>
+                                        <li>Identify which numeric variables are counts and which are measurements.</li>
+                                        <li>Choose one appropriate visualization for pain score and one for length of stay.</li>
+                                        <li>Recommend an encoding for diagnosis code.</li>
+                                    </ol>
+                                    <p class="mb-0"><button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#healthcareSolution" aria-expanded="false" aria-controls="healthcareSolution">Show Sample Analysis</button></p>
+                                    <div class="collapse mt-3" id="healthcareSolution">
+                                        <div class="case-card">
+                                            <ul class="mb-0">
+                                                <li>Diagnosis code: nominal; commonly represented with categorical indicators or domain-aware grouping.</li>
+                                                <li>Pain score: ordinal; use ordered bars and consider medians/IQRs.</li>
+                                                <li>Temperature C: interval and conceptually continuous.</li>
+                                                <li>Age: ratio and conceptually continuous.</li>
+                                                <li>Comorbidity count and readmissions: ratio-scale discrete counts.</li>
+                                                <li>Length of stay: ratio; measured time may be conceptually continuous even when reported in whole days.</li>
+                                                <li>Useful visuals include an ordered bar chart for pain and a box, violin, or histogram for length of stay.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h3 class="accordion-header" id="commerceCaseHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#commerceCase" aria-expanded="false" aria-controls="commerceCase">
+                                    Case B: E-Commerce Activity
+                                </button>
+                            </h3>
+                            <div id="commerceCase" class="accordion-collapse collapse" aria-labelledby="commerceCaseHeading" data-bs-parent="#caseAccordion">
+                                <div class="accordion-body">
+                                    <p><strong>Variables:</strong> device type, membership tier, session duration, weekday, purchases in 30 days, and revenue.</p>
+                                    <h4 class="h6">Your Task</h4>
+                                    <ol>
+                                        <li>Classify each variable by measurement scale.</li>
+                                        <li>Select encodings for device type, weekday, and membership tier.</li>
+                                        <li>Choose a visualization for purchases and another for session duration.</li>
+                                        <li>Recommend SQL storage for revenue.</li>
+                                    </ol>
+                                    <p class="mb-0"><button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#commerceSolution" aria-expanded="false" aria-controls="commerceSolution">Show Sample Analysis</button></p>
+                                    <div class="collapse mt-3" id="commerceSolution">
+                                        <div class="case-card">
+                                            <ul class="mb-0">
+                                                <li>Device type and weekday: nominal. One-hot encoding is a common starting point.</li>
+                                                <li>Membership tier: ordinal when the business rules define a meaningful order.</li>
+                                                <li>Session duration and revenue: ratio and conceptually continuous.</li>
+                                                <li>Purchases: ratio-scale discrete count.</li>
+                                                <li>Purchases can be shown with a count distribution; session duration may use a histogram or box plot and may require a log scale when strongly right-skewed.</li>
+                                                <li>Store currency in an exact <code>NUMERIC</code> field and store a documented currency code separately.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="assessment" class="section-shell" aria-labelledby="assessment-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-clipboard-check"></i></span>
+                        <div>
+                            <h2 id="assessment-heading" class="h3">8. Assessment and Closure</h2>
+                            <p>Move from recognition to justification and then to applied decision-making.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="h5">Checkpoint 1: Recognition</h3>
+                    <p>Classify each variable as nominal, ordinal, interval, or ratio. For numeric variables, also state whether it is a count or measurement.</p>
+                    <ol>
+                        <li>Education level: HS, BS, MS, PhD</li>
+                        <li>Body temperature in C</li>
+                        <li>Monthly income in USD</li>
+                        <li>Number of ER visits in the last year</li>
+                        <li>Customer satisfaction from 1 to 5</li>
+                        <li>ZIP code</li>
+                    </ol>
+
+                    <h3 class="h5 mt-4">Checkpoint 2: Justification</h3>
+                    <ol>
+                        <li>Explain why ZIP code is not a ratio variable even when it is stored as an integer.</li>
+                        <li>Explain why temperature in Celsius permits meaningful differences but not meaningful ratios.</li>
+                        <li>Explain the risk of encoding unordered categories as 0, 1, 2, and 3.</li>
+                    </ol>
+
+                    <h3 class="h5 mt-4">Checkpoint 3: Application</h3>
+                    <p>A dataset contains <code>patient_id</code>, <code>triage_level</code>, <code>heart_rate</code>, <code>encounter_status</code>, and <code>length_of_stay</code>.</p>
+                    <ol>
+                        <li>Identify two quality checks you would run.</li>
+                        <li>Classify three of the variables.</li>
+                        <li>Select one summary and one visualization.</li>
+                        <li>Recommend one encoding or storage decision.</li>
+                    </ol>
+
+                    <p><button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#assessmentAnswers" aria-expanded="false" aria-controls="assessmentAnswers">Show Sample Answers</button></p>
+                    <div class="collapse" id="assessmentAnswers">
+                        <div class="case-card">
+                            <h3 class="h5">Sample Answers</h3>
+                            <ul>
+                                <li>Education level: ordinal.</li>
+                                <li>Temperature C: interval, continuous measurement.</li>
+                                <li>Income: ratio, continuous measurement.</li>
+                                <li>ER visits: ratio, discrete count.</li>
+                                <li>Satisfaction 1-5: ordinal.</li>
+                                <li>ZIP code: nominal.</li>
+                            </ul>
+                            <p>ZIP codes label areas; subtraction or ratios do not have a meaningful interpretation. Celsius has equal units, but zero is not the absence of temperature. Integer codes for nominal categories can cause a model to infer an order or distance that the data does not contain.</p>
+                            <p class="mb-0">Possible applied checks include missingness, duplicate IDs, allowed encounter statuses, plausible heart-rate ranges, and nonnegative length of stay. Triage level is ordinal; patient ID is nominal; heart rate and length of stay are ratio-scale measurements. An ordered bar chart can summarize triage, while a histogram or box plot can summarize length of stay.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="h5 mt-5">Five Key Takeaways</h3>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="takeaway-card"><strong>1.</strong> Data organization and variable measurement are different layers of classification.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="takeaway-card"><strong>2.</strong> Quality must be assessed before sophisticated analysis can be trusted.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="takeaway-card"><strong>3.</strong> Measurement scale determines which comparisons and summaries are defensible.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="takeaway-card"><strong>4.</strong> A software dtype or SQL type does not, by itself, define analytical meaning.</div>
+                        </div>
+                        <div class="col-12">
+                            <div class="takeaway-card"><strong>5.</strong> Good preprocessing follows a documented conceptual decision and is fitted carefully to avoid leakage.</div>
+                        </div>
+                    </div>
+
+                    <h3 class="h5 mt-5">Glossary</h3>
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle">
+                            <caption class="visually-hidden">Module glossary</caption>
+                            <thead class="table-light"><tr><th scope="col">Term</th><th scope="col">Working Definition</th></tr></thead>
+                            <tbody>
+                                <tr><td>Structured data</td><td>Data organized according to a predefined schema, commonly in rows and columns.</td></tr>
+                                <tr><td>Semi-structured data</td><td>Data with labels or tags but a flexible or nested schema, such as JSON or XML.</td></tr>
+                                <tr><td>Unstructured data</td><td>Data without a predefined tabular model, such as free text, images, audio, and video.</td></tr>
+                                <tr><td>Measurement scale</td><td>A classification that describes the meaning of values and the operations that are defensible.</td></tr>
+                                <tr><td>Nominal</td><td>Categories that differ but have no inherent order.</td></tr>
+                                <tr><td>Ordinal</td><td>Categories with a meaningful order but not necessarily equal spacing.</td></tr>
+                                <tr><td>Interval</td><td>Numeric values with equal intervals but no true zero.</td></tr>
+                                <tr><td>Ratio</td><td>Numeric values with equal intervals and a meaningful zero.</td></tr>
+                                <tr><td>Discrete</td><td>A numeric variable generated by counting distinct events or units.</td></tr>
+                                <tr><td>Continuous</td><td>A numeric variable generated by measurement and conceptually able to take values within a range.</td></tr>
+                                <tr><td>One-hot encoding</td><td>A representation that creates indicator columns for categories without assigning an inherent order.</td></tr>
+                                <tr><td>Data leakage</td><td>Use of information during model development that would not be available when making a real prediction.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="h5 mt-5">References and Further Reading</h3>
+                    <ol>
+                        <li>Stevens, S. S. "On the Theory of Scales of Measurement." <em>Science</em>, 1946.</li>
+                        <li>NIST Big Data Interoperability Framework, Volume 1: Definitions.</li>
+                        <li>DAMA-DMBOK2, Chapter 13: Data Quality.</li>
+                        <li>ISO 8000: Data Quality overview.</li>
+                        <li>pandas documentation: categorical data and <code>CategoricalDtype</code>.</li>
+                        <li>scikit-learn documentation: <code>OneHotEncoder</code>, <code>OrdinalEncoder</code>, <code>StandardScaler</code>, and preprocessing.</li>
+                        <li>PostgreSQL documentation: numeric, character, and date/time types; constraints.</li>
+                        <li>UCLA OARC statistical resources: count models and ordinal logistic regression.</li>
+                        <li>Doug Laney: early research note on Volume, Velocity, and Variety.</li>
+                    </ol>
+
+                    <div class="alert alert-info mt-4 mb-0" role="note">
+                        <strong><i class="fas fa-forward me-2" aria-hidden="true"></i>Next:</strong>
+                        Module 2 develops database concepts, including relational structure, keys, relationships, integrity, and schema design.
+                    </div>
+                </section>
             </div>
-        </section>
-    </div>
+        </div>
+    </main>
 
-    <footer class="py-4 mt-5">
+    <footer class="footer py-4">
         <div class="container text-center">
-            <p class="mb-0">&copy; 2026 Ali Noori, UNCG. All rights reserved.</p>
+            <p class="mb-1">&copy; 2026 Ali Noori, UNC Greensboro. All rights reserved.</p>
+            <p class="small text-muted mb-0">IAN 603 - Data Analytics | Module 1</p>
         </div>
     </footer>
 
+    <button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top">
+        <i class="fas fa-arrow-up" aria-hidden="true"></i>
+    </button>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const toggleBtn = document.getElementById('theme-toggle');
         const html = document.documentElement;
-        function setTheme(theme) {
-            html.setAttribute('data-theme', theme);
-            toggleBtn.querySelector('i').className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-            localStorage.setItem('theme', theme);
-            document.getElementById('hljs-theme').href = theme === 'dark' 
-                ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css' 
-                : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css';
-        }
-        const saved = localStorage.getItem('theme') || 'dark';
-        setTheme(saved);
-        toggleBtn.addEventListener('click', () => setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+        const themeToggle = document.getElementById("theme-toggle");
+        const highlightTheme = document.getElementById("hljs-theme");
+        const menuButton = document.getElementById("mobile-menu-toggle");
+        const navList = document.getElementById("nav-links-list");
+        const backToTop = document.getElementById("back-to-top");
 
-        const menuBtn = document.getElementById('mobile-menu-toggle');
-        const navList = document.getElementById('nav-links-list');
-        menuBtn?.addEventListener('click', () => {
-            const expanded = navList.classList.toggle('active');
-            menuBtn.setAttribute('aria-expanded', expanded);
+        function applyTheme(theme) {
+            html.setAttribute("data-theme", theme);
+            localStorage.setItem("theme", theme);
+
+            const icon = themeToggle.querySelector("i");
+            const label = themeToggle.querySelector("span");
+            const isDark = theme === "dark";
+
+            icon.className = isDark ? "fas fa-sun" : "fas fa-moon";
+            label.textContent = isDark ? "Light" : "Dark";
+            themeToggle.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
+
+            if (highlightTheme) {
+                highlightTheme.href = isDark
+                    ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"
+                    : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css";
+            }
+        }
+
+        const savedTheme = localStorage.getItem("theme");
+        const preferredTheme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        applyTheme(savedTheme || preferredTheme);
+
+        themeToggle.addEventListener("click", function () {
+            const nextTheme = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
+            applyTheme(nextTheme);
         });
 
-        function copyCode(btn) {
-            const code = btn.parentElement.querySelector('code');
-            navigator.clipboard.writeText(code.innerText).then(() => {
-                btn.textContent = 'Copied!';
-                setTimeout(() => btn.textContent = 'Copy', 1500);
+        if (menuButton && navList) {
+            menuButton.addEventListener("click", function () {
+                const isOpen = navList.classList.toggle("active");
+                menuButton.setAttribute("aria-expanded", String(isOpen));
+                menuButton.querySelector("i").className = isOpen ? "fas fa-xmark" : "fas fa-bars";
+            });
+
+            navList.querySelectorAll("a").forEach(function (link) {
+                link.addEventListener("click", function () {
+                    navList.classList.remove("active");
+                    menuButton.setAttribute("aria-expanded", "false");
+                    menuButton.querySelector("i").className = "fas fa-bars";
+                });
             });
         }
 
-        hljs.highlightAll();
+        function copyCode(button) {
+            const code = button.parentElement.querySelector("code");
+            if (!code) return;
+
+            navigator.clipboard.writeText(code.innerText).then(function () {
+                const originalText = button.textContent;
+                button.textContent = "Copied";
+                button.setAttribute("aria-live", "polite");
+                window.setTimeout(function () {
+                    button.textContent = originalText;
+                    button.removeAttribute("aria-live");
+                }, 1500);
+            }).catch(function () {
+                button.textContent = "Select and copy";
+            });
+        }
+
+        window.copyCode = copyCode;
+
+        const tocLinks = Array.from(document.querySelectorAll(".toc-list a"));
+        const trackedSections = tocLinks
+            .map(function (link) {
+                const target = document.querySelector(link.getAttribute("href"));
+                return target ? { link: link, target: target } : null;
+            })
+            .filter(Boolean);
+
+        const observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                tocLinks.forEach(function (link) { link.classList.remove("active"); });
+                const match = trackedSections.find(function (item) { return item.target === entry.target; });
+                if (match) match.link.classList.add("active");
+            });
+        }, {
+            rootMargin: "-25% 0px -65% 0px",
+            threshold: 0
+        });
+
+        trackedSections.forEach(function (item) { observer.observe(item.target); });
+
+        window.addEventListener("scroll", function () {
+            if (window.scrollY > 600) {
+                backToTop.classList.add("show");
+            } else {
+                backToTop.classList.remove("show");
+            }
+        });
+
+        backToTop.addEventListener("click", function () {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        if (window.hljs) {
+            hljs.highlightAll();
+        }
     </script>
 </body>
 </html>
