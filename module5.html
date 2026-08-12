@@ -1,562 +1,3350 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Module 5: SQL Logic - IAF 603</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Highlight.js for code highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <meta name="description" content="IAN 603 Module 5: reason with Boolean logic, three-valued logic, NULL handling, COALESCE, NULLIF, CASE expressions, and applied PostgreSQL decision rules in a live browser lab.">
+    <title>Module 5: SQL Logic | IAN 603</title>
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%A0%3C/text%3E%3C/svg%3E">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" id="hljs-theme">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --section-bg: #1e293b;
+            --section-alt-bg: #172033;
+            --border-color: #334155;
+            --header-color: #38bdf8;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --success-color: #34d399;
+            --danger-color: #f87171;
+            --warning-color: #fbbf24;
+            --uncg-blue: #0c2340;
+            --uncg-gold: #cf9b2f;
+            --muted-color: #94a3b8;
+            --light-color: #f1f5f9;
+            --code-bg: #0b1120;
+            --table-stripe: rgba(255, 255, 255, 0.035);
+            --alert-info-bg: #172c4d;
+            --alert-info-border: #3b82f6;
+            --alert-warning-bg: #453516;
+            --alert-warning-border: #f59e0b;
+            --alert-secondary-bg: #182235;
+            --alert-secondary-border: #64748b;
+            --alert-success-bg: #12352e;
+            --alert-success-border: #10b981;
+            --hero-bg: linear-gradient(135deg, #07182d 0%, #0c2340 50%, #26365e 100%);
+            --hero-text: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.22);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --text-color: #1e293b;
+            --section-bg: #ffffff;
+            --section-alt-bg: #f8fafc;
+            --border-color: #d7e0eb;
+            --header-color: #1d4ed8;
+            --accent-color: #4f46e5;
+            --accent-hover: #4338ca;
+            --success-color: #047857;
+            --danger-color: #b91c1c;
+            --warning-color: #b45309;
+            --muted-color: #64748b;
+            --light-color: #f8fafc;
+            --code-bg: #f8fafc;
+            --table-stripe: rgba(15, 23, 42, 0.035);
+            --alert-info-bg: #dbeafe;
+            --alert-info-border: #3b82f6;
+            --alert-warning-bg: #fffbeb;
+            --alert-warning-border: #f59e0b;
+            --alert-secondary-bg: #f1f5f9;
+            --alert-secondary-border: #94a3b8;
+            --alert-success-bg: #d1fae5;
+            --alert-success-border: #10b981;
+            --hero-bg: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 55%, #fef3c7 100%);
+            --hero-text: #13243a;
+            --shadow-color: rgba(15, 23, 42, 0.12);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 96px;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            font-family: "Inter", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            transition: background-color 0.3s, color 0.3s;
         }
-        .container {
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
+
+        a {
+            color: var(--header-color);
         }
-        .code-block {
+
+        a:hover {
+            color: var(--accent-color);
+        }
+
+        p,
+        li,
+        td,
+        th,
+        label,
+        .accordion-body,
+        .form-check-label {
+            color: var(--text-color);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: var(--header-color);
+            font-weight: 700;
+        }
+
+        .h1,
+        .h2,
+        .h3,
+        .h4,
+        .h5,
+        .h6 {
+            color: var(--header-color) !important;
+        }
+
+        body {
+            color: var(--text-color) !important;
+        }
+
+        strong {
+            color: inherit;
+        }
+
+        .hero-section h1,
+        .hero-section .h1,
+        .hero-section p,
+        .hero-section strong,
+        .hero-section .course-badge,
+        .hero-section .hero-kicker,
+        .hero-section .hero-meta,
+        .hero-section .essential-question {
+            color: var(--hero-text) !important;
+        }
+
+        code,
+        pre {
+            font-family: "Source Code Pro", monospace;
+        }
+
+        code:not(pre code) {
+            color: var(--text-color);
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--border-color);
+            border-radius: 0.3rem;
+            padding: 0.08rem 0.3rem;
+        }
+
+        pre {
+            background-color: var(--code-bg) !important;
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+            overflow: auto;
+        }
+
+        .skip-link {
+            position: absolute;
+            left: 0.75rem;
+            top: -5rem;
+            z-index: 2000;
+            background: var(--section-bg);
+            color: var(--text-color);
+            border: 2px solid var(--accent-color);
+            border-radius: 0.4rem;
+            padding: 0.6rem 0.85rem;
+        }
+
+        .skip-link:focus {
+            top: 0.75rem;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--uncg-gold);
+            outline-offset: 3px;
+        }
+
+        .text-muted {
+            color: var(--muted-color) !important;
+        }
+
+        .bg-white,
+        .bg-light {
+            background-color: var(--section-bg) !important;
+        }
+
+        .border,
+        .table-bordered,
+        .table-bordered th,
+        .table-bordered td {
+            border-color: var(--border-color) !important;
+        }
+
+        .shadow,
+        .shadow-sm {
+            box-shadow: 0 8px 24px var(--shadow-color) !important;
+        }
+
+        .table {
+            color: var(--text-color);
+            margin-bottom: 0;
+        }
+
+        .table > :not(caption) > * > * {
+            background-color: transparent;
+            color: var(--text-color);
+            border-color: var(--border-color);
+            vertical-align: top;
+        }
+
+        .table thead th,
+        .table-light th,
+        .table-light td {
+            background-color: var(--section-alt-bg) !important;
+            color: var(--text-color) !important;
+        }
+
+        .table-striped > tbody > tr:nth-of-type(odd) > * {
+            background-color: var(--table-stripe);
+        }
+
+        .nav-container {
+            background-color: var(--section-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        .nav-menu {
+            min-height: 74px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            color: var(--header-color);
+            font-weight: 800;
+            font-size: 1.15rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            white-space: nowrap;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--uncg-blue), var(--accent-color));
+            border: 2px solid var(--uncg-gold);
+        }
+
+        .nav-links-list {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-link,
+        .theme-toggle-btn {
+            color: var(--text-color);
+            background: none;
+            border: none;
+            border-radius: 0.55rem;
+            padding: 0.55rem 0.75rem;
+            font: inherit;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link:focus-visible,
+        .theme-toggle-btn:hover,
+        .theme-toggle-btn:focus-visible {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .dropdown {
             position: relative;
         }
-        .copy-btn {
+
+        .dropdown-content {
+            display: none;
             position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            @apply bg-gray-600 text-white text-xs px-2 py-1 rounded-md hover:bg-gray-700 transition-colors;
+            top: calc(100% + 0.25rem);
+            left: 0;
+            min-width: 315px;
+            max-height: 70vh;
+            overflow-y: auto;
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+            padding: 0.45rem;
+            box-shadow: 0 12px 30px var(--shadow-color);
         }
-        pre {
-            background-color: #282c34 !important;
-            color: #abb2bf !important;
-            padding: 1rem;
+
+        .dropdown:hover .dropdown-content,
+        .dropdown:focus-within .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.65rem 0.75rem;
             border-radius: 0.5rem;
         }
-    </style>
-</head>
-<body class="bg-gray-100 text-gray-800 leading-relaxed">
 
-    <!-- Navbar -->
-    <nav class="bg-white sticky top-0 z-50 shadow-md">
-        <div class="container px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center">
-            <a href="#" class="text-xl font-bold text-gray-900">IAF 603: Preparing Data for Analytics</a>
+        .dropdown-link:hover,
+        .dropdown-link:focus-visible {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .module-number {
+            width: 25px;
+            height: 25px;
+            flex: 0 0 25px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--accent-color);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 1.45rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 0.45rem;
+        }
+
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+            background: var(--hero-bg);
+            color: var(--hero-text);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 1.25rem;
+            margin: 2rem 0;
+            padding: 3.2rem 2rem;
+            box-shadow: 0 18px 45px var(--shadow-color);
+        }
+
+        .hero-section::after {
+            content: "";
+            position: absolute;
+            width: 330px;
+            height: 330px;
+            right: -115px;
+            top: -135px;
+            border-radius: 50%;
+            background: rgba(207, 155, 47, 0.12);
+        }
+
+        .hero-section h1,
+        .hero-section p,
+        .hero-section .hero-kicker,
+        .hero-section .hero-meta,
+        .hero-section .essential-question {
+            color: var(--hero-text);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-kicker {
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .course-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.45rem 0.75rem;
+            background: rgba(255, 255, 255, 0.11);
+            border: 1px solid rgba(255, 255, 255, 0.23);
+            border-radius: 999px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .essential-question {
+            max-width: 870px;
+            margin: 1.35rem auto 0;
+            padding: 1rem 1.2rem;
+            border-left: 4px solid var(--uncg-gold);
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 0 0.75rem 0.75rem 0;
+            text-align: left;
+        }
+
+        .section-shell {
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            padding: clamp(1.2rem, 2.5vw, 2rem);
+            margin-bottom: 1.6rem;
+            scroll-margin-top: 94px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.9rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.35rem;
+        }
+
+        .section-icon {
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            border-radius: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(99, 102, 241, 0.14);
+            color: var(--header-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-heading h2 {
+            margin-bottom: 0.15rem;
+        }
+
+        .section-heading p {
+            margin-bottom: 0;
+            color: var(--muted-color);
+        }
+
+        .toc-panel {
+            position: sticky;
+            top: 94px;
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.9rem;
+            padding: 1rem;
+            max-height: calc(100vh - 115px);
+            overflow-y: auto;
+        }
+
+        .toc-panel h2 {
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-list a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.5rem 0.55rem;
+            border-radius: 0.45rem;
+            font-size: 0.9rem;
+        }
+
+        .toc-list a:hover,
+        .toc-list a.active {
+            background-color: rgba(99, 102, 241, 0.18);
+            color: var(--header-color);
+        }
+
+        .toc-list .toc-index {
+            color: var(--muted-color);
+            font-size: 0.75rem;
+            font-weight: 800;
+            min-width: 1.5rem;
+        }
+
+        .roadmap-card,
+        .concept-card,
+        .example-card,
+        .case-card,
+        .takeaway-card {
+            height: 100%;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            padding: 1rem;
+        }
+
+        .roadmap-card {
+            position: relative;
+            padding-top: 3.15rem;
+        }
+
+        .roadmap-number {
+            position: absolute;
+            top: 0.9rem;
+            left: 1rem;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+        }
+
+        .layer-label {
+            display: inline-block;
+            color: #ffffff;
+            background: var(--accent-color);
+            border-radius: 999px;
+            padding: 0.2rem 0.55rem;
+            font-size: 0.74rem;
+            font-weight: 800;
+            margin-bottom: 0.55rem;
+        }
+
+        .concept-arrow {
+            color: var(--muted-color);
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        .badge-soft-primary,
+        .badge-soft-success,
+        .badge-soft-warning,
+        .badge-soft-danger,
+        .badge-soft-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            border-radius: 999px;
+            padding: 0.32rem 0.58rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .badge-soft-primary {
+            color: var(--header-color);
+            background: rgba(59, 130, 246, 0.14);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+        }
+
+        .badge-soft-success {
+            color: var(--success-color);
+            background: rgba(16, 185, 129, 0.13);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+
+        .badge-soft-warning {
+            color: var(--warning-color);
+            background: rgba(245, 158, 11, 0.13);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+
+        .badge-soft-danger {
+            color: var(--danger-color);
+            background: rgba(239, 68, 68, 0.13);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
+
+        .badge-soft-secondary {
+            color: var(--muted-color);
+            background: rgba(100, 116, 139, 0.13);
+            border: 1px solid rgba(100, 116, 139, 0.35);
+        }
+
+        .alert {
+            color: var(--text-color);
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 0.75rem;
+        }
+
+        .alert-info {
+            background: var(--alert-info-bg);
+            border-color: var(--alert-info-border);
+        }
+
+        .alert-warning {
+            background: var(--alert-warning-bg);
+            border-color: var(--alert-warning-border);
+        }
+
+        .alert-secondary {
+            background: var(--alert-secondary-bg);
+            border-color: var(--alert-secondary-border);
+        }
+
+        .alert-success {
+            background: var(--alert-success-bg);
+            border-color: var(--alert-success-border);
+        }
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.7rem;
+            margin: 1rem 0;
+        }
+
+        .workflow-step {
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem 0.55rem;
+        }
+
+        .workflow-step i {
+            display: block;
+            color: var(--header-color);
+            font-size: 1.25rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .decision-table th:first-child,
+        .decision-table td:first-child {
+            min-width: 125px;
+        }
+
+        .copy-wrap {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.6rem;
+            z-index: 2;
+            border: 1px solid var(--border-color);
+            background: var(--section-bg);
+            color: var(--header-color);
+            border-radius: 0.45rem;
+            padding: 0.25rem 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .copy-btn:hover {
+            color: #ffffff;
+            background: var(--accent-color);
+        }
+
+        .accordion-item,
+        .accordion-button,
+        .accordion-body {
+            background-color: var(--section-alt-bg);
+            color: var(--text-color);
+            border-color: var(--border-color);
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: rgba(99, 102, 241, 0.15);
+            color: var(--header-color);
+            box-shadow: inset 0 -1px 0 var(--border-color);
+        }
+
+        .accordion-button::after {
+            filter: var(--accordion-icon-filter, none);
+        }
+
+        [data-theme="dark"] .accordion-button::after {
+            filter: invert(1) grayscale(1) brightness(1.8);
+        }
+
+        .btn-outline-primary {
+            color: var(--header-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-outline-primary:hover,
+        .btn-outline-primary:focus-visible {
+            color: #ffffff;
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus-visible {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            position: relative;
+            padding-left: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .checklist li::before {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+        }
+
+        .mistake-table .looks-like {
+            color: var(--warning-color);
+            font-weight: 700;
+        }
+
+        .mistake-table .actually {
+            color: var(--success-color);
+            font-weight: 700;
+        }
+
+        .mini-note {
+            color: var(--muted-color);
+            font-size: 0.9rem;
+        }
+
+        .key-term {
+            border-bottom: 1px dotted var(--header-color);
+            cursor: help;
+        }
+
+        .footer {
+            background: var(--section-bg);
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem;
+            width: 44px;
+            height: 44px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            z-index: 1100;
+        }
+
+        .back-to-top.show {
+            display: inline-flex;
+        }
+
+        @media (max-width: 1199.98px) {
+            .nav-links-list {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                padding: 0.8rem;
+                background: var(--section-bg);
+                border-bottom: 1px solid var(--border-color);
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-links-list.active {
+                display: flex;
+            }
+
+            .nav-link,
+            .theme-toggle-btn {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .mobile-menu-btn {
+                display: inline-flex;
+            }
+
+            .dropdown-content {
+                position: static;
+                min-width: 0;
+                max-height: none;
+                box-shadow: none;
+                margin-top: 0.25rem;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .toc-panel {
+                position: static;
+                max-height: none;
+                margin-bottom: 1.3rem;
+            }
+
+            .workflow {
+                grid-template-columns: 1fr;
+            }
+
+            .concept-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .hero-section {
+                padding: 2rem 1.1rem;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .section-shell {
+                padding: 1rem;
+            }
+
+            .section-heading {
+                flex-direction: column;
+            }
+
+            .table-responsive {
+                border: 1px solid var(--border-color);
+                border-radius: 0.65rem;
+            }
+        }
+
+        @media print {
+            .nav-container,
+            .toc-panel,
+            .copy-btn,
+            .back-to-top,
+            .theme-toggle-btn,
+            .mobile-menu-btn,
+            .btn {
+                display: none !important;
+            }
+
+            body,
+            .section-shell,
+            .roadmap-card,
+            .concept-card,
+            .example-card,
+            .case-card,
+            .takeaway-card,
+            .accordion-item,
+            .accordion-button,
+            .accordion-body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                box-shadow: none !important;
+            }
+
+            p,
+            li,
+            td,
+            th,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                color: #000000 !important;
+            }
+
+            .collapse:not(.show) {
+                display: block !important;
+            }
+        }
+
+        .design-flow {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 0.65rem;
+            margin: 1rem 0;
+        }
+
+        .design-step {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem 0.6rem;
+            text-align: center;
+            min-height: 132px;
+        }
+
+        .design-step .step-number {
+            width: 2rem;
+            height: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+        }
+
+        .schema-card {
+            height: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            overflow: hidden;
+            background: var(--section-alt-bg);
+        }
+
+        .schema-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.75rem 0.9rem;
+            background: rgba(99, 102, 241, 0.14);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .schema-card-header h3,
+        .schema-card-header h4 {
+            margin: 0;
+            color: var(--header-color);
+        }
+
+        .schema-field-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .schema-field-list li {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.5rem 0.9rem;
+            border-bottom: 1px solid var(--border-color);
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.82rem;
+        }
+
+        .schema-field-list li:last-child {
+            border-bottom: 0;
+        }
+
+        .field-key {
+            color: var(--warning-color);
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .erd-board {
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            background: var(--section-alt-bg);
+            padding: 1rem;
+        }
+
+        .erd-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 132px minmax(0, 1fr);
+            gap: 0.75rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .erd-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .erd-node {
+            border: 2px solid var(--accent-color);
+            border-radius: 0.75rem;
+            background: var(--section-bg);
+            overflow: hidden;
+            min-height: 100%;
+        }
+
+        .erd-node-title {
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+            padding: 0.55rem 0.75rem;
+            letter-spacing: 0.02em;
+        }
+
+        .erd-node-body {
+            padding: 0.65rem 0.75rem;
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.82rem;
+        }
+
+        .erd-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted-color);
+            text-align: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .erd-line {
+            width: 100%;
+            height: 2px;
+            background: var(--border-color);
+            position: relative;
+            margin: 0.4rem 0;
+        }
+
+        .erd-line::after {
+            content: "";
+            position: absolute;
+            right: -1px;
+            top: -4px;
+            border-left: 8px solid var(--accent-color);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .cardinality-label {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            background: var(--section-bg);
+            color: var(--text-color);
+            border-radius: 999px;
+            padding: 0.18rem 0.5rem;
+            font-family: "Source Code Pro", monospace;
+        }
+
+        .constraint-card {
+            height: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--section-alt-bg);
+            padding: 1rem;
+        }
+
+        .constraint-card h3,
+        .constraint-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .normalization-step {
+            border-left: 4px solid var(--accent-color);
+            background: var(--section-alt-bg);
+            border-radius: 0.55rem;
+            padding: 1rem 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .normalization-step h3,
+        .normalization-step h4 {
+            margin-bottom: 0.45rem;
+        }
+
+        .dependency {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin: 0.2rem 0.35rem 0.2rem 0;
+            padding: 0.3rem 0.55rem;
+            border-radius: 0.45rem;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--border-color);
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.8rem;
+        }
+
+        .comparison-good,
+        .comparison-bad {
+            border-radius: 0.75rem;
+            padding: 1rem;
+            height: 100%;
+        }
+
+        .comparison-good {
+            border: 1px solid var(--success-color);
+            background: var(--alert-success-bg);
+        }
+
+        .comparison-bad {
+            border: 1px solid var(--danger-color);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .data-dictionary td:first-child {
+            font-family: "Source Code Pro", monospace;
+            font-weight: 700;
+        }
+
+        .test-case {
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--section-alt-bg);
+            padding: 0.9rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .test-case:last-child {
+            margin-bottom: 0;
+        }
+
+        .advanced-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+            border: 1px dashed var(--warning-color);
+            background: var(--alert-warning-bg);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .advanced-banner i {
+            color: var(--warning-color);
+            font-size: 1.3rem;
+            margin-top: 0.15rem;
+        }
+
+        .rule-to-schema {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .rule-arrow {
+            color: var(--accent-color);
+            font-size: 1.25rem;
+        }
+
+        @media (max-width: 1199.98px) {
+            .design-flow {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .design-flow {
+                grid-template-columns: 1fr;
+            }
+
+            .erd-row,
+            .rule-to-schema {
+                grid-template-columns: 1fr;
+            }
+
+            .erd-connector,
+            .rule-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+    
+
+        /* Module 3: live PostgreSQL lab */
+        .sql-lab-shell {
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            background: var(--section-alt-bg);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+        }
+
+        .lab-masthead {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.95rem 1rem;
+            background: linear-gradient(135deg, rgba(12, 35, 64, 0.98), rgba(49, 46, 129, 0.92));
+            border-bottom: 1px solid var(--border-color);
+            color: #ffffff;
+        }
+
+        .lab-masthead h3,
+        .lab-masthead p,
+        .lab-masthead span,
+        .lab-masthead strong {
+            color: #ffffff;
+        }
+
+        .engine-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.35rem 0.65rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 0.78rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .lab-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            border-radius: 50%;
+            background: #94a3b8;
+            box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.18);
+        }
+
+        .lab-status[data-state="ready"] .status-dot {
+            background: #34d399;
+            box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.18);
+        }
+
+        .lab-status[data-state="running"] .status-dot,
+        .lab-status[data-state="loading"] .status-dot {
+            background: #fbbf24;
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.18);
+            animation: status-pulse 1s infinite ease-in-out;
+        }
+
+        .lab-status[data-state="error"] .status-dot {
+            background: #f87171;
+            box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.18);
+        }
+
+        @keyframes status-pulse {
+            0%, 100% { transform: scale(0.9); opacity: 0.75; }
+            50% { transform: scale(1.15); opacity: 1; }
+        }
+
+        .lab-controls {
+            display: grid;
+            grid-template-columns: minmax(230px, 1fr) auto;
+            gap: 0.75rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .lab-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .form-select,
+        .form-control {
+            color: var(--text-color);
+            background-color: var(--section-bg);
+            border-color: var(--border-color);
+        }
+
+        .form-select:focus,
+        .form-control:focus {
+            color: var(--text-color);
+            background-color: var(--section-bg);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.18);
+        }
+
+        .editor-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .editor-panel,
+        .results-panel {
+            min-width: 0;
+        }
+
+        .editor-header,
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.72rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--section-bg);
+        }
+
+        .editor-header h4,
+        .results-header h4 {
+            margin: 0;
+            font-size: 0.93rem;
+        }
+
+        .keyboard-hint {
+            color: var(--muted-color);
+            font-size: 0.76rem;
+        }
+
+        .sql-editor {
+            display: block;
+            width: 100%;
+            min-height: 310px;
+            resize: vertical;
+            padding: 1rem;
+            color: #e5e7eb;
+            background: #090f1d;
+            border: 0;
+            border-bottom: 1px solid var(--border-color);
+            outline: none;
+            font: 500 0.9rem/1.65 "Source Code Pro", monospace;
+            tab-size: 2;
+            caret-color: #fbbf24;
+        }
+
+        .sql-editor::selection {
+            background: rgba(99, 102, 241, 0.55);
+        }
+
+        [data-theme="light"] .sql-editor {
+            color: #172033;
+            background: #f8fafc;
+        }
+
+        .results-panel {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .results-output {
+            min-height: 180px;
+            max-height: 560px;
+            overflow: auto;
+            padding: 1rem;
+            background: var(--section-alt-bg);
+        }
+
+        .result-placeholder {
+            min-height: 145px;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            color: var(--muted-color);
+            border: 1px dashed var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .result-card {
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            margin-bottom: 0.85rem;
+            overflow: hidden;
+        }
+
+        .result-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.62rem 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .result-card-header strong {
+            color: var(--header-color);
+        }
+
+        .result-meta {
+            color: var(--muted-color);
+            font-size: 0.76rem;
+        }
+
+        .result-table-wrap {
+            overflow-x: auto;
+        }
+
+        .result-table {
+            width: 100%;
+            margin: 0;
+            border-collapse: collapse;
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.82rem;
+        }
+
+        .result-table th,
+        .result-table td {
+            padding: 0.52rem 0.68rem;
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+            white-space: nowrap;
+        }
+
+        .result-table th {
+            color: var(--header-color);
+            background: var(--section-alt-bg);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .result-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .result-table th:last-child,
+        .result-table td:last-child {
+            border-right: 0;
+        }
+
+        .result-message {
+            padding: 0.82rem;
+            color: var(--text-color);
+        }
+
+        .null-value {
+            color: var(--muted-color);
+            font-style: italic;
+        }
+
+        .query-error {
+            border: 1px solid rgba(248, 113, 113, 0.5);
+            border-left: 5px solid var(--danger-color);
+            background: rgba(248, 113, 113, 0.08);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .query-error pre {
+            margin: 0.65rem 0 0;
+            color: var(--danger-color);
+            white-space: pre-wrap;
+            word-break: break-word;
+            background: transparent !important;
+            border: 0;
+            padding: 0;
+        }
+
+        .lab-footnote {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            padding: 0.85rem 1rem;
+            color: var(--muted-color);
+            background: var(--section-bg);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8rem;
+        }
+
+        .schema-chip-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.65rem;
+        }
+
+        .schema-chip {
+            padding: 0.75rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+        }
+
+        .schema-chip code {
+            color: var(--header-color);
+            font-weight: 700;
+        }
+
+        .copy-wrap pre {
+            padding-top: 3.25rem !important;
+        }
+
+        .code-toolbar {
+            position: absolute;
+            top: 0.55rem;
+            right: 0.55rem;
+            z-index: 3;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.4rem;
+        }
+
+        .code-toolbar .copy-btn {
+            position: static;
+        }
+
+        .try-query-btn {
+            border: 1px solid rgba(52, 211, 153, 0.45);
+            background: var(--section-bg);
+            color: var(--success-color);
+            border-radius: 0.45rem;
+            padding: 0.25rem 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .try-query-btn:hover,
+        .try-query-btn:focus-visible {
+            color: #ffffff;
+            background: var(--success-color);
+        }
+
+        .sql-command-card {
+            height: 100%;
+            padding: 1rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 0.8rem;
+        }
+
+        .sql-command-card[data-kind="dql"] { border-top-color: #38bdf8; }
+        .sql-command-card[data-kind="dml"] { border-top-color: #34d399; }
+        .sql-command-card[data-kind="ddl"] { border-top-color: #fbbf24; }
+        .sql-command-card[data-kind="tcl"] { border-top-color: #a78bfa; }
+
+        .query-flow {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 0.55rem;
+            margin: 1rem 0;
+        }
+
+        .query-flow-step {
+            position: relative;
+            text-align: center;
+            padding: 0.78rem 0.45rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.65rem;
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .query-flow-step:not(:last-child)::after {
+            content: "→";
+            position: absolute;
+            right: -0.48rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted-color);
+            z-index: 2;
+        }
+
+        .safety-workflow {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.65rem;
+            margin: 1rem 0;
+        }
+
+        .safety-step {
+            padding: 0.8rem;
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+        }
+
+        .safety-step .step-number {
+            display: inline-grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            margin-bottom: 0.4rem;
+            border-radius: 50%;
+            color: #ffffff;
+            background: var(--accent-color);
+            font-weight: 800;
+        }
+
+        .danger-example {
+            border-left: 5px solid var(--danger-color);
+        }
+
+        .success-example {
+            border-left: 5px solid var(--success-color);
+        }
+
+        .statement-anatomy {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--section-alt-bg);
+            font-family: "Source Code Pro", monospace;
+        }
+
+        .statement-part {
+            padding: 0.35rem 0.55rem;
+            border-radius: 0.45rem;
+            background: rgba(99, 102, 241, 0.14);
+            border: 1px solid rgba(99, 102, 241, 0.35);
+        }
+
+        .lab-task {
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .download-result-btn {
+            border: 1px solid var(--border-color);
+            color: var(--header-color);
+            background: var(--section-bg);
+            border-radius: 0.4rem;
+            font-size: 0.72rem;
+            padding: 0.22rem 0.48rem;
+        }
+
+        .download-result-btn:hover {
+            color: #ffffff;
+            background: var(--accent-color);
+        }
+
+        @media (min-width: 1200px) {
+            .editor-grid {
+                grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+            }
+
+            .results-panel {
+                border-top: 0;
+                border-left: 1px solid var(--border-color);
+            }
+
+            .sql-editor {
+                min-height: 455px;
+                border-bottom: 0;
+            }
+
+            .results-output {
+                min-height: 455px;
+                max-height: 640px;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .schema-chip-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .query-flow,
+            .safety-workflow {
+                grid-template-columns: 1fr;
+            }
+
+            .query-flow-step:not(:last-child)::after {
+                content: "↓";
+                right: 50%;
+                top: auto;
+                bottom: -0.8rem;
+                transform: translateX(50%);
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .lab-masthead,
+            .lab-controls,
+            .editor-header,
+            .results-header {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .lab-controls {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .lab-actions {
+                justify-content: flex-start;
+            }
+
+            .schema-chip-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            .sql-lab-shell,
+            .try-query-btn,
+            .code-toolbar {
+                break-inside: avoid;
+            }
+
+            .lab-controls,
+            .sql-editor,
+            .results-panel,
+            .lab-status,
+            .engine-badge,
+            .try-query-btn {
+                display: none !important;
+            }
+        }
+
+    
+
+        /* Module 4 additions */
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .function-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 0.9rem;
+            min-height: 100%;
+        }
+
+        .function-card code {
+            display: inline-block;
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+        }
+
+        .grain-ladder {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+
+        .grain-step {
+            position: relative;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .grain-step .grain-number {
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #fff;
+            font-weight: 800;
+            margin-bottom: 0.55rem;
+        }
+
+        .clause-flow {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            margin: 1rem 0;
+        }
+
+        .clause-node {
+            min-width: 105px;
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.65rem 0.75rem;
+            font-family: "Source Code Pro", monospace;
+            font-weight: 700;
+        }
+
+        .clause-arrow {
+            color: var(--muted-color);
+            font-size: 1.1rem;
+        }
+
+        .query-anatomy {
+            display: grid;
+            grid-template-columns: 145px 1fr;
+            gap: 0.25rem 0.8rem;
+            align-items: start;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .query-anatomy dt {
+            color: var(--header-color);
+            font-family: "Source Code Pro", monospace;
+            font-weight: 800;
+        }
+
+        .query-anatomy dd {
+            margin-bottom: 0.45rem;
+        }
+
+        .run-example-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.7rem;
+        }
+
+        .subtotal-key {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .subtotal-key > div {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.8rem;
+        }
+
+        .metric-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.55rem;
+            border-radius: 999px;
+            background: rgba(99, 102, 241, 0.14);
+            border: 1px solid rgba(99, 102, 241, 0.36);
+            color: var(--header-color);
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0.15rem;
+        }
+
+        @media (max-width: 991.98px) {
+            .function-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .grain-ladder, .subtotal-key { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 575.98px) {
+            .function-grid { grid-template-columns: 1fr; }
+            .query-anatomy { grid-template-columns: 1fr; }
+            .clause-arrow { transform: rotate(90deg); }
+        }
+
+
+        /* Module 5 logic visuals */
+        .logic-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .logic-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 0.85rem;
+            padding: 1rem;
+            height: 100%;
+        }
+
+        .logic-card.and { border-top-color: var(--success-color); }
+        .logic-card.or { border-top-color: var(--header-color); }
+        .logic-card.not { border-top-color: var(--warning-color); }
+
+        .precedence-stack {
+            display: grid;
+            gap: 0.55rem;
+            max-width: 520px;
+            margin: 1rem auto;
+        }
+
+        .precedence-step {
+            display: grid;
+            grid-template-columns: 44px 1fr;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.75rem 0.9rem;
+        }
+
+        .precedence-rank {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .truth-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .truth-state {
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+            text-align: center;
+            background: var(--section-alt-bg);
+        }
+
+        .truth-state strong {
+            display: block;
+            font-size: 1.05rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .truth-state.true strong { color: var(--success-color); }
+        .truth-state.false strong { color: var(--danger-color); }
+        .truth-state.unknown strong { color: var(--warning-color); }
+
+        .logic-expression {
+            font-family: "Source Code Pro", monospace;
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.65rem;
+            padding: 0.7rem 0.85rem;
+            margin: 0.45rem 0;
+            overflow-x: auto;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .trap-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--danger-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .safe-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--success-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .case-flow {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .case-flow > div {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem;
+            text-align: center;
+        }
+
+        .boundary-table td:first-child,
+        .boundary-table th:first-child {
+            white-space: nowrap;
+        }
+
+        .rule-builder {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.65rem;
+            margin: 1rem 0;
+        }
+
+        .rule-builder > div {
+            border: 1px solid var(--border-color);
+            background: var(--section-alt-bg);
+            border-radius: 0.7rem;
+            padding: 0.8rem;
+            text-align: center;
+        }
+
+        @media (max-width: 991.98px) {
+            .logic-grid,
+            .truth-grid,
+            .case-flow,
+            .rule-builder { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 575.98px) {
+            .logic-grid,
+            .truth-grid,
+            .pattern-grid,
+            .case-flow,
+            .rule-builder { grid-template-columns: 1fr; }
+        }
+
+</style>
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <nav class="nav-container" aria-label="Main navigation">
+        <div class="container">
+            <div class="nav-menu">
+                <a href="index.html" class="nav-logo" aria-label="IAN 603 home">
+                    <span class="brand-mark" aria-hidden="true"><i class="fas fa-database"></i></span>
+                    <span>IAN 603 - Data Analytics</span>
+                </a>
+                <button class="mobile-menu-btn" id="mobile-menu-toggle" type="button" aria-expanded="false" aria-controls="nav-links-list" aria-label="Toggle navigation menu">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+                <ul class="nav-links-list" id="nav-links-list" role="list">
+                    <li><a href="index.html" class="nav-link"><i class="fas fa-home" aria-hidden="true"></i> Home</a></li>
+                    <li class="dropdown">
+                        <button class="nav-link dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-book-open" aria-hidden="true"></i> Modules <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                        </button>
+                        <div class="dropdown-content" role="menu">
+                            <a href="module1.html" class="dropdown-link"><span class="module-number">1</span> Understanding Data</a>
+                            <a href="module2.html" class="dropdown-link"><span class="module-number">2</span> Database Concepts</a>
+                            <a href="module3.html" class="dropdown-link"><span class="module-number">3</span> PostgreSQL in Action</a>
+                            <a href="module4.html" class="dropdown-link"><span class="module-number">4</span> SQL Aggregations</a>
+                            <a href="module5.html" class="dropdown-link" aria-current="page"><span class="module-number">5</span> SQL Logic</a>
+                            <a href="module6.html" class="dropdown-link"><span class="module-number">6</span> Joins in SQL</a>
+                            <a href="module7.html" class="dropdown-link"><span class="module-number">7</span> Subqueries</a>
+                            <a href="module8.html" class="dropdown-link"><span class="module-number">8</span> Strings and Dates</a>
+                            <a href="module9.html" class="dropdown-link"><span class="module-number">9</span> Data Cleaning</a>
+                            <a href="module10.html" class="dropdown-link"><span class="module-number">10</span> Reshaping Data</a>
+                            <a href="module11.html" class="dropdown-link"><span class="module-number">11</span> Advanced SQL</a>
+                            <a href="module12.html" class="dropdown-link"><span class="module-number">12</span> Views and Modular Queries</a>
+                            <a href="module13.html" class="dropdown-link"><span class="module-number">13</span> Spark SQL</a>
+                            <a href="module14.html" class="dropdown-link"><span class="module-number">14</span> Final Project</a>
+                        </div>
+                    </li>
+                    <li><a href="#sql-lab" class="nav-link"><i class="fas fa-terminal" aria-hidden="true"></i> SQL Lab</a></li>
+                    <li><a href="#assessment" class="nav-link"><i class="fas fa-clipboard-check" aria-hidden="true"></i> Self-Check</a></li>
+                    <li><a href="postgre.html" class="nav-link"><i class="fas fa-download" aria-hidden="true"></i> PostgreSQL Guide</a></li>
+                    <li>
+                        <button id="theme-toggle" class="theme-toggle-btn" type="button" aria-label="Switch to light theme">
+                            <i class="fas fa-sun" aria-hidden="true"></i> <span>Theme</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container my-8 px-4 sm:px-6 lg:px-8">
-
-        <!-- Module Title -->
-        <section class="text-center py-10 bg-white rounded-xl shadow-lg mb-8">
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900">Module 5: SQL Logic</h1>
+    <header class="container">
+        <section class="hero-section text-center" aria-labelledby="module-title">
+            <div class="course-badge"><i class="fas fa-graduation-cap" aria-hidden="true"></i> UNC Greensboro | IAN 603</div>
+            <p class="hero-kicker mb-2">Module 5</p>
+            <h1 id="module-title" class="display-4 fw-bold">Reasoning with SQL Logic</h1>
+            <p class="lead mb-2">Build accurate decision rules with Boolean operators, three-valued logic, NULL-safe expressions, and PostgreSQL <code>CASE</code>.</p>
+            <p class="hero-meta small mb-0"><i class="far fa-calendar-alt me-1" aria-hidden="true"></i> Updated: August 11, 2026</p>
+            <div class="essential-question">
+                <strong><i class="fas fa-circle-question me-2" aria-hidden="true"></i>Essential Question</strong><br>
+                How can SQL express business rules accurately when conditions overlap and missing values make ordinary comparisons uncertain?
+            </div>
         </section>
+    </header>
 
-        <!-- Module Content -->
-        <div class="space-y-12">
-            
-            <!-- Learning Objectives -->
-            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
-                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">1. Learning Objectives</h2>
-                <p class="text-gray-700 mb-4 text-justify">Upon completion of this module, you will be able to:</p>
-                <ul class="list-disc list-inside space-y-2 text-gray-700">
-                    <li>Implement Boolean logic using <code>AND</code>, <code>OR</code>, and <code>NOT</code> operators to create complex SQL conditions.</li>
-                    <li>Handle <code>NULL</code> values effectively using <code>IS NULL</code>, <code>COALESCE</code>, and <code>NULLIF</code> for robust data filtering and transformation.</li>
-                    <li>Use <code>CASE</code> statements to implement conditional logic for categorizing and transforming data.</li>
-                    <li>Combine logical operators, NULL handling, and <code>CASE</code> statements in SQL queries to address real-world data preparation challenges.</li>
-                    <li>Apply these techniques in cloud-based environments like Microsoft Fabric Lakehouse.</li>
-                </ul>
-            </section>
-            
-            <!-- Introduction to SQL Logic -->
-            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
-                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">2. Introduction to SQL Logic</h2>
-                <p class="text-gray-700 mb-4 text-justify">SQL logic enables advanced data filtering and transformation by applying conditional logic to queries. This module dives into Boolean logic (<code>AND</code>, <code>OR</code>, <code>NOT</code>), NULL handling (<code>IS NULL</code>, <code>COALESCE</code>, <code>NULLIF</code>), and <code>CASE</code> statements for conditional transformations. These tools are essential for preparing data for analytics, allowing you to handle complex filtering scenarios, manage missing data, and create derived categories. For example, in a Greensboro hospital, SQL logic can categorize patients by risk level based on age and diagnosis, or in a retail setting, identify high-value customers based on purchase patterns. Mastering these techniques ensures you can tailor data to specific analytical needs.</p>
-                <p class="text-gray-700 text-justify">Boolean logic and NULL handling are critical because real-world datasets often contain incomplete or ambiguous data. <code>CASE</code> statements add flexibility, enabling dynamic transformations without external processing. These skills are foundational for later modules on joins, subqueries, and advanced analytics.</p>
-            </section>
-            
-            <!-- Sample Datasets -->
-            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
-                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">Sample Datasets</h2>
-                <p class="text-gray-700 mb-4 text-justify">The following sample tables are used for all code examples and assessments in this module. Click the button below to show or hide the table contents.</p>
-                <button id="toggle-tables-btn" class="px-6 py-3 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-800 transition-colors">Show Sample Tables</button>
-                <div id="sample-tables-container" class="mt-6 space-y-8 hidden">
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">PATIENT_INFO Table</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left text-gray-500 rounded-lg overflow-hidden">
-                                <thead>
-                                    <tr class="text-xs text-gray-700 uppercase bg-gray-50">
-                                        <th scope="col" class="px-6 py-3">Patient_ID</th>
-                                        <th scope="col" class="px-6 py-3">Patient_Name</th>
-                                        <th scope="col" class="px-6 py-3">Age</th>
-                                        <th scope="col" class="px-6 py-3">Email_Address</th>
-                                        <th scope="col" class="px-6 py-3">Mobile_Phone</th>
-                                        <th scope="col" class="px-6 py-3">Home_Phone</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">101</td><td class="px-6 py-4">John Doe</td><td class="px-6 py-4">65</td><td class="px-6 py-4">john.doe@email.com</td><td class="px-6 py-4">336-555-0101</td><td class="px-6 py-4">NULL</td></tr>
-                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">102</td><td class="px-6 py-4">Jane Smith</td><td class="px-6 py-4">32</td><td class="px-6 py-4">jane.smith@email.com</td><td class="px-6 py-4">336-555-0102</td><td class="px-6 py-4">NULL</td></tr>
-                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">103</td><td class="px-6 py-4">Robert Lee</td><td class="px-6 py-4">48</td><td class="px-6 py-4">NULL</td><td class="px-6 py-4">NULL</td><td class="px-6 py-4">336-555-0103</td></tr>
-                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">104</td><td class="px-6 py-4">Lisa Ray</td><td class="px-6 py-4">71</td><td class="px-6 py-4">NULL</td><td class="px-6 py-4">NULL</td><td class="px-6 py-4">336-555-0104</td></tr>
-                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">105</td><td class="px-6 py-4">Peter Chen</td><td class="px-6 py-4">25</td><td class="px-6 py-4">peter.chen@email.com</td><td class="px-6 py-4">336-555-0105</td><td class="px-6 py-4">NULL</td></tr>
-                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">106</td><td class="px-6 py-4">Susan Gray</td><td class="px-6 py-4">58</td><td class="px-6 py-4">susan.gray@email.com</td><td class="px-6 py-4">NULL</td><td class="px-6 py-4">NULL</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">DIAGNOSTICS Table</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left text-gray-500 rounded-lg overflow-hidden">
-                                <thead>
-                                    <tr class="text-xs text-gray-700 uppercase bg-gray-50">
-                                        <th scope="col" class="px-6 py-3">Patient_ID</th>
-                                        <th scope="col" class="px-6 py-3">Diagnosis</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">101</td><td class="px-6 py-4">Pneumonia</td></tr>
-                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">102</td><td class="px-6 py-4">Fever</td></tr>
-                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">103</td><td class="px-6 py-4">Kidney Disease</td></tr>
-                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">104</td><td class="px-6 py-4">Diabetes</td></tr>
-                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">105</td><td class="px-6 py-4">Sprained Ankle</td></tr>
-                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">106</td><td class="px-6 py-4">Kidney Disease</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">PATIENT_BILLING Table</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left text-gray-500 rounded-lg overflow-hidden">
-                                <thead>
-                                    <tr class="text-xs text-gray-700 uppercase bg-gray-50">
-                                        <th scope="col" class="px-6 py-3">Patient_ID</th>
-                                        <th scope="col" class="px-6 py-3">Bill_Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">101</td><td class="px-6 py-4">12000</td></tr>
-                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">102</td><td class="px-6 py-4">7500</td></tr>
-                                    <tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">103</td><td class="px-6 py-4">NULL</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+    <main id="main-content" class="container pb-4">
+        <div class="row g-4">
+            <aside class="col-lg-3" aria-label="Module contents">
+                <nav class="toc-panel">
+                    <h2><i class="fas fa-list-ul me-2" aria-hidden="true"></i>Module Contents</h2>
+                    <ul class="toc-list">
+                        <li><a href="#start-here"><span class="toc-index">00</span> Start Here</a></li>
+                        <li><a href="#sql-lab"><span class="toc-index">01</span> Live PostgreSQL Lab</a></li>
+                        <li><a href="#boolean-logic"><span class="toc-index">02</span> Boolean Logic</a></li>
+                        <li><a href="#three-valued"><span class="toc-index">03</span> NULL and Three Values</a></li>
+                        <li><a href="#null-tools"><span class="toc-index">04</span> NULL-Handling Tools</a></li>
+                        <li><a href="#case-expressions"><span class="toc-index">05</span> CASE Expressions</a></li>
+                        <li><a href="#logic-traps"><span class="toc-index">06</span> Patterns and Traps</a></li>
+                        <li><a href="#clinic-workflow"><span class="toc-index">07</span> Clinic Workflow</a></li>
+                        <li><a href="#portability"><span class="toc-index">08</span> Portability and Fabric</a></li>
+                        <li><a href="#guided-practice"><span class="toc-index">09</span> Guided Practice</a></li>
+                        <li><a href="#assessment"><span class="toc-index">10</span> Assessment and Closure</a></li>
+                    </ul>
+                    <hr class="border-secondary">
+                    <p class="small text-muted mb-2">Logic habit</p>
+                    <p class="small mb-0">Define the rule &rarr; identify possible NULLs &rarr; group conditions &rarr; order outcomes &rarr; test boundaries &rarr; inspect excluded rows.</p>
+                </nav>
+            </aside>
 
-                <div class="mt-12">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">PostgreSQL DDL/DML for Sample Data</h3>
-                    <p class="text-gray-700 mb-4 text-justify">You can use the following script to create and populate the sample tables in a PostgreSQL database.</p>
-                    <button id="toggle-postgres-btn" class="px-6 py-3 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-800 transition-colors">Show PostgreSQL DDL/DML</button>
-                    <div id="postgres-container" class="hidden">
-                        <div class="code-block">
-                            <button class="copy-btn">Copy</button>
-                            <pre><code class="language-sql">-- Create PATIENT_INFO table
-CREATE TABLE PATIENT_INFO (
-    Patient_ID INT,
-    Patient_Name VARCHAR(255),
-    Age INT,
-    Email_Address VARCHAR(255),
-    Mobile_Phone VARCHAR(20),
-    Home_Phone VARCHAR(20)
-);
-
--- Insert data into PATIENT_INFO
-INSERT INTO PATIENT_INFO (Patient_ID, Patient_Name, Age, Email_Address, Mobile_Phone, Home_Phone) VALUES
-(101, 'John Doe', 65, 'john.doe@email.com', '336-555-0101', NULL),
-(102, 'Jane Smith', 32, 'jane.smith@email.com', '336-555-0102', NULL),
-(103, 'Robert Lee', 48, NULL, NULL, '336-555-0103'),
-(104, 'Lisa Ray', 71, NULL, NULL, '336-555-0104'),
-(105, 'Peter Chen', 25, 'peter.chen@email.com', '336-555-0105', NULL),
-(106, 'Susan Gray', 58, 'susan.gray@email.com', NULL, NULL);
-
--- Create DIAGNOSTICS table
-CREATE TABLE DIAGNOSTICS (
-    Patient_ID INT,
-    Diagnosis VARCHAR(255)
-);
-
--- Insert data into DIAGNOSTICS
-INSERT INTO DIAGNOSTICS (Patient_ID, Diagnosis) VALUES
-(101, 'Pneumonia'),
-(102, 'Fever'),
-(103, 'Kidney Disease'),
-(104, 'Diabetes'),
-(105, 'Sprained Ankle'),
-(106, 'Kidney Disease');
-
--- Create PATIENT_BILLING table
-CREATE TABLE PATIENT_BILLING (
-    Patient_ID INT,
-    Bill_Amount INT
-);
-
--- Insert data into PATIENT_BILLING
-INSERT INTO PATIENT_BILLING (Patient_ID, Bill_Amount) VALUES
-(101, 12000),
-(102, 7500),
-(103, NULL);</code></pre>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Foundational Logic -->
-            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
-                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">3. Foundational Logic: The Building Blocks of Data Filtering</h2>
-                <p class="text-gray-700 mb-4 text-justify">The bedrock of data preparation and analysis in SQL is <strong>Boolean logic</strong>. This logic is expressed through a set of foundational operators that allow for the precise filtering of data. These operators are essential for constructing a <code>WHERE</code> clause to isolate specific records based on a defined set of conditions.</p>
-                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">3.1. The Core Logical Operators</h3>
-                <p class="text-gray-700 mb-4 text-justify">The three primary Boolean operators are <strong><code>AND</code></strong>, <strong><code>OR</code></strong>, and <strong><code>NOT</code></strong>. These operators allow data professionals to combine multiple conditions to create complex and highly specific query criteria.</p>
-                <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
-                    <li><strong><code>AND</code></strong>: This operator returns a true result only when all conditions it connects are true. It is a restrictive operator, narrowing down the result set to records that meet every single criterion.</li>
-                    <li><strong><code>OR</code></strong>: In contrast to AND, the OR operator returns a true result if at least one of the conditions it connects is true. It is an inclusive operator, broadening the result set to include records that satisfy any of the specified criteria.</li>
-                    <li><strong><code>NOT</code></strong>: This operator is used to negate a condition, returning a true result when the condition being evaluated is false. It is valuable for excluding specific data points from a result set.</li>
-                </ul>
-                <p class="text-gray-700 mb-4 text-justify">These operators can be combined to create complex logical expressions. Using <strong>parentheses</strong> is a best practice to explicitly define the order of operations and prevent logical errors, especially in multi-layered queries. For example, <code>WHERE (Condition A AND Condition B) OR (Condition C)</code> ensures that the AND operation is performed first, treating the combined result as a single expression before the OR operation is applied.</p>
-                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">3.2. Practical Application of Boolean Logic at a Greensboro Hospital</h3>
-                <p class="text-gray-700 mb-4 text-justify">The public health team at the Greensboro hospital needs to identify a specific patient cohort for a new initiative targeting respiratory illnesses. The team is interested in patients who were admitted in January 2024 with a diagnosis of either 'Fever' or 'Cough' and are adults, not children.</p>
-                <div class="code-block">
-                    <button class="copy-btn">Copy</button>
-                    <pre><code class="language-sql">-- Query using Boolean operators to filter data
-SELECT
-    P.Patient_ID,
-    P.Patient_Name,
-    P.Age,
-    D.Diagnosis
-FROM
-    PATIENT_INFO AS P
-INNER JOIN
-    DIAGNOSTICS AS D ON P.Patient_ID = D.Patient_ID
-WHERE
-    (P.Age > 18) AND (D.Diagnosis LIKE '%Fever%' OR D.Diagnosis LIKE '%Cough%');</code></pre>
-                </div>
-            </section>
-            
-            <!-- The NULL Conundrum -->
-            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
-                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">4. The NULL Conundrum: Understanding Three-Valued Logic</h2>
-                <p class="text-gray-700 mb-4 text-justify">The presence of <strong><code>NULL</code></strong> values in a dataset is one of the most common and perplexing challenges in data preparation. A NULL value is not equivalent to a zero, an empty string, or a space; rather, it is a special marker that represents an absence of a value. It can signify that the data is either unknown or not applicable.</p>
-                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">4.1. The Pitfall of Standard Comparisons and Three-Valued Logic</h3>
-                <p class="text-gray-700 mb-4 text-justify">Unlike many other programming languages, SQL operates on a three-valued logic (3VL) system, where conditions can evaluate to <strong>TRUE</strong>, <strong>FALSE</strong>, or <strong>UNKNOWN</strong>. Any standard comparison involving NULL—including <code>NULL = NULL</code> and <code>NULL <> NULL</code>—returns UNKNOWN, not a boolean TRUE or FALSE. This is because it is impossible to know for certain if two unknown values are the same or different. A <code>WHERE</code> clause will only return rows where the condition evaluates to TRUE, so any comparison that results in an UNKNOWN state will cause the row to be excluded from the result set.</p>
-                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">4.2. The Solution: Explicit NULL Operators</h3>
-                <p class="text-gray-700 mb-4 text-justify">To properly handle the absence of data, SQL provides two dedicated operators: <strong><code>IS NULL</code></strong> and <strong><code>IS NOT NULL</code></strong>. These operators bypass the standard comparison logic and explicitly test for the presence or absence of a NULL value, returning a definitive TRUE or FALSE result. For example, the correct way to find patients who have no email on file is to use <code>WHERE Email_Address IS NULL</code>.</p>
-                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">4.3. Expert Strategies for Handling NULLs</h3>
-                <p class="text-gray-700 mb-4 text-justify">Beyond simple checks, modern SQL provides several powerful functions for managing NULL values:</p>
-                <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
-                    <li><strong><code>COALESCE</code></strong>: This is an ANSI-standard function that returns the first non-null expression from a list of arguments. It is highly portable and flexible, perfect for providing a default value when data is missing.</li>
-                    <li><strong><code>NULLIF</code></strong>: This function returns a NULL value if its two arguments are equal; otherwise, it returns the first argument. A practical use case for <code>NULLIF</code> is to prevent division-by-zero errors or to clean up ambiguous values like empty strings (<code>''</code>).</li>
-                </ul>
-                <div class="code-block">
-                    <button class="copy-btn">Copy</button>
-                    <pre><code class="language-sql">-- Find all patients with no email address on file
-SELECT Patient_ID, Patient_Name
-FROM PATIENT_INFO
-WHERE Email_Address IS NULL;
-
--- Create a preferred contact column, providing a fallback
-SELECT
-    Patient_ID,
-    COALESCE(Email_Address, Mobile_Phone, Home_Phone, 'No Contact Provided') AS Preferred_Contact
-FROM PATIENT_INFO;</code></pre>
-                </div>
-            </section>
-
-            <!-- Conditional Transformation with CASE -->
-            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
-                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">5. Conditional Transformation with CASE Statements</h2>
-                <p class="text-gray-700 mb-4 text-justify">While Boolean logic and NULL functions are used to filter and handle data, <strong><code>CASE</code> statements</strong> are the primary tool for transforming data based on conditional logic. They enable data professionals to create new, derived columns that categorize, standardize, and enrich a dataset.</p>
-                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">5.1. Dynamic Categorization and Data Enrichment</h3>
-                <p class="text-gray-700 mb-4 text-justify">A primary application of a CASE statement is to create a new, derived column that categorizes data based on a defined set of business rules. This process transforms raw, granular data into more meaningful and aggregated categories that are more suitable for high-level reporting and analysis. For example, a hospital's billing department might need to categorize patients' final bill amounts into different tiers.</p>
-                <div class="code-block">
-                    <button class="copy-btn">Copy</button>
-                    <pre><code class="language-sql">-- Categorize patient billing into tiers
-SELECT
-    Patient_ID,
-    Bill_Amount,
-    CASE
-        WHEN Bill_Amount >= 10000 THEN 'High-Value'
-        WHEN Bill_Amount BETWEEN 5000 AND 10000 THEN 'Standard'
-        ELSE 'Low-Value'
-    END AS Billing_Tier
-FROM PATIENT_BILLING;</code></pre>
-                </div>
-            </section>
-
-            <!-- Case Study -->
-            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
-                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">6. Case Study: Preparing Hospital Data</h2>
-                <p class="text-gray-700 mb-4 text-justify">This section unifies the concepts of Boolean logic, NULL handling, and CASE statements in a single, practical case study using the Greensboro hospital data. The following queries demonstrate how to apply these concepts to solve real-world healthcare data problems.</p>
-                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Query 1: Identifying High-Risk Patients with Missing Info</h3>
-                <p class="text-gray-700 mb-4 text-justify">Problem: The patient outreach team needs to identify patients who have a high-risk diagnosis (Diabetes or Kidney Disease) and have no email address on file. The query must use Boolean logic to combine the diagnostic conditions and <code>IS NULL</code> to check for the absence of an email address.</p>
-                <div class="code-block">
-                    <button class="copy-btn">Copy</button>
-                    <pre><code class="language-sql">-- Query to find high-risk patients with no email contact
-SELECT
-    P.Patient_ID,
-    P.Patient_Name,
-    D.Diagnosis,
-    P.Email_Address
-FROM
-    PATIENT_INFO AS P
-INNER JOIN
-    DIAGNOSTICS AS D ON P.Patient_ID = D.Patient_ID
-WHERE
-    (D.Diagnosis = 'Diabetes' OR D.Diagnosis = 'Kidney Disease')
-    AND P.Email_Address IS NULL;</code></pre>
-                </div>
-                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mt-6 mb-4">Query 2: Standardizing and Augmenting Patient Information</h3>
-                <p class="text-gray-700 mb-4 text-justify">Problem: The billing department needs a standardized view of patient data to ensure every record has a valid contact method and a simplified billing tier. They require a new `Billing_Tier` column and a `Primary_Contact` column.</p>
-                <div class="code-block">
-                    <button class="copy-btn">Copy</button>
-                    <pre><code class="language-sql">-- Query to standardize patient data for billing
-SELECT
-    P.Patient_ID,
-    P.Patient_Name,
-    B.Bill_Amount,
-    COALESCE(P.Email_Address, P.Mobile_Phone, 'No Contact Info Provided') AS Primary_Contact,
-    CASE
-        WHEN B.Bill_Amount > 10000 THEN 'High-Value'
-        WHEN B.Bill_Amount BETWEEN 5000 AND 10000 THEN 'Standard'
-        ELSE 'Low-Value'
-    END AS Billing_Tier
-FROM
-    PATIENT_INFO AS P
-LEFT JOIN
-    PATIENT_BILLING AS B ON P.Patient_ID = B.Patient_ID;</code></pre>
-                </div>
-            </section>
-
-            <!-- Interactive SQL Sandbox -->
-            <section class="bg-gray-800 p-6 sm:p-8 rounded-xl shadow-lg text-white">
-                <h2 class="text-2xl sm:text-3xl font-bold text-gray-100 border-b-2 border-gray-600 pb-4 mb-6">Interactive SQL Sandbox</h2>
-                <p class="text-gray-300 mb-4 text-justify">Practice your queries with our sample datasets! Type your SQL below and click 'Run Query' to see the results. The sample tables are: <code>PATIENT_INFO</code>, <code>DIAGNOSTICS</code>, and <code>PATIENT_BILLING</code>.</p>
-                <div class="flex flex-col md:flex-row gap-6">
-                    <div class="flex-1">
-                        <textarea id="sql-editor" class="w-full h-48 bg-gray-900 text-gray-50 border border-gray-700 rounded-lg p-4 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Type your SQL query here..."></textarea>
-                        <button id="run-btn" class="mt-4 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors">Run Query</button>
-                    </div>
-                    <div class="flex-1">
-                        <div id="results" class="bg-gray-900 text-gray-50 border border-gray-700 rounded-lg p-4 h-full overflow-auto">
-                            <p id="results-message">Results will appear here...</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
-                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 border-b-2 border-gray-200 pb-4 mb-6">Assessments</h2>
-                <ol class="space-y-6 text-gray-700">
-                    <li><strong>Conceptual Question:</strong> Explain the difference between <code>NULL</code> and an empty string (<code>''</code>) in SQL, and how to handle both.</li>
-                    <li><strong>SQL Coding Task:</strong> Using the <code>ADMISSIONS</code> table, write a query that calculates the length of stay in days for each admission. The query should use a <code>CASE</code> statement to categorize the stay as 'Short' (< 5 days), 'Medium' (5-10 days), or 'Long' (> 10 days). You must also exclude any admissions without a discharge date.</li>
-                    <li><strong>Application Scenario:</strong> A hospital administrator wants a report on admissions from the past 30 days that have a 'Pneumonia' or 'Flu' diagnosis. The report should show the patient's name and age, and categorize the diagnosis into a 'High-Risk Respiratory' or 'Other' group.</li>
-                </ol>
-                <div class="mt-6">
-                    <button id="toggle-solutions-btn" class="px-6 py-3 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-800 transition-colors">Show Assessment Solutions</button>
-                    <div id="solutions-container" class="mt-6 space-y-6 hidden">
+            <div class="col-lg-9">
+                <section id="start-here" class="section-shell" aria-labelledby="start-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-play"></i></span>
                         <div>
-                            <h3 class="text-xl font-bold text-gray-900 mb-2">Solution for Question 1</h3>
-                            <p class="text-gray-700 text-justify">A <strong><code>NULL</code></strong> is a marker for missing or unknown data, while an <strong>empty string</strong> (<code>''</code>) is an actual value that represents a zero-length string. They are not the same. You test for <code>NULL</code> using <code>IS NULL</code>, and for an empty string using a standard equality check like <code>= ''</code>. A common practice is to use <code>NULLIF</code> to convert empty strings to <code>NULL</code> values, which can then be handled with other <code>NULL</code>-specific functions like <code>COALESCE</code>.</p>
+                            <h2 id="start-heading" class="h3">Start Here</h2>
+                            <p>Move from simple filters to explainable rules that remain correct when values are missing.</p>
                         </div>
+                    </div>
+
+                    <h3 class="h5">Learning Objectives</h3>
+                    <p>By the end of this module, you will be able to:</p>
+                    <ol>
+                        <li>Compose conditions with <code>AND</code>, <code>OR</code>, and <code>NOT</code>, and use parentheses to make precedence explicit.</li>
+                        <li>Explain SQL's <strong>TRUE/FALSE/UNKNOWN</strong> model and predict how a <code>WHERE</code> clause treats UNKNOWN.</li>
+                        <li>Test and compare missing values with <code>IS NULL</code>, <code>IS NOT NULL</code>, <code>IS DISTINCT FROM</code>, and Boolean predicates.</li>
+                        <li>Use <code>COALESCE</code> and <code>NULLIF</code> to create fallbacks, normalize blank text, and prevent division by zero.</li>
+                        <li>Build searched and simple <code>CASE</code> expressions with non-overlapping boundaries and meaningful NULL branches.</li>
+                        <li>Combine these tools in a reproducible PostgreSQL workflow and interpret both successful results and errors.</li>
+                    </ol>
+
+                    <h3 class="h5 mt-4">The Six-Step Logic Workflow</h3>
+                    <div class="rule-builder" aria-label="Six-step logic workflow">
+                        <div><i class="fas fa-bullseye d-block mb-2" aria-hidden="true"></i><strong>1. Define</strong><span class="small d-block">State the rule in plain language.</span></div>
+                        <div><i class="fas fa-question d-block mb-2" aria-hidden="true"></i><strong>2. Inspect NULLs</strong><span class="small d-block">List fields that can be unknown.</span></div>
+                        <div><i class="fas fa-object-group d-block mb-2" aria-hidden="true"></i><strong>3. Group</strong><span class="small d-block">Add parentheses around related tests.</span></div>
+                        <div><i class="fas fa-list-ol d-block mb-2" aria-hidden="true"></i><strong>4. Order</strong><span class="small d-block">Put specific CASE branches first.</span></div>
+                        <div><i class="fas fa-border-all d-block mb-2" aria-hidden="true"></i><strong>5. Test</strong><span class="small d-block">Include edges, blanks, and NULLs.</span></div>
+                        <div><i class="fas fa-circle-check d-block mb-2" aria-hidden="true"></i><strong>6. Validate</strong><span class="small d-block">Compare results with the written rule.</span></div>
+                    </div>
+
+                    <div class="alert alert-info" role="note">
+                        <strong><i class="fas fa-flask me-2" aria-hidden="true"></i>Practice environment:</strong>
+                        The embedded lab uses synthetic clinic data in a disposable in-memory PostgreSQL engine. It is not connected to university or production systems. Do not paste sensitive or regulated data into the editor.
+                    </div>
+
+                    <h3 class="h5 mt-4">Practice Schema</h3>
+                    <div class="schema-chip-grid" aria-label="Module 5 practice schema">
+                        <div class="schema-chip"><code>patient_info</code><span class="small d-block mt-1">Demographics, contact fields, activity, consent, and language</span></div>
+                        <div class="schema-chip"><code>diagnostics</code><span class="small d-block mt-1">Diagnosis, severity, and confirmation state</span></div>
+                        <div class="schema-chip"><code>patient_billing</code><span class="small d-block mt-1">Bills, payments, zero balances, and missing status values</span></div>
+                        <div class="schema-chip"><code>admissions</code><span class="small d-block mt-1">Admission and discharge dates for deterministic stay logic</span></div>
+                        <div class="schema-chip"><code>patient_case</code><span class="small d-block mt-1">A provided convenience view so this module can focus on logic; Module 6 builds the joins behind it</span></div>
+                    </div>
+                </section>
+
+                <section id="sql-lab" class="section-shell" aria-labelledby="lab-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-terminal"></i></span>
                         <div>
-                            <h3 class="text-xl font-bold text-gray-900 mb-2">Solution for Question 2</h3>
-                            <div class="code-block">
-                                <button class="copy-btn">Copy</button>
-                                <pre><code class="language-sql">SELECT
-    Admission_ID,
-    JULIANDAY(Discharge_Date) - JULIANDAY(Admission_Date) AS Length_of_Stay,
-    CASE
-        WHEN JULIANDAY(Discharge_Date) - JULIANDAY(Admission_Date) < 5 THEN 'Short Stay'
-        WHEN JULIANDAY(Discharge_Date) - JULIANDAY(Admission_Date) BETWEEN 5 AND 10 THEN 'Medium Stay'
-        ELSE 'Long Stay'
-    END AS Stay_Category
-FROM ADMISSIONS
-WHERE Discharge_Date IS NOT NULL;</code></pre>
+                            <h2 id="lab-heading" class="h3">Live PostgreSQL Logic Lab</h2>
+                            <p>Load a rule, predict its result, run it, and inspect how PostgreSQL handles TRUE, FALSE, and UNKNOWN.</p>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-secondary" role="note">
+                        <strong>How it works:</strong> PGlite loads PostgreSQL as WebAssembly, builds the synthetic clinic schema, and renders returned rows as accessible HTML tables. The library and PostgreSQL assets require network access when first loaded.
+                    </div>
+
+                    <div class="sql-lab-shell" aria-label="Interactive PostgreSQL SQL-logic lab">
+                        <div class="lab-masthead">
+                            <div>
+                                <h3 class="h5 mb-1"><i class="fas fa-code-branch me-2" aria-hidden="true"></i>Logic Sandbox</h3>
+                                <p class="small mb-0">Disposable synthetic database &middot; reset at any time</p>
+                            </div>
+                            <div class="d-flex flex-wrap align-items-center gap-3">
+                                <span class="engine-badge"><i class="fas fa-bolt" aria-hidden="true"></i>PGlite / PostgreSQL WASM</span>
+                                <span id="lab-status" class="lab-status" data-state="loading" role="status" aria-live="polite"><span class="status-dot" aria-hidden="true"></span><span id="lab-status-text">Loading engine...</span></span>
                             </div>
                         </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-gray-900 mb-2">Solution for Question 3</h3>
-                            <div class="code-block">
-                                <button class="copy-btn">Copy</button>
-                                <pre><code class="language-sql">SELECT
-    P.Patient_Name,
-    P.Age,
-    A.Diagnosis,
-    CASE
-        WHEN A.Diagnosis IN ('Pneumonia', 'Flu') THEN 'High-Risk Respiratory'
-        ELSE 'Other'
-    END AS Diagnosis_Category
-FROM ADMISSIONS AS A
-JOIN PATIENTS AS P ON A.Patient_ID = D.Patient_ID
-WHERE
-    A.Admission_Date BETWEEN DATE('now', '-30 days') AND DATE('now')
-    AND (A.Diagnosis = 'Pneumonia' OR A.Diagnosis = 'Flu');</code></pre>
+
+                        <div class="lab-controls">
+                            <div>
+                                <label class="form-label small fw-bold" for="query-preset">Load an example</label>
+                                <select id="query-preset" class="form-select form-select-sm" disabled>
+                                    <optgroup label="Explore and Boolean logic">
+                                        <option value="explore_patients">Explore the patient case view</option>
+                                        <option value="and_filter">AND narrows a cohort</option>
+                                        <option value="or_filter">OR broadens a cohort</option>
+                                        <option value="precedence_unparenthesized">Precedence without parentheses</option>
+                                        <option value="precedence_parenthesized">Same rule with parentheses</option>
+                                        <option value="not_operator">NOT excludes a condition</option>
+                                    </optgroup>
+                                    <optgroup label="Three-valued logic and NULL">
+                                        <option value="truth_table">TRUE/FALSE/UNKNOWN truth table</option>
+                                        <option value="where_true_only">WHERE keeps only TRUE</option>
+                                        <option value="null_comparison_trap">Why = NULL fails</option>
+                                        <option value="is_null">Find missing or blank email values</option>
+                                        <option value="is_distinct_from">NULL-safe comparisons</option>
+                                        <option value="boolean_predicates">IS TRUE, IS FALSE, IS UNKNOWN</option>
+                                    </optgroup>
+                                    <optgroup label="COALESCE and NULLIF">
+                                        <option value="coalesce_contact">Preferred contact with COALESCE</option>
+                                        <option value="nullif_blank">Convert blank text with NULLIF</option>
+                                        <option value="nullif_division">Prevent division by zero</option>
+                                    </optgroup>
+                                    <optgroup label="CASE expressions">
+                                        <option value="searched_case">Searched CASE for billing tiers</option>
+                                        <option value="simple_case">Simple CASE for status mapping</option>
+                                        <option value="case_order_trap">Unreachable CASE branch</option>
+                                        <option value="case_order_correct">Correct CASE branch order</option>
+                                        <option value="case_missing_else">Missing ELSE returns NULL</option>
+                                    </optgroup>
+                                    <optgroup label="Applied clinic rules">
+                                        <option value="high_risk_outreach">High-risk outreach cohort</option>
+                                        <option value="standardized_billing">Standardized contact and billing output</option>
+                                        <option value="stay_category">Length-of-stay categories</option>
+                                        <option value="recent_respiratory">Recent respiratory admissions</option>
+                                        <option value="not_in_null_trap">NOT IN with a NULL trap</option>
+                                        <option value="null_safe_not_paid">&lt;&gt; versus IS DISTINCT FROM</option>
+                                        <option value="assessment_starter">Assessment starter</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="lab-actions align-self-end">
+                                <button id="run-sql" type="button" class="btn btn-primary btn-sm" disabled><i class="fas fa-play me-1" aria-hidden="true"></i>Run SQL</button>
+                                <button id="run-selection" type="button" class="btn btn-outline-primary btn-sm" disabled><i class="fas fa-i-cursor me-1" aria-hidden="true"></i>Run selection</button>
+                                <button id="reset-db" type="button" class="btn btn-outline-primary btn-sm" disabled><i class="fas fa-rotate-left me-1" aria-hidden="true"></i>Reset database</button>
+                                <button id="clear-editor" type="button" class="btn btn-outline-primary btn-sm"><i class="fas fa-eraser me-1" aria-hidden="true"></i>Clear editor</button>
+                            </div>
+                        </div>
+
+                        <div class="editor-grid">
+                            <div class="editor-panel">
+                                <div class="editor-header">
+                                    <h4><i class="fas fa-code me-2" aria-hidden="true"></i>SQL editor</h4>
+                                    <span class="keyboard-hint">Ctrl/Cmd + Enter runs SQL</span>
+                                </div>
+                                <label class="visually-hidden" for="sql-editor">SQL editor</label>
+                                <textarea id="sql-editor" class="sql-editor" spellcheck="false" autocapitalize="off" autocomplete="off">SELECT patient_id, patient_name, age, diagnosis,
+       email_address, consent_to_contact, bill_amount
+FROM patient_case
+ORDER BY patient_id;</textarea>
+                            </div>
+
+                            <div class="results-panel">
+                                <div class="results-header">
+                                    <h4><i class="fas fa-table me-2" aria-hidden="true"></i>Results</h4>
+                                    <span id="execution-meta" class="result-meta">No query run yet</span>
+                                </div>
+                                <div id="results-output" class="results-output" aria-live="polite">
+                                    <div class="result-placeholder"><div><i class="fas fa-code-branch fa-2x mb-2" aria-hidden="true"></i><br>Run a query to display rows, Boolean states, derived categories, or PostgreSQL errors here.</div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lab-footnote">
+                            <span><i class="fas fa-shield-halved me-1" aria-hidden="true"></i>Synthetic records only</span>
+                            <span><i class="fas fa-keyboard me-1" aria-hidden="true"></i>Use Tab to indent</span>
+                            <span><i class="fas fa-file-csv me-1" aria-hidden="true"></i>Export each returned result as CSV</span>
+                        </div>
+                    </div>
+
+                    <div class="accordion mt-4" id="labSetupAccordion">
+                        <div class="accordion-item">
+                            <h3 class="accordion-header" id="seed-heading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#seed-collapse" aria-expanded="false" aria-controls="seed-collapse">View the PostgreSQL seed script</button>
+                            </h3>
+                            <div id="seed-collapse" class="accordion-collapse collapse" aria-labelledby="seed-heading" data-bs-parent="#labSetupAccordion">
+                                <div class="accordion-body">
+                                    <p>The reset control executes this script. The <code>patient_case</code> view is provided only to keep Module 5 focused on logic; you will construct equivalent joins in Module 6.</p>
+                                    <div class="copy-wrap mt-3">
+        <div class="code-toolbar"><span>PostgreSQL</span><button type="button" class="copy-btn" onclick="copyCode(this)"><i class="far fa-copy me-1" aria-hidden="true"></i>Copy SQL</button></div>
+        <pre class="m-0"><code class="language-sql">DROP VIEW IF EXISTS patient_case CASCADE;
+DROP TABLE IF EXISTS admissions CASCADE;
+DROP TABLE IF EXISTS patient_billing CASCADE;
+DROP TABLE IF EXISTS diagnostics CASCADE;
+DROP TABLE IF EXISTS patient_info CASCADE;
+
+CREATE TABLE patient_info (
+    patient_id integer PRIMARY KEY,
+    patient_name varchar(100) NOT NULL,
+    age integer NOT NULL CHECK (age BETWEEN 0 AND 120),
+    email_address varchar(150),
+    mobile_phone varchar(30),
+    home_phone varchar(30),
+    active boolean NOT NULL DEFAULT true,
+    consent_to_contact boolean,
+    preferred_language varchar(40)
+);
+
+INSERT INTO patient_info
+    (patient_id, patient_name, age, email_address, mobile_phone, home_phone, active, consent_to_contact, preferred_language)
+VALUES
+    (101, &#x27;John Doe&#x27;, 65, &#x27;john.doe@email.com&#x27;, &#x27;336-555-0101&#x27;, NULL, true, true, &#x27;English&#x27;),
+    (102, &#x27;Jane Smith&#x27;, 32, &#x27;jane.smith@email.com&#x27;, &#x27;336-555-0102&#x27;, NULL, true, false, &#x27;English&#x27;),
+    (103, &#x27;Robert Lee&#x27;, 48, NULL, NULL, &#x27;336-555-0103&#x27;, true, true, &#x27;English&#x27;),
+    (104, &#x27;Lisa Ray&#x27;, 71, &#x27;&#x27;, NULL, &#x27;336-555-0104&#x27;, true, false, &#x27;English&#x27;),
+    (105, &#x27;Peter Chen&#x27;, 25, &#x27;peter.chen@email.com&#x27;, &#x27;336-555-0105&#x27;, NULL, false, true, &#x27;Mandarin&#x27;),
+    (106, &#x27;Susan Gray&#x27;, 58, &#x27;susan.gray@email.com&#x27;, NULL, NULL, true, NULL, NULL),
+    (107, &#x27;Maria Torres&#x27;, 44, &#x27;   &#x27;, &#x27;336-555-0107&#x27;, NULL, true, true, &#x27;Spanish&#x27;),
+    (108, &#x27;Andre Green&#x27;, 16, NULL, NULL, NULL, true, false, &#x27;English&#x27;);
+
+CREATE TABLE diagnostics (
+    patient_id integer PRIMARY KEY REFERENCES patient_info(patient_id),
+    diagnosis varchar(100),
+    severity varchar(20) CHECK (severity IN (&#x27;Low&#x27;, &#x27;Moderate&#x27;, &#x27;High&#x27;)),
+    confirmed boolean
+);
+
+INSERT INTO diagnostics (patient_id, diagnosis, severity, confirmed) VALUES
+    (101, &#x27;Pneumonia&#x27;, &#x27;High&#x27;, true),
+    (102, &#x27;Fever&#x27;, &#x27;Moderate&#x27;, true),
+    (103, &#x27;Kidney Disease&#x27;, &#x27;High&#x27;, true),
+    (104, &#x27;Diabetes&#x27;, &#x27;High&#x27;, true),
+    (105, &#x27;Sprained Ankle&#x27;, &#x27;Low&#x27;, true),
+    (106, &#x27;Kidney Disease&#x27;, &#x27;High&#x27;, NULL),
+    (107, &#x27;Asthma&#x27;, &#x27;Moderate&#x27;, true),
+    (108, &#x27;Flu&#x27;, &#x27;Moderate&#x27;, false);
+
+CREATE TABLE patient_billing (
+    patient_id integer PRIMARY KEY REFERENCES patient_info(patient_id),
+    bill_amount numeric(10,2) CHECK (bill_amount IS NULL OR bill_amount &gt;= 0),
+    amount_paid numeric(10,2) CHECK (amount_paid IS NULL OR amount_paid &gt;= 0),
+    payment_status varchar(30)
+);
+
+INSERT INTO patient_billing (patient_id, bill_amount, amount_paid, payment_status) VALUES
+    (101, 12000.00, 4000.00, &#x27;Open&#x27;),
+    (102, 7500.00, 7500.00, &#x27;Paid&#x27;),
+    (103, NULL, 0.00, &#x27;Pending Review&#x27;),
+    (104, 9800.00, NULL, &#x27;Open&#x27;),
+    (105, 850.00, 850.00, &#x27;Paid&#x27;),
+    (106, 5200.00, 1000.00, NULL),
+    (107, 0.00, 0.00, &#x27;No Charge&#x27;),
+    (108, 2300.00, 0.00, &#x27;Open&#x27;);
+
+CREATE TABLE admissions (
+    admission_id integer PRIMARY KEY,
+    patient_id integer NOT NULL REFERENCES patient_info(patient_id),
+    admission_date date NOT NULL,
+    discharge_date date,
+    diagnosis varchar(100) NOT NULL
+);
+
+INSERT INTO admissions (admission_id, patient_id, admission_date, discharge_date, diagnosis) VALUES
+    (201, 101, &#x27;2026-07-15&#x27;, &#x27;2026-07-21&#x27;, &#x27;Pneumonia&#x27;),
+    (202, 102, &#x27;2026-07-25&#x27;, &#x27;2026-07-27&#x27;, &#x27;Fever&#x27;),
+    (203, 103, &#x27;2026-08-01&#x27;, NULL, &#x27;Kidney Disease&#x27;),
+    (204, 104, &#x27;2026-06-10&#x27;, &#x27;2026-06-22&#x27;, &#x27;Diabetes&#x27;),
+    (205, 105, &#x27;2026-08-05&#x27;, &#x27;2026-08-06&#x27;, &#x27;Sprained Ankle&#x27;),
+    (206, 106, &#x27;2026-07-30&#x27;, &#x27;2026-08-04&#x27;, &#x27;Kidney Disease&#x27;),
+    (207, 107, &#x27;2026-08-08&#x27;, NULL, &#x27;Asthma&#x27;),
+    (208, 108, &#x27;2026-08-09&#x27;, &#x27;2026-08-11&#x27;, &#x27;Flu&#x27;);
+
+CREATE VIEW patient_case AS
+SELECT
+    p.patient_id,
+    p.patient_name,
+    p.age,
+    p.email_address,
+    p.mobile_phone,
+    p.home_phone,
+    p.active,
+    p.consent_to_contact,
+    p.preferred_language,
+    d.diagnosis,
+    d.severity,
+    d.confirmed,
+    b.bill_amount,
+    b.amount_paid,
+    b.payment_status
+FROM patient_info AS p
+LEFT JOIN diagnostics AS d USING (patient_id)
+LEFT JOIN patient_billing AS b USING (patient_id);</code></pre>
+    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h3 class="accordion-header" id="pgadmin-heading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pgadmin-collapse" aria-expanded="false" aria-controls="pgadmin-collapse">Run the same work in pgAdmin 4</button>
+                            </h3>
+                            <div id="pgadmin-collapse" class="accordion-collapse collapse" aria-labelledby="pgadmin-heading" data-bs-parent="#labSetupAccordion">
+                                <div class="accordion-body">
+                                    <ol class="mb-0">
+                                        <li>Create or select a practice database.</li>
+                                        <li>Open <strong>Tools &rarr; Query Tool</strong>.</li>
+                                        <li>Run the seed script once, then run individual examples in a separate query tab.</li>
+                                        <li>Use <code>SELECT</code> to verify rows before applying logic inside any future <code>UPDATE</code> or <code>DELETE</code>.</li>
+                                    </ol>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
-        </div>
+                </section>
+
+                <section id="boolean-logic" class="section-shell" aria-labelledby="boolean-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-code-branch"></i></span>
+                        <div>
+                            <h2 id="boolean-heading" class="h3">Boolean Logic and Operator Precedence</h2>
+                            <p>Combine tests deliberately; do not rely on a reader remembering precedence rules.</p>
+                        </div>
+                    </div>
+
+                    <div class="logic-grid">
+                        <div class="logic-card and"><h3 class="h5"><code>AND</code></h3><p class="mb-1">Returns TRUE only when every connected condition is TRUE.</p><p class="small mb-0"><strong>Effect:</strong> usually narrows a cohort.</p></div>
+                        <div class="logic-card or"><h3 class="h5"><code>OR</code></h3><p class="mb-1">Returns TRUE when at least one connected condition is TRUE.</p><p class="small mb-0"><strong>Effect:</strong> usually broadens a cohort.</p></div>
+                        <div class="logic-card not"><h3 class="h5"><code>NOT</code></h3><p class="mb-1">Negates a Boolean expression, but <code>NOT UNKNOWN</code> remains UNKNOWN.</p><p class="small mb-0"><strong>Effect:</strong> excludes a condition only when its truth state is known.</p></div>
+                    </div>
+
+                    <h3 class="h5 mt-4">PostgreSQL Precedence</h3>
+                    <div class="precedence-stack" aria-label="Logical operator precedence from highest to lowest">
+                        <div class="precedence-step"><span class="precedence-rank">1</span><div><strong><code>NOT</code></strong><span class="small d-block">Evaluated first among the three logical operators.</span></div></div>
+                        <div class="precedence-step"><span class="precedence-rank">2</span><div><strong><code>AND</code></strong><span class="small d-block">Evaluated before OR.</span></div></div>
+                        <div class="precedence-step"><span class="precedence-rank">3</span><div><strong><code>OR</code></strong><span class="small d-block">Evaluated last.</span></div></div>
+                    </div>
+
+                    <div class="alert alert-warning" role="note">
+                        <strong>Parentheses are part of the documentation.</strong> Even when the default precedence produces the intended answer, parentheses show which conditions belong to the same business rule and make future edits safer.
+                    </div>
+
+                    <div class="copy-wrap mt-3">
+        <div class="code-toolbar"><span>PostgreSQL</span><button type="button" class="copy-btn" onclick="copyCode(this)"><i class="far fa-copy me-1" aria-hidden="true"></i>Copy SQL</button></div>
+        <pre class="m-0"><code class="language-sql">SELECT patient_id, patient_name, age, diagnosis
+FROM patient_case
+WHERE active IS TRUE
+  AND (age &gt;= 65 OR diagnosis IN (&#x27;Diabetes&#x27;, &#x27;Kidney Disease&#x27;))
+ORDER BY patient_id;</code></pre>
+    </div>
+                    <div class="run-example-bar">
+                        <button type="button" class="try-query-btn" data-preset="precedence_unparenthesized"><i class="fas fa-play" aria-hidden="true"></i>Run without parentheses</button>
+                        <button type="button" class="try-query-btn" data-preset="precedence_parenthesized"><i class="fas fa-play" aria-hidden="true"></i>Run intended grouping</button>
+                    </div>
+                </section>
+
+                <section id="three-valued" class="section-shell" aria-labelledby="three-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-circle-half-stroke"></i></span>
+                        <div>
+                            <h2 id="three-heading" class="h3">NULL and SQL's Three-Valued Logic</h2>
+                            <p>A condition can be TRUE, FALSE, or UNKNOWN; <code>WHERE</code> retains only TRUE rows.</p>
+                        </div>
+                    </div>
+
+                    <p><code>NULL</code> is a marker for a missing, unknown, or inapplicable value. It is not zero, an empty string, a space, or Boolean FALSE. Because the value is unknown, ordinary comparisons involving NULL normally produce UNKNOWN.</p>
+
+                    <div class="truth-grid">
+                        <div class="truth-state true"><strong>TRUE</strong><span>The row satisfies the condition.</span></div>
+                        <div class="truth-state false"><strong>FALSE</strong><span>The row does not satisfy the condition.</span></div>
+                        <div class="truth-state unknown"><strong>UNKNOWN</strong><span>The available data cannot establish TRUE or FALSE.</span></div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped align-middle">
+                            <caption class="caption-top">Selected three-valued logic outcomes</caption>
+                            <thead class="table-light"><tr><th scope="col">Expression</th><th scope="col">Result</th><th scope="col">Reason</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>TRUE AND UNKNOWN</code></td><td>UNKNOWN</td><td>The unknown side could still be FALSE.</td></tr>
+                                <tr><td><code>FALSE AND UNKNOWN</code></td><td>FALSE</td><td>One FALSE is enough to make the conjunction false.</td></tr>
+                                <tr><td><code>TRUE OR UNKNOWN</code></td><td>TRUE</td><td>One TRUE is enough to make the disjunction true.</td></tr>
+                                <tr><td><code>FALSE OR UNKNOWN</code></td><td>UNKNOWN</td><td>The unknown side could still be TRUE.</td></tr>
+                                <tr><td><code>NOT UNKNOWN</code></td><td>UNKNOWN</td><td>Negating an unknown state does not reveal its value.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pattern-grid">
+                        <div class="trap-card"><h3 class="h5">Incorrect</h3><div class="logic-expression">WHERE email_address = NULL</div><p class="small mb-0">The comparison is UNKNOWN for every row, including rows whose email is NULL.</p></div>
+                        <div class="safe-card"><h3 class="h5">Correct</h3><div class="logic-expression">WHERE email_address IS NULL</div><p class="small mb-0"><code>IS NULL</code> performs an explicit missing-value test and returns TRUE or FALSE.</p></div>
+                    </div>
+
+                    <div class="run-example-bar">
+                        <button type="button" class="try-query-btn" data-preset="truth_table"><i class="fas fa-play" aria-hidden="true"></i>Run the truth table</button>
+                        <button type="button" class="try-query-btn" data-preset="where_true_only"><i class="fas fa-play" aria-hidden="true"></i>See what WHERE keeps</button>
+                        <button type="button" class="try-query-btn" data-preset="null_comparison_trap"><i class="fas fa-play" aria-hidden="true"></i>Test = NULL</button>
+                    </div>
+                </section>
+
+                <section id="null-tools" class="section-shell" aria-labelledby="null-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-toolbox"></i></span>
+                        <div>
+                            <h2 id="null-heading" class="h3">NULL-Handling Tools</h2>
+                            <p>Choose the tool that matches the task: test, compare, substitute, or normalize.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle decision-table">
+                            <caption class="caption-top">PostgreSQL tools for common missing-value tasks</caption>
+                            <thead class="table-light"><tr><th scope="col">Need</th><th scope="col">Use</th><th scope="col">Key behavior</th></tr></thead>
+                            <tbody>
+                                <tr><td>Find missing or present values</td><td><code>IS NULL</code>, <code>IS NOT NULL</code></td><td>Returns a definite Boolean result.</td></tr>
+                                <tr><td>Compare two values with NULL awareness</td><td><code>IS DISTINCT FROM</code></td><td>Never returns UNKNOWN; two NULLs are treated as not distinct.</td></tr>
+                                <tr><td>Choose the first available value</td><td><code>COALESCE(a, b, c)</code></td><td>Returns the first non-NULL expression.</td></tr>
+                                <tr><td>Turn a sentinel into NULL</td><td><code>NULLIF(a, sentinel)</code></td><td>Returns NULL when the two arguments compare equal.</td></tr>
+                                <tr><td>Test a nullable Boolean explicitly</td><td><code>IS TRUE</code>, <code>IS FALSE</code>, <code>IS UNKNOWN</code></td><td>Keeps FALSE and unknown as separate states.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="h5 mt-4">Normalize Before Falling Back</h3>
+                    <p>A blank string is a real string in PostgreSQL. Combining <code>BTRIM</code>, <code>NULLIF</code>, and <code>COALESCE</code> lets the query treat empty and whitespace-only contact fields as unavailable before selecting a fallback.</p>
+                    <div class="copy-wrap mt-3">
+        <div class="code-toolbar"><span>PostgreSQL</span><button type="button" class="copy-btn" onclick="copyCode(this)"><i class="far fa-copy me-1" aria-hidden="true"></i>Copy SQL</button></div>
+        <pre class="m-0"><code class="language-sql">SELECT patient_id,
+       patient_name,
+       COALESCE(
+           NULLIF(BTRIM(email_address), &#x27;&#x27;),
+           NULLIF(BTRIM(mobile_phone), &#x27;&#x27;),
+           NULLIF(BTRIM(home_phone), &#x27;&#x27;),
+           &#x27;No contact provided&#x27;
+       ) AS preferred_contact
+FROM patient_info
+ORDER BY patient_id;</code></pre>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-white py-6 text-center mt-8 shadow-inner">
-        <p class="text-gray-500 mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
+                    <div class="alert alert-warning mt-4" role="note">
+                        <strong>Do not substitute blindly.</strong> <code>COALESCE(bill_amount, 0)</code> asserts that a missing bill means zero. That may be appropriate in one workflow and seriously misleading in another. The fallback should reflect a documented domain rule.
+                    </div>
+
+                    <h3 class="h5 mt-4"><code>NULLIF</code> for Safe Ratios</h3>
+                    <p><code>NULLIF(bill_amount, 0)</code> turns a zero denominator into NULL, allowing the ratio to return NULL instead of raising a division-by-zero error. The result means “not computable,” which is different from zero percent.</p>
+                    <div class="run-example-bar">
+                        <button type="button" class="try-query-btn" data-preset="coalesce_contact"><i class="fas fa-play" aria-hidden="true"></i>Build contact fallback</button>
+                        <button type="button" class="try-query-btn" data-preset="nullif_blank"><i class="fas fa-play" aria-hidden="true"></i>Normalize blank text</button>
+                        <button type="button" class="try-query-btn" data-preset="nullif_division"><i class="fas fa-play" aria-hidden="true"></i>Calculate safe ratios</button>
+                    </div>
+                </section>
+
+                <section id="case-expressions" class="section-shell" aria-labelledby="case-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-signs-post"></i></span>
+                        <div>
+                            <h2 id="case-heading" class="h3">Conditional Transformation with CASE</h2>
+                            <p>Translate ordered business rules into derived labels without modifying stored values.</p>
+                        </div>
+                    </div>
+
+                    <div class="case-flow" aria-label="CASE evaluation sequence">
+                        <div><strong>1. Evaluate</strong><span class="small d-block">Check WHEN clauses from top to bottom.</span></div>
+                        <div><strong>2. Stop</strong><span class="small d-block">Use the first condition that is TRUE.</span></div>
+                        <div><strong>3. Return</strong><span class="small d-block">Produce its THEN expression.</span></div>
+                        <div><strong>4. Default</strong><span class="small d-block">Use ELSE, or NULL when ELSE is absent.</span></div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6"><div class="concept-card h-100"><h3 class="h5">Searched CASE</h3><p>Each <code>WHEN</code> contains a complete Boolean condition. Use it for ranges, compound rules, and NULL tests.</p><div class="logic-expression">CASE WHEN condition THEN result ... END</div></div></div>
+                        <div class="col-md-6"><div class="concept-card h-100"><h3 class="h5">Simple CASE</h3><p>One expression is compared with a list of exact values. Use it for direct code-to-label mappings.</p><div class="logic-expression">CASE expression WHEN value THEN result ... END</div></div></div>
+                    </div>
+
+                    <h3 class="h5 mt-4">Boundary-Safe Billing Tiers</h3>
+                    <p>Test missing values first, then arrange numeric thresholds from most specific or highest to lowest. This avoids treating an unknown bill as low value and keeps interval boundaries unambiguous.</p>
+                    <div class="copy-wrap mt-3">
+        <div class="code-toolbar"><span>PostgreSQL</span><button type="button" class="copy-btn" onclick="copyCode(this)"><i class="far fa-copy me-1" aria-hidden="true"></i>Copy SQL</button></div>
+        <pre class="m-0"><code class="language-sql">SELECT patient_id,
+       bill_amount,
+       CASE
+           WHEN bill_amount IS NULL THEN &#x27;Unknown&#x27;
+           WHEN bill_amount &gt;= 10000 THEN &#x27;High-Value&#x27;
+           WHEN bill_amount &gt;= 5000 THEN &#x27;Standard&#x27;
+           ELSE &#x27;Low-Value&#x27;
+       END AS billing_tier
+FROM patient_billing
+ORDER BY patient_id;</code></pre>
+    </div>
+
+                    <div class="alert alert-info mt-4" role="note">
+                        <strong>First match wins.</strong> If <code>WHEN age &gt;= 18</code> appears before <code>WHEN age &gt;= 65</code>, every senior matches the adult branch and the senior branch can never run.
+                    </div>
+
+                    <div class="run-example-bar">
+                        <button type="button" class="try-query-btn" data-preset="searched_case"><i class="fas fa-play" aria-hidden="true"></i>Run searched CASE</button>
+                        <button type="button" class="try-query-btn" data-preset="simple_case"><i class="fas fa-play" aria-hidden="true"></i>Run simple CASE</button>
+                        <button type="button" class="try-query-btn" data-preset="case_order_trap"><i class="fas fa-bug" aria-hidden="true"></i>See unreachable branch</button>
+                        <button type="button" class="try-query-btn" data-preset="case_order_correct"><i class="fas fa-check" aria-hidden="true"></i>Run corrected order</button>
+                    </div>
+                </section>
+
+                <section id="logic-traps" class="section-shell" aria-labelledby="traps-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-triangle-exclamation"></i></span>
+                        <div>
+                            <h2 id="traps-heading" class="h3">Reusable Patterns and Common Traps</h2>
+                            <p>Most logic bugs are syntactically valid; they return the wrong cohort without raising an error.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered mistake-table align-middle">
+                            <caption class="caption-top">Logic mistakes that PostgreSQL may execute successfully</caption>
+                            <thead class="table-light"><tr><th scope="col">Trap</th><th scope="col">Why it fails</th><th scope="col">Safer pattern</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>a OR b AND c</code></td><td><code>AND</code> binds before <code>OR</code>, which may not match the prose rule.</td><td><code>(a OR b) AND c</code> when that is the intended grouping.</td></tr>
+                                <tr><td><code>column = NULL</code></td><td>The comparison is UNKNOWN, not TRUE.</td><td><code>column IS NULL</code>.</td></tr>
+                                <tr><td><code>value NOT IN (..., NULL)</code></td><td>Non-matches can become UNKNOWN because one list comparison is unknown.</td><td>Remove NULLs from the list and handle missing values explicitly.</td></tr>
+                                <tr><td><code>status &lt;&gt; 'Paid'</code></td><td>Rows with NULL status are excluded as UNKNOWN.</td><td><code>status IS DISTINCT FROM 'Paid'</code> when NULL should count as different.</td></tr>
+                                <tr><td>Broad CASE branch before a narrow branch</td><td>The narrow branch becomes unreachable.</td><td>Order the most specific conditions first.</td></tr>
+                                <tr><td><code>ELSE 'Low'</code> for nullable measures</td><td>Unknown values are silently reclassified as low.</td><td>Add an explicit <code>WHEN measure IS NULL</code> branch.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pattern-grid">
+                        <div class="trap-card"><h3 class="h5"><code>NOT IN</code> with NULL</h3><p>Because no ordinary value can be proven different from an unknown list element, the predicate can return UNKNOWN for every apparent non-match.</p><button type="button" class="try-query-btn" data-preset="not_in_null_trap"><i class="fas fa-play" aria-hidden="true"></i>Run the trap</button></div>
+                        <div class="safe-card"><h3 class="h5">NULL-Safe Inequality</h3><p><code>IS DISTINCT FROM</code> supplies a definite TRUE/FALSE answer and can intentionally include rows whose status is missing.</p><button type="button" class="try-query-btn" data-preset="null_safe_not_paid"><i class="fas fa-play" aria-hidden="true"></i>Compare both filters</button></div>
+                    </div>
+                </section>
+
+                <section id="clinic-workflow" class="section-shell" aria-labelledby="clinic-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-hospital-user"></i></span>
+                        <div>
+                            <h2 id="clinic-heading" class="h3">Applied Clinic Workflow</h2>
+                            <p>Combine Boolean grouping, explicit NULL policy, and ordered CASE outcomes in reproducible reports.</p>
+                        </div>
+                    </div>
+
+                    <div class="case-card">
+                        <h3 class="h5">Case 1: High-Risk Outreach with Missing Email</h3>
+                        <p><strong>Rule:</strong> include active patients who explicitly consented, have Diabetes or Kidney Disease, and lack a usable email address. UNKNOWN consent is not the same as consent.</p>
+                        <div class="copy-wrap mt-3">
+        <div class="code-toolbar"><span>PostgreSQL</span><button type="button" class="copy-btn" onclick="copyCode(this)"><i class="far fa-copy me-1" aria-hidden="true"></i>Copy SQL</button></div>
+        <pre class="m-0"><code class="language-sql">SELECT patient_id,
+       patient_name,
+       diagnosis,
+       consent_to_contact,
+       email_address
+FROM patient_case
+WHERE active IS TRUE
+  AND consent_to_contact IS TRUE
+  AND diagnosis IN (&#x27;Diabetes&#x27;, &#x27;Kidney Disease&#x27;)
+  AND NULLIF(BTRIM(email_address), &#x27;&#x27;) IS NULL
+ORDER BY patient_id;</code></pre>
+    </div>
+                        <button type="button" class="try-query-btn mt-3" data-preset="high_risk_outreach"><i class="fas fa-play" aria-hidden="true"></i>Run outreach rule</button>
+                    </div>
+
+                    <div class="case-card mt-4">
+                        <h3 class="h5">Case 2: Standardized Billing Output</h3>
+                        <p><strong>Rule:</strong> select the first usable contact method and classify the bill, but preserve missing bills as “Needs review.” This separates presentation defaults from data-quality meaning.</p>
+                        <button type="button" class="try-query-btn" data-preset="standardized_billing"><i class="fas fa-play" aria-hidden="true"></i>Run combined transformation</button>
+                    </div>
+
+                    <div class="case-card mt-4">
+                        <h3 class="h5">Case 3: Length-of-Stay Categories</h3>
+                        <p>PostgreSQL subtracts one <code>date</code> from another to return an integer number of days. Because the task concerns completed stays, filter out rows without a discharge date before calculating the category.</p>
+                        <div class="copy-wrap mt-3">
+        <div class="code-toolbar"><span>PostgreSQL</span><button type="button" class="copy-btn" onclick="copyCode(this)"><i class="far fa-copy me-1" aria-hidden="true"></i>Copy SQL</button></div>
+        <pre class="m-0"><code class="language-sql">SELECT admission_id,
+       patient_id,
+       admission_date,
+       discharge_date,
+       discharge_date - admission_date AS length_of_stay_days,
+       CASE
+           WHEN discharge_date - admission_date &lt; 5 THEN &#x27;Short&#x27;
+           WHEN discharge_date - admission_date &lt;= 10 THEN &#x27;Medium&#x27;
+           ELSE &#x27;Long&#x27;
+       END AS stay_category
+FROM admissions
+WHERE discharge_date IS NOT NULL
+ORDER BY admission_id;</code></pre>
+    </div>
+                        <button type="button" class="try-query-btn mt-3" data-preset="stay_category"><i class="fas fa-play" aria-hidden="true"></i>Run completed-stay categories</button>
+                    </div>
+                </section>
+
+                <section id="portability" class="section-shell" aria-labelledby="portability-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-cloud-arrow-up"></i></span>
+                        <div>
+                            <h2 id="portability-heading" class="h3">PostgreSQL, Microsoft Fabric, and Dialect Portability</h2>
+                            <p>Carry the reasoning pattern across platforms, but verify functions and date syntax in the target SQL dialect.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle">
+                            <caption class="caption-top">Portable ideas and dialect-specific syntax</caption>
+                            <thead class="table-light"><tr><th scope="col">Task</th><th scope="col">PostgreSQL in this module</th><th scope="col">Portability note</th></tr></thead>
+                            <tbody>
+                                <tr><td>Boolean composition</td><td><code>AND</code>, <code>OR</code>, <code>NOT</code></td><td>Broadly portable; precedence should still be made explicit with parentheses.</td></tr>
+                                <tr><td>Missing-value tests</td><td><code>IS NULL</code>, <code>IS NOT NULL</code></td><td>Standard and widely supported.</td></tr>
+                                <tr><td>Fallback and sentinel conversion</td><td><code>COALESCE</code>, <code>NULLIF</code></td><td>Widely portable, though output type rules still matter.</td></tr>
+                                <tr><td>NULL-safe comparison</td><td><code>IS DISTINCT FROM</code></td><td>Supported by PostgreSQL and some modern warehouse engines; verify the exact target platform.</td></tr>
+                                <tr><td>Date difference</td><td><code>discharge_date - admission_date</code></td><td>SQL Server/Fabric commonly uses <code>DATEDIFF</code>; SQLite commonly uses <code>julianday</code>. Do not mix these syntaxes.</td></tr>
+                                <tr><td>Current-date exercises</td><td>Fixed <code>DATE '2026-08-11'</code> in the lab</td><td>A fixed reference date makes student results reproducible; production reports can use the platform's current-date function.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="alert alert-secondary mt-4 mb-0" role="note">
+                        <strong>Fabric application:</strong> The same rule-design workflow applies to Fabric Warehouse and Lakehouse SQL endpoints: define the cohort, decide how NULL should behave, group mixed AND/OR conditions, then test boundary records. Translate only the dialect-specific functions after the logic is correct.
+                    </div>
+                </section>
+
+                <section id="guided-practice" class="section-shell" aria-labelledby="practice-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-dumbbell"></i></span>
+                        <div>
+                            <h2 id="practice-heading" class="h3">Guided Practice</h2>
+                            <p>Predict first, run second, and explain every row that is excluded.</p>
+                        </div>
+                    </div>
+
+                    <div class="lab-task">
+                        <h3 class="h5">Task 1: Parentheses and Consent</h3>
+                        <p>Compare the two precedence presets. Identify the patient who appears only when parentheses are omitted and explain which subexpression admitted that row.</p>
+                        <div class="run-example-bar"><button type="button" class="try-query-btn" data-preset="precedence_unparenthesized"><i class="fas fa-play" aria-hidden="true"></i>Version A</button><button type="button" class="try-query-btn" data-preset="precedence_parenthesized"><i class="fas fa-play" aria-hidden="true"></i>Version B</button></div>
+                    </div>
+
+                    <div class="lab-task">
+                        <h3 class="h5">Task 2: Contact Normalization</h3>
+                        <p>Modify the COALESCE query so a missing preferred language is shown as <code>'Language not recorded'</code> without changing the stored table.</p>
+                        <button type="button" class="try-query-btn" data-preset="coalesce_contact"><i class="fas fa-play" aria-hidden="true"></i>Load starter</button>
+                    </div>
+
+                    <div class="lab-task">
+                        <h3 class="h5">Task 3: CASE Boundaries</h3>
+                        <p>Add a <code>'No Charge'</code> tier for an exact zero bill. Place it so zero does not fall into the general low-value branch.</p>
+                        <button type="button" class="try-query-btn" data-preset="searched_case"><i class="fas fa-play" aria-hidden="true"></i>Load billing CASE</button>
+                    </div>
+
+                    <div class="lab-task">
+                        <h3 class="h5">Task 4: NULL-Safe Status Filter</h3>
+                        <p>Run both statements in the status preset. Explain why the second result includes one additional row.</p>
+                        <button type="button" class="try-query-btn" data-preset="null_safe_not_paid"><i class="fas fa-play" aria-hidden="true"></i>Compare filters</button>
+                    </div>
+
+                    <div class="lab-task">
+                        <h3 class="h5">Task 5: Reproducible Date Rule</h3>
+                        <p>Change the respiratory report's reference date from August 11 to August 5, 2026. Predict which admissions move outside the 30-day window and whether the age-based risk label changes before running it.</p>
+                        <button type="button" class="try-query-btn" data-preset="recent_respiratory"><i class="fas fa-play" aria-hidden="true"></i>Load date rule</button>
+                    </div>
+                </section>
+
+                <section id="assessment" class="section-shell" aria-labelledby="assessment-heading">
+                    <div class="section-heading">
+                        <span class="section-icon" aria-hidden="true"><i class="fas fa-clipboard-check"></i></span>
+                        <div>
+                            <h2 id="assessment-heading" class="h3">Assessment and Closure</h2>
+                            <p>Demonstrate recognition, justification, and applied rule design.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="h5">Assessment Tasks</h3>
+                    <ol>
+                        <li><strong>Concept:</strong> Explain the difference between <code>NULL</code> and an empty string (<code>''</code>) in SQL. Include the correct test for each and describe how <code>NULLIF</code> can standardize blank text.</li>
+                        <li><strong>Prediction:</strong> Evaluate <code>FALSE OR (TRUE AND UNKNOWN)</code> and explain whether a <code>WHERE</code> clause retains the row.</li>
+                        <li><strong>SQL coding:</strong> Using <code>admissions</code>, calculate each completed admission's length of stay in days and categorize it as Short (&lt; 5 days), Medium (5&ndash;10 days), or Long (&gt; 10 days). Exclude rows without a discharge date.</li>
+                        <li><strong>Application scenario:</strong> Using August 11, 2026 as the reproducible report date, return admissions from the preceding 30 days with a Pneumonia or Flu diagnosis. Show the patient's name and age and create a diagnosis category that distinguishes high-risk respiratory cases from other respiratory cases.</li>
+                        <li><strong>NULL-aware filtering:</strong> Return active patients with no usable email, but exclude anyone whose consent is explicitly FALSE. Preserve UNKNOWN consent for review.</li>
+                        <li><strong>Applied rule:</strong> Complete the outreach-priority starter. Your <code>CASE</code> must distinguish inactive or explicit refusal, urgent outreach, routine outreach, and records requiring review.</li>
+                    </ol>
+                    <button type="button" class="try-query-btn" data-preset="assessment_starter"><i class="fas fa-terminal" aria-hidden="true"></i>Open assessment starter in the lab</button>
+
+                    <div class="accordion mt-4" id="assessmentSolutions">
+                        <div class="accordion-item">
+                            <h3 class="accordion-header" id="assessment-solution-heading"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#assessment-solution-collapse" aria-expanded="false" aria-controls="assessment-solution-collapse">Show sample solution and reasoning</button></h3>
+                            <div id="assessment-solution-collapse" class="accordion-collapse collapse" aria-labelledby="assessment-solution-heading" data-bs-parent="#assessmentSolutions">
+                                <div class="accordion-body">
+                                    <p><strong>Concept:</strong> <code>NULL</code> represents missing or unknown data, whereas <code>''</code> is a known zero-length text value. Test them with <code>IS NULL</code> and <code>= ''</code>, respectively. <code>NULLIF(BTRIM(column_name), '')</code> converts empty or whitespace-only text to NULL for consistent handling.</p>
+                                    <p><strong>Prediction:</strong> <code>TRUE AND UNKNOWN</code> is UNKNOWN; <code>FALSE OR UNKNOWN</code> remains UNKNOWN. Because <code>WHERE</code> keeps only TRUE, the row is excluded.</p>
+
+                                    <h4 class="h6 mt-4">Completed-Stay Solution</h4>
+                                    <div class="copy-wrap mt-3">
+        <div class="code-toolbar"><span>PostgreSQL</span><button type="button" class="copy-btn" onclick="copyCode(this)"><i class="far fa-copy me-1" aria-hidden="true"></i>Copy SQL</button></div>
+        <pre class="m-0"><code class="language-sql">SELECT admission_id,
+       patient_id,
+       admission_date,
+       discharge_date,
+       discharge_date - admission_date AS length_of_stay_days,
+       CASE
+           WHEN discharge_date - admission_date &lt; 5 THEN &#x27;Short&#x27;
+           WHEN discharge_date - admission_date &lt;= 10 THEN &#x27;Medium&#x27;
+           ELSE &#x27;Long&#x27;
+       END AS stay_category
+FROM admissions
+WHERE discharge_date IS NOT NULL
+ORDER BY admission_id;</code></pre>
+    </div>
+
+                                    <h4 class="h6 mt-4">Recent Respiratory Report Solution</h4>
+                                    <div class="copy-wrap mt-3">
+        <div class="code-toolbar"><span>PostgreSQL</span><button type="button" class="copy-btn" onclick="copyCode(this)"><i class="far fa-copy me-1" aria-hidden="true"></i>Copy SQL</button></div>
+        <pre class="m-0"><code class="language-sql">SELECT a.admission_id,
+       p.patient_name,
+       p.age,
+       a.admission_date,
+       a.diagnosis,
+       CASE
+           WHEN a.diagnosis IN (&#x27;Pneumonia&#x27;, &#x27;Flu&#x27;)
+                AND p.age &gt;= 60
+               THEN &#x27;High-Risk Respiratory&#x27;
+           WHEN a.diagnosis IN (&#x27;Pneumonia&#x27;, &#x27;Flu&#x27;)
+               THEN &#x27;Respiratory&#x27;
+           ELSE &#x27;Other&#x27;
+       END AS diagnosis_category
+FROM admissions AS a
+JOIN patient_info AS p USING (patient_id)
+WHERE a.admission_date BETWEEN DATE &#x27;2026-08-11&#x27; - 30
+                           AND DATE &#x27;2026-08-11&#x27;
+  AND a.diagnosis IN (&#x27;Pneumonia&#x27;, &#x27;Flu&#x27;)
+ORDER BY a.admission_date;</code></pre>
+    </div>
+
+                                    <h4 class="h6 mt-4">Outreach-Priority Solution</h4>
+                                    <div class="copy-wrap mt-3">
+        <div class="code-toolbar"><span>PostgreSQL</span><button type="button" class="copy-btn" onclick="copyCode(this)"><i class="far fa-copy me-1" aria-hidden="true"></i>Copy SQL</button></div>
+        <pre class="m-0"><code class="language-sql">SELECT patient_id,
+       patient_name,
+       active,
+       consent_to_contact,
+       severity,
+       email_address,
+       CASE
+           WHEN active IS FALSE OR consent_to_contact IS FALSE
+               THEN &#x27;Do not contact&#x27;
+           WHEN active IS TRUE
+                AND consent_to_contact IS TRUE
+                AND severity = &#x27;High&#x27;
+                AND NULLIF(BTRIM(email_address), &#x27;&#x27;) IS NULL
+               THEN &#x27;Urgent&#x27;
+           WHEN active IS TRUE
+                AND consent_to_contact IS TRUE
+               THEN &#x27;Routine&#x27;
+           ELSE &#x27;Review&#x27;
+       END AS outreach_priority
+FROM patient_case
+ORDER BY patient_id;</code></pre>
+    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="h5 mt-4">Quick Reference</h3>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped align-middle">
+                            <caption class="caption-top">Module 5 decision guide</caption>
+                            <thead class="table-light"><tr><th scope="col">Question</th><th scope="col">Typical construct</th></tr></thead>
+                            <tbody>
+                                <tr><td>Must all conditions be true?</td><td><code>AND</code></td></tr>
+                                <tr><td>Can any condition be true?</td><td><code>OR</code></td></tr>
+                                <tr><td>Should a known condition be reversed?</td><td><code>NOT</code></td></tr>
+                                <tr><td>Is a value missing?</td><td><code>IS NULL</code> / <code>IS NOT NULL</code></td></tr>
+                                <tr><td>Should NULL compare as a distinct state?</td><td><code>IS DISTINCT FROM</code></td></tr>
+                                <tr><td>Which available value should be displayed?</td><td><code>COALESCE</code></td></tr>
+                                <tr><td>Should a sentinel become NULL?</td><td><code>NULLIF</code></td></tr>
+                                <tr><td>Should rows receive derived labels?</td><td><code>CASE</code></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="h5 mt-4">Key Takeaways</h3>
+                    <div class="row g-3">
+                        <div class="col-md-6"><div class="takeaway-card"><strong>UNKNOWN is a real logic state.</strong><p class="small mb-0 mt-1"><code>WHERE</code> excludes FALSE and UNKNOWN, so missing data can silently change a cohort.</p></div></div>
+                        <div class="col-md-6"><div class="takeaway-card"><strong>Parentheses communicate intent.</strong><p class="small mb-0 mt-1">They protect mixed AND/OR rules from precedence mistakes and later edits.</p></div></div>
+                        <div class="col-md-6"><div class="takeaway-card"><strong>Fallbacks encode assumptions.</strong><p class="small mb-0 mt-1">Use COALESCE only when the substitute has a defensible domain meaning.</p></div></div>
+                        <div class="col-md-6"><div class="takeaway-card"><strong>CASE is ordered.</strong><p class="small mb-0 mt-1">The first TRUE branch wins; test NULL and narrow conditions deliberately.</p></div></div>
+                    </div>
+
+                    <h3 class="h5 mt-4">Glossary</h3>
+                    <div class="row g-3">
+                        <div class="col-md-6"><div class="concept-card"><strong>Boolean expression</strong><p class="small mb-0 mt-1">An expression evaluated as TRUE, FALSE, or UNKNOWN.</p></div></div>
+                        <div class="col-md-6"><div class="concept-card"><strong>UNKNOWN</strong><p class="small mb-0 mt-1">The truth state produced when available values cannot establish TRUE or FALSE.</p></div></div>
+                        <div class="col-md-6"><div class="concept-card"><strong>NULL-safe comparison</strong><p class="small mb-0 mt-1">A comparison such as <code>IS DISTINCT FROM</code> that always returns TRUE or FALSE.</p></div></div>
+                        <div class="col-md-6"><div class="concept-card"><strong>Searched CASE</strong><p class="small mb-0 mt-1">A CASE expression whose WHEN clauses contain complete conditions.</p></div></div>
+                    </div>
+
+                    <h3 class="h5 mt-4">References and Further Reading</h3>
+                    <ol>
+                        <li><a href="https://www.postgresql.org/docs/current/functions-logical.html" target="_blank" rel="noopener noreferrer">PostgreSQL documentation: logical operators</a>.</li>
+                        <li><a href="https://www.postgresql.org/docs/current/functions-comparison.html" target="_blank" rel="noopener noreferrer">PostgreSQL documentation: comparisons, NULL tests, and IS DISTINCT FROM</a>.</li>
+                        <li><a href="https://www.postgresql.org/docs/current/functions-conditional.html" target="_blank" rel="noopener noreferrer">PostgreSQL documentation: CASE, COALESCE, and NULLIF</a>.</li>
+                        <li><a href="https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-PRECEDENCE" target="_blank" rel="noopener noreferrer">PostgreSQL documentation: operator precedence</a>.</li>
+                        <li><a href="https://pglite.dev/docs/" target="_blank" rel="noopener noreferrer">PGlite documentation: PostgreSQL in the browser</a>.</li>
+                    </ol>
+
+                    <div class="alert alert-success mt-4 mb-0" role="note">
+                        <strong><i class="fas fa-forward me-2" aria-hidden="true"></i>Next: Module 6</strong><br>
+                        Use keys and join conditions to combine related tables while preserving row meaning and avoiding accidental duplication.
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer py-4">
+        <div class="container text-center">
+            <p class="mb-1">&copy; 2026 Ali Noori, UNC Greensboro. All rights reserved.</p>
+            <p class="small text-muted mb-0">IAN 603 - Data Analytics | Module 5</p>
+        </div>
     </footer>
 
-    <!-- SQL.js CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
+    <button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top">
+        <i class="fas fa-arrow-up" aria-hidden="true"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        // Copy functionality
-        function copyCode(button) {
-            const code = button.nextElementSibling.querySelector('code');
-            navigator.clipboard.writeText(code.innerText).then(() => {
-                button.textContent = 'Copied!';
-                setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+        const htmlRoot = document.documentElement;
+        const themeToggle = document.getElementById("theme-toggle");
+        const highlightTheme = document.getElementById("hljs-theme");
+        const menuButton = document.getElementById("mobile-menu-toggle");
+        const navList = document.getElementById("nav-links-list");
+        const backToTop = document.getElementById("back-to-top");
+
+        function applyTheme(theme) {
+            htmlRoot.setAttribute("data-theme", theme);
+            localStorage.setItem("theme", theme);
+            const icon = themeToggle.querySelector("i");
+            const label = themeToggle.querySelector("span");
+            const isDark = theme === "dark";
+            icon.className = isDark ? "fas fa-sun" : "fas fa-moon";
+            label.textContent = isDark ? "Light" : "Dark";
+            themeToggle.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
+            if (highlightTheme) {
+                highlightTheme.href = isDark
+                    ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"
+                    : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css";
+            }
+        }
+
+        const savedTheme = localStorage.getItem("theme");
+        const preferredTheme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        applyTheme(savedTheme || preferredTheme);
+
+        themeToggle.addEventListener("click", function () {
+            applyTheme(htmlRoot.getAttribute("data-theme") === "dark" ? "light" : "dark");
+        });
+
+        if (menuButton && navList) {
+            menuButton.addEventListener("click", function () {
+                const isOpen = navList.classList.toggle("active");
+                menuButton.setAttribute("aria-expanded", String(isOpen));
+                menuButton.querySelector("i").className = isOpen ? "fas fa-xmark" : "fas fa-bars";
+            });
+            navList.querySelectorAll("a").forEach(function (link) {
+                link.addEventListener("click", function () {
+                    navList.classList.remove("active");
+                    menuButton.setAttribute("aria-expanded", "false");
+                    menuButton.querySelector("i").className = "fas fa-bars";
+                });
             });
         }
-        document.querySelectorAll('.copy-btn').forEach(button => {
-            button.addEventListener('click', () => copyCode(button));
-        });
 
-        // Toggle visibility functionality
-        document.getElementById('toggle-tables-btn').addEventListener('click', function() {
-            const container = document.getElementById('sample-tables-container');
-            container.classList.toggle('hidden');
-            this.textContent = container.classList.contains('hidden') ? 'Show Sample Tables' : 'Hide Sample Tables';
-        });
-
-        document.getElementById('toggle-solutions-btn').addEventListener('click', function() {
-            const container = document.getElementById('solutions-container');
-            container.classList.toggle('hidden');
-            this.textContent = container.classList.contains('hidden') ? 'Show Assessment Solutions' : 'Hide Assessment Solutions';
-        });
-
-        document.getElementById('toggle-postgres-btn').addEventListener('click', function() {
-            const container = document.getElementById('postgres-container');
-            container.classList.toggle('hidden');
-            this.textContent = container.classList.contains('hidden') ? 'Show PostgreSQL DDL/DML' : 'Hide PostgreSQL DDL/DML';
-        });
-
-        // Initialize and run the SQL database
-        async function initializeDB() {
-            const sqlPromise = window.initSqlJs({
-                locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${file}`
+        function copyCode(button) {
+            const wrapper = button.closest(".copy-wrap");
+            const code = wrapper ? wrapper.querySelector("code") : null;
+            if (!code) return;
+            navigator.clipboard.writeText(code.innerText).then(function () {
+                const originalText = button.textContent;
+                button.textContent = "Copied";
+                button.setAttribute("aria-live", "polite");
+                window.setTimeout(function () {
+                    button.textContent = originalText;
+                    button.removeAttribute("aria-live");
+                }, 1500);
+            }).catch(function () {
+                button.textContent = "Select and copy";
             });
-            const SQL = await sqlPromise;
-            const db = new SQL.Database();
+        }
+        window.copyCode = copyCode;
 
-            // Create and populate new tables
-            db.exec(`
-                -- Patient_Info table
-                CREATE TABLE PATIENT_INFO (Patient_ID INT, Patient_Name TEXT, Age INT, Email_Address TEXT, Mobile_Phone TEXT, Home_Phone TEXT);
-                INSERT INTO PATIENT_INFO (Patient_ID, Patient_Name, Age, Email_Address, Mobile_Phone, Home_Phone) VALUES
-                (101, 'John Doe', 65, 'john.doe@email.com', '336-555-0101', NULL),
-                (102, 'Jane Smith', 32, 'jane.smith@email.com', '336-555-0102', NULL),
-                (103, 'Robert Lee', 48, NULL, NULL, '336-555-0103'),
-                (104, 'Lisa Ray', 71, NULL, NULL, '336-555-0104'),
-                (105, 'Peter Chen', 25, 'peter.chen@email.com', '336-555-0105', NULL),
-                (106, 'Susan Gray', 58, 'susan.gray@email.com', NULL, NULL);
+        const tocLinks = Array.from(document.querySelectorAll(".toc-list a"));
+        const trackedSections = tocLinks.map(function (link) {
+            const target = document.querySelector(link.getAttribute("href"));
+            return target ? { link: link, target: target } : null;
+        }).filter(Boolean);
 
-                -- Diagnostics table
-                CREATE TABLE DIAGNOSTICS (Patient_ID INT, Diagnosis TEXT);
-                INSERT INTO DIAGNOSTICS (Patient_ID, Diagnosis) VALUES
-                (101, 'Pneumonia'),
-                (102, 'Fever'),
-                (103, 'Kidney Disease'),
-                (104, 'Diabetes'),
-                (105, 'Sprained Ankle'),
-                (106, 'Kidney Disease');
+        const observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                tocLinks.forEach(function (link) { link.classList.remove("active"); });
+                const match = trackedSections.find(function (item) { return item.target === entry.target; });
+                if (match) match.link.classList.add("active");
+            });
+        }, { rootMargin: "-25% 0px -65% 0px", threshold: 0 });
+        trackedSections.forEach(function (item) { observer.observe(item.target); });
 
-                -- Patient_Billing table
-                CREATE TABLE PATIENT_BILLING (Patient_ID INT, Bill_Amount INT);
-                INSERT INTO PATIENT_BILLING (Patient_ID, Bill_Amount) VALUES
-                (101, 12000),
-                (102, 7500),
-                (103, NULL);
+        window.addEventListener("scroll", function () {
+            backToTop.classList.toggle("show", window.scrollY > 600);
+        });
+        backToTop.addEventListener("click", function () {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+        if (window.hljs) { hljs.highlightAll(); }
+    </script>
 
-                -- Re-creating ADMISSIONS and PATIENTS for assessment questions
-                CREATE TABLE PATIENTS (Patient_ID INTEGER, Patient_Name TEXT, Age INTEGER, Email_Address TEXT);
-                INSERT INTO PATIENTS VALUES
-                (101, 'John Doe', 65, 'john.doe@email.com'),
-                (102, 'Jane Smith', 32, 'jane.smith@email.com'),
-                (103, 'Robert Lee', 48, NULL),
-                (104, 'Lisa Ray', 71, NULL),
-                (105, 'Peter Chen', 25, 'peter.chen@email.com');
+    <script type="module">
+        const PRESETS = {"explore_patients": "SELECT patient_id, patient_name, age, diagnosis,\n       email_address, consent_to_contact, bill_amount\nFROM patient_case\nORDER BY patient_id;", "and_filter": "SELECT patient_id, patient_name, age, diagnosis\nFROM patient_case\nWHERE active IS TRUE\n  AND age >= 40\n  AND severity = 'High'\nORDER BY patient_id;", "or_filter": "SELECT patient_id, patient_name, diagnosis\nFROM patient_case\nWHERE diagnosis = 'Pneumonia'\n   OR diagnosis = 'Flu'\n   OR diagnosis = 'Asthma'\nORDER BY patient_id;", "precedence_unparenthesized": "-- AND is evaluated before OR.\nSELECT patient_id, patient_name, age, diagnosis, consent_to_contact\nFROM patient_case\nWHERE age >= 65\n   OR diagnosis = 'Kidney Disease' AND consent_to_contact IS TRUE\nORDER BY patient_id;", "precedence_parenthesized": "-- Parentheses express the intended business rule.\nSELECT patient_id, patient_name, age, diagnosis, consent_to_contact\nFROM patient_case\nWHERE (age >= 65 OR diagnosis = 'Kidney Disease')\n  AND consent_to_contact IS TRUE\nORDER BY patient_id;", "not_operator": "SELECT patient_id, patient_name, diagnosis, active\nFROM patient_case\nWHERE active IS TRUE\n  AND NOT (diagnosis IN ('Sprained Ankle', 'Flu'))\nORDER BY patient_id;", "truth_table": "WITH bools(label, value, sort_order) AS (\n    VALUES\n        ('TRUE', TRUE, 1),\n        ('FALSE', FALSE, 2),\n        ('UNKNOWN', NULL::boolean, 3)\n)\nSELECT a.label AS a,\n       b.label AS b,\n       COALESCE((a.value AND b.value)::text, 'unknown') AS a_and_b,\n       COALESCE((a.value OR b.value)::text, 'unknown') AS a_or_b\nFROM bools AS a\nCROSS JOIN bools AS b\nORDER BY a.sort_order, b.sort_order;", "where_true_only": "SELECT label, flag\nFROM (VALUES\n    ('TRUE row', TRUE),\n    ('FALSE row', FALSE),\n    ('UNKNOWN row', NULL::boolean)\n) AS states(label, flag)\nWHERE flag;", "null_comparison_trap": "-- Ordinary comparisons with NULL return UNKNOWN.\nSELECT patient_id,\n       email_address,\n       email_address = NULL AS equals_null,\n       email_address <> NULL AS not_equals_null\nFROM patient_info\nORDER BY patient_id;", "is_null": "-- Treat NULL, empty text, and whitespace-only text as missing.\nSELECT patient_id, patient_name, email_address\nFROM patient_info\nWHERE NULLIF(BTRIM(email_address), '') IS NULL\nORDER BY patient_id;", "is_distinct_from": "SELECT patient_id,\n       bill_amount,\n       amount_paid,\n       bill_amount IS DISTINCT FROM amount_paid AS amounts_differ,\n       bill_amount IS NOT DISTINCT FROM amount_paid AS amounts_match_null_safely\nFROM patient_billing\nORDER BY patient_id;", "coalesce_contact": "SELECT patient_id,\n       patient_name,\n       COALESCE(\n           NULLIF(BTRIM(email_address), ''),\n           NULLIF(BTRIM(mobile_phone), ''),\n           NULLIF(BTRIM(home_phone), ''),\n           'No contact provided'\n       ) AS preferred_contact\nFROM patient_info\nORDER BY patient_id;", "nullif_blank": "SELECT patient_id,\n       email_address AS original_email,\n       NULLIF(BTRIM(email_address), '') AS normalized_email\nFROM patient_info\nORDER BY patient_id;", "nullif_division": "SELECT patient_id,\n       bill_amount,\n       amount_paid,\n       ROUND(\n           100.0 * COALESCE(amount_paid, 0) / NULLIF(bill_amount, 0),\n           1\n       ) AS percent_paid\nFROM patient_billing\nORDER BY patient_id;", "searched_case": "SELECT patient_id,\n       bill_amount,\n       CASE\n           WHEN bill_amount IS NULL THEN 'Unknown'\n           WHEN bill_amount >= 10000 THEN 'High-Value'\n           WHEN bill_amount >= 5000 THEN 'Standard'\n           ELSE 'Low-Value'\n       END AS billing_tier\nFROM patient_billing\nORDER BY patient_id;", "simple_case": "SELECT patient_id,\n       payment_status,\n       CASE payment_status\n           WHEN 'Paid' THEN 'Closed'\n           WHEN 'No Charge' THEN 'Closed'\n           WHEN 'Open' THEN 'Follow up'\n           WHEN 'Pending Review' THEN 'Investigate'\n           ELSE 'Status missing'\n       END AS action\nFROM patient_billing\nORDER BY patient_id;", "case_order_trap": "-- The first true WHEN wins. The senior branch is unreachable.\nSELECT patient_id, patient_name, age,\n       CASE\n           WHEN age >= 18 THEN 'Adult'\n           WHEN age >= 65 THEN 'Senior'\n           ELSE 'Minor'\n       END AS age_group\nFROM patient_info\nORDER BY patient_id;", "case_order_correct": "SELECT patient_id, patient_name, age,\n       CASE\n           WHEN age >= 65 THEN 'Senior'\n           WHEN age >= 18 THEN 'Adult'\n           ELSE 'Minor'\n       END AS age_group\nFROM patient_info\nORDER BY patient_id;", "case_missing_else": "-- Without ELSE, unmatched rows receive NULL.\nSELECT patient_id, diagnosis,\n       CASE\n           WHEN diagnosis IN ('Pneumonia', 'Flu', 'Asthma')\n               THEN 'Respiratory'\n       END AS diagnosis_group\nFROM diagnostics\nORDER BY patient_id;", "boolean_predicates": "SELECT patient_id,\n       patient_name,\n       consent_to_contact,\n       consent_to_contact IS TRUE AS explicitly_yes,\n       consent_to_contact IS FALSE AS explicitly_no,\n       consent_to_contact IS UNKNOWN AS not_recorded\nFROM patient_info\nORDER BY patient_id;", "high_risk_outreach": "SELECT patient_id,\n       patient_name,\n       diagnosis,\n       consent_to_contact,\n       email_address\nFROM patient_case\nWHERE active IS TRUE\n  AND consent_to_contact IS TRUE\n  AND diagnosis IN ('Diabetes', 'Kidney Disease')\n  AND NULLIF(BTRIM(email_address), '') IS NULL\nORDER BY patient_id;", "standardized_billing": "SELECT patient_id,\n       patient_name,\n       COALESCE(\n           NULLIF(BTRIM(email_address), ''),\n           NULLIF(BTRIM(mobile_phone), ''),\n           NULLIF(BTRIM(home_phone), ''),\n           'No contact provided'\n       ) AS primary_contact,\n       bill_amount,\n       CASE\n           WHEN bill_amount IS NULL THEN 'Needs review'\n           WHEN bill_amount >= 10000 THEN 'High-Value'\n           WHEN bill_amount >= 5000 THEN 'Standard'\n           ELSE 'Low-Value'\n       END AS billing_tier\nFROM patient_case\nORDER BY patient_id;", "stay_category": "SELECT admission_id,\n       patient_id,\n       admission_date,\n       discharge_date,\n       discharge_date - admission_date AS length_of_stay_days,\n       CASE\n           WHEN discharge_date - admission_date < 5 THEN 'Short'\n           WHEN discharge_date - admission_date <= 10 THEN 'Medium'\n           ELSE 'Long'\n       END AS stay_category\nFROM admissions\nWHERE discharge_date IS NOT NULL\nORDER BY admission_id;", "recent_respiratory": "-- Fixed reference date keeps the lab reproducible.\nSELECT a.admission_id,\n       p.patient_name,\n       p.age,\n       a.admission_date,\n       a.diagnosis,\n       CASE\n           WHEN a.diagnosis IN ('Pneumonia', 'Flu')\n                AND p.age >= 60\n               THEN 'High-Risk Respiratory'\n           WHEN a.diagnosis IN ('Pneumonia', 'Flu')\n               THEN 'Respiratory'\n           ELSE 'Other'\n       END AS diagnosis_category\nFROM admissions AS a\nJOIN patient_info AS p USING (patient_id)\nWHERE a.admission_date BETWEEN DATE '2026-08-11' - 30 AND DATE '2026-08-11'\n  AND a.diagnosis IN ('Pneumonia', 'Flu')\nORDER BY a.admission_date;", "not_in_null_trap": "-- A NULL inside NOT IN can make every non-match UNKNOWN.\nSELECT patient_id, diagnosis\nFROM diagnostics\nWHERE diagnosis NOT IN ('Flu', NULL)\nORDER BY patient_id;", "null_safe_not_paid": "-- Ordinary <> excludes NULL statuses because the result is UNKNOWN.\nSELECT patient_id, payment_status\nFROM patient_billing\nWHERE payment_status <> 'Paid'\nORDER BY patient_id;\n\n-- IS DISTINCT FROM treats NULL as a comparable state.\nSELECT patient_id, payment_status\nFROM patient_billing\nWHERE payment_status IS DISTINCT FROM 'Paid'\nORDER BY patient_id;", "assessment_starter": "-- Assessment: create an outreach priority.\n-- Rules:\n-- 1. 'Urgent' for active adults with a High-severity diagnosis,\n--    consent recorded as TRUE, and no usable email.\n-- 2. 'Routine' for all other active patients.\n-- 3. 'Do not contact' for inactive patients or explicit FALSE consent.\n-- Keep NULL consent distinct from FALSE.\n\nSELECT patient_id,\n       patient_name,\n       active,\n       consent_to_contact,\n       severity,\n       email_address,\n       CASE\n           -- Add ordered WHEN clauses here\n           ELSE 'Review'\n       END AS outreach_priority\nFROM patient_case\nORDER BY patient_id;"};
+        const RESET_SQL = "DROP VIEW IF EXISTS patient_case CASCADE;\nDROP TABLE IF EXISTS admissions CASCADE;\nDROP TABLE IF EXISTS patient_billing CASCADE;\nDROP TABLE IF EXISTS diagnostics CASCADE;\nDROP TABLE IF EXISTS patient_info CASCADE;\n\nCREATE TABLE patient_info (\n    patient_id integer PRIMARY KEY,\n    patient_name varchar(100) NOT NULL,\n    age integer NOT NULL CHECK (age BETWEEN 0 AND 120),\n    email_address varchar(150),\n    mobile_phone varchar(30),\n    home_phone varchar(30),\n    active boolean NOT NULL DEFAULT true,\n    consent_to_contact boolean,\n    preferred_language varchar(40)\n);\n\nINSERT INTO patient_info\n    (patient_id, patient_name, age, email_address, mobile_phone, home_phone, active, consent_to_contact, preferred_language)\nVALUES\n    (101, 'John Doe', 65, 'john.doe@email.com', '336-555-0101', NULL, true, true, 'English'),\n    (102, 'Jane Smith', 32, 'jane.smith@email.com', '336-555-0102', NULL, true, false, 'English'),\n    (103, 'Robert Lee', 48, NULL, NULL, '336-555-0103', true, true, 'English'),\n    (104, 'Lisa Ray', 71, '', NULL, '336-555-0104', true, false, 'English'),\n    (105, 'Peter Chen', 25, 'peter.chen@email.com', '336-555-0105', NULL, false, true, 'Mandarin'),\n    (106, 'Susan Gray', 58, 'susan.gray@email.com', NULL, NULL, true, NULL, NULL),\n    (107, 'Maria Torres', 44, '   ', '336-555-0107', NULL, true, true, 'Spanish'),\n    (108, 'Andre Green', 16, NULL, NULL, NULL, true, false, 'English');\n\nCREATE TABLE diagnostics (\n    patient_id integer PRIMARY KEY REFERENCES patient_info(patient_id),\n    diagnosis varchar(100),\n    severity varchar(20) CHECK (severity IN ('Low', 'Moderate', 'High')),\n    confirmed boolean\n);\n\nINSERT INTO diagnostics (patient_id, diagnosis, severity, confirmed) VALUES\n    (101, 'Pneumonia', 'High', true),\n    (102, 'Fever', 'Moderate', true),\n    (103, 'Kidney Disease', 'High', true),\n    (104, 'Diabetes', 'High', true),\n    (105, 'Sprained Ankle', 'Low', true),\n    (106, 'Kidney Disease', 'High', NULL),\n    (107, 'Asthma', 'Moderate', true),\n    (108, 'Flu', 'Moderate', false);\n\nCREATE TABLE patient_billing (\n    patient_id integer PRIMARY KEY REFERENCES patient_info(patient_id),\n    bill_amount numeric(10,2) CHECK (bill_amount IS NULL OR bill_amount >= 0),\n    amount_paid numeric(10,2) CHECK (amount_paid IS NULL OR amount_paid >= 0),\n    payment_status varchar(30)\n);\n\nINSERT INTO patient_billing (patient_id, bill_amount, amount_paid, payment_status) VALUES\n    (101, 12000.00, 4000.00, 'Open'),\n    (102, 7500.00, 7500.00, 'Paid'),\n    (103, NULL, 0.00, 'Pending Review'),\n    (104, 9800.00, NULL, 'Open'),\n    (105, 850.00, 850.00, 'Paid'),\n    (106, 5200.00, 1000.00, NULL),\n    (107, 0.00, 0.00, 'No Charge'),\n    (108, 2300.00, 0.00, 'Open');\n\nCREATE TABLE admissions (\n    admission_id integer PRIMARY KEY,\n    patient_id integer NOT NULL REFERENCES patient_info(patient_id),\n    admission_date date NOT NULL,\n    discharge_date date,\n    diagnosis varchar(100) NOT NULL\n);\n\nINSERT INTO admissions (admission_id, patient_id, admission_date, discharge_date, diagnosis) VALUES\n    (201, 101, '2026-07-15', '2026-07-21', 'Pneumonia'),\n    (202, 102, '2026-07-25', '2026-07-27', 'Fever'),\n    (203, 103, '2026-08-01', NULL, 'Kidney Disease'),\n    (204, 104, '2026-06-10', '2026-06-22', 'Diabetes'),\n    (205, 105, '2026-08-05', '2026-08-06', 'Sprained Ankle'),\n    (206, 106, '2026-07-30', '2026-08-04', 'Kidney Disease'),\n    (207, 107, '2026-08-08', NULL, 'Asthma'),\n    (208, 108, '2026-08-09', '2026-08-11', 'Flu');\n\nCREATE VIEW patient_case AS\nSELECT\n    p.patient_id,\n    p.patient_name,\n    p.age,\n    p.email_address,\n    p.mobile_phone,\n    p.home_phone,\n    p.active,\n    p.consent_to_contact,\n    p.preferred_language,\n    d.diagnosis,\n    d.severity,\n    d.confirmed,\n    b.bill_amount,\n    b.amount_paid,\n    b.payment_status\nFROM patient_info AS p\nLEFT JOIN diagnostics AS d USING (patient_id)\nLEFT JOIN patient_billing AS b USING (patient_id);";
+        const PINNED_PGLITE_URL = "https://cdn.jsdelivr.net/npm/@electric-sql/pglite@0.5.4/dist/index.js";
+        const FALLBACK_PGLITE_URL = "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
 
-                CREATE TABLE ADMISSIONS (Admission_ID INTEGER, Patient_ID INTEGER, Admission_Date TEXT, Discharge_Date TEXT, Diagnosis TEXT);
-                INSERT INTO ADMISSIONS VALUES
-                (201, 101, '2024-01-10', '2024-01-15', 'Pneumonia'),
-                (202, 102, '2024-02-01', NULL, 'Fracture'),
-                (203, 103, '2024-03-05', '2024-03-12', 'Unknown'),
-                (204, 104, '2024-04-10', NULL, 'Flu'),
-                (205, 101, '2024-04-20', '2024-04-22', 'Flu');
-            `);
+        const editor = document.getElementById("sql-editor");
+        const presetSelect = document.getElementById("query-preset");
+        const runButton = document.getElementById("run-sql");
+        const runSelectionButton = document.getElementById("run-selection");
+        const resetButton = document.getElementById("reset-db");
+        const clearButton = document.getElementById("clear-editor");
+        const resultsOutput = document.getElementById("results-output");
+        const executionMeta = document.getElementById("execution-meta");
+        const status = document.getElementById("lab-status");
+        const statusText = document.getElementById("lab-status-text");
 
-            const runBtn = document.getElementById('run-btn');
-            const editor = document.getElementById('sql-editor');
-            const resultsDiv = document.getElementById('results');
+        let db = null;
+        let busy = false;
 
-            runBtn.addEventListener('click', () => {
-                const query = editor.value;
-                if (!query) {
-                    resultsDiv.innerHTML = '<p class="text-gray-400">Please enter a query.</p>';
-                    return;
+        function setStatus(state, message) {
+            status.dataset.state = state;
+            statusText.textContent = message;
+        }
+
+        function setControlsEnabled(enabled) {
+            runButton.disabled = !enabled;
+            runSelectionButton.disabled = !enabled;
+            resetButton.disabled = !enabled;
+            presetSelect.disabled = !enabled;
+        }
+
+        function clearResults(message = "Run a query to display summary rows, detail rows, or PostgreSQL errors here.") {
+            resultsOutput.replaceChildren();
+            const placeholder = document.createElement("div");
+            placeholder.className = "result-placeholder";
+            placeholder.textContent = message;
+            resultsOutput.appendChild(placeholder);
+            executionMeta.textContent = "No query run yet";
+        }
+
+        function formatValue(value) {
+            if (value === null || value === undefined) return null;
+            if (typeof value === "bigint") return value.toString();
+            if (value instanceof Date) return value.toISOString();
+            if (typeof value === "object") {
+                try { return JSON.stringify(value); } catch { return String(value); }
+            }
+            return String(value);
+        }
+
+        function buildCsv(rows, columns) {
+            const quote = function (value) {
+                const text = value === null || value === undefined
+                    ? ""
+                    : (typeof value === "object" ? JSON.stringify(value) : String(value));
+                return '"' + text.replaceAll('"', '""') + '"';
+            };
+            const lines = [columns.map(quote).join(",")];
+            rows.forEach(function (row) {
+                lines.push(columns.map(function (column) { return quote(row[column]); }).join(","));
+            });
+            return lines.join("\n");
+        }
+
+        function downloadResult(rows, columns, index) {
+            const blob = new Blob([buildCsv(rows, columns)], { type: "text/csv;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `module5-result-${index}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function renderResults(results, elapsedMs) {
+            resultsOutput.replaceChildren();
+            const normalized = Array.isArray(results) ? results : [results];
+            if (!normalized.length) {
+                clearResults("PostgreSQL completed the statement without returning a result object.");
+                return;
+            }
+
+            normalized.forEach(function (result, resultIndex) {
+                const rows = Array.isArray(result?.rows) ? result.rows : [];
+                const fields = Array.isArray(result?.fields) ? result.fields : [];
+                const columns = fields.length
+                    ? fields.map(function (field) { return field.name; })
+                    : (rows.length ? Object.keys(rows[0]) : []);
+
+                const card = document.createElement("section");
+                card.className = "result-card";
+                card.setAttribute("aria-label", `SQL result ${resultIndex + 1}`);
+
+                const header = document.createElement("div");
+                header.className = "result-card-header";
+                const heading = document.createElement("strong");
+                heading.textContent = `Result ${resultIndex + 1}`;
+                header.appendChild(heading);
+
+                const right = document.createElement("div");
+                right.className = "d-flex align-items-center gap-2";
+                const meta = document.createElement("span");
+                meta.className = "result-meta";
+                if (rows.length) {
+                    meta.textContent = `${rows.length} row${rows.length === 1 ? "" : "s"} returned`;
+                } else if (typeof result?.affectedRows === "number") {
+                    meta.textContent = `${result.affectedRows} row${result.affectedRows === 1 ? "" : "s"} affected`;
+                } else {
+                    meta.textContent = "Statement completed";
                 }
-                
-                try {
-                    const res = db.exec(query);
-                    if (res.length === 0) {
-                        resultsDiv.innerHTML = '<p class="text-gray-400">Query executed successfully, no results returned.</p>';
-                        return;
-                    }
+                right.appendChild(meta);
 
-                    const table = document.createElement('table');
-                    table.className = 'w-full text-sm text-left text-gray-500 rounded-lg overflow-hidden';
-                    const thead = table.createTHead();
-                    const tbody = table.createTBody();
-
-                    // Create table header
-                    const headerRow = thead.insertRow();
-                    res[0].columns.forEach(col => {
-                        const th = document.createElement('th');
-                        th.textContent = col;
-                        th.className = 'px-4 py-2 font-bold bg-gray-700 text-gray-50';
-                        headerRow.appendChild(th);
+                if (rows.length && columns.length) {
+                    const download = document.createElement("button");
+                    download.type = "button";
+                    download.className = "download-result-btn";
+                    download.textContent = "CSV";
+                    download.setAttribute("aria-label", `Download result ${resultIndex + 1} as CSV`);
+                    download.addEventListener("click", function () {
+                        downloadResult(rows, columns, resultIndex + 1);
                     });
+                    right.appendChild(download);
+                }
+                header.appendChild(right);
+                card.appendChild(header);
 
-                    // Create table body
-                    res[0].values.forEach(row => {
-                        const tr = tbody.insertRow();
-                        row.forEach(cell => {
-                            const td = document.createElement('td');
-                            td.textContent = cell === null ? 'NULL' : cell;
-                            td.className = 'px-4 py-2 border-t border-gray-700';
+                if (rows.length && columns.length) {
+                    const wrap = document.createElement("div");
+                    wrap.className = "result-table-wrap";
+                    const table = document.createElement("table");
+                    table.className = "result-table";
+                    const caption = document.createElement("caption");
+                    caption.className = "visually-hidden";
+                    caption.textContent = `Rows returned by SQL result ${resultIndex + 1}`;
+                    table.appendChild(caption);
+
+                    const thead = document.createElement("thead");
+                    const headRow = document.createElement("tr");
+                    columns.forEach(function (column) {
+                        const th = document.createElement("th");
+                        th.scope = "col";
+                        th.textContent = column;
+                        headRow.appendChild(th);
+                    });
+                    thead.appendChild(headRow);
+                    table.appendChild(thead);
+
+                    const tbody = document.createElement("tbody");
+                    rows.slice(0, 250).forEach(function (row) {
+                        const tr = document.createElement("tr");
+                        columns.forEach(function (column) {
+                            const td = document.createElement("td");
+                            const formatted = formatValue(row[column]);
+                            if (formatted === null) {
+                                const nullSpan = document.createElement("span");
+                                nullSpan.className = "null-value";
+                                nullSpan.textContent = "NULL";
+                                td.appendChild(nullSpan);
+                            } else {
+                                td.textContent = formatted;
+                            }
                             tr.appendChild(td);
                         });
+                        tbody.appendChild(tr);
                     });
+                    table.appendChild(tbody);
+                    wrap.appendChild(table);
+                    card.appendChild(wrap);
 
-                    resultsDiv.innerHTML = '';
-                    resultsDiv.appendChild(table);
-
-                } catch (error) {
-                    resultsDiv.innerHTML = `<p class="text-red-400">Error: ${error.message}</p>`;
+                    if (rows.length > 250) {
+                        const note = document.createElement("div");
+                        note.className = "result-message small text-muted";
+                        note.textContent = `Showing the first 250 of ${rows.length} rows.`;
+                        card.appendChild(note);
+                    }
+                } else {
+                    const message = document.createElement("div");
+                    message.className = "result-message";
+                    message.textContent = typeof result?.affectedRows === "number"
+                        ? `PostgreSQL reports ${result.affectedRows} affected row${result.affectedRows === 1 ? "" : "s"}.`
+                        : "PostgreSQL completed this statement successfully.";
+                    card.appendChild(message);
                 }
+                resultsOutput.appendChild(card);
             });
-
-            // Initial message
-            resultsDiv.innerHTML = '<p class="text-gray-400">Enter a query above to see the results. For example: <code>SELECT * FROM PATIENT_INFO;</code></p>';
+            executionMeta.textContent = `${normalized.length} result${normalized.length === 1 ? "" : "s"} · ${elapsedMs.toFixed(1)} ms`;
         }
 
-        initializeDB();
-        hljs.highlightAll();
+        function renderError(error, elapsedMs) {
+            resultsOutput.replaceChildren();
+            const panel = document.createElement("div");
+            panel.className = "query-error";
+            const title = document.createElement("strong");
+            title.textContent = "PostgreSQL error";
+            const detail = document.createElement("pre");
+            detail.textContent = error?.message || String(error);
+            panel.append(title, detail);
+            resultsOutput.appendChild(panel);
+            executionMeta.textContent = `Failed · ${elapsedMs.toFixed(1)} ms`;
+        }
+
+        function selectedOrAll(selectionOnly) {
+            if (selectionOnly) {
+                return editor.value.slice(editor.selectionStart, editor.selectionEnd).trim();
+            }
+            return editor.value.trim();
+        }
+
+        async function runSql(selectionOnly = false) {
+            if (!db || busy) return;
+            const sql = selectedOrAll(selectionOnly);
+            if (!sql) {
+                clearResults("The SQL editor is empty.");
+                return;
+            }
+            busy = true;
+            setControlsEnabled(false);
+            setStatus("running", "Running SQL...");
+            const started = performance.now();
+            try {
+                const results = await db.exec(sql);
+                const elapsed = performance.now() - started;
+                renderResults(results, elapsed);
+                setStatus("ready", "Database ready");
+            } catch (error) {
+                const elapsed = performance.now() - started;
+                renderError(error, elapsed);
+                setStatus("error", "Query failed");
+                try { await db.exec("ROLLBACK;"); } catch { /* no open transaction */ }
+            } finally {
+                busy = false;
+                setControlsEnabled(true);
+            }
+        }
+
+        function loadPreset(id, scrollToLab = false) {
+            if (!PRESETS[id]) return;
+            editor.value = PRESETS[id];
+            presetSelect.value = id;
+            editor.focus();
+            if (scrollToLab) {
+                document.getElementById("sql-lab").scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        }
+
+        async function resetDatabase(showMessage = true) {
+            if (!db || busy) return;
+            busy = true;
+            setControlsEnabled(false);
+            setStatus("running", "Resetting database...");
+            try {
+                await db.exec(RESET_SQL);
+                loadPreset("explore_patients", false);
+                clearResults(showMessage ? "Database reset. Run a query when ready." : "Run a query to display results.");
+                setStatus("ready", "Database ready");
+            } catch (error) {
+                renderError(error, 0);
+                setStatus("error", "Reset failed");
+            } finally {
+                busy = false;
+                setControlsEnabled(true);
+            }
+        }
+
+        async function loadPGlite() {
+            try {
+                return await import(PINNED_PGLITE_URL);
+            } catch (pinnedError) {
+                console.warn("Pinned PGlite import failed; trying the current package tag.", pinnedError);
+                return await import(FALLBACK_PGLITE_URL);
+            }
+        }
+
+        async function initializeLab() {
+            setControlsEnabled(false);
+            setStatus("loading", "Loading PostgreSQL engine...");
+            try {
+                const module = await loadPGlite();
+                db = await module.PGlite.create();
+                window.module5Database = db;
+                await db.exec(RESET_SQL);
+                setStatus("ready", "Database ready");
+                setControlsEnabled(true);
+                clearResults("PostgreSQL is ready. Run the starter query or load a SQL-logic example.");
+            } catch (error) {
+                setStatus("error", "Engine could not load");
+                renderError(error, 0);
+                executionMeta.textContent = "Check web-server, network, or CDN access";
+            }
+        }
+
+        presetSelect.addEventListener("change", function () { loadPreset(presetSelect.value, false); });
+        runButton.addEventListener("click", function () { runSql(false); });
+        runSelectionButton.addEventListener("click", function () { runSql(true); });
+        resetButton.addEventListener("click", function () { resetDatabase(true); });
+        clearButton.addEventListener("click", function () { editor.value = ""; editor.focus(); });
+
+        editor.addEventListener("keydown", function (event) {
+            if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+                event.preventDefault();
+                runSql(false);
+            }
+            if (event.key === "Tab") {
+                event.preventDefault();
+                const start = editor.selectionStart;
+                const end = editor.selectionEnd;
+                editor.setRangeText("  ", start, end, "end");
+            }
+        });
+
+        document.querySelectorAll("[data-preset]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                loadPreset(button.dataset.preset, true);
+            });
+        });
+
+        initializeLab();
+
     </script>
 </body>
 </html>
