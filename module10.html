@@ -1,448 +1,2587 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html data-theme="dark" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Module 10: Reshaping Data - IAF 603</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Highlight.js for code highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- MathJax CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- Custom MathJax Configuration -->
-    <script src="./js/mathjax.js"></script>
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="./css/styles.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="IAN 603 Module 10: reshape data between long and wide forms in PostgreSQL using conditional aggregation, FILTER, UNION ALL, and LATERAL VALUES with a live PGlite workbench." name="description"/>
+<title>Module 10: Reshaping Data | IAN 603</title>
+<link href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%84%3C/text%3E%3C/svg%3E" rel="icon"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Source+Code+Pro:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" id="hljs-theme" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --section-bg: #1e293b;
+            --section-alt-bg: #172033;
+            --border-color: #334155;
+            --header-color: #38bdf8;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --success-color: #34d399;
+            --danger-color: #f87171;
+            --warning-color: #fbbf24;
+            --uncg-blue: #0c2340;
+            --uncg-gold: #cf9b2f;
+            --muted-color: #94a3b8;
+            --light-color: #f1f5f9;
+            --code-bg: #0b1120;
+            --table-stripe: rgba(255, 255, 255, 0.035);
+            --alert-info-bg: #172c4d;
+            --alert-info-border: #3b82f6;
+            --alert-warning-bg: #453516;
+            --alert-warning-border: #f59e0b;
+            --alert-secondary-bg: #182235;
+            --alert-secondary-border: #64748b;
+            --alert-success-bg: #12352e;
+            --alert-success-border: #10b981;
+            --hero-bg: linear-gradient(135deg, #07182d 0%, #0c2340 50%, #26365e 100%);
+            --hero-text: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.22);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --text-color: #1e293b;
+            --section-bg: #ffffff;
+            --section-alt-bg: #f8fafc;
+            --border-color: #d7e0eb;
+            --header-color: #1d4ed8;
+            --accent-color: #4f46e5;
+            --accent-hover: #4338ca;
+            --success-color: #047857;
+            --danger-color: #b91c1c;
+            --warning-color: #b45309;
+            --muted-color: #64748b;
+            --light-color: #f8fafc;
+            --code-bg: #f8fafc;
+            --table-stripe: rgba(15, 23, 42, 0.035);
+            --alert-info-bg: #dbeafe;
+            --alert-info-border: #3b82f6;
+            --alert-warning-bg: #fffbeb;
+            --alert-warning-border: #f59e0b;
+            --alert-secondary-bg: #f1f5f9;
+            --alert-secondary-border: #94a3b8;
+            --alert-success-bg: #d1fae5;
+            --alert-success-border: #10b981;
+            --hero-bg: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 55%, #fef3c7 100%);
+            --hero-text: #13243a;
+            --shadow-color: rgba(15, 23, 42, 0.12);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 96px;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        a {
+            color: var(--header-color);
+        }
+
+        a:hover {
+            color: var(--accent-color);
+        }
+
+        p,
+        li,
+        td,
+        th,
+        label,
+        .accordion-body,
+        .form-check-label {
+            color: var(--text-color);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: var(--header-color);
+            font-weight: 700;
+        }
+
+        .h1,
+        .h2,
+        .h3,
+        .h4,
+        .h5,
+        .h6 {
+            color: var(--header-color) !important;
+        }
+
+        body {
+            color: var(--text-color) !important;
+        }
+
+        strong {
+            color: inherit;
+        }
+
+        .hero-section h1,
+        .hero-section .h1,
+        .hero-section p,
+        .hero-section strong,
+        .hero-section .course-badge,
+        .hero-section .hero-kicker,
+        .hero-section .hero-meta,
+        .hero-section .essential-question {
+            color: var(--hero-text) !important;
+        }
+
+        code,
+        pre {
+            font-family: "Source Code Pro", monospace;
+        }
+
+        code:not(pre code) {
+            color: var(--text-color);
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--border-color);
+            border-radius: 0.3rem;
+            padding: 0.08rem 0.3rem;
+        }
+
+        pre {
+            background-color: var(--code-bg) !important;
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+            overflow: auto;
+        }
+
+        .skip-link {
+            position: absolute;
+            left: 0.75rem;
+            top: -5rem;
+            z-index: 2000;
+            background: var(--section-bg);
+            color: var(--text-color);
+            border: 2px solid var(--accent-color);
+            border-radius: 0.4rem;
+            padding: 0.6rem 0.85rem;
+        }
+
+        .skip-link:focus {
+            top: 0.75rem;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--uncg-gold);
+            outline-offset: 3px;
+        }
+
+        .text-muted {
+            color: var(--muted-color) !important;
+        }
+
+        .bg-white,
+        .bg-light {
+            background-color: var(--section-bg) !important;
+        }
+
+        .border,
+        .table-bordered,
+        .table-bordered th,
+        .table-bordered td {
+            border-color: var(--border-color) !important;
+        }
+
+        .shadow,
+        .shadow-sm {
+            box-shadow: 0 8px 24px var(--shadow-color) !important;
+        }
+
+        .table {
+            color: var(--text-color);
+            margin-bottom: 0;
+        }
+
+        .table > :not(caption) > * > * {
+            background-color: transparent;
+            color: var(--text-color);
+            border-color: var(--border-color);
+            vertical-align: top;
+        }
+
+        .table thead th,
+        .table-light th,
+        .table-light td {
+            background-color: var(--section-alt-bg) !important;
+            color: var(--text-color) !important;
+        }
+
+        .table-striped > tbody > tr:nth-of-type(odd) > * {
+            background-color: var(--table-stripe);
+        }
+
+        .nav-container {
+            background-color: var(--section-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        .nav-menu {
+            min-height: 74px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            color: var(--header-color);
+            font-weight: 800;
+            font-size: 1.15rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            white-space: nowrap;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--uncg-blue), var(--accent-color));
+            border: 2px solid var(--uncg-gold);
+        }
+
+        .nav-links-list {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-link,
+        .theme-toggle-btn {
+            color: var(--text-color);
+            background: none;
+            border: none;
+            border-radius: 0.55rem;
+            padding: 0.55rem 0.75rem;
+            font: inherit;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link:focus-visible,
+        .theme-toggle-btn:hover,
+        .theme-toggle-btn:focus-visible {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: calc(100% + 0.25rem);
+            left: 0;
+            min-width: 315px;
+            max-height: 70vh;
+            overflow-y: auto;
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+            padding: 0.45rem;
+            box-shadow: 0 12px 30px var(--shadow-color);
+        }
+
+        .dropdown:hover .dropdown-content,
+        .dropdown:focus-within .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.65rem 0.75rem;
+            border-radius: 0.5rem;
+        }
+
+        .dropdown-link:hover,
+        .dropdown-link:focus-visible {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .module-number {
+            width: 25px;
+            height: 25px;
+            flex: 0 0 25px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--accent-color);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 1.45rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 0.45rem;
+        }
+
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+            background: var(--hero-bg);
+            color: var(--hero-text);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 1.25rem;
+            margin: 2rem 0;
+            padding: 3.2rem 2rem;
+            box-shadow: 0 18px 45px var(--shadow-color);
+        }
+
+        .hero-section::after {
+            content: "";
+            position: absolute;
+            width: 330px;
+            height: 330px;
+            right: -115px;
+            top: -135px;
+            border-radius: 50%;
+            background: rgba(207, 155, 47, 0.12);
+        }
+
+        .hero-section h1,
+        .hero-section p,
+        .hero-section .hero-kicker,
+        .hero-section .hero-meta,
+        .hero-section .essential-question {
+            color: var(--hero-text);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-kicker {
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .course-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.45rem 0.75rem;
+            background: rgba(255, 255, 255, 0.11);
+            border: 1px solid rgba(255, 255, 255, 0.23);
+            border-radius: 999px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .essential-question {
+            max-width: 870px;
+            margin: 1.35rem auto 0;
+            padding: 1rem 1.2rem;
+            border-left: 4px solid var(--uncg-gold);
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 0 0.75rem 0.75rem 0;
+            text-align: left;
+        }
+
+        .section-shell {
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            padding: clamp(1.2rem, 2.5vw, 2rem);
+            margin-bottom: 1.6rem;
+            scroll-margin-top: 94px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.9rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.35rem;
+        }
+
+        .section-icon {
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            border-radius: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(99, 102, 241, 0.14);
+            color: var(--header-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-heading h2 {
+            margin-bottom: 0.15rem;
+        }
+
+        .section-heading p {
+            margin-bottom: 0;
+            color: var(--muted-color);
+        }
+
+        .toc-panel {
+            position: sticky;
+            top: 94px;
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.9rem;
+            padding: 1rem;
+            max-height: calc(100vh - 115px);
+            overflow-y: auto;
+        }
+
+        .toc-panel h2 {
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-list a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.5rem 0.55rem;
+            border-radius: 0.45rem;
+            font-size: 0.9rem;
+        }
+
+        .toc-list a:hover,
+        .toc-list a.active {
+            background-color: rgba(99, 102, 241, 0.18);
+            color: var(--header-color);
+        }
+
+        .toc-list .toc-index {
+            color: var(--muted-color);
+            font-size: 0.75rem;
+            font-weight: 800;
+            min-width: 1.5rem;
+        }
+
+        .roadmap-card,
+        .concept-card,
+        .example-card,
+        .case-card,
+        .takeaway-card {
+            height: 100%;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            padding: 1rem;
+        }
+
+        .roadmap-card {
+            position: relative;
+            padding-top: 3.15rem;
+        }
+
+        .roadmap-number {
+            position: absolute;
+            top: 0.9rem;
+            left: 1rem;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+        }
+
+        .layer-label {
+            display: inline-block;
+            color: #ffffff;
+            background: var(--accent-color);
+            border-radius: 999px;
+            padding: 0.2rem 0.55rem;
+            font-size: 0.74rem;
+            font-weight: 800;
+            margin-bottom: 0.55rem;
+        }
+
+        .concept-arrow {
+            color: var(--muted-color);
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        .badge-soft-primary,
+        .badge-soft-success,
+        .badge-soft-warning,
+        .badge-soft-danger,
+        .badge-soft-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            border-radius: 999px;
+            padding: 0.32rem 0.58rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .badge-soft-primary {
+            color: var(--header-color);
+            background: rgba(59, 130, 246, 0.14);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+        }
+
+        .badge-soft-success {
+            color: var(--success-color);
+            background: rgba(16, 185, 129, 0.13);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+
+        .badge-soft-warning {
+            color: var(--warning-color);
+            background: rgba(245, 158, 11, 0.13);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+
+        .badge-soft-danger {
+            color: var(--danger-color);
+            background: rgba(239, 68, 68, 0.13);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
+
+        .badge-soft-secondary {
+            color: var(--muted-color);
+            background: rgba(100, 116, 139, 0.13);
+            border: 1px solid rgba(100, 116, 139, 0.35);
+        }
+
+        .alert {
+            color: var(--text-color);
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 0.75rem;
+        }
+
+        .alert-info {
+            background: var(--alert-info-bg);
+            border-color: var(--alert-info-border);
+        }
+
+        .alert-warning {
+            background: var(--alert-warning-bg);
+            border-color: var(--alert-warning-border);
+        }
+
+        .alert-secondary {
+            background: var(--alert-secondary-bg);
+            border-color: var(--alert-secondary-border);
+        }
+
+        .alert-success {
+            background: var(--alert-success-bg);
+            border-color: var(--alert-success-border);
+        }
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.7rem;
+            margin: 1rem 0;
+        }
+
+        .workflow-step {
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem 0.55rem;
+        }
+
+        .workflow-step i {
+            display: block;
+            color: var(--header-color);
+            font-size: 1.25rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .decision-table th:first-child,
+        .decision-table td:first-child {
+            min-width: 125px;
+        }
+
+        .copy-wrap {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.6rem;
+            z-index: 2;
+            border: 1px solid var(--border-color);
+            background: var(--section-bg);
+            color: var(--header-color);
+            border-radius: 0.45rem;
+            padding: 0.25rem 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .copy-btn:hover {
+            color: #ffffff;
+            background: var(--accent-color);
+        }
+
+        .accordion-item,
+        .accordion-button,
+        .accordion-body {
+            background-color: var(--section-alt-bg);
+            color: var(--text-color);
+            border-color: var(--border-color);
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: rgba(99, 102, 241, 0.15);
+            color: var(--header-color);
+            box-shadow: inset 0 -1px 0 var(--border-color);
+        }
+
+        .accordion-button::after {
+            filter: var(--accordion-icon-filter, none);
+        }
+
+        [data-theme="dark"] .accordion-button::after {
+            filter: invert(1) grayscale(1) brightness(1.8);
+        }
+
+        .btn-outline-primary {
+            color: var(--header-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-outline-primary:hover,
+        .btn-outline-primary:focus-visible {
+            color: #ffffff;
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus-visible {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            position: relative;
+            padding-left: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .checklist li::before {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+        }
+
+        .mistake-table .looks-like {
+            color: var(--warning-color);
+            font-weight: 700;
+        }
+
+        .mistake-table .actually {
+            color: var(--success-color);
+            font-weight: 700;
+        }
+
+        .mini-note {
+            color: var(--muted-color);
+            font-size: 0.9rem;
+        }
+
+        .key-term {
+            border-bottom: 1px dotted var(--header-color);
+            cursor: help;
+        }
+
+        .footer {
+            background: var(--section-bg);
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem;
+            width: 44px;
+            height: 44px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            z-index: 1100;
+        }
+
+        .back-to-top.show {
+            display: inline-flex;
+        }
+
+        @media (max-width: 1199.98px) {
+            .nav-links-list {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                padding: 0.8rem;
+                background: var(--section-bg);
+                border-bottom: 1px solid var(--border-color);
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-links-list.active {
+                display: flex;
+            }
+
+            .nav-link,
+            .theme-toggle-btn {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .mobile-menu-btn {
+                display: inline-flex;
+            }
+
+            .dropdown-content {
+                position: static;
+                min-width: 0;
+                max-height: none;
+                box-shadow: none;
+                margin-top: 0.25rem;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .toc-panel {
+                position: static;
+                max-height: none;
+                margin-bottom: 1.3rem;
+            }
+
+            .workflow {
+                grid-template-columns: 1fr;
+            }
+
+            .concept-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .hero-section {
+                padding: 2rem 1.1rem;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .section-shell {
+                padding: 1rem;
+            }
+
+            .section-heading {
+                flex-direction: column;
+            }
+
+            .table-responsive {
+                border: 1px solid var(--border-color);
+                border-radius: 0.65rem;
+            }
+        }
+
+        @media print {
+            .nav-container,
+            .toc-panel,
+            .copy-btn,
+            .back-to-top,
+            .theme-toggle-btn,
+            .mobile-menu-btn,
+            .btn {
+                display: none !important;
+            }
+
+            body,
+            .section-shell,
+            .roadmap-card,
+            .concept-card,
+            .example-card,
+            .case-card,
+            .takeaway-card,
+            .accordion-item,
+            .accordion-button,
+            .accordion-body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                box-shadow: none !important;
+            }
+
+            p,
+            li,
+            td,
+            th,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                color: #000000 !important;
+            }
+
+            .collapse:not(.show) {
+                display: block !important;
+            }
+        }
+
+        .design-flow {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 0.65rem;
+            margin: 1rem 0;
+        }
+
+        .design-step {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem 0.6rem;
+            text-align: center;
+            min-height: 132px;
+        }
+
+        .design-step .step-number {
+            width: 2rem;
+            height: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+        }
+
+        .schema-card {
+            height: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            overflow: hidden;
+            background: var(--section-alt-bg);
+        }
+
+        .schema-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.75rem 0.9rem;
+            background: rgba(99, 102, 241, 0.14);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .schema-card-header h3,
+        .schema-card-header h4 {
+            margin: 0;
+            color: var(--header-color);
+        }
+
+        .schema-field-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .schema-field-list li {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.5rem 0.9rem;
+            border-bottom: 1px solid var(--border-color);
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.82rem;
+        }
+
+        .schema-field-list li:last-child {
+            border-bottom: 0;
+        }
+
+        .field-key {
+            color: var(--warning-color);
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .erd-board {
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            background: var(--section-alt-bg);
+            padding: 1rem;
+        }
+
+        .erd-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 132px minmax(0, 1fr);
+            gap: 0.75rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .erd-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .erd-node {
+            border: 2px solid var(--accent-color);
+            border-radius: 0.75rem;
+            background: var(--section-bg);
+            overflow: hidden;
+            min-height: 100%;
+        }
+
+        .erd-node-title {
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+            padding: 0.55rem 0.75rem;
+            letter-spacing: 0.02em;
+        }
+
+        .erd-node-body {
+            padding: 0.65rem 0.75rem;
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.82rem;
+        }
+
+        .erd-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted-color);
+            text-align: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .erd-line {
+            width: 100%;
+            height: 2px;
+            background: var(--border-color);
+            position: relative;
+            margin: 0.4rem 0;
+        }
+
+        .erd-line::after {
+            content: "";
+            position: absolute;
+            right: -1px;
+            top: -4px;
+            border-left: 8px solid var(--accent-color);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .cardinality-label {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            background: var(--section-bg);
+            color: var(--text-color);
+            border-radius: 999px;
+            padding: 0.18rem 0.5rem;
+            font-family: "Source Code Pro", monospace;
+        }
+
+        .constraint-card {
+            height: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--section-alt-bg);
+            padding: 1rem;
+        }
+
+        .constraint-card h3,
+        .constraint-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .normalization-step {
+            border-left: 4px solid var(--accent-color);
+            background: var(--section-alt-bg);
+            border-radius: 0.55rem;
+            padding: 1rem 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .normalization-step h3,
+        .normalization-step h4 {
+            margin-bottom: 0.45rem;
+        }
+
+        .dependency {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin: 0.2rem 0.35rem 0.2rem 0;
+            padding: 0.3rem 0.55rem;
+            border-radius: 0.45rem;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--border-color);
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.8rem;
+        }
+
+        .comparison-good,
+        .comparison-bad {
+            border-radius: 0.75rem;
+            padding: 1rem;
+            height: 100%;
+        }
+
+        .comparison-good {
+            border: 1px solid var(--success-color);
+            background: var(--alert-success-bg);
+        }
+
+        .comparison-bad {
+            border: 1px solid var(--danger-color);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .data-dictionary td:first-child {
+            font-family: "Source Code Pro", monospace;
+            font-weight: 700;
+        }
+
+        .test-case {
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--section-alt-bg);
+            padding: 0.9rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .test-case:last-child {
+            margin-bottom: 0;
+        }
+
+        .advanced-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+            border: 1px dashed var(--warning-color);
+            background: var(--alert-warning-bg);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .advanced-banner i {
+            color: var(--warning-color);
+            font-size: 1.3rem;
+            margin-top: 0.15rem;
+        }
+
+        .rule-to-schema {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .rule-arrow {
+            color: var(--accent-color);
+            font-size: 1.25rem;
+        }
+
+        @media (max-width: 1199.98px) {
+            .design-flow {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .design-flow {
+                grid-template-columns: 1fr;
+            }
+
+            .erd-row,
+            .rule-to-schema {
+                grid-template-columns: 1fr;
+            }
+
+            .erd-connector,
+            .rule-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+    
+
+        /* Module 3: live PostgreSQL lab */
+        .sql-lab-shell {
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            background: var(--section-alt-bg);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+        }
+
+        .lab-masthead {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.95rem 1rem;
+            background: linear-gradient(135deg, rgba(12, 35, 64, 0.98), rgba(49, 46, 129, 0.92));
+            border-bottom: 1px solid var(--border-color);
+            color: #ffffff;
+        }
+
+        .lab-masthead h3,
+        .lab-masthead p,
+        .lab-masthead span,
+        .lab-masthead strong {
+            color: #ffffff;
+        }
+
+        .engine-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.35rem 0.65rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 0.78rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .lab-status,
+        .engine-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .lab-status-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.65rem 0.85rem;
+            margin: 0.85rem 0 0.35rem;
+        }
+
+        .engine-status.ready .status-dot {
+            background: #34d399;
+            box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.18);
+        }
+
+        .engine-status.loading .status-dot {
+            background: #fbbf24;
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.18);
+            animation: status-pulse 1s infinite ease-in-out;
+        }
+
+        .engine-status.error .status-dot {
+            background: #f87171;
+            box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.18);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            border-radius: 50%;
+            background: #94a3b8;
+            box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.18);
+        }
+
+        .lab-status[data-state="ready"] .status-dot {
+            background: #34d399;
+            box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.18);
+        }
+
+        .lab-status[data-state="running"] .status-dot,
+        .lab-status[data-state="loading"] .status-dot {
+            background: #fbbf24;
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.18);
+            animation: status-pulse 1s infinite ease-in-out;
+        }
+
+        .lab-status[data-state="error"] .status-dot {
+            background: #f87171;
+            box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.18);
+        }
+
+        @keyframes status-pulse {
+            0%, 100% { transform: scale(0.9); opacity: 0.75; }
+            50% { transform: scale(1.15); opacity: 1; }
+        }
+
+        .lab-controls {
+            display: grid;
+            grid-template-columns: minmax(230px, 1fr) auto;
+            gap: 0.75rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .lab-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .form-select,
+        .form-control {
+            color: var(--text-color);
+            background-color: var(--section-bg);
+            border-color: var(--border-color);
+        }
+
+        .form-select:focus,
+        .form-control:focus {
+            color: var(--text-color);
+            background-color: var(--section-bg);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.18);
+        }
+
+        .editor-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .editor-panel,
+        .results-panel {
+            min-width: 0;
+        }
+
+        .editor-header,
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.72rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--section-bg);
+        }
+
+        .editor-header h4,
+        .results-header h4 {
+            margin: 0;
+            font-size: 0.93rem;
+        }
+
+        .keyboard-hint {
+            color: var(--muted-color);
+            font-size: 0.76rem;
+        }
+
+        .sql-editor {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-height: 310px;
+            resize: vertical;
+            box-sizing: border-box;
+            padding: 1rem;
+            color: #e5e7eb;
+            background: #090f1d;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            outline: none;
+            font: 500 0.9rem/1.65 "Source Code Pro", monospace;
+            tab-size: 2;
+            caret-color: #fbbf24;
+            white-space: pre;
+            overflow: auto;
+        }
+
+        .sql-editor:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.18);
+        }
+
+        .sql-editor::selection {
+            background: rgba(99, 102, 241, 0.55);
+        }
+
+        [data-theme="light"] .sql-editor {
+            color: #172033;
+            background: #f8fafc;
+        }
+
+        .results-panel {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .results-output {
+            min-height: 180px;
+            max-height: 560px;
+            overflow: auto;
+            padding: 1rem;
+            background: var(--section-alt-bg);
+        }
+
+        .result-placeholder {
+            min-height: 145px;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            color: var(--muted-color);
+            border: 1px dashed var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .result-card {
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            margin-bottom: 0.85rem;
+            overflow: hidden;
+        }
+
+        .result-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.62rem 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .result-card-header strong {
+            color: var(--header-color);
+        }
+
+        .result-meta {
+            color: var(--muted-color);
+            font-size: 0.76rem;
+        }
+
+        .result-table-wrap {
+            overflow-x: auto;
+        }
+
+        .result-table {
+            width: 100%;
+            margin: 0;
+            border-collapse: collapse;
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.82rem;
+        }
+
+        .result-table th,
+        .result-table td {
+            padding: 0.52rem 0.68rem;
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+            white-space: nowrap;
+        }
+
+        .result-table th {
+            color: var(--header-color);
+            background: var(--section-alt-bg);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .result-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .result-table th:last-child,
+        .result-table td:last-child {
+            border-right: 0;
+        }
+
+        .result-message {
+            padding: 0.82rem;
+            color: var(--text-color);
+        }
+
+        .null-value {
+            color: var(--muted-color);
+            font-style: italic;
+        }
+
+        .query-error {
+            border: 1px solid rgba(248, 113, 113, 0.5);
+            border-left: 5px solid var(--danger-color);
+            background: rgba(248, 113, 113, 0.08);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .query-error pre {
+            margin: 0.65rem 0 0;
+            color: var(--danger-color);
+            white-space: pre-wrap;
+            word-break: break-word;
+            background: transparent !important;
+            border: 0;
+            padding: 0;
+        }
+
+        .lab-footnote {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            padding: 0.85rem 1rem;
+            color: var(--muted-color);
+            background: var(--section-bg);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8rem;
+        }
+
+        .schema-chip-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.65rem;
+        }
+
+        .schema-chip {
+            padding: 0.75rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+        }
+
+        .schema-chip code {
+            color: var(--header-color);
+            font-weight: 700;
+        }
+
+        .copy-wrap pre {
+            padding-top: 3.25rem !important;
+        }
+
+        .code-toolbar {
+            position: absolute;
+            top: 0.55rem;
+            right: 0.55rem;
+            z-index: 3;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.4rem;
+        }
+
+        .code-toolbar .copy-btn {
+            position: static;
+        }
+
+        .try-query-btn {
+            border: 1px solid rgba(52, 211, 153, 0.45);
+            background: var(--section-bg);
+            color: var(--success-color);
+            border-radius: 0.45rem;
+            padding: 0.25rem 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .try-query-btn:hover,
+        .try-query-btn:focus-visible {
+            color: #ffffff;
+            background: var(--success-color);
+        }
+
+        .sql-command-card {
+            height: 100%;
+            padding: 1rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 0.8rem;
+        }
+
+        .sql-command-card[data-kind="dql"] { border-top-color: #38bdf8; }
+        .sql-command-card[data-kind="dml"] { border-top-color: #34d399; }
+        .sql-command-card[data-kind="ddl"] { border-top-color: #fbbf24; }
+        .sql-command-card[data-kind="tcl"] { border-top-color: #a78bfa; }
+
+        .query-flow {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 0.55rem;
+            margin: 1rem 0;
+        }
+
+        .query-flow-step {
+            position: relative;
+            text-align: center;
+            padding: 0.78rem 0.45rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.65rem;
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .query-flow-step:not(:last-child)::after {
+            content: "→";
+            position: absolute;
+            right: -0.48rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted-color);
+            z-index: 2;
+        }
+
+        .safety-workflow {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.65rem;
+            margin: 1rem 0;
+        }
+
+        .safety-step {
+            padding: 0.8rem;
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+        }
+
+        .safety-step .step-number {
+            display: inline-grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            margin-bottom: 0.4rem;
+            border-radius: 50%;
+            color: #ffffff;
+            background: var(--accent-color);
+            font-weight: 800;
+        }
+
+        .danger-example {
+            border-left: 5px solid var(--danger-color);
+        }
+
+        .success-example {
+            border-left: 5px solid var(--success-color);
+        }
+
+        .statement-anatomy {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--section-alt-bg);
+            font-family: "Source Code Pro", monospace;
+        }
+
+        .statement-part {
+            padding: 0.35rem 0.55rem;
+            border-radius: 0.45rem;
+            background: rgba(99, 102, 241, 0.14);
+            border: 1px solid rgba(99, 102, 241, 0.35);
+        }
+
+        .lab-task {
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .download-result-btn {
+            border: 1px solid var(--border-color);
+            color: var(--header-color);
+            background: var(--section-bg);
+            border-radius: 0.4rem;
+            font-size: 0.72rem;
+            padding: 0.22rem 0.48rem;
+        }
+
+        .download-result-btn:hover {
+            color: #ffffff;
+            background: var(--accent-color);
+        }
+
+        @media (min-width: 1200px) {
+            .editor-grid {
+                grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+            }
+
+            .results-panel {
+                border-top: 0;
+                border-left: 1px solid var(--border-color);
+            }
+
+            .sql-editor {
+                min-height: 455px;
+            }
+
+            .results-output {
+                min-height: 455px;
+                max-height: 640px;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .schema-chip-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .query-flow,
+            .safety-workflow {
+                grid-template-columns: 1fr;
+            }
+
+            .query-flow-step:not(:last-child)::after {
+                content: "↓";
+                right: 50%;
+                top: auto;
+                bottom: -0.8rem;
+                transform: translateX(50%);
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .lab-masthead,
+            .lab-controls,
+            .editor-header,
+            .results-header {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .lab-controls {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .lab-actions {
+                justify-content: flex-start;
+            }
+
+            .sql-editor {
+                min-height: 250px;
+            }
+
+            .schema-chip-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            .sql-lab-shell,
+            .try-query-btn,
+            .code-toolbar {
+                break-inside: avoid;
+            }
+
+            .lab-controls,
+            .sql-editor,
+            .results-panel,
+            .lab-status,
+            .engine-badge,
+            .try-query-btn {
+                display: none !important;
+            }
+        }
+
+    
+
+        /* Module 4 additions */
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .function-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 0.9rem;
+            min-height: 100%;
+        }
+
+        .function-card code {
+            display: inline-block;
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+        }
+
+        .grain-ladder {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+
+        .grain-step {
+            position: relative;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .grain-step .grain-number {
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #fff;
+            font-weight: 800;
+            margin-bottom: 0.55rem;
+        }
+
+        .clause-flow {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            margin: 1rem 0;
+        }
+
+        .clause-node {
+            min-width: 105px;
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.65rem 0.75rem;
+            font-family: "Source Code Pro", monospace;
+            font-weight: 700;
+        }
+
+        .clause-arrow {
+            color: var(--muted-color);
+            font-size: 1.1rem;
+        }
+
+        .query-anatomy {
+            display: grid;
+            grid-template-columns: 145px 1fr;
+            gap: 0.25rem 0.8rem;
+            align-items: start;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .query-anatomy dt {
+            color: var(--header-color);
+            font-family: "Source Code Pro", monospace;
+            font-weight: 800;
+        }
+
+        .query-anatomy dd {
+            margin-bottom: 0.45rem;
+        }
+
+        .run-example-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.7rem;
+        }
+
+        .subtotal-key {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .subtotal-key > div {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.8rem;
+        }
+
+        .metric-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.55rem;
+            border-radius: 999px;
+            background: rgba(99, 102, 241, 0.14);
+            border: 1px solid rgba(99, 102, 241, 0.36);
+            color: var(--header-color);
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0.15rem;
+        }
+
+        @media (max-width: 991.98px) {
+            .function-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .grain-ladder, .subtotal-key { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 575.98px) {
+            .function-grid { grid-template-columns: 1fr; }
+            .query-anatomy { grid-template-columns: 1fr; }
+            .clause-arrow { transform: rotate(90deg); }
+        }
+
+
+        /* Module 5 logic visuals */
+        .logic-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .logic-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 0.85rem;
+            padding: 1rem;
+            height: 100%;
+        }
+
+        .logic-card.and { border-top-color: var(--success-color); }
+        .logic-card.or { border-top-color: var(--header-color); }
+        .logic-card.not { border-top-color: var(--warning-color); }
+
+        .precedence-stack {
+            display: grid;
+            gap: 0.55rem;
+            max-width: 520px;
+            margin: 1rem auto;
+        }
+
+        .precedence-step {
+            display: grid;
+            grid-template-columns: 44px 1fr;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.75rem 0.9rem;
+        }
+
+        .precedence-rank {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .truth-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .truth-state {
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+            text-align: center;
+            background: var(--section-alt-bg);
+        }
+
+        .truth-state strong {
+            display: block;
+            font-size: 1.05rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .truth-state.true strong { color: var(--success-color); }
+        .truth-state.false strong { color: var(--danger-color); }
+        .truth-state.unknown strong { color: var(--warning-color); }
+
+        .logic-expression {
+            font-family: "Source Code Pro", monospace;
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.65rem;
+            padding: 0.7rem 0.85rem;
+            margin: 0.45rem 0;
+            overflow-x: auto;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .trap-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--danger-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .safe-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--success-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .case-flow {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .case-flow > div {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem;
+            text-align: center;
+        }
+
+        .boundary-table td:first-child,
+        .boundary-table th:first-child {
+            white-space: nowrap;
+        }
+
+        .rule-builder {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.65rem;
+            margin: 1rem 0;
+        }
+
+        .rule-builder > div {
+            border: 1px solid var(--border-color);
+            background: var(--section-alt-bg);
+            border-radius: 0.7rem;
+            padding: 0.8rem;
+            text-align: center;
+        }
+
+        @media (max-width: 991.98px) {
+            .logic-grid,
+            .truth-grid,
+            .case-flow,
+            .rule-builder { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 575.98px) {
+            .logic-grid,
+            .truth-grid,
+            .pattern-grid,
+            .case-flow,
+            .rule-builder { grid-template-columns: 1fr; }
+        }
+
+
+
+        .join-family-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1rem; }
+        .join-family-card { border:1px solid var(--border-color); border-radius:.8rem; padding:1rem; background:var(--section-alt-bg); height:100%; }
+        .join-family-card h4 { font-size:1rem; margin-bottom:.35rem; }
+        .join-family-card p { margin:0; font-size:.9rem; }
+        .join-chip { display:inline-flex; align-items:center; gap:.35rem; border:1px solid var(--border-color); border-radius:999px; padding:.22rem .55rem; font-size:.78rem; font-weight:700; background:var(--section-alt-bg); }
+        .preserve-left { border-left:4px solid #3b82f6; }
+        .preserve-right { border-left:4px solid #8b5cf6; }
+        .preserve-both { border-left:4px solid #f59e0b; }
+        .preserve-match { border-left:4px solid #10b981; }
+        .grain-box { border:1px solid var(--border-color); border-radius:.75rem; padding:1rem; background:var(--section-alt-bg); }
+        .grain-arrow { font-size:1.6rem; color:var(--muted-color); text-align:center; }
+        .mini-table { width:100%; border-collapse:collapse; font-size:.84rem; }
+        .mini-table th,.mini-table td { border:1px solid var(--border-color); padding:.42rem .5rem; }
+        .mini-table th { background:var(--section-alt-bg); }
+        .matched { background:rgba(16,185,129,.12); }
+        .unmatched { background:rgba(245,158,11,.10); }
+        .danger-note { border-left:4px solid var(--danger-color); background:rgba(248,113,113,.08); border-radius:.55rem; padding:.85rem 1rem; }
+        .join-decision { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.85rem; }
+        .join-decision .step-card { min-height:100%; }
+        .schema-relations { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.8rem; }
+        .schema-table { border:1px solid var(--border-color); border-radius:.75rem; overflow:hidden; background:var(--section-alt-bg); }
+        .schema-table h4 { margin:0; padding:.7rem .8rem; font-size:.95rem; background:rgba(99,102,241,.12); }
+        .schema-table ul { margin:0; padding:.7rem 1.6rem .8rem 1.8rem; font-family:"Source Code Pro",monospace; font-size:.78rem; }
+        .relationship-strip { display:flex; flex-wrap:wrap; gap:.55rem; margin-top:1rem; }
+        .relationship-strip span { border:1px solid var(--border-color); border-radius:999px; padding:.3rem .65rem; font-size:.78rem; background:var(--section-alt-bg); }
+        .comparison-table td:first-child,.comparison-table th:first-child { white-space:nowrap; }
+        .output-grain { display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; }
+        .output-grain > span { padding:.45rem .65rem; border:1px solid var(--border-color); border-radius:.55rem; background:var(--section-alt-bg); }
+        .output-grain .op { border:none; background:transparent; color:var(--muted-color); font-weight:800; }
+        .project-card-custom { border:1px solid var(--border-color); border-radius:.8rem; padding:1rem; background:var(--section-alt-bg); height:100%; }
+        @media (max-width: 991.98px) { .join-family-grid,.schema-relations { grid-template-columns:repeat(2,minmax(0,1fr)); } .join-decision { grid-template-columns:1fr; } }
+        @media (max-width: 575.98px) { .join-family-grid,.schema-relations { grid-template-columns:1fr; } }
+
+        /* Concept visuals and lightweight result charts */
+        .join-visualizer {
+            border: 1px solid var(--border-color);
+            border-radius: .9rem;
+            background: var(--section-alt-bg);
+            padding: 1rem;
+            margin-top: 1.25rem;
+        }
+        .join-visual-controls { display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem; }
+        .join-visual-btn {
+            border:1px solid var(--border-color);
+            background:var(--section-bg);
+            color:var(--text-color);
+            border-radius:999px;
+            padding:.42rem .72rem;
+            font-weight:700;
+            font-size:.82rem;
+        }
+        .join-visual-btn:hover,.join-visual-btn:focus { border-color:var(--accent-color); outline:none; }
+        .join-visual-btn.active { background:var(--accent-color); color:#fff; border-color:var(--accent-color); }
+        .join-visual-stage { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:.8rem; align-items:start; }
+        .join-source-card,.join-output-card { border:1px solid var(--border-color); border-radius:.75rem; overflow:hidden; background:var(--section-bg); }
+        .join-source-card h4,.join-output-card h4 { font-size:.88rem; margin:0; padding:.62rem .72rem; background:rgba(99,102,241,.10); }
+        .join-source-row,.join-output-row { display:grid; grid-template-columns:72px minmax(0,1fr); gap:.45rem; padding:.5rem .65rem; border-top:1px solid var(--border-color); font-family:"Source Code Pro",monospace; font-size:.78rem; }
+        .join-output-row { grid-template-columns:72px minmax(0,1fr) 84px minmax(0,1.2fr); }
+        .join-source-row.match,.join-output-row.match { background:rgba(16,185,129,.10); }
+        .join-output-row.preserved { background:rgba(245,158,11,.10); }
+        .join-null { color:var(--muted-color); font-style:italic; }
+        .join-visual-arrow { align-self:center; color:var(--accent-color); font-size:1.5rem; font-weight:900; padding-top:2rem; }
+        .join-output-card { margin-top:1rem; }
+        .join-visual-summary { margin-top:.65rem; color:var(--muted-color); font-size:.82rem; }
+        .cardinality-bars { border:1px solid var(--border-color); border-radius:.8rem; padding:1rem; background:var(--section-alt-bg); margin:1rem 0; }
+        .cardinality-bar-row { display:grid; grid-template-columns:135px minmax(0,1fr) 44px; gap:.65rem; align-items:center; margin:.55rem 0; font-size:.84rem; }
+        .cardinality-bar-track { height:18px; background:var(--section-bg); border:1px solid var(--border-color); border-radius:999px; overflow:hidden; }
+        .cardinality-bar-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,var(--accent-color),var(--header-color)); min-width:8px; }
+        .cardinality-bar-row.total .cardinality-bar-fill { background:linear-gradient(90deg,#f59e0b,#ef4444); }
+        .visualize-result-btn {
+            border:1px solid var(--border-color);
+            background:transparent;
+            color:var(--header-color);
+            border-radius:.45rem;
+            padding:.25rem .48rem;
+            font-size:.74rem;
+            font-weight:700;
+        }
+        .visualize-result-btn:hover { border-color:var(--accent-color); }
+        .result-chart { padding:.9rem; border-top:1px solid var(--border-color); background:var(--section-alt-bg); }
+        .result-chart-title { font-weight:700; color:var(--header-color); margin-bottom:.7rem; font-size:.86rem; }
+        .result-chart-row { display:grid; grid-template-columns:minmax(90px,150px) minmax(0,1fr) 70px; gap:.6rem; align-items:center; margin:.42rem 0; font-size:.78rem; }
+        .result-chart-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .result-chart-track { height:16px; background:var(--section-bg); border:1px solid var(--border-color); border-radius:999px; overflow:hidden; }
+        .result-chart-bar { height:100%; background:linear-gradient(90deg,var(--accent-color),var(--header-color)); border-radius:999px; min-width:2px; }
+        .result-chart-value { text-align:right; font-family:"Source Code Pro",monospace; }
+        .chart-hint { display:flex; gap:.45rem; align-items:flex-start; margin-top:.65rem; color:var(--muted-color); font-size:.8rem; }
+        @media (max-width: 767.98px) {
+            .join-visual-stage { grid-template-columns:1fr; }
+            .join-visual-arrow { transform:rotate(90deg); padding:0; justify-self:center; }
+            .join-output-row { grid-template-columns:64px minmax(0,1fr); }
+            .join-output-row > :nth-child(3),.join-output-row > :nth-child(4) { border-top:1px dashed var(--border-color); padding-top:.25rem; }
+            .cardinality-bar-row { grid-template-columns:100px minmax(0,1fr) 36px; }
+            .result-chart-row { grid-template-columns:95px minmax(0,1fr) 56px; }
+        }
+
+
+
+        .shape-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 1rem;
+            align-items: center;
+        }
+        .shape-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.9rem;
+            padding: 1rem;
+            min-width: 0;
+        }
+        .shape-card h3 { font-size: 1rem; margin-bottom: 0.75rem; }
+        .shape-arrow {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: rgba(99,102,241,.16);
+            border: 1px solid rgba(99,102,241,.45);
+            color: var(--header-color);
+            font-size: 1.35rem;
+        }
+        .mini-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .78rem;
+        }
+        .mini-data-table th, .mini-data-table td {
+            border: 1px solid var(--border-color);
+            padding: .38rem .45rem;
+            text-align: left;
+            white-space: nowrap;
+        }
+        .mini-data-table th { background: rgba(99,102,241,.11); }
+        .reshape-rule {
+            border-left: 4px solid var(--uncg-gold);
+            background: var(--alert-warning-bg);
+            padding: .9rem 1rem;
+            border-radius: 0 .7rem .7rem 0;
+        }
+        .grain-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: .75rem;
+        }
+        .grain-step {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: .8rem;
+            padding: .9rem;
+            text-align: center;
+        }
+        .grain-step strong { display: block; color: var(--header-color); margin-bottom: .3rem; }
+        .pivot-cells {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0,1fr));
+            gap: .6rem;
+        }
+        .pivot-cell {
+            border: 1px solid var(--border-color);
+            background: var(--section-alt-bg);
+            border-radius: .7rem;
+            padding: .75rem;
+            text-align: center;
+        }
+        .pivot-cell .value { font-family: "Source Code Pro", monospace; font-size: 1.2rem; font-weight: 700; color: var(--header-color); }
+        .reshape-flow {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0,1fr));
+            gap: .55rem;
+            align-items: stretch;
+        }
+        .reshape-flow .flow-node {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: .8rem;
+            padding: .8rem;
+            text-align: center;
+            font-size: .83rem;
+        }
+        .reshape-flow .flow-node strong { display:block; color: var(--header-color); }
+        .shape-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            padding: .25rem .6rem;
+            font-size: .76rem;
+            background: var(--section-alt-bg);
+        }
+        .decision-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; }
+        .decision-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .decision-card h3 { font-size:1rem; }
+        @media (max-width: 991px) {
+            .shape-grid { grid-template-columns: 1fr; }
+            .shape-arrow { margin: 0 auto; transform: rotate(90deg); }
+            .grain-row { grid-template-columns: repeat(2,1fr); }
+            .reshape-flow { grid-template-columns: 1fr; }
+            .decision-grid { grid-template-columns:1fr; }
+        }
+        @media (max-width: 575px) {
+            .grain-row, .pivot-cells { grid-template-columns:1fr; }
+        }
+</style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="./index.html">IAF 603: Preparing Data for Analytics</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Modules
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="./module1.html">Module 1</a></li>
-                            <li><a class="dropdown-item" href="./module2.html">Module 2</a></li>
-                            <li><a class="dropdown-item" href="./module3.html">Module 3</a></li>
-                            <li><a class="dropdown-item" href="./module4.html">Module 4</a></li>
-                            <li><a class="dropdown-item" href="./module5.html">Module 5</a></li>
-                            <li><a class="dropdown-item" href="./module6.html">Module 6</a></li>
-                            <li><a class="dropdown-item" href="./module7.html">Module 7</a></li>
-                            <li><a class="dropdown-item" href="./module8.html">Module 8</a></li>
-                            <li><a class="dropdown-item" href="./module9.html">Module 9</a></li>
-                            <li><a class="dropdown-item" href="./module10.html">Module 10</a></li>
-                            <li><a class="dropdown-item" href="./module11.html">Module 11</a></li>
-                            <li><a class="dropdown-item" href="./module12.html">Module 12</a></li>
-                            <li><a class="dropdown-item" href="./module13.html">Module 13</a></li>
-                            <li><a class="dropdown-item" href="./module14.html">Module 14</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<nav aria-label="Main navigation" class="nav-container"><div class="container"><div class="nav-menu">
+<a class="nav-logo" href="index.html"><span class="brand-mark"><i aria-hidden="true" class="fas fa-database"></i></span>IAN 603 - Data Analytics</a>
+<button aria-controls="nav-links-list" aria-expanded="false" aria-label="Open navigation" class="mobile-menu-btn" id="mobile-menu-toggle" type="button"><i aria-hidden="true" class="fas fa-bars"></i></button>
+<ul class="nav-links-list" id="nav-links-list"><li><a class="nav-link" href="index.html"><i aria-hidden="true" class="fas fa-home"></i>Home</a></li><li class="dropdown"><button aria-expanded="false" class="nav-link dropdown-trigger" type="button"><i aria-hidden="true" class="fas fa-layer-group"></i>Modules <i aria-hidden="true" class="fas fa-chevron-down ms-1"></i></button><div class="dropdown-content"><a class="dropdown-link" href="module1.html"><span class="module-number">1</span>Introduction to Data</a><a class="dropdown-link" href="module2.html"><span class="module-number">2</span>Database Concepts</a><a class="dropdown-link" href="module3.html"><span class="module-number">3</span>PostgreSQL in Action</a><a class="dropdown-link" href="module4.html"><span class="module-number">4</span>SQL Aggregations</a><a class="dropdown-link" href="module5.html"><span class="module-number">5</span>SQL Logic</a><a class="dropdown-link" href="module6.html"><span class="module-number">6</span>Joins in SQL</a><a class="dropdown-link" href="module7.html"><span class="module-number">7</span>Subqueries</a><a class="dropdown-link" href="module8.html"><span class="module-number">8</span>Strings and Dates</a><a class="dropdown-link" href="module9.html"><span class="module-number">9</span>Data Cleaning</a><a class="dropdown-link active" href="module10.html"><span class="module-number">10</span>Reshaping Data</a><a class="dropdown-link" href="module11.html"><span class="module-number">11</span>Advanced SQL</a><a class="dropdown-link" href="module12.html"><span class="module-number">12</span>Views &amp; Modular Queries</a><a class="dropdown-link" href="module13.html"><span class="module-number">13</span>Spark SQL</a><a class="dropdown-link" href="module14.html"><span class="module-number">14</span>Final Project</a></div></li><li><a class="nav-link" href="#sql-lab"><i aria-hidden="true" class="fas fa-terminal"></i>SQL Lab</a></li><li><button aria-label="Toggle dark and light theme" class="theme-toggle-btn" id="theme-toggle" type="button"><i aria-hidden="true" class="fas fa-sun"></i><span class="d-none d-md-inline">Theme</span></button></li></ul>
+</div></div></nav>
+<header class="hero-section"><div class="container"><div class="row align-items-center g-4"><div class="col-lg-8"><div class="hero-kicker"><i aria-hidden="true" class="fas fa-arrows-alt-h me-2"></i>Module 10</div><h1>Reshaping Data</h1><p class="lead mb-3">Move between long and wide analytical forms without losing track of grain, meaning, or missingness.</p><div class="essential-question"><strong>Essential question:</strong> How can we change the shape of data without changing what the data means?</div><div class="hero-meta mt-3"><span><i aria-hidden="true" class="fas fa-database me-1"></i>PostgreSQL</span><span><i aria-hidden="true" class="fas fa-chart-column me-1"></i>Pivot &amp; unpivot</span><span><i aria-hidden="true" class="fas fa-grip-lines me-1"></i>Wide &amp; long</span></div></div><div class="col-lg-4"><div class="hero-summary"><div class="course-badge">IAN 603 - Data Analytics</div><p class="mb-2"><strong>Core workflow</strong></p><p class="mb-0">Declare grain → choose shape → aggregate deliberately → reshape → validate totals → deliver to the next tool.</p></div></div></div></div></header>
+<main class="container pb-5" id="main-content"><div class="row g-4 mt-1"><aside aria-label="Module contents" class="col-lg-3"><nav aria-label="Module section navigation" class="toc-panel"><h2><i aria-hidden="true" class="fas fa-list-ul me-2"></i>Module Contents</h2><ul class="toc-list">
+<li><a href="#start"><span class="toc-index">01</span> Start Here</a></li><li><a href="#shapes"><span class="toc-index">02</span> Wide vs. Long</a></li><li><a href="#sql-lab"><span class="toc-index">03</span> Live PostgreSQL Lab</a></li><li><a href="#pivot"><span class="toc-index">04</span> Pivot with CASE &amp; FILTER</a></li><li><a href="#unpivot"><span class="toc-index">05</span> Unpivot to Long Form</a></li><li><a href="#grain"><span class="toc-index">06</span> Grain &amp; Information Loss</a></li><li><a href="#joins"><span class="toc-index">07</span> Joins + Reshaping</a></li><li><a href="#roundtrip"><span class="toc-index">08</span> Round Trips &amp; NULLs</a></li><li><a href="#dynamic"><span class="toc-index">09</span> Static vs. Dynamic Categories</a></li><li><a href="#delivery"><span class="toc-index">10</span> Reporting &amp; Visualization</a></li><li><a href="#practice-project"><span class="toc-index">11</span> Practice &amp; Project</a></li><li><a href="#assessment"><span class="toc-index">12</span> Assessment &amp; Closure</a></li></ul><hr class="border-secondary"/><p class="small text-muted mb-2">Reshaping habit</p><p class="small mb-0">State the output grain first. Then decide which categories become rows, which become columns, and which measure must be aggregated.</p></nav></aside>
+<div class="col-lg-9 content-column">
+<section class="content-card" id="start"><div class="section-kicker">Start here</div><h2>Reshaping changes structure—not the underlying facts</h2><p>Analytics often needs the same information in different shapes. A dashboard may prefer one row per month with products as columns; a statistical workflow may prefer one row per product-month. The transformation is useful only when you can explain the grain before and after the reshape.</p><div class="learning-objectives"><h3 class="h5">Learning objectives</h3><p>By the end of this module, you will be able to:</p><ul class="mb-0"><li>Distinguish long and wide data and state the grain of each result.</li><li>Pivot rows to columns with conditional aggregation using <code>CASE</code> and PostgreSQL aggregate <code>FILTER</code>.</li><li>Unpivot columns to rows with <code>UNION ALL</code> and <code>CROSS JOIN LATERAL (VALUES ...)</code>.</li><li>Preserve meaningful <code>NULL</code> values rather than automatically replacing absence with zero.</li><li>Combine joins, pre-aggregation, and reshaping without multiplying facts.</li><li>Choose a long or wide delivery shape based on the needs of visualization, reporting, or modeling.</li></ul></div><div class="reshape-rule mt-4"><strong>Rule:</strong> before writing a pivot, complete this sentence: <em>“One output row represents ___.”</em></div></section>
+<section class="content-card" id="shapes"><div class="section-kicker">Mental model</div><h2>Long and wide are two views of the same analytical relationship</h2><div class="shape-grid mt-4"><div class="shape-card"><h3>Long form: one product-month per row</h3><table class="mini-data-table"><caption class="visually-hidden">Long sales example</caption><thead><tr><th>product</th><th>month</th><th>revenue</th></tr></thead><tbody><tr><td>Laptop</td><td>Jan</td><td>1600</td></tr><tr><td>Laptop</td><td>Feb</td><td>2400</td></tr><tr><td>Mouse</td><td>Jan</td><td>100</td></tr><tr><td>Mouse</td><td>Feb</td><td>150</td></tr></tbody></table></div><div aria-hidden="true" class="shape-arrow"><i class="fas fa-right-left"></i></div><div class="shape-card"><h3>Wide form: one product per row</h3><table class="mini-data-table"><caption class="visually-hidden">Wide sales example</caption><thead><tr><th>product</th><th>Jan</th><th>Feb</th></tr></thead><tbody><tr><td>Laptop</td><td>1600</td><td>2400</td></tr><tr><td>Mouse</td><td>100</td><td>150</td></tr></tbody></table></div></div><div class="decision-grid mt-4"><div class="decision-card"><h3><i aria-hidden="true" class="fas fa-grip-lines me-2"></i>Prefer long form when</h3><ul class="mb-0"><li>categories change frequently,</li><li>you need time-series or faceted visualization,</li><li>you want flexible grouping/filtering,</li><li>the next step is modeling or tidy analysis.</li></ul></div><div class="decision-card"><h3><i aria-hidden="true" class="fas fa-table-columns me-2"></i>Prefer wide form when</h3><ul class="mb-0"><li>the report needs fixed side-by-side categories,</li><li>users expect a matrix or scorecard,</li><li>columns have stable business meaning,</li><li>the downstream system requires a fixed schema.</li></ul></div></div><div class="alert alert-info mt-4"><strong>Do not confuse reshaping with aggregation.</strong> Many pivots require aggregation because several source rows map to one output cell. That aggregation can remove detail permanently.</div></section>
+<section class="content-card sql-lab-card" id="sql-lab"><div class="section-kicker">Hands-on lab</div><h2>Live PostgreSQL workbench</h2><p>The workbench runs PostgreSQL in your browser through PGlite. The disposable dataset includes admissions, retail sales, survey responses, a wide monthly-sales table, patient metrics, and student grades.</p><div class="lab-status-row"><div class="engine-status loading" id="engine-status"><span class="status-dot"></span><span id="engine-status-text">Loading PostgreSQL engine...</span></div><span class="engine-badge"><i aria-hidden="true" class="fas fa-bolt"></i>PGlite / PostgreSQL WASM</span></div><div class="row g-3 mt-1"><div class="col-lg-5"><label class="form-label fw-semibold" for="preset-select">Runnable example</label><select class="form-select lab-control" id="preset-select"><option value="explore_schema">Explore schema</option><option value="inspect_admissions">Inspect long admissions</option><option value="pivot_diagnosis_case">Pivot diagnoses with CASE</option><option value="pivot_diagnosis_filter">Pivot diagnoses with FILTER</option><option value="pivot_sales_revenue">Pivot sales revenue</option><option value="pivot_survey_scores">Pivot survey scores</option><option value="pivot_null_semantics">Missing vs zero in pivot</option><option value="inspect_monthly_sales">Inspect wide monthly sales</option><option value="unpivot_union">Unpivot with UNION ALL</option><option value="unpivot_lateral">Unpivot with LATERAL VALUES</option><option value="unpivot_metrics">Unpivot patient metrics</option><option value="unpivot_drop_null">Drop missing cells after unpivot</option><option value="round_trip">Pivot then unpivot</option><option value="grain_check">Check source grain</option><option value="grain_loss_demo">See aggregation information loss</option><option value="join_patient_pivot">Join then pivot patient months</option><option value="preaggregate_sales">Pre-aggregate then reshape</option><option value="long_for_chart">Long result for charting</option><option value="discover_categories">Discover categories</option><option value="static_categories">Static category pivot</option><option value="project_grade_matrix">Project: grade matrix</option><option value="project_patient_months">Project: patient month matrix</option><option value="assessment_starter">Assessment starter</option></select></div><div class="col-lg-7 d-flex align-items-end"><div class="lab-actions"><button class="btn btn-primary" id="run-sql" type="button"><i aria-hidden="true" class="fas fa-play me-1"></i>Run SQL</button><button class="btn btn-outline-primary" id="run-selection" type="button">Run selection</button><button class="btn btn-outline-secondary" id="reset-db" type="button">Reset DB</button><button class="btn btn-outline-secondary" id="clear-editor" type="button">Clear</button></div></div></div><label class="form-label fw-semibold mt-3" for="sql-editor">SQL editor</label><textarea aria-describedby="sql-shortcuts" class="sql-editor" id="sql-editor" spellcheck="false">SELECT DATE_TRUNC('month', admit_time)::date AS admit_month,
+       COUNT(*) FILTER (WHERE diagnosis = 'Pneumonia') AS pneumonia_count,
+       COUNT(*) FILTER (WHERE diagnosis = 'Fracture') AS fracture_count,
+       COUNT(*) FILTER (WHERE diagnosis = 'Flu') AS flu_count
+FROM admissions
+GROUP BY 1
+ORDER BY 1;</textarea><div class="sql-shortcuts" id="sql-shortcuts"><kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Enter</kbd> runs the editor. Select text first and use <strong>Run selection</strong> to execute only that portion.</div><div class="results-shell mt-3"><div class="results-header"><div><h3 class="h5 mb-0">Results</h3><span class="result-meta" id="execution-meta">Waiting for query</span></div></div><div aria-live="polite" class="results-output" id="results-output"><div class="result-placeholder">Waiting for PostgreSQL...</div></div></div><details class="seed-details mt-3"><summary>View the seeded database structure</summary><pre class="mt-3"><code class="language-sql">DROP TABLE IF EXISTS grades CASCADE;
+DROP TABLE IF EXISTS students CASCADE;
+DROP TABLE IF EXISTS patient_metrics CASCADE;
+DROP TABLE IF EXISTS monthly_sales CASCADE;
+DROP TABLE IF EXISTS survey_responses CASCADE;
+DROP TABLE IF EXISTS sales CASCADE;
+DROP TABLE IF EXISTS admissions CASCADE;
+DROP TABLE IF EXISTS patients CASCADE;
 
-    <!-- Main Content -->
-    <div class="container my-5">
-        <!-- Module Title -->
-        <section class="text-center py-5 bg-white rounded shadow">
-            <h1 class="display-4 fw-bold text-dark">Module 10: Reshaping Data</h1>
-        </section>
+CREATE TABLE patients (
+  subject_id integer PRIMARY KEY,
+  name text NOT NULL
+);
 
-        <!-- Module Content -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <!-- Learning Objectives -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Learning Objectives</h2>
-                <p>Upon completion of this module, participants will be able to:</p>
-                <ul>
-                    <li>Learn to pivot data (rows to columns) using <code>CASE</code> statements to transform datasets for analysis.</li>
-                    <li>Apply unpivoting techniques (columns to rows) using <code>UNION ALL</code> to normalize data structures.</li>
-                    <li>Combine pivoting and unpivoting with other SQL clauses (<code>JOIN</code>, <code>GROUP BY</code>) for flexible data restructuring.</li>
-                    <li>Address common data reshaping challenges in real-world scenarios, such as reporting and visualization preparation.</li>
-                    <li>Execute reshaping operations in cloud-based environments like Microsoft Fabric Lakehouse.</li>
-                </ul>
+CREATE TABLE admissions (
+  hadm_id integer PRIMARY KEY,
+  subject_id integer NOT NULL REFERENCES patients(subject_id),
+  admit_time timestamp NOT NULL,
+  diagnosis text NOT NULL,
+  department text NOT NULL
+);
 
-                <!-- Introduction to Reshaping Data -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Introduction to Reshaping Data</h2>
-                <p>Reshaping data involves transforming its structure to suit analytical or reporting needs, such as converting rows to columns (pivoting) or columns to rows (unpivoting). This module focuses on using <code>CASE</code> statements for pivoting and <code>UNION ALL</code> for unpivoting, enabling flexible data restructuring. These techniques are critical in scenarios like creating summary reports in a Greensboro hospital (e.g., pivoting patient diagnoses by month) or normalizing survey responses for analysis. Reshaping ensures data is presented in a format that aligns with analytical tools or business requirements, enhancing interpretability and usability.</p>
-                <p>Pivoting is useful for creating wide-format tables for dashboards, while unpivoting converts wide data into long formats for detailed analysis. These methods are particularly valuable when dealing with messy datasets or preparing data for visualization tools like Power BI or Tableau. By combining reshaping with joins and aggregations, you can create robust data preparation pipelines.</p>
+CREATE TABLE sales (
+  sale_id integer PRIMARY KEY,
+  product text NOT NULL,
+  category text NOT NULL,
+  sale_month date NOT NULL,
+  revenue numeric(10,2) NOT NULL CHECK (revenue &gt;= 0)
+);
 
-                <!-- Sample Data -->
-                <h3 class="h4 fw-bold mb-3">Sample Data</h3>
-                <p><strong>ADMISSIONS Table:</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>hadm_id</th>
-                            <th>subject_id</th>
-                            <th>admit_time</th>
-                            <th>diagnosis</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>101</td>
-                            <td>1001</td>
-                            <td>2025-01-10</td>
-                            <td>Pneumonia</td>
-                        </tr>
-                        <tr>
-                            <td>102</td>
-                            <td>1002</td>
-                            <td>2025-01-15</td>
-                            <td>Fracture</td>
-                        </tr>
-                        <tr>
-                            <td>103</td>
-                            <td>1001</td>
-                            <td>2025-02-05</td>
-                            <td>Pneumonia</td>
-                        </tr>
-                        <tr>
-                            <td>104</td>
-                            <td>1003</td>
-                            <td>2025-02-10</td>
-                            <td>Flu</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p><strong>Sales Table (Retail Example):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>sale_id</th>
-                            <th>product</th>
-                            <th>month</th>
-                            <th>revenue</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Laptop</td>
-                            <td>2025-01</td>
-                            <td>1600.00</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Mouse</td>
-                            <td>2025-01</td>
-                            <td>100.00</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Laptop</td>
-                            <td>2025-02</td>
-                            <td>2400.00</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Mouse</td>
-                            <td>2025-02</td>
-                            <td>150.00</td>
-                        </tr>
-                    </tbody>
-                </table>
+CREATE TABLE survey_responses (
+  respondent_id integer NOT NULL,
+  question text NOT NULL,
+  score integer CHECK (score BETWEEN 1 AND 5),
+  PRIMARY KEY (respondent_id, question)
+);
 
-                <!-- Pivoting Data (Rows to Columns) -->
-                <h3 class="h4 fw-bold mb-3">Pivoting Data (Rows to Columns)</h3>
-                <p>Pivoting transforms rows into columns, often for summary reports or visualizations. In SQL, <code>CASE</code> statements are used to create pivot tables when a dedicated <code>PIVOT</code> operator is unavailable.</p>
-                <ul>
-                    <li><strong>Purpose:</strong> Summarize data by categories as columns (e.g., diagnoses by month).</li>
-                    <li><strong>Method:</strong> Use <code>CASE</code> to create columns for each category, combined with <code>GROUP BY</code>.</li>
-                </ul>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Pivot admissions by diagnosis for each month
-SELECT
-    EXTRACT(MONTH FROM admit_time) AS Month,
-    SUM(CASE WHEN diagnosis = 'Pneumonia' THEN 1 ELSE 0 END) AS PneumoniaCount,
-    SUM(CASE WHEN diagnosis = 'Fracture' THEN 1 ELSE 0 END) AS FractureCount,
-    SUM(CASE WHEN diagnosis = 'Flu' THEN 1 ELSE 0 END) AS FluCount
-FROM ADMISSIONS
-GROUP BY EXTRACT(MONTH FROM admit_time);</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This query creates columns for each diagnosis, counting occurrences per month. The result is a wide-format table ideal for monthly trend reports.</p>
-                <p><strong>Expected Output:</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Month</th>
-                            <th>PneumoniaCount</th>
-                            <th>FractureCount</th>
-                            <th>FluCount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p><strong>Expanded Example (Sales by Product):</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Pivot sales revenue by product for each month
-SELECT
-    month,
-    SUM(CASE WHEN product = 'Laptop' THEN revenue ELSE 0 END) AS LaptopRevenue,
-    SUM(CASE WHEN product = 'Mouse' THEN revenue ELSE 0 END) AS MouseRevenue
-FROM Sales
-GROUP BY month;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Creates a pivot table showing revenue for each product by month, useful for retail performance dashboards.</p>
-                <p><strong>Expanded Example (Survey Responses):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>respondent_id</th>
-                            <th>question</th>
-                            <th>score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Q1</td>
-                            <td>4</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Q2</td>
-                            <td>5</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Q1</td>
-                            <td>3</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Q2</td>
-                            <td>4</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Pivot survey scores by question
-SELECT
-    respondent_id,
-    MAX(CASE WHEN question = 'Q1' THEN score ELSE NULL END) AS Q1_Score,
-    MAX(CASE WHEN question = 'Q2' THEN score ELSE NULL END) AS Q2_Score
-FROM SurveyResponses
-GROUP BY respondent_id;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Transforms question scores into columns per respondent, ideal for comparing responses across questions.</p>
+CREATE TABLE monthly_sales (
+  product text PRIMARY KEY,
+  jan_revenue numeric(10,2),
+  feb_revenue numeric(10,2),
+  mar_revenue numeric(10,2)
+);
 
-                <!-- Unpivoting Data (Columns to Rows) -->
-                <h3 class="h4 fw-bold mb-3">Unpivoting Data (Columns to Rows)</h3>
-                <p>Unpivoting converts columns into rows, often for normalizing wide-format data or preparing it for detailed analysis.</p>
-                <ul>
-                    <li><strong>Purpose:</strong> Transform wide data into long format (e.g., convert monthly columns into rows).</li>
-                    <li><strong>Method:</strong> Use <code>UNION ALL</code> to stack column values as rows.</li>
-                </ul>
-                <p><strong>Sample Wide Data (MonthlySales):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>product</th>
-                            <th>Jan_Revenue</th>
-                            <th>Feb_Revenue</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Laptop</td>
-                            <td>1600.00</td>
-                            <td>2400.00</td>
-                        </tr>
-                        <tr>
-                            <td>Mouse</td>
-                            <td>100.00</td>
-                            <td>150.00</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Unpivot monthly sales data
-SELECT product, 'Jan' AS Month, Jan_Revenue AS Revenue
-FROM MonthlySales
+CREATE TABLE patient_metrics (
+  patient_id integer PRIMARY KEY,
+  heart_rate integer,
+  systolic_bp integer,
+  diastolic_bp integer,
+  oxygen_sat numeric(5,2)
+);
+
+CREATE TABLE students (
+  student_id integer PRIMARY KEY,
+  student_name text NOT NULL
+);
+
+CREATE TABLE grades (
+  student_id integer REFERENCES students(student_id),
+  course_code text NOT NULL,
+  grade numeric(5,2),
+  PRIMARY KEY (student_id, course_code)
+);
+
+INSERT INTO patients VALUES
+(1001,'Alice Smith'),
+(1002,'Bob Johnson'),
+(1003,'Carol White'),
+(1004,'David Brown'),
+(1005,'Eve Davis');
+
+INSERT INTO admissions VALUES
+(101,1001,TIMESTAMP '2025-01-10 09:00','Pneumonia','Internal Medicine'),
+(102,1002,TIMESTAMP '2025-01-15 14:00','Fracture','Orthopedics'),
+(103,1001,TIMESTAMP '2025-01-28 16:00','Flu','Internal Medicine'),
+(104,1001,TIMESTAMP '2025-02-05 08:30','Pneumonia','Internal Medicine'),
+(105,1003,TIMESTAMP '2025-02-10 11:00','Flu','Internal Medicine'),
+(106,1004,TIMESTAMP '2025-02-18 07:45','Pneumonia','Pulmonology'),
+(107,1005,TIMESTAMP '2025-03-02 13:20','Fracture','Orthopedics'),
+(108,1002,TIMESTAMP '2025-03-15 19:10','Flu','Internal Medicine'),
+(109,1001,TIMESTAMP '2025-03-22 10:15','Flu','Internal Medicine'),
+(110,1003,TIMESTAMP '2025-03-30 17:00','Pneumonia','Pulmonology');
+
+INSERT INTO sales VALUES
+(1,'Laptop','Electronics',DATE '2025-01-01',900.00),
+(2,'Laptop','Electronics',DATE '2025-01-01',700.00),
+(3,'Mouse','Accessories',DATE '2025-01-01',40.00),
+(4,'Mouse','Accessories',DATE '2025-01-01',60.00),
+(5,'Laptop','Electronics',DATE '2025-02-01',1400.00),
+(6,'Laptop','Electronics',DATE '2025-02-01',1000.00),
+(7,'Mouse','Accessories',DATE '2025-02-01',150.00),
+(8,'Keyboard','Accessories',DATE '2025-02-01',200.00),
+(9,'Laptop','Electronics',DATE '2025-03-01',1800.00),
+(10,'Mouse','Accessories',DATE '2025-03-01',190.00),
+(11,'Keyboard','Accessories',DATE '2025-03-01',250.00);
+
+INSERT INTO survey_responses VALUES
+(1,'Q1',4),(1,'Q2',5),(1,'Q3',4),
+(2,'Q1',3),(2,'Q2',4),
+(3,'Q1',5),(3,'Q2',5),(3,'Q3',5);
+
+INSERT INTO monthly_sales VALUES
+('Laptop',1600.00,2400.00,1800.00),
+('Mouse',100.00,150.00,190.00),
+('Keyboard',NULL,200.00,250.00);
+
+INSERT INTO patient_metrics VALUES
+(1001,72,120,80,98.0),
+(1002,68,130,85,97.0),
+(1003,88,142,92,94.5);
+
+INSERT INTO students VALUES
+(1,'Ana Patel'),(2,'Malik Green'),(3,'Sofia Chen');
+
+INSERT INTO grades VALUES
+(1,'CSC101',92),(1,'STA201',88),(1,'DBA301',95),
+(2,'CSC101',84),(2,'STA201',91),
+(3,'CSC101',97),(3,'STA201',94),(3,'DBA301',90);
+</code></pre></details></section>
+<section class="content-card" id="pivot"><div class="section-kicker">Rows → columns</div><h2>Pivot with conditional aggregation</h2><p>PostgreSQL does not require a dedicated core <code>PIVOT</code> keyword. A transparent pattern is to group by the desired row grain and use a conditional aggregate for each output category.</p><div class="pivot-cells mt-3"><div class="pivot-cell"><div class="small text-muted">Row grain</div><div class="value">month</div></div><div class="pivot-cell"><div class="small text-muted">Column categories</div><div class="value">diagnosis</div></div><div class="pivot-cell"><div class="small text-muted">Cell measure</div><div class="value">count</div></div></div><h3 class="h5 mt-4">Portable CASE pattern</h3><div class="code-shell"><div class="code-toolbar"><span>Conditional aggregation with CASE</span><div class="d-flex gap-2 flex-wrap"><button class="btn btn-sm btn-primary load-preset-btn" data-preset="pivot_diagnosis_case" type="button">Load in SQL lab</button><button class="btn btn-sm btn-outline-secondary copy-btn" type="button">Copy</button></div></div><pre><code class="language-sql">SELECT DATE_TRUNC('month', admit_time)::date AS admit_month,
+       SUM(CASE WHEN diagnosis = 'Pneumonia' THEN 1 ELSE 0 END) AS pneumonia_count,
+       SUM(CASE WHEN diagnosis = 'Fracture' THEN 1 ELSE 0 END) AS fracture_count,
+       SUM(CASE WHEN diagnosis = 'Flu' THEN 1 ELSE 0 END) AS flu_count
+FROM admissions
+GROUP BY 1
+ORDER BY 1;</code></pre></div><h3 class="h5 mt-4">PostgreSQL FILTER pattern</h3><div class="code-shell"><div class="code-toolbar"><span>Aggregate FILTER</span><div class="d-flex gap-2 flex-wrap"><button class="btn btn-sm btn-primary load-preset-btn" data-preset="pivot_diagnosis_filter" type="button">Load in SQL lab</button><button class="btn btn-sm btn-outline-secondary copy-btn" type="button">Copy</button></div></div><pre><code class="language-sql">SELECT DATE_TRUNC('month', admit_time)::date AS admit_month,
+       COUNT(*) FILTER (WHERE diagnosis = 'Pneumonia') AS pneumonia_count,
+       COUNT(*) FILTER (WHERE diagnosis = 'Fracture') AS fracture_count,
+       COUNT(*) FILTER (WHERE diagnosis = 'Flu') AS flu_count
+FROM admissions
+GROUP BY 1
+ORDER BY 1;</code></pre></div><p class="mt-3">Both queries produce the same conceptual shape. <code>FILTER</code> can be easier to read because the aggregate and its category condition stay together.</p><div class="alert alert-warning"><strong>Missing is not always zero.</strong> A count of events may reasonably be zero. A missing survey score is different: use <code>MAX(CASE WHEN ... THEN score END)</code> or a filtered aggregate so absence remains <code>NULL</code>.</div><div class="code-shell"><div class="code-toolbar"><span>Survey scores: preserve missing cells</span><div class="d-flex gap-2 flex-wrap"><button class="btn btn-sm btn-primary load-preset-btn" data-preset="pivot_survey_scores" type="button">Load in SQL lab</button><button class="btn btn-sm btn-outline-secondary copy-btn" type="button">Copy</button></div></div><pre><code class="language-sql">SELECT respondent_id,
+       MAX(score) FILTER (WHERE question = 'Q1') AS q1_score,
+       MAX(score) FILTER (WHERE question = 'Q2') AS q2_score,
+       MAX(score) FILTER (WHERE question = 'Q3') AS q3_score
+FROM survey_responses
+GROUP BY respondent_id
+ORDER BY respondent_id;</code></pre></div><button class="btn btn-outline-primary mt-2 load-preset-btn" data-preset="pivot_null_semantics" type="button">Compare NULL versus forced zero</button></section>
+<section class="content-card" id="unpivot"><div class="section-kicker">Columns → rows</div><h2>Unpivot wide tables into a reusable long form</h2><p>Unpivoting turns repeated measure columns into a category column plus a value column. This is useful when month names, metrics, or survey questions were stored as columns but analysis needs them as rows.</p><div class="shape-grid mt-4"><div class="shape-card"><h3>Wide source</h3><table class="mini-data-table"><caption class="visually-hidden">Reshaping data example table 1</caption><thead><tr><th>product</th><th>Jan</th><th>Feb</th><th>Mar</th></tr></thead><tbody><tr><td>Laptop</td><td>1600</td><td>2400</td><td>1800</td></tr></tbody></table></div><div aria-hidden="true" class="shape-arrow"><i class="fas fa-arrow-down"></i></div><div class="shape-card"><h3>Long result</h3><table class="mini-data-table"><caption class="visually-hidden">Reshaping data example table 2</caption><thead><tr><th>product</th><th>month</th><th>revenue</th></tr></thead><tbody><tr><td>Laptop</td><td>Jan</td><td>1600</td></tr><tr><td>Laptop</td><td>Feb</td><td>2400</td></tr><tr><td>Laptop</td><td>Mar</td><td>1800</td></tr></tbody></table></div></div><h3 class="h5 mt-4">Method 1: UNION ALL</h3><div class="code-shell"><div class="code-toolbar"><span>Explicit UNION ALL</span><div class="d-flex gap-2 flex-wrap"><button class="btn btn-sm btn-primary load-preset-btn" data-preset="unpivot_union" type="button">Load in SQL lab</button><button class="btn btn-sm btn-outline-secondary copy-btn" type="button">Copy</button></div></div><pre><code class="language-sql">SELECT product, DATE '2025-01-01' AS sale_month, jan_revenue AS revenue
+FROM monthly_sales
 UNION ALL
-SELECT product, 'Feb' AS Month, Feb_Revenue AS Revenue
-FROM MonthlySales;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Converts monthly revenue columns into rows, creating a long-format table for time-series analysis.</p>
-                <p><strong>Expected Output:</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>product</th>
-                            <th>Month</th>
-                            <th>Revenue</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Laptop</td>
-                            <td>Jan</td>
-                            <td>1600.00</td>
-                        </tr>
-                        <tr>
-                            <td>Laptop</td>
-                            <td>Feb</td>
-                            <td>2400.00</td>
-                        </tr>
-                        <tr>
-                            <td>Mouse</td>
-                            <td>Jan</td>
-                            <td>100.00</td>
-                        </tr>
-                        <tr>
-                            <td>Mouse</td>
-                            <td>Feb</td>
-                            <td>150.00</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p><strong>Expanded Example (Patient Metrics):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>patient_id</th>
-                            <th>HeartRate</th>
-                            <th>BloodPressure</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1001</td>
-                            <td>72</td>
-                            <td>120/80</td>
-                        </tr>
-                        <tr>
-                            <td>1002</td>
-                            <td>68</td>
-                            <td>130/85</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Unpivot patient metrics
-SELECT patient_id, 'HeartRate' AS Metric, HeartRate AS Value
-FROM PatientMetrics
+SELECT product, DATE '2025-02-01', feb_revenue
+FROM monthly_sales
 UNION ALL
-SELECT patient_id, 'BloodPressure' AS Metric, BloodPressure AS Value
-FROM PatientMetrics;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Converts metrics into a long format, suitable for detailed health analysis.</p>
+SELECT product, DATE '2025-03-01', mar_revenue
+FROM monthly_sales
+ORDER BY product, sale_month;</code></pre></div><h3 class="h5 mt-4">Method 2: CROSS JOIN LATERAL + VALUES</h3><div class="code-shell"><div class="code-toolbar"><span>PostgreSQL LATERAL VALUES</span><div class="d-flex gap-2 flex-wrap"><button class="btn btn-sm btn-primary load-preset-btn" data-preset="unpivot_lateral" type="button">Load in SQL lab</button><button class="btn btn-sm btn-outline-secondary copy-btn" type="button">Copy</button></div></div><pre><code class="language-sql">SELECT m.product, v.sale_month, v.revenue
+FROM monthly_sales AS m
+CROSS JOIN LATERAL (
+    VALUES
+      (DATE '2025-01-01', m.jan_revenue),
+      (DATE '2025-02-01', m.feb_revenue),
+      (DATE '2025-03-01', m.mar_revenue)
+) AS v(sale_month, revenue)
+ORDER BY m.product, v.sale_month;</code></pre></div><p class="mt-3">The lateral form keeps all source columns available while generating several rows from each source row. It is especially useful when many related columns share a common output type.</p><div class="code-shell"><div class="code-toolbar"><span>Unpivot patient metrics</span><div class="d-flex gap-2 flex-wrap"><button class="btn btn-sm btn-primary load-preset-btn" data-preset="unpivot_metrics" type="button">Load in SQL lab</button><button class="btn btn-sm btn-outline-secondary copy-btn" type="button">Copy</button></div></div><pre><code class="language-sql">SELECT p.patient_id, v.metric, v.value
+FROM patient_metrics AS p
+CROSS JOIN LATERAL (
+    VALUES
+      ('heart_rate', p.heart_rate::numeric),
+      ('systolic_bp', p.systolic_bp::numeric),
+      ('diastolic_bp', p.diastolic_bp::numeric),
+      ('oxygen_sat', p.oxygen_sat)
+) AS v(metric, value)
+ORDER BY p.patient_id, v.metric;</code></pre></div><div class="alert alert-info mt-3">When unpivoted columns have different data types, PostgreSQL must find a common type. Cast explicitly when needed so the output <code>value</code> column has a deliberate type.</div></section>
+<section class="content-card" id="grain"><div class="section-kicker">The most important safeguard</div><h2>Grain determines whether a pivot is correct</h2><div class="grain-row"><div class="grain-step"><strong>Source fact</strong>One row per sale transaction</div><div class="grain-step"><strong>Group</strong>One product-month group</div><div class="grain-step"><strong>Aggregate</strong>SUM revenue inside the group</div><div class="grain-step"><strong>Pivot cell</strong>One total per product × month</div></div><p class="mt-4">The seeded <code>sales</code> table deliberately contains two Laptop rows in January. A pivot cell cannot contain both transaction rows, so you must decide how to combine them.</p><div class="code-shell"><div class="code-toolbar"><span>Inspect source cardinality</span><div class="d-flex gap-2 flex-wrap"><button class="btn btn-sm btn-primary load-preset-btn" data-preset="grain_check" type="button">Load in SQL lab</button><button class="btn btn-sm btn-outline-secondary copy-btn" type="button">Copy</button></div></div><pre><code class="language-sql">SELECT product, sale_month, COUNT(*) AS source_rows, SUM(revenue) AS total_revenue
+FROM sales
+GROUP BY product, sale_month
+ORDER BY product, sale_month;</code></pre></div><button class="btn btn-outline-primary load-preset-btn" data-preset="grain_loss_demo" type="button">See the detail that aggregation removes</button><div class="reshape-rule mt-4"><strong>Validation habit:</strong> compare totals before and after reshaping. For additive measures such as revenue, the long-form grand total should equal the sum of all populated pivot cells.</div></section>
+<section class="content-card" id="joins"><div class="section-kicker">Combine earlier modules</div><h2>Join first only when the join preserves the intended fact grain</h2><p>A common report joins descriptive data to facts and then pivots. The safe approach is to know which table defines the measure and whether the join can duplicate that measure.</p><div class="code-shell"><div class="code-toolbar"><span>Patient admissions by month</span><div class="d-flex gap-2 flex-wrap"><button class="btn btn-sm btn-primary load-preset-btn" data-preset="join_patient_pivot" type="button">Load in SQL lab</button><button class="btn btn-sm btn-outline-secondary copy-btn" type="button">Copy</button></div></div><pre><code class="language-sql">SELECT p.subject_id, p.name,
+       COUNT(a.hadm_id) FILTER (WHERE DATE_TRUNC('month', a.admit_time) = DATE '2025-01-01') AS jan_admissions,
+       COUNT(a.hadm_id) FILTER (WHERE DATE_TRUNC('month', a.admit_time) = DATE '2025-02-01') AS feb_admissions,
+       COUNT(a.hadm_id) FILTER (WHERE DATE_TRUNC('month', a.admit_time) = DATE '2025-03-01') AS mar_admissions
+FROM patients AS p
+LEFT JOIN admissions AS a ON a.subject_id = p.subject_id
+GROUP BY p.subject_id, p.name
+ORDER BY p.subject_id;</code></pre></div><p class="mt-3">Here, <code>patients</code> contributes one descriptive row per patient and <code>admissions</code> contributes the fact rows being counted. The patient table does not multiply admissions.</p><h3 class="h5 mt-4">Pre-aggregate before later reshaping when needed</h3><div class="code-shell"><div class="code-toolbar"><span>Pre-aggregate sales to product-month</span><div class="d-flex gap-2 flex-wrap"><button class="btn btn-sm btn-primary load-preset-btn" data-preset="preaggregate_sales" type="button">Load in SQL lab</button><button class="btn btn-sm btn-outline-secondary copy-btn" type="button">Copy</button></div></div><pre><code class="language-sql">WITH monthly_product AS (
+    SELECT product, category, sale_month, SUM(revenue) AS revenue
+    FROM sales
+    GROUP BY product, category, sale_month
+)
+SELECT category,
+       SUM(revenue) FILTER (WHERE sale_month = DATE '2025-01-01') AS jan_revenue,
+       SUM(revenue) FILTER (WHERE sale_month = DATE '2025-02-01') AS feb_revenue,
+       SUM(revenue) FILTER (WHERE sale_month = DATE '2025-03-01') AS mar_revenue
+FROM monthly_product
+GROUP BY category
+ORDER BY category;</code></pre></div><div class="alert alert-warning mt-3">If you join two one-to-many child tables before aggregating, you can multiply rows and inflate pivot cells. Apply the cardinality lessons from Module 6 before trusting a reshaped result.</div></section>
+<section class="content-card" id="roundtrip"><div class="section-kicker">Reason about reversibility</div><h2>A reshape can be reversible—or lossy</h2><div class="reshape-flow mt-3"><div class="flow-node"><strong>Long source</strong>transaction rows</div><div class="flow-node"><strong>Group</strong>product-month</div><div class="flow-node"><strong>Pivot</strong>monthly columns</div><div class="flow-node"><strong>Unpivot</strong>month rows</div><div class="flow-node"><strong>Long result</strong>monthly totals</div></div><p class="mt-4">The round trip does not recover original transaction IDs because the pivot aggregated them into monthly totals. It recovers the aggregated grain—not the original grain.</p><div class="code-shell"><div class="code-toolbar"><span>Pivot then unpivot</span><div class="d-flex gap-2 flex-wrap"><button class="btn btn-sm btn-primary load-preset-btn" data-preset="round_trip" type="button">Load in SQL lab</button><button class="btn btn-sm btn-outline-secondary copy-btn" type="button">Copy</button></div></div><pre><code class="language-sql">WITH wide AS (
+    SELECT product,
+           SUM(revenue) FILTER (WHERE sale_month = DATE '2025-01-01') AS jan_revenue,
+           SUM(revenue) FILTER (WHERE sale_month = DATE '2025-02-01') AS feb_revenue,
+           SUM(revenue) FILTER (WHERE sale_month = DATE '2025-03-01') AS mar_revenue
+    FROM sales
+    GROUP BY product
+)
+SELECT w.product, v.sale_month, v.revenue
+FROM wide AS w
+CROSS JOIN LATERAL (
+  VALUES
+    (DATE '2025-01-01', w.jan_revenue),
+    (DATE '2025-02-01', w.feb_revenue),
+    (DATE '2025-03-01', w.mar_revenue)
+) AS v(sale_month, revenue)
+ORDER BY w.product, v.sale_month;</code></pre></div><h3 class="h5 mt-4">NULL policy</h3><p>Decide whether an empty pivot cell means <em>zero observed events</em>, <em>no measurement</em>, or <em>unknown</em>. Those meanings are analytically different. The unpivot step can preserve null cells or explicitly remove them.</p><button class="btn btn-outline-primary load-preset-btn" data-preset="unpivot_drop_null" type="button">Unpivot and drop NULL cells</button></section>
+<section class="content-card" id="dynamic"><div class="section-kicker">Schema design decision</div><h2>Static categories are easy; dynamic categories change the output schema</h2><p>Conditional aggregation works best when the desired columns are known: January, February, March; Q1, Q2, Q3; or a stable set of diagnoses. First inspect the categories:</p><div class="code-shell"><div class="code-toolbar"><span>Discover current categories</span><div class="d-flex gap-2 flex-wrap"><button class="btn btn-sm btn-primary load-preset-btn" data-preset="discover_categories" type="button">Load in SQL lab</button><button class="btn btn-sm btn-outline-secondary copy-btn" type="button">Copy</button></div></div><pre><code class="language-sql">SELECT DISTINCT diagnosis
+FROM admissions
+ORDER BY diagnosis;
 
-                <!-- Combining with Other SQL Clauses -->
-                <h3 class="h4 fw-bold mb-3">Combining with Other SQL Clauses</h3>
-                <p>Reshaping often involves joins, aggregations, and filtering for complex analysis.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Pivot admissions with patient names
-SELECT
-    p.name,
-    SUM(CASE WHEN EXTRACT(MONTH FROM a.admit_time) = 1 THEN 1 ELSE 0 END) AS JanAdmissions,
-    SUM(CASE WHEN EXTRACT(MONTH FROM a.admit_time) = 2 THEN 1 ELSE 0 END) AS FebAdmissions
-FROM PATIENTS p
-LEFT JOIN ADMISSIONS a ON p.subject_id = a.subject_id
-GROUP BY p.name;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Joins patients with admissions, pivoting to show admission counts by month per patient.</p>
-                <p><strong>Expanded Example (Sales with Categories):</strong></p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Pivot sales by category and month
-SELECT
-    p.category,
-    SUM(CASE WHEN s.month = '2025-01' THEN s.revenue ELSE 0 END) AS JanRevenue,
-    SUM(CASE WHEN s.month = '2025-02' THEN s.revenue ELSE 0 END) AS FebRevenue
-FROM Products p
-JOIN Sales s ON p.product = s.product
-GROUP BY p.category;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Aggregates revenue by category and month, creating a wide-format report.</p>
-
-                <!-- Reshaping in Microsoft Fabric -->
-                <h3 class="h4 fw-bold mb-3">Reshaping in Microsoft Fabric Lakehouse</h3>
-                <p>Fabric supports reshaping for large datasets, optimized for distributed processing.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Pivot survey scores in Fabric
-SELECT
-    respondent_id,
-    MAX(CASE WHEN question = 'Q1' THEN score ELSE NULL END) AS Q1_Score,
-    MAX(CASE WHEN question = 'Q2' THEN score ELSE NULL END) AS Q2_Score
-FROM survey_lakehouse.Responses
-GROUP BY respondent_id;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> Pivots survey responses for scalable analysis in Fabric.</p>
-
-                <!-- Assessments -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Assessments</h2>
-                <ol>
-                    <li><strong>Conceptual Question:</strong> Explain the difference between pivoting and unpivoting. When would you use each?</li>
-                    <li><strong>SQL Coding Task:</strong> Using the ADMISSIONS table, pivot to show counts of each diagnosis by month in 2025.</li>
-                    <li><strong>Application Scenario:</strong> For a Greensboro retailer, unpivot a table with monthly sales columns into a long format for time-series analysis.</li>
-                    <li><strong>Expanded Task:</strong> For a university database, pivot student grades by course code into columns, then join with student data to include names.</li>
-                </ol>
-            </div>
-        </section>
-    </div>
-
-    <!-- Footer -->
-    <footer class="bg-light py-3 text-center">
-        <p class="text-muted mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <!-- Highlight.js Initialization -->
-    <script>hljs.highlightAll();</script>
-    <!-- Custom Copy Functionality -->
-    <script>
-        function copyCode(button) {
-            const code = button.nextElementSibling.querySelector('code');
-            navigator.clipboard.writeText(code.innerText).then(() => {
-                button.textContent = 'Copied!';
-                setTimeout(() => { button.textContent = 'Copy'; }, 2000);
-            });
-        }
-    </script>
-</body>
-</html>
+SELECT DISTINCT product
+FROM sales
+ORDER BY product;</code></pre></div><p class="mt-3">If categories change often, a long result is usually more robust because new categories become new rows rather than requiring new SQL columns. Application code or a BI tool can generate the presentation matrix at render time.</p><div class="alert alert-secondary"><strong>Optional PostgreSQL feature:</strong> the supplied <code>tablefunc</code> extension provides <code>crosstab()</code> for pivot tables, but extension availability and the required output-column definition make it better suited to selected server-side reporting scenarios than to the core pattern taught here.</div><div class="code-shell"><div class="code-toolbar"><span>Static diagnosis columns</span><div class="d-flex gap-2 flex-wrap"><button class="btn btn-sm btn-primary load-preset-btn" data-preset="static_categories" type="button">Load in SQL lab</button><button class="btn btn-sm btn-outline-secondary copy-btn" type="button">Copy</button></div></div><pre><code class="language-sql">SELECT DATE_TRUNC('month', admit_time)::date AS admit_month,
+       COUNT(*) FILTER (WHERE diagnosis = 'Pneumonia') AS pneumonia,
+       COUNT(*) FILTER (WHERE diagnosis = 'Fracture') AS fracture,
+       COUNT(*) FILTER (WHERE diagnosis = 'Flu') AS flu
+FROM admissions
+GROUP BY 1
+ORDER BY 1;</code></pre></div></section>
+<section class="content-card" id="delivery"><div class="section-kicker">Downstream use</div><h2>Choose shape based on the next analytical task</h2><div class="decision-grid"><div class="decision-card"><h3>Dashboard matrix</h3><p class="mb-2">A fixed wide result can make month-by-month comparisons easy for business users.</p><span class="shape-chip"><i class="fas fa-table-columns"></i>wide</span></div><div class="decision-card"><h3>Trend chart</h3><p class="mb-2">A long result with <code>month</code>, <code>product</code>, and <code>revenue</code> is flexible for plotting and filtering.</p><span class="shape-chip"><i class="fas fa-chart-line"></i>long</span></div></div><p class="mt-4">Run the long sales preset below and use the workbench <strong>Chart</strong> control on a graphable result.</p><div class="code-shell"><div class="code-toolbar"><span>Long monthly sales for visualization</span><div class="d-flex gap-2 flex-wrap"><button class="btn btn-sm btn-primary load-preset-btn" data-preset="long_for_chart" type="button">Load in SQL lab</button><button class="btn btn-sm btn-outline-secondary copy-btn" type="button">Copy</button></div></div><pre><code class="language-sql">SELECT sale_month, product, SUM(revenue) AS revenue
+FROM sales
+GROUP BY sale_month, product
+ORDER BY sale_month, product;</code></pre></div><div class="alert alert-info mt-3"><strong>Microsoft Fabric / Power BI portability:</strong> the long-vs-wide design decision is platform-independent, but syntax for dedicated pivot operators varies across SQL engines. Keep the PostgreSQL patterns in this module separate from T-SQL-specific <code>PIVOT</code>/<code>UNPIVOT</code> syntax.</div></section>
+<section class="content-card" id="practice-project"><div class="section-kicker">Practice &amp; project</div><h2>Apply reshaping to familiar analytical problems</h2><div class="row g-3"><div class="col-md-6"><div class="assessment-card h-100"><h3 class="h6">Practice 1: student grade matrix</h3><p>Start with long <code>grades(student_id, course_code, grade)</code>. Return one row per student with CSC101, STA201, and DBA301 as columns while preserving a missing course as <code>NULL</code>.</p><button class="btn btn-primary load-preset-btn" data-preset="project_grade_matrix" type="button">Open solution in lab</button></div></div><div class="col-md-6"><div class="assessment-card h-100"><h3 class="h6">Practice 2: patient month matrix</h3><p>Join patients to admissions and produce one row per patient containing Jan, Feb, Mar, and total admission counts—including patients with no admissions.</p><button class="btn btn-primary load-preset-btn" data-preset="project_patient_months" type="button">Open solution in lab</button></div></div></div><h3 class="h5 mt-4">Project: dashboard-ready retail view</h3><p>Build two outputs from the same <code>sales</code> fact table:</p><ol><li>a long monthly product table for a trend chart;</li><li>a wide product table with Jan, Feb, and Mar revenue columns for a scorecard.</li></ol><p>Verify that the total revenue agrees across the source, the long aggregate, and the wide result. In your submission, state the grain of all three outputs.</p></section>
+<section class="content-card" id="assessment"><div class="section-kicker">Assessment and closure</div><h2>Can you reshape data without changing its meaning?</h2><div class="row g-3"><div class="col-md-6"><div class="assessment-card h-100"><h3 class="h6">Recognition</h3><ol class="mb-0"><li>What is the grain of a long product-month revenue table?</li><li>Why does a pivot often require an aggregate?</li><li>When is <code>NULL</code> preferable to zero in a pivot cell?</li><li>How does <code>FILTER</code> differ stylistically from <code>SUM(CASE ...)</code>?</li><li>Why can an unpivot require explicit casts?</li><li>What information is lost when transaction rows are summed before pivoting?</li></ol></div></div><div class="col-md-6"><div class="assessment-card h-100"><h3 class="h6">Applied challenge</h3><p>Return one row per product with January, February, and March revenue. Preserve <code>NULL</code> when there is no observation for a product-month. Then explain why the result has fewer rows than the source.</p><button class="btn btn-primary load-preset-btn" data-preset="assessment_starter" type="button">Open assessment starter</button></div></div></div><h3 class="h5 mt-4">Key takeaways</h3><ul><li>Long and wide are shapes, not quality levels.</li><li>State the output grain before reshaping.</li><li>Conditional aggregation is the core PostgreSQL pivot pattern taught in this course.</li><li><code>FILTER</code> can make category-specific aggregates easier to read.</li><li><code>UNION ALL</code> and lateral <code>VALUES</code> are practical unpivot patterns.</li><li>Aggregation inside a pivot may permanently remove detail.</li><li>NULL and zero carry different meanings.</li><li>Validate totals and row counts after reshaping.</li><li>Prefer long form when categories evolve; use fixed wide schemas for stable reporting needs.</li></ul><div class="next-module mt-4"><div><div class="section-kicker">Next</div><h3 class="h5 mb-1">Module 11: Advanced SQL</h3><p class="mb-0">Build on reshaping with more advanced PostgreSQL query patterns and analytical techniques.</p></div><a class="btn btn-primary" href="module11.html">Continue to Module 11 <i aria-hidden="true" class="fas fa-arrow-right ms-1"></i></a></div></section>
+<section class="content-card"><div class="section-kicker">References</div><h2>References &amp; further reading</h2><ol class="mb-0"><li><a href="https://www.postgresql.org/docs/current/sql-expressions.html">PostgreSQL Documentation - aggregate expressions and FILTER</a>.</li><li><a href="https://www.postgresql.org/docs/current/queries-table-expressions.html">PostgreSQL Documentation - table expressions and LATERAL</a>.</li><li><a href="https://www.postgresql.org/docs/current/tablefunc.html">PostgreSQL Documentation - optional tablefunc/crosstab extension</a>.</li><li><a href="https://pglite.dev/docs/">PGlite Documentation - PostgreSQL in the browser</a>.</li></ol></section>
+</div></div></main>
+<button aria-label="Back to top" class="back-to-top" id="back-to-top" type="button"><i aria-hidden="true" class="fas fa-arrow-up"></i></button>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function(){
+const htmlEl=document.documentElement,themeBtn=document.getElementById('theme-toggle'),mobileBtn=document.getElementById('mobile-menu-toggle'),navList=document.getElementById('nav-links-list'),drop=document.querySelector('.dropdown'),dropTrigger=document.querySelector('.dropdown-trigger');
+function setTheme(theme){htmlEl.setAttribute('data-theme',theme);localStorage.setItem('ian603-theme',theme);const icon=themeBtn?.querySelector('i');if(icon)icon.className=theme==='dark'?'fas fa-sun':'fas fa-moon';}
+setTheme(localStorage.getItem('ian603-theme')||'dark');themeBtn?.addEventListener('click',()=>setTheme(htmlEl.getAttribute('data-theme')==='dark'?'light':'dark'));
+mobileBtn?.addEventListener('click',e=>{e.stopPropagation();const open=navList.classList.toggle('active');mobileBtn.setAttribute('aria-expanded',String(open));});
+dropTrigger?.addEventListener('click',e=>{if(window.innerWidth<=991){e.preventDefault();const open=drop.classList.toggle('open');dropTrigger.setAttribute('aria-expanded',String(open));}});
+document.addEventListener('click',e=>{if(window.innerWidth<=991&&!e.target.closest('.nav-menu')){navList?.classList.remove('active');mobileBtn?.setAttribute('aria-expanded','false');drop?.classList.remove('open');}});
+document.querySelectorAll('.copy-btn').forEach(btn=>btn.addEventListener('click',async()=>{const code=btn.closest('.code-shell')?.querySelector('code')?.textContent||'';try{await navigator.clipboard.writeText(code);}catch{const ta=document.createElement('textarea');ta.value=code;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}const old=btn.textContent;btn.textContent='Copied';setTimeout(()=>btn.textContent=old,1200);}));
+if(window.hljs)hljs.highlightAll();
+const tocLinks=[...document.querySelectorAll('.toc-list a')],sections=tocLinks.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);function setActive(id){tocLinks.forEach(a=>{const active=a.getAttribute('href')==='#'+id;a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');});}
+if('IntersectionObserver' in window){const obs=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top);if(visible[0])setActive(visible[0].target.id);},{rootMargin:'-18% 0px -68% 0px',threshold:[0,.1]});sections.forEach(s=>obs.observe(s));}
+tocLinks.forEach(a=>a.addEventListener('click',()=>setActive(a.getAttribute('href').slice(1))));
+const btt=document.getElementById('back-to-top');window.addEventListener('scroll',()=>btt.classList.toggle('show',window.scrollY>650));btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+})();
+</script>
+<script type="module">
+const PRESETS = {"explore_schema": "SELECT table_name\nFROM information_schema.tables\nWHERE table_schema = 'public'\nORDER BY table_name;", "inspect_admissions": "SELECT hadm_id, subject_id, admit_time, diagnosis, department\nFROM admissions\nORDER BY admit_time, hadm_id;", "pivot_diagnosis_case": "SELECT DATE_TRUNC('month', admit_time)::date AS admit_month,\n       SUM(CASE WHEN diagnosis = 'Pneumonia' THEN 1 ELSE 0 END) AS pneumonia_count,\n       SUM(CASE WHEN diagnosis = 'Fracture' THEN 1 ELSE 0 END) AS fracture_count,\n       SUM(CASE WHEN diagnosis = 'Flu' THEN 1 ELSE 0 END) AS flu_count\nFROM admissions\nGROUP BY 1\nORDER BY 1;", "pivot_diagnosis_filter": "SELECT DATE_TRUNC('month', admit_time)::date AS admit_month,\n       COUNT(*) FILTER (WHERE diagnosis = 'Pneumonia') AS pneumonia_count,\n       COUNT(*) FILTER (WHERE diagnosis = 'Fracture') AS fracture_count,\n       COUNT(*) FILTER (WHERE diagnosis = 'Flu') AS flu_count\nFROM admissions\nGROUP BY 1\nORDER BY 1;", "pivot_sales_revenue": "SELECT sale_month,\n       SUM(revenue) FILTER (WHERE product = 'Laptop') AS laptop_revenue,\n       SUM(revenue) FILTER (WHERE product = 'Mouse') AS mouse_revenue,\n       SUM(revenue) FILTER (WHERE product = 'Keyboard') AS keyboard_revenue\nFROM sales\nGROUP BY sale_month\nORDER BY sale_month;", "pivot_survey_scores": "SELECT respondent_id,\n       MAX(score) FILTER (WHERE question = 'Q1') AS q1_score,\n       MAX(score) FILTER (WHERE question = 'Q2') AS q2_score,\n       MAX(score) FILTER (WHERE question = 'Q3') AS q3_score\nFROM survey_responses\nGROUP BY respondent_id\nORDER BY respondent_id;", "pivot_null_semantics": "SELECT respondent_id,\n       MAX(CASE WHEN question = 'Q3' THEN score END) AS q3_preserve_missing,\n       MAX(CASE WHEN question = 'Q3' THEN score ELSE 0 END) AS q3_force_zero\nFROM survey_responses\nGROUP BY respondent_id\nORDER BY respondent_id;", "inspect_monthly_sales": "SELECT *\nFROM monthly_sales\nORDER BY product;", "unpivot_union": "SELECT product, DATE '2025-01-01' AS sale_month, jan_revenue AS revenue\nFROM monthly_sales\nUNION ALL\nSELECT product, DATE '2025-02-01', feb_revenue\nFROM monthly_sales\nUNION ALL\nSELECT product, DATE '2025-03-01', mar_revenue\nFROM monthly_sales\nORDER BY product, sale_month;", "unpivot_lateral": "SELECT m.product, v.sale_month, v.revenue\nFROM monthly_sales AS m\nCROSS JOIN LATERAL (\n    VALUES\n      (DATE '2025-01-01', m.jan_revenue),\n      (DATE '2025-02-01', m.feb_revenue),\n      (DATE '2025-03-01', m.mar_revenue)\n) AS v(sale_month, revenue)\nORDER BY m.product, v.sale_month;", "unpivot_metrics": "SELECT p.patient_id, v.metric, v.value\nFROM patient_metrics AS p\nCROSS JOIN LATERAL (\n    VALUES\n      ('heart_rate', p.heart_rate::numeric),\n      ('systolic_bp', p.systolic_bp::numeric),\n      ('diastolic_bp', p.diastolic_bp::numeric),\n      ('oxygen_sat', p.oxygen_sat)\n) AS v(metric, value)\nORDER BY p.patient_id, v.metric;", "unpivot_drop_null": "SELECT m.product, v.sale_month, v.revenue\nFROM monthly_sales AS m\nCROSS JOIN LATERAL (\n    VALUES\n      (DATE '2025-01-01', m.jan_revenue),\n      (DATE '2025-02-01', m.feb_revenue),\n      (DATE '2025-03-01', m.mar_revenue)\n) AS v(sale_month, revenue)\nWHERE v.revenue IS NOT NULL\nORDER BY m.product, v.sale_month;", "round_trip": "WITH wide AS (\n    SELECT product,\n           SUM(revenue) FILTER (WHERE sale_month = DATE '2025-01-01') AS jan_revenue,\n           SUM(revenue) FILTER (WHERE sale_month = DATE '2025-02-01') AS feb_revenue,\n           SUM(revenue) FILTER (WHERE sale_month = DATE '2025-03-01') AS mar_revenue\n    FROM sales\n    GROUP BY product\n)\nSELECT w.product, v.sale_month, v.revenue\nFROM wide AS w\nCROSS JOIN LATERAL (\n  VALUES\n    (DATE '2025-01-01', w.jan_revenue),\n    (DATE '2025-02-01', w.feb_revenue),\n    (DATE '2025-03-01', w.mar_revenue)\n) AS v(sale_month, revenue)\nORDER BY w.product, v.sale_month;", "grain_check": "SELECT product, sale_month, COUNT(*) AS source_rows, SUM(revenue) AS total_revenue\nFROM sales\nGROUP BY product, sale_month\nORDER BY product, sale_month;", "grain_loss_demo": "SELECT product, sale_month, sale_id, revenue\nFROM sales\nWHERE product = 'Laptop' AND sale_month = DATE '2025-01-01'\nORDER BY sale_id;\n\nSELECT product, sale_month, SUM(revenue) AS pivot_cell_value\nFROM sales\nWHERE product = 'Laptop' AND sale_month = DATE '2025-01-01'\nGROUP BY product, sale_month;", "join_patient_pivot": "SELECT p.subject_id, p.name,\n       COUNT(a.hadm_id) FILTER (WHERE DATE_TRUNC('month', a.admit_time) = DATE '2025-01-01') AS jan_admissions,\n       COUNT(a.hadm_id) FILTER (WHERE DATE_TRUNC('month', a.admit_time) = DATE '2025-02-01') AS feb_admissions,\n       COUNT(a.hadm_id) FILTER (WHERE DATE_TRUNC('month', a.admit_time) = DATE '2025-03-01') AS mar_admissions\nFROM patients AS p\nLEFT JOIN admissions AS a ON a.subject_id = p.subject_id\nGROUP BY p.subject_id, p.name\nORDER BY p.subject_id;", "preaggregate_sales": "WITH monthly_product AS (\n    SELECT product, category, sale_month, SUM(revenue) AS revenue\n    FROM sales\n    GROUP BY product, category, sale_month\n)\nSELECT category,\n       SUM(revenue) FILTER (WHERE sale_month = DATE '2025-01-01') AS jan_revenue,\n       SUM(revenue) FILTER (WHERE sale_month = DATE '2025-02-01') AS feb_revenue,\n       SUM(revenue) FILTER (WHERE sale_month = DATE '2025-03-01') AS mar_revenue\nFROM monthly_product\nGROUP BY category\nORDER BY category;", "long_for_chart": "SELECT sale_month, product, SUM(revenue) AS revenue\nFROM sales\nGROUP BY sale_month, product\nORDER BY sale_month, product;", "discover_categories": "SELECT DISTINCT diagnosis\nFROM admissions\nORDER BY diagnosis;\n\nSELECT DISTINCT product\nFROM sales\nORDER BY product;", "static_categories": "SELECT DATE_TRUNC('month', admit_time)::date AS admit_month,\n       COUNT(*) FILTER (WHERE diagnosis = 'Pneumonia') AS pneumonia,\n       COUNT(*) FILTER (WHERE diagnosis = 'Fracture') AS fracture,\n       COUNT(*) FILTER (WHERE diagnosis = 'Flu') AS flu\nFROM admissions\nGROUP BY 1\nORDER BY 1;", "project_grade_matrix": "SELECT s.student_id, s.student_name,\n       MAX(g.grade) FILTER (WHERE g.course_code = 'CSC101') AS csc101,\n       MAX(g.grade) FILTER (WHERE g.course_code = 'STA201') AS sta201,\n       MAX(g.grade) FILTER (WHERE g.course_code = 'DBA301') AS dba301\nFROM students AS s\nLEFT JOIN grades AS g ON g.student_id = s.student_id\nGROUP BY s.student_id, s.student_name\nORDER BY s.student_id;", "project_patient_months": "SELECT p.subject_id, p.name,\n       COUNT(a.hadm_id) FILTER (WHERE DATE_TRUNC('month', a.admit_time) = DATE '2025-01-01') AS jan,\n       COUNT(a.hadm_id) FILTER (WHERE DATE_TRUNC('month', a.admit_time) = DATE '2025-02-01') AS feb,\n       COUNT(a.hadm_id) FILTER (WHERE DATE_TRUNC('month', a.admit_time) = DATE '2025-03-01') AS mar,\n       COUNT(a.hadm_id) AS total_admissions\nFROM patients AS p\nLEFT JOIN admissions AS a ON a.subject_id = p.subject_id\nGROUP BY p.subject_id, p.name\nORDER BY total_admissions DESC, p.subject_id;", "assessment_starter": "-- Assessment: reshape the long sales table to one row per product.\n-- Return Jan, Feb, and Mar revenue columns. Preserve NULL when a\n-- product has no observation for a month, and explain the output grain.\nSELECT\n  product\n  -- add reshaped month columns\nFROM sales\nGROUP BY product\nORDER BY product;"};
+const RESET_SQL = "DROP TABLE IF EXISTS grades CASCADE;\nDROP TABLE IF EXISTS students CASCADE;\nDROP TABLE IF EXISTS patient_metrics CASCADE;\nDROP TABLE IF EXISTS monthly_sales CASCADE;\nDROP TABLE IF EXISTS survey_responses CASCADE;\nDROP TABLE IF EXISTS sales CASCADE;\nDROP TABLE IF EXISTS admissions CASCADE;\nDROP TABLE IF EXISTS patients CASCADE;\n\nCREATE TABLE patients (\n  subject_id integer PRIMARY KEY,\n  name text NOT NULL\n);\n\nCREATE TABLE admissions (\n  hadm_id integer PRIMARY KEY,\n  subject_id integer NOT NULL REFERENCES patients(subject_id),\n  admit_time timestamp NOT NULL,\n  diagnosis text NOT NULL,\n  department text NOT NULL\n);\n\nCREATE TABLE sales (\n  sale_id integer PRIMARY KEY,\n  product text NOT NULL,\n  category text NOT NULL,\n  sale_month date NOT NULL,\n  revenue numeric(10,2) NOT NULL CHECK (revenue >= 0)\n);\n\nCREATE TABLE survey_responses (\n  respondent_id integer NOT NULL,\n  question text NOT NULL,\n  score integer CHECK (score BETWEEN 1 AND 5),\n  PRIMARY KEY (respondent_id, question)\n);\n\nCREATE TABLE monthly_sales (\n  product text PRIMARY KEY,\n  jan_revenue numeric(10,2),\n  feb_revenue numeric(10,2),\n  mar_revenue numeric(10,2)\n);\n\nCREATE TABLE patient_metrics (\n  patient_id integer PRIMARY KEY,\n  heart_rate integer,\n  systolic_bp integer,\n  diastolic_bp integer,\n  oxygen_sat numeric(5,2)\n);\n\nCREATE TABLE students (\n  student_id integer PRIMARY KEY,\n  student_name text NOT NULL\n);\n\nCREATE TABLE grades (\n  student_id integer REFERENCES students(student_id),\n  course_code text NOT NULL,\n  grade numeric(5,2),\n  PRIMARY KEY (student_id, course_code)\n);\n\nINSERT INTO patients VALUES\n(1001,'Alice Smith'),\n(1002,'Bob Johnson'),\n(1003,'Carol White'),\n(1004,'David Brown'),\n(1005,'Eve Davis');\n\nINSERT INTO admissions VALUES\n(101,1001,TIMESTAMP '2025-01-10 09:00','Pneumonia','Internal Medicine'),\n(102,1002,TIMESTAMP '2025-01-15 14:00','Fracture','Orthopedics'),\n(103,1001,TIMESTAMP '2025-01-28 16:00','Flu','Internal Medicine'),\n(104,1001,TIMESTAMP '2025-02-05 08:30','Pneumonia','Internal Medicine'),\n(105,1003,TIMESTAMP '2025-02-10 11:00','Flu','Internal Medicine'),\n(106,1004,TIMESTAMP '2025-02-18 07:45','Pneumonia','Pulmonology'),\n(107,1005,TIMESTAMP '2025-03-02 13:20','Fracture','Orthopedics'),\n(108,1002,TIMESTAMP '2025-03-15 19:10','Flu','Internal Medicine'),\n(109,1001,TIMESTAMP '2025-03-22 10:15','Flu','Internal Medicine'),\n(110,1003,TIMESTAMP '2025-03-30 17:00','Pneumonia','Pulmonology');\n\nINSERT INTO sales VALUES\n(1,'Laptop','Electronics',DATE '2025-01-01',900.00),\n(2,'Laptop','Electronics',DATE '2025-01-01',700.00),\n(3,'Mouse','Accessories',DATE '2025-01-01',40.00),\n(4,'Mouse','Accessories',DATE '2025-01-01',60.00),\n(5,'Laptop','Electronics',DATE '2025-02-01',1400.00),\n(6,'Laptop','Electronics',DATE '2025-02-01',1000.00),\n(7,'Mouse','Accessories',DATE '2025-02-01',150.00),\n(8,'Keyboard','Accessories',DATE '2025-02-01',200.00),\n(9,'Laptop','Electronics',DATE '2025-03-01',1800.00),\n(10,'Mouse','Accessories',DATE '2025-03-01',190.00),\n(11,'Keyboard','Accessories',DATE '2025-03-01',250.00);\n\nINSERT INTO survey_responses VALUES\n(1,'Q1',4),(1,'Q2',5),(1,'Q3',4),\n(2,'Q1',3),(2,'Q2',4),\n(3,'Q1',5),(3,'Q2',5),(3,'Q3',5);\n\nINSERT INTO monthly_sales VALUES\n('Laptop',1600.00,2400.00,1800.00),\n('Mouse',100.00,150.00,190.00),\n('Keyboard',NULL,200.00,250.00);\n\nINSERT INTO patient_metrics VALUES\n(1001,72,120,80,98.0),\n(1002,68,130,85,97.0),\n(1003,88,142,92,94.5);\n\nINSERT INTO students VALUES\n(1,'Ana Patel'),(2,'Malik Green'),(3,'Sofia Chen');\n\nINSERT INTO grades VALUES\n(1,'CSC101',92),(1,'STA201',88),(1,'DBA301',95),\n(2,'CSC101',84),(2,'STA201',91),\n(3,'CSC101',97),(3,'STA201',94),(3,'DBA301',90);\n";
+const PGLITE_URL='https://cdn.jsdelivr.net/npm/@electric-sql/pglite@0.5.4/dist/index.js';
+let db=null,busy=false;
+const presetSelect=document.getElementById('preset-select'),editor=document.getElementById('sql-editor'),runButton=document.getElementById('run-sql'),runSelectionButton=document.getElementById('run-selection'),resetButton=document.getElementById('reset-db'),clearButton=document.getElementById('clear-editor'),resultsOutput=document.getElementById('results-output'),executionMeta=document.getElementById('execution-meta'),status=document.getElementById('engine-status'),statusText=document.getElementById('engine-status-text');
+function setStatus(kind,text){status.className='engine-status '+kind;statusText.textContent=text;}
+function setControlsEnabled(enabled){[presetSelect,runButton,runSelectionButton,resetButton,clearButton].forEach(el=>el.disabled=!enabled);editor.disabled=!enabled;}
+function clearResults(text){resultsOutput.innerHTML='';const d=document.createElement('div');d.className='result-placeholder';d.textContent=text;resultsOutput.appendChild(d);executionMeta.textContent='Waiting for query';}
+function formatValue(value){if(value===null||value===undefined)return null;if(value instanceof Date)return value.toISOString();if(typeof value==='object')return JSON.stringify(value);return String(value);}
+function csvEscape(value){const s=value==null?'':String(value);return /[",\n]/.test(s)?'"'+s.replaceAll('"','""')+'"':s;}
+function resultColumns(result,rows){if(Array.isArray(result?.fields)&&result.fields.length)return result.fields.map(f=>f.name);if(rows.length)return Object.keys(rows[0]);return [];}
+function downloadResult(rows,columns,index){const lines=[columns.map(csvEscape).join(',')];rows.forEach(row=>lines.push(columns.map(c=>csvEscape(row[c])).join(',')));const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='module10-result-'+index+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+function chartSpecForResult(rows,columns){if(rows.length<2)return null;const numeric=columns.filter(c=>rows.some(r=>typeof r[c]==='number'&&Number.isFinite(r[c]))&&!/(^|_)(id|rank)$/i.test(c));if(!numeric.length)return null;const labels=columns.filter(c=>!numeric.includes(c)&&rows.some(r=>typeof r[c]==='string'||r[c] instanceof Date)&&!/description/i.test(c));const metric=numeric.find(c=>/revenue|count|score|grade|value|total/i.test(c))||numeric[0];const label=labels.find(c=>/month|product|category|diagnosis|question|student|name|metric|dataset/i.test(c))||labels[0];if(!label)return null;const points=rows.filter(r=>typeof r[metric]==='number'&&Number.isFinite(r[metric])).slice(0,24).map(r=>({label:formatValue(r[label])??'NULL',value:Number(r[metric])}));return points.length>=2?{label,metric,points}:null;}
+function renderResultChart(card,spec){const existing=card.querySelector('.result-chart');if(existing){existing.remove();return false;}const panel=document.createElement('div');panel.className='result-chart';const title=document.createElement('div');title.className='result-chart-title';title.textContent=spec.metric+' by '+spec.label;panel.appendChild(title);const max=Math.max(...spec.points.map(p=>Math.abs(p.value)),1);spec.points.forEach(p=>{const row=document.createElement('div');row.className='result-chart-row';const label=document.createElement('div');label.className='result-chart-label';label.title=p.label;label.textContent=p.label;const track=document.createElement('div');track.className='result-chart-track';const bar=document.createElement('div');bar.className='result-chart-bar';bar.style.width=Math.max(2,Math.abs(p.value)/max*100)+'%';track.appendChild(bar);const value=document.createElement('div');value.className='result-chart-value';value.textContent=Number.isInteger(p.value)?String(p.value):p.value.toFixed(2).replace(/\.00$/,'');row.append(label,track,value);panel.appendChild(row);});card.appendChild(panel);return true;}
+function renderResults(results,elapsed){resultsOutput.replaceChildren();const normalized=Array.isArray(results)?results:[results];if(!normalized.length){clearResults('PostgreSQL completed the statement.');executionMeta.textContent=elapsed.toFixed(1)+' ms';return;}normalized.forEach((result,i)=>{const rows=Array.isArray(result?.rows)?result.rows:[];const columns=resultColumns(result,rows);const card=document.createElement('div');card.className='result-card';const header=document.createElement('div');header.className='result-card-header';const title=document.createElement('strong');title.textContent='Result '+(i+1);header.appendChild(title);const right=document.createElement('div');right.className='d-flex align-items-center gap-2 flex-wrap justify-content-end';const meta=document.createElement('span');meta.className='result-meta';meta.textContent=rows.length?rows.length+' row'+(rows.length===1?'':'s')+' returned':(typeof result?.affectedRows==='number'?result.affectedRows+' row'+(result.affectedRows===1?'':'s')+' affected':'Statement completed');right.appendChild(meta);if(rows.length&&columns.length){const spec=chartSpecForResult(rows,columns);if(spec){const chartBtn=document.createElement('button');chartBtn.type='button';chartBtn.className='visualize-result-btn';chartBtn.textContent='Chart';chartBtn.addEventListener('click',()=>{const shown=renderResultChart(card,spec);chartBtn.textContent=shown?'Hide chart':'Chart';});right.appendChild(chartBtn);}const b=document.createElement('button');b.type='button';b.className='download-result-btn';b.textContent='CSV';b.addEventListener('click',()=>downloadResult(rows,columns,i+1));right.appendChild(b);}header.appendChild(right);card.appendChild(header);if(rows.length&&columns.length){const wrap=document.createElement('div');wrap.className='result-table-wrap';const table=document.createElement('table');table.className='result-table';const cap=document.createElement('caption');cap.className='visually-hidden';cap.textContent='SQL result '+(i+1);table.appendChild(cap);const thead=document.createElement('thead'),hr=document.createElement('tr');columns.forEach(c=>{const th=document.createElement('th');th.scope='col';th.textContent=c;hr.appendChild(th);});thead.appendChild(hr);table.appendChild(thead);const tbody=document.createElement('tbody');rows.slice(0,250).forEach(row=>{const tr=document.createElement('tr');columns.forEach(c=>{const td=document.createElement('td');const val=formatValue(row[c]);if(val===null){const s=document.createElement('span');s.className='null-value';s.textContent='NULL';td.appendChild(s);}else td.textContent=val;tr.appendChild(td);});tbody.appendChild(tr);});table.appendChild(tbody);wrap.appendChild(table);card.appendChild(wrap);}else{const m=document.createElement('div');m.className='result-message';m.textContent='PostgreSQL completed this statement successfully.';card.appendChild(m);}resultsOutput.appendChild(card);});executionMeta.textContent=normalized.length+' result'+(normalized.length===1?'':'s')+' - '+elapsed.toFixed(1)+' ms';}
+function renderError(error,elapsed){resultsOutput.replaceChildren();const panel=document.createElement('div');panel.className='query-error';const title=document.createElement('strong');title.textContent='PostgreSQL error';const detail=document.createElement('pre');detail.textContent=error?.message||String(error);panel.append(title,detail);resultsOutput.appendChild(panel);executionMeta.textContent='Failed - '+elapsed.toFixed(1)+' ms';}
+function selectedOrAll(selectionOnly){return selectionOnly?editor.value.slice(editor.selectionStart,editor.selectionEnd).trim():editor.value.trim();}
+async function runSql(selectionOnly=false){if(!db||busy)return;const sql=selectedOrAll(selectionOnly);if(!sql){clearResults('The SQL editor is empty.');return;}busy=true;setControlsEnabled(false);setStatus('running','Running SQL...');const start=performance.now();try{const results=await db.exec(sql);renderResults(results,performance.now()-start);setStatus('ready','Database ready');}catch(error){renderError(error,performance.now()-start);setStatus('error','Query failed');try{await db.exec('ROLLBACK;');}catch{}}finally{busy=false;setControlsEnabled(true);}}
+function loadPreset(id,scroll=false){if(!PRESETS[id])return;editor.value=PRESETS[id];presetSelect.value=id;editor.focus();if(scroll)document.getElementById('sql-lab').scrollIntoView({behavior:'smooth',block:'start'});}
+async function resetDatabase(show=true){if(!db||busy)return;busy=true;setControlsEnabled(false);setStatus('running','Resetting database...');try{await db.exec(RESET_SQL);loadPreset('pivot_diagnosis_filter');clearResults(show?'Database reset. Run a query when ready.':'Run a query to display results.');setStatus('ready','Database ready');}catch(error){renderError(error,0);setStatus('error','Reset failed');}finally{busy=false;setControlsEnabled(true);}}
+async function initializeLab(){setControlsEnabled(false);setStatus('loading','Loading PostgreSQL engine...');try{const mod=await import(PGLITE_URL);db=new mod.PGlite();window.module10Database=db;await db.exec(RESET_SQL);setStatus('ready','Database ready');setControlsEnabled(true);clearResults('PostgreSQL is ready. Run a pivot, unpivot, or grain-check example.');}catch(error){setStatus('error','Engine could not load');renderError(error,0);executionMeta.textContent='Check web-server, network, or CDN access';}}
+presetSelect.addEventListener('change',()=>loadPreset(presetSelect.value));runButton.addEventListener('click',()=>runSql(false));runSelectionButton.addEventListener('click',()=>runSql(true));resetButton.addEventListener('click',()=>resetDatabase(true));clearButton.addEventListener('click',()=>{editor.value='';editor.focus();});editor.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runSql(false);}if(e.key==='Tab'){e.preventDefault();const s=editor.selectionStart,en=editor.selectionEnd;editor.setRangeText('  ',s,en,'end');}});document.querySelectorAll('[data-preset]').forEach(btn=>btn.addEventListener('click',()=>loadPreset(btn.dataset.preset,true)));initializeLab();
+</script>
+</body></html>
