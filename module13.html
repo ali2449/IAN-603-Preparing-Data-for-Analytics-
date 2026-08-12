@@ -1,362 +1,3000 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-theme="dark" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Module 13: Introduction to Spark SQL - IAF 603</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Highlight.js for code highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- MathJax CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- Custom MathJax Configuration -->
-    <script src="./js/mathjax.js"></script>
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="./css/styles.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="IAN 603 Module 13: Spark SQL, distributed execution, DataFrames, Microsoft Fabric Lakehouse, Delta tables, Spark SQL query workflows, query plans, partitions, shuffles, and portable SQL practice." name="description"/>
+<title>Module 13: Introduction to Spark SQL | IAN 603</title>
+<link href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E" rel="icon"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Source+Code+Pro:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" id="hljs-theme" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --section-bg: #1e293b;
+            --section-alt-bg: #172033;
+            --border-color: #334155;
+            --header-color: #38bdf8;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --success-color: #34d399;
+            --danger-color: #f87171;
+            --warning-color: #fbbf24;
+            --uncg-blue: #0c2340;
+            --uncg-gold: #cf9b2f;
+            --muted-color: #94a3b8;
+            --light-color: #f1f5f9;
+            --code-bg: #0b1120;
+            --table-stripe: rgba(255, 255, 255, 0.035);
+            --alert-info-bg: #172c4d;
+            --alert-info-border: #3b82f6;
+            --alert-warning-bg: #453516;
+            --alert-warning-border: #f59e0b;
+            --alert-secondary-bg: #182235;
+            --alert-secondary-border: #64748b;
+            --alert-success-bg: #12352e;
+            --alert-success-border: #10b981;
+            --hero-bg: linear-gradient(135deg, #07182d 0%, #0c2340 50%, #26365e 100%);
+            --hero-text: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.22);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --text-color: #1e293b;
+            --section-bg: #ffffff;
+            --section-alt-bg: #f8fafc;
+            --border-color: #d7e0eb;
+            --header-color: #1d4ed8;
+            --accent-color: #4f46e5;
+            --accent-hover: #4338ca;
+            --success-color: #047857;
+            --danger-color: #b91c1c;
+            --warning-color: #b45309;
+            --muted-color: #64748b;
+            --light-color: #f8fafc;
+            --code-bg: #f8fafc;
+            --table-stripe: rgba(15, 23, 42, 0.035);
+            --alert-info-bg: #dbeafe;
+            --alert-info-border: #3b82f6;
+            --alert-warning-bg: #fffbeb;
+            --alert-warning-border: #f59e0b;
+            --alert-secondary-bg: #f1f5f9;
+            --alert-secondary-border: #94a3b8;
+            --alert-success-bg: #d1fae5;
+            --alert-success-border: #10b981;
+            --hero-bg: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 55%, #fef3c7 100%);
+            --hero-text: #13243a;
+            --shadow-color: rgba(15, 23, 42, 0.12);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 96px;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        a {
+            color: var(--header-color);
+        }
+
+        a:hover {
+            color: var(--accent-color);
+        }
+
+        p,
+        li,
+        td,
+        th,
+        label,
+        .accordion-body,
+        .form-check-label {
+            color: var(--text-color);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: var(--header-color);
+            font-weight: 700;
+        }
+
+        .h1,
+        .h2,
+        .h3,
+        .h4,
+        .h5,
+        .h6 {
+            color: var(--header-color) !important;
+        }
+
+        body {
+            color: var(--text-color) !important;
+        }
+
+        strong {
+            color: inherit;
+        }
+
+        .hero-section h1,
+        .hero-section .h1,
+        .hero-section p,
+        .hero-section strong,
+        .hero-section .course-badge,
+        .hero-section .hero-kicker,
+        .hero-section .hero-meta,
+        .hero-section .essential-question {
+            color: var(--hero-text) !important;
+        }
+
+        code,
+        pre {
+            font-family: "Source Code Pro", monospace;
+        }
+
+        code:not(pre code) {
+            color: var(--text-color);
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--border-color);
+            border-radius: 0.3rem;
+            padding: 0.08rem 0.3rem;
+        }
+
+        pre {
+            background-color: var(--code-bg) !important;
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+            overflow: auto;
+        }
+
+        .skip-link {
+            position: absolute;
+            left: 0.75rem;
+            top: -5rem;
+            z-index: 2000;
+            background: var(--section-bg);
+            color: var(--text-color);
+            border: 2px solid var(--accent-color);
+            border-radius: 0.4rem;
+            padding: 0.6rem 0.85rem;
+        }
+
+        .skip-link:focus {
+            top: 0.75rem;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--uncg-gold);
+            outline-offset: 3px;
+        }
+
+        .text-muted {
+            color: var(--muted-color) !important;
+        }
+
+        .bg-white,
+        .bg-light {
+            background-color: var(--section-bg) !important;
+        }
+
+        .border,
+        .table-bordered,
+        .table-bordered th,
+        .table-bordered td {
+            border-color: var(--border-color) !important;
+        }
+
+        .shadow,
+        .shadow-sm {
+            box-shadow: 0 8px 24px var(--shadow-color) !important;
+        }
+
+        .table {
+            color: var(--text-color);
+            margin-bottom: 0;
+        }
+
+        .table > :not(caption) > * > * {
+            background-color: transparent;
+            color: var(--text-color);
+            border-color: var(--border-color);
+            vertical-align: top;
+        }
+
+        .table thead th,
+        .table-light th,
+        .table-light td {
+            background-color: var(--section-alt-bg) !important;
+            color: var(--text-color) !important;
+        }
+
+        .table-striped > tbody > tr:nth-of-type(odd) > * {
+            background-color: var(--table-stripe);
+        }
+
+        .nav-container {
+            background-color: var(--section-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        .nav-menu {
+            min-height: 74px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            color: var(--header-color);
+            font-weight: 800;
+            font-size: 1.15rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            white-space: nowrap;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--uncg-blue), var(--accent-color));
+            border: 2px solid var(--uncg-gold);
+        }
+
+        .nav-links-list {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-link,
+        .theme-toggle-btn {
+            color: var(--text-color);
+            background: none;
+            border: none;
+            border-radius: 0.55rem;
+            padding: 0.55rem 0.75rem;
+            font: inherit;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link:focus-visible,
+        .theme-toggle-btn:hover,
+        .theme-toggle-btn:focus-visible {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: calc(100% + 0.25rem);
+            left: 0;
+            min-width: 315px;
+            max-height: 70vh;
+            overflow-y: auto;
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+            padding: 0.45rem;
+            box-shadow: 0 12px 30px var(--shadow-color);
+        }
+
+        .dropdown:hover .dropdown-content,
+        .dropdown:focus-within .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.65rem 0.75rem;
+            border-radius: 0.5rem;
+        }
+
+        .dropdown-link:hover,
+        .dropdown-link:focus-visible {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .module-number {
+            width: 25px;
+            height: 25px;
+            flex: 0 0 25px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--accent-color);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 1.45rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 0.45rem;
+        }
+
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+            background: var(--hero-bg);
+            color: var(--hero-text);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 1.25rem;
+            margin: 2rem 0;
+            padding: 3.2rem 2rem;
+            box-shadow: 0 18px 45px var(--shadow-color);
+        }
+
+        .hero-section::after {
+            content: "";
+            position: absolute;
+            width: 330px;
+            height: 330px;
+            right: -115px;
+            top: -135px;
+            border-radius: 50%;
+            background: rgba(207, 155, 47, 0.12);
+        }
+
+        .hero-section h1,
+        .hero-section p,
+        .hero-section .hero-kicker,
+        .hero-section .hero-meta,
+        .hero-section .essential-question {
+            color: var(--hero-text);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-kicker {
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .course-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.45rem 0.75rem;
+            background: rgba(255, 255, 255, 0.11);
+            border: 1px solid rgba(255, 255, 255, 0.23);
+            border-radius: 999px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .essential-question {
+            max-width: 870px;
+            margin: 1.35rem auto 0;
+            padding: 1rem 1.2rem;
+            border-left: 4px solid var(--uncg-gold);
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 0 0.75rem 0.75rem 0;
+            text-align: left;
+        }
+
+        .section-shell {
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            padding: clamp(1.2rem, 2.5vw, 2rem);
+            margin-bottom: 1.6rem;
+            scroll-margin-top: 94px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.9rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.35rem;
+        }
+
+        .section-icon {
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            border-radius: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(99, 102, 241, 0.14);
+            color: var(--header-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-heading h2 {
+            margin-bottom: 0.15rem;
+        }
+
+        .section-heading p {
+            margin-bottom: 0;
+            color: var(--muted-color);
+        }
+
+        .toc-panel {
+            position: sticky;
+            top: 94px;
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.9rem;
+            padding: 1rem;
+            max-height: calc(100vh - 115px);
+            overflow-y: auto;
+        }
+
+        .toc-panel h2 {
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-list a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.5rem 0.55rem;
+            border-radius: 0.45rem;
+            font-size: 0.9rem;
+        }
+
+        .toc-list a:hover,
+        .toc-list a.active {
+            background-color: rgba(99, 102, 241, 0.18);
+            color: var(--header-color);
+        }
+
+        .toc-list .toc-index {
+            color: var(--muted-color);
+            font-size: 0.75rem;
+            font-weight: 800;
+            min-width: 1.5rem;
+        }
+
+        .roadmap-card,
+        .concept-card,
+        .example-card,
+        .case-card,
+        .takeaway-card {
+            height: 100%;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            padding: 1rem;
+        }
+
+        .roadmap-card {
+            position: relative;
+            padding-top: 3.15rem;
+        }
+
+        .roadmap-number {
+            position: absolute;
+            top: 0.9rem;
+            left: 1rem;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+        }
+
+        .layer-label {
+            display: inline-block;
+            color: #ffffff;
+            background: var(--accent-color);
+            border-radius: 999px;
+            padding: 0.2rem 0.55rem;
+            font-size: 0.74rem;
+            font-weight: 800;
+            margin-bottom: 0.55rem;
+        }
+
+        .concept-arrow {
+            color: var(--muted-color);
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        .badge-soft-primary,
+        .badge-soft-success,
+        .badge-soft-warning,
+        .badge-soft-danger,
+        .badge-soft-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            border-radius: 999px;
+            padding: 0.32rem 0.58rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .badge-soft-primary {
+            color: var(--header-color);
+            background: rgba(59, 130, 246, 0.14);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+        }
+
+        .badge-soft-success {
+            color: var(--success-color);
+            background: rgba(16, 185, 129, 0.13);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+
+        .badge-soft-warning {
+            color: var(--warning-color);
+            background: rgba(245, 158, 11, 0.13);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+
+        .badge-soft-danger {
+            color: var(--danger-color);
+            background: rgba(239, 68, 68, 0.13);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
+
+        .badge-soft-secondary {
+            color: var(--muted-color);
+            background: rgba(100, 116, 139, 0.13);
+            border: 1px solid rgba(100, 116, 139, 0.35);
+        }
+
+        .alert {
+            color: var(--text-color);
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 0.75rem;
+        }
+
+        .alert-info {
+            background: var(--alert-info-bg);
+            border-color: var(--alert-info-border);
+        }
+
+        .alert-warning {
+            background: var(--alert-warning-bg);
+            border-color: var(--alert-warning-border);
+        }
+
+        .alert-secondary {
+            background: var(--alert-secondary-bg);
+            border-color: var(--alert-secondary-border);
+        }
+
+        .alert-success {
+            background: var(--alert-success-bg);
+            border-color: var(--alert-success-border);
+        }
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.7rem;
+            margin: 1rem 0;
+        }
+
+        .workflow-step {
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem 0.55rem;
+        }
+
+        .workflow-step i {
+            display: block;
+            color: var(--header-color);
+            font-size: 1.25rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .decision-table th:first-child,
+        .decision-table td:first-child {
+            min-width: 125px;
+        }
+
+        .copy-wrap {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.6rem;
+            z-index: 2;
+            border: 1px solid var(--border-color);
+            background: var(--section-bg);
+            color: var(--header-color);
+            border-radius: 0.45rem;
+            padding: 0.25rem 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .copy-btn:hover {
+            color: #ffffff;
+            background: var(--accent-color);
+        }
+
+        .accordion-item,
+        .accordion-button,
+        .accordion-body {
+            background-color: var(--section-alt-bg);
+            color: var(--text-color);
+            border-color: var(--border-color);
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: rgba(99, 102, 241, 0.15);
+            color: var(--header-color);
+            box-shadow: inset 0 -1px 0 var(--border-color);
+        }
+
+        .accordion-button::after {
+            filter: var(--accordion-icon-filter, none);
+        }
+
+        [data-theme="dark"] .accordion-button::after {
+            filter: invert(1) grayscale(1) brightness(1.8);
+        }
+
+        .btn-outline-primary {
+            color: var(--header-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-outline-primary:hover,
+        .btn-outline-primary:focus-visible {
+            color: #ffffff;
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus-visible {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            position: relative;
+            padding-left: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .checklist li::before {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+        }
+
+        .mistake-table .looks-like {
+            color: var(--warning-color);
+            font-weight: 700;
+        }
+
+        .mistake-table .actually {
+            color: var(--success-color);
+            font-weight: 700;
+        }
+
+        .mini-note {
+            color: var(--muted-color);
+            font-size: 0.9rem;
+        }
+
+        .key-term {
+            border-bottom: 1px dotted var(--header-color);
+            cursor: help;
+        }
+
+        .footer {
+            background: var(--section-bg);
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem;
+            width: 44px;
+            height: 44px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            z-index: 1100;
+        }
+
+        .back-to-top.show {
+            display: inline-flex;
+        }
+
+        @media (max-width: 1199.98px) {
+            .nav-links-list {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                padding: 0.8rem;
+                background: var(--section-bg);
+                border-bottom: 1px solid var(--border-color);
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-links-list.active {
+                display: flex;
+            }
+
+            .nav-link,
+            .theme-toggle-btn {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .mobile-menu-btn {
+                display: inline-flex;
+            }
+
+            .dropdown-content {
+                position: static;
+                min-width: 0;
+                max-height: none;
+                box-shadow: none;
+                margin-top: 0.25rem;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .toc-panel {
+                position: static;
+                max-height: none;
+                margin-bottom: 1.3rem;
+            }
+
+            .workflow {
+                grid-template-columns: 1fr;
+            }
+
+            .concept-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .hero-section {
+                padding: 2rem 1.1rem;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .section-shell {
+                padding: 1rem;
+            }
+
+            .section-heading {
+                flex-direction: column;
+            }
+
+            .table-responsive {
+                border: 1px solid var(--border-color);
+                border-radius: 0.65rem;
+            }
+        }
+
+        @media print {
+            .nav-container,
+            .toc-panel,
+            .copy-btn,
+            .back-to-top,
+            .theme-toggle-btn,
+            .mobile-menu-btn,
+            .btn {
+                display: none !important;
+            }
+
+            body,
+            .section-shell,
+            .roadmap-card,
+            .concept-card,
+            .example-card,
+            .case-card,
+            .takeaway-card,
+            .accordion-item,
+            .accordion-button,
+            .accordion-body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                box-shadow: none !important;
+            }
+
+            p,
+            li,
+            td,
+            th,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                color: #000000 !important;
+            }
+
+            .collapse:not(.show) {
+                display: block !important;
+            }
+        }
+
+        .design-flow {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 0.65rem;
+            margin: 1rem 0;
+        }
+
+        .design-step {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem 0.6rem;
+            text-align: center;
+            min-height: 132px;
+        }
+
+        .design-step .step-number {
+            width: 2rem;
+            height: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+        }
+
+        .schema-card {
+            height: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            overflow: hidden;
+            background: var(--section-alt-bg);
+        }
+
+        .schema-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.75rem 0.9rem;
+            background: rgba(99, 102, 241, 0.14);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .schema-card-header h3,
+        .schema-card-header h4 {
+            margin: 0;
+            color: var(--header-color);
+        }
+
+        .schema-field-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .schema-field-list li {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.5rem 0.9rem;
+            border-bottom: 1px solid var(--border-color);
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.82rem;
+        }
+
+        .schema-field-list li:last-child {
+            border-bottom: 0;
+        }
+
+        .field-key {
+            color: var(--warning-color);
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .erd-board {
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            background: var(--section-alt-bg);
+            padding: 1rem;
+        }
+
+        .erd-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 132px minmax(0, 1fr);
+            gap: 0.75rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .erd-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .erd-node {
+            border: 2px solid var(--accent-color);
+            border-radius: 0.75rem;
+            background: var(--section-bg);
+            overflow: hidden;
+            min-height: 100%;
+        }
+
+        .erd-node-title {
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+            padding: 0.55rem 0.75rem;
+            letter-spacing: 0.02em;
+        }
+
+        .erd-node-body {
+            padding: 0.65rem 0.75rem;
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.82rem;
+        }
+
+        .erd-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted-color);
+            text-align: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .erd-line {
+            width: 100%;
+            height: 2px;
+            background: var(--border-color);
+            position: relative;
+            margin: 0.4rem 0;
+        }
+
+        .erd-line::after {
+            content: "";
+            position: absolute;
+            right: -1px;
+            top: -4px;
+            border-left: 8px solid var(--accent-color);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .cardinality-label {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            background: var(--section-bg);
+            color: var(--text-color);
+            border-radius: 999px;
+            padding: 0.18rem 0.5rem;
+            font-family: "Source Code Pro", monospace;
+        }
+
+        .constraint-card {
+            height: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--section-alt-bg);
+            padding: 1rem;
+        }
+
+        .constraint-card h3,
+        .constraint-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .normalization-step {
+            border-left: 4px solid var(--accent-color);
+            background: var(--section-alt-bg);
+            border-radius: 0.55rem;
+            padding: 1rem 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .normalization-step h3,
+        .normalization-step h4 {
+            margin-bottom: 0.45rem;
+        }
+
+        .dependency {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin: 0.2rem 0.35rem 0.2rem 0;
+            padding: 0.3rem 0.55rem;
+            border-radius: 0.45rem;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--border-color);
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.8rem;
+        }
+
+        .comparison-good,
+        .comparison-bad {
+            border-radius: 0.75rem;
+            padding: 1rem;
+            height: 100%;
+        }
+
+        .comparison-good {
+            border: 1px solid var(--success-color);
+            background: var(--alert-success-bg);
+        }
+
+        .comparison-bad {
+            border: 1px solid var(--danger-color);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .data-dictionary td:first-child {
+            font-family: "Source Code Pro", monospace;
+            font-weight: 700;
+        }
+
+        .test-case {
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--section-alt-bg);
+            padding: 0.9rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .test-case:last-child {
+            margin-bottom: 0;
+        }
+
+        .advanced-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+            border: 1px dashed var(--warning-color);
+            background: var(--alert-warning-bg);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .advanced-banner i {
+            color: var(--warning-color);
+            font-size: 1.3rem;
+            margin-top: 0.15rem;
+        }
+
+        .rule-to-schema {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .rule-arrow {
+            color: var(--accent-color);
+            font-size: 1.25rem;
+        }
+
+        @media (max-width: 1199.98px) {
+            .design-flow {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .design-flow {
+                grid-template-columns: 1fr;
+            }
+
+            .erd-row,
+            .rule-to-schema {
+                grid-template-columns: 1fr;
+            }
+
+            .erd-connector,
+            .rule-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+    
+
+        /* Module 3: live PostgreSQL lab */
+        .sql-lab-shell,
+        .lab-shell {
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            background: var(--section-alt-bg);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+        }
+
+        .lab-masthead {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.95rem 1rem;
+            background: linear-gradient(135deg, rgba(12, 35, 64, 0.98), rgba(49, 46, 129, 0.92));
+            border-bottom: 1px solid var(--border-color);
+            color: #ffffff;
+        }
+
+        .lab-masthead h3,
+        .lab-masthead p,
+        .lab-masthead span,
+        .lab-masthead strong {
+            color: #ffffff;
+        }
+
+        .engine-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.35rem 0.65rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 0.78rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .lab-status,
+        .engine-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .lab-status-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.65rem 0.85rem;
+            margin: 0.85rem 0 0.35rem;
+        }
+
+        .engine-status.ready .status-dot {
+            background: #34d399;
+            box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.18);
+        }
+
+        .engine-status.loading .status-dot {
+            background: #fbbf24;
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.18);
+            animation: status-pulse 1s infinite ease-in-out;
+        }
+
+        .engine-status.error .status-dot {
+            background: #f87171;
+            box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.18);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            border-radius: 50%;
+            background: #94a3b8;
+            box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.18);
+        }
+
+        .lab-status[data-state="ready"] .status-dot {
+            background: #34d399;
+            box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.18);
+        }
+
+        .lab-status[data-state="running"] .status-dot,
+        .lab-status[data-state="loading"] .status-dot {
+            background: #fbbf24;
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.18);
+            animation: status-pulse 1s infinite ease-in-out;
+        }
+
+        .lab-status[data-state="error"] .status-dot {
+            background: #f87171;
+            box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.18);
+        }
+
+        @keyframes status-pulse {
+            0%, 100% { transform: scale(0.9); opacity: 0.75; }
+            50% { transform: scale(1.15); opacity: 1; }
+        }
+
+        .lab-controls {
+            display: grid;
+            grid-template-columns: minmax(230px, 1fr) auto;
+            gap: 0.75rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .lab-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .form-select,
+        .form-control {
+            color: var(--text-color);
+            background-color: var(--section-bg);
+            border-color: var(--border-color);
+        }
+
+        .form-select:focus,
+        .form-control:focus {
+            color: var(--text-color);
+            background-color: var(--section-bg);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.18);
+        }
+
+        .editor-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .editor-panel,
+        .results-panel {
+            min-width: 0;
+        }
+
+        .editor-header,
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.72rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--section-bg);
+        }
+
+        .editor-header h4,
+        .results-header h4 {
+            margin: 0;
+            font-size: 0.93rem;
+        }
+
+        .keyboard-hint {
+            color: var(--muted-color);
+            font-size: 0.76rem;
+        }
+
+        .sql-editor,
+        .sql-editor-main {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-height: 310px;
+            resize: vertical;
+            box-sizing: border-box;
+            padding: 1rem;
+            color: #e5e7eb;
+            background: #090f1d;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            outline: none;
+            font: 500 0.9rem/1.65 "Source Code Pro", monospace;
+            tab-size: 2;
+            caret-color: #fbbf24;
+            white-space: pre;
+            overflow: auto;
+        }
+
+        .sql-editor:focus,
+        .sql-editor-main:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.18);
+        }
+
+        .sql-editor::selection,
+        .sql-editor-main::selection {
+            background: rgba(99, 102, 241, 0.55);
+        }
+
+        [data-theme="light"] .sql-editor,
+        [data-theme="light"] .sql-editor-main {
+            color: #172033;
+            background: #f8fafc;
+        }
+
+        .results-panel,
+        .results-shell {
+            border-top: 1px solid var(--border-color);
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            overflow: hidden;
+            background: var(--section-alt-bg);
+        }
+
+        .results-output {
+            min-height: 180px;
+            max-height: 560px;
+            overflow: auto;
+            padding: 1rem;
+            background: var(--section-alt-bg);
+        }
+
+        .result-placeholder {
+            min-height: 145px;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            color: var(--muted-color);
+            border: 1px dashed var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .result-card {
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            margin-bottom: 0.85rem;
+            overflow: hidden;
+        }
+
+        .result-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.62rem 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .result-card-header strong {
+            color: var(--header-color);
+        }
+
+        .result-meta {
+            color: var(--muted-color);
+            font-size: 0.76rem;
+        }
+
+        .result-table-wrap {
+            overflow-x: auto;
+        }
+
+        .result-table {
+            width: 100%;
+            margin: 0;
+            border-collapse: collapse;
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.82rem;
+        }
+
+        .result-table th,
+        .result-table td {
+            padding: 0.52rem 0.68rem;
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+            white-space: nowrap;
+        }
+
+        .result-table th {
+            color: var(--header-color);
+            background: var(--section-alt-bg);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .result-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .result-table th:last-child,
+        .result-table td:last-child {
+            border-right: 0;
+        }
+
+        .result-message {
+            padding: 0.82rem;
+            color: var(--text-color);
+        }
+
+        .null-value {
+            color: var(--muted-color);
+            font-style: italic;
+        }
+
+        .query-error {
+            border: 1px solid rgba(248, 113, 113, 0.5);
+            border-left: 5px solid var(--danger-color);
+            background: rgba(248, 113, 113, 0.08);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .query-error pre {
+            margin: 0.65rem 0 0;
+            color: var(--danger-color);
+            white-space: pre-wrap;
+            word-break: break-word;
+            background: transparent !important;
+            border: 0;
+            padding: 0;
+        }
+
+        .lab-footnote {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            padding: 0.85rem 1rem;
+            color: var(--muted-color);
+            background: var(--section-bg);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8rem;
+        }
+
+        .schema-chip-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.65rem;
+        }
+
+        .schema-chip {
+            padding: 0.75rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+        }
+
+        .schema-chip code {
+            color: var(--header-color);
+            font-weight: 700;
+        }
+
+        .copy-wrap pre {
+            padding-top: 3.25rem !important;
+        }
+
+        .code-toolbar {
+            position: absolute;
+            top: 0.55rem;
+            right: 0.55rem;
+            z-index: 3;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.4rem;
+        }
+
+        .code-toolbar .copy-btn {
+            position: static;
+        }
+
+        .try-query-btn {
+            border: 1px solid rgba(52, 211, 153, 0.45);
+            background: var(--section-bg);
+            color: var(--success-color);
+            border-radius: 0.45rem;
+            padding: 0.25rem 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .try-query-btn:hover,
+        .try-query-btn:focus-visible {
+            color: #ffffff;
+            background: var(--success-color);
+        }
+
+        .sql-command-card {
+            height: 100%;
+            padding: 1rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 0.8rem;
+        }
+
+        .sql-command-card[data-kind="dql"] { border-top-color: #38bdf8; }
+        .sql-command-card[data-kind="dml"] { border-top-color: #34d399; }
+        .sql-command-card[data-kind="ddl"] { border-top-color: #fbbf24; }
+        .sql-command-card[data-kind="tcl"] { border-top-color: #a78bfa; }
+
+        .query-flow {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 0.55rem;
+            margin: 1rem 0;
+        }
+
+        .query-flow-step {
+            position: relative;
+            text-align: center;
+            padding: 0.78rem 0.45rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.65rem;
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .query-flow-step:not(:last-child)::after {
+            content: "→";
+            position: absolute;
+            right: -0.48rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted-color);
+            z-index: 2;
+        }
+
+        .safety-workflow {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.65rem;
+            margin: 1rem 0;
+        }
+
+        .safety-step {
+            padding: 0.8rem;
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+        }
+
+        .safety-step .step-number {
+            display: inline-grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            margin-bottom: 0.4rem;
+            border-radius: 50%;
+            color: #ffffff;
+            background: var(--accent-color);
+            font-weight: 800;
+        }
+
+        .danger-example {
+            border-left: 5px solid var(--danger-color);
+        }
+
+        .success-example {
+            border-left: 5px solid var(--success-color);
+        }
+
+        .statement-anatomy {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--section-alt-bg);
+            font-family: "Source Code Pro", monospace;
+        }
+
+        .statement-part {
+            padding: 0.35rem 0.55rem;
+            border-radius: 0.45rem;
+            background: rgba(99, 102, 241, 0.14);
+            border: 1px solid rgba(99, 102, 241, 0.35);
+        }
+
+        .lab-task {
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .download-result-btn {
+            border: 1px solid var(--border-color);
+            color: var(--header-color);
+            background: var(--section-bg);
+            border-radius: 0.4rem;
+            font-size: 0.72rem;
+            padding: 0.22rem 0.48rem;
+        }
+
+        .download-result-btn:hover {
+            color: #ffffff;
+            background: var(--accent-color);
+        }
+
+        @media (min-width: 1200px) {
+            .editor-grid {
+                grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+            }
+
+            .results-panel {
+                border-top: 0;
+                border-left: 1px solid var(--border-color);
+            }
+
+            .sql-editor,
+            .sql-editor-main {
+                min-height: 455px;
+            }
+
+            .results-output {
+                min-height: 455px;
+                max-height: 640px;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .schema-chip-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .query-flow,
+            .safety-workflow {
+                grid-template-columns: 1fr;
+            }
+
+            .query-flow-step:not(:last-child)::after {
+                content: "↓";
+                right: 50%;
+                top: auto;
+                bottom: -0.8rem;
+                transform: translateX(50%);
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .lab-masthead,
+            .lab-controls,
+            .editor-header,
+            .results-header {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .lab-controls {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .lab-actions {
+                justify-content: flex-start;
+            }
+
+            .sql-editor,
+            .sql-editor-main {
+                min-height: 250px;
+            }
+
+            .schema-chip-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            .sql-lab-shell,
+            .try-query-btn,
+            .code-toolbar {
+                break-inside: avoid;
+            }
+
+            .lab-controls,
+            .sql-editor,
+            .sql-editor-main,
+            .results-panel,
+            .results-shell,
+            .lab-status,
+            .engine-badge,
+            .try-query-btn {
+                display: none !important;
+            }
+        }
+
+    
+
+        /* Module 4 additions */
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .function-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 0.9rem;
+            min-height: 100%;
+        }
+
+        .function-card code {
+            display: inline-block;
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+        }
+
+        .grain-ladder {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+
+        .grain-step {
+            position: relative;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .grain-step .grain-number {
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #fff;
+            font-weight: 800;
+            margin-bottom: 0.55rem;
+        }
+
+        .clause-flow {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            margin: 1rem 0;
+        }
+
+        .clause-node {
+            min-width: 105px;
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.65rem 0.75rem;
+            font-family: "Source Code Pro", monospace;
+            font-weight: 700;
+        }
+
+        .clause-arrow {
+            color: var(--muted-color);
+            font-size: 1.1rem;
+        }
+
+        .query-anatomy {
+            display: grid;
+            grid-template-columns: 145px 1fr;
+            gap: 0.25rem 0.8rem;
+            align-items: start;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .query-anatomy dt {
+            color: var(--header-color);
+            font-family: "Source Code Pro", monospace;
+            font-weight: 800;
+        }
+
+        .query-anatomy dd {
+            margin-bottom: 0.45rem;
+        }
+
+        .run-example-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.7rem;
+        }
+
+        .subtotal-key {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .subtotal-key > div {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.8rem;
+        }
+
+        .metric-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.55rem;
+            border-radius: 999px;
+            background: rgba(99, 102, 241, 0.14);
+            border: 1px solid rgba(99, 102, 241, 0.36);
+            color: var(--header-color);
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0.15rem;
+        }
+
+        @media (max-width: 991.98px) {
+            .function-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .grain-ladder, .subtotal-key { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 575.98px) {
+            .function-grid { grid-template-columns: 1fr; }
+            .query-anatomy { grid-template-columns: 1fr; }
+            .clause-arrow { transform: rotate(90deg); }
+        }
+
+
+        /* Module 5 logic visuals */
+        .logic-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .logic-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 0.85rem;
+            padding: 1rem;
+            height: 100%;
+        }
+
+        .logic-card.and { border-top-color: var(--success-color); }
+        .logic-card.or { border-top-color: var(--header-color); }
+        .logic-card.not { border-top-color: var(--warning-color); }
+
+        .precedence-stack {
+            display: grid;
+            gap: 0.55rem;
+            max-width: 520px;
+            margin: 1rem auto;
+        }
+
+        .precedence-step {
+            display: grid;
+            grid-template-columns: 44px 1fr;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.75rem 0.9rem;
+        }
+
+        .precedence-rank {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .truth-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .truth-state {
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+            text-align: center;
+            background: var(--section-alt-bg);
+        }
+
+        .truth-state strong {
+            display: block;
+            font-size: 1.05rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .truth-state.true strong { color: var(--success-color); }
+        .truth-state.false strong { color: var(--danger-color); }
+        .truth-state.unknown strong { color: var(--warning-color); }
+
+        .logic-expression {
+            font-family: "Source Code Pro", monospace;
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.65rem;
+            padding: 0.7rem 0.85rem;
+            margin: 0.45rem 0;
+            overflow-x: auto;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .trap-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--danger-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .safe-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--success-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .case-flow {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .case-flow > div {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem;
+            text-align: center;
+        }
+
+        .boundary-table td:first-child,
+        .boundary-table th:first-child {
+            white-space: nowrap;
+        }
+
+        .rule-builder {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.65rem;
+            margin: 1rem 0;
+        }
+
+        .rule-builder > div {
+            border: 1px solid var(--border-color);
+            background: var(--section-alt-bg);
+            border-radius: 0.7rem;
+            padding: 0.8rem;
+            text-align: center;
+        }
+
+        @media (max-width: 991.98px) {
+            .logic-grid,
+            .truth-grid,
+            .case-flow,
+            .rule-builder { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 575.98px) {
+            .logic-grid,
+            .truth-grid,
+            .pattern-grid,
+            .case-flow,
+            .rule-builder { grid-template-columns: 1fr; }
+        }
+
+
+
+        .join-family-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1rem; }
+        .join-family-card { border:1px solid var(--border-color); border-radius:.8rem; padding:1rem; background:var(--section-alt-bg); height:100%; }
+        .join-family-card h4 { font-size:1rem; margin-bottom:.35rem; }
+        .join-family-card p { margin:0; font-size:.9rem; }
+        .join-chip { display:inline-flex; align-items:center; gap:.35rem; border:1px solid var(--border-color); border-radius:999px; padding:.22rem .55rem; font-size:.78rem; font-weight:700; background:var(--section-alt-bg); }
+        .preserve-left { border-left:4px solid #3b82f6; }
+        .preserve-right { border-left:4px solid #8b5cf6; }
+        .preserve-both { border-left:4px solid #f59e0b; }
+        .preserve-match { border-left:4px solid #10b981; }
+        .grain-box { border:1px solid var(--border-color); border-radius:.75rem; padding:1rem; background:var(--section-alt-bg); }
+        .grain-arrow { font-size:1.6rem; color:var(--muted-color); text-align:center; }
+        .mini-table { width:100%; border-collapse:collapse; font-size:.84rem; }
+        .mini-table th,.mini-table td { border:1px solid var(--border-color); padding:.42rem .5rem; }
+        .mini-table th { background:var(--section-alt-bg); }
+        .matched { background:rgba(16,185,129,.12); }
+        .unmatched { background:rgba(245,158,11,.10); }
+        .danger-note { border-left:4px solid var(--danger-color); background:rgba(248,113,113,.08); border-radius:.55rem; padding:.85rem 1rem; }
+        .join-decision { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.85rem; }
+        .join-decision .step-card { min-height:100%; }
+        .schema-relations { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.8rem; }
+        .schema-table { border:1px solid var(--border-color); border-radius:.75rem; overflow:hidden; background:var(--section-alt-bg); }
+        .schema-table h4 { margin:0; padding:.7rem .8rem; font-size:.95rem; background:rgba(99,102,241,.12); }
+        .schema-table ul { margin:0; padding:.7rem 1.6rem .8rem 1.8rem; font-family:"Source Code Pro",monospace; font-size:.78rem; }
+        .relationship-strip { display:flex; flex-wrap:wrap; gap:.55rem; margin-top:1rem; }
+        .relationship-strip span { border:1px solid var(--border-color); border-radius:999px; padding:.3rem .65rem; font-size:.78rem; background:var(--section-alt-bg); }
+        .comparison-table td:first-child,.comparison-table th:first-child { white-space:nowrap; }
+        .output-grain { display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; }
+        .output-grain > span { padding:.45rem .65rem; border:1px solid var(--border-color); border-radius:.55rem; background:var(--section-alt-bg); }
+        .output-grain .op { border:none; background:transparent; color:var(--muted-color); font-weight:800; }
+        .project-card-custom { border:1px solid var(--border-color); border-radius:.8rem; padding:1rem; background:var(--section-alt-bg); height:100%; }
+        @media (max-width: 991.98px) { .join-family-grid,.schema-relations { grid-template-columns:repeat(2,minmax(0,1fr)); } .join-decision { grid-template-columns:1fr; } }
+        @media (max-width: 575.98px) { .join-family-grid,.schema-relations { grid-template-columns:1fr; } }
+
+        /* Concept visuals and lightweight result charts */
+        .join-visualizer {
+            border: 1px solid var(--border-color);
+            border-radius: .9rem;
+            background: var(--section-alt-bg);
+            padding: 1rem;
+            margin-top: 1.25rem;
+        }
+        .join-visual-controls { display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem; }
+        .join-visual-btn {
+            border:1px solid var(--border-color);
+            background:var(--section-bg);
+            color:var(--text-color);
+            border-radius:999px;
+            padding:.42rem .72rem;
+            font-weight:700;
+            font-size:.82rem;
+        }
+        .join-visual-btn:hover,.join-visual-btn:focus { border-color:var(--accent-color); outline:none; }
+        .join-visual-btn.active { background:var(--accent-color); color:#fff; border-color:var(--accent-color); }
+        .join-visual-stage { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:.8rem; align-items:start; }
+        .join-source-card,.join-output-card { border:1px solid var(--border-color); border-radius:.75rem; overflow:hidden; background:var(--section-bg); }
+        .join-source-card h4,.join-output-card h4 { font-size:.88rem; margin:0; padding:.62rem .72rem; background:rgba(99,102,241,.10); }
+        .join-source-row,.join-output-row { display:grid; grid-template-columns:72px minmax(0,1fr); gap:.45rem; padding:.5rem .65rem; border-top:1px solid var(--border-color); font-family:"Source Code Pro",monospace; font-size:.78rem; }
+        .join-output-row { grid-template-columns:72px minmax(0,1fr) 84px minmax(0,1.2fr); }
+        .join-source-row.match,.join-output-row.match { background:rgba(16,185,129,.10); }
+        .join-output-row.preserved { background:rgba(245,158,11,.10); }
+        .join-null { color:var(--muted-color); font-style:italic; }
+        .join-visual-arrow { align-self:center; color:var(--accent-color); font-size:1.5rem; font-weight:900; padding-top:2rem; }
+        .join-output-card { margin-top:1rem; }
+        .join-visual-summary { margin-top:.65rem; color:var(--muted-color); font-size:.82rem; }
+        .cardinality-bars { border:1px solid var(--border-color); border-radius:.8rem; padding:1rem; background:var(--section-alt-bg); margin:1rem 0; }
+        .cardinality-bar-row { display:grid; grid-template-columns:135px minmax(0,1fr) 44px; gap:.65rem; align-items:center; margin:.55rem 0; font-size:.84rem; }
+        .cardinality-bar-track { height:18px; background:var(--section-bg); border:1px solid var(--border-color); border-radius:999px; overflow:hidden; }
+        .cardinality-bar-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,var(--accent-color),var(--header-color)); min-width:8px; }
+        .cardinality-bar-row.total .cardinality-bar-fill { background:linear-gradient(90deg,#f59e0b,#ef4444); }
+        .visualize-result-btn {
+            border:1px solid var(--border-color);
+            background:transparent;
+            color:var(--header-color);
+            border-radius:.45rem;
+            padding:.25rem .48rem;
+            font-size:.74rem;
+            font-weight:700;
+        }
+        .visualize-result-btn:hover { border-color:var(--accent-color); }
+        .result-chart { padding:.9rem; border-top:1px solid var(--border-color); background:var(--section-alt-bg); }
+        .result-chart-title { font-weight:700; color:var(--header-color); margin-bottom:.7rem; font-size:.86rem; }
+        .result-chart-row { display:grid; grid-template-columns:minmax(90px,150px) minmax(0,1fr) 70px; gap:.6rem; align-items:center; margin:.42rem 0; font-size:.78rem; }
+        .result-chart-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .result-chart-track { height:16px; background:var(--section-bg); border:1px solid var(--border-color); border-radius:999px; overflow:hidden; }
+        .result-chart-bar { height:100%; background:linear-gradient(90deg,var(--accent-color),var(--header-color)); border-radius:999px; min-width:2px; }
+        .result-chart-value { text-align:right; font-family:"Source Code Pro",monospace; }
+        .chart-hint { display:flex; gap:.45rem; align-items:flex-start; margin-top:.65rem; color:var(--muted-color); font-size:.8rem; }
+        @media (max-width: 767.98px) {
+            .join-visual-stage { grid-template-columns:1fr; }
+            .join-visual-arrow { transform:rotate(90deg); padding:0; justify-self:center; }
+            .join-output-row { grid-template-columns:64px minmax(0,1fr); }
+            .join-output-row > :nth-child(3),.join-output-row > :nth-child(4) { border-top:1px dashed var(--border-color); padding-top:.25rem; }
+            .cardinality-bar-row { grid-template-columns:100px minmax(0,1fr) 36px; }
+            .result-chart-row { grid-template-columns:95px minmax(0,1fr) 56px; }
+        }
+
+
+
+        .shape-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 1rem;
+            align-items: center;
+        }
+        .shape-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.9rem;
+            padding: 1rem;
+            min-width: 0;
+        }
+        .shape-card h3 { font-size: 1rem; margin-bottom: 0.75rem; }
+        .shape-arrow {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: rgba(99,102,241,.16);
+            border: 1px solid rgba(99,102,241,.45);
+            color: var(--header-color);
+            font-size: 1.35rem;
+        }
+        .mini-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .78rem;
+        }
+        .mini-data-table th, .mini-data-table td {
+            border: 1px solid var(--border-color);
+            padding: .38rem .45rem;
+            text-align: left;
+            white-space: nowrap;
+        }
+        .mini-data-table th { background: rgba(99,102,241,.11); }
+        .reshape-rule {
+            border-left: 4px solid var(--uncg-gold);
+            background: var(--alert-warning-bg);
+            padding: .9rem 1rem;
+            border-radius: 0 .7rem .7rem 0;
+        }
+        .grain-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: .75rem;
+        }
+        .grain-step {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: .8rem;
+            padding: .9rem;
+            text-align: center;
+        }
+        .grain-step strong { display: block; color: var(--header-color); margin-bottom: .3rem; }
+        .pivot-cells {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0,1fr));
+            gap: .6rem;
+        }
+        .pivot-cell {
+            border: 1px solid var(--border-color);
+            background: var(--section-alt-bg);
+            border-radius: .7rem;
+            padding: .75rem;
+            text-align: center;
+        }
+        .pivot-cell .value { font-family: "Source Code Pro", monospace; font-size: 1.2rem; font-weight: 700; color: var(--header-color); }
+        .reshape-flow {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0,1fr));
+            gap: .55rem;
+            align-items: stretch;
+        }
+        .reshape-flow .flow-node {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: .8rem;
+            padding: .8rem;
+            text-align: center;
+            font-size: .83rem;
+        }
+        .reshape-flow .flow-node strong { display:block; color: var(--header-color); }
+        .shape-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            padding: .25rem .6rem;
+            font-size: .76rem;
+            background: var(--section-alt-bg);
+        }
+        .decision-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; }
+        .decision-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .decision-card h3 { font-size:1rem; }
+        @media (max-width: 991px) {
+            .shape-grid { grid-template-columns: 1fr; }
+            .shape-arrow { margin: 0 auto; transform: rotate(90deg); }
+            .grain-row { grid-template-columns: repeat(2,1fr); }
+            .reshape-flow { grid-template-columns: 1fr; }
+            .decision-grid { grid-template-columns:1fr; }
+        }
+        @media (max-width: 575px) {
+            .grain-row, .pivot-cells { grid-template-columns:1fr; }
+        }
+
+        /* Module 11 visual language */
+        .cte-pipeline { display:grid; grid-template-columns:repeat(5,1fr); gap:.65rem; align-items:center; margin:1.25rem 0; }
+        .cte-step { border:1px solid var(--border-color); border-radius:.8rem; padding:.85rem; background:var(--section-alt-bg); min-height:112px; display:flex; flex-direction:column; justify-content:center; text-align:center; }
+        .cte-step strong { color:var(--header-color); display:block; margin-bottom:.25rem; }
+        .cte-arrow { text-align:center; color:var(--uncg-gold); font-size:1.25rem; }
+        .window-anatomy { display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; margin:1.2rem 0; }
+        .window-piece { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .window-piece .piece-label { font-size:.76rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted-color); font-weight:700; }
+        .window-piece code { display:block; margin-top:.45rem; }
+        .rank-demo { overflow-x:auto; border:1px solid var(--border-color); border-radius:.85rem; }
+        .rank-demo table { width:100%; border-collapse:collapse; min-width:620px; }
+        .rank-demo th,.rank-demo td { padding:.65rem .8rem; border-bottom:1px solid var(--border-color); text-align:center; }
+        .rank-demo th:first-child,.rank-demo td:first-child { text-align:left; }
+        .rank-demo tr:last-child td { border-bottom:0; }
+        .tie-row { background:rgba(207,155,47,.08); }
+        .timeline { display:flex; gap:.65rem; align-items:center; overflow-x:auto; padding:.75rem 0 .25rem; }
+        .timeline-event { min-width:155px; border:1px solid var(--border-color); border-radius:.85rem; background:var(--section-alt-bg); padding:.8rem; text-align:center; }
+        .timeline-event .event-date { font-size:.8rem; color:var(--muted-color); }
+        .timeline-arrow { color:var(--uncg-gold); font-size:1.2rem; flex:0 0 auto; }
+        .frame-visual { display:grid; grid-template-columns:repeat(7,1fr); gap:.35rem; margin:1rem 0; }
+        .frame-cell { border:1px solid var(--border-color); border-radius:.55rem; text-align:center; padding:.7rem .3rem; background:var(--section-alt-bg); font-size:.8rem; }
+        .frame-cell.current { outline:2px solid var(--uncg-gold); background:rgba(207,155,47,.12); }
+        .frame-cell.in-frame { border-color:var(--accent-color); background:rgba(99,102,241,.12); }
+        .group-partition-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+        .grain-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .grain-card .row-count { display:inline-block; padding:.2rem .55rem; border-radius:999px; background:rgba(56,189,248,.12); border:1px solid var(--border-color); font-size:.78rem; }
+        .analysis-pattern { display:grid; grid-template-columns:repeat(3,1fr); gap:.85rem; margin:1rem 0; }
+        .pattern-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .pattern-card h3 { font-size:1rem; }
+        .recursive-tree { display:grid; gap:.5rem; max-width:760px; margin:1rem auto; }
+        .tree-row { display:flex; align-items:center; gap:.65rem; }
+        .tree-indent-0 { margin-left:0; }
+        .tree-indent-1 { margin-left:2rem; }
+        .tree-indent-2 { margin-left:4rem; }
+        .tree-node { border:1px solid var(--border-color); border-radius:.65rem; padding:.5rem .75rem; background:var(--section-alt-bg); }
+        .output-grain-note { border-left:4px solid var(--uncg-gold); background:var(--section-alt-bg); padding:1rem; border-radius:0 .65rem .65rem 0; }
+        @media (max-width: 991px) {
+            .cte-pipeline { grid-template-columns:1fr; }
+            .cte-arrow { transform:rotate(90deg); }
+            .window-anatomy { grid-template-columns:1fr 1fr; }
+            .group-partition-grid,.analysis-pattern { grid-template-columns:1fr; }
+        }
+        @media (max-width: 575px) {
+            .window-anatomy { grid-template-columns:1fr; }
+            .frame-visual { grid-template-columns:repeat(4,1fr); }
+        }
+
+        .view-layer-stack { display:grid; grid-template-columns:1fr auto 1fr auto 1fr auto 1fr; gap:.65rem; align-items:center; margin:1.25rem 0; }
+        .view-layer { border:1px solid var(--border-color); border-radius:.85rem; background:var(--section-alt-bg); padding:1rem; min-height:116px; display:flex; flex-direction:column; justify-content:center; }
+        .view-layer strong { color:var(--header-color); display:block; margin-bottom:.25rem; }
+        .layer-arrow { color:var(--uncg-gold); text-align:center; font-size:1.15rem; }
+        .interface-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0; }
+        .interface-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .interface-card.dynamic { border-top:4px solid var(--success-color); }
+        .interface-card.snapshot { border-top:4px solid var(--warning-color); }
+        .interface-label { display:inline-block; border:1px solid var(--border-color); border-radius:999px; padding:.15rem .55rem; font-size:.75rem; margin-bottom:.6rem; }
+        .freshness-line { display:grid; grid-template-columns:repeat(5,1fr); gap:.65rem; align-items:start; margin:1.2rem 0; position:relative; }
+        .freshness-line::before { content:""; position:absolute; top:18px; left:8%; right:8%; height:2px; background:var(--border-color); z-index:0; }
+        .fresh-step { position:relative; z-index:1; text-align:center; }
+        .fresh-dot { width:36px; height:36px; border-radius:50%; margin:0 auto .45rem; display:flex; align-items:center; justify-content:center; background:var(--section-bg); border:2px solid var(--accent-color); font-weight:700; }
+        .fresh-step.stale .fresh-dot { border-color:var(--warning-color); }
+        .fresh-step.refresh .fresh-dot { border-color:var(--success-color); }
+        .security-flow { display:grid; grid-template-columns:1fr auto 1fr auto 1fr; gap:.75rem; align-items:center; margin:1rem 0; }
+        .security-node { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); min-height:130px; }
+        .security-node.sensitive { border-top:4px solid var(--danger-color); }
+        .security-node.interface { border-top:4px solid var(--accent-color); }
+        .security-node.consumer { border-top:4px solid var(--success-color); }
+        .dependency-chain { display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem; margin:1rem 0; }
+        .dependency-node { border:1px solid var(--border-color); border-radius:.75rem; padding:.85rem; background:var(--section-alt-bg); position:relative; }
+        .dependency-node:not(:last-child)::after { content:"→"; position:absolute; right:-.63rem; top:50%; transform:translateY(-50%); color:var(--uncg-gold); font-weight:800; }
+        .view-decision-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:.85rem; margin:1rem 0; }
+        .view-decision { border:1px solid var(--border-color); border-radius:.85rem; background:var(--section-alt-bg); padding:1rem; }
+        .view-decision h3 { font-size:1rem; }
+        .boundary-note { border-left:4px solid var(--warning-color); background:var(--section-alt-bg); padding:1rem; border-radius:0 .65rem .65rem 0; }
+        .object-chip { display:inline-flex; align-items:center; gap:.35rem; border:1px solid var(--border-color); border-radius:999px; padding:.2rem .55rem; font-size:.78rem; margin:.15rem .15rem .15rem 0; }
+        .object-chip.view { background:rgba(52,211,153,.08); }
+        .object-chip.mv { background:rgba(251,191,36,.08); }
+        .object-chip.cte { background:rgba(99,102,241,.08); }
+        .freshness-meter { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+        .meter-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .meter-bar { height:12px; border-radius:999px; background:var(--border-color); overflow:hidden; margin-top:.55rem; }
+        .meter-bar span { display:block; height:100%; }
+        .meter-live { width:100%; background:var(--success-color); }
+        .meter-snapshot { width:68%; background:var(--warning-color); }
+        @media (max-width: 991px) {
+            .view-layer-stack { grid-template-columns:1fr; }
+            .layer-arrow { transform:rotate(90deg); }
+            .interface-grid,.freshness-meter,.view-decision-grid { grid-template-columns:1fr; }
+            .security-flow { grid-template-columns:1fr; }
+            .security-flow .layer-arrow { transform:rotate(90deg); }
+            .dependency-chain { grid-template-columns:1fr; }
+            .dependency-node:not(:last-child)::after { content:"↓"; right:auto; left:50%; top:auto; bottom:-1.05rem; transform:translateX(-50%); }
+        }
+        @media (max-width: 575px) {
+            .freshness-line { grid-template-columns:1fr; }
+            .freshness-line::before { display:none; }
+        }
+
+
+
+        /* Module 13: Spark-specific visuals */
+        .spark-architecture {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) auto minmax(0, 1.7fr);
+            gap: 1rem;
+            align-items: center;
+            margin: 1.4rem 0;
+        }
+        .spark-driver,
+        .spark-executor,
+        .spark-stage,
+        .concept-tile,
+        .engine-lane,
+        .schema-card,
+        .plan-step,
+        .workload-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: .85rem;
+            padding: 1rem;
+        }
+        .spark-driver {
+            border-top: 4px solid var(--uncg-gold);
+        }
+        .spark-driver strong,
+        .spark-executor strong,
+        .plan-step strong,
+        .schema-card strong,
+        .engine-lane strong {
+            display: block;
+            color: var(--header-color);
+            margin-bottom: .25rem;
+        }
+        .executor-cluster {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: .8rem;
+        }
+        .spark-executor {
+            border-top: 4px solid var(--accent-color);
+        }
+        .spark-task-row {
+            display: flex;
+            gap: .35rem;
+            flex-wrap: wrap;
+            margin-top: .7rem;
+        }
+        .spark-task {
+            background: rgba(99,102,241,.14);
+            border: 1px solid var(--accent-color);
+            border-radius: 999px;
+            padding: .15rem .48rem;
+            font: 600 .72rem "Source Code Pro", monospace;
+        }
+        .cluster-arrow,
+        .plan-arrow {
+            color: var(--uncg-gold);
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        .concept-grid,
+        .schema-grid,
+        .workload-grid,
+        .engine-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1.25rem 0;
+        }
+        .concept-tile h3,
+        .schema-card h3,
+        .workload-card h3,
+        .engine-lane h3 {
+            font-size: 1rem;
+            margin-bottom: .45rem;
+        }
+        .concept-icon {
+            width: 2.35rem;
+            height: 2.35rem;
+            display: inline-grid;
+            place-items: center;
+            border-radius: .65rem;
+            background: rgba(56,189,248,.13);
+            border: 1px solid rgba(56,189,248,.35);
+            margin-bottom: .65rem;
+        }
+        .spark-plan {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: .65rem;
+            margin: 1.3rem 0;
+            align-items: stretch;
+        }
+        .plan-step {
+            position: relative;
+            min-height: 116px;
+        }
+        .plan-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -.62rem;
+            top: 42%;
+            color: var(--uncg-gold);
+            font-weight: 800;
+        }
+        .lakehouse-stack {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: .55rem;
+            margin: 1.2rem 0;
+        }
+        .lakehouse-layer {
+            display: grid;
+            grid-template-columns: 150px minmax(0, 1fr);
+            gap: .9rem;
+            align-items: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--accent-color);
+            border-radius: .75rem;
+            padding: .8rem 1rem;
+        }
+        .lakehouse-layer.storage {border-left-color: var(--uncg-gold);}
+        .lakehouse-layer.table {border-left-color: var(--success-color);}
+        .lakehouse-layer.engine {border-left-color: var(--header-color);}
+        .lakehouse-layer strong {color: var(--header-color);}
+        .engine-lane.spark {border-top: 4px solid #f59e0b;}
+        .engine-lane.tsql {border-top: 4px solid #38bdf8;}
+        .portable-lab-note {
+            border: 1px solid var(--warning-color);
+            border-left: 5px solid var(--warning-color);
+            background: var(--alert-warning-bg);
+            border-radius: .75rem;
+            padding: 1rem;
+            margin: 1rem 0 1.25rem;
+        }
+        .portable-lab-note strong {color: var(--text-color);}
+        .shuffle-visual {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            gap: .65rem;
+            align-items: center;
+            margin: 1.2rem 0;
+        }
+        .partition-column {
+            display: grid;
+            gap: .45rem;
+        }
+        .partition-box {
+            border: 1px solid var(--border-color);
+            border-radius: .55rem;
+            padding: .55rem .7rem;
+            background: var(--section-alt-bg);
+            font-size: .87rem;
+        }
+        .shuffle-cloud {
+            border: 2px dashed var(--warning-color);
+            border-radius: 1rem;
+            padding: .9rem;
+            text-align: center;
+            background: var(--alert-warning-bg);
+            min-width: 116px;
+        }
+        .schema-card.infer {border-top: 4px solid var(--warning-color);}
+        .schema-card.explicit {border-top: 4px solid var(--success-color);}
+        .schema-card.delta {border-top: 4px solid var(--accent-color);}
+        .workload-card.spark-fit {border-top: 4px solid var(--success-color);}
+        .workload-card.db-fit {border-top: 4px solid var(--header-color);}
+        .code-label {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            font-size: .76rem;
+            font-weight: 700;
+            padding: .25rem .55rem;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            background: var(--section-alt-bg);
+            margin-bottom: .5rem;
+        }
+        .fabric-badge {
+            color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+        .portable-badge {
+            color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        .spark-checklist li {margin-bottom: .45rem;}
+        @media (max-width: 991.98px) {
+            .spark-architecture {grid-template-columns: 1fr;}
+            .cluster-arrow {transform: rotate(90deg);}
+            .spark-plan {grid-template-columns: 1fr 1fr;}
+            .plan-step:nth-child(2)::after {display:none;}
+            .shuffle-visual {grid-template-columns: 1fr;}
+            .plan-arrow {transform: rotate(90deg);}
+        }
+        @media (max-width: 575.98px) {
+            .concept-grid,.schema-grid,.workload-grid,.engine-grid,.executor-cluster,.spark-plan {grid-template-columns: 1fr;}
+            .plan-step::after {display:none !important;}
+            .lakehouse-layer {grid-template-columns: 1fr;}
+        }
+</style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="./index.html">IAF 603: Preparing Data for Analytics</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Modules
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="./module1.html">Module 1</a></li>
-                            <li><a class="dropdown-item" href="./module2.html">Module 2</a></li>
-                            <li><a class="dropdown-item" href="./module3.html">Module 3</a></li>
-                            <li><a class="dropdown-item" href="./module4.html">Module 4</a></li>
-                            <li><a class="dropdown-item" href="./module5.html">Module 5</a></li>
-                            <li><a class="dropdown-item" href="./module6.html">Module 6</a></li>
-                            <li><a class="dropdown-item" href="./module7.html">Module 7</a></li>
-                            <li><a class="dropdown-item" href="./module8.html">Module 8</a></li>
-                            <li><a class="dropdown-item" href="./module9.html">Module 9</a></li>
-                            <li><a class="dropdown-item" href="./module10.html">Module 10</a></li>
-                            <li><a class="dropdown-item" href="./module11.html">Module 11</a></li>
-                            <li><a class="dropdown-item" href="./module12.html">Module 12</a></li>
-                            <li><a class="dropdown-item" href="./module13.html">Module 13</a></li>
-                            <li><a class="dropdown-item" href="./module14.html">Module 14</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Main Content -->
-    <div class="container my-5">
-        <!-- Module Title -->
-        <section class="text-center py-5 bg-white rounded shadow">
-            <h1 class="display-4 fw-bold text-dark">Module 13: Introduction to Spark SQL</h1>
-        </section>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<nav aria-label="Main navigation" class="nav-container"><div class="container"><div class="nav-menu">
+<a class="nav-logo" href="index.html"><span class="brand-mark"><i aria-hidden="true" class="fas fa-database"></i></span>IAN 603 - Data Analytics</a>
+<button aria-controls="nav-links-list" aria-expanded="false" aria-label="Open navigation" class="mobile-menu-btn" id="mobile-menu-toggle" type="button"><i aria-hidden="true" class="fas fa-bars"></i></button>
+<ul class="nav-links-list" id="nav-links-list"><li><a class="nav-link" href="index.html"><i aria-hidden="true" class="fas fa-home"></i>Home</a></li><li class="dropdown"><button aria-expanded="false" class="nav-link dropdown-trigger" type="button"><i aria-hidden="true" class="fas fa-layer-group"></i>Modules <i aria-hidden="true" class="fas fa-chevron-down ms-1"></i></button><div class="dropdown-content"><a class="dropdown-link" href="module1.html"><span class="module-number">1</span>Introduction to Data</a><a class="dropdown-link" href="module2.html"><span class="module-number">2</span>Database Concepts</a><a class="dropdown-link" href="module3.html"><span class="module-number">3</span>PostgreSQL in Action</a><a class="dropdown-link" href="module4.html"><span class="module-number">4</span>SQL Aggregations</a><a class="dropdown-link" href="module5.html"><span class="module-number">5</span>SQL Logic</a><a class="dropdown-link" href="module6.html"><span class="module-number">6</span>Joins in SQL</a><a class="dropdown-link" href="module7.html"><span class="module-number">7</span>Subqueries</a><a class="dropdown-link" href="module8.html"><span class="module-number">8</span>Strings and Dates</a><a class="dropdown-link" href="module9.html"><span class="module-number">9</span>Data Cleaning</a><a class="dropdown-link" href="module10.html"><span class="module-number">10</span>Reshaping Data</a><a class="dropdown-link" href="module11.html"><span class="module-number">11</span>Advanced SQL</a><a class="dropdown-link" href="module12.html"><span class="module-number">12</span>Views &amp; Modular Queries</a><a class="dropdown-link active" href="module13.html"><span class="module-number">13</span>Spark SQL</a><a class="dropdown-link" href="module14.html"><span class="module-number">14</span>Final Project</a></div></li><li><a class="nav-link" href="#sql-lab"><i aria-hidden="true" class="fas fa-terminal"></i>SQL Lab</a></li><li><button aria-label="Toggle dark and light theme" class="theme-toggle-btn" id="theme-toggle" type="button"><i aria-hidden="true" class="fas fa-sun"></i><span class="d-none d-md-inline">Theme</span></button></li></ul>
+</div></div></nav>
 
-        <!-- Module Content -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <!-- Learning Objectives -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Learning Objectives</h2>
-                <p>Upon completion of this module, participants will be able to:</p>
-                <ul>
-                    <li>Understand the fundamental concepts of distributed computing and why it’s necessary for big data.</li>
-                    <li>Describe the basic architecture of Apache Spark and the role of Spark SQL.</li>
-                    <li>Differentiate between Spark SQL and traditional SQL, especially regarding schema-on-read.</li>
-                    <li>Execute basic Spark SQL queries against data in a Microsoft Fabric Lakehouse.</li>
-                </ul>
+<header class="hero-section"><div class="container"><div class="row align-items-center g-4"><div class="col-lg-8"><div class="hero-kicker"><i aria-hidden="true" class="fas fa-bolt me-2"></i>Module 13</div><h1>Introduction to Spark SQL</h1><p class="lead mb-3">Move from single-database SQL thinking to distributed analytical execution without losing the relational reasoning you built in Modules 3–12.</p><div class="essential-question"><strong>Essential question:</strong> What changes when familiar SQL is executed over distributed files and tables across a Spark cluster rather than inside one PostgreSQL database?</div><div class="hero-meta mt-3"><span><i aria-hidden="true" class="fas fa-network-wired me-1"></i>Distributed execution</span><span><i aria-hidden="true" class="fas fa-fire me-1"></i>Spark SQL</span><span><i aria-hidden="true" class="fas fa-water me-1"></i>Fabric Lakehouse</span></div></div><div class="col-lg-4"><div class="hero-summary"><div class="course-badge">IAN 603 - Data Analytics</div><p class="mb-2"><strong>Core workflow</strong></p><p class="mb-0">Understand the data source → inspect schema → write relational logic → inspect the plan → minimize unnecessary scan/shuffle → execute in Spark → validate output grain.</p></div></div></div></div></header>
 
-                <!-- Introduction to Spark SQL -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Introduction to Spark SQL</h2>
-                <p>As datasets grow from gigabytes to terabytes and petabytes, traditional single-node databases struggle to keep up. Distributed computing, where tasks are parallelized across multiple machines, is essential for handling big data. Apache Spark is the leading open-source framework for this, and Spark SQL is its module that allows standard SQL queries on massive datasets. This module bridges traditional SQL skills to distributed analytics, focusing on applying these skills in modern cloud environments like Microsoft Fabric. Spark SQL leverages the same ANSI SQL syntax you’ve mastered, but its execution model is optimized for scalability, making it ideal for large-scale data preparation tasks in fields like healthcare, business, or public policy.</p>
-                <p>Spark SQL’s power lies in its ability to process vast, diverse datasets stored in data lakes, such as patient records for a Greensboro hospital or transaction logs for a retail chain. Unlike traditional databases, Spark SQL’s schema-on-read approach allows flexible data ingestion without predefined schemas, accommodating evolving data structures. This module equips you to transition from single-server SQL to distributed analytics, preparing you for real-world big data challenges where traditional tools fall short.</p>
+<main class="container pb-5" id="main-content"><div class="row g-4 mt-1"><aside aria-label="Module contents" class="col-lg-3"><nav aria-label="Module section navigation" class="toc-panel"><h2><i aria-hidden="true" class="fas fa-list-ul me-2"></i>Module Contents</h2><ul class="toc-list">
+<li><a href="#start"><span class="toc-index">01</span> Start Here</a></li>
+<li><a href="#distributed"><span class="toc-index">02</span> Why Distributed?</a></li>
+<li><a href="#architecture"><span class="toc-index">03</span> Spark Execution Model</a></li>
+<li><a href="#spark-sql"><span class="toc-index">04</span> Spark SQL &amp; DataFrames</a></li>
+<li><a href="#lakehouse"><span class="toc-index">05</span> Lakehouse, Delta &amp; Schema</a></li>
+<li><a href="#fabric"><span class="toc-index">06</span> Fabric Spark SQL Workflow</a></li>
+<li><a href="#sql-lab"><span class="toc-index">07</span> Portable SQL Practice</a></li>
+<li><a href="#sources"><span class="toc-index">08</span> Data Sources &amp; Tables</a></li>
+<li><a href="#performance"><span class="toc-index">09</span> Plans, Partitions &amp; Shuffle</a></li>
+<li><a href="#advanced"><span class="toc-index">10</span> Windows &amp; Advanced SQL</a></li>
+<li><a href="#project"><span class="toc-index">11</span> Practice &amp; Project</a></li>
+<li><a href="#assessment"><span class="toc-index">12</span> Assessment &amp; Closure</a></li>
+</ul><hr class="border-secondary"/><p class="small text-muted mb-2">Spark habit</p><p class="small mb-0">Do not stop at “the query is correct.” Ask <strong>what is scanned, what is shuffled, and what one output row represents</strong>.</p></nav></aside><div class="col-lg-9 content-column">
 
-                <!-- Core Concepts of Distributed Computing -->
-                <h3 class="h4 fw-bold mb-3">Core Concepts of Distributed Computing</h3>
-                <p>Distributed computing divides tasks across multiple computers (nodes) to process large datasets efficiently.</p>
-                <ul>
-                    <li><strong>Cluster:</strong> A group of computers (nodes or workers) that collaborate to process data.</li>
-                    <li><strong>Distributed Storage:</strong> Data is split into chunks and stored across nodes’ drives (e.g., HDFS, Amazon S3, Microsoft OneLake).</li>
-                    <li><strong>Parallel Processing:</strong> Queries are broken into tasks executed simultaneously across nodes, with results aggregated for the final output.</li>
-                </ul>
-                <p>These concepts enable Spark to handle massive datasets by distributing both storage and computation. For example, analyzing years of patient data across a hospital network requires parallel processing to deliver results quickly, which single-node systems cannot achieve efficiently.</p>
+<section class="content-card" id="start"><div class="section-kicker">Start here</div><h2>Same SQL ideas, different execution environment</h2><p>Spark SQL is Apache Spark's structured-data module. It lets you express transformations using SQL while Spark plans and executes the work over distributed data. The relational ideas from earlier modules still matter—filters, joins, aggregates, windows, grain, and NULL semantics—but the cost model now includes files, partitions, network exchange, and parallel tasks.</p><div class="learning-objectives"><h3 class="h5">Learning objectives</h3><p>By the end of this module, you will be able to:</p><ul class="mb-0"><li>Explain when distributed processing can be useful and when a conventional database may still be the better tool.</li><li>Describe the roles of the Spark driver, executors, partitions, stages, and tasks at an introductory level.</li><li>Explain how Spark SQL and DataFrames use the same structured-data execution engine.</li><li>Distinguish raw file schema inference from explicit schemas and Delta-table schema enforcement.</li><li>Run Spark SQL in a Microsoft Fabric notebook or Spark SQL query surface and distinguish that workflow from the lakehouse T-SQL analytics endpoint.</li><li>Use familiar SQL for aggregation, window analysis, and readmission-style temporal analysis in Spark.</li><li>Use <code>EXPLAIN</code> and a simple scan/filter/shuffle mental model to reason about distributed query cost.</li></ul></div><div class="boundary-note mt-4"><strong>Important:</strong> Spark is not “PostgreSQL, but bigger.” Spark is a distributed compute engine that can query many storage systems. A database and Spark often coexist in the same architecture.</div></section>
 
-                <!-- Spark Architecture and Spark SQL -->
-                <h3 class="h4 fw-bold mb-3">Spark Architecture and Spark SQL</h3>
-                <p>Spark’s architecture is designed for distributed processing, with Spark SQL as a high-level interface.</p>
-                <ul>
-                    <li><strong>Spark Driver:</strong> The master node that plans queries, breaks them into tasks, and schedules execution on worker nodes.</li>
-                    <li><strong>Executors:</strong> Processes on worker nodes that execute tasks and return results to the driver.</li>
-                    <li><strong>Spark SQL:</strong> Uses the Catalyst optimizer to create efficient execution plans, running SQL queries across the cluster.</li>
-                </ul>
-                <p>The Catalyst optimizer translates SQL into an optimized physical plan, distributing tasks to maximize parallelism. This makes Spark SQL ideal for complex queries on large datasets, such as aggregating sales data across multiple stores or analyzing sensor data from IoT devices.</p>
+<section class="content-card" id="distributed"><div class="section-kicker">Scale decision</div><h2>Why distribute a workload?</h2><p>Distributed processing becomes useful when a workload benefits from dividing data and computation across multiple workers—for example, large lake files, broad ETL pipelines, repeated transformations across many partitions, or workloads that exceed the practical CPU, memory, or I/O envelope of one machine. That does <em>not</em> mean every large dataset automatically belongs in Spark.</p><div class="workload-grid"><div class="workload-card db-fit"><h3><i class="fas fa-database me-2"></i>A database may be the better fit</h3><ul class="mb-0"><li>Transactional workloads and frequent small writes</li><li>Low-latency point lookups</li><li>Strong relational constraints and operational workflows</li><li>Data comfortably handled by the database platform</li></ul></div><div class="workload-card spark-fit"><h3><i class="fas fa-network-wired me-2"></i>Spark may be a better fit</h3><ul class="mb-0"><li>Large file-based lakehouse transformations</li><li>Wide scans over many partitions</li><li>Parallel ETL/ELT and feature preparation</li><li>Batch analytics spanning diverse sources</li></ul></div></div><div class="concept-grid"><div class="concept-tile"><span class="concept-icon"><i class="fas fa-cubes"></i></span><h3>Partition</h3><p class="mb-0">A chunk of a distributed dataset that Spark can process as a unit of parallel work.</p></div><div class="concept-tile"><span class="concept-icon"><i class="fas fa-list-check"></i></span><h3>Task</h3><p class="mb-0">A unit of work sent to an executor, commonly operating on one partition for a stage.</p></div><div class="concept-tile"><span class="concept-icon"><i class="fas fa-layer-group"></i></span><h3>Stage</h3><p class="mb-0">A group of tasks that can execute without needing a new cross-partition data exchange.</p></div><div class="concept-tile"><span class="concept-icon"><i class="fas fa-arrows-turn-to-dots"></i></span><h3>Shuffle</h3><p class="mb-0">Redistribution of data across workers, often introduced by grouping, sorting, or certain joins.</p></div></div></section>
 
-                <!-- Spark SQL vs. Traditional SQL -->
-                <h3 class="h4 fw-bold mb-3">Spark SQL vs. Traditional SQL</h3>
-                <p>While Spark SQL uses familiar ANSI SQL syntax, its execution model differs significantly from traditional SQL databases.</p>
-                <ul>
-                    <li><strong>Schema-on-Write (Traditional):</strong> Requires a predefined schema (<code>CREATE TABLE</code>) before loading data, with validation at write time.</li>
-                    <li><strong>Schema-on-Read (Spark SQL):</strong> Infers schema when reading data from files (e.g., CSV, JSON, Parquet), offering flexibility for unstructured or evolving data.</li>
-                    <li><strong>Data Formats:</strong> Optimized for columnar formats like Parquet and Delta Lake, which reduce I/O by reading only required columns.</li>
-                </ul>
-                <p>Schema-on-read eliminates the need for upfront schema design, making it easier to work with semi-structured data like JSON from APIs. Parquet’s columnar storage speeds up analytical queries by skipping irrelevant data, crucial for big data workloads.</p>
+<section class="content-card" id="architecture"><div class="section-kicker">Architecture</div><h2>From SQL text to distributed tasks</h2><p>At a high level, the driver coordinates a Spark application while executors perform distributed work. Spark SQL adds structured query planning and optimization before the physical work is scheduled.</p><div class="spark-plan"><div class="plan-step"><strong>1. SQL / DataFrame</strong><span>You express relational intent.</span></div><div class="plan-step"><strong>2. Logical plan</strong><span>Spark resolves tables, columns, expressions, and relational operators.</span></div><div class="plan-step"><strong>3. Optimized plan</strong><span>Optimizer rules can simplify and reorganize work.</span></div><div class="plan-step"><strong>4. Physical plan</strong><span>Spark chooses executable operators and exchanges.</span></div></div><div class="spark-architecture"><div class="spark-driver"><strong><i class="fas fa-compass me-2"></i>Driver</strong><p class="mb-2">Coordinates the application, builds plans, schedules stages and tasks, and tracks progress.</p><div class="spark-task-row"><span class="spark-task">Plan</span><span class="spark-task">Schedule</span><span class="spark-task">Coordinate</span></div></div><div class="cluster-arrow"><i class="fas fa-arrow-right"></i></div><div class="executor-cluster"><div class="spark-executor"><strong>Executor A</strong><span>Processes partitions</span><div class="spark-task-row"><span class="spark-task">Task 1</span><span class="spark-task">Task 2</span></div></div><div class="spark-executor"><strong>Executor B</strong><span>Processes partitions</span><div class="spark-task-row"><span class="spark-task">Task 3</span><span class="spark-task">Task 4</span></div></div><div class="spark-executor"><strong>Executor C</strong><span>Processes partitions</span><div class="spark-task-row"><span class="spark-task">Task 5</span><span class="spark-task">Task 6</span></div></div><div class="spark-executor"><strong>Executor D</strong><span>Processes partitions</span><div class="spark-task-row"><span class="spark-task">Task 7</span><span class="spark-task">Task 8</span></div></div></div></div><div class="alert alert-info"><strong>Do not equate “one query” with “one operation.”</strong> One SQL statement can become many stages and hundreds or thousands of tasks depending on the data and physical plan.</div></section>
 
-                <!-- Running Spark SQL in Microsoft Fabric -->
-                <h3 class="h4 fw-bold mb-3">Running Spark SQL in Microsoft Fabric</h3>
-                <p>Microsoft Fabric provides a user-friendly environment for Spark SQL, typically within Notebooks in a Lakehouse architecture.</p>
-                <ul>
-                    <li><strong>Lakehouse:</strong> Combines data lake flexibility (storing all data types) with data warehouse features (ACID transactions, optimized querying). Data is often stored in Delta Lake format.</li>
-                    <li><strong>Notebooks:</strong> Interactive web-based environments for writing and executing Spark SQL, Python, or R code, with results displayed inline.</li>
-                </ul>
-                <p><strong>Sample Data (survey_responses_delta Table):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>response_id</th>
-                            <th>city</th>
-                            <th>state</th>
-                            <th>satisfaction_score</th>
-                            <th>response_date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Greensboro</td>
-                            <td>NC</td>
-                            <td>4</td>
-                            <td>2025-01-10</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Raleigh</td>
-                            <td>NC</td>
-                            <td>3</td>
-                            <td>2025-01-11</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Richmond</td>
-                            <td>VA</td>
-                            <td>5</td>
-                            <td>2025-01-12</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Charleston</td>
-                            <td>SC</td>
-                            <td>2</td>
-                            <td>2025-01-13</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Greensboro</td>
-                            <td>NC</td>
-                            <td>4</td>
-                            <td>2025-01-14</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Run in a Fabric Notebook cell with %sql
--- Aggregate survey responses by city and state
-%sql
+<section class="content-card" id="spark-sql"><div class="section-kicker">Structured APIs</div><h2>Spark SQL and DataFrames share the same structured execution engine</h2><p>Spark SQL is not a separate storage engine. A table or DataFrame provides Spark with schema and relational structure, and you can express the transformation either as SQL or with the DataFrame API. Both feed the same Spark SQL planning/execution machinery.</p><div class="row g-3"><div class="col-md-6"><div class="code-label fabric-badge"><i class="fas fa-code"></i> Spark SQL</div><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">SELECT
+    state,
+    AVG(satisfaction_score) AS avg_score,
+    COUNT(*) AS responses
+FROM survey_responses_delta
+GROUP BY state
+ORDER BY avg_score DESC;</code></pre></div></div><div class="col-md-6"><div class="code-label fabric-badge"><i class="fab fa-python"></i> PySpark DataFrame</div><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-python">from pyspark.sql import functions as F
+
+df = spark.table("survey_responses_delta")
+result = (
+    df.groupBy("state")
+      .agg(
+          F.avg("satisfaction_score").alias("avg_score"),
+          F.count("*").alias("responses")
+      )
+      .orderBy(F.desc("avg_score"))
+)
+result.show()</code></pre></div></div></div><div class="alert alert-secondary mt-3"><strong>Temporary-view bridge:</strong> a DataFrame can be registered with <code>createOrReplaceTempView()</code> and then queried with SQL. This is useful when part of a workflow is easier to express in Python and another part is clearer in SQL.</div></section>
+
+<section class="content-card" id="lakehouse"><div class="section-kicker">Storage model</div><h2>Lakehouse, Delta, and the schema-on-read nuance</h2><p>The source module contrasts “schema-on-write” databases with “schema-on-read” Spark. That distinction is useful as a first approximation, but production systems are more nuanced. Spark can infer schema from files, you can provide an explicit schema, Parquet carries schema metadata, and Delta tables add schema enforcement/evolution plus transactional metadata.</p><div class="schema-grid"><div class="schema-card infer"><strong>Infer at read time</strong><h3>Useful for exploration</h3><p class="mb-0">CSV/JSON ingestion can infer types, but inference can be slow or ambiguous and may vary when source data change.</p></div><div class="schema-card explicit"><strong>Explicit schema</strong><h3>Useful for repeatability</h3><p class="mb-0">Production ingestion often benefits from declaring expected names and types so bad source data fail or can be quarantined deliberately.</p></div><div class="schema-card delta"><strong>Delta table</strong><h3>Managed table contract</h3><p class="mb-0">Delta extends Parquet storage with transaction metadata and supports schema enforcement/evolution workflows.</p></div><div class="schema-card"><strong>Parquet</strong><h3>Self-describing columnar files</h3><p class="mb-0">Parquet stores schema with the data and supports column-oriented reads that fit analytical scans well.</p></div></div><div class="lakehouse-stack"><div class="lakehouse-layer storage"><strong>OneLake / files</strong><span>CSV, JSON, Parquet, Delta files and folders</span></div><div class="lakehouse-layer table"><strong>Lakehouse tables</strong><span>Delta tables registered for Spark and other Fabric workloads</span></div><div class="lakehouse-layer engine"><strong>Compute engines</strong><span>Spark notebooks / Spark SQL query explorer for Spark SQL; SQL analytics endpoint for T-SQL over Delta tables</span></div></div><div class="boundary-note"><strong>Key distinction:</strong> in Fabric, “SQL” can mean different engines. Spark SQL in a notebook/query explorer is not the same dialect or execution path as the lakehouse SQL analytics endpoint, which uses T-SQL.</div></section>
+
+<section class="content-card" id="fabric"><div class="section-kicker">Microsoft Fabric</div><h2>Two practical Spark SQL authoring surfaces</h2><p>Fabric supports Spark development in notebooks and also provides a Spark SQL query experience in the Lakehouse explorer. The SQL itself is Spark SQL; what changes is the authoring surface.</p><div class="engine-grid"><div class="engine-lane spark"><h3><i class="fas fa-book-open me-2"></i>Notebook</h3><p>Use a SQL cell or the <code>%sql</code> magic in a multi-language notebook. Notebooks are well suited to mixing SQL, PySpark, Markdown, and visual output.</p><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">%sql
 SELECT
     city,
     state,
-    AVG(satisfaction_score) AS avg_score,
+    ROUND(AVG(satisfaction_score), 2) AS avg_score,
     COUNT(*) AS num_responses
-FROM
-    my_lakehouse.survey_responses_delta
-WHERE
-    state IN ('NC', 'VA', 'SC')
-GROUP BY
-    city, state
-HAVING
-    COUNT(*) > 100
-ORDER BY
-    avg_score DESC;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This query uses standard SQL syntax to aggregate survey data in a Fabric Lakehouse. Behind the scenes, the Spark Driver distributes tasks across executors, each processing a portion of the <code>survey_responses_delta</code> table (stored as Parquet in OneLake). Results are combined and displayed in the Notebook, transparent to the user. This is ideal for analyzing large-scale data, such as public health surveys across multiple states.</p>
-                <p><strong>Expanded Example (Clickstream Analysis):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>user_id</th>
-                            <th>event_timestamp</th>
-                            <th>page_viewed</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>101</td>
-                            <td>2025-01-10 10:00:00</td>
-                            <td>Homepage</td>
-                        </tr>
-                        <tr>
-                            <td>101</td>
-                            <td>2025-01-10 10:05:00</td>
-                            <td>Product</td>
-                        </tr>
-                        <tr>
-                            <td>102</td>
-                            <td>2025-01-11 12:00:00</td>
-                            <td>Homepage</td>
-                        </tr>
-                        <tr>
-                            <td>103</td>
-                            <td>2025-01-11 14:00:00</td>
-                            <td>Checkout</td>
-                        </tr>
-                        <tr>
-                            <td>102</td>
-                            <td>2025-01-12 09:00:00</td>
-                            <td>Product</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Run in a Fabric Notebook cell with %sql
--- Count unique visitors per day
-%sql
-SELECT
-    DATE(event_timestamp) AS event_date,
-    COUNT(DISTINCT user_id) AS unique_visitors
-FROM
-    my_lakehouse.clickstream_logs
-GROUP BY
-    DATE(event_timestamp)
-ORDER BY
-    event_date;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This query aggregates daily unique visitors from web logs, leveraging Spark SQL’s ability to process large-scale clickstream data efficiently. The distributed execution ensures scalability, making it suitable for analyzing website traffic for a large e-commerce platform.</p>
+FROM survey_responses_delta
+WHERE state IN ('NC', 'VA', 'SC')
+GROUP BY city, state
+ORDER BY avg_score DESC;</code></pre></div></div><div class="engine-lane tsql"><h3><i class="fas fa-terminal me-2"></i>Spark SQL query explorer</h3><p>Use Spark SQL directly from the Lakehouse explorer. Do <strong>not</strong> include notebook magic such as <code>%sql</code>.</p><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">SELECT
+    city,
+    state,
+    ROUND(AVG(satisfaction_score), 2) AS avg_score,
+    COUNT(*) AS num_responses
+FROM survey_responses_delta
+WHERE state IN ('NC', 'VA', 'SC')
+GROUP BY city, state
+ORDER BY avg_score DESC;</code></pre></div></div></div><div class="alert alert-warning"><strong>Separate surface:</strong> the Lakehouse SQL analytics endpoint is designed for T-SQL access to Delta tables. Do not assume every Spark SQL function or Spark-specific statement will run there unchanged.</div></section>
 
-                <!-- Advanced Spark SQL with Window Functions -->
-                <h3 class="h4 fw-bold mb-3">Advanced Spark SQL with Window Functions</h3>
-                <p>Spark SQL supports advanced features like window functions, enabling complex analytics on distributed data.</p>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Run in a Fabric Notebook cell with %sql
--- Calculate running total of sales per product category
-%sql
+<section class="content-card" id="sql-lab"><div class="section-kicker">Hands-on</div><h2>Portable SQL practice workbench</h2><p>This course page cannot embed a full distributed Spark cluster in the browser. To keep the module interactive, this workbench uses PGlite/PostgreSQL for <strong>portable relational logic only</strong>: filtering, grouping, CTEs, window functions, and date arithmetic that closely resemble the Spark examples.</p><div class="portable-lab-note"><strong>Execution boundary:</strong> this is <em>not</em> a Spark runtime. Spark-specific statements such as notebook <code>%sql</code>, <code>USING PARQUET</code>, Spark plan output, lakehouse identifiers, or Spark-only functions must be run in Fabric or Apache Spark.</div><div class="lab-shell"><div class="lab-status-row"><div class="engine-status loading" id="engine-status"><span class="status-dot"></span><span id="engine-status-text">Loading portable SQL engine...</span></div><span class="engine-badge"><i class="fas fa-flask me-1"></i>PGlite / PostgreSQL · portable syntax practice</span></div><div class="row g-3 align-items-end"><div class="col-lg-6"><label class="form-label fw-semibold" for="preset-select">Runnable example</label><select class="form-select" id="preset-select"><option value="explore_schema">Explore practice schema</option><option value="survey_summary">Survey summary by city</option><option value="state_summary">State-level satisfaction</option><option value="clickstream_daily">Daily unique visitors</option><option value="monthly_sales">Monthly sales by category</option><option value="running_total">Running sales total</option><option value="readmission_lag">Readmission intervals with LAG</option><option value="customer_spend">Customer spend by month</option><option value="high_value_customers">High-value customers</option><option value="rank_states">Rank states by satisfaction</option><option value="cte_pipeline">CTE + window pipeline</option><option value="output_grain">Validate output grain</option></select></div><div class="col-lg-6"><div class="d-flex gap-2 flex-wrap justify-content-lg-end"><button class="btn btn-primary" id="run-sql" type="button"><i class="fas fa-play me-1"></i>Run SQL</button><button class="btn btn-outline-primary" id="run-selection" type="button">Run selection</button><button class="btn btn-outline-secondary" id="reset-db" type="button">Reset DB</button><button class="btn btn-outline-secondary" id="clear-editor" type="button">Clear</button></div></div></div><label class="form-label fw-semibold mt-3" for="sql-editor">SQL editor</label><textarea aria-describedby="sql-shortcuts" class="sql-editor" id="sql-editor" spellcheck="false">SELECT
+    city,
+    state_code,
+    ROUND(AVG(satisfaction_score), 2) AS avg_score,
+    COUNT(*) AS num_responses
+FROM survey_responses
+GROUP BY city, state_code
+ORDER BY avg_score DESC;</textarea><p class="small text-muted mt-2 mb-0" id="sql-shortcuts"><kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Enter</kbd> runs the editor. Select text first and use <strong>Run selection</strong> to execute only that portion.</p><div class="results-shell mt-4"><div class="results-header"><div><h3 class="h5 mb-1">Results</h3><span class="small text-muted" id="execution-meta">Waiting for query</span></div></div><div class="results-output" id="results-output"><div class="result-placeholder">Waiting for query</div></div></div></div></section>
+
+<section class="content-card" id="sources"><div class="section-kicker">Data sources</div><h2>Files become queryable through DataFrames, tables, and temporary views</h2><p>Spark SQL can work with persistent tables as well as DataFrames loaded from files. A common workflow is to read a file with the DataFrame API, inspect or enforce the schema, register a temporary view, and then continue with SQL.</p><div class="row g-3"><div class="col-md-6"><div class="code-label fabric-badge">PySpark · load Parquet</div><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-python">df = spark.read.parquet("Files/survey/")
+df.printSchema()
+df.createOrReplaceTempView("survey_file")</code></pre></div></div><div class="col-md-6"><div class="code-label fabric-badge">Spark SQL · query temp view</div><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">SELECT
+    state,
+    COUNT(*) AS responses,
+    AVG(satisfaction_score) AS avg_score
+FROM survey_file
+GROUP BY state;</code></pre></div></div></div><h3 class="h5 mt-4">Pure Spark SQL data-source pattern</h3><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">CREATE OR REPLACE TEMPORARY VIEW parquet_survey
+USING parquet
+OPTIONS (path 'path/to/survey.parquet');
+
+SELECT *
+FROM parquet_survey
+LIMIT 20;</code></pre></div><div class="alert alert-secondary"><strong>Path portability:</strong> the exact path format depends on the Spark environment and attached lakehouse. In Fabric, use the path or table reference supplied by Lakehouse Explorer rather than copying a generic path blindly.</div></section>
+
+<section class="content-card" id="performance"><div class="section-kicker">Performance intuition</div><h2>Scan less, move less, and inspect the plan</h2><p>Distributed SQL introduces a cost that is easy to overlook: moving data between workers. Many analytical operators can require a shuffle, especially when rows with the same key must be brought together.</p><div class="shuffle-visual"><div class="partition-column"><div class="partition-box">Partition A<br/>NC · VA · NC</div><div class="partition-box">Partition B<br/>SC · NC · VA</div></div><div class="plan-arrow"><i class="fas fa-arrow-right"></i></div><div class="shuffle-cloud"><i class="fas fa-arrows-turn-to-dots fa-lg mb-2"></i><br/><strong>Shuffle</strong><br/><span class="small">redistribute by key</span></div><div class="plan-arrow"><i class="fas fa-arrow-right"></i></div><div class="partition-column"><div class="partition-box">NC group</div><div class="partition-box">VA group</div><div class="partition-box">SC group</div></div></div><div class="concept-grid"><div class="concept-tile"><h3>Column pruning</h3><p class="mb-0">Select only columns you need so columnar formats can avoid unnecessary I/O.</p></div><div class="concept-tile"><h3>Predicate / partition pruning</h3><p class="mb-0">Filter early and on useful partition keys so fewer files or row groups need to be read.</p></div><div class="concept-tile"><h3>Shuffle awareness</h3><p class="mb-0"><code>GROUP BY</code>, global sort, and many joins can redistribute data across workers.</p></div><div class="concept-tile"><h3>Join strategy</h3><p class="mb-0">The physical plan may choose broadcast, sort-merge, or other strategies depending on statistics, size, and runtime features.</p></div></div><h3 class="h5 mt-4">Inspect instead of guessing</h3><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">EXPLAIN FORMATTED
+SELECT
+    state,
+    AVG(satisfaction_score) AS avg_score
+FROM survey_responses_delta
+WHERE response_date >= DATE '2026-01-01'
+GROUP BY state;</code></pre></div><div class="boundary-note"><strong>Plan-reading question:</strong> Where does the scan happen, which filters are pushed close to the scan, where is data exchanged, and what operator produces the final aggregate?</div></section>
+
+<section class="content-card" id="advanced"><div class="section-kicker">Advanced SQL</div><h2>Window functions transfer naturally to Spark SQL</h2><p>One advantage of learning SQL concepts before Spark is that many analytical patterns remain recognizable. The distributed engine changes the physical execution, not the business meaning of a partitioned window.</p><h3 class="h5">Running totals after monthly aggregation</h3><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">WITH monthly_sales AS (
+    SELECT
+        category,
+        DATE_TRUNC('month', sale_date) AS sale_month,
+        SUM(sale_amount) AS monthly_sales
+    FROM sales_data
+    GROUP BY category, DATE_TRUNC('month', sale_date)
+)
 SELECT
     category,
-    DATE_TRUNC('month', sale_date) AS sale_month,
-    SUM(sale_amount) AS monthly_sales,
-    SUM(SUM(sale_amount)) OVER (PARTITION BY category ORDER BY DATE_TRUNC('month', sale_date)) AS running_total
-FROM
-    my_lakehouse.sales_data
-GROUP BY
-    category, DATE_TRUNC('month', sale_date)
-ORDER BY
-    category, sale_month;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This query uses a window function to compute running totals of sales per product category, executed across a distributed dataset. Spark’s parallel processing ensures efficiency, ideal for financial reporting in retail analytics.</p>
-                <p><strong>Expanded Example (Patient Readmissions):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>patient_id</th>
-                            <th>admit_date</th>
-                            <th>diagnosis</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1001</td>
-                            <td>2025-01-10</td>
-                            <td>Influenza</td>
-                        </tr>
-                        <tr>
-                            <td>1001</td>
-                            <td>2025-02-15</td>
-                            <td>Pneumonia</td>
-                        </tr>
-                        <tr>
-                            <td>1002</td>
-                            <td>2025-01-20</td>
-                            <td>Fracture</td>
-                        </tr>
-                        <tr>
-                            <td>1001</td>
-                            <td>2025-03-10</td>
-                            <td>Influenza</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Run in a Fabric Notebook cell with %sql
--- Calculate time between readmissions
-%sql
-WITH PatientAdmissions AS (
+    sale_month,
+    monthly_sales,
+    SUM(monthly_sales) OVER (
+        PARTITION BY category
+        ORDER BY sale_month
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS running_total
+FROM monthly_sales
+ORDER BY category, sale_month;</code></pre></div><h3 class="h5 mt-4">Days between admissions</h3><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">WITH patient_admissions AS (
     SELECT
         patient_id,
         admit_date,
-        LAG(admit_date) OVER (PARTITION BY patient_id ORDER BY admit_date) AS previous_admit
-    FROM
-        my_lakehouse.patient_admissions
+        LAG(admit_date) OVER (
+            PARTITION BY patient_id
+            ORDER BY admit_date
+        ) AS previous_admit
+    FROM patient_admissions
 )
 SELECT
     patient_id,
     admit_date,
     previous_admit,
     DATEDIFF(admit_date, previous_admit) AS days_between_admissions
-FROM
-    PatientAdmissions
-WHERE
-    previous_admit IS NOT NULL;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This query uses a CTE and window function in Spark SQL to calculate days between hospital readmissions, leveraging distributed processing for large patient datasets. It’s critical for healthcare analytics, such as tracking readmission rates.</p>
+FROM patient_admissions
+WHERE previous_admit IS NOT NULL;</code></pre></div><div class="alert alert-info"><strong>Transfer from Module 11:</strong> <code>PARTITION BY</code> still preserves row-level detail; however, the physical plan may need to repartition and sort distributed data to satisfy the window.</div></section>
 
-                <!-- Assessments -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Assessments</h2>
-                <ol>
-                    <li><strong>Conceptual Question:</strong> What does "schema-on-read" mean, and why is it a significant advantage when working with diverse or evolving datasets in a data lake?</li>
-                    <li><strong>Conceptual Scenario:</strong> You need to calculate total sales for the last year from a 10-terabyte dataset of transaction logs stored as Parquet files. Explain why Spark SQL would be more appropriate than a traditional PostgreSQL database on a single server.</li>
-                    <li><strong>Coding Task:</strong> Write a Spark SQL query to find the number of unique visitors per day from a <code>clickstream_logs</code> table with columns <code>user_id</code> and <code>event_timestamp</code>, stored in a Fabric Lakehouse.</li>
-                    <li><strong>Expanded Task (Customer Segmentation):</strong> Using a <code>customer_transactions</code> table with columns <code>customer_id</code>, <code>transaction_date</code>, and <code>amount</code>, write a Spark SQL query to identify customers with total purchases above $10,000 in the last 6 months, grouped by month.</li>
-                </ol>
-            </div>
-        </section>
-    </div>
+<section class="content-card" id="project"><div class="section-kicker">Practice</div><h2>Mini-project: regional experience analytics in a lakehouse</h2><p>Assume the lakehouse contains survey responses, clickstream events, sales, admissions, and customer transactions. Build a small analytical workflow that demonstrates both relational correctness and distributed-computing awareness.</p><ol class="spark-checklist"><li><strong>Inspect:</strong> describe the survey table and identify column types, expected grain, and candidate partition/filter columns.</li><li><strong>Profile:</strong> count rows by state and identify missing satisfaction scores.</li><li><strong>Aggregate:</strong> calculate average score and response count by city/state.</li><li><strong>Behavior:</strong> calculate daily unique visitors from clickstream data.</li><li><strong>Window:</strong> calculate monthly sales and a running total by category.</li><li><strong>Healthcare:</strong> use <code>LAG</code> to calculate time between admissions.</li><li><strong>Plan:</strong> run <code>EXPLAIN FORMATTED</code> on one grouped query and identify scan, filter, exchange, and aggregate operators.</li><li><strong>Reflection:</strong> identify one part of the workflow where Spark's parallelism helps and one part that could be handled adequately by PostgreSQL.</li></ol><div class="alert alert-warning"><strong>Do not optimize by folklore.</strong> Start with correct grain and semantics, inspect the plan, and then change data layout or query strategy when you have evidence of a real bottleneck.</div></section>
 
-    <!-- Footer -->
-    <footer class="bg-light py-3 text-center">
-        <p class="text-muted mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
-    </footer>
+<section class="content-card" id="assessment"><div class="section-kicker">Closure</div><h2>Assessment and key takeaways</h2><div class="assessment-grid"><div class="assessment-card"><span class="assessment-number">1</span><h3 class="h5">Explain</h3><p>What is a partition, and why can a shuffle be expensive in a distributed query?</p></div><div class="assessment-card"><span class="assessment-number">2</span><h3 class="h5">Compare</h3><p>Explain the difference between schema inference on raw files and schema enforcement for a managed Delta table.</p></div><div class="assessment-card"><span class="assessment-number">3</span><h3 class="h5">Code</h3><p>Write Spark SQL that returns unique visitors per day from <code>clickstream_logs(user_id, event_timestamp)</code>.</p></div><div class="assessment-card"><span class="assessment-number">4</span><h3 class="h5">Apply</h3><p>For <code>customer_transactions(customer_id, transaction_date, amount)</code>, identify customers whose total purchases exceed $10,000 in the last six months and summarize spend by month.</p></div></div><details class="answer-panel mt-4"><summary>Show sample assessment SQL</summary><div class="code-shell mt-3"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">-- Daily unique visitors
+SELECT
+    CAST(event_timestamp AS DATE) AS event_date,
+    COUNT(DISTINCT user_id) AS unique_visitors
+FROM clickstream_logs
+GROUP BY CAST(event_timestamp AS DATE)
+ORDER BY event_date;
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <!-- Highlight.js Initialization -->
-    <script>hljs.highlightAll();</script>
-    <!-- Custom Copy Functionality -->
-    <script>
-        function copyCode(button) {
-            const code = button.nextElementSibling.querySelector('code');
-            navigator.clipboard.writeText(code.innerText).then(() => {
-                button.textContent = 'Copied!';
-                setTimeout(() => { button.textContent = 'Copy'; }, 2000);
-            });
-        }
-    </script>
-</body>
-</html>
+-- High-value customers in the last six months
+WITH recent AS (
+    SELECT
+        customer_id,
+        DATE_TRUNC('month', transaction_date) AS transaction_month,
+        amount
+    FROM customer_transactions
+    WHERE transaction_date >= ADD_MONTHS(CURRENT_DATE(), -6)
+),
+customer_totals AS (
+    SELECT customer_id, SUM(amount) AS six_month_total
+    FROM recent
+    GROUP BY customer_id
+    HAVING SUM(amount) > 10000
+)
+SELECT
+    r.customer_id,
+    r.transaction_month,
+    SUM(r.amount) AS monthly_spend,
+    MAX(t.six_month_total) AS six_month_total
+FROM recent r
+JOIN customer_totals t USING (customer_id)
+GROUP BY r.customer_id, r.transaction_month
+ORDER BY r.customer_id, r.transaction_month;</code></pre></div></details><div class="key-takeaways mt-4"><h3 class="h5">Key takeaways</h3><ul class="mb-0"><li>Spark SQL preserves familiar relational logic while changing how the work is physically distributed.</li><li>Driver, executors, partitions, tasks, stages, and shuffles form a practical mental model for distributed execution.</li><li>Spark SQL and DataFrames share the structured Spark execution engine.</li><li>“Schema-on-read” is a capability, not a recommendation to avoid explicit data contracts.</li><li>Fabric provides Spark SQL surfaces as well as a separate T-SQL analytics endpoint; know which engine you are using.</li><li>Correct SQL is only the first step at scale: inspect scans, exchanges, output grain, and plans.</li></ul></div><div class="references mt-4"><h3 class="h5">References and further reading</h3><ul><li><a href="https://spark.apache.org/docs/latest/sql-programming-guide" rel="noopener" target="_blank">Apache Spark — Spark SQL, DataFrames and Datasets Guide</a></li><li><a href="https://spark.apache.org/docs/latest/sql-ref.html" rel="noopener" target="_blank">Apache Spark — SQL Reference</a></li><li><a href="https://spark.apache.org/docs/latest/sql-data-sources-parquet.html" rel="noopener" target="_blank">Apache Spark — Parquet Files</a></li><li><a href="https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-overview" rel="noopener" target="_blank">Microsoft Fabric — Lakehouse overview</a></li><li><a href="https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-query-explorer" rel="noopener" target="_blank">Microsoft Fabric — Spark SQL query explorer</a></li><li><a href="https://learn.microsoft.com/en-us/fabric/data-engineering/author-execute-notebook" rel="noopener" target="_blank">Microsoft Fabric — Develop and run notebooks</a></li></ul></div><div class="next-module mt-4"><div><span class="section-kicker">Next</span><h3 class="h5 mb-1">Module 14: Final Project</h3><p class="mb-0">Integrate data quality, relational design, PostgreSQL analytics, reusable SQL, and distributed-data reasoning into a final applied project.</p></div><a class="btn btn-primary" href="module14.html">Go to Module 14 <i class="fas fa-arrow-right ms-1"></i></a></div></section>
+
+</div></div></main><footer class="site-footer"><div class="container d-flex flex-column flex-md-row justify-content-between gap-2"><span>© 2026 Ali Noori, UNCG. All rights reserved.</span><span>IAN 603 · Module 13 · Introduction to Spark SQL</span></div></footer><button aria-label="Back to top" class="back-to-top" id="back-to-top" type="button"><i class="fas fa-arrow-up"></i></button>
+
+<script>
+hljs.highlightAll();
+(function(){
+const htmlEl=document.documentElement,themeToggle=document.getElementById('theme-toggle'),hljsTheme=document.getElementById('hljs-theme');
+function applyTheme(theme){htmlEl.setAttribute('data-theme',theme);localStorage.setItem('ian603-theme',theme);const icon=themeToggle.querySelector('i');if(icon)icon.className=theme==='dark'?'fas fa-sun':'fas fa-moon';if(hljsTheme)hljsTheme.href=theme==='dark'?'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css':'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';}
+applyTheme(localStorage.getItem('ian603-theme')||'dark');themeToggle.addEventListener('click',()=>applyTheme(htmlEl.getAttribute('data-theme')==='dark'?'light':'dark'));
+const mobile=document.getElementById('mobile-menu-toggle'),navList=document.getElementById('nav-links-list'),dropTrigger=document.querySelector('.dropdown-trigger'),drop=document.querySelector('.dropdown');
+mobile.addEventListener('click',()=>{const open=navList.classList.toggle('active');mobile.setAttribute('aria-expanded',String(open));});
+if(dropTrigger&&drop)dropTrigger.addEventListener('click',()=>{const open=drop.classList.toggle('open');dropTrigger.setAttribute('aria-expanded',String(open));});
+document.addEventListener('click',e=>{if(drop&&!e.target.closest('.dropdown')){drop.classList.remove('open');dropTrigger.setAttribute('aria-expanded','false');}if(window.innerWidth<992&&!e.target.closest('.nav-menu')){navList.classList.remove('active');mobile.setAttribute('aria-expanded','false');}});
+document.querySelectorAll('.copy-btn').forEach(btn=>btn.addEventListener('click',async()=>{const pre=btn.closest('.code-shell')?.querySelector('pre code');if(!pre)return;try{await navigator.clipboard.writeText(pre.textContent);const old=btn.textContent;btn.textContent='Copied';setTimeout(()=>btn.textContent=old,1300);}catch{}}));
+const back=document.getElementById('back-to-top');window.addEventListener('scroll',()=>back.classList.toggle('show',window.scrollY>650));back.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+const tocLinks=[...document.querySelectorAll('.toc-list a')],sections=tocLinks.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);function setActive(id){tocLinks.forEach(a=>{const active=a.getAttribute('href')==='#'+id;a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');});}
+const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top);if(visible[0])setActive(visible[0].target.id);},{rootMargin:'-20% 0px -65% 0px',threshold:[0,.1,.4]});sections.forEach(s=>observer.observe(s));tocLinks.forEach(a=>a.addEventListener('click',()=>setActive(a.getAttribute('href').slice(1))));
+})();
+
+const PGLITE_URL='https://cdn.jsdelivr.net/npm/@electric-sql/pglite@0.5.4/dist/index.js';
+const RESET_SQL=`DROP TABLE IF EXISTS customer_transactions CASCADE;
+DROP TABLE IF EXISTS patient_admissions CASCADE;
+DROP TABLE IF EXISTS sales_data CASCADE;
+DROP TABLE IF EXISTS clickstream_logs CASCADE;
+DROP TABLE IF EXISTS survey_responses CASCADE;
+
+CREATE TABLE survey_responses (
+  response_id integer PRIMARY KEY,
+  city text NOT NULL,
+  state_code text NOT NULL,
+  satisfaction_score integer CHECK (satisfaction_score BETWEEN 1 AND 5),
+  response_date date NOT NULL
+);
+CREATE TABLE clickstream_logs (
+  event_id integer PRIMARY KEY,
+  user_id integer NOT NULL,
+  event_timestamp timestamp NOT NULL,
+  page_viewed text NOT NULL
+);
+CREATE TABLE sales_data (
+  sale_id integer PRIMARY KEY,
+  category text NOT NULL,
+  sale_date date NOT NULL,
+  sale_amount numeric(12,2) NOT NULL CHECK (sale_amount >= 0)
+);
+CREATE TABLE patient_admissions (
+  admission_id integer PRIMARY KEY,
+  patient_id integer NOT NULL,
+  admit_date date NOT NULL,
+  diagnosis text NOT NULL
+);
+CREATE TABLE customer_transactions (
+  transaction_id integer PRIMARY KEY,
+  customer_id integer NOT NULL,
+  transaction_date date NOT NULL,
+  amount numeric(12,2) NOT NULL CHECK (amount >= 0)
+);
+
+INSERT INTO survey_responses VALUES
+(1,'Greensboro','NC',4,'2026-01-10'),(2,'Raleigh','NC',3,'2026-01-11'),(3,'Richmond','VA',5,'2026-01-12'),
+(4,'Charleston','SC',2,'2026-01-13'),(5,'Greensboro','NC',4,'2026-01-14'),(6,'Greensboro','NC',5,'2026-02-02'),
+(7,'Raleigh','NC',4,'2026-02-04'),(8,'Richmond','VA',4,'2026-02-07'),(9,'Charleston','SC',3,'2026-02-09'),
+(10,'Durham','NC',NULL,'2026-02-11'),(11,'Durham','NC',4,'2026-02-12'),(12,'Greensboro','NC',3,'2026-03-01');
+
+INSERT INTO clickstream_logs VALUES
+(1,101,'2026-01-10 10:00','Homepage'),(2,101,'2026-01-10 10:05','Product'),(3,102,'2026-01-10 11:15','Homepage'),
+(4,103,'2026-01-11 14:00','Checkout'),(5,102,'2026-01-11 15:00','Product'),(6,104,'2026-01-11 16:20','Homepage'),
+(7,101,'2026-01-12 09:10','Product'),(8,105,'2026-01-12 09:25','Homepage'),(9,105,'2026-01-12 09:30','Checkout');
+
+INSERT INTO sales_data VALUES
+(1,'Electronics','2026-01-05',1200),(2,'Electronics','2026-01-20',800),(3,'Accessories','2026-01-07',220),
+(4,'Accessories','2026-02-03',310),(5,'Electronics','2026-02-14',1500),(6,'Home','2026-02-18',900),
+(7,'Electronics','2026-03-05',1100),(8,'Accessories','2026-03-09',450),(9,'Home','2026-03-12',700);
+
+INSERT INTO patient_admissions VALUES
+(1,1001,'2026-01-10','Influenza'),(2,1001,'2026-02-15','Pneumonia'),(3,1002,'2026-01-20','Fracture'),
+(4,1001,'2026-03-10','Influenza'),(5,1003,'2026-02-01','Asthma'),(6,1003,'2026-02-20','Asthma');
+
+INSERT INTO customer_transactions VALUES
+(1,201,'2026-01-10',4200),(2,201,'2026-02-15',3900),(3,201,'2026-03-12',3500),
+(4,202,'2026-01-22',1800),(5,202,'2026-02-18',2200),(6,203,'2026-01-07',6000),
+(7,203,'2026-03-02',5200),(8,204,'2026-02-11',950),(9,204,'2026-03-17',1050);`;
+
+const PRESETS={
+'explore_schema':`SELECT table_name, column_name, data_type
+FROM information_schema.columns
+WHERE table_schema='public'
+ORDER BY table_name, ordinal_position;`,
+'survey_summary':`SELECT city, state_code,
+       ROUND(AVG(satisfaction_score),2) AS avg_score,
+       COUNT(*) AS num_responses,
+       COUNT(satisfaction_score) AS scored_responses
+FROM survey_responses
+GROUP BY city, state_code
+ORDER BY avg_score DESC NULLS LAST;`,
+'state_summary':`SELECT state_code,
+       COUNT(*) AS responses,
+       ROUND(AVG(satisfaction_score),2) AS avg_score
+FROM survey_responses
+GROUP BY state_code
+ORDER BY avg_score DESC;`,
+'clickstream_daily':`SELECT CAST(event_timestamp AS date) AS event_date,
+       COUNT(DISTINCT user_id) AS unique_visitors,
+       COUNT(*) AS page_events
+FROM clickstream_logs
+GROUP BY CAST(event_timestamp AS date)
+ORDER BY event_date;`,
+'monthly_sales':`SELECT category,
+       DATE_TRUNC('month', sale_date)::date AS sale_month,
+       SUM(sale_amount)::numeric(12,2) AS monthly_sales
+FROM sales_data
+GROUP BY category, DATE_TRUNC('month', sale_date)
+ORDER BY category, sale_month;`,
+'running_total':`WITH monthly AS (
+  SELECT category,
+         DATE_TRUNC('month', sale_date)::date AS sale_month,
+         SUM(sale_amount) AS monthly_sales
+  FROM sales_data
+  GROUP BY category, DATE_TRUNC('month', sale_date)
+)
+SELECT category, sale_month, monthly_sales,
+       SUM(monthly_sales) OVER (
+         PARTITION BY category ORDER BY sale_month
+         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS running_total
+FROM monthly
+ORDER BY category, sale_month;`,
+'readmission_lag':`WITH sequenced AS (
+  SELECT patient_id, admit_date, diagnosis,
+         LAG(admit_date) OVER (
+           PARTITION BY patient_id ORDER BY admit_date
+         ) AS previous_admit
+  FROM patient_admissions
+)
+SELECT patient_id, admit_date, previous_admit,
+       admit_date - previous_admit AS days_between_admissions,
+       diagnosis
+FROM sequenced
+WHERE previous_admit IS NOT NULL
+ORDER BY patient_id, admit_date;`,
+'customer_spend':`SELECT customer_id,
+       DATE_TRUNC('month', transaction_date)::date AS transaction_month,
+       SUM(amount)::numeric(12,2) AS monthly_spend
+FROM customer_transactions
+GROUP BY customer_id, DATE_TRUNC('month', transaction_date)
+ORDER BY customer_id, transaction_month;`,
+'high_value_customers':`SELECT customer_id,
+       SUM(amount)::numeric(12,2) AS total_spend
+FROM customer_transactions
+GROUP BY customer_id
+HAVING SUM(amount) > 10000
+ORDER BY total_spend DESC;`,
+'rank_states':`WITH state_scores AS (
+  SELECT state_code,
+         ROUND(AVG(satisfaction_score),2) AS avg_score,
+         COUNT(satisfaction_score) AS scored_responses
+  FROM survey_responses
+  GROUP BY state_code
+)
+SELECT *,
+       DENSE_RANK() OVER (ORDER BY avg_score DESC) AS satisfaction_rank
+FROM state_scores
+ORDER BY satisfaction_rank, state_code;`,
+'cte_pipeline':`WITH monthly AS (
+  SELECT customer_id,
+         DATE_TRUNC('month', transaction_date)::date AS month,
+         SUM(amount) AS monthly_spend
+  FROM customer_transactions
+  GROUP BY customer_id, DATE_TRUNC('month', transaction_date)
+),
+with_total AS (
+  SELECT *, SUM(monthly_spend) OVER (PARTITION BY customer_id) AS customer_total
+  FROM monthly
+)
+SELECT customer_id, month, monthly_spend, customer_total
+FROM with_total
+WHERE customer_total > 10000
+ORDER BY customer_id, month;`,
+'output_grain':`SELECT
+  COUNT(*) AS output_rows,
+  COUNT(DISTINCT (city, state_code)) AS distinct_city_state_pairs
+FROM (
+  SELECT city, state_code, AVG(satisfaction_score) AS avg_score
+  FROM survey_responses
+  GROUP BY city, state_code
+) AS city_summary;`
+};
+
+let db=null,busy=false;
+const presetSelect=document.getElementById('preset-select'),editor=document.getElementById('sql-editor'),runButton=document.getElementById('run-sql'),runSelectionButton=document.getElementById('run-selection'),resetButton=document.getElementById('reset-db'),clearButton=document.getElementById('clear-editor'),resultsOutput=document.getElementById('results-output'),executionMeta=document.getElementById('execution-meta'),status=document.getElementById('engine-status'),statusText=document.getElementById('engine-status-text');
+function setStatus(kind,text){status.className='engine-status '+kind;statusText.textContent=text;}
+function setControlsEnabled(enabled){[presetSelect,runButton,runSelectionButton,resetButton,clearButton].forEach(el=>el.disabled=!enabled);editor.disabled=!enabled;}
+function clearResults(text){resultsOutput.innerHTML='';const d=document.createElement('div');d.className='result-placeholder';d.textContent=text;resultsOutput.appendChild(d);executionMeta.textContent='Waiting for query';}
+function formatValue(value){if(value===null||value===undefined)return null;if(value instanceof Date)return value.toISOString();if(typeof value==='object')return JSON.stringify(value);return String(value);}
+function csvEscape(value){const s=value==null?'':String(value);return /[",\n]/.test(s)?'"'+s.replaceAll('"','""')+'"':s;}
+function resultColumns(result,rows){if(Array.isArray(result?.fields)&&result.fields.length)return result.fields.map(f=>f.name);if(rows.length)return Object.keys(rows[0]);return [];}
+function downloadResult(rows,columns,index){const lines=[columns.map(csvEscape).join(',')];rows.forEach(row=>lines.push(columns.map(c=>csvEscape(row[c])).join(',')));const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='module13-practice-result-'+index+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+function chartSpecForResult(rows,columns){if(rows.length<2)return null;const numeric=columns.filter(c=>rows.some(r=>typeof r[c]==='number'&&Number.isFinite(r[c]))&&!/(^|_)(id|response_id|event_id|sale_id|patient_id|customer_id)$/i.test(c));if(!numeric.length)return null;const labels=columns.filter(c=>!numeric.includes(c)&&rows.some(r=>typeof r[c]==='string'||r[c] instanceof Date));const metric=numeric.find(c=>/sales|spend|score|responses|visitors|events|count|total|days|rank/i.test(c))||numeric[0];const label=labels.find(c=>/state|city|category|month|date|diagnosis/i.test(c))||labels[0];if(!label)return null;const points=rows.filter(r=>typeof r[metric]==='number'&&Number.isFinite(r[metric])).slice(0,24).map(r=>({label:formatValue(r[label])??'NULL',value:Number(r[metric])}));return points.length>=2?{label,metric,points}:null;}
+function renderResultChart(card,spec){const existing=card.querySelector('.result-chart');if(existing){existing.remove();return false;}const panel=document.createElement('div');panel.className='result-chart';const title=document.createElement('div');title.className='result-chart-title';title.textContent=spec.metric+' by '+spec.label;panel.appendChild(title);const max=Math.max(...spec.points.map(p=>Math.abs(p.value)),1);spec.points.forEach(p=>{const row=document.createElement('div');row.className='result-chart-row';const label=document.createElement('div');label.className='result-chart-label';label.title=p.label;label.textContent=p.label;const track=document.createElement('div');track.className='result-chart-track';const bar=document.createElement('div');bar.className='result-chart-bar';bar.style.width=Math.max(2,Math.abs(p.value)/max*100)+'%';track.appendChild(bar);const value=document.createElement('div');value.className='result-chart-value';value.textContent=Number.isInteger(p.value)?String(p.value):p.value.toFixed(2).replace(/\.00$/,'');row.append(label,track,value);panel.appendChild(row);});card.appendChild(panel);return true;}
+function renderResults(results,elapsed){resultsOutput.replaceChildren();const normalized=Array.isArray(results)?results:[results];if(!normalized.length){clearResults('Portable SQL engine completed the statement.');executionMeta.textContent=elapsed.toFixed(1)+' ms';return;}normalized.forEach((result,i)=>{const rows=Array.isArray(result?.rows)?result.rows:[];const columns=resultColumns(result,rows);const card=document.createElement('div');card.className='result-card';const header=document.createElement('div');header.className='result-card-header';const title=document.createElement('strong');title.textContent='Result '+(i+1);header.appendChild(title);const right=document.createElement('div');right.className='d-flex align-items-center gap-2 flex-wrap justify-content-end';const meta=document.createElement('span');meta.className='result-meta';meta.textContent=rows.length?rows.length+' row'+(rows.length===1?'':'s')+' returned':(typeof result?.affectedRows==='number'?result.affectedRows+' row'+(result.affectedRows===1?'':'s')+' affected':'Statement completed');right.appendChild(meta);if(rows.length&&columns.length){const spec=chartSpecForResult(rows,columns);if(spec){const chartBtn=document.createElement('button');chartBtn.type='button';chartBtn.className='visualize-result-btn';chartBtn.textContent='Chart';chartBtn.addEventListener('click',()=>{const shown=renderResultChart(card,spec);chartBtn.textContent=shown?'Hide chart':'Chart';});right.appendChild(chartBtn);}const b=document.createElement('button');b.type='button';b.className='download-result-btn';b.textContent='CSV';b.addEventListener('click',()=>downloadResult(rows,columns,i+1));right.appendChild(b);}header.appendChild(right);card.appendChild(header);if(rows.length&&columns.length){const wrap=document.createElement('div');wrap.className='result-table-wrap';const table=document.createElement('table');table.className='result-table';const cap=document.createElement('caption');cap.className='visually-hidden';cap.textContent='SQL result '+(i+1);table.appendChild(cap);const thead=document.createElement('thead'),hr=document.createElement('tr');columns.forEach(c=>{const th=document.createElement('th');th.scope='col';th.textContent=c;hr.appendChild(th);});thead.appendChild(hr);table.appendChild(thead);const tbody=document.createElement('tbody');rows.slice(0,250).forEach(row=>{const tr=document.createElement('tr');columns.forEach(c=>{const td=document.createElement('td');const val=formatValue(row[c]);if(val===null){const s=document.createElement('span');s.className='null-value';s.textContent='NULL';td.appendChild(s);}else td.textContent=val;tr.appendChild(td);});tbody.appendChild(tr);});table.appendChild(tbody);wrap.appendChild(table);card.appendChild(wrap);}else{const m=document.createElement('div');m.className='result-message';m.textContent='Statement completed successfully.';card.appendChild(m);}resultsOutput.appendChild(card);});executionMeta.textContent=normalized.length+' result'+(normalized.length===1?'':'s')+' - '+elapsed.toFixed(1)+' ms';}
+function renderError(error,elapsed){resultsOutput.replaceChildren();const panel=document.createElement('div');panel.className='query-error';const title=document.createElement('strong');title.textContent='Portable SQL error';const detail=document.createElement('pre');detail.textContent=error?.message||String(error);panel.append(title,detail);resultsOutput.appendChild(panel);executionMeta.textContent='Failed - '+elapsed.toFixed(1)+' ms';}
+function selectedOrAll(selectionOnly){return selectionOnly?editor.value.slice(editor.selectionStart,editor.selectionEnd).trim():editor.value.trim();}
+async function runSql(selectionOnly=false){if(!db||busy)return;const sql=selectedOrAll(selectionOnly);if(!sql){clearResults('The SQL editor is empty.');return;}busy=true;setControlsEnabled(false);setStatus('running','Running portable SQL...');const start=performance.now();try{const results=await db.exec(sql);renderResults(results,performance.now()-start);setStatus('ready','Portable practice database ready');}catch(error){renderError(error,performance.now()-start);setStatus('error','Query failed');try{await db.exec('ROLLBACK;');}catch{}}finally{busy=false;setControlsEnabled(true);}}
+function loadPreset(id){if(!PRESETS[id])return;editor.value=PRESETS[id];presetSelect.value=id;editor.focus();}
+async function resetDatabase(show=true){if(!db||busy)return;busy=true;setControlsEnabled(false);setStatus('running','Resetting practice database...');try{await db.exec(RESET_SQL);loadPreset('survey_summary');clearResults(show?'Practice database reset. Run a query when ready.':'Run a query to display results.');setStatus('ready','Portable practice database ready');}catch(error){renderError(error,0);setStatus('error','Reset failed');}finally{busy=false;setControlsEnabled(true);}}
+async function initializeLab(){setControlsEnabled(false);setStatus('loading','Loading portable SQL engine...');try{const mod=await import(PGLITE_URL);db=new mod.PGlite();window.module13PracticeDatabase=db;await db.exec(RESET_SQL);setStatus('ready','Portable practice database ready');setControlsEnabled(true);loadPreset('survey_summary');clearResults('Portable SQL practice is ready. Spark-specific code belongs in Fabric or Apache Spark.');}catch(error){setStatus('error','Engine could not load');renderError(error,0);executionMeta.textContent='Check web-server, network, or CDN access';}}
+presetSelect.addEventListener('change',()=>loadPreset(presetSelect.value));runButton.addEventListener('click',()=>runSql(false));runSelectionButton.addEventListener('click',()=>runSql(true));resetButton.addEventListener('click',()=>resetDatabase(true));clearButton.addEventListener('click',()=>{editor.value='';editor.focus();});editor.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runSql(false);}if(e.key==='Tab'){e.preventDefault();const s=editor.selectionStart,en=editor.selectionEnd;editor.setRangeText('  ',s,en,'end');}});initializeLab();
+</script>
+
+</body></html>
