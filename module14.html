@@ -1,341 +1,2794 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-theme="dark" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Module 14: Final Project - IAF 603</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Highlight.js for code highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- MathJax CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- Custom MathJax Configuration -->
-    <script src="./js/mathjax.js"></script>
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="./css/styles.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="IAN 603 Module 14: course synthesis and a sample data preparation project walkthrough. The actual final project instructions, requirements, due date, and submission are provided in Canvas." name="description"/>
+<title>Module 14: Course Synthesis & Sample Project | IAN 603</title>
+<link href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E" rel="icon"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Source+Code+Pro:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" id="hljs-theme" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --section-bg: #1e293b;
+            --section-alt-bg: #172033;
+            --border-color: #334155;
+            --header-color: #38bdf8;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --success-color: #34d399;
+            --danger-color: #f87171;
+            --warning-color: #fbbf24;
+            --uncg-blue: #0c2340;
+            --uncg-gold: #cf9b2f;
+            --muted-color: #94a3b8;
+            --light-color: #f1f5f9;
+            --code-bg: #0b1120;
+            --table-stripe: rgba(255, 255, 255, 0.035);
+            --alert-info-bg: #172c4d;
+            --alert-info-border: #3b82f6;
+            --alert-warning-bg: #453516;
+            --alert-warning-border: #f59e0b;
+            --alert-secondary-bg: #182235;
+            --alert-secondary-border: #64748b;
+            --alert-success-bg: #12352e;
+            --alert-success-border: #10b981;
+            --hero-bg: linear-gradient(135deg, #07182d 0%, #0c2340 50%, #26365e 100%);
+            --hero-text: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.22);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --text-color: #1e293b;
+            --section-bg: #ffffff;
+            --section-alt-bg: #f8fafc;
+            --border-color: #d7e0eb;
+            --header-color: #1d4ed8;
+            --accent-color: #4f46e5;
+            --accent-hover: #4338ca;
+            --success-color: #047857;
+            --danger-color: #b91c1c;
+            --warning-color: #b45309;
+            --muted-color: #64748b;
+            --light-color: #f8fafc;
+            --code-bg: #f8fafc;
+            --table-stripe: rgba(15, 23, 42, 0.035);
+            --alert-info-bg: #dbeafe;
+            --alert-info-border: #3b82f6;
+            --alert-warning-bg: #fffbeb;
+            --alert-warning-border: #f59e0b;
+            --alert-secondary-bg: #f1f5f9;
+            --alert-secondary-border: #94a3b8;
+            --alert-success-bg: #d1fae5;
+            --alert-success-border: #10b981;
+            --hero-bg: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 55%, #fef3c7 100%);
+            --hero-text: #13243a;
+            --shadow-color: rgba(15, 23, 42, 0.12);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 96px;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        a {
+            color: var(--header-color);
+        }
+
+        a:hover {
+            color: var(--accent-color);
+        }
+
+        p,
+        li,
+        td,
+        th,
+        label,
+        .accordion-body,
+        .form-check-label {
+            color: var(--text-color);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: var(--header-color);
+            font-weight: 700;
+        }
+
+        .h1,
+        .h2,
+        .h3,
+        .h4,
+        .h5,
+        .h6 {
+            color: var(--header-color) !important;
+        }
+
+        body {
+            color: var(--text-color) !important;
+        }
+
+        strong {
+            color: inherit;
+        }
+
+        .hero-section h1,
+        .hero-section .h1,
+        .hero-section p,
+        .hero-section strong,
+        .hero-section .course-badge,
+        .hero-section .hero-kicker,
+        .hero-section .hero-meta,
+        .hero-section .essential-question {
+            color: var(--hero-text) !important;
+        }
+
+        code,
+        pre {
+            font-family: "Source Code Pro", monospace;
+        }
+
+        code:not(pre code) {
+            color: var(--text-color);
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--border-color);
+            border-radius: 0.3rem;
+            padding: 0.08rem 0.3rem;
+        }
+
+        pre {
+            background-color: var(--code-bg) !important;
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+            overflow: auto;
+        }
+
+        .skip-link {
+            position: absolute;
+            left: 0.75rem;
+            top: -5rem;
+            z-index: 2000;
+            background: var(--section-bg);
+            color: var(--text-color);
+            border: 2px solid var(--accent-color);
+            border-radius: 0.4rem;
+            padding: 0.6rem 0.85rem;
+        }
+
+        .skip-link:focus {
+            top: 0.75rem;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--uncg-gold);
+            outline-offset: 3px;
+        }
+
+        .text-muted {
+            color: var(--muted-color) !important;
+        }
+
+        .bg-white,
+        .bg-light {
+            background-color: var(--section-bg) !important;
+        }
+
+        .border,
+        .table-bordered,
+        .table-bordered th,
+        .table-bordered td {
+            border-color: var(--border-color) !important;
+        }
+
+        .shadow,
+        .shadow-sm {
+            box-shadow: 0 8px 24px var(--shadow-color) !important;
+        }
+
+        .table {
+            color: var(--text-color);
+            margin-bottom: 0;
+        }
+
+        .table > :not(caption) > * > * {
+            background-color: transparent;
+            color: var(--text-color);
+            border-color: var(--border-color);
+            vertical-align: top;
+        }
+
+        .table thead th,
+        .table-light th,
+        .table-light td {
+            background-color: var(--section-alt-bg) !important;
+            color: var(--text-color) !important;
+        }
+
+        .table-striped > tbody > tr:nth-of-type(odd) > * {
+            background-color: var(--table-stripe);
+        }
+
+        .nav-container {
+            background-color: var(--section-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        .nav-menu {
+            min-height: 74px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            color: var(--header-color);
+            font-weight: 800;
+            font-size: 1.15rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            white-space: nowrap;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--uncg-blue), var(--accent-color));
+            border: 2px solid var(--uncg-gold);
+        }
+
+        .nav-links-list {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-link,
+        .theme-toggle-btn {
+            color: var(--text-color);
+            background: none;
+            border: none;
+            border-radius: 0.55rem;
+            padding: 0.55rem 0.75rem;
+            font: inherit;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link:focus-visible,
+        .theme-toggle-btn:hover,
+        .theme-toggle-btn:focus-visible {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: calc(100% + 0.25rem);
+            left: 0;
+            min-width: 315px;
+            max-height: 70vh;
+            overflow-y: auto;
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+            padding: 0.45rem;
+            box-shadow: 0 12px 30px var(--shadow-color);
+        }
+
+        .dropdown:hover .dropdown-content,
+        .dropdown:focus-within .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.65rem 0.75rem;
+            border-radius: 0.5rem;
+        }
+
+        .dropdown-link:hover,
+        .dropdown-link:focus-visible {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .module-number {
+            width: 25px;
+            height: 25px;
+            flex: 0 0 25px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--accent-color);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 1.45rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 0.45rem;
+        }
+
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+            background: var(--hero-bg);
+            color: var(--hero-text);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 1.25rem;
+            margin: 2rem 0;
+            padding: 3.2rem 2rem;
+            box-shadow: 0 18px 45px var(--shadow-color);
+        }
+
+        .hero-section::after {
+            content: "";
+            position: absolute;
+            width: 330px;
+            height: 330px;
+            right: -115px;
+            top: -135px;
+            border-radius: 50%;
+            background: rgba(207, 155, 47, 0.12);
+        }
+
+        .hero-section h1,
+        .hero-section p,
+        .hero-section .hero-kicker,
+        .hero-section .hero-meta,
+        .hero-section .essential-question {
+            color: var(--hero-text);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-kicker {
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .course-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.45rem 0.75rem;
+            background: rgba(255, 255, 255, 0.11);
+            border: 1px solid rgba(255, 255, 255, 0.23);
+            border-radius: 999px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .essential-question {
+            max-width: 870px;
+            margin: 1.35rem auto 0;
+            padding: 1rem 1.2rem;
+            border-left: 4px solid var(--uncg-gold);
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 0 0.75rem 0.75rem 0;
+            text-align: left;
+        }
+
+        .section-shell {
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            padding: clamp(1.2rem, 2.5vw, 2rem);
+            margin-bottom: 1.6rem;
+            scroll-margin-top: 94px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.9rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.35rem;
+        }
+
+        .section-icon {
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            border-radius: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(99, 102, 241, 0.14);
+            color: var(--header-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-heading h2 {
+            margin-bottom: 0.15rem;
+        }
+
+        .section-heading p {
+            margin-bottom: 0;
+            color: var(--muted-color);
+        }
+
+        .toc-panel {
+            position: sticky;
+            top: 94px;
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.9rem;
+            padding: 1rem;
+            max-height: calc(100vh - 115px);
+            overflow-y: auto;
+        }
+
+        .toc-panel h2 {
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-list a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.5rem 0.55rem;
+            border-radius: 0.45rem;
+            font-size: 0.9rem;
+        }
+
+        .toc-list a:hover,
+        .toc-list a.active {
+            background-color: rgba(99, 102, 241, 0.18);
+            color: var(--header-color);
+        }
+
+        .toc-list .toc-index {
+            color: var(--muted-color);
+            font-size: 0.75rem;
+            font-weight: 800;
+            min-width: 1.5rem;
+        }
+
+        .roadmap-card,
+        .concept-card,
+        .example-card,
+        .case-card,
+        .takeaway-card {
+            height: 100%;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            padding: 1rem;
+        }
+
+        .roadmap-card {
+            position: relative;
+            padding-top: 3.15rem;
+        }
+
+        .roadmap-number {
+            position: absolute;
+            top: 0.9rem;
+            left: 1rem;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+        }
+
+        .layer-label {
+            display: inline-block;
+            color: #ffffff;
+            background: var(--accent-color);
+            border-radius: 999px;
+            padding: 0.2rem 0.55rem;
+            font-size: 0.74rem;
+            font-weight: 800;
+            margin-bottom: 0.55rem;
+        }
+
+        .concept-arrow {
+            color: var(--muted-color);
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        .badge-soft-primary,
+        .badge-soft-success,
+        .badge-soft-warning,
+        .badge-soft-danger,
+        .badge-soft-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            border-radius: 999px;
+            padding: 0.32rem 0.58rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .badge-soft-primary {
+            color: var(--header-color);
+            background: rgba(59, 130, 246, 0.14);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+        }
+
+        .badge-soft-success {
+            color: var(--success-color);
+            background: rgba(16, 185, 129, 0.13);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+
+        .badge-soft-warning {
+            color: var(--warning-color);
+            background: rgba(245, 158, 11, 0.13);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+
+        .badge-soft-danger {
+            color: var(--danger-color);
+            background: rgba(239, 68, 68, 0.13);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
+
+        .badge-soft-secondary {
+            color: var(--muted-color);
+            background: rgba(100, 116, 139, 0.13);
+            border: 1px solid rgba(100, 116, 139, 0.35);
+        }
+
+        .alert {
+            color: var(--text-color);
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 0.75rem;
+        }
+
+        .alert-info {
+            background: var(--alert-info-bg);
+            border-color: var(--alert-info-border);
+        }
+
+        .alert-warning {
+            background: var(--alert-warning-bg);
+            border-color: var(--alert-warning-border);
+        }
+
+        .alert-secondary {
+            background: var(--alert-secondary-bg);
+            border-color: var(--alert-secondary-border);
+        }
+
+        .alert-success {
+            background: var(--alert-success-bg);
+            border-color: var(--alert-success-border);
+        }
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.7rem;
+            margin: 1rem 0;
+        }
+
+        .workflow-step {
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem 0.55rem;
+        }
+
+        .workflow-step i {
+            display: block;
+            color: var(--header-color);
+            font-size: 1.25rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .decision-table th:first-child,
+        .decision-table td:first-child {
+            min-width: 125px;
+        }
+
+        .copy-wrap {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.6rem;
+            z-index: 2;
+            border: 1px solid var(--border-color);
+            background: var(--section-bg);
+            color: var(--header-color);
+            border-radius: 0.45rem;
+            padding: 0.25rem 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .copy-btn:hover {
+            color: #ffffff;
+            background: var(--accent-color);
+        }
+
+        .accordion-item,
+        .accordion-button,
+        .accordion-body {
+            background-color: var(--section-alt-bg);
+            color: var(--text-color);
+            border-color: var(--border-color);
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: rgba(99, 102, 241, 0.15);
+            color: var(--header-color);
+            box-shadow: inset 0 -1px 0 var(--border-color);
+        }
+
+        .accordion-button::after {
+            filter: var(--accordion-icon-filter, none);
+        }
+
+        [data-theme="dark"] .accordion-button::after {
+            filter: invert(1) grayscale(1) brightness(1.8);
+        }
+
+        .btn-outline-primary {
+            color: var(--header-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-outline-primary:hover,
+        .btn-outline-primary:focus-visible {
+            color: #ffffff;
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus-visible {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            position: relative;
+            padding-left: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .checklist li::before {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+        }
+
+        .mistake-table .looks-like {
+            color: var(--warning-color);
+            font-weight: 700;
+        }
+
+        .mistake-table .actually {
+            color: var(--success-color);
+            font-weight: 700;
+        }
+
+        .mini-note {
+            color: var(--muted-color);
+            font-size: 0.9rem;
+        }
+
+        .key-term {
+            border-bottom: 1px dotted var(--header-color);
+            cursor: help;
+        }
+
+        .footer {
+            background: var(--section-bg);
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem;
+            width: 44px;
+            height: 44px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            z-index: 1100;
+        }
+
+        .back-to-top.show {
+            display: inline-flex;
+        }
+
+        @media (max-width: 1199.98px) {
+            .nav-links-list {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                padding: 0.8rem;
+                background: var(--section-bg);
+                border-bottom: 1px solid var(--border-color);
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-links-list.active {
+                display: flex;
+            }
+
+            .nav-link,
+            .theme-toggle-btn {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .mobile-menu-btn {
+                display: inline-flex;
+            }
+
+            .dropdown-content {
+                position: static;
+                min-width: 0;
+                max-height: none;
+                box-shadow: none;
+                margin-top: 0.25rem;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .toc-panel {
+                position: static;
+                max-height: none;
+                margin-bottom: 1.3rem;
+            }
+
+            .workflow {
+                grid-template-columns: 1fr;
+            }
+
+            .concept-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .hero-section {
+                padding: 2rem 1.1rem;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .section-shell {
+                padding: 1rem;
+            }
+
+            .section-heading {
+                flex-direction: column;
+            }
+
+            .table-responsive {
+                border: 1px solid var(--border-color);
+                border-radius: 0.65rem;
+            }
+        }
+
+        @media print {
+            .nav-container,
+            .toc-panel,
+            .copy-btn,
+            .back-to-top,
+            .theme-toggle-btn,
+            .mobile-menu-btn,
+            .btn {
+                display: none !important;
+            }
+
+            body,
+            .section-shell,
+            .roadmap-card,
+            .concept-card,
+            .example-card,
+            .case-card,
+            .takeaway-card,
+            .accordion-item,
+            .accordion-button,
+            .accordion-body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                box-shadow: none !important;
+            }
+
+            p,
+            li,
+            td,
+            th,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                color: #000000 !important;
+            }
+
+            .collapse:not(.show) {
+                display: block !important;
+            }
+        }
+
+        .design-flow {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 0.65rem;
+            margin: 1rem 0;
+        }
+
+        .design-step {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem 0.6rem;
+            text-align: center;
+            min-height: 132px;
+        }
+
+        .design-step .step-number {
+            width: 2rem;
+            height: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+        }
+
+        .schema-card {
+            height: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            overflow: hidden;
+            background: var(--section-alt-bg);
+        }
+
+        .schema-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.75rem 0.9rem;
+            background: rgba(99, 102, 241, 0.14);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .schema-card-header h3,
+        .schema-card-header h4 {
+            margin: 0;
+            color: var(--header-color);
+        }
+
+        .schema-field-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .schema-field-list li {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.5rem 0.9rem;
+            border-bottom: 1px solid var(--border-color);
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.82rem;
+        }
+
+        .schema-field-list li:last-child {
+            border-bottom: 0;
+        }
+
+        .field-key {
+            color: var(--warning-color);
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .erd-board {
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            background: var(--section-alt-bg);
+            padding: 1rem;
+        }
+
+        .erd-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 132px minmax(0, 1fr);
+            gap: 0.75rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .erd-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .erd-node {
+            border: 2px solid var(--accent-color);
+            border-radius: 0.75rem;
+            background: var(--section-bg);
+            overflow: hidden;
+            min-height: 100%;
+        }
+
+        .erd-node-title {
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+            padding: 0.55rem 0.75rem;
+            letter-spacing: 0.02em;
+        }
+
+        .erd-node-body {
+            padding: 0.65rem 0.75rem;
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.82rem;
+        }
+
+        .erd-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted-color);
+            text-align: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .erd-line {
+            width: 100%;
+            height: 2px;
+            background: var(--border-color);
+            position: relative;
+            margin: 0.4rem 0;
+        }
+
+        .erd-line::after {
+            content: "";
+            position: absolute;
+            right: -1px;
+            top: -4px;
+            border-left: 8px solid var(--accent-color);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .cardinality-label {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            background: var(--section-bg);
+            color: var(--text-color);
+            border-radius: 999px;
+            padding: 0.18rem 0.5rem;
+            font-family: "Source Code Pro", monospace;
+        }
+
+        .constraint-card {
+            height: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--section-alt-bg);
+            padding: 1rem;
+        }
+
+        .constraint-card h3,
+        .constraint-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .normalization-step {
+            border-left: 4px solid var(--accent-color);
+            background: var(--section-alt-bg);
+            border-radius: 0.55rem;
+            padding: 1rem 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .normalization-step h3,
+        .normalization-step h4 {
+            margin-bottom: 0.45rem;
+        }
+
+        .dependency {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin: 0.2rem 0.35rem 0.2rem 0;
+            padding: 0.3rem 0.55rem;
+            border-radius: 0.45rem;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--border-color);
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.8rem;
+        }
+
+        .comparison-good,
+        .comparison-bad {
+            border-radius: 0.75rem;
+            padding: 1rem;
+            height: 100%;
+        }
+
+        .comparison-good {
+            border: 1px solid var(--success-color);
+            background: var(--alert-success-bg);
+        }
+
+        .comparison-bad {
+            border: 1px solid var(--danger-color);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .data-dictionary td:first-child {
+            font-family: "Source Code Pro", monospace;
+            font-weight: 700;
+        }
+
+        .test-case {
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--section-alt-bg);
+            padding: 0.9rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .test-case:last-child {
+            margin-bottom: 0;
+        }
+
+        .advanced-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+            border: 1px dashed var(--warning-color);
+            background: var(--alert-warning-bg);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .advanced-banner i {
+            color: var(--warning-color);
+            font-size: 1.3rem;
+            margin-top: 0.15rem;
+        }
+
+        .rule-to-schema {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .rule-arrow {
+            color: var(--accent-color);
+            font-size: 1.25rem;
+        }
+
+        @media (max-width: 1199.98px) {
+            .design-flow {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .design-flow {
+                grid-template-columns: 1fr;
+            }
+
+            .erd-row,
+            .rule-to-schema {
+                grid-template-columns: 1fr;
+            }
+
+            .erd-connector,
+            .rule-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+    
+
+        /* Module 3: live PostgreSQL lab */
+        .sql-lab-shell,
+        .lab-shell {
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            background: var(--section-alt-bg);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+        }
+
+        .lab-masthead {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.95rem 1rem;
+            background: linear-gradient(135deg, rgba(12, 35, 64, 0.98), rgba(49, 46, 129, 0.92));
+            border-bottom: 1px solid var(--border-color);
+            color: #ffffff;
+        }
+
+        .lab-masthead h3,
+        .lab-masthead p,
+        .lab-masthead span,
+        .lab-masthead strong {
+            color: #ffffff;
+        }
+
+        .engine-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.35rem 0.65rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 0.78rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .lab-status,
+        .engine-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .lab-status-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.65rem 0.85rem;
+            margin: 0.85rem 0 0.35rem;
+        }
+
+        .engine-status.ready .status-dot {
+            background: #34d399;
+            box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.18);
+        }
+
+        .engine-status.loading .status-dot {
+            background: #fbbf24;
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.18);
+            animation: status-pulse 1s infinite ease-in-out;
+        }
+
+        .engine-status.error .status-dot {
+            background: #f87171;
+            box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.18);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            border-radius: 50%;
+            background: #94a3b8;
+            box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.18);
+        }
+
+        .lab-status[data-state="ready"] .status-dot {
+            background: #34d399;
+            box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.18);
+        }
+
+        .lab-status[data-state="running"] .status-dot,
+        .lab-status[data-state="loading"] .status-dot {
+            background: #fbbf24;
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.18);
+            animation: status-pulse 1s infinite ease-in-out;
+        }
+
+        .lab-status[data-state="error"] .status-dot {
+            background: #f87171;
+            box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.18);
+        }
+
+        @keyframes status-pulse {
+            0%, 100% { transform: scale(0.9); opacity: 0.75; }
+            50% { transform: scale(1.15); opacity: 1; }
+        }
+
+        .lab-controls {
+            display: grid;
+            grid-template-columns: minmax(230px, 1fr) auto;
+            gap: 0.75rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .lab-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .form-select,
+        .form-control {
+            color: var(--text-color);
+            background-color: var(--section-bg);
+            border-color: var(--border-color);
+        }
+
+        .form-select:focus,
+        .form-control:focus {
+            color: var(--text-color);
+            background-color: var(--section-bg);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.18);
+        }
+
+        .editor-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .editor-panel,
+        .results-panel {
+            min-width: 0;
+        }
+
+        .editor-header,
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.72rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--section-bg);
+        }
+
+        .editor-header h4,
+        .results-header h4 {
+            margin: 0;
+            font-size: 0.93rem;
+        }
+
+        .keyboard-hint {
+            color: var(--muted-color);
+            font-size: 0.76rem;
+        }
+
+        .sql-editor,
+        .sql-editor-main {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-height: 310px;
+            resize: vertical;
+            box-sizing: border-box;
+            padding: 1rem;
+            color: #e5e7eb;
+            background: #090f1d;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            outline: none;
+            font: 500 0.9rem/1.65 "Source Code Pro", monospace;
+            tab-size: 2;
+            caret-color: #fbbf24;
+            white-space: pre;
+            overflow: auto;
+        }
+
+        .sql-editor:focus,
+        .sql-editor-main:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.18);
+        }
+
+        .sql-editor::selection,
+        .sql-editor-main::selection {
+            background: rgba(99, 102, 241, 0.55);
+        }
+
+        [data-theme="light"] .sql-editor,
+        [data-theme="light"] .sql-editor-main {
+            color: #172033;
+            background: #f8fafc;
+        }
+
+        .results-panel,
+        .results-shell {
+            border-top: 1px solid var(--border-color);
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            overflow: hidden;
+            background: var(--section-alt-bg);
+        }
+
+        .results-output {
+            min-height: 180px;
+            max-height: 560px;
+            overflow: auto;
+            padding: 1rem;
+            background: var(--section-alt-bg);
+        }
+
+        .result-placeholder {
+            min-height: 145px;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            color: var(--muted-color);
+            border: 1px dashed var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .result-card {
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            margin-bottom: 0.85rem;
+            overflow: hidden;
+        }
+
+        .result-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.62rem 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .result-card-header strong {
+            color: var(--header-color);
+        }
+
+        .result-meta {
+            color: var(--muted-color);
+            font-size: 0.76rem;
+        }
+
+        .result-table-wrap {
+            overflow-x: auto;
+        }
+
+        .result-table {
+            width: 100%;
+            margin: 0;
+            border-collapse: collapse;
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.82rem;
+        }
+
+        .result-table th,
+        .result-table td {
+            padding: 0.52rem 0.68rem;
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+            white-space: nowrap;
+        }
+
+        .result-table th {
+            color: var(--header-color);
+            background: var(--section-alt-bg);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .result-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .result-table th:last-child,
+        .result-table td:last-child {
+            border-right: 0;
+        }
+
+        .result-message {
+            padding: 0.82rem;
+            color: var(--text-color);
+        }
+
+        .null-value {
+            color: var(--muted-color);
+            font-style: italic;
+        }
+
+        .query-error {
+            border: 1px solid rgba(248, 113, 113, 0.5);
+            border-left: 5px solid var(--danger-color);
+            background: rgba(248, 113, 113, 0.08);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .query-error pre {
+            margin: 0.65rem 0 0;
+            color: var(--danger-color);
+            white-space: pre-wrap;
+            word-break: break-word;
+            background: transparent !important;
+            border: 0;
+            padding: 0;
+        }
+
+        .lab-footnote {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            padding: 0.85rem 1rem;
+            color: var(--muted-color);
+            background: var(--section-bg);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8rem;
+        }
+
+        .schema-chip-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.65rem;
+        }
+
+        .schema-chip {
+            padding: 0.75rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+        }
+
+        .schema-chip code {
+            color: var(--header-color);
+            font-weight: 700;
+        }
+
+        .copy-wrap pre {
+            padding-top: 3.25rem !important;
+        }
+
+        .code-toolbar {
+            position: absolute;
+            top: 0.55rem;
+            right: 0.55rem;
+            z-index: 3;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.4rem;
+        }
+
+        .code-toolbar .copy-btn {
+            position: static;
+        }
+
+        .try-query-btn {
+            border: 1px solid rgba(52, 211, 153, 0.45);
+            background: var(--section-bg);
+            color: var(--success-color);
+            border-radius: 0.45rem;
+            padding: 0.25rem 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .try-query-btn:hover,
+        .try-query-btn:focus-visible {
+            color: #ffffff;
+            background: var(--success-color);
+        }
+
+        .sql-command-card {
+            height: 100%;
+            padding: 1rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 0.8rem;
+        }
+
+        .sql-command-card[data-kind="dql"] { border-top-color: #38bdf8; }
+        .sql-command-card[data-kind="dml"] { border-top-color: #34d399; }
+        .sql-command-card[data-kind="ddl"] { border-top-color: #fbbf24; }
+        .sql-command-card[data-kind="tcl"] { border-top-color: #a78bfa; }
+
+        .query-flow {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 0.55rem;
+            margin: 1rem 0;
+        }
+
+        .query-flow-step {
+            position: relative;
+            text-align: center;
+            padding: 0.78rem 0.45rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.65rem;
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .query-flow-step:not(:last-child)::after {
+            content: "→";
+            position: absolute;
+            right: -0.48rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted-color);
+            z-index: 2;
+        }
+
+        .safety-workflow {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.65rem;
+            margin: 1rem 0;
+        }
+
+        .safety-step {
+            padding: 0.8rem;
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+        }
+
+        .safety-step .step-number {
+            display: inline-grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            margin-bottom: 0.4rem;
+            border-radius: 50%;
+            color: #ffffff;
+            background: var(--accent-color);
+            font-weight: 800;
+        }
+
+        .danger-example {
+            border-left: 5px solid var(--danger-color);
+        }
+
+        .success-example {
+            border-left: 5px solid var(--success-color);
+        }
+
+        .statement-anatomy {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--section-alt-bg);
+            font-family: "Source Code Pro", monospace;
+        }
+
+        .statement-part {
+            padding: 0.35rem 0.55rem;
+            border-radius: 0.45rem;
+            background: rgba(99, 102, 241, 0.14);
+            border: 1px solid rgba(99, 102, 241, 0.35);
+        }
+
+        .lab-task {
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .download-result-btn {
+            border: 1px solid var(--border-color);
+            color: var(--header-color);
+            background: var(--section-bg);
+            border-radius: 0.4rem;
+            font-size: 0.72rem;
+            padding: 0.22rem 0.48rem;
+        }
+
+        .download-result-btn:hover {
+            color: #ffffff;
+            background: var(--accent-color);
+        }
+
+        @media (min-width: 1200px) {
+            .editor-grid {
+                grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+            }
+
+            .results-panel {
+                border-top: 0;
+                border-left: 1px solid var(--border-color);
+            }
+
+            .sql-editor,
+            .sql-editor-main {
+                min-height: 455px;
+            }
+
+            .results-output {
+                min-height: 455px;
+                max-height: 640px;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .schema-chip-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .query-flow,
+            .safety-workflow {
+                grid-template-columns: 1fr;
+            }
+
+            .query-flow-step:not(:last-child)::after {
+                content: "↓";
+                right: 50%;
+                top: auto;
+                bottom: -0.8rem;
+                transform: translateX(50%);
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .lab-masthead,
+            .lab-controls,
+            .editor-header,
+            .results-header {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .lab-controls {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .lab-actions {
+                justify-content: flex-start;
+            }
+
+            .sql-editor,
+            .sql-editor-main {
+                min-height: 250px;
+            }
+
+            .schema-chip-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            .sql-lab-shell,
+            .try-query-btn,
+            .code-toolbar {
+                break-inside: avoid;
+            }
+
+            .lab-controls,
+            .sql-editor,
+            .sql-editor-main,
+            .results-panel,
+            .results-shell,
+            .lab-status,
+            .engine-badge,
+            .try-query-btn {
+                display: none !important;
+            }
+        }
+
+    
+
+        /* Module 4 additions */
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .function-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 0.9rem;
+            min-height: 100%;
+        }
+
+        .function-card code {
+            display: inline-block;
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+        }
+
+        .grain-ladder {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+
+        .grain-step {
+            position: relative;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .grain-step .grain-number {
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #fff;
+            font-weight: 800;
+            margin-bottom: 0.55rem;
+        }
+
+        .clause-flow {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            margin: 1rem 0;
+        }
+
+        .clause-node {
+            min-width: 105px;
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.65rem 0.75rem;
+            font-family: "Source Code Pro", monospace;
+            font-weight: 700;
+        }
+
+        .clause-arrow {
+            color: var(--muted-color);
+            font-size: 1.1rem;
+        }
+
+        .query-anatomy {
+            display: grid;
+            grid-template-columns: 145px 1fr;
+            gap: 0.25rem 0.8rem;
+            align-items: start;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .query-anatomy dt {
+            color: var(--header-color);
+            font-family: "Source Code Pro", monospace;
+            font-weight: 800;
+        }
+
+        .query-anatomy dd {
+            margin-bottom: 0.45rem;
+        }
+
+        .run-example-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.7rem;
+        }
+
+        .subtotal-key {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .subtotal-key > div {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.8rem;
+        }
+
+        .metric-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.55rem;
+            border-radius: 999px;
+            background: rgba(99, 102, 241, 0.14);
+            border: 1px solid rgba(99, 102, 241, 0.36);
+            color: var(--header-color);
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0.15rem;
+        }
+
+        @media (max-width: 991.98px) {
+            .function-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .grain-ladder, .subtotal-key { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 575.98px) {
+            .function-grid { grid-template-columns: 1fr; }
+            .query-anatomy { grid-template-columns: 1fr; }
+            .clause-arrow { transform: rotate(90deg); }
+        }
+
+
+        /* Module 5 logic visuals */
+        .logic-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .logic-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 0.85rem;
+            padding: 1rem;
+            height: 100%;
+        }
+
+        .logic-card.and { border-top-color: var(--success-color); }
+        .logic-card.or { border-top-color: var(--header-color); }
+        .logic-card.not { border-top-color: var(--warning-color); }
+
+        .precedence-stack {
+            display: grid;
+            gap: 0.55rem;
+            max-width: 520px;
+            margin: 1rem auto;
+        }
+
+        .precedence-step {
+            display: grid;
+            grid-template-columns: 44px 1fr;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.75rem 0.9rem;
+        }
+
+        .precedence-rank {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .truth-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .truth-state {
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+            text-align: center;
+            background: var(--section-alt-bg);
+        }
+
+        .truth-state strong {
+            display: block;
+            font-size: 1.05rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .truth-state.true strong { color: var(--success-color); }
+        .truth-state.false strong { color: var(--danger-color); }
+        .truth-state.unknown strong { color: var(--warning-color); }
+
+        .logic-expression {
+            font-family: "Source Code Pro", monospace;
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.65rem;
+            padding: 0.7rem 0.85rem;
+            margin: 0.45rem 0;
+            overflow-x: auto;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .trap-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--danger-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .safe-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--success-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .case-flow {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .case-flow > div {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem;
+            text-align: center;
+        }
+
+        .boundary-table td:first-child,
+        .boundary-table th:first-child {
+            white-space: nowrap;
+        }
+
+        .rule-builder {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.65rem;
+            margin: 1rem 0;
+        }
+
+        .rule-builder > div {
+            border: 1px solid var(--border-color);
+            background: var(--section-alt-bg);
+            border-radius: 0.7rem;
+            padding: 0.8rem;
+            text-align: center;
+        }
+
+        @media (max-width: 991.98px) {
+            .logic-grid,
+            .truth-grid,
+            .case-flow,
+            .rule-builder { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 575.98px) {
+            .logic-grid,
+            .truth-grid,
+            .pattern-grid,
+            .case-flow,
+            .rule-builder { grid-template-columns: 1fr; }
+        }
+
+
+
+        .join-family-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1rem; }
+        .join-family-card { border:1px solid var(--border-color); border-radius:.8rem; padding:1rem; background:var(--section-alt-bg); height:100%; }
+        .join-family-card h4 { font-size:1rem; margin-bottom:.35rem; }
+        .join-family-card p { margin:0; font-size:.9rem; }
+        .join-chip { display:inline-flex; align-items:center; gap:.35rem; border:1px solid var(--border-color); border-radius:999px; padding:.22rem .55rem; font-size:.78rem; font-weight:700; background:var(--section-alt-bg); }
+        .preserve-left { border-left:4px solid #3b82f6; }
+        .preserve-right { border-left:4px solid #8b5cf6; }
+        .preserve-both { border-left:4px solid #f59e0b; }
+        .preserve-match { border-left:4px solid #10b981; }
+        .grain-box { border:1px solid var(--border-color); border-radius:.75rem; padding:1rem; background:var(--section-alt-bg); }
+        .grain-arrow { font-size:1.6rem; color:var(--muted-color); text-align:center; }
+        .mini-table { width:100%; border-collapse:collapse; font-size:.84rem; }
+        .mini-table th,.mini-table td { border:1px solid var(--border-color); padding:.42rem .5rem; }
+        .mini-table th { background:var(--section-alt-bg); }
+        .matched { background:rgba(16,185,129,.12); }
+        .unmatched { background:rgba(245,158,11,.10); }
+        .danger-note { border-left:4px solid var(--danger-color); background:rgba(248,113,113,.08); border-radius:.55rem; padding:.85rem 1rem; }
+        .join-decision { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.85rem; }
+        .join-decision .step-card { min-height:100%; }
+        .schema-relations { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.8rem; }
+        .schema-table { border:1px solid var(--border-color); border-radius:.75rem; overflow:hidden; background:var(--section-alt-bg); }
+        .schema-table h4 { margin:0; padding:.7rem .8rem; font-size:.95rem; background:rgba(99,102,241,.12); }
+        .schema-table ul { margin:0; padding:.7rem 1.6rem .8rem 1.8rem; font-family:"Source Code Pro",monospace; font-size:.78rem; }
+        .relationship-strip { display:flex; flex-wrap:wrap; gap:.55rem; margin-top:1rem; }
+        .relationship-strip span { border:1px solid var(--border-color); border-radius:999px; padding:.3rem .65rem; font-size:.78rem; background:var(--section-alt-bg); }
+        .comparison-table td:first-child,.comparison-table th:first-child { white-space:nowrap; }
+        .output-grain { display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; }
+        .output-grain > span { padding:.45rem .65rem; border:1px solid var(--border-color); border-radius:.55rem; background:var(--section-alt-bg); }
+        .output-grain .op { border:none; background:transparent; color:var(--muted-color); font-weight:800; }
+        .project-card-custom { border:1px solid var(--border-color); border-radius:.8rem; padding:1rem; background:var(--section-alt-bg); height:100%; }
+        @media (max-width: 991.98px) { .join-family-grid,.schema-relations { grid-template-columns:repeat(2,minmax(0,1fr)); } .join-decision { grid-template-columns:1fr; } }
+        @media (max-width: 575.98px) { .join-family-grid,.schema-relations { grid-template-columns:1fr; } }
+
+        /* Concept visuals and lightweight result charts */
+        .join-visualizer {
+            border: 1px solid var(--border-color);
+            border-radius: .9rem;
+            background: var(--section-alt-bg);
+            padding: 1rem;
+            margin-top: 1.25rem;
+        }
+        .join-visual-controls { display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem; }
+        .join-visual-btn {
+            border:1px solid var(--border-color);
+            background:var(--section-bg);
+            color:var(--text-color);
+            border-radius:999px;
+            padding:.42rem .72rem;
+            font-weight:700;
+            font-size:.82rem;
+        }
+        .join-visual-btn:hover,.join-visual-btn:focus { border-color:var(--accent-color); outline:none; }
+        .join-visual-btn.active { background:var(--accent-color); color:#fff; border-color:var(--accent-color); }
+        .join-visual-stage { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:.8rem; align-items:start; }
+        .join-source-card,.join-output-card { border:1px solid var(--border-color); border-radius:.75rem; overflow:hidden; background:var(--section-bg); }
+        .join-source-card h4,.join-output-card h4 { font-size:.88rem; margin:0; padding:.62rem .72rem; background:rgba(99,102,241,.10); }
+        .join-source-row,.join-output-row { display:grid; grid-template-columns:72px minmax(0,1fr); gap:.45rem; padding:.5rem .65rem; border-top:1px solid var(--border-color); font-family:"Source Code Pro",monospace; font-size:.78rem; }
+        .join-output-row { grid-template-columns:72px minmax(0,1fr) 84px minmax(0,1.2fr); }
+        .join-source-row.match,.join-output-row.match { background:rgba(16,185,129,.10); }
+        .join-output-row.preserved { background:rgba(245,158,11,.10); }
+        .join-null { color:var(--muted-color); font-style:italic; }
+        .join-visual-arrow { align-self:center; color:var(--accent-color); font-size:1.5rem; font-weight:900; padding-top:2rem; }
+        .join-output-card { margin-top:1rem; }
+        .join-visual-summary { margin-top:.65rem; color:var(--muted-color); font-size:.82rem; }
+        .cardinality-bars { border:1px solid var(--border-color); border-radius:.8rem; padding:1rem; background:var(--section-alt-bg); margin:1rem 0; }
+        .cardinality-bar-row { display:grid; grid-template-columns:135px minmax(0,1fr) 44px; gap:.65rem; align-items:center; margin:.55rem 0; font-size:.84rem; }
+        .cardinality-bar-track { height:18px; background:var(--section-bg); border:1px solid var(--border-color); border-radius:999px; overflow:hidden; }
+        .cardinality-bar-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,var(--accent-color),var(--header-color)); min-width:8px; }
+        .cardinality-bar-row.total .cardinality-bar-fill { background:linear-gradient(90deg,#f59e0b,#ef4444); }
+        .visualize-result-btn {
+            border:1px solid var(--border-color);
+            background:transparent;
+            color:var(--header-color);
+            border-radius:.45rem;
+            padding:.25rem .48rem;
+            font-size:.74rem;
+            font-weight:700;
+        }
+        .visualize-result-btn:hover { border-color:var(--accent-color); }
+        .result-chart { padding:.9rem; border-top:1px solid var(--border-color); background:var(--section-alt-bg); }
+        .result-chart-title { font-weight:700; color:var(--header-color); margin-bottom:.7rem; font-size:.86rem; }
+        .result-chart-row { display:grid; grid-template-columns:minmax(90px,150px) minmax(0,1fr) 70px; gap:.6rem; align-items:center; margin:.42rem 0; font-size:.78rem; }
+        .result-chart-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .result-chart-track { height:16px; background:var(--section-bg); border:1px solid var(--border-color); border-radius:999px; overflow:hidden; }
+        .result-chart-bar { height:100%; background:linear-gradient(90deg,var(--accent-color),var(--header-color)); border-radius:999px; min-width:2px; }
+        .result-chart-value { text-align:right; font-family:"Source Code Pro",monospace; }
+        .chart-hint { display:flex; gap:.45rem; align-items:flex-start; margin-top:.65rem; color:var(--muted-color); font-size:.8rem; }
+        @media (max-width: 767.98px) {
+            .join-visual-stage { grid-template-columns:1fr; }
+            .join-visual-arrow { transform:rotate(90deg); padding:0; justify-self:center; }
+            .join-output-row { grid-template-columns:64px minmax(0,1fr); }
+            .join-output-row > :nth-child(3),.join-output-row > :nth-child(4) { border-top:1px dashed var(--border-color); padding-top:.25rem; }
+            .cardinality-bar-row { grid-template-columns:100px minmax(0,1fr) 36px; }
+            .result-chart-row { grid-template-columns:95px minmax(0,1fr) 56px; }
+        }
+
+
+
+        .shape-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 1rem;
+            align-items: center;
+        }
+        .shape-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.9rem;
+            padding: 1rem;
+            min-width: 0;
+        }
+        .shape-card h3 { font-size: 1rem; margin-bottom: 0.75rem; }
+        .shape-arrow {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: rgba(99,102,241,.16);
+            border: 1px solid rgba(99,102,241,.45);
+            color: var(--header-color);
+            font-size: 1.35rem;
+        }
+        .mini-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .78rem;
+        }
+        .mini-data-table th, .mini-data-table td {
+            border: 1px solid var(--border-color);
+            padding: .38rem .45rem;
+            text-align: left;
+            white-space: nowrap;
+        }
+        .mini-data-table th { background: rgba(99,102,241,.11); }
+        .reshape-rule {
+            border-left: 4px solid var(--uncg-gold);
+            background: var(--alert-warning-bg);
+            padding: .9rem 1rem;
+            border-radius: 0 .7rem .7rem 0;
+        }
+        .grain-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: .75rem;
+        }
+        .grain-step {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: .8rem;
+            padding: .9rem;
+            text-align: center;
+        }
+        .grain-step strong { display: block; color: var(--header-color); margin-bottom: .3rem; }
+        .pivot-cells {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0,1fr));
+            gap: .6rem;
+        }
+        .pivot-cell {
+            border: 1px solid var(--border-color);
+            background: var(--section-alt-bg);
+            border-radius: .7rem;
+            padding: .75rem;
+            text-align: center;
+        }
+        .pivot-cell .value { font-family: "Source Code Pro", monospace; font-size: 1.2rem; font-weight: 700; color: var(--header-color); }
+        .reshape-flow {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0,1fr));
+            gap: .55rem;
+            align-items: stretch;
+        }
+        .reshape-flow .flow-node {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: .8rem;
+            padding: .8rem;
+            text-align: center;
+            font-size: .83rem;
+        }
+        .reshape-flow .flow-node strong { display:block; color: var(--header-color); }
+        .shape-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            padding: .25rem .6rem;
+            font-size: .76rem;
+            background: var(--section-alt-bg);
+        }
+        .decision-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; }
+        .decision-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .decision-card h3 { font-size:1rem; }
+        @media (max-width: 991px) {
+            .shape-grid { grid-template-columns: 1fr; }
+            .shape-arrow { margin: 0 auto; transform: rotate(90deg); }
+            .grain-row { grid-template-columns: repeat(2,1fr); }
+            .reshape-flow { grid-template-columns: 1fr; }
+            .decision-grid { grid-template-columns:1fr; }
+        }
+        @media (max-width: 575px) {
+            .grain-row, .pivot-cells { grid-template-columns:1fr; }
+        }
+
+        /* Module 11 visual language */
+        .cte-pipeline { display:grid; grid-template-columns:repeat(5,1fr); gap:.65rem; align-items:center; margin:1.25rem 0; }
+        .cte-step { border:1px solid var(--border-color); border-radius:.8rem; padding:.85rem; background:var(--section-alt-bg); min-height:112px; display:flex; flex-direction:column; justify-content:center; text-align:center; }
+        .cte-step strong { color:var(--header-color); display:block; margin-bottom:.25rem; }
+        .cte-arrow { text-align:center; color:var(--uncg-gold); font-size:1.25rem; }
+        .window-anatomy { display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; margin:1.2rem 0; }
+        .window-piece { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .window-piece .piece-label { font-size:.76rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted-color); font-weight:700; }
+        .window-piece code { display:block; margin-top:.45rem; }
+        .rank-demo { overflow-x:auto; border:1px solid var(--border-color); border-radius:.85rem; }
+        .rank-demo table { width:100%; border-collapse:collapse; min-width:620px; }
+        .rank-demo th,.rank-demo td { padding:.65rem .8rem; border-bottom:1px solid var(--border-color); text-align:center; }
+        .rank-demo th:first-child,.rank-demo td:first-child { text-align:left; }
+        .rank-demo tr:last-child td { border-bottom:0; }
+        .tie-row { background:rgba(207,155,47,.08); }
+        .timeline { display:flex; gap:.65rem; align-items:center; overflow-x:auto; padding:.75rem 0 .25rem; }
+        .timeline-event { min-width:155px; border:1px solid var(--border-color); border-radius:.85rem; background:var(--section-alt-bg); padding:.8rem; text-align:center; }
+        .timeline-event .event-date { font-size:.8rem; color:var(--muted-color); }
+        .timeline-arrow { color:var(--uncg-gold); font-size:1.2rem; flex:0 0 auto; }
+        .frame-visual { display:grid; grid-template-columns:repeat(7,1fr); gap:.35rem; margin:1rem 0; }
+        .frame-cell { border:1px solid var(--border-color); border-radius:.55rem; text-align:center; padding:.7rem .3rem; background:var(--section-alt-bg); font-size:.8rem; }
+        .frame-cell.current { outline:2px solid var(--uncg-gold); background:rgba(207,155,47,.12); }
+        .frame-cell.in-frame { border-color:var(--accent-color); background:rgba(99,102,241,.12); }
+        .group-partition-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+        .grain-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .grain-card .row-count { display:inline-block; padding:.2rem .55rem; border-radius:999px; background:rgba(56,189,248,.12); border:1px solid var(--border-color); font-size:.78rem; }
+        .analysis-pattern { display:grid; grid-template-columns:repeat(3,1fr); gap:.85rem; margin:1rem 0; }
+        .pattern-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .pattern-card h3 { font-size:1rem; }
+        .recursive-tree { display:grid; gap:.5rem; max-width:760px; margin:1rem auto; }
+        .tree-row { display:flex; align-items:center; gap:.65rem; }
+        .tree-indent-0 { margin-left:0; }
+        .tree-indent-1 { margin-left:2rem; }
+        .tree-indent-2 { margin-left:4rem; }
+        .tree-node { border:1px solid var(--border-color); border-radius:.65rem; padding:.5rem .75rem; background:var(--section-alt-bg); }
+        .output-grain-note { border-left:4px solid var(--uncg-gold); background:var(--section-alt-bg); padding:1rem; border-radius:0 .65rem .65rem 0; }
+        @media (max-width: 991px) {
+            .cte-pipeline { grid-template-columns:1fr; }
+            .cte-arrow { transform:rotate(90deg); }
+            .window-anatomy { grid-template-columns:1fr 1fr; }
+            .group-partition-grid,.analysis-pattern { grid-template-columns:1fr; }
+        }
+        @media (max-width: 575px) {
+            .window-anatomy { grid-template-columns:1fr; }
+            .frame-visual { grid-template-columns:repeat(4,1fr); }
+        }
+
+        .view-layer-stack { display:grid; grid-template-columns:1fr auto 1fr auto 1fr auto 1fr; gap:.65rem; align-items:center; margin:1.25rem 0; }
+        .view-layer { border:1px solid var(--border-color); border-radius:.85rem; background:var(--section-alt-bg); padding:1rem; min-height:116px; display:flex; flex-direction:column; justify-content:center; }
+        .view-layer strong { color:var(--header-color); display:block; margin-bottom:.25rem; }
+        .layer-arrow { color:var(--uncg-gold); text-align:center; font-size:1.15rem; }
+        .interface-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0; }
+        .interface-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .interface-card.dynamic { border-top:4px solid var(--success-color); }
+        .interface-card.snapshot { border-top:4px solid var(--warning-color); }
+        .interface-label { display:inline-block; border:1px solid var(--border-color); border-radius:999px; padding:.15rem .55rem; font-size:.75rem; margin-bottom:.6rem; }
+        .freshness-line { display:grid; grid-template-columns:repeat(5,1fr); gap:.65rem; align-items:start; margin:1.2rem 0; position:relative; }
+        .freshness-line::before { content:""; position:absolute; top:18px; left:8%; right:8%; height:2px; background:var(--border-color); z-index:0; }
+        .fresh-step { position:relative; z-index:1; text-align:center; }
+        .fresh-dot { width:36px; height:36px; border-radius:50%; margin:0 auto .45rem; display:flex; align-items:center; justify-content:center; background:var(--section-bg); border:2px solid var(--accent-color); font-weight:700; }
+        .fresh-step.stale .fresh-dot { border-color:var(--warning-color); }
+        .fresh-step.refresh .fresh-dot { border-color:var(--success-color); }
+        .security-flow { display:grid; grid-template-columns:1fr auto 1fr auto 1fr; gap:.75rem; align-items:center; margin:1rem 0; }
+        .security-node { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); min-height:130px; }
+        .security-node.sensitive { border-top:4px solid var(--danger-color); }
+        .security-node.interface { border-top:4px solid var(--accent-color); }
+        .security-node.consumer { border-top:4px solid var(--success-color); }
+        .dependency-chain { display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem; margin:1rem 0; }
+        .dependency-node { border:1px solid var(--border-color); border-radius:.75rem; padding:.85rem; background:var(--section-alt-bg); position:relative; }
+        .dependency-node:not(:last-child)::after { content:"→"; position:absolute; right:-.63rem; top:50%; transform:translateY(-50%); color:var(--uncg-gold); font-weight:800; }
+        .view-decision-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:.85rem; margin:1rem 0; }
+        .view-decision { border:1px solid var(--border-color); border-radius:.85rem; background:var(--section-alt-bg); padding:1rem; }
+        .view-decision h3 { font-size:1rem; }
+        .boundary-note { border-left:4px solid var(--warning-color); background:var(--section-alt-bg); padding:1rem; border-radius:0 .65rem .65rem 0; }
+        .object-chip { display:inline-flex; align-items:center; gap:.35rem; border:1px solid var(--border-color); border-radius:999px; padding:.2rem .55rem; font-size:.78rem; margin:.15rem .15rem .15rem 0; }
+        .object-chip.view { background:rgba(52,211,153,.08); }
+        .object-chip.mv { background:rgba(251,191,36,.08); }
+        .object-chip.cte { background:rgba(99,102,241,.08); }
+        .freshness-meter { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+        .meter-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .meter-bar { height:12px; border-radius:999px; background:var(--border-color); overflow:hidden; margin-top:.55rem; }
+        .meter-bar span { display:block; height:100%; }
+        .meter-live { width:100%; background:var(--success-color); }
+        .meter-snapshot { width:68%; background:var(--warning-color); }
+        @media (max-width: 991px) {
+            .view-layer-stack { grid-template-columns:1fr; }
+            .layer-arrow { transform:rotate(90deg); }
+            .interface-grid,.freshness-meter,.view-decision-grid { grid-template-columns:1fr; }
+            .security-flow { grid-template-columns:1fr; }
+            .security-flow .layer-arrow { transform:rotate(90deg); }
+            .dependency-chain { grid-template-columns:1fr; }
+            .dependency-node:not(:last-child)::after { content:"↓"; right:auto; left:50%; top:auto; bottom:-1.05rem; transform:translateX(-50%); }
+        }
+        @media (max-width: 575px) {
+            .freshness-line { grid-template-columns:1fr; }
+            .freshness-line::before { display:none; }
+        }
+
+
+
+        /* Module 13: Spark-specific visuals */
+        .spark-architecture {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) auto minmax(0, 1.7fr);
+            gap: 1rem;
+            align-items: center;
+            margin: 1.4rem 0;
+        }
+        .spark-driver,
+        .spark-executor,
+        .spark-stage,
+        .concept-tile,
+        .engine-lane,
+        .schema-card,
+        .plan-step,
+        .workload-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: .85rem;
+            padding: 1rem;
+        }
+        .spark-driver {
+            border-top: 4px solid var(--uncg-gold);
+        }
+        .spark-driver strong,
+        .spark-executor strong,
+        .plan-step strong,
+        .schema-card strong,
+        .engine-lane strong {
+            display: block;
+            color: var(--header-color);
+            margin-bottom: .25rem;
+        }
+        .executor-cluster {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: .8rem;
+        }
+        .spark-executor {
+            border-top: 4px solid var(--accent-color);
+        }
+        .spark-task-row {
+            display: flex;
+            gap: .35rem;
+            flex-wrap: wrap;
+            margin-top: .7rem;
+        }
+        .spark-task {
+            background: rgba(99,102,241,.14);
+            border: 1px solid var(--accent-color);
+            border-radius: 999px;
+            padding: .15rem .48rem;
+            font: 600 .72rem "Source Code Pro", monospace;
+        }
+        .cluster-arrow,
+        .plan-arrow {
+            color: var(--uncg-gold);
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        .concept-grid,
+        .schema-grid,
+        .workload-grid,
+        .engine-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1.25rem 0;
+        }
+        .concept-tile h3,
+        .schema-card h3,
+        .workload-card h3,
+        .engine-lane h3 {
+            font-size: 1rem;
+            margin-bottom: .45rem;
+        }
+        .concept-icon {
+            width: 2.35rem;
+            height: 2.35rem;
+            display: inline-grid;
+            place-items: center;
+            border-radius: .65rem;
+            background: rgba(56,189,248,.13);
+            border: 1px solid rgba(56,189,248,.35);
+            margin-bottom: .65rem;
+        }
+        .spark-plan {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: .65rem;
+            margin: 1.3rem 0;
+            align-items: stretch;
+        }
+        .plan-step {
+            position: relative;
+            min-height: 116px;
+        }
+        .plan-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -.62rem;
+            top: 42%;
+            color: var(--uncg-gold);
+            font-weight: 800;
+        }
+        .lakehouse-stack {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: .55rem;
+            margin: 1.2rem 0;
+        }
+        .lakehouse-layer {
+            display: grid;
+            grid-template-columns: 150px minmax(0, 1fr);
+            gap: .9rem;
+            align-items: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--accent-color);
+            border-radius: .75rem;
+            padding: .8rem 1rem;
+        }
+        .lakehouse-layer.storage {border-left-color: var(--uncg-gold);}
+        .lakehouse-layer.table {border-left-color: var(--success-color);}
+        .lakehouse-layer.engine {border-left-color: var(--header-color);}
+        .lakehouse-layer strong {color: var(--header-color);}
+        .engine-lane.spark {border-top: 4px solid #f59e0b;}
+        .engine-lane.tsql {border-top: 4px solid #38bdf8;}
+        .portable-lab-note {
+            border: 1px solid var(--warning-color);
+            border-left: 5px solid var(--warning-color);
+            background: var(--alert-warning-bg);
+            border-radius: .75rem;
+            padding: 1rem;
+            margin: 1rem 0 1.25rem;
+        }
+        .portable-lab-note strong {color: var(--text-color);}
+        .shuffle-visual {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            gap: .65rem;
+            align-items: center;
+            margin: 1.2rem 0;
+        }
+        .partition-column {
+            display: grid;
+            gap: .45rem;
+        }
+        .partition-box {
+            border: 1px solid var(--border-color);
+            border-radius: .55rem;
+            padding: .55rem .7rem;
+            background: var(--section-alt-bg);
+            font-size: .87rem;
+        }
+        .shuffle-cloud {
+            border: 2px dashed var(--warning-color);
+            border-radius: 1rem;
+            padding: .9rem;
+            text-align: center;
+            background: var(--alert-warning-bg);
+            min-width: 116px;
+        }
+        .schema-card.infer {border-top: 4px solid var(--warning-color);}
+        .schema-card.explicit {border-top: 4px solid var(--success-color);}
+        .schema-card.delta {border-top: 4px solid var(--accent-color);}
+        .workload-card.spark-fit {border-top: 4px solid var(--success-color);}
+        .workload-card.db-fit {border-top: 4px solid var(--header-color);}
+        .code-label {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            font-size: .76rem;
+            font-weight: 700;
+            padding: .25rem .55rem;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            background: var(--section-alt-bg);
+            margin-bottom: .5rem;
+        }
+        .fabric-badge {
+            color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+        .portable-badge {
+            color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        .spark-checklist li {margin-bottom: .45rem;}
+        @media (max-width: 991.98px) {
+            .spark-architecture {grid-template-columns: 1fr;}
+            .cluster-arrow {transform: rotate(90deg);}
+            .spark-plan {grid-template-columns: 1fr 1fr;}
+            .plan-step:nth-child(2)::after {display:none;}
+            .shuffle-visual {grid-template-columns: 1fr;}
+            .plan-arrow {transform: rotate(90deg);}
+        }
+        @media (max-width: 575.98px) {
+            .concept-grid,.schema-grid,.workload-grid,.engine-grid,.executor-cluster,.spark-plan {grid-template-columns: 1fr;}
+            .plan-step::after {display:none !important;}
+            .lakehouse-layer {grid-template-columns: 1fr;}
+        }
+</style>
+
+<style>
+.canvas-banner{background:linear-gradient(135deg,rgba(207,155,47,.18),rgba(99,102,241,.16));border:2px solid var(--uncg-gold);border-radius:1rem;padding:1.15rem 1.25rem;margin:1rem 0;box-shadow:0 8px 24px var(--shadow-color)}
+.canvas-banner h3{color:var(--header-color);margin-bottom:.35rem}.canvas-banner .canvas-icon{width:48px;height:48px;border-radius:.85rem;display:inline-flex;align-items:center;justify-content:center;background:var(--uncg-blue);color:#fff;border:2px solid var(--uncg-gold);font-size:1.2rem;flex:0 0 48px}
+.sample-badge{display:inline-flex;align-items:center;gap:.45rem;border:1px solid var(--uncg-gold);background:rgba(207,155,47,.12);color:var(--text-color);border-radius:999px;padding:.35rem .7rem;font-weight:800;font-size:.8rem;text-transform:uppercase;letter-spacing:.03em}
+.lifecycle-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.6rem;margin:1rem 0}.lifecycle-step{position:relative;background:var(--section-alt-bg);border:1px solid var(--border-color);border-radius:.85rem;padding:.85rem .65rem;text-align:center;min-height:112px}.lifecycle-step i{display:block;color:var(--header-color);font-size:1.25rem;margin-bottom:.45rem}.lifecycle-step strong{display:block}.lifecycle-step small{color:var(--muted-color)}
+.course-map{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.75rem}.course-map-card{background:var(--section-alt-bg);border:1px solid var(--border-color);border-radius:.85rem;padding:1rem;height:100%}.course-map-card .module-range{font-weight:800;color:var(--header-color);font-size:.82rem;text-transform:uppercase;letter-spacing:.05em}.course-map-card h3{font-size:1rem;margin:.35rem 0}.course-map-card p{font-size:.9rem;margin:0;color:var(--muted-color)}
+.sample-files{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}.file-card{background:var(--section-alt-bg);border:1px solid var(--border-color);border-radius:.85rem;padding:1rem}.file-card .file-icon{font-size:1.4rem;color:var(--header-color);margin-bottom:.4rem}.file-card code{font-size:.82rem}
+.issue-visual{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin-top:1rem}.issue-card{background:var(--section-alt-bg);border:1px solid var(--border-color);border-radius:.85rem;padding:1rem}.issue-meter{height:10px;background:rgba(148,163,184,.22);border-radius:99px;overflow:hidden;margin:.6rem 0}.issue-meter span{display:block;height:100%;background:linear-gradient(90deg,var(--uncg-gold),var(--accent-color));border-radius:99px}.issue-card .big-number{font-size:1.55rem;font-weight:800;color:var(--header-color)}
+.pipeline-visual{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:stretch;gap:.55rem;margin:1rem 0}.pipeline-box{background:var(--section-alt-bg);border:1px solid var(--border-color);border-radius:.85rem;padding:1rem;text-align:center}.pipeline-box i{display:block;color:var(--header-color);font-size:1.25rem;margin-bottom:.35rem}.pipeline-arrow{display:flex;align-items:center;color:var(--muted-color)}
+.validation-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}.validation-card{background:var(--section-alt-bg);border:1px solid var(--border-color);border-radius:.85rem;padding:1rem}.validation-card h3{font-size:1rem}.validation-card i{color:var(--success-color);margin-right:.4rem}
+.readiness-list{list-style:none;padding:0;margin:0;display:grid;gap:.6rem}.readiness-list li{display:grid;grid-template-columns:30px 1fr;gap:.65rem;align-items:start;background:var(--section-alt-bg);border:1px solid var(--border-color);border-radius:.75rem;padding:.75rem}.readiness-list .check-box{width:24px;height:24px;border:2px solid var(--accent-color);border-radius:.35rem;display:flex;align-items:center;justify-content:center;color:var(--accent-color);font-size:.75rem;margin-top:.1rem}
+.not-assignment{border-left:5px solid var(--uncg-gold);background:var(--alert-warning-bg);border-radius:.75rem;padding:1rem 1.1rem}.sample-code-note{font-size:.88rem;color:var(--muted-color);margin-top:.45rem}.course-finish{background:linear-gradient(135deg,rgba(16,185,129,.14),rgba(56,189,248,.1));border:1px solid var(--success-color);border-radius:1rem;padding:1.25rem}.course-finish h3{color:var(--success-color)}
+@media(max-width:1199.98px){.lifecycle-grid{grid-template-columns:repeat(3,1fr)}.course-map{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:767.98px){.sample-files,.issue-visual,.validation-grid{grid-template-columns:1fr}.pipeline-visual{grid-template-columns:1fr}.pipeline-arrow{justify-content:center;transform:rotate(90deg)}.course-map{grid-template-columns:1fr}.lifecycle-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:479px){.lifecycle-grid{grid-template-columns:1fr}}
+</style>
+
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="./index.html">IAF 603: Preparing Data for Analytics</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Modules
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="./module1.html">Module 1</a></li>
-                            <li><a class="dropdown-item" href="./module2.html">Module 2</a></li>
-                            <li><a class="dropdown-item" href="./module3.html">Module 3</a></li>
-                            <li><a class="dropdown-item" href="./module4.html">Module 4</a></li>
-                            <li><a class="dropdown-item" href="./module5.html">Module 5</a></li>
-                            <li><a class="dropdown-item" href="./module6.html">Module 6</a></li>
-                            <li><a class="dropdown-item" href="./module7.html">Module 7</a></li>
-                            <li><a class="dropdown-item" href="./module8.html">Module 8</a></li>
-                            <li><a class="dropdown-item" href="./module9.html">Module 9</a></li>
-                            <li><a class="dropdown-item" href="./module10.html">Module 10</a></li>
-                            <li><a class="dropdown-item" href="./module11.html">Module 11</a></li>
-                            <li><a class="dropdown-item" href="./module12.html">Module 12</a></li>
-                            <li><a class="dropdown-item" href="./module13.html">Module 13</a></li>
-                            <li><a class="dropdown-item" href="./module14.html">Module 14</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Main Content -->
-    <div class="container my-5">
-        <!-- Module Title -->
-        <section class="text-center py-5 bg-white rounded shadow">
-            <h1 class="display-4 fw-bold text-dark">Module 14: Final Project</h1>
-        </section>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<nav aria-label="Main navigation" class="nav-container"><div class="container"><div class="nav-menu">
+<a class="nav-logo" href="index.html"><span class="brand-mark"><i aria-hidden="true" class="fas fa-database"></i></span>IAN 603 - Data Analytics</a>
+<button aria-controls="nav-links-list" aria-expanded="false" aria-label="Open navigation" class="mobile-menu-btn" id="mobile-menu-toggle" type="button"><i aria-hidden="true" class="fas fa-bars"></i></button>
+<ul class="nav-links-list" id="nav-links-list"><li><a class="nav-link" href="index.html"><i aria-hidden="true" class="fas fa-home"></i>Home</a></li><li class="dropdown"><button aria-expanded="false" class="nav-link dropdown-trigger" type="button"><i aria-hidden="true" class="fas fa-layer-group"></i>Modules <i aria-hidden="true" class="fas fa-chevron-down ms-1"></i></button><div class="dropdown-content">
+<a class="dropdown-link" href="module1.html"><span class="module-number">1</span>Introduction to Data</a><a class="dropdown-link" href="module2.html"><span class="module-number">2</span>Database Concepts</a><a class="dropdown-link" href="module3.html"><span class="module-number">3</span>PostgreSQL in Action</a><a class="dropdown-link" href="module4.html"><span class="module-number">4</span>SQL Aggregations</a><a class="dropdown-link" href="module5.html"><span class="module-number">5</span>SQL Logic</a><a class="dropdown-link" href="module6.html"><span class="module-number">6</span>Joins in SQL</a><a class="dropdown-link" href="module7.html"><span class="module-number">7</span>Subqueries</a><a class="dropdown-link" href="module8.html"><span class="module-number">8</span>Strings and Dates</a><a class="dropdown-link" href="module9.html"><span class="module-number">9</span>Data Cleaning</a><a class="dropdown-link" href="module10.html"><span class="module-number">10</span>Reshaping Data</a><a class="dropdown-link" href="module11.html"><span class="module-number">11</span>Advanced SQL</a><a class="dropdown-link" href="module12.html"><span class="module-number">12</span>Views &amp; Modular Queries</a><a class="dropdown-link" href="module13.html"><span class="module-number">13</span>Spark SQL</a><a class="dropdown-link active" href="module14.html"><span class="module-number">14</span>Course Synthesis</a>
+</div></li><li><a class="nav-link" href="#canvas"><i aria-hidden="true" class="fas fa-cloud-arrow-up"></i>Canvas</a></li><li><button aria-label="Toggle dark and light theme" class="theme-toggle-btn" id="theme-toggle" type="button"><i aria-hidden="true" class="fas fa-sun"></i><span class="d-none d-md-inline">Theme</span></button></li></ul>
+</div></div></nav>
 
-        <!-- Module Content -->
-        <section class="my-5">
-            <div class="bg-white p-4 rounded shadow">
-                <!-- Learning Objectives -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Learning Objectives</h2>
-                <p>Upon completion of this module, participants will be able to:</p>
-                <ul>
-                    <li>Scope and define a real-world data preparation problem.</li>
-                    <li>Independently apply the full range of SQL (and Spark SQL) skills learned in the course to a complex, messy dataset.</li>
-                    <li>Conduct data profiling, cleaning, transformation, and integration in a systematic workflow.</li>
-                    <li>Implement data validation checks to ensure the quality and integrity of the final dataset.</li>
-                    <li>Document and present the data preparation process and outcomes clearly and professionally.</li>
-                </ul>
+<header class="hero-section"><div class="container"><div class="row align-items-center g-4"><div class="col-lg-8"><div class="hero-kicker"><i aria-hidden="true" class="fas fa-flag-checkered me-2"></i>Module 14 · Final Module</div><h1>Course Synthesis &amp; Sample Project Walkthrough</h1><p class="lead mb-3">Review the full data-preparation lifecycle through one worked example, then use the course framework to prepare for your own final project.</p><div class="essential-question"><strong>Essential question:</strong> How do the SQL, data-quality, modeling, reshaping, modularity, and distributed-computing skills from this course fit together into one defensible data-preparation workflow?</div><div class="hero-meta mt-3"><span><i aria-hidden="true" class="fas fa-route me-1"></i>Workflow synthesis</span><span><i aria-hidden="true" class="fas fa-bus me-1"></i>Sample transit case</span><span><i aria-hidden="true" class="fas fa-cloud-arrow-up me-1"></i>Final submission in Canvas</span></div></div><div class="col-lg-4"><div class="hero-summary"><div class="course-badge">IAN 603 - Data Analytics</div><p class="mb-2"><strong>This page is a study guide</strong></p><p class="mb-0">The Greensboro transit scenario is a sample walkthrough. Your actual final-project prompt, rubric, due date, required files, and submission area are in Canvas.</p></div></div></div></div></header>
 
-                <!-- Introduction to the Final Project -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Introduction to the Final Project</h2>
-                <p>This final module is the culmination of the entire course. Theory and isolated exercises give way to a comprehensive, hands-on project that mirrors a real-world data preparation task. Working in groups, you will take a raw, "dirty" dataset and apply the full lifecycle of data preparation techniques we have covered—from initial profiling and cleaning to complex transformation, integration, and validation. The goal is not just to write code, but to think critically like a data analyst or engineer: identifying problems, devising strategies, implementing solutions, and documenting your work. This project will solidify your skills and serve as a tangible demonstration of your ability to deliver analysis-ready data.</p>
-                <p>In greater detail, the final project emphasizes practical application in contexts like healthcare informatics or business analytics. For instance, you might work with datasets from public sources, such as Greensboro’s open data portal, to address real issues like public transit efficiency or health trends. By synthesizing SQL basics, advanced features, and Spark SQL from previous modules, you’ll create a robust data pipeline. This hands-on experience prepares you for professional roles, where data preparation often consumes 80% of analytical time, ensuring you can handle messy, large-scale data effectively.</p>
+<main class="container pb-5" id="main-content"><div class="row g-4 mt-1"><aside aria-label="Module contents" class="col-lg-3"><nav aria-label="Module section navigation" class="toc-panel"><h2><i aria-hidden="true" class="fas fa-list-ul me-2"></i>Module Contents</h2><ul class="toc-list">
+<li><a href="#start"><span class="toc-index">01</span> Start Here</a></li>
+<li><a href="#canvas"><span class="toc-index">02</span> Final Project in Canvas</a></li>
+<li><a href="#course-map"><span class="toc-index">03</span> Course Skill Map</a></li>
+<li><a href="#sample"><span class="toc-index">04</span> Sample Project</a></li>
+<li><a href="#sample-data"><span class="toc-index">05</span> Sample Data &amp; Issues</a></li>
+<li><a href="#profile"><span class="toc-index">06</span> 1 · Profile</a></li>
+<li><a href="#clean"><span class="toc-index">07</span> 2 · Clean &amp; Normalize</a></li>
+<li><a href="#integrate"><span class="toc-index">08</span> 3 · Integrate &amp; Reshape</a></li>
+<li><a href="#validate"><span class="toc-index">09</span> 4 · Validate</a></li>
+<li><a href="#document"><span class="toc-index">10</span> 5 · Document &amp; Explain</a></li>
+<li><a href="#readiness"><span class="toc-index">11</span> Readiness Checklist</a></li>
+<li><a href="#closure"><span class="toc-index">12</span> Course Closure</a></li>
+</ul><hr class="border-secondary"/><p class="small text-muted mb-2">Final-module habit</p><p class="small mb-0">A good data-preparation project does not only produce a clean table. It makes the <strong>decisions, validation, and lineage understandable</strong>.</p></nav></aside><div class="col-lg-9 content-column">
 
-                <!-- Project Lifecycle Review -->
-                <h3 class="h4 fw-bold mb-3">Project Lifecycle Review</h3>
-                <p>Your project should follow the systematic workflow we’ve implicitly developed over the past 13 modules.</p>
-                <ol>
-                    <li><strong>Data Selection & Understanding:</strong> Choose a suitable dataset and understand its context, fields, and shortcomings. Ask: What was it collected for? What do the columns mean?</li>
-                    <li><strong>Data Profiling:</strong> Use SQL queries (<code>COUNT</code>, <code>GROUP BY</code>, <code>DISTINCT</code>, <code>MIN/MAX</code>) to explore row/column counts, data types, NULL values, ranges, and distributions.</li>
-                    <li><strong>Define a Target Schema:</strong> Based on profiling, design the final clean schema, applying normalization (1NF-3NF) and considering multiple related tables.</li>
-                    <li><strong>Develop the Cleaning & Transformation Script:</strong> Use SQL/Spark SQL with CTEs/Views for cleaning (handle NULLs/duplicates), standardization (text/dates), transformation (derived features, reshaping), and integration (joins).</li>
-                    <li><strong>Data Validation:</strong> Write queries to check row counts, NULLs, key integrity, and value ranges post-cleaning.</li>
-                    <li><strong>Documentation and Presentation:</strong> Communicate your process in a report and presentation, covering problems, solutions, challenges, and results.</li>
-                </ol>
-                <p>This lifecycle ensures a thorough, reproducible process. In practice, iterations may occur, such as re-profiling after cleaning to catch new issues. For large datasets, integrate Spark SQL for scalability, especially in validation steps on distributed data lakes.</p>
+<section class="content-card" id="start"><div class="section-kicker">Start here</div><h2>This module is a synthesis, not the final-project assignment</h2><p>Modules 1–13 developed individual skills: understanding data, relational design, PostgreSQL querying, aggregation, logic, joins, subqueries, text/date transformation, cleaning, reshaping, advanced SQL, views, and Spark SQL. Module 14 brings those ideas together so you can see what an end-to-end preparation workflow looks like.</p><div class="learning-objectives"><h3 class="h5">Learning objectives</h3><p>By the end of this module, you will be able to:</p><ul class="mb-0"><li>Explain an end-to-end data-preparation lifecycle from source understanding through validation and communication.</li><li>Identify which course techniques belong at different stages of a realistic workflow.</li><li>Evaluate a sample project for data-quality risks, transformation choices, output grain, and validation evidence.</li><li>Distinguish a worked example from the requirements of your own final project.</li><li>Use a readiness checklist before submitting your actual final project in Canvas.</li></ul></div><div class="not-assignment mt-4"><strong><i class="fas fa-triangle-exclamation me-2"></i>Do not treat the sample below as your final-project prompt.</strong> It is provided only to demonstrate process and reasoning. Your own project may use different data, requirements, technologies, and deliverables.</div></section>
 
-                <!-- Example Project Scenario: Greensboro Public Transit Analysis -->
-                <h3 class="h4 fw-bold mb-3">Example Project Scenario: Greensboro Public Transit Analysis</h3>
-                <p>Imagine your group analyzes public transit data for Greensboro, NC, using messy CSV files: <code>bus_routes.csv</code>, <code>bus_stops.csv</code>, and <code>daily_ridership.csv</code>.</p>
-                <ul>
-                    <li><strong>Profiling:</strong> Discover inconsistent date formats in <code>daily_ridership</code>, NULL accessibility in <code>bus_stops</code>, and comma-separated streets in <code>bus_routes</code>.</li>
-                    <li><strong>Cleaning/Transformation:</strong> Parse dates with <code>CASE</code>, impute NULLs with <code>COALESCE</code>, split streets into normalized tables.</li>
-                    <li><strong>Validation:</strong> Check row counts match, no NULL dates, valid links between stops and routes.</li>
-                    <li><strong>Final Dataset:</strong> Integrated tables ready for analysis, e.g., weekend ridership or accessibility on high-traffic routes.</li>
-                </ul>
-                <p>This scenario demonstrates applying course skills to local issues, like improving transit for Greensboro residents. Expand by incorporating Spark SQL for large ridership logs, ensuring scalability.</p>
-                <p><strong>Sample Data (bus_routes.csv):</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>route_id</th>
-                            <th>route_name</th>
-                            <th>major_streets</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Route A</td>
-                            <td>Main St, Elm St, Oak Ave</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Route B</td>
-                            <td>Pine Rd, Maple Blvd</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Route C</td>
-                            <td>Cedar Ln, Birch Way, Willow St</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p><strong>bus_stops.csv:</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>stop_id</th>
-                            <th>route_id</th>
-                            <th>stop_name</th>
-                            <th>wheelchair_accessible</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>101</td>
-                            <td>1</td>
-                            <td>Main St Stop</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>102</td>
-                            <td>1</td>
-                            <td>Elm St Stop</td>
-                            <td>NULL</td>
-                        </tr>
-                        <tr>
-                            <td>103</td>
-                            <td>2</td>
-                            <td>Pine Rd Stop</td>
-                            <td>No</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p><strong>daily_ridership.csv:</strong></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>ridership_id</th>
-                            <th>route_id</th>
-                            <th>date</th>
-                            <th>riders</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>01/10/2025</td>
-                            <td>150</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>1</td>
-                            <td>2025-01-11</td>
-                            <td>200</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>2</td>
-                            <td>02/01/2025</td>
-                            <td>120</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Example cleaning script for dates and NULLs
-WITH CleanedRidership AS (
-    SELECT
-        ridership_id,
-        route_id,
-        CASE
-            WHEN date LIKE '%/%' THEN STR_TO_DATE(date, '%m/%d/%Y')
-            ELSE STR_TO_DATE(date, '%Y-%m-%d')
-        END AS standardized_date,
-        riders
-    FROM daily_ridership
-),
-CleanedStops AS (
-    SELECT
-        stop_id,
-        route_id,
-        stop_name,
-        COALESCE(wheelchair_accessible, 'Unknown') AS wheelchair_accessible
-    FROM bus_stops
-)
-SELECT *
-FROM CleanedRidership cr
-JOIN CleanedStops cs ON cr.route_id = cs.route_id;</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This script standardizes dates using <code>CASE</code> and handles NULLs with <code>COALESCE</code>, joining for integrated analysis. In a full project, extend with validation queries like checking for remaining NULLs or duplicate rows.</p>
-                <p><strong>Expanded Example (Healthcare Dataset Project):</strong> Suppose your group analyzes patient lab results from messy files: <code>patients.csv</code>, <code>labs.csv</code>, <code>admissions.csv</code>. Profiling reveals inconsistent units in labs, missing values in admissions, and denormalized patient info. Clean by normalizing units with <code>CASE</code>, imputing misses with <code>COALESCE</code>, and reshaping for 3NF. Validate by comparing row counts and ranges pre/post-cleaning.</p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>patient_id</th>
-                            <th>name</th>
-                            <th>age</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1001</td>
-                            <td>Alice</td>
-                            <td>45</td>
-                        </tr>
-                        <tr>
-                            <td>1002</td>
-                            <td>Bob</td>
-                            <td>NULL</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>lab_id</th>
-                            <th>patient_id</th>
-                            <th>test_name</th>
-                            <th>value</th>
-                            <th>unit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>1001</td>
-                            <td>Glucose</td>
-                            <td>120</td>
-                            <td>mg/dL</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>1001</td>
-                            <td>Glucose</td>
-                            <td>6.7</td>
-                            <td>mmol/L</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="code-block">
-                    <button class="btn btn-sm btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><code class="language-sql">-- Normalize glucose units to mg/dL
+<section class="content-card" id="canvas"><div class="section-kicker">Submission</div><h2>Your actual final project is in Canvas</h2><div class="canvas-banner"><div class="d-flex gap-3 align-items-start"><span class="canvas-icon"><i class="fas fa-cloud-arrow-up"></i></span><div><h3 class="h5">Canvas is the authoritative location</h3><p class="mb-2">Use the Final Project assignment in Canvas for the official prompt, grading rubric, required deliverables, due date, file-format requirements, and submission instructions.</p><p class="mb-0"><strong>No final-project files are submitted on this Module 14 page.</strong></p></div></div></div><div class="row g-3 mt-1"><div class="col-md-4"><div class="takeaway-card"><h3 class="h6"><i class="fas fa-file-lines me-2"></i>Instructions</h3><p class="mb-0">Read the complete Canvas assignment before choosing a dataset or deciding what to submit.</p></div></div><div class="col-md-4"><div class="takeaway-card"><h3 class="h6"><i class="fas fa-list-check me-2"></i>Rubric</h3><p class="mb-0">Use the Canvas rubric as your final quality-control checklist, not assumptions from this sample.</p></div></div><div class="col-md-4"><div class="takeaway-card"><h3 class="h6"><i class="fas fa-upload me-2"></i>Submission</h3><p class="mb-0">Upload the required final-project materials to the Canvas assignment and verify the submission confirmation.</p></div></div></div></section>
+
+<section class="content-card" id="course-map"><div class="section-kicker">Synthesis</div><h2>How the course skills fit into one workflow</h2><p>A realistic preparation project rarely uses course topics in module order. Instead, you move back and forth among understanding, profiling, cleaning, modeling, integration, transformation, validation, and communication.</p><div class="lifecycle-grid"><div class="lifecycle-step"><i class="fas fa-magnifying-glass-chart"></i><strong>Understand</strong><small>context · grain · meaning</small></div><div class="lifecycle-step"><i class="fas fa-chart-simple"></i><strong>Profile</strong><small>NULLs · ranges · categories</small></div><div class="lifecycle-step"><i class="fas fa-broom"></i><strong>Clean</strong><small>standardize · preserve raw</small></div><div class="lifecycle-step"><i class="fas fa-diagram-project"></i><strong>Integrate</strong><small>keys · joins · cardinality</small></div><div class="lifecycle-step"><i class="fas fa-shuffle"></i><strong>Transform</strong><small>reshape · derive · aggregate</small></div><div class="lifecycle-step"><i class="fas fa-circle-check"></i><strong>Validate</strong><small>prove output quality</small></div></div><div class="course-map mt-4"><div class="course-map-card"><span class="module-range">Modules 1–2</span><h3>Meaning &amp; structure</h3><p>Data types, quality dimensions, relational thinking, keys, constraints, normalization, and schema design.</p></div><div class="course-map-card"><span class="module-range">Modules 3–7</span><h3>Relational querying</h3><p>SELECT/DML, aggregation, Boolean logic, joins, subqueries, output grain, and cardinality.</p></div><div class="course-map-card"><span class="module-range">Modules 8–10</span><h3>Preparation &amp; shape</h3><p>Strings, dates, validation, data cleaning, deduplication, pivoting, unpivoting, and analytical structure.</p></div><div class="course-map-card"><span class="module-range">Modules 11–13</span><h3>Reusable &amp; scalable analytics</h3><p>CTEs, windows, views, materialized views, modular design, Spark SQL, and distributed execution.</p></div></div></section>
+
+<section class="content-card" id="sample"><div class="section-kicker">Worked example</div><span class="sample-badge"><i class="fas fa-flask"></i>Sample only · not the Canvas assignment</span><h2 class="mt-3">Sample project: Greensboro public transit data preparation</h2><p>Assume an analyst receives three small CSV extracts describing bus routes, bus stops, and daily ridership. The purpose of the sample is not to answer a final-project question; it is to illustrate how a disciplined workflow turns raw source files into analysis-ready relational data.</p><div class="sample-files"><div class="file-card"><div class="file-icon"><i class="fas fa-route"></i></div><h3 class="h6"><code>bus_routes.csv</code></h3><p class="mb-0">Route identifiers, route names, and a comma-separated <code>major_streets</code> field.</p></div><div class="file-card"><div class="file-icon"><i class="fas fa-location-dot"></i></div><h3 class="h6"><code>bus_stops.csv</code></h3><p class="mb-0">Stops linked to routes, with a sometimes-missing wheelchair-accessibility value.</p></div><div class="file-card"><div class="file-icon"><i class="fas fa-people-group"></i></div><h3 class="h6"><code>daily_ridership.csv</code></h3><p class="mb-0">Ridership by route and day, with dates represented in more than one text format.</p></div></div><div class="pipeline-visual"><div class="pipeline-box"><i class="fas fa-file-csv"></i><strong>Raw CSV</strong><br/><small>source values preserved</small></div><div class="pipeline-arrow"><i class="fas fa-arrow-right"></i></div><div class="pipeline-box"><i class="fas fa-magnifying-glass"></i><strong>Profile</strong><br/><small>find issues first</small></div><div class="pipeline-arrow"><i class="fas fa-arrow-right"></i></div><div class="pipeline-box"><i class="fas fa-wand-magic-sparkles"></i><strong>Transform</strong><br/><small>typed, normalized data</small></div><div class="pipeline-arrow"><i class="fas fa-arrow-right"></i></div><div class="pipeline-box"><i class="fas fa-circle-check"></i><strong>Validated output</strong><br/><small>analysis-ready tables</small></div></div></section>
+
+<section class="content-card" id="sample-data"><div class="section-kicker">Source inspection</div><h2>What is visibly wrong or risky in the sample?</h2><p>Even a tiny sample already raises design questions. The goal is to identify issues before deciding how to correct them.</p><div class="row g-3"><div class="col-lg-4"><div class="table-responsive"><table class="table table-bordered table-sm"><caption><code>bus_routes.csv</code> sample</caption><thead><tr><th>route_id</th><th>route_name</th><th>major_streets</th></tr></thead><tbody><tr><td>1</td><td>Route A</td><td>Main St, Elm St, Oak Ave</td></tr><tr><td>2</td><td>Route B</td><td>Pine Rd, Maple Blvd</td></tr><tr><td>3</td><td>Route C</td><td>Cedar Ln, Birch Way, Willow St</td></tr></tbody></table></div></div><div class="col-lg-4"><div class="table-responsive"><table class="table table-bordered table-sm"><caption><code>bus_stops.csv</code> sample</caption><thead><tr><th>stop_id</th><th>route_id</th><th>stop_name</th><th>accessible</th></tr></thead><tbody><tr><td>101</td><td>1</td><td>Main St Stop</td><td>Yes</td></tr><tr><td>102</td><td>1</td><td>Elm St Stop</td><td><em>NULL</em></td></tr><tr><td>103</td><td>2</td><td>Pine Rd Stop</td><td>No</td></tr></tbody></table></div></div><div class="col-lg-4"><div class="table-responsive"><table class="table table-bordered table-sm"><caption><code>daily_ridership.csv</code> sample</caption><thead><tr><th>ridership_id</th><th>route_id</th><th>date</th><th>riders</th></tr></thead><tbody><tr><td>1</td><td>1</td><td>01/10/2025</td><td>150</td></tr><tr><td>2</td><td>1</td><td>2025-01-11</td><td>200</td></tr><tr><td>3</td><td>2</td><td>02/01/2025</td><td>120</td></tr></tbody></table></div></div></div><div class="issue-visual"><div class="issue-card"><div class="big-number">3 / 3</div><strong>routes have a multi-valued street field</strong><div class="issue-meter"><span style="width:100%"></span></div><small class="text-muted">A comma-separated list violates the desired one-value-per-field analytical structure.</small></div><div class="issue-card"><div class="big-number">1 / 3</div><strong>sample stops have missing accessibility</strong><div class="issue-meter"><span style="width:33.333%"></span></div><small class="text-muted">Missing does not automatically mean “No.” Preserve uncertainty unless a business rule says otherwise.</small></div><div class="issue-card"><div class="big-number">2</div><strong>date representations appear</strong><div class="issue-meter"><span style="width:66%"></span></div><small class="text-muted"><code>MM/DD/YYYY</code> and <code>YYYY-MM-DD</code> should become one typed date column.</small></div></div></section>
+
+<section class="content-card" id="profile"><div class="section-kicker">Sample step 1</div><span class="sample-badge"><i class="fas fa-flask"></i>Sample walkthrough</span><h2 class="mt-3">Profile before changing anything</h2><p>Profiling establishes the source grain and creates evidence for later cleaning decisions. Keep raw source tables unchanged while you investigate.</p><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">-- Example profiling questions for raw ridership
 SELECT
-    lab_id,
-    patient_id,
-    test_name,
+    COUNT(*) AS row_count,
+    COUNT(DISTINCT ridership_id) AS distinct_ids,
+    COUNT(*) FILTER (WHERE route_id IS NULL) AS missing_route_ids,
+    COUNT(*) FILTER (WHERE riders IS NULL) AS missing_rider_counts,
+    MIN(riders) AS min_riders,
+    MAX(riders) AS max_riders
+FROM raw_daily_ridership;
+
+-- Inspect date representations before parsing
+SELECT
+    service_date_raw,
+    COUNT(*) AS occurrences
+FROM raw_daily_ridership
+GROUP BY service_date_raw
+ORDER BY occurrences DESC, service_date_raw;</code></pre></div><p class="sample-code-note">The exact table and column names in a real project depend on the Canvas project and chosen data. The important pattern is to profile first and document what you find.</p><div class="alert alert-info mt-3"><strong>Project evidence:</strong> Save profiling results or summarize them in your documentation. A cleaning decision is easier to defend when you can show the issue it addresses.</div></section>
+
+<section class="content-card" id="clean"><div class="section-kicker">Sample step 2</div><span class="sample-badge"><i class="fas fa-flask"></i>Sample walkthrough</span><h2 class="mt-3">Clean values without inventing facts</h2><p>In this sample, the date text can be standardized, the accessibility field can be normalized, and the street list can be separated into one row per route/street relationship. Missing accessibility remains unknown rather than being silently converted to “No.”</p><h3 class="h5">Standardize date text into a typed date</h3><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">SELECT
+    ridership_id,
+    route_id,
+    service_date_raw,
     CASE
-        WHEN unit = 'mmol/L' THEN value * 18
-        ELSE value
-    END AS standardized_value,
-    'mg/dL' AS standardized_unit
-FROM labs
-WHERE test_name = 'Glucose';</code></pre>
-                </div>
-                <p><strong>Explanation:</strong> This transformation standardizes units, ensuring comparable analysis. Validate by checking min/max values align with expected ranges post-transformation.</p>
+        WHEN BTRIM(service_date_raw) ~ '^\d{4}-\d{2}-\d{2}$'
+            THEN BTRIM(service_date_raw)::date
+        WHEN BTRIM(service_date_raw) ~ '^\d{1,2}/\d{1,2}/\d{4}$'
+            THEN TO_DATE(BTRIM(service_date_raw), 'MM/DD/YYYY')
+        ELSE NULL
+    END AS service_date,
+    riders
+FROM raw_daily_ridership;</code></pre></div><h3 class="h5 mt-4">Normalize accessibility while preserving uncertainty</h3><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">SELECT
+    stop_id,
+    route_id,
+    BTRIM(stop_name) AS stop_name,
+    CASE LOWER(BTRIM(wheelchair_accessible_raw))
+        WHEN 'yes' THEN TRUE
+        WHEN 'no'  THEN FALSE
+        ELSE NULL
+    END AS wheelchair_accessible,
+    CASE
+        WHEN wheelchair_accessible_raw IS NULL
+          OR BTRIM(wheelchair_accessible_raw) = ''
+        THEN 'missing_source_value'
+        ELSE 'source_value_present'
+    END AS accessibility_status
+FROM raw_bus_stops;</code></pre></div><h3 class="h5 mt-4">Normalize the comma-separated street list</h3><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">SELECT
+    r.route_id,
+    BTRIM(street_name) AS street_name
+FROM raw_bus_routes AS r
+CROSS JOIN LATERAL
+    REGEXP_SPLIT_TO_TABLE(r.major_streets, '\s*,\s*') AS street_name;</code></pre></div><div class="alert alert-warning mt-3"><strong>Notice the principle:</strong> cleaning should standardize representation and expose uncertainty. It should not manufacture a value merely to eliminate NULLs.</div></section>
 
-                <!-- Final Deliverables and Course Review -->
-                <h3 class="h4 fw-bold mb-3">Final Deliverables and Course Review</h3>
-                <p>The final project concludes the course, requiring synthesis of all learned skills.</p>
-                <ul>
-                    <li><strong>Deliverables:</strong>
-                        <ol>
-                            <li>All documented SQL/Spark SQL scripts.</li>
-                            <li>A detailed project report.</li>
-                            <li>A final presentation.</li>
-                        </ol>
-                    </li>
-                    <li><strong>Course Review:</strong> The final session includes presentations and a review of key concepts, preparing you for informatics roles.</li>
-                </ul>
-                <p>Deliverables emphasize professional communication, with reports detailing methodology, challenges, and insights. The review reinforces foundational to advanced topics, ensuring comprehensive mastery.</p>
+<section class="content-card" id="integrate"><div class="section-kicker">Sample step 3</div><span class="sample-badge"><i class="fas fa-flask"></i>Sample walkthrough</span><h2 class="mt-3">Integrate at the correct grain</h2><p>Suppose the desired analytical output is <strong>one row per route per service date</strong>. Joining ridership directly to individual stops would repeat the same ridership value once for every stop. Aggregate the child table first, then join.</p><div class="pipeline-visual"><div class="pipeline-box"><i class="fas fa-calendar-day"></i><strong>Ridership</strong><br/><small>route × date</small></div><div class="pipeline-arrow"><i class="fas fa-plus"></i></div><div class="pipeline-box"><i class="fas fa-location-dot"></i><strong>Stops</strong><br/><small>many rows per route</small></div><div class="pipeline-arrow"><i class="fas fa-arrow-right"></i></div><div class="pipeline-box"><i class="fas fa-calculator"></i><strong>Pre-aggregate stops</strong><br/><small>one row per route</small></div><div class="pipeline-arrow"><i class="fas fa-arrow-right"></i></div><div class="pipeline-box"><i class="fas fa-table"></i><strong>Final grain</strong><br/><small>route × date</small></div></div><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">WITH stop_summary AS (
+    SELECT
+        route_id,
+        COUNT(*) AS stop_count,
+        COUNT(*) FILTER (WHERE wheelchair_accessible IS TRUE) AS accessible_stop_count,
+        COUNT(*) FILTER (WHERE wheelchair_accessible IS NULL) AS unknown_accessibility_count
+    FROM clean_bus_stops
+    GROUP BY route_id
+)
+SELECT
+    r.route_id,
+    r.route_name,
+    d.service_date,
+    d.riders,
+    s.stop_count,
+    s.accessible_stop_count,
+    s.unknown_accessibility_count
+FROM clean_daily_ridership AS d
+JOIN clean_bus_routes AS r
+    ON r.route_id = d.route_id
+LEFT JOIN stop_summary AS s
+    ON s.route_id = d.route_id
+ORDER BY d.service_date, r.route_id;</code></pre></div><div class="alert alert-info mt-3"><strong>Grain check:</strong> before trusting a joined result, state what one row represents and verify that your joins have not changed that grain unintentionally.</div></section>
 
-                <!-- Assessments -->
-                <h2 class="h3 fw-bold border-bottom pb-2 mb-4">Assessments</h2>
-                <ol>
-                    <li><strong>Final Project Submission (30% of final grade):</strong> Evaluated on SQL correctness, cleaning thoroughness, documentation clarity, and presentation professionalism.</li>
-                    <li><strong>Expanded Task (Hypothetical Extension):</strong> For your transit project, integrate Spark SQL to profile large ridership logs: Write a query to count unique riders per route and validate against expected totals.</li>
-                </ol>
-            </div>
-        </section>
-    </div>
+<section class="content-card" id="validate"><div class="section-kicker">Sample step 4</div><span class="sample-badge"><i class="fas fa-flask"></i>Sample walkthrough</span><h2 class="mt-3">Validation turns “looks clean” into evidence</h2><p>Validation should test the properties that matter for the final analytical dataset. It is not a single query; it is a set of assertions about completeness, uniqueness, validity, referential integrity, and expected grain.</p><div class="validation-grid"><div class="validation-card"><h3><i class="fas fa-fingerprint"></i>Uniqueness</h3><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">SELECT ridership_id, COUNT(*)
+FROM clean_daily_ridership
+GROUP BY ridership_id
+HAVING COUNT(*) &gt; 1;</code></pre></div></div><div class="validation-card"><h3><i class="fas fa-link"></i>Referential integrity</h3><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">SELECT d.*
+FROM clean_daily_ridership AS d
+LEFT JOIN clean_bus_routes AS r
+  ON r.route_id = d.route_id
+WHERE r.route_id IS NULL;</code></pre></div></div><div class="validation-card"><h3><i class="fas fa-calendar-check"></i>Date parsing</h3><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">SELECT *
+FROM clean_daily_ridership
+WHERE service_date IS NULL;</code></pre></div></div><div class="validation-card"><h3><i class="fas fa-arrow-trend-up"></i>Range validity</h3><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">SELECT *
+FROM clean_daily_ridership
+WHERE riders &lt; 0;</code></pre></div></div></div><h3 class="h5 mt-4">Validate the intended final grain</h3><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">-- If one output row should represent one route on one service date:
+SELECT
+    route_id,
+    service_date,
+    COUNT(*) AS rows_at_grain
+FROM final_route_daily_dataset
+GROUP BY route_id, service_date
+HAVING COUNT(*) &gt; 1;</code></pre></div><p class="sample-code-note">An empty result is evidence that no duplicate route/date combinations were found—not proof that every other quality dimension is correct.</p></section>
 
-    <!-- Footer -->
-    <footer class="bg-light py-3 text-center">
-        <p class="text-muted mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
-    </footer>
+<section class="content-card" id="document"><div class="section-kicker">Sample step 5</div><h2>Document decisions, not just code</h2><p>A professional preparation workflow makes it possible for another person to understand what changed, why it changed, what was preserved, and how the output was validated.</p><div class="row g-3"><div class="col-md-6"><div class="takeaway-card"><h3 class="h6"><i class="fas fa-book-open me-2"></i>What the source meant</h3><p class="mb-0">Describe files, fields, collection context, source grain, known limitations, and assumptions.</p></div></div><div class="col-md-6"><div class="takeaway-card"><h3 class="h6"><i class="fas fa-wand-magic-sparkles me-2"></i>What you changed</h3><p class="mb-0">Explain cleaning rules, type conversions, standardization, deduplication, normalization, joins, and derived fields.</p></div></div><div class="col-md-6"><div class="takeaway-card"><h3 class="h6"><i class="fas fa-shield-halved me-2"></i>What you refused to guess</h3><p class="mb-0">Record values that remained unknown, invalid, quarantined, or pending review instead of silently imputing them.</p></div></div><div class="col-md-6"><div class="takeaway-card"><h3 class="h6"><i class="fas fa-circle-check me-2"></i>How you validated it</h3><p class="mb-0">Show checks for counts, keys, ranges, NULLs, categories, duplicates, referential integrity, and final output grain.</p></div></div></div><div class="alert alert-secondary mt-4"><strong>Reproducibility test:</strong> Could another analyst understand the source → transformation → validation path without asking you what each line of SQL was supposed to accomplish?</div></section>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <!-- Highlight.js Initialization -->
-    <script>hljs.highlightAll();</script>
-    <!-- Custom Copy Functionality -->
-    <script>
-        function copyCode(button) {
-            const code = button.nextElementSibling.querySelector('code');
-            navigator.clipboard.writeText(code.innerText).then(() => {
-                button.textContent = 'Copied!';
-                setTimeout(() => { button.textContent = 'Copy'; }, 2000);
-            });
-        }
-    </script>
-</body>
-</html>
+<section class="content-card" id="readiness"><div class="section-kicker">Before submission</div><h2>Final-project readiness checklist</h2><p>This checklist is intentionally general. If the Canvas assignment or rubric says something different or more specific, <strong>Canvas takes precedence</strong>.</p><ul class="readiness-list"><li><span class="check-box"><i class="fas fa-check"></i></span><div><strong>I read the complete Canvas project prompt and rubric.</strong><br/><span class="text-muted">I am not relying on the sample project as my assignment specification.</span></div></li><li><span class="check-box"><i class="fas fa-check"></i></span><div><strong>I can state the grain of each important source and final table.</strong><br/><span class="text-muted">I know what one row represents before and after joins/aggregations.</span></div></li><li><span class="check-box"><i class="fas fa-check"></i></span><div><strong>I profiled my source before cleaning it.</strong><br/><span class="text-muted">My cleaning choices are tied to observed issues.</span></div></li><li><span class="check-box"><i class="fas fa-check"></i></span><div><strong>I preserve raw/source values or can trace back to them.</strong><br/><span class="text-muted">I can distinguish source facts from transformed values.</span></div></li><li><span class="check-box"><i class="fas fa-check"></i></span><div><strong>I validated the final dataset.</strong><br/><span class="text-muted">I checked the quality dimensions relevant to my project, including keys and output grain.</span></div></li><li><span class="check-box"><i class="fas fa-check"></i></span><div><strong>My code and explanation agree.</strong><br/><span class="text-muted">The report does not claim a transformation or result that the SQL does not actually produce.</span></div></li><li><span class="check-box"><i class="fas fa-check"></i></span><div><strong>I reviewed Canvas for required files, naming, due date, and submission instructions.</strong><br/><span class="text-muted">I will upload the final materials to the Canvas assignment.</span></div></li><li><span class="check-box"><i class="fas fa-check"></i></span><div><strong>I verified the Canvas submission after upload.</strong><br/><span class="text-muted">I confirmed that the intended files were successfully submitted.</span></div></li></ul></section>
+
+<section class="content-card" id="closure"><div class="section-kicker">Final module</div><h2>Course closure: from SQL syntax to defensible data preparation</h2><p>The goal of IAN 603 is larger than memorizing SQL commands. Across the course, you have practiced making decisions about structure, grain, data quality, transformations, integration, validation, modularity, and scale.</p><div class="course-finish"><h3 class="h5"><i class="fas fa-graduation-cap me-2"></i>A useful final mental model</h3><p class="mb-2"><strong>Correct syntax</strong> is necessary, but it is only the beginning.</p><p class="mb-0">A strong data-preparation workflow is <strong>correct, explainable, reproducible, validated, appropriately structured, and suitable for the analytical purpose</strong>.</p></div><h3 class="h5 mt-4">Reflection prompts</h3><ol><li>Which course concept most changed how you think about data preparation?</li><li>Where are you now most likely to check output grain or cardinality before trusting a result?</li><li>Which validation query would you consider essential in nearly every project?</li><li>When would you choose PostgreSQL, and when might Spark/Fabric be a better execution environment?</li><li>What evidence will you include in your final project to show that your output is trustworthy?</li></ol><div class="canvas-banner mt-4"><div class="d-flex gap-3 align-items-start"><span class="canvas-icon"><i class="fas fa-arrow-up-from-bracket"></i></span><div><h3 class="h5">Next action</h3><p class="mb-0">Open the Final Project assignment in <strong>Canvas</strong>, follow the official requirements there, and submit your completed project through Canvas. This Module 14 page does not collect submissions.</p></div></div></div></section>
+
+</div></div></main>
+<footer class="py-4 border-top"><div class="container d-flex flex-column flex-md-row justify-content-between gap-2"><span>© 2026 Ali Noori, UNCG. All rights reserved.</span><span>IAN 603 · Module 14 · Course Synthesis</span></div></footer>
+<button aria-label="Back to top" class="back-to-top" id="back-to-top" type="button"><i aria-hidden="true" class="fas fa-arrow-up"></i></button>
+<script>
+hljs.highlightAll();
+(function(){
+const htmlEl=document.documentElement,themeToggle=document.getElementById('theme-toggle'),hljsTheme=document.getElementById('hljs-theme');
+function applyTheme(theme){htmlEl.setAttribute('data-theme',theme);localStorage.setItem('ian603-theme',theme);const icon=themeToggle?.querySelector('i');if(icon)icon.className=theme==='dark'?'fas fa-sun':'fas fa-moon';if(hljsTheme)hljsTheme.href=theme==='dark'?'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css':'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';}
+applyTheme(localStorage.getItem('ian603-theme')||'dark');themeToggle?.addEventListener('click',()=>applyTheme(htmlEl.getAttribute('data-theme')==='dark'?'light':'dark'));
+const mobile=document.getElementById('mobile-menu-toggle'),navList=document.getElementById('nav-links-list'),dropTrigger=document.querySelector('.dropdown-trigger'),drop=document.querySelector('.dropdown');
+mobile?.addEventListener('click',()=>{const open=navList.classList.toggle('active');mobile.setAttribute('aria-expanded',String(open));});
+if(dropTrigger&&drop)dropTrigger.addEventListener('click',()=>{const open=drop.classList.toggle('open');dropTrigger.setAttribute('aria-expanded',String(open));});
+document.addEventListener('click',e=>{if(drop&&!e.target.closest('.dropdown')){drop.classList.remove('open');dropTrigger?.setAttribute('aria-expanded','false');}if(window.innerWidth<992&&!e.target.closest('.nav-menu')){navList?.classList.remove('active');mobile?.setAttribute('aria-expanded','false');}});
+document.querySelectorAll('.copy-btn').forEach(btn=>btn.addEventListener('click',async()=>{const pre=btn.closest('.code-shell')?.querySelector('pre code');if(!pre)return;try{await navigator.clipboard.writeText(pre.textContent);const old=btn.textContent;btn.textContent='Copied';setTimeout(()=>btn.textContent=old,1300);}catch{}}));
+const back=document.getElementById('back-to-top');window.addEventListener('scroll',()=>back?.classList.toggle('show',window.scrollY>650));back?.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+const tocLinks=[...document.querySelectorAll('.toc-list a')],sections=tocLinks.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);function setActive(id){tocLinks.forEach(a=>{const active=a.getAttribute('href')==='#'+id;a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');});}
+const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top);if(visible[0])setActive(visible[0].target.id);},{rootMargin:'-20% 0px -65% 0px',threshold:[0,.1,.4]});sections.forEach(s=>observer.observe(s));tocLinks.forEach(a=>a.addEventListener('click',()=>setActive(a.getAttribute('href').slice(1))));
+})();
+</script>
+</body></html>
