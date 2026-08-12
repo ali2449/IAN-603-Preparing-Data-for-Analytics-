@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IAF 603 - Preparing Data for Analytics | UNCG</title>
+    <meta name="description" content="IAN 603 - Preparing Data for Analytics, MSIA program at UNCG. Master SQL and data preparation for analytics.">
+    <title>IAN 603 - Preparing Data for Analytics | UNCG</title>
+    
+    <!-- Favicon (placeholder) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -48,7 +52,6 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Override Bootstrap text colors for dark mode */
         .text-muted {
             color: var(--muted-color) !important;
         }
@@ -141,9 +144,13 @@
             text-decoration: none;
         }
 
-        .nav-links {
+        .nav-links-list {
             display: flex;
-            gap: 1.5rem;
+            align-items: center;
+            gap: 0.5rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
         }
 
         .nav-link {
@@ -156,9 +163,14 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: inherit;
+            font-family: inherit;
         }
 
-        .nav-link:hover {
+        .nav-link:hover, .nav-link:focus-visible {
             background-color: var(--accent-color);
             color: white;
         }
@@ -172,6 +184,12 @@
             position: relative;
         }
 
+        .dropdown-trigger {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
         .dropdown-content {
             display: none;
             position: absolute;
@@ -182,11 +200,12 @@
             box-shadow: 0 8px 16px rgba(0,0,0,0.1);
             border-radius: 0.5rem;
             border: 1px solid var(--border-color);
-            z-index: 1;
             padding: 0.5rem 0;
+            z-index: 10;
         }
 
-        .dropdown:hover .dropdown-content {
+        .dropdown:hover .dropdown-content,
+        .dropdown:focus-within .dropdown-content {
             display: block;
         }
 
@@ -199,9 +218,10 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            white-space: nowrap;
         }
 
-        .dropdown-link:hover {
+        .dropdown-link:hover, .dropdown-link:focus {
             background-color: var(--accent-color);
             color: white;
         }
@@ -217,6 +237,7 @@
             justify-content: center;
             font-size: 0.75rem;
             font-weight: bold;
+            flex-shrink: 0;
         }
 
         .mobile-menu-btn {
@@ -226,15 +247,120 @@
             color: var(--text-color);
             font-size: 1.5rem;
             cursor: pointer;
+            padding: 0.5rem;
         }
 
-        /* Hero Section */
-        .hero-section {
-            background: linear-gradient(135deg, var(--uncg-blue), var(--accent-color));
+        .theme-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .theme-toggle-btn:hover, .theme-toggle-btn:focus-visible {
+            background-color: var(--accent-color);
             color: white;
+        }
+
+        @media (max-width: 1024px) {
+            .nav-links-list {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--section-bg);
+                flex-direction: column;
+                padding: 1rem;
+                border-bottom: 1px solid var(--border-color);
+                box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            }
+
+            .nav-links-list.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                border: none;
+                background-color: transparent;
+                padding-left: 1rem;
+            }
+
+            .dropdown-trigger {
+                justify-content: flex-start;
+            }
+        }
+
+        /* Hero Section - improved for readability */
+        .hero-section {
+            background: linear-gradient(135deg, #0a1929 0%, #1a2942 100%);
+            color: #ffffff;
             padding: 4rem 0;
             border-radius: 1rem;
             margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(99,102,241,0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .hero-section * {
+            position: relative;
+            z-index: 1;
+        }
+        .hero-section h1 {
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .hero-section p {
+            color: rgba(255,255,255,0.95);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+        .hero-section .btn-light {
+            background-color: #ffffff;
+            border-color: #ffffff;
+            color: #0f172a;
+            font-weight: 600;
+        }
+        .hero-section .btn-outline-light {
+            border-color: #ffffff;
+            color: #ffffff;
+            font-weight: 500;
+        }
+        .hero-section .btn-outline-light:hover {
+            background-color: #ffffff;
+            color: #0f172a;
+        }
+        .hero-section .btn-light:hover {
+            background-color: #f1f5f9;
+            border-color: #f1f5f9;
+        }
+        .hero-logo {
+            max-height: 80px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 8px 16px;
+            display: inline-block;
         }
 
         .module-card {
@@ -269,35 +395,6 @@
         .contact-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-
-        @media (max-width: 1024px) {
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background-color: var(--section-bg);
-                flex-direction: column;
-                padding: 1rem;
-                border-bottom: 1px solid var(--border-color);
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .mobile-menu-btn {
-                display: block;
-            }
-
-            .dropdown-content {
-                position: static;
-                box-shadow: none;
-                border: none;
-                background-color: transparent;
-            }
         }
 
         .learning-path {
@@ -337,6 +434,13 @@
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #cbd5e1;
+            color: #475569;
+            font-size: 3rem;
+            margin: 0 auto;
         }
 
         .card {
@@ -361,123 +465,133 @@
 </head>
 <body>
     <!-- Navigation Menu -->
-    <nav class="nav-container">
+    <nav class="nav-container" aria-label="Main navigation">
         <div class="container">
             <div class="nav-menu">
                 <a href="index.html" class="nav-logo">
                     <i class="fas fa-database"></i>
-                    IAF 603 - Data Analytics
+                    IAN 603 - Data Analytics
                 </a>
                 
-                <button class="mobile-menu-btn" id="mobile-menu-toggle">
+                <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-expanded="false" aria-controls="nav-links-list" aria-label="Toggle navigation menu">
                     <i class="fas fa-bars"></i>
                 </button>
                 
-                <div class="nav-links" id="nav-links">
-                    <a href="#overview" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        Overview
-                    </a>
+                <ul class="nav-links-list" id="nav-links-list" role="list">
+                    <li>
+                        <a href="#overview" class="nav-link">
+                            <i class="fas fa-home"></i>
+                            Overview
+                        </a>
+                    </li>
                     
-                    <div class="dropdown">
-                        <a href="#modules" class="nav-link">
+                    <li class="dropdown">
+                        <button class="nav-link dropdown-trigger" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-book"></i>
                             Modules
                             <i class="fas fa-chevron-down"></i>
-                        </a>
-                        <div class="dropdown-content">
-                            <a href="module1.html" class="dropdown-link">
+                        </button>
+                        <div class="dropdown-content" role="menu">
+                            <a href="module1.html" class="dropdown-link" role="menuitem">
                                 <span class="module-number">1</span>
                                 Introduction to Data in Informatics
                             </a>
-                            <a href="module2.html" class="dropdown-link">
+                            <a href="module2.html" class="dropdown-link" role="menuitem">
                                 <span class="module-number">2</span>
                                 Database Concepts
                             </a>
-                            <a href="module3.html" class="dropdown-link">
+                            <a href="module3.html" class="dropdown-link" role="menuitem">
                                 <span class="module-number">3</span>
                                 PostgreSQL in Action: DQL and DML
                             </a>
-                            <a href="module4.html" class="dropdown-link">
+                            <a href="module4.html" class="dropdown-link" role="menuitem">
                                 <span class="module-number">4</span>
                                 SQL Basics II: Aggregations
                             </a>
-                            <a href="module5.html" class="dropdown-link">
+                            <a href="module5.html" class="dropdown-link" role="menuitem">
                                 <span class="module-number">5</span>
                                 SQL Logic
                             </a>
-                            <a href="module6.html" class="dropdown-link">
+                            <a href="module6.html" class="dropdown-link" role="menuitem">
                                 <span class="module-number">6</span>
                                 Joins in SQL
                             </a>
-                            <a href="module7.html" class="dropdown-link">
+                            <a href="module7.html" class="dropdown-link" role="menuitem">
                                 <span class="module-number">7</span>
                                 Subqueries
                             </a>
-                            <a href="module8.html" class="dropdown-link">
+                            <a href="module8.html" class="dropdown-link" role="menuitem">
                                 <span class="module-number">8</span>
                                 Strings and Dates
                             </a>
-                            <a href="module9.html" class="dropdown-link">
+                            <a href="module9.html" class="dropdown-link" role="menuitem">
                                 <span class="module-number">9</span>
                                 Data Cleaning in SQL
                             </a>
-                            <a href="module10.html" class="dropdown-link">
+                            <a href="module10.html" class="dropdown-link" role="menuitem">
                                 <span class="module-number">10</span>
                                 Reshaping Data
                             </a>
-                            <a href="module11.html" class="dropdown-link">
+                            <a href="module11.html" class="dropdown-link" role="menuitem">
                                 <span class="module-number">11</span>
                                 Advanced SQL Features
                             </a>
-                            <a href="module12.html" class="dropdown-link">
+                            <a href="module12.html" class="dropdown-link" role="menuitem">
                                 <span class="module-number">12</span>
                                 Views and Modular Queries
                             </a>
-                            <a href="module13.html" class="dropdown-link">
+                            <a href="module13.html" class="dropdown-link" role="menuitem">
                                 <span class="module-number">13</span>
                                 Introduction to Spark SQL
                             </a>
-                            <a href="module14.html" class="dropdown-link">
+                            <a href="module14.html" class="dropdown-link" role="menuitem">
                                 <span class="module-number">14</span>
                                 Final Project
                             </a>
                         </div>
-                    </div>
+                    </li>
                     
-                    <a href="#resources" class="nav-link">
-                        <i class="fas fa-tools"></i>
-                        Resources
-                    </a>
+                    <li>
+                        <a href="#resources" class="nav-link">
+                            <i class="fas fa-tools"></i>
+                            Resources
+                        </a>
+                    </li>
                     
-                    <a href="#contact" class="nav-link">
-                        <i class="fas fa-envelope"></i>
-                        Contact
-                    </a>
+                    <li>
+                        <a href="#contact" class="nav-link">
+                            <i class="fas fa-envelope"></i>
+                            Contact
+                        </a>
+                    </li>
 
-                    <a href="postgre.html" class="nav-link">
-                        <i class="fas fa-download"></i>
-                        PostgreSQL Guide
-                    </a>
+                    <li>
+                        <a href="postgre.html" class="nav-link">
+                            <i class="fas fa-download"></i>
+                            PostgreSQL Guide
+                        </a>
+                    </li>
 
-                    <button id="theme-toggle" class="nav-link" style="background: none; border: none;">
-                        <i class="fas fa-moon"></i>
-                        Theme
-                    </button>
-                </div>
+                    <li>
+                        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark/light theme">
+                            <i class="fas fa-moon"></i>
+                            <span class="d-none d-md-inline">Theme</span>
+                        </button>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
 
     <div class="container my-5">
-        <!-- Hero Section -->
+        <!-- Hero Section - Fixed and readable -->
         <section class="hero-section text-center">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <img src="https://logodix.com/logo/1830467.jpg" alt="UNCG Logo" class="img-fluid mb-4" style="max-height: 80px; filter: brightness(0) invert(1);">
-                    <h1 class="display-4 fw-bold mb-4">IAF 603 - Preparing Data for Analytics</h1>
+                    <img src="https://logodix.com/logo/1830480.jpg" alt="UNCG Logo" class="hero-logo img-fluid mb-4">
+                    <h1 class="display-4 fw-bold mb-4">IAN 603 - Preparing Data for Analytics</h1>
                     <p class="lead mb-4">Master SQL and Data Analytics with Comprehensive Learning Modules</p>
-                    <p class="mb-4">For MSIA Students at UNCG • Fall 2025</p>
+                    <p class="mb-4">For MSIA Students at UNCG • Fall 2026</p>
                     <div class="d-flex gap-3 justify-content-center flex-wrap">
                         <a href="#modules" class="btn btn-light btn-lg">
                             <i class="fas fa-play me-2"></i>Start Learning
@@ -525,7 +639,7 @@
                 <div class="row align-items-center">
                     <div class="col-lg-8">
                         <p class="lead mb-4">
-                            The IAF 603: Preparing Data for Analytics course is a cornerstone of the Master of Science in Informatics and Analytics (MSIA) program at the University of North Carolina at Greensboro (UNCG). This course equips students with the essential skills to manage, clean, and transform structured, semi-structured, and unstructured data for analytics.
+                            The IAN 603: Preparing Data for Analytics course is a cornerstone of the Master of Science in Informatics and Analytics (MSIA) program at the University of North Carolina at Greensboro (UNCG). This course equips students with the essential skills to manage, clean, and transform structured, semi-structured, and unstructured data for analytics.
                         </p>
                         <p>
                             Through 14 comprehensive modules, students will master SQL and Spark SQL, learning to handle real-world datasets with techniques like data cleaning, normalization, joins, and advanced querying. Designed for both beginners and those with some programming experience, this course prepares you for data-driven decision-making in fields like healthcare, business, and informatics.
@@ -567,7 +681,7 @@
         <section id="modules" class="my-5">
             <h2 class="h1 fw-bold text-center mb-5">Course Modules</h2>
             <div class="row g-4">
-                <!-- Module 1 -->
+                <!-- All 14 module cards (unchanged) -->
                 <div class="col-lg-4 col-md-6">
                     <div class="module-card">
                         <div class="module-number">1</div>
@@ -578,7 +692,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Module 2 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="module-card">
                         <div class="module-number">2</div>
@@ -589,7 +702,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Module 3 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="module-card">
                         <div class="module-number">3</div>
@@ -600,7 +712,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Module 4 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="module-card">
                         <div class="module-number">4</div>
@@ -611,7 +722,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Module 5 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="module-card">
                         <div class="module-number">5</div>
@@ -622,7 +732,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Module 6 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="module-card">
                         <div class="module-number">6</div>
@@ -633,7 +742,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Module 7 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="module-card">
                         <div class="module-number">7</div>
@@ -644,7 +752,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Module 8 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="module-card">
                         <div class="module-number">8</div>
@@ -655,7 +762,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Module 9 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="module-card">
                         <div class="module-number">9</div>
@@ -666,7 +772,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Module 10 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="module-card">
                         <div class="module-number">10</div>
@@ -677,7 +782,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Module 11 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="module-card">
                         <div class="module-number">11</div>
@@ -688,7 +792,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Module 12 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="module-card">
                         <div class="module-number">12</div>
@@ -699,7 +802,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Module 13 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="module-card">
                         <div class="module-number">13</div>
@@ -710,7 +812,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Module 14 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="module-card">
                         <div class="module-number">14</div>
@@ -767,8 +868,8 @@
                         <div class="contact-card">
                             <div class="row align-items-center mb-4">
                                 <div class="col-md-3 text-center mb-3 mb-md-0">
-                                    <div class="instructor-image bg-secondary d-flex align-items-center justify-content-center mx-auto">
-                                        <i class="fas fa-user fa-3x text-light"></i>
+                                    <div class="instructor-image" aria-hidden="true">
+                                        <i class="fas fa-user"></i>
                                     </div>
                                 </div>
                                 <div class="col-md-9">
@@ -813,7 +914,7 @@
                                         <i class="fas fa-globe text-primary me-3"></i>
                                         <div>
                                             <strong>Website</strong>
-                                            <p class="mb-0"><a href="https://ali2449.github.io/resume/" target="_blank" class="text-decoration-none">ali2449.github.io/resume</a></p>
+                                            <p class="mb-0"><a href="https://ali2449.github.io/resume/" target="_blank" rel="noopener" class="text-decoration-none">ali2449.github.io/resume</a></p>
                                         </div>
                                     </div>
                                 </div>
@@ -836,35 +937,35 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <p class="mb-0">&copy; 2025 Ali Noori, UNCG. All rights reserved.</p>
+                    <p class="mb-0">&copy; 2026 Ali Noori, UNCG. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <p class="mb-0">IAF 603 - Preparing Data for Analytics | MSIA Program</p>
+                    <p class="mb-0">IAN 603 - Preparing Data for Analytics | MSIA Program</p>
                 </div>
             </div>
         </div>
     </footer>
 
     <script>
-        // Navigation Menu Functionality
+        // Navigation and Theme Toggle
         function setupNavigation() {
             const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-            const navLinks = document.getElementById('nav-links');
+            const navLinksList = document.getElementById('nav-links-list');
             
-            if (mobileMenuToggle && navLinks) {
+            if (mobileMenuToggle && navLinksList) {
                 mobileMenuToggle.addEventListener('click', () => {
-                    navLinks.classList.toggle('active');
+                    const expanded = navLinksList.classList.toggle('active');
+                    mobileMenuToggle.setAttribute('aria-expanded', expanded);
                 });
             }
             
-            // Close mobile menu when clicking outside
             document.addEventListener('click', (event) => {
-                if (!event.target.closest('.nav-menu')) {
-                    navLinks.classList.remove('active');
+                if (!event.target.closest('.nav-menu') && navLinksList.classList.contains('active')) {
+                    navLinksList.classList.remove('active');
+                    mobileMenuToggle.setAttribute('aria-expanded', false);
                 }
             });
 
-            // Smooth scrolling for navigation links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -874,14 +975,28 @@
                             behavior: 'smooth',
                             block: 'start'
                         });
-                        // Close mobile menu after clicking
-                        navLinks.classList.remove('active');
+                        if (navLinksList.classList.contains('active')) {
+                            navLinksList.classList.remove('active');
+                            mobileMenuToggle.setAttribute('aria-expanded', false);
+                        }
                     }
                 });
             });
+
+            const dropdownTrigger = document.querySelector('.dropdown-trigger');
+            if (dropdownTrigger) {
+                dropdownTrigger.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const dropdownContent = dropdownTrigger.closest('.dropdown').querySelector('.dropdown-content');
+                        dropdownContent.style.display = 'block';
+                        const firstLink = dropdownContent.querySelector('.dropdown-link');
+                        if (firstLink) firstLink.focus();
+                    }
+                });
+            }
         }
 
-        // Theme Toggle Functionality
         function setupThemeToggle() {
             const toggleButton = document.getElementById('theme-toggle');
             const html = document.documentElement;
@@ -903,17 +1018,10 @@
             });
         }
 
-        // Initialize when the page loads
         document.addEventListener('DOMContentLoaded', function() {
             setupNavigation();
             setupThemeToggle();
             
-            // Add animation to module cards on scroll
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -921,9 +1029,8 @@
                         entry.target.style.transform = 'translateY(0)';
                     }
                 });
-            }, observerOptions);
+            }, { threshold: 0.1 });
 
-            // Observe module cards
             document.querySelectorAll('.module-card').forEach(card => {
                 card.style.opacity = '0';
                 card.style.transform = 'translateY(20px)';
