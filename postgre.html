@@ -1,329 +1,3155 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-theme="dark" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Installing PostgreSQL - Complete Guide</title>
-    <!-- Bootstrap CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-    <!-- Google Fonts CDN for Roboto -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="IAN 603 PostgreSQL installation and course setup guide for Windows, macOS, Ubuntu/Debian, and Red Hat-family Linux, with pgAdmin setup, verification, troubleshooting, and course readiness checks." name="description"/>
+<title>PostgreSQL Installation & Course Setup Guide | IAN 603</title>
+<link href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%98%3C/text%3E%3C/svg%3E" rel="icon"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Source+Code+Pro:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" id="hljs-theme" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --section-bg: #1e293b;
+            --section-alt-bg: #172033;
+            --border-color: #334155;
+            --header-color: #38bdf8;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --success-color: #34d399;
+            --danger-color: #f87171;
+            --warning-color: #fbbf24;
+            --uncg-blue: #0c2340;
+            --uncg-gold: #cf9b2f;
+            --muted-color: #94a3b8;
+            --light-color: #f1f5f9;
+            --code-bg: #0b1120;
+            --table-stripe: rgba(255, 255, 255, 0.035);
+            --alert-info-bg: #172c4d;
+            --alert-info-border: #3b82f6;
+            --alert-warning-bg: #453516;
+            --alert-warning-border: #f59e0b;
+            --alert-secondary-bg: #182235;
+            --alert-secondary-border: #64748b;
+            --alert-success-bg: #12352e;
+            --alert-success-border: #10b981;
+            --hero-bg: linear-gradient(135deg, #07182d 0%, #0c2340 50%, #26365e 100%);
+            --hero-text: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.22);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --text-color: #1e293b;
+            --section-bg: #ffffff;
+            --section-alt-bg: #f8fafc;
+            --border-color: #d7e0eb;
+            --header-color: #1d4ed8;
+            --accent-color: #4f46e5;
+            --accent-hover: #4338ca;
+            --success-color: #047857;
+            --danger-color: #b91c1c;
+            --warning-color: #b45309;
+            --muted-color: #64748b;
+            --light-color: #f8fafc;
+            --code-bg: #f8fafc;
+            --table-stripe: rgba(15, 23, 42, 0.035);
+            --alert-info-bg: #dbeafe;
+            --alert-info-border: #3b82f6;
+            --alert-warning-bg: #fffbeb;
+            --alert-warning-border: #f59e0b;
+            --alert-secondary-bg: #f1f5f9;
+            --alert-secondary-border: #94a3b8;
+            --alert-success-bg: #d1fae5;
+            --alert-success-border: #10b981;
+            --hero-bg: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 55%, #fef3c7 100%);
+            --hero-text: #13243a;
+            --shadow-color: rgba(15, 23, 42, 0.12);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 96px;
+        }
+
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: "Inter", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            transition: background-color 0.3s, color 0.3s;
         }
-        code {
-            background-color: #f8f9fa;
-            padding: 2px 4px;
-            border-radius: 4px;
+
+        a {
+            color: var(--header-color);
         }
-    </style>
+
+        a:hover {
+            color: var(--accent-color);
+        }
+
+        p,
+        li,
+        td,
+        th,
+        label,
+        .accordion-body,
+        .form-check-label {
+            color: var(--text-color);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: var(--header-color);
+            font-weight: 700;
+        }
+
+        .h1,
+        .h2,
+        .h3,
+        .h4,
+        .h5,
+        .h6 {
+            color: var(--header-color) !important;
+        }
+
+        body {
+            color: var(--text-color) !important;
+        }
+
+        strong {
+            color: inherit;
+        }
+
+        .hero-section h1,
+        .hero-section .h1,
+        .hero-section p,
+        .hero-section strong,
+        .hero-section .course-badge,
+        .hero-section .hero-kicker,
+        .hero-section .hero-meta,
+        .hero-section .essential-question {
+            color: var(--hero-text) !important;
+        }
+
+        code,
+        pre {
+            font-family: "Source Code Pro", monospace;
+        }
+
+        code:not(pre code) {
+            color: var(--text-color);
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--border-color);
+            border-radius: 0.3rem;
+            padding: 0.08rem 0.3rem;
+        }
+
+        pre {
+            background-color: var(--code-bg) !important;
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+            overflow: auto;
+        }
+
+        .skip-link {
+            position: absolute;
+            left: 0.75rem;
+            top: -5rem;
+            z-index: 2000;
+            background: var(--section-bg);
+            color: var(--text-color);
+            border: 2px solid var(--accent-color);
+            border-radius: 0.4rem;
+            padding: 0.6rem 0.85rem;
+        }
+
+        .skip-link:focus {
+            top: 0.75rem;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--uncg-gold);
+            outline-offset: 3px;
+        }
+
+        .text-muted {
+            color: var(--muted-color) !important;
+        }
+
+        .bg-white,
+        .bg-light {
+            background-color: var(--section-bg) !important;
+        }
+
+        .border,
+        .table-bordered,
+        .table-bordered th,
+        .table-bordered td {
+            border-color: var(--border-color) !important;
+        }
+
+        .shadow,
+        .shadow-sm {
+            box-shadow: 0 8px 24px var(--shadow-color) !important;
+        }
+
+        .table {
+            color: var(--text-color);
+            margin-bottom: 0;
+        }
+
+        .table > :not(caption) > * > * {
+            background-color: transparent;
+            color: var(--text-color);
+            border-color: var(--border-color);
+            vertical-align: top;
+        }
+
+        .table thead th,
+        .table-light th,
+        .table-light td {
+            background-color: var(--section-alt-bg) !important;
+            color: var(--text-color) !important;
+        }
+
+        .table-striped > tbody > tr:nth-of-type(odd) > * {
+            background-color: var(--table-stripe);
+        }
+
+        .nav-container {
+            background-color: var(--section-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        .nav-menu {
+            min-height: 74px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            color: var(--header-color);
+            font-weight: 800;
+            font-size: 1.15rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            white-space: nowrap;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--uncg-blue), var(--accent-color));
+            border: 2px solid var(--uncg-gold);
+        }
+
+        .nav-links-list {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-link,
+        .theme-toggle-btn {
+            color: var(--text-color);
+            background: none;
+            border: none;
+            border-radius: 0.55rem;
+            padding: 0.55rem 0.75rem;
+            font: inherit;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link:focus-visible,
+        .theme-toggle-btn:hover,
+        .theme-toggle-btn:focus-visible {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: calc(100% + 0.25rem);
+            left: 0;
+            min-width: 315px;
+            max-height: 70vh;
+            overflow-y: auto;
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+            padding: 0.45rem;
+            box-shadow: 0 12px 30px var(--shadow-color);
+        }
+
+        .dropdown:hover .dropdown-content,
+        .dropdown:focus-within .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.65rem 0.75rem;
+            border-radius: 0.5rem;
+        }
+
+        .dropdown-link:hover,
+        .dropdown-link:focus-visible {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .module-number {
+            width: 25px;
+            height: 25px;
+            flex: 0 0 25px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--accent-color);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 1.45rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 0.45rem;
+        }
+
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+            background: var(--hero-bg);
+            color: var(--hero-text);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 1.25rem;
+            margin: 2rem 0;
+            padding: 3.2rem 2rem;
+            box-shadow: 0 18px 45px var(--shadow-color);
+        }
+
+        .hero-section::after {
+            content: "";
+            position: absolute;
+            width: 330px;
+            height: 330px;
+            right: -115px;
+            top: -135px;
+            border-radius: 50%;
+            background: rgba(207, 155, 47, 0.12);
+        }
+
+        .hero-section h1,
+        .hero-section p,
+        .hero-section .hero-kicker,
+        .hero-section .hero-meta,
+        .hero-section .essential-question {
+            color: var(--hero-text);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-kicker {
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .course-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.45rem 0.75rem;
+            background: rgba(255, 255, 255, 0.11);
+            border: 1px solid rgba(255, 255, 255, 0.23);
+            border-radius: 999px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .essential-question {
+            max-width: 870px;
+            margin: 1.35rem auto 0;
+            padding: 1rem 1.2rem;
+            border-left: 4px solid var(--uncg-gold);
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 0 0.75rem 0.75rem 0;
+            text-align: left;
+        }
+
+        .section-shell {
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            padding: clamp(1.2rem, 2.5vw, 2rem);
+            margin-bottom: 1.6rem;
+            scroll-margin-top: 94px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.9rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.35rem;
+        }
+
+        .section-icon {
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            border-radius: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(99, 102, 241, 0.14);
+            color: var(--header-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-heading h2 {
+            margin-bottom: 0.15rem;
+        }
+
+        .section-heading p {
+            margin-bottom: 0;
+            color: var(--muted-color);
+        }
+
+        .toc-panel {
+            position: sticky;
+            top: 94px;
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.9rem;
+            padding: 1rem;
+            max-height: calc(100vh - 115px);
+            overflow-y: auto;
+        }
+
+        .toc-panel h2 {
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-list a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.5rem 0.55rem;
+            border-radius: 0.45rem;
+            font-size: 0.9rem;
+        }
+
+        .toc-list a:hover,
+        .toc-list a.active {
+            background-color: rgba(99, 102, 241, 0.18);
+            color: var(--header-color);
+        }
+
+        .toc-list .toc-index {
+            color: var(--muted-color);
+            font-size: 0.75rem;
+            font-weight: 800;
+            min-width: 1.5rem;
+        }
+
+        .roadmap-card,
+        .concept-card,
+        .example-card,
+        .case-card,
+        .takeaway-card {
+            height: 100%;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            padding: 1rem;
+        }
+
+        .roadmap-card {
+            position: relative;
+            padding-top: 3.15rem;
+        }
+
+        .roadmap-number {
+            position: absolute;
+            top: 0.9rem;
+            left: 1rem;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+        }
+
+        .layer-label {
+            display: inline-block;
+            color: #ffffff;
+            background: var(--accent-color);
+            border-radius: 999px;
+            padding: 0.2rem 0.55rem;
+            font-size: 0.74rem;
+            font-weight: 800;
+            margin-bottom: 0.55rem;
+        }
+
+        .concept-arrow {
+            color: var(--muted-color);
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        .badge-soft-primary,
+        .badge-soft-success,
+        .badge-soft-warning,
+        .badge-soft-danger,
+        .badge-soft-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            border-radius: 999px;
+            padding: 0.32rem 0.58rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .badge-soft-primary {
+            color: var(--header-color);
+            background: rgba(59, 130, 246, 0.14);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+        }
+
+        .badge-soft-success {
+            color: var(--success-color);
+            background: rgba(16, 185, 129, 0.13);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+
+        .badge-soft-warning {
+            color: var(--warning-color);
+            background: rgba(245, 158, 11, 0.13);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+
+        .badge-soft-danger {
+            color: var(--danger-color);
+            background: rgba(239, 68, 68, 0.13);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
+
+        .badge-soft-secondary {
+            color: var(--muted-color);
+            background: rgba(100, 116, 139, 0.13);
+            border: 1px solid rgba(100, 116, 139, 0.35);
+        }
+
+        .alert {
+            color: var(--text-color);
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 0.75rem;
+        }
+
+        .alert-info {
+            background: var(--alert-info-bg);
+            border-color: var(--alert-info-border);
+        }
+
+        .alert-warning {
+            background: var(--alert-warning-bg);
+            border-color: var(--alert-warning-border);
+        }
+
+        .alert-secondary {
+            background: var(--alert-secondary-bg);
+            border-color: var(--alert-secondary-border);
+        }
+
+        .alert-success {
+            background: var(--alert-success-bg);
+            border-color: var(--alert-success-border);
+        }
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.7rem;
+            margin: 1rem 0;
+        }
+
+        .workflow-step {
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem 0.55rem;
+        }
+
+        .workflow-step i {
+            display: block;
+            color: var(--header-color);
+            font-size: 1.25rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .decision-table th:first-child,
+        .decision-table td:first-child {
+            min-width: 125px;
+        }
+
+        .copy-wrap {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.6rem;
+            z-index: 2;
+            border: 1px solid var(--border-color);
+            background: var(--section-bg);
+            color: var(--header-color);
+            border-radius: 0.45rem;
+            padding: 0.25rem 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .copy-btn:hover {
+            color: #ffffff;
+            background: var(--accent-color);
+        }
+
+        .accordion-item,
+        .accordion-button,
+        .accordion-body {
+            background-color: var(--section-alt-bg);
+            color: var(--text-color);
+            border-color: var(--border-color);
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: rgba(99, 102, 241, 0.15);
+            color: var(--header-color);
+            box-shadow: inset 0 -1px 0 var(--border-color);
+        }
+
+        .accordion-button::after {
+            filter: var(--accordion-icon-filter, none);
+        }
+
+        [data-theme="dark"] .accordion-button::after {
+            filter: invert(1) grayscale(1) brightness(1.8);
+        }
+
+        .btn-outline-primary {
+            color: var(--header-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-outline-primary:hover,
+        .btn-outline-primary:focus-visible {
+            color: #ffffff;
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus-visible {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            position: relative;
+            padding-left: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .checklist li::before {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+        }
+
+        .mistake-table .looks-like {
+            color: var(--warning-color);
+            font-weight: 700;
+        }
+
+        .mistake-table .actually {
+            color: var(--success-color);
+            font-weight: 700;
+        }
+
+        .mini-note {
+            color: var(--muted-color);
+            font-size: 0.9rem;
+        }
+
+        .key-term {
+            border-bottom: 1px dotted var(--header-color);
+            cursor: help;
+        }
+
+        .footer {
+            background: var(--section-bg);
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem;
+            width: 44px;
+            height: 44px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            z-index: 1100;
+        }
+
+        .back-to-top.show {
+            display: inline-flex;
+        }
+
+        @media (max-width: 1199.98px) {
+            .nav-links-list {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                padding: 0.8rem;
+                background: var(--section-bg);
+                border-bottom: 1px solid var(--border-color);
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-links-list.active {
+                display: flex;
+            }
+
+            .nav-link,
+            .theme-toggle-btn {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .mobile-menu-btn {
+                display: inline-flex;
+            }
+
+            .dropdown-content {
+                position: static;
+                min-width: 0;
+                max-height: none;
+                box-shadow: none;
+                margin-top: 0.25rem;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .toc-panel {
+                position: static;
+                max-height: none;
+                margin-bottom: 1.3rem;
+            }
+
+            .workflow {
+                grid-template-columns: 1fr;
+            }
+
+            .concept-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .hero-section {
+                padding: 2rem 1.1rem;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .section-shell {
+                padding: 1rem;
+            }
+
+            .section-heading {
+                flex-direction: column;
+            }
+
+            .table-responsive {
+                border: 1px solid var(--border-color);
+                border-radius: 0.65rem;
+            }
+        }
+
+        @media print {
+            .nav-container,
+            .toc-panel,
+            .copy-btn,
+            .back-to-top,
+            .theme-toggle-btn,
+            .mobile-menu-btn,
+            .btn {
+                display: none !important;
+            }
+
+            body,
+            .section-shell,
+            .roadmap-card,
+            .concept-card,
+            .example-card,
+            .case-card,
+            .takeaway-card,
+            .accordion-item,
+            .accordion-button,
+            .accordion-body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                box-shadow: none !important;
+            }
+
+            p,
+            li,
+            td,
+            th,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                color: #000000 !important;
+            }
+
+            .collapse:not(.show) {
+                display: block !important;
+            }
+        }
+
+        .design-flow {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 0.65rem;
+            margin: 1rem 0;
+        }
+
+        .design-step {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem 0.6rem;
+            text-align: center;
+            min-height: 132px;
+        }
+
+        .design-step .step-number {
+            width: 2rem;
+            height: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+        }
+
+        .schema-card {
+            height: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            overflow: hidden;
+            background: var(--section-alt-bg);
+        }
+
+        .schema-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.75rem 0.9rem;
+            background: rgba(99, 102, 241, 0.14);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .schema-card-header h3,
+        .schema-card-header h4 {
+            margin: 0;
+            color: var(--header-color);
+        }
+
+        .schema-field-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .schema-field-list li {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.5rem 0.9rem;
+            border-bottom: 1px solid var(--border-color);
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.82rem;
+        }
+
+        .schema-field-list li:last-child {
+            border-bottom: 0;
+        }
+
+        .field-key {
+            color: var(--warning-color);
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .erd-board {
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            background: var(--section-alt-bg);
+            padding: 1rem;
+        }
+
+        .erd-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 132px minmax(0, 1fr);
+            gap: 0.75rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .erd-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .erd-node {
+            border: 2px solid var(--accent-color);
+            border-radius: 0.75rem;
+            background: var(--section-bg);
+            overflow: hidden;
+            min-height: 100%;
+        }
+
+        .erd-node-title {
+            background: var(--accent-color);
+            color: #ffffff;
+            font-weight: 800;
+            padding: 0.55rem 0.75rem;
+            letter-spacing: 0.02em;
+        }
+
+        .erd-node-body {
+            padding: 0.65rem 0.75rem;
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.82rem;
+        }
+
+        .erd-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted-color);
+            text-align: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .erd-line {
+            width: 100%;
+            height: 2px;
+            background: var(--border-color);
+            position: relative;
+            margin: 0.4rem 0;
+        }
+
+        .erd-line::after {
+            content: "";
+            position: absolute;
+            right: -1px;
+            top: -4px;
+            border-left: 8px solid var(--accent-color);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .cardinality-label {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            background: var(--section-bg);
+            color: var(--text-color);
+            border-radius: 999px;
+            padding: 0.18rem 0.5rem;
+            font-family: "Source Code Pro", monospace;
+        }
+
+        .constraint-card {
+            height: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--section-alt-bg);
+            padding: 1rem;
+        }
+
+        .constraint-card h3,
+        .constraint-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .normalization-step {
+            border-left: 4px solid var(--accent-color);
+            background: var(--section-alt-bg);
+            border-radius: 0.55rem;
+            padding: 1rem 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .normalization-step h3,
+        .normalization-step h4 {
+            margin-bottom: 0.45rem;
+        }
+
+        .dependency {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin: 0.2rem 0.35rem 0.2rem 0;
+            padding: 0.3rem 0.55rem;
+            border-radius: 0.45rem;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--border-color);
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.8rem;
+        }
+
+        .comparison-good,
+        .comparison-bad {
+            border-radius: 0.75rem;
+            padding: 1rem;
+            height: 100%;
+        }
+
+        .comparison-good {
+            border: 1px solid var(--success-color);
+            background: var(--alert-success-bg);
+        }
+
+        .comparison-bad {
+            border: 1px solid var(--danger-color);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .data-dictionary td:first-child {
+            font-family: "Source Code Pro", monospace;
+            font-weight: 700;
+        }
+
+        .test-case {
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--section-alt-bg);
+            padding: 0.9rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .test-case:last-child {
+            margin-bottom: 0;
+        }
+
+        .advanced-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+            border: 1px dashed var(--warning-color);
+            background: var(--alert-warning-bg);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .advanced-banner i {
+            color: var(--warning-color);
+            font-size: 1.3rem;
+            margin-top: 0.15rem;
+        }
+
+        .rule-to-schema {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .rule-arrow {
+            color: var(--accent-color);
+            font-size: 1.25rem;
+        }
+
+        @media (max-width: 1199.98px) {
+            .design-flow {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .design-flow {
+                grid-template-columns: 1fr;
+            }
+
+            .erd-row,
+            .rule-to-schema {
+                grid-template-columns: 1fr;
+            }
+
+            .erd-connector,
+            .rule-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+    
+
+        /* Module 3: live PostgreSQL lab */
+        .sql-lab-shell,
+        .lab-shell {
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            background: var(--section-alt-bg);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+        }
+
+        .lab-masthead {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.95rem 1rem;
+            background: linear-gradient(135deg, rgba(12, 35, 64, 0.98), rgba(49, 46, 129, 0.92));
+            border-bottom: 1px solid var(--border-color);
+            color: #ffffff;
+        }
+
+        .lab-masthead h3,
+        .lab-masthead p,
+        .lab-masthead span,
+        .lab-masthead strong {
+            color: #ffffff;
+        }
+
+        .engine-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.35rem 0.65rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 0.78rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .lab-status,
+        .engine-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .lab-status-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.65rem 0.85rem;
+            margin: 0.85rem 0 0.35rem;
+        }
+
+        .engine-status.ready .status-dot {
+            background: #34d399;
+            box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.18);
+        }
+
+        .engine-status.loading .status-dot {
+            background: #fbbf24;
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.18);
+            animation: status-pulse 1s infinite ease-in-out;
+        }
+
+        .engine-status.error .status-dot {
+            background: #f87171;
+            box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.18);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            border-radius: 50%;
+            background: #94a3b8;
+            box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.18);
+        }
+
+        .lab-status[data-state="ready"] .status-dot {
+            background: #34d399;
+            box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.18);
+        }
+
+        .lab-status[data-state="running"] .status-dot,
+        .lab-status[data-state="loading"] .status-dot {
+            background: #fbbf24;
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.18);
+            animation: status-pulse 1s infinite ease-in-out;
+        }
+
+        .lab-status[data-state="error"] .status-dot {
+            background: #f87171;
+            box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.18);
+        }
+
+        @keyframes status-pulse {
+            0%, 100% { transform: scale(0.9); opacity: 0.75; }
+            50% { transform: scale(1.15); opacity: 1; }
+        }
+
+        .lab-controls {
+            display: grid;
+            grid-template-columns: minmax(230px, 1fr) auto;
+            gap: 0.75rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .lab-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .form-select,
+        .form-control {
+            color: var(--text-color);
+            background-color: var(--section-bg);
+            border-color: var(--border-color);
+        }
+
+        .form-select:focus,
+        .form-control:focus {
+            color: var(--text-color);
+            background-color: var(--section-bg);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.18);
+        }
+
+        .editor-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .editor-panel,
+        .results-panel {
+            min-width: 0;
+        }
+
+        .editor-header,
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.72rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--section-bg);
+        }
+
+        .editor-header h4,
+        .results-header h4 {
+            margin: 0;
+            font-size: 0.93rem;
+        }
+
+        .keyboard-hint {
+            color: var(--muted-color);
+            font-size: 0.76rem;
+        }
+
+        .sql-editor,
+        .sql-editor-main {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-height: 310px;
+            resize: vertical;
+            box-sizing: border-box;
+            padding: 1rem;
+            color: #e5e7eb;
+            background: #090f1d;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            outline: none;
+            font: 500 0.9rem/1.65 "Source Code Pro", monospace;
+            tab-size: 2;
+            caret-color: #fbbf24;
+            white-space: pre;
+            overflow: auto;
+        }
+
+        .sql-editor:focus,
+        .sql-editor-main:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.18);
+        }
+
+        .sql-editor::selection,
+        .sql-editor-main::selection {
+            background: rgba(99, 102, 241, 0.55);
+        }
+
+        [data-theme="light"] .sql-editor,
+        [data-theme="light"] .sql-editor-main {
+            color: #172033;
+            background: #f8fafc;
+        }
+
+        .results-panel,
+        .results-shell {
+            border-top: 1px solid var(--border-color);
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            overflow: hidden;
+            background: var(--section-alt-bg);
+        }
+
+        .results-output {
+            min-height: 180px;
+            max-height: 560px;
+            overflow: auto;
+            padding: 1rem;
+            background: var(--section-alt-bg);
+        }
+
+        .result-placeholder {
+            min-height: 145px;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            color: var(--muted-color);
+            border: 1px dashed var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .result-card {
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            margin-bottom: 0.85rem;
+            overflow: hidden;
+        }
+
+        .result-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.62rem 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .result-card-header strong {
+            color: var(--header-color);
+        }
+
+        .result-meta {
+            color: var(--muted-color);
+            font-size: 0.76rem;
+        }
+
+        .result-table-wrap {
+            overflow-x: auto;
+        }
+
+        .result-table {
+            width: 100%;
+            margin: 0;
+            border-collapse: collapse;
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.82rem;
+        }
+
+        .result-table th,
+        .result-table td {
+            padding: 0.52rem 0.68rem;
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+            white-space: nowrap;
+        }
+
+        .result-table th {
+            color: var(--header-color);
+            background: var(--section-alt-bg);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .result-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .result-table th:last-child,
+        .result-table td:last-child {
+            border-right: 0;
+        }
+
+        .result-message {
+            padding: 0.82rem;
+            color: var(--text-color);
+        }
+
+        .null-value {
+            color: var(--muted-color);
+            font-style: italic;
+        }
+
+        .query-error {
+            border: 1px solid rgba(248, 113, 113, 0.5);
+            border-left: 5px solid var(--danger-color);
+            background: rgba(248, 113, 113, 0.08);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .query-error pre {
+            margin: 0.65rem 0 0;
+            color: var(--danger-color);
+            white-space: pre-wrap;
+            word-break: break-word;
+            background: transparent !important;
+            border: 0;
+            padding: 0;
+        }
+
+        .lab-footnote {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            padding: 0.85rem 1rem;
+            color: var(--muted-color);
+            background: var(--section-bg);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8rem;
+        }
+
+        .schema-chip-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.65rem;
+        }
+
+        .schema-chip {
+            padding: 0.75rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+        }
+
+        .schema-chip code {
+            color: var(--header-color);
+            font-weight: 700;
+        }
+
+        .copy-wrap pre {
+            padding-top: 3.25rem !important;
+        }
+
+        .code-toolbar {
+            position: absolute;
+            top: 0.55rem;
+            right: 0.55rem;
+            z-index: 3;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.4rem;
+        }
+
+        .code-toolbar .copy-btn {
+            position: static;
+        }
+
+        .try-query-btn {
+            border: 1px solid rgba(52, 211, 153, 0.45);
+            background: var(--section-bg);
+            color: var(--success-color);
+            border-radius: 0.45rem;
+            padding: 0.25rem 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .try-query-btn:hover,
+        .try-query-btn:focus-visible {
+            color: #ffffff;
+            background: var(--success-color);
+        }
+
+        .sql-command-card {
+            height: 100%;
+            padding: 1rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 0.8rem;
+        }
+
+        .sql-command-card[data-kind="dql"] { border-top-color: #38bdf8; }
+        .sql-command-card[data-kind="dml"] { border-top-color: #34d399; }
+        .sql-command-card[data-kind="ddl"] { border-top-color: #fbbf24; }
+        .sql-command-card[data-kind="tcl"] { border-top-color: #a78bfa; }
+
+        .query-flow {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 0.55rem;
+            margin: 1rem 0;
+        }
+
+        .query-flow-step {
+            position: relative;
+            text-align: center;
+            padding: 0.78rem 0.45rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.65rem;
+            font-family: "Source Code Pro", monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .query-flow-step:not(:last-child)::after {
+            content: "→";
+            position: absolute;
+            right: -0.48rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted-color);
+            z-index: 2;
+        }
+
+        .safety-workflow {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.65rem;
+            margin: 1rem 0;
+        }
+
+        .safety-step {
+            padding: 0.8rem;
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.7rem;
+        }
+
+        .safety-step .step-number {
+            display: inline-grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            margin-bottom: 0.4rem;
+            border-radius: 50%;
+            color: #ffffff;
+            background: var(--accent-color);
+            font-weight: 800;
+        }
+
+        .danger-example {
+            border-left: 5px solid var(--danger-color);
+        }
+
+        .success-example {
+            border-left: 5px solid var(--success-color);
+        }
+
+        .statement-anatomy {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--section-alt-bg);
+            font-family: "Source Code Pro", monospace;
+        }
+
+        .statement-part {
+            padding: 0.35rem 0.55rem;
+            border-radius: 0.45rem;
+            background: rgba(99, 102, 241, 0.14);
+            border: 1px solid rgba(99, 102, 241, 0.35);
+        }
+
+        .lab-task {
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .download-result-btn {
+            border: 1px solid var(--border-color);
+            color: var(--header-color);
+            background: var(--section-bg);
+            border-radius: 0.4rem;
+            font-size: 0.72rem;
+            padding: 0.22rem 0.48rem;
+        }
+
+        .download-result-btn:hover {
+            color: #ffffff;
+            background: var(--accent-color);
+        }
+
+        @media (min-width: 1200px) {
+            .editor-grid {
+                grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+            }
+
+            .results-panel {
+                border-top: 0;
+                border-left: 1px solid var(--border-color);
+            }
+
+            .sql-editor,
+            .sql-editor-main {
+                min-height: 455px;
+            }
+
+            .results-output {
+                min-height: 455px;
+                max-height: 640px;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .schema-chip-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .query-flow,
+            .safety-workflow {
+                grid-template-columns: 1fr;
+            }
+
+            .query-flow-step:not(:last-child)::after {
+                content: "↓";
+                right: 50%;
+                top: auto;
+                bottom: -0.8rem;
+                transform: translateX(50%);
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .lab-masthead,
+            .lab-controls,
+            .editor-header,
+            .results-header {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .lab-controls {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .lab-actions {
+                justify-content: flex-start;
+            }
+
+            .sql-editor,
+            .sql-editor-main {
+                min-height: 250px;
+            }
+
+            .schema-chip-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            .sql-lab-shell,
+            .try-query-btn,
+            .code-toolbar {
+                break-inside: avoid;
+            }
+
+            .lab-controls,
+            .sql-editor,
+            .sql-editor-main,
+            .results-panel,
+            .results-shell,
+            .lab-status,
+            .engine-badge,
+            .try-query-btn {
+                display: none !important;
+            }
+        }
+
+    
+
+        /* Module 4 additions */
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .function-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 0.9rem;
+            min-height: 100%;
+        }
+
+        .function-card code {
+            display: inline-block;
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+        }
+
+        .grain-ladder {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+
+        .grain-step {
+            position: relative;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .grain-step .grain-number {
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #fff;
+            font-weight: 800;
+            margin-bottom: 0.55rem;
+        }
+
+        .clause-flow {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            margin: 1rem 0;
+        }
+
+        .clause-node {
+            min-width: 105px;
+            text-align: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.65rem 0.75rem;
+            font-family: "Source Code Pro", monospace;
+            font-weight: 700;
+        }
+
+        .clause-arrow {
+            color: var(--muted-color);
+            font-size: 1.1rem;
+        }
+
+        .query-anatomy {
+            display: grid;
+            grid-template-columns: 145px 1fr;
+            gap: 0.25rem 0.8rem;
+            align-items: start;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .query-anatomy dt {
+            color: var(--header-color);
+            font-family: "Source Code Pro", monospace;
+            font-weight: 800;
+        }
+
+        .query-anatomy dd {
+            margin-bottom: 0.45rem;
+        }
+
+        .run-example-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.7rem;
+        }
+
+        .subtotal-key {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .subtotal-key > div {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.8rem;
+        }
+
+        .metric-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.55rem;
+            border-radius: 999px;
+            background: rgba(99, 102, 241, 0.14);
+            border: 1px solid rgba(99, 102, 241, 0.36);
+            color: var(--header-color);
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0.15rem;
+        }
+
+        @media (max-width: 991.98px) {
+            .function-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .grain-ladder, .subtotal-key { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 575.98px) {
+            .function-grid { grid-template-columns: 1fr; }
+            .query-anatomy { grid-template-columns: 1fr; }
+            .clause-arrow { transform: rotate(90deg); }
+        }
+
+
+        /* Module 5 logic visuals */
+        .logic-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .logic-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 0.85rem;
+            padding: 1rem;
+            height: 100%;
+        }
+
+        .logic-card.and { border-top-color: var(--success-color); }
+        .logic-card.or { border-top-color: var(--header-color); }
+        .logic-card.not { border-top-color: var(--warning-color); }
+
+        .precedence-stack {
+            display: grid;
+            gap: 0.55rem;
+            max-width: 520px;
+            margin: 1rem auto;
+        }
+
+        .precedence-step {
+            display: grid;
+            grid-template-columns: 44px 1fr;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.75rem 0.9rem;
+        }
+
+        .precedence-rank {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .truth-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .truth-state {
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+            text-align: center;
+            background: var(--section-alt-bg);
+        }
+
+        .truth-state strong {
+            display: block;
+            font-size: 1.05rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .truth-state.true strong { color: var(--success-color); }
+        .truth-state.false strong { color: var(--danger-color); }
+        .truth-state.unknown strong { color: var(--warning-color); }
+
+        .logic-expression {
+            font-family: "Source Code Pro", monospace;
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.65rem;
+            padding: 0.7rem 0.85rem;
+            margin: 0.45rem 0;
+            overflow-x: auto;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .trap-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--danger-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .safe-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--success-color);
+            border-radius: 0.8rem;
+            padding: 1rem;
+        }
+
+        .case-flow {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .case-flow > div {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.85rem;
+            text-align: center;
+        }
+
+        .boundary-table td:first-child,
+        .boundary-table th:first-child {
+            white-space: nowrap;
+        }
+
+        .rule-builder {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.65rem;
+            margin: 1rem 0;
+        }
+
+        .rule-builder > div {
+            border: 1px solid var(--border-color);
+            background: var(--section-alt-bg);
+            border-radius: 0.7rem;
+            padding: 0.8rem;
+            text-align: center;
+        }
+
+        @media (max-width: 991.98px) {
+            .logic-grid,
+            .truth-grid,
+            .case-flow,
+            .rule-builder { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 575.98px) {
+            .logic-grid,
+            .truth-grid,
+            .pattern-grid,
+            .case-flow,
+            .rule-builder { grid-template-columns: 1fr; }
+        }
+
+
+
+        .join-family-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1rem; }
+        .join-family-card { border:1px solid var(--border-color); border-radius:.8rem; padding:1rem; background:var(--section-alt-bg); height:100%; }
+        .join-family-card h4 { font-size:1rem; margin-bottom:.35rem; }
+        .join-family-card p { margin:0; font-size:.9rem; }
+        .join-chip { display:inline-flex; align-items:center; gap:.35rem; border:1px solid var(--border-color); border-radius:999px; padding:.22rem .55rem; font-size:.78rem; font-weight:700; background:var(--section-alt-bg); }
+        .preserve-left { border-left:4px solid #3b82f6; }
+        .preserve-right { border-left:4px solid #8b5cf6; }
+        .preserve-both { border-left:4px solid #f59e0b; }
+        .preserve-match { border-left:4px solid #10b981; }
+        .grain-box { border:1px solid var(--border-color); border-radius:.75rem; padding:1rem; background:var(--section-alt-bg); }
+        .grain-arrow { font-size:1.6rem; color:var(--muted-color); text-align:center; }
+        .mini-table { width:100%; border-collapse:collapse; font-size:.84rem; }
+        .mini-table th,.mini-table td { border:1px solid var(--border-color); padding:.42rem .5rem; }
+        .mini-table th { background:var(--section-alt-bg); }
+        .matched { background:rgba(16,185,129,.12); }
+        .unmatched { background:rgba(245,158,11,.10); }
+        .danger-note { border-left:4px solid var(--danger-color); background:rgba(248,113,113,.08); border-radius:.55rem; padding:.85rem 1rem; }
+        .join-decision { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.85rem; }
+        .join-decision .step-card { min-height:100%; }
+        .schema-relations { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.8rem; }
+        .schema-table { border:1px solid var(--border-color); border-radius:.75rem; overflow:hidden; background:var(--section-alt-bg); }
+        .schema-table h4 { margin:0; padding:.7rem .8rem; font-size:.95rem; background:rgba(99,102,241,.12); }
+        .schema-table ul { margin:0; padding:.7rem 1.6rem .8rem 1.8rem; font-family:"Source Code Pro",monospace; font-size:.78rem; }
+        .relationship-strip { display:flex; flex-wrap:wrap; gap:.55rem; margin-top:1rem; }
+        .relationship-strip span { border:1px solid var(--border-color); border-radius:999px; padding:.3rem .65rem; font-size:.78rem; background:var(--section-alt-bg); }
+        .comparison-table td:first-child,.comparison-table th:first-child { white-space:nowrap; }
+        .output-grain { display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; }
+        .output-grain > span { padding:.45rem .65rem; border:1px solid var(--border-color); border-radius:.55rem; background:var(--section-alt-bg); }
+        .output-grain .op { border:none; background:transparent; color:var(--muted-color); font-weight:800; }
+        .project-card-custom { border:1px solid var(--border-color); border-radius:.8rem; padding:1rem; background:var(--section-alt-bg); height:100%; }
+        @media (max-width: 991.98px) { .join-family-grid,.schema-relations { grid-template-columns:repeat(2,minmax(0,1fr)); } .join-decision { grid-template-columns:1fr; } }
+        @media (max-width: 575.98px) { .join-family-grid,.schema-relations { grid-template-columns:1fr; } }
+
+        /* Concept visuals and lightweight result charts */
+        .join-visualizer {
+            border: 1px solid var(--border-color);
+            border-radius: .9rem;
+            background: var(--section-alt-bg);
+            padding: 1rem;
+            margin-top: 1.25rem;
+        }
+        .join-visual-controls { display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem; }
+        .join-visual-btn {
+            border:1px solid var(--border-color);
+            background:var(--section-bg);
+            color:var(--text-color);
+            border-radius:999px;
+            padding:.42rem .72rem;
+            font-weight:700;
+            font-size:.82rem;
+        }
+        .join-visual-btn:hover,.join-visual-btn:focus { border-color:var(--accent-color); outline:none; }
+        .join-visual-btn.active { background:var(--accent-color); color:#fff; border-color:var(--accent-color); }
+        .join-visual-stage { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:.8rem; align-items:start; }
+        .join-source-card,.join-output-card { border:1px solid var(--border-color); border-radius:.75rem; overflow:hidden; background:var(--section-bg); }
+        .join-source-card h4,.join-output-card h4 { font-size:.88rem; margin:0; padding:.62rem .72rem; background:rgba(99,102,241,.10); }
+        .join-source-row,.join-output-row { display:grid; grid-template-columns:72px minmax(0,1fr); gap:.45rem; padding:.5rem .65rem; border-top:1px solid var(--border-color); font-family:"Source Code Pro",monospace; font-size:.78rem; }
+        .join-output-row { grid-template-columns:72px minmax(0,1fr) 84px minmax(0,1.2fr); }
+        .join-source-row.match,.join-output-row.match { background:rgba(16,185,129,.10); }
+        .join-output-row.preserved { background:rgba(245,158,11,.10); }
+        .join-null { color:var(--muted-color); font-style:italic; }
+        .join-visual-arrow { align-self:center; color:var(--accent-color); font-size:1.5rem; font-weight:900; padding-top:2rem; }
+        .join-output-card { margin-top:1rem; }
+        .join-visual-summary { margin-top:.65rem; color:var(--muted-color); font-size:.82rem; }
+        .cardinality-bars { border:1px solid var(--border-color); border-radius:.8rem; padding:1rem; background:var(--section-alt-bg); margin:1rem 0; }
+        .cardinality-bar-row { display:grid; grid-template-columns:135px minmax(0,1fr) 44px; gap:.65rem; align-items:center; margin:.55rem 0; font-size:.84rem; }
+        .cardinality-bar-track { height:18px; background:var(--section-bg); border:1px solid var(--border-color); border-radius:999px; overflow:hidden; }
+        .cardinality-bar-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,var(--accent-color),var(--header-color)); min-width:8px; }
+        .cardinality-bar-row.total .cardinality-bar-fill { background:linear-gradient(90deg,#f59e0b,#ef4444); }
+        .visualize-result-btn {
+            border:1px solid var(--border-color);
+            background:transparent;
+            color:var(--header-color);
+            border-radius:.45rem;
+            padding:.25rem .48rem;
+            font-size:.74rem;
+            font-weight:700;
+        }
+        .visualize-result-btn:hover { border-color:var(--accent-color); }
+        .result-chart { padding:.9rem; border-top:1px solid var(--border-color); background:var(--section-alt-bg); }
+        .result-chart-title { font-weight:700; color:var(--header-color); margin-bottom:.7rem; font-size:.86rem; }
+        .result-chart-row { display:grid; grid-template-columns:minmax(90px,150px) minmax(0,1fr) 70px; gap:.6rem; align-items:center; margin:.42rem 0; font-size:.78rem; }
+        .result-chart-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .result-chart-track { height:16px; background:var(--section-bg); border:1px solid var(--border-color); border-radius:999px; overflow:hidden; }
+        .result-chart-bar { height:100%; background:linear-gradient(90deg,var(--accent-color),var(--header-color)); border-radius:999px; min-width:2px; }
+        .result-chart-value { text-align:right; font-family:"Source Code Pro",monospace; }
+        .chart-hint { display:flex; gap:.45rem; align-items:flex-start; margin-top:.65rem; color:var(--muted-color); font-size:.8rem; }
+        @media (max-width: 767.98px) {
+            .join-visual-stage { grid-template-columns:1fr; }
+            .join-visual-arrow { transform:rotate(90deg); padding:0; justify-self:center; }
+            .join-output-row { grid-template-columns:64px minmax(0,1fr); }
+            .join-output-row > :nth-child(3),.join-output-row > :nth-child(4) { border-top:1px dashed var(--border-color); padding-top:.25rem; }
+            .cardinality-bar-row { grid-template-columns:100px minmax(0,1fr) 36px; }
+            .result-chart-row { grid-template-columns:95px minmax(0,1fr) 56px; }
+        }
+
+
+
+        .shape-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 1rem;
+            align-items: center;
+        }
+        .shape-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.9rem;
+            padding: 1rem;
+            min-width: 0;
+        }
+        .shape-card h3 { font-size: 1rem; margin-bottom: 0.75rem; }
+        .shape-arrow {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: rgba(99,102,241,.16);
+            border: 1px solid rgba(99,102,241,.45);
+            color: var(--header-color);
+            font-size: 1.35rem;
+        }
+        .mini-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .78rem;
+        }
+        .mini-data-table th, .mini-data-table td {
+            border: 1px solid var(--border-color);
+            padding: .38rem .45rem;
+            text-align: left;
+            white-space: nowrap;
+        }
+        .mini-data-table th { background: rgba(99,102,241,.11); }
+        .reshape-rule {
+            border-left: 4px solid var(--uncg-gold);
+            background: var(--alert-warning-bg);
+            padding: .9rem 1rem;
+            border-radius: 0 .7rem .7rem 0;
+        }
+        .grain-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: .75rem;
+        }
+        .grain-step {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: .8rem;
+            padding: .9rem;
+            text-align: center;
+        }
+        .grain-step strong { display: block; color: var(--header-color); margin-bottom: .3rem; }
+        .pivot-cells {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0,1fr));
+            gap: .6rem;
+        }
+        .pivot-cell {
+            border: 1px solid var(--border-color);
+            background: var(--section-alt-bg);
+            border-radius: .7rem;
+            padding: .75rem;
+            text-align: center;
+        }
+        .pivot-cell .value { font-family: "Source Code Pro", monospace; font-size: 1.2rem; font-weight: 700; color: var(--header-color); }
+        .reshape-flow {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0,1fr));
+            gap: .55rem;
+            align-items: stretch;
+        }
+        .reshape-flow .flow-node {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: .8rem;
+            padding: .8rem;
+            text-align: center;
+            font-size: .83rem;
+        }
+        .reshape-flow .flow-node strong { display:block; color: var(--header-color); }
+        .shape-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            padding: .25rem .6rem;
+            font-size: .76rem;
+            background: var(--section-alt-bg);
+        }
+        .decision-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; }
+        .decision-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .decision-card h3 { font-size:1rem; }
+        @media (max-width: 991px) {
+            .shape-grid { grid-template-columns: 1fr; }
+            .shape-arrow { margin: 0 auto; transform: rotate(90deg); }
+            .grain-row { grid-template-columns: repeat(2,1fr); }
+            .reshape-flow { grid-template-columns: 1fr; }
+            .decision-grid { grid-template-columns:1fr; }
+        }
+        @media (max-width: 575px) {
+            .grain-row, .pivot-cells { grid-template-columns:1fr; }
+        }
+
+        /* Module 11 visual language */
+        .cte-pipeline { display:grid; grid-template-columns:repeat(5,1fr); gap:.65rem; align-items:center; margin:1.25rem 0; }
+        .cte-step { border:1px solid var(--border-color); border-radius:.8rem; padding:.85rem; background:var(--section-alt-bg); min-height:112px; display:flex; flex-direction:column; justify-content:center; text-align:center; }
+        .cte-step strong { color:var(--header-color); display:block; margin-bottom:.25rem; }
+        .cte-arrow { text-align:center; color:var(--uncg-gold); font-size:1.25rem; }
+        .window-anatomy { display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; margin:1.2rem 0; }
+        .window-piece { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .window-piece .piece-label { font-size:.76rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted-color); font-weight:700; }
+        .window-piece code { display:block; margin-top:.45rem; }
+        .rank-demo { overflow-x:auto; border:1px solid var(--border-color); border-radius:.85rem; }
+        .rank-demo table { width:100%; border-collapse:collapse; min-width:620px; }
+        .rank-demo th,.rank-demo td { padding:.65rem .8rem; border-bottom:1px solid var(--border-color); text-align:center; }
+        .rank-demo th:first-child,.rank-demo td:first-child { text-align:left; }
+        .rank-demo tr:last-child td { border-bottom:0; }
+        .tie-row { background:rgba(207,155,47,.08); }
+        .timeline { display:flex; gap:.65rem; align-items:center; overflow-x:auto; padding:.75rem 0 .25rem; }
+        .timeline-event { min-width:155px; border:1px solid var(--border-color); border-radius:.85rem; background:var(--section-alt-bg); padding:.8rem; text-align:center; }
+        .timeline-event .event-date { font-size:.8rem; color:var(--muted-color); }
+        .timeline-arrow { color:var(--uncg-gold); font-size:1.2rem; flex:0 0 auto; }
+        .frame-visual { display:grid; grid-template-columns:repeat(7,1fr); gap:.35rem; margin:1rem 0; }
+        .frame-cell { border:1px solid var(--border-color); border-radius:.55rem; text-align:center; padding:.7rem .3rem; background:var(--section-alt-bg); font-size:.8rem; }
+        .frame-cell.current { outline:2px solid var(--uncg-gold); background:rgba(207,155,47,.12); }
+        .frame-cell.in-frame { border-color:var(--accent-color); background:rgba(99,102,241,.12); }
+        .group-partition-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+        .grain-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .grain-card .row-count { display:inline-block; padding:.2rem .55rem; border-radius:999px; background:rgba(56,189,248,.12); border:1px solid var(--border-color); font-size:.78rem; }
+        .analysis-pattern { display:grid; grid-template-columns:repeat(3,1fr); gap:.85rem; margin:1rem 0; }
+        .pattern-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .pattern-card h3 { font-size:1rem; }
+        .recursive-tree { display:grid; gap:.5rem; max-width:760px; margin:1rem auto; }
+        .tree-row { display:flex; align-items:center; gap:.65rem; }
+        .tree-indent-0 { margin-left:0; }
+        .tree-indent-1 { margin-left:2rem; }
+        .tree-indent-2 { margin-left:4rem; }
+        .tree-node { border:1px solid var(--border-color); border-radius:.65rem; padding:.5rem .75rem; background:var(--section-alt-bg); }
+        .output-grain-note { border-left:4px solid var(--uncg-gold); background:var(--section-alt-bg); padding:1rem; border-radius:0 .65rem .65rem 0; }
+        @media (max-width: 991px) {
+            .cte-pipeline { grid-template-columns:1fr; }
+            .cte-arrow { transform:rotate(90deg); }
+            .window-anatomy { grid-template-columns:1fr 1fr; }
+            .group-partition-grid,.analysis-pattern { grid-template-columns:1fr; }
+        }
+        @media (max-width: 575px) {
+            .window-anatomy { grid-template-columns:1fr; }
+            .frame-visual { grid-template-columns:repeat(4,1fr); }
+        }
+
+        .view-layer-stack { display:grid; grid-template-columns:1fr auto 1fr auto 1fr auto 1fr; gap:.65rem; align-items:center; margin:1.25rem 0; }
+        .view-layer { border:1px solid var(--border-color); border-radius:.85rem; background:var(--section-alt-bg); padding:1rem; min-height:116px; display:flex; flex-direction:column; justify-content:center; }
+        .view-layer strong { color:var(--header-color); display:block; margin-bottom:.25rem; }
+        .layer-arrow { color:var(--uncg-gold); text-align:center; font-size:1.15rem; }
+        .interface-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0; }
+        .interface-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .interface-card.dynamic { border-top:4px solid var(--success-color); }
+        .interface-card.snapshot { border-top:4px solid var(--warning-color); }
+        .interface-label { display:inline-block; border:1px solid var(--border-color); border-radius:999px; padding:.15rem .55rem; font-size:.75rem; margin-bottom:.6rem; }
+        .freshness-line { display:grid; grid-template-columns:repeat(5,1fr); gap:.65rem; align-items:start; margin:1.2rem 0; position:relative; }
+        .freshness-line::before { content:""; position:absolute; top:18px; left:8%; right:8%; height:2px; background:var(--border-color); z-index:0; }
+        .fresh-step { position:relative; z-index:1; text-align:center; }
+        .fresh-dot { width:36px; height:36px; border-radius:50%; margin:0 auto .45rem; display:flex; align-items:center; justify-content:center; background:var(--section-bg); border:2px solid var(--accent-color); font-weight:700; }
+        .fresh-step.stale .fresh-dot { border-color:var(--warning-color); }
+        .fresh-step.refresh .fresh-dot { border-color:var(--success-color); }
+        .security-flow { display:grid; grid-template-columns:1fr auto 1fr auto 1fr; gap:.75rem; align-items:center; margin:1rem 0; }
+        .security-node { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); min-height:130px; }
+        .security-node.sensitive { border-top:4px solid var(--danger-color); }
+        .security-node.interface { border-top:4px solid var(--accent-color); }
+        .security-node.consumer { border-top:4px solid var(--success-color); }
+        .dependency-chain { display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem; margin:1rem 0; }
+        .dependency-node { border:1px solid var(--border-color); border-radius:.75rem; padding:.85rem; background:var(--section-alt-bg); position:relative; }
+        .dependency-node:not(:last-child)::after { content:"→"; position:absolute; right:-.63rem; top:50%; transform:translateY(-50%); color:var(--uncg-gold); font-weight:800; }
+        .view-decision-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:.85rem; margin:1rem 0; }
+        .view-decision { border:1px solid var(--border-color); border-radius:.85rem; background:var(--section-alt-bg); padding:1rem; }
+        .view-decision h3 { font-size:1rem; }
+        .boundary-note { border-left:4px solid var(--warning-color); background:var(--section-alt-bg); padding:1rem; border-radius:0 .65rem .65rem 0; }
+        .object-chip { display:inline-flex; align-items:center; gap:.35rem; border:1px solid var(--border-color); border-radius:999px; padding:.2rem .55rem; font-size:.78rem; margin:.15rem .15rem .15rem 0; }
+        .object-chip.view { background:rgba(52,211,153,.08); }
+        .object-chip.mv { background:rgba(251,191,36,.08); }
+        .object-chip.cte { background:rgba(99,102,241,.08); }
+        .freshness-meter { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+        .meter-card { border:1px solid var(--border-color); border-radius:.85rem; padding:1rem; background:var(--section-alt-bg); }
+        .meter-bar { height:12px; border-radius:999px; background:var(--border-color); overflow:hidden; margin-top:.55rem; }
+        .meter-bar span { display:block; height:100%; }
+        .meter-live { width:100%; background:var(--success-color); }
+        .meter-snapshot { width:68%; background:var(--warning-color); }
+        @media (max-width: 991px) {
+            .view-layer-stack { grid-template-columns:1fr; }
+            .layer-arrow { transform:rotate(90deg); }
+            .interface-grid,.freshness-meter,.view-decision-grid { grid-template-columns:1fr; }
+            .security-flow { grid-template-columns:1fr; }
+            .security-flow .layer-arrow { transform:rotate(90deg); }
+            .dependency-chain { grid-template-columns:1fr; }
+            .dependency-node:not(:last-child)::after { content:"↓"; right:auto; left:50%; top:auto; bottom:-1.05rem; transform:translateX(-50%); }
+        }
+        @media (max-width: 575px) {
+            .freshness-line { grid-template-columns:1fr; }
+            .freshness-line::before { display:none; }
+        }
+
+
+
+        /* Module 13: Spark-specific visuals */
+        .spark-architecture {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) auto minmax(0, 1.7fr);
+            gap: 1rem;
+            align-items: center;
+            margin: 1.4rem 0;
+        }
+        .spark-driver,
+        .spark-executor,
+        .spark-stage,
+        .concept-tile,
+        .engine-lane,
+        .schema-card,
+        .plan-step,
+        .workload-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: .85rem;
+            padding: 1rem;
+        }
+        .spark-driver {
+            border-top: 4px solid var(--uncg-gold);
+        }
+        .spark-driver strong,
+        .spark-executor strong,
+        .plan-step strong,
+        .schema-card strong,
+        .engine-lane strong {
+            display: block;
+            color: var(--header-color);
+            margin-bottom: .25rem;
+        }
+        .executor-cluster {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: .8rem;
+        }
+        .spark-executor {
+            border-top: 4px solid var(--accent-color);
+        }
+        .spark-task-row {
+            display: flex;
+            gap: .35rem;
+            flex-wrap: wrap;
+            margin-top: .7rem;
+        }
+        .spark-task {
+            background: rgba(99,102,241,.14);
+            border: 1px solid var(--accent-color);
+            border-radius: 999px;
+            padding: .15rem .48rem;
+            font: 600 .72rem "Source Code Pro", monospace;
+        }
+        .cluster-arrow,
+        .plan-arrow {
+            color: var(--uncg-gold);
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        .concept-grid,
+        .schema-grid,
+        .workload-grid,
+        .engine-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1.25rem 0;
+        }
+        .concept-tile h3,
+        .schema-card h3,
+        .workload-card h3,
+        .engine-lane h3 {
+            font-size: 1rem;
+            margin-bottom: .45rem;
+        }
+        .concept-icon {
+            width: 2.35rem;
+            height: 2.35rem;
+            display: inline-grid;
+            place-items: center;
+            border-radius: .65rem;
+            background: rgba(56,189,248,.13);
+            border: 1px solid rgba(56,189,248,.35);
+            margin-bottom: .65rem;
+        }
+        .spark-plan {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: .65rem;
+            margin: 1.3rem 0;
+            align-items: stretch;
+        }
+        .plan-step {
+            position: relative;
+            min-height: 116px;
+        }
+        .plan-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -.62rem;
+            top: 42%;
+            color: var(--uncg-gold);
+            font-weight: 800;
+        }
+        .lakehouse-stack {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: .55rem;
+            margin: 1.2rem 0;
+        }
+        .lakehouse-layer {
+            display: grid;
+            grid-template-columns: 150px minmax(0, 1fr);
+            gap: .9rem;
+            align-items: center;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--accent-color);
+            border-radius: .75rem;
+            padding: .8rem 1rem;
+        }
+        .lakehouse-layer.storage {border-left-color: var(--uncg-gold);}
+        .lakehouse-layer.table {border-left-color: var(--success-color);}
+        .lakehouse-layer.engine {border-left-color: var(--header-color);}
+        .lakehouse-layer strong {color: var(--header-color);}
+        .engine-lane.spark {border-top: 4px solid #f59e0b;}
+        .engine-lane.tsql {border-top: 4px solid #38bdf8;}
+        .portable-lab-note {
+            border: 1px solid var(--warning-color);
+            border-left: 5px solid var(--warning-color);
+            background: var(--alert-warning-bg);
+            border-radius: .75rem;
+            padding: 1rem;
+            margin: 1rem 0 1.25rem;
+        }
+        .portable-lab-note strong {color: var(--text-color);}
+        .shuffle-visual {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            gap: .65rem;
+            align-items: center;
+            margin: 1.2rem 0;
+        }
+        .partition-column {
+            display: grid;
+            gap: .45rem;
+        }
+        .partition-box {
+            border: 1px solid var(--border-color);
+            border-radius: .55rem;
+            padding: .55rem .7rem;
+            background: var(--section-alt-bg);
+            font-size: .87rem;
+        }
+        .shuffle-cloud {
+            border: 2px dashed var(--warning-color);
+            border-radius: 1rem;
+            padding: .9rem;
+            text-align: center;
+            background: var(--alert-warning-bg);
+            min-width: 116px;
+        }
+        .schema-card.infer {border-top: 4px solid var(--warning-color);}
+        .schema-card.explicit {border-top: 4px solid var(--success-color);}
+        .schema-card.delta {border-top: 4px solid var(--accent-color);}
+        .workload-card.spark-fit {border-top: 4px solid var(--success-color);}
+        .workload-card.db-fit {border-top: 4px solid var(--header-color);}
+        .code-label {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            font-size: .76rem;
+            font-weight: 700;
+            padding: .25rem .55rem;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            background: var(--section-alt-bg);
+            margin-bottom: .5rem;
+        }
+        .fabric-badge {
+            color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+        .portable-badge {
+            color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        .spark-checklist li {margin-bottom: .45rem;}
+        @media (max-width: 991.98px) {
+            .spark-architecture {grid-template-columns: 1fr;}
+            .cluster-arrow {transform: rotate(90deg);}
+            .spark-plan {grid-template-columns: 1fr 1fr;}
+            .plan-step:nth-child(2)::after {display:none;}
+            .shuffle-visual {grid-template-columns: 1fr;}
+            .plan-arrow {transform: rotate(90deg);}
+        }
+        @media (max-width: 575.98px) {
+            .concept-grid,.schema-grid,.workload-grid,.engine-grid,.executor-cluster,.spark-plan {grid-template-columns: 1fr;}
+            .plan-step::after {display:none !important;}
+            .lakehouse-layer {grid-template-columns: 1fr;}
+        }
+
+
+        .install-choice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .platform-card {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.9rem;
+            padding: 1.15rem;
+            height: 100%;
+        }
+
+        .platform-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            margin-bottom: 0.65rem;
+        }
+
+        .platform-icon {
+            width: 40px;
+            height: 40px;
+            flex: 0 0 40px;
+            border-radius: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(99, 102, 241, 0.16);
+            border: 1px solid rgba(99, 102, 241, 0.45);
+            color: var(--header-color);
+        }
+
+        .version-banner {
+            background: linear-gradient(135deg, rgba(12,35,64,.88), rgba(79,70,229,.78));
+            color: #fff;
+            border: 1px solid rgba(207,155,47,.65);
+            border-radius: 0.9rem;
+            padding: 1rem 1.1rem;
+        }
+
+        .version-banner strong,
+        .version-banner p,
+        .version-banner span {
+            color: #fff !important;
+        }
+
+        .install-flow {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 0.7rem;
+            align-items: stretch;
+            margin-top: 1rem;
+        }
+
+        .flow-step {
+            position: relative;
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            padding: 0.9rem 0.75rem;
+            text-align: center;
+            min-height: 116px;
+        }
+
+        .flow-step::after {
+            content: "→";
+            position: absolute;
+            right: -0.62rem;
+            top: 39px;
+            z-index: 3;
+            width: 1.1rem;
+            height: 1.8rem;
+            color: var(--uncg-gold);
+            font-weight: 800;
+            font-size: 1.3rem;
+        }
+
+        .flow-step:last-child::after { display: none; }
+
+        .flow-step .step-number {
+            display: inline-flex;
+            width: 30px;
+            height: 30px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #fff;
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+        }
+
+        .flow-step h3 {
+            font-size: 0.96rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .flow-step p {
+            font-size: 0.8rem;
+            margin: 0;
+            color: var(--muted-color);
+        }
+
+        .path-table td:first-child,
+        .path-table th:first-child { width: 22%; }
+
+        .path-table td:nth-child(2),
+        .path-table th:nth-child(2) { width: 28%; }
+
+        .recommended-pill,
+        .optional-pill,
+        .terminal-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            border-radius: 999px;
+            padding: .22rem .55rem;
+            font-size: .74rem;
+            font-weight: 800;
+        }
+
+        .recommended-pill { background: rgba(16,185,129,.16); color: var(--success-color); border: 1px solid rgba(16,185,129,.45); }
+        .optional-pill { background: rgba(245,158,11,.13); color: var(--warning-color); border: 1px solid rgba(245,158,11,.42); }
+        .terminal-pill { background: rgba(56,189,248,.12); color: var(--header-color); border: 1px solid rgba(56,189,248,.4); }
+
+        .step-list {
+            counter-reset: installstep;
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0 0;
+        }
+
+        .step-list > li {
+            counter-increment: installstep;
+            position: relative;
+            padding: 0 0 1.2rem 3.25rem;
+            min-height: 3rem;
+        }
+
+        .step-list > li::before {
+            content: counter(installstep);
+            position: absolute;
+            left: 0;
+            top: .05rem;
+            width: 2.3rem;
+            height: 2.3rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: .65rem;
+            background: var(--accent-color);
+            color: #fff;
+            font-weight: 800;
+            box-shadow: 0 5px 14px var(--shadow-color);
+        }
+
+        .step-list > li:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            left: 1.12rem;
+            top: 2.45rem;
+            bottom: .05rem;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .code-shell {
+            position: relative;
+            margin: .7rem 0 1rem;
+        }
+
+        .code-shell pre {
+            margin: 0;
+            padding: 1rem 1rem 1rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            z-index: 5;
+            top: .55rem;
+            right: .55rem;
+            border: 1px solid var(--border-color);
+            background: var(--section-bg);
+            color: var(--text-color);
+            border-radius: .45rem;
+            font-size: .74rem;
+            font-weight: 700;
+            padding: .3rem .5rem;
+        }
+
+        .copy-btn:hover { background: var(--accent-color); color: #fff; }
+
+        .connection-diagram {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            gap: .55rem;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        .connection-node {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: .85rem;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .connection-node i { color: var(--header-color); font-size: 1.5rem; margin-bottom: .45rem; }
+        .connection-arrow { color: var(--uncg-gold); font-size: 1.45rem; font-weight: 800; }
+
+        .check-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: .75rem;
+        }
+
+        .check-item {
+            background: var(--section-alt-bg);
+            border: 1px solid var(--border-color);
+            border-radius: .75rem;
+            padding: .8rem .9rem;
+            display: flex;
+            gap: .65rem;
+            align-items: flex-start;
+        }
+
+        .check-item i { color: var(--success-color); margin-top: .28rem; }
+
+        .troubleshoot-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: .9rem;
+        }
+
+        .trouble-card {
+            border: 1px solid var(--border-color);
+            border-radius: .8rem;
+            padding: 1rem;
+            background: var(--section-alt-bg);
+        }
+
+        .trouble-card h3 { font-size: 1rem; }
+
+        .source-card {
+            border-left: 4px solid var(--accent-color);
+            background: var(--section-alt-bg);
+            border-radius: .55rem;
+            padding: .8rem 1rem;
+            margin-bottom: .7rem;
+        }
+
+        .source-card a { font-weight: 700; }
+
+        .accordion-item,
+        .accordion-button,
+        .accordion-body {
+            background: var(--section-bg);
+            color: var(--text-color);
+            border-color: var(--border-color);
+        }
+
+        .accordion-button:not(.collapsed) {
+            background: var(--section-alt-bg);
+            color: var(--header-color);
+            box-shadow: none;
+        }
+
+        .accordion-button::after { filter: var(--accordion-filter, invert(1)); }
+        [data-theme="light"] .accordion-button::after { --accordion-filter: none; }
+
+        @media (max-width: 991.98px) {
+            .install-flow { grid-template-columns: 1fr; }
+            .flow-step::after { content: "↓"; right: 50%; top: auto; bottom: -1.05rem; transform: translateX(50%); }
+            .connection-diagram { grid-template-columns: 1fr; }
+            .connection-arrow { transform: rotate(90deg); justify-self: center; }
+        }
+
+        @media (max-width: 767.98px) {
+            .install-choice-grid,
+            .check-grid,
+            .troubleshoot-grid { grid-template-columns: 1fr; }
+            .path-table { min-width: 720px; }
+        }
+</style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<nav aria-label="Main navigation" class="nav-container"><div class="container"><div class="nav-menu">
+<a class="nav-logo" href="index.html"><span class="brand-mark"><i aria-hidden="true" class="fas fa-database"></i></span>IAN 603 - Data Analytics</a>
+<button aria-controls="nav-links-list" aria-expanded="false" aria-label="Open navigation" class="mobile-menu-btn" id="mobile-menu-toggle" type="button"><i aria-hidden="true" class="fas fa-bars"></i></button>
+<ul class="nav-links-list" id="nav-links-list"><li><a class="nav-link" href="index.html"><i aria-hidden="true" class="fas fa-home"></i>Home</a></li><li class="dropdown"><button aria-expanded="false" class="nav-link dropdown-trigger" type="button"><i aria-hidden="true" class="fas fa-layer-group"></i>Modules <i aria-hidden="true" class="fas fa-chevron-down ms-1"></i></button><div class="dropdown-content"><a class="dropdown-link" href="module1.html"><span class="module-number">1</span>Introduction to Data</a><a class="dropdown-link" href="module2.html"><span class="module-number">2</span>Database Concepts</a><a class="dropdown-link" href="module3.html"><span class="module-number">3</span>PostgreSQL in Action</a><a class="dropdown-link" href="module4.html"><span class="module-number">4</span>SQL Aggregations</a><a class="dropdown-link" href="module5.html"><span class="module-number">5</span>SQL Logic</a><a class="dropdown-link" href="module6.html"><span class="module-number">6</span>Joins in SQL</a><a class="dropdown-link" href="module7.html"><span class="module-number">7</span>Subqueries</a><a class="dropdown-link" href="module8.html"><span class="module-number">8</span>Strings and Dates</a><a class="dropdown-link" href="module9.html"><span class="module-number">9</span>Data Cleaning</a><a class="dropdown-link" href="module10.html"><span class="module-number">10</span>Reshaping Data</a><a class="dropdown-link" href="module11.html"><span class="module-number">11</span>Advanced SQL</a><a class="dropdown-link" href="module12.html"><span class="module-number">12</span>Views &amp; Modular Queries</a><a class="dropdown-link" href="module13.html"><span class="module-number">13</span>Spark SQL</a><a class="dropdown-link" href="module14.html"><span class="module-number">14</span>Course Synthesis</a></div></li><li><a class="nav-link active" href="#start"><i aria-hidden="true" class="fas fa-screwdriver-wrench"></i>PostgreSQL Guide</a></li><li><button aria-label="Toggle dark and light theme" class="theme-toggle-btn" id="theme-toggle" type="button"><i aria-hidden="true" class="fas fa-sun"></i><span class="d-none d-md-inline">Theme</span></button></li></ul>
+</div></div></nav>
 
-    <!-- Navigation Bar -->
+<header class="hero-section"><div class="container"><div class="row align-items-center g-4"><div class="col-lg-8">
+<div class="hero-kicker"><i aria-hidden="true" class="fas fa-screwdriver-wrench me-2"></i>IAN 603 · Course Resource</div>
+<h1>PostgreSQL Installation &amp; Course Setup Guide</h1>
+<p class="lead mb-3">Install PostgreSQL, connect with pgAdmin or <code>psql</code>, verify your local server, and get a clean course database ready for IAN 603.</p>
+<div class="essential-question"><strong>Goal:</strong> By the end of this guide, you should be able to start PostgreSQL, connect to it, execute SQL, and confirm that your environment is ready for the course.</div>
+<div class="hero-meta mt-3"><span><i aria-hidden="true" class="fab fa-windows me-1"></i>Windows</span><span><i aria-hidden="true" class="fab fa-apple me-1"></i>macOS</span><span><i aria-hidden="true" class="fab fa-linux me-1"></i>Linux</span><span><i aria-hidden="true" class="fas fa-elephant me-1"></i>PostgreSQL 18.x</span></div>
+</div><div class="col-lg-4"><div class="hero-summary"><div class="course-badge">IAN 603 - Data Analytics</div><p class="mb-2"><strong>Updated August 12, 2026</strong></p><p class="mb-0">For a new course installation, PostgreSQL 18 is the current major release. Use the current minor release available for your installation method unless your instructor specifies another supported major.</p></div></div></div></div></header>
 
- <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="./index.html">IAF 603: Preparing Data for Analytics</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Modules
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="./module1.html">Module 1</a></li>
-                            <li><a class="dropdown-item" href="./module2.html">Module 2</a></li>
-                            <li><a class="dropdown-item" href="./module3.html">Module 3</a></li>
-                            <li><a class="dropdown-item" href="./module4.html">Module 4</a></li>
-                            <li><a class="dropdown-item" href="./module5.html">Module 5</a></li>
-                            <li><a class="dropdown-item" href="./module6.html">Module 6</a></li>
-                            <li><a class="dropdown-item" href="./module7.html">Module 7</a></li>
-                            <li><a class="dropdown-item" href="./module8.html">Module 8</a></li>
-                            <li><a class="dropdown-item" href="./module9.html">Module 9</a></li>
-                            <li><a class="dropdown-item" href="./module10.html">Module 10</a></li>
-                            <li><a class="dropdown-item" href="./module11.html">Module 11</a></li>
-                            <li><a class="dropdown-item" href="./module12.html">Module 12</a></li>
-                            <li><a class="dropdown-item" href="./module13.html">Module 13</a></li>
-                            <li><a class="dropdown-item" href="./module14.html">Module 14</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./index.html#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<main class="container pb-5" id="main-content"><div class="row g-4 mt-1"><aside aria-label="Installation contents" class="col-lg-3"><nav aria-label="Installation section navigation" class="toc-panel"><h2><i aria-hidden="true" class="fas fa-list-check me-2"></i>Installation Contents</h2><ul class="toc-list">
+<li><a href="#start"><span class="toc-index">01</span> Start Here</a></li>
+<li><a href="#choose"><span class="toc-index">02</span> Choose a Path</a></li>
+<li><a href="#windows"><span class="toc-index">03</span> Windows</a></li>
+<li><a href="#macos"><span class="toc-index">04</span> macOS</a></li>
+<li><a href="#debian"><span class="toc-index">05</span> Ubuntu / Debian</a></li>
+<li><a href="#redhat"><span class="toc-index">06</span> RHEL / Rocky / Alma / Fedora</a></li>
+<li><a href="#pgadmin"><span class="toc-index">07</span> Configure pgAdmin</a></li>
+<li><a href="#verify"><span class="toc-index">08</span> Verify Installation</a></li>
+<li><a href="#troubleshoot"><span class="toc-index">09</span> Troubleshooting</a></li>
+<li><a href="#security"><span class="toc-index">10</span> Security Basics</a></li>
+<li><a href="#ready"><span class="toc-index">11</span> Ready for IAN 603</a></li>
+<li><a href="#resources"><span class="toc-index">12</span> Official Resources</a></li>
+</ul><hr class="border-secondary"/><p class="small text-muted mb-2">Best installation habit</p><p class="small mb-0">Choose <strong>one local PostgreSQL server installation method</strong>. Multiple local servers are a common cause of port and PATH conflicts.</p></nav></aside>
+<div class="col-lg-9 content-column">
 
+<section class="content-card" id="start"><div class="section-kicker">Start here</div><h2>What you need for IAN 603</h2>
+<p>This guide replaces the older installation page while keeping its cross-platform goal: a working PostgreSQL server, a way to connect, and a reliable verification step. The course does not require you to install every optional tool.</p>
+<div class="version-banner"><p class="mb-1"><strong><i class="fas fa-circle-info me-2"></i>Current version note</strong></p><p class="mb-0">As of this guide update, PostgreSQL <strong>18.4</strong> is the current minor release in major version 18. PostgreSQL 14–18 are supported, but PostgreSQL 14 reaches end of support in November 2026. New student installations should normally use PostgreSQL 18 unless course instructions say otherwise.</p></div>
+<div class="install-flow" aria-label="Installation workflow">
+<div class="flow-step"><span class="step-number">1</span><h3>Install</h3><p>Install one PostgreSQL server.</p></div>
+<div class="flow-step"><span class="step-number">2</span><h3>Start</h3><p>Confirm the database service is running.</p></div>
+<div class="flow-step"><span class="step-number">3</span><h3>Connect</h3><p>Use pgAdmin or <code>psql</code>.</p></div>
+<div class="flow-step"><span class="step-number">4</span><h3>Verify</h3><p>Run a version and connection query.</p></div>
+<div class="flow-step"><span class="step-number">5</span><h3>Course DB</h3><p>Create a clean <code>ian603</code> database.</p></div>
+</div>
+<div class="alert alert-info mt-4"><strong>Before you begin:</strong> You may need administrator privileges to install software. Save any password you create in a secure password manager. Do not post database passwords in Canvas discussions, screenshots, or shared code.</div>
+</section>
 
+<section class="content-card" id="choose"><div class="section-kicker">Choose one path</div><h2>Recommended installation path by operating system</h2>
+<p>Use the simplest option that fits your computer. You do <strong>not</strong> need multiple PostgreSQL installations.</p>
+<div class="table-responsive"><table class="table table-bordered path-table"><caption>Recommended PostgreSQL installation options for IAN 603</caption><thead><tr><th>Platform</th><th>Recommended path</th><th>When to use it</th><th>pgAdmin</th></tr></thead><tbody>
+<tr><td><i class="fab fa-windows me-2"></i>Windows</td><td><span class="recommended-pill"><i class="fas fa-star"></i>EDB installer</span></td><td>Simplest complete installation for most students.</td><td>Included with the EDB installer.</td></tr>
+<tr><td><i class="fab fa-apple me-2"></i>macOS</td><td><span class="recommended-pill"><i class="fas fa-star"></i>Postgres.app</span> or <span class="terminal-pill"><i class="fas fa-terminal"></i>Homebrew</span></td><td>Postgres.app for simplicity; Homebrew for terminal-oriented workflows.</td><td>Install separately if your chosen method does not include it.</td></tr>
+<tr><td><i class="fab fa-ubuntu me-2"></i>Ubuntu / Debian</td><td><span class="recommended-pill"><i class="fas fa-star"></i>APT</span></td><td>Use distribution packages for simplicity or PGDG APT when you want the current supported major.</td><td>Optional; available from the official pgAdmin APT repository.</td></tr>
+<tr><td><i class="fab fa-redhat me-2"></i>RHEL / Rocky / Alma / Fedora</td><td><span class="recommended-pill"><i class="fas fa-star"></i>DNF / PGDG</span></td><td>Distribution package for simplicity; PGDG repository for a selected supported major.</td><td>Optional; available from the official pgAdmin RPM repository.</td></tr>
+</tbody></table></div>
+<div class="alert alert-warning mt-3"><strong>Avoid duplicate servers:</strong> For example, do not install Postgres.app and a Homebrew PostgreSQL server at the same time unless you intentionally know how to manage separate ports and data directories.</div>
+</section>
 
+<section class="content-card" id="windows"><div class="section-kicker">Platform setup</div><h2><i class="fab fa-windows me-2"></i>Windows: EDB interactive installer</h2>
+<p>The official PostgreSQL Windows download page points to the EDB interactive installer. It bundles the PostgreSQL server, pgAdmin, and StackBuilder.</p>
+<ol class="step-list">
+<li><strong>Open the official Windows download page.</strong><br/><a href="https://www.postgresql.org/download/windows/" target="_blank" rel="noopener">PostgreSQL Windows downloads</a>. Choose the EDB interactive installer and select the current stable PostgreSQL major unless your instructor specifies another supported version.</li>
+<li><strong>Run the installer.</strong><br/>Keep <strong>PostgreSQL Server</strong>, <strong>pgAdmin 4</strong>, and <strong>Command Line Tools</strong> selected. StackBuilder is optional for this course.</li>
+<li><strong>Set the database superuser password.</strong><br/>The installer normally creates the administrative role <code>postgres</code>. Save its password securely; pgAdmin may ask for it when you connect.</li>
+<li><strong>Keep the default port unless you have a conflict.</strong><br/>The standard PostgreSQL port is <code>5432</code>. If the installer says it is already in use, check whether PostgreSQL is already installed before choosing another port.</li>
+<li><strong>Finish the installation and open pgAdmin 4.</strong><br/>You can skip optional StackBuilder packages unless a later course activity explicitly needs an extension or driver.</li>
+</ol>
+<h3 class="h5 mt-3">Verify from Windows</h3>
+<div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-bash">psql --version</code></pre></div>
+<p>If Windows says <code>psql</code> is not recognized, open <strong>SQL Shell (psql)</strong> from the Start menu or add the PostgreSQL <code>bin</code> directory (typically <code>C:\Program Files\PostgreSQL\&lt;major&gt;in</code>) to your PATH.</p>
+<div class="alert alert-secondary"><strong>Typical local connection:</strong> host <code>localhost</code>, port <code>5432</code>, maintenance database <code>postgres</code>, username <code>postgres</code>.</div>
+</section>
 
-    <div class="container my-5">
-        <!-- Header with PostgreSQL Logo -->
-        <div class="text-center mb-4">
-            <img src="./img/postgre_logo.png" alt="PostgreSQL Elephant Logo" class="img-fluid mx-auto d-block" style="max-width: 200px;">
-            <h1 class="mt-3">Installing PostgreSQL</h1>
-            <p>This guide provides complete, step-by-step instructions for installing PostgreSQL on Windows, macOS, and Linux (focusing on major distributions like Ubuntu, Debian, and Red Hat-based systems such as RHEL, Fedora, and CentOS). These instructions are based on official sources and assume you're installing the latest stable version unless specified. Always check the official PostgreSQL website for the most up-to-date versions and any security advisories. After installation, a common verification step across platforms is to run <code>psql --version</code> in a terminal or command prompt to confirm the installation.</p>
-        </div>
+<section class="content-card" id="macos"><div class="section-kicker">Platform setup</div><h2><i class="fab fa-apple me-2"></i>macOS: Postgres.app or Homebrew</h2>
+<div class="install-choice-grid">
+<div class="platform-card"><h3 class="h5"><span class="platform-icon"><i class="fas fa-window-maximize"></i></span>Option A · Postgres.app</h3><p><span class="recommended-pill"><i class="fas fa-star"></i>Recommended for simplicity</span></p><ol class="mb-0"><li>Download Postgres.app from its official site.</li><li>Move it to <strong>Applications</strong> and open it.</li><li>Click <strong>Initialize</strong> if prompted to create a server cluster.</li><li>Add the bundled command-line tools to PATH if you want to use <code>psql</code> in Terminal.</li></ol></div>
+<div class="platform-card"><h3 class="h5"><span class="platform-icon"><i class="fas fa-terminal"></i></span>Option B · Homebrew</h3><p><span class="terminal-pill"><i class="fas fa-code"></i>Terminal workflow</span></p><p>Use this when you already use Homebrew and are comfortable managing services from Terminal.</p><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-bash">brew update
+brew install postgresql@18
+brew services start postgresql@18
+brew services list
+psql postgres</code></pre></div></div>
+</div>
+<h3 class="h5 mt-4">Postgres.app command-line PATH</h3>
+<p>The Postgres.app documentation recommends adding its current version's <code>bin</code> directory to the macOS path list:</p>
+<div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-bash">sudo mkdir -p /etc/paths.d
+echo /Applications/Postgres.app/Contents/Versions/latest/bin | sudo tee /etc/paths.d/postgresapp</code></pre></div>
+<p>Open a new Terminal window afterward and verify:</p>
+<div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-bash">psql --version
+psql postgres</code></pre></div>
+<div class="alert alert-warning"><strong>Important:</strong> Postgres.app and Homebrew can each run their own PostgreSQL server. Pick one for the course to avoid port <code>5432</code> conflicts.</div>
+</section>
 
-        <!-- Accordion for Sections -->
-        <div class="accordion" id="installationAccordion">
-            <!-- Windows Section -->
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="windowsHeading">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#windowsCollapse" aria-expanded="true" aria-controls="windowsCollapse">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/512px-Windows_logo_-_2012.svg.png" alt="Windows Logo" class="me-2" width="30"> On Windows
-                    </button>
-                </h2>
-                <div id="windowsCollapse" class="accordion-collapse collapse show" aria-labelledby="windowsHeading" data-bs-parent="#installationAccordion">
-                    <div class="accordion-body">
-                        <h3>Prerequisites</h3>
-                        <p>A supported Windows version (e.g., Windows Server 2022, 2019, 2016, or 2012 R2, depending on the PostgreSQL version).</p>
-                        
-                        <h3>Download and Installation</h3>
-                        <ol>
-                            <li>Download the interactive installer from EnterpriseDB: Visit <a href="https://www.enterprisedb.com/downloads/postgres-postgresql-downloads">https://www.enterprisedb.com/downloads/postgres-postgresql-downloads</a> and select the appropriate version for your system.</li>
-                            <li>Run the downloaded installer (.exe file). You can choose interactive mode (follow the graphical prompts) or silent mode for automation.</li>
-                            <li>During installation, the wizard will guide you through selecting components, including:
-                                <ul>
-                                    <li>PostgreSQL server.</li>
-                                    <li>pgAdmin (a graphical management tool).</li>
-                                    <li>StackBuilder (for additional tools like drivers and extensions).</li>
-                                </ul>
-                            </li>
-                            <li>Complete the installation by following the on-screen instructions, including setting a superuser password.</li>
-                        </ol>
-                        
-                        <h3>Post-Installation Verification and Configuration</h3>
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <p>PostgreSQL should start automatically as a service. Open pgAdmin or use the command prompt to connect to the server.</p>
-                                <p>To verify: Open Command Prompt and run <code>psql -U postgres</code> (enter the password set during installation), then type <code>\conninfo</code> to check the connection.</p>
-                                <p>If issues arise, check the installer GitHub for bugs: <a href="https://github.com/EnterpriseDB/edb-installers/issues">https://github.com/EnterpriseDB/edb-installers/issues</a>.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<section class="content-card" id="debian"><div class="section-kicker">Platform setup</div><h2><i class="fab fa-ubuntu me-2"></i>Ubuntu / Debian: APT</h2>
+<p>PostgreSQL is available directly from Ubuntu and Debian repositories. The PostgreSQL Global Development Group (PGDG) also maintains an APT repository that provides supported PostgreSQL majors, including the current major.</p>
+<h3 class="h5">Path A · Distribution package</h3>
+<p>Use this if you want the version provided and maintained by your Linux distribution:</p>
+<div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-bash">sudo apt update
+sudo apt install -y postgresql
+sudo systemctl status postgresql</code></pre></div>
+<h3 class="h5 mt-4">Path B · PGDG repository for PostgreSQL 18</h3>
+<p>Use the official PGDG repository if you specifically want PostgreSQL 18 on a supported Ubuntu/Debian release:</p>
+<div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-bash">sudo apt install -y postgresql-common ca-certificates
+sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+sudo apt update
+sudo apt install -y postgresql-18</code></pre></div>
+<h3 class="h5 mt-4">Connect locally</h3>
+<p>Debian-family packages commonly let the operating-system <code>postgres</code> account connect locally using peer authentication:</p>
+<div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-bash">sudo -u postgres psql</code></pre></div>
+<p>Inside <code>psql</code>, you can verify the connection with:</p>
+<div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">SELECT version();
+SELECT current_database(), current_user;</code></pre></div>
+<div class="alert alert-info"><strong>pgAdmin note:</strong> A local shell connection may work without a database password because Linux can use peer authentication. pgAdmin uses a network-style connection, so authentication requirements can differ.</div>
+</section>
 
-            <!-- macOS Section -->
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="macosHeading">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#macosCollapse" aria-expanded="false" aria-controls="macosCollapse">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/833px-Apple_logo_black.svg.png" alt="macOS Apple Logo" class="me-2" width="30"> On macOS
-                    </button>
-                </h2>
-                <div id="macosCollapse" class="accordion-collapse collapse" aria-labelledby="macosHeading" data-bs-parent="#installationAccordion">
-                    <div class="accordion-body">
-                        <p>PostgreSQL can be installed via Homebrew (command-line) or Postgres.app (GUI-based). Homebrew is recommended for developers.</p>
-                        
-                        <h3>Using Homebrew</h3>
-                        <h4>Prerequisites</h4>
-                        <p>Homebrew installed (install from <a href="https://brew.sh">https://brew.sh</a> if needed).</p>
-                        
-                        <h4>Installation</h4>
-                        <ol>
-                            <li>Open Terminal and update Homebrew: <code>brew update</code>.</li>
-                            <li>Install PostgreSQL (latest version): <code>brew install postgresql</code>.
-                                <ul>
-                                    <li>For a specific version (e.g., 16): <code>brew install postgresql@16</code>.</li>
-                                </ul>
-                            </li>
-                            <li>Start the service: <code>brew services start postgresql</code> (or <code>brew services start postgresql@16</code> for a specific version).</li>
-                        </ol>
-                        
-                        <h4>Post-Installation Verification and Configuration</h4>
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <p>Verify: Run <code>psql --version</code>.</p>
-                                <p>Create a database: <code>createdb mydb</code> and connect with <code>psql mydb</code>.</p>
-                                <p>Stop the service if needed: <code>brew services stop postgresql</code>.</p>
-                            </div>
-                        </div>
-                        
-                        <h3>Using Postgres.app</h3>
-                        <h4>Prerequisites</h4>
-                        <p>None specific beyond macOS compatibility.</p>
-                        
-                        <h4>Installation</h4>
-                        <ol>
-                            <li>Download Postgres.app from <a href="https://postgresapp.com">https://postgresapp.com</a>.</li>
-                            <li>Open the downloaded .app file. It runs from the menu bar and starts a PostgreSQL server automatically.</li>
-                        </ol>
-                        
-                        <h4>Post-Installation Verification and Configuration</h4>
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <p>The server runs while the app is open. Connect using included tools or <code>psql</code>.</p>
-                                <p>Verify: Open Terminal and run <code>psql --version</code>.</p>
-                                <p>Closing the app stops the server.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<section class="content-card" id="redhat"><div class="section-kicker">Platform setup</div><h2><i class="fab fa-redhat me-2"></i>RHEL / Rocky / AlmaLinux / Fedora: DNF</h2>
+<p>Red Hat-family distributions include PostgreSQL packages, and the PostgreSQL project also provides the PGDG Yum repository for supported major versions.</p>
+<h3 class="h5">Path A · Distribution package</h3>
+<div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-bash">sudo dnf install -y postgresql-server
+sudo postgresql-setup --initdb
+sudo systemctl enable postgresql.service
+sudo systemctl start postgresql.service</code></pre></div>
+<h3 class="h5 mt-4">Path B · PGDG repository</h3>
+<p>Because the repository setup RPM depends on your exact distribution release and architecture, use the PostgreSQL project's selector rather than copying a hard-coded repository URL from an old guide:</p>
+<p><a href="https://www.postgresql.org/download/linux/redhat/" target="_blank" rel="noopener">PostgreSQL Red Hat-family download selector</a></p>
+<p>After configuring the PGDG repository for PostgreSQL 18, the versioned package/service pattern is typically:</p>
+<div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-bash">sudo dnf install -y postgresql18-server
+sudo /usr/pgsql-18/bin/postgresql-18-setup initdb
+sudo systemctl enable --now postgresql-18</code></pre></div>
+<p>Then connect locally as the PostgreSQL operating-system account:</p>
+<div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-bash">sudo -u postgres psql</code></pre></div>
+<div class="alert alert-warning"><strong>Fedora note:</strong> Fedora changes quickly. For a course laptop, use packages supported by your current Fedora release and avoid copying commands designed for an older Fedora version.</div>
+</section>
 
-            <!-- Linux Section -->
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="linuxHeading">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#linuxCollapse" aria-expanded="false" aria-controls="linuxCollapse">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/800px-Tux.svg.png" alt="Linux Tux Penguin Logo" class="me-2" width="30"> On Linux
-                    </button>
-                </h2>
-                <div id="linuxCollapse" class="accordion-collapse collapse" aria-labelledby="linuxHeading" data-bs-parent="#installationAccordion">
-                    <div class="accordion-body">
-                        <p>Instructions vary by distribution. Below are for Ubuntu, Debian, and Red Hat-based systems (RHEL, Fedora, CentOS/Rocky/AlmaLinux). Use sudo for commands requiring privileges.</p>
-                        
-                        <!-- Nested Accordion for Linux Distributions -->
-                        <div class="accordion" id="linuxDistAccordion">
-                            <!-- Ubuntu Sub-Section -->
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="ubuntuHeading">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ubuntuCollapse" aria-expanded="true" aria-controls="ubuntuCollapse">
-                                        Ubuntu
-                                    </button>
-                                </h2>
-                                <div id="ubuntuCollapse" class="accordion-collapse collapse show" aria-labelledby="ubuntuHeading" data-bs-parent="#linuxDistAccordion">
-                                    <div class="accordion-body">
-                                        <h4>Prerequisites</h4>
-                                        <p>A supported Ubuntu version (e.g., 24.04 LTS, 22.04 LTS).</p>
-                                        
-                                        <h4>Repository Setup</h4>
-                                        <ol>
-                                            <li>Install PostgreSQL common: <code>sudo apt install -y postgresql-common</code>.</li>
-                                            <li>Run the setup script: <code>sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh</code>.
-                                                <ul>
-                                                    <li>Alternatively, manually: Install curl and ca-certificates, import the key, add the repo to sources.list, and update apt.</li>
-                                                </ul>
-                                            </li>
-                                        </ol>
-                                        
-                                        <h4>Installation</h4>
-                                        <ol>
-                                            <li>Update packages: <code>sudo apt update</code>.</li>
-                                            <li>Install: <code>sudo apt install -y postgresql</code> (latest version).
-                                                <ul>
-                                                    <li>For a specific version (e.g., 16): <code>sudo apt install -y postgresql-16</code>.</li>
-                                                </ul>
-                                            </li>
-                                        </ol>
-                                        
-                                        <h4>Post-Installation Verification and Configuration</h4>
-                                        <div class="card mb-3">
-                                            <div class="card-body">
-                                                <p>Start the service: <code>sudo systemctl start postgresql</code>.</p>
-                                                <p>Enable on boot: <code>sudo systemctl enable postgresql</code>.</p>
-                                                <p>Verify: <code>sudo -u postgres psql</code> and run <code>\conninfo</code>.</p>
-                                                <p>Set a password for the postgres user if needed: <code>sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'newpassword';"</code>.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+<section class="content-card" id="pgadmin"><div class="section-kicker">Graphical client</div><h2>Configure pgAdmin 4</h2>
+<p>pgAdmin is a graphical administration and development tool. Windows EDB installations normally include it; macOS and Linux users can install it separately if they want a GUI.</p>
+<div class="connection-diagram" aria-label="pgAdmin connection diagram">
+<div class="connection-node"><i class="fas fa-laptop-code"></i><h3 class="h6">pgAdmin / psql</h3><p class="small mb-0">Your SQL client</p></div><div class="connection-arrow">→</div>
+<div class="connection-node"><i class="fas fa-network-wired"></i><h3 class="h6">localhost:5432</h3><p class="small mb-0">Local connection</p></div><div class="connection-arrow">→</div>
+<div class="connection-node"><i class="fas fa-database"></i><h3 class="h6">PostgreSQL Server</h3><p class="small mb-0">Databases + roles</p></div>
+</div>
+<h3 class="h5">Register your local server</h3>
+<div class="table-responsive"><table class="table table-bordered"><caption>Typical pgAdmin connection values</caption><thead><tr><th>Field</th><th>Typical value</th><th>Notes</th></tr></thead><tbody>
+<tr><td>Name</td><td><code>IAN603 Local PostgreSQL</code></td><td>This is only a label inside pgAdmin.</td></tr>
+<tr><td>Host name/address</td><td><code>localhost</code></td><td>Use for a PostgreSQL server running on the same computer.</td></tr>
+<tr><td>Port</td><td><code>5432</code></td><td>Use a different number only if you intentionally installed PostgreSQL on another port.</td></tr>
+<tr><td>Maintenance database</td><td><code>postgres</code></td><td>Common default administrative database.</td></tr>
+<tr><td>Username</td><td><code>postgres</code> or your local PostgreSQL role</td><td>Windows EDB often uses <code>postgres</code>; Homebrew/Postgres.app may use your macOS username.</td></tr>
+<tr><td>Password</td><td>Your database-role password</td><td>Do not confuse this with your computer login password.</td></tr>
+</tbody></table></div>
+<p>After connecting, open <strong>Tools → Query Tool</strong> and run:</p>
+<div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">SELECT version();
+SELECT current_database(), current_user;
+SHOW server_version;</code></pre></div>
+</section>
 
-                            <!-- Debian Sub-Section -->
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="debianHeading">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#debianCollapse" aria-expanded="false" aria-controls="debianCollapse">
-                                        Debian
-                                    </button>
-                                </h2>
-                                <div id="debianCollapse" class="accordion-collapse collapse" aria-labelledby="debianHeading" data-bs-parent="#linuxDistAccordion">
-                                    <div class="accordion-body">
-                                        <h4>Prerequisites</h4>
-                                        <p>A supported Debian version (e.g., 12, 11).</p>
-                                        
-                                        <h4>Repository Setup</h4>
-                                        <ol>
-                                            <li>Install PostgreSQL common: <code>sudo apt install -y postgresql-common</code>.</li>
-                                            <li>Run the setup script: <code>sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh</code>.
-                                                <ul>
-                                                    <li>Manually: Similar to Ubuntu—install curl, import key, add repo, update apt.</li>
-                                                </ul>
-                                            </li>
-                                        </ol>
-                                        
-                                        <h4>Installation</h4>
-                                        <ol>
-                                            <li>Update packages: <code>sudo apt update</code>.</li>
-                                            <li>Install: <code>sudo apt install -y postgresql</code> (latest).
-                                                <ul>
-                                                    <li>Specific version: <code>sudo apt install -y postgresql-16</code>.</li>
-                                                </ul>
-                                            </li>
-                                        </ol>
-                                        
-                                        <h4>Post-Installation Verification and Configuration</h4>
-                                        <div class="card mb-3">
-                                            <div class="card-body">
-                                                <p>Start the service: <code>sudo systemctl start postgresql</code>.</p>
-                                                <p>Enable on boot: <code>sudo systemctl enable postgresql</code>.</p>
-                                                <p>Verify: <code>sudo -u postgres psql</code> and check with <code>\conninfo</code>.</p>
-                                                <p>Configure as needed, e.g., edit <code>/etc/postgresql/&lt;version&gt;/main/postgresql.conf</code> for settings.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+<section class="content-card" id="verify"><div class="section-kicker">Verification</div><h2>Verify PostgreSQL before the first SQL assignment</h2>
+<p>Do not stop at “the installer finished.” Verify the client, the server, the connection, and your ability to create/query a database.</p>
+<h3 class="h5">1 · Client version</h3>
+<div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-bash">psql --version</code></pre></div>
+<h3 class="h5">2 · Server connection</h3>
+<div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">SELECT version();
+SELECT current_database() AS database_name,
+       current_user AS connected_as;</code></pre></div>
+<h3 class="h5">3 · Create a course database</h3>
+<p>Run this once while connected with a role that has permission to create databases:</p>
+<div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">CREATE DATABASE ian603;</code></pre></div>
+<h3 class="h5">4 · Run a small course readiness test</h3>
+<p>Connect to <code>ian603</code> in pgAdmin or <code>psql</code>, then run:</p>
+<div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-sql">CREATE TABLE installation_check (
+    check_id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    message text NOT NULL,
+    checked_at timestamptz NOT NULL DEFAULT now()
+);
 
-                            <!-- Red Hat Sub-Section -->
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="redhatHeading">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#redhatCollapse" aria-expanded="false" aria-controls="redhatCollapse">
-                                        Red Hat Enterprise Linux (RHEL) / CentOS / Rocky / AlmaLinux / Fedora
-                                    </button>
-                                </h2>
-                                <div id="redhatCollapse" class="accordion-collapse collapse" aria-labelledby="redhatHeading" data-bs-parent="#linuxDistAccordion">
-                                    <div class="accordion-body">
-                                        <h4>Prerequisites</h4>
-                                        <p>Access to the PostgreSQL Yum Repository for full versions.</p>
-                                        
-                                        <h4>Repository Setup</h4>
-                                        <ol>
-                                            <li>Visit <a href="https://yum.postgresql.org">https://yum.postgresql.org</a>, select your version, platform, and architecture.</li>
-                                            <li>Run the provided setup script (e.g., install the PGDG RPM: <code>sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm</code> for RHEL 9).</li>
-                                        </ol>
-                                        
-                                        <h4>Installation</h4>
-                                        <ol>
-                                            <li>For distribution repos (limited versions): <code>sudo dnf install -y postgresql-server</code>.</li>
-                                            <li>From PGDG repo (recommended): After setup, <code>sudo dnf install -y postgresql16-server</code> (replace 16 with desired version).</li>
-                                        </ol>
-                                        
-                                        <h4>Post-Installation Verification and Configuration</h4>
-                                        <div class="card mb-3">
-                                            <div class="card-body">
-                                                <p>Initialize the database: <code>sudo postgresql-setup --initdb</code> (or <code>/usr/pgsql-16/bin/postgresql-16-setup initdb</code> for specific versions).</p>
-                                                <p>Enable and start the service: <code>sudo systemctl enable postgresql.service</code> (or <code>postgresql-16.service</code>), then <code>sudo systemctl start postgresql.service</code>.</p>
-                                                <p>Verify: <code>sudo -u postgres psql</code> and run <code>\conninfo</code>.</p>
-                                                <p>For Fedora's shorter cycle, use PGDG for stability.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+INSERT INTO installation_check (message)
+VALUES ('PostgreSQL is ready for IAN 603');
 
-    <!-- Footer -->
-    <footer class="text-center py-3 bg-light">
-        <p>Guide based on official PostgreSQL documentation. Images sourced from public web repositories. Current as of August 06, 2025.</p>
-    </footer>
+SELECT *
+FROM installation_check;</code></pre></div>
+<p>If this returns one row, you have confirmed DDL, DML, default values, identity columns, and query execution.</p>
+<div class="alert alert-success"><strong>Success condition:</strong> You can start PostgreSQL, connect, execute SQL, and see the inserted row in <code>ian603</code>.</div>
+</section>
 
-    <!-- Bootstrap JS CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
-</body>
-</html>
+<section class="content-card" id="troubleshoot"><div class="section-kicker">Troubleshooting</div><h2>Common installation problems</h2>
+<div class="troubleshoot-grid">
+<div class="trouble-card"><h3><i class="fas fa-terminal me-2"></i><code>psql</code> not found</h3><p>PostgreSQL may be installed but its command-line tools are not in your PATH.</p><p class="mb-0"><strong>Check:</strong> use the platform's installed SQL shell, or add the PostgreSQL <code>bin</code> directory to PATH.</p></div>
+<div class="trouble-card"><h3><i class="fas fa-plug-circle-xmark me-2"></i>Connection refused</h3><p>The server may not be running, or pgAdmin may be using the wrong port.</p><p class="mb-0"><strong>Check:</strong> service status and whether PostgreSQL is listening on <code>5432</code>.</p></div>
+<div class="trouble-card"><h3><i class="fas fa-key me-2"></i>Password authentication failed</h3><p>Make sure you are using a PostgreSQL role and its database password—not necessarily your operating-system account password.</p><p class="mb-0"><strong>Linux:</strong> local peer authentication and pgAdmin password authentication can behave differently.</p></div>
+<div class="trouble-card"><h3><i class="fas fa-triangle-exclamation me-2"></i>Port 5432 already in use</h3><p>You may already have a PostgreSQL server running.</p><p class="mb-0"><strong>Do not immediately install a second server.</strong> Identify the existing service first.</p></div>
+</div>
+<div class="accordion mt-4" id="troubleCommands">
+<div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#portCommands" aria-expanded="true" aria-controls="portCommands">Useful port/service checks</button></h3><div id="portCommands" class="accordion-collapse collapse show" data-bs-parent="#troubleCommands"><div class="accordion-body">
+<p><strong>macOS:</strong></p><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-bash">lsof -i :5432
+brew services list</code></pre></div>
+<p><strong>Linux:</strong></p><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-bash">ss -ltnp | grep 5432
+systemctl status postgresql</code></pre></div>
+<p><strong>Windows Command Prompt:</strong></p><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-bat">netstat -ano | findstr :5432</code></pre></div>
+</div></div></div>
+<div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#serverCheck" aria-expanded="false" aria-controls="serverCheck">Check whether PostgreSQL accepts connections</button></h3><div id="serverCheck" class="accordion-collapse collapse" data-bs-parent="#troubleCommands"><div class="accordion-body"><div class="code-shell"><button class="copy-btn" type="button">Copy</button><pre><code class="language-bash">pg_isready -h localhost -p 5432</code></pre></div><p class="mb-0">If <code>pg_isready</code> is available, it reports whether a PostgreSQL server is accepting connections at that host and port.</p></div></div></div>
+</div>
+</section>
+
+<section class="content-card" id="security"><div class="section-kicker">Safe local setup</div><h2>Security basics for a course installation</h2>
+<div class="row g-3"><div class="col-md-6"><div class="takeaway-card"><h3 class="h6"><i class="fas fa-house-laptop me-2"></i>Keep it local</h3><p class="mb-0">For IAN 603, a local database should normally listen only for local connections. You do not need to expose PostgreSQL directly to the public internet.</p></div></div><div class="col-md-6"><div class="takeaway-card"><h3 class="h6"><i class="fas fa-lock me-2"></i>Protect credentials</h3><p class="mb-0">Use a unique password when one is required. Do not place passwords in SQL scripts, screenshots, Git repositories, or Canvas posts.</p></div></div><div class="col-md-6"><div class="takeaway-card"><h3 class="h6"><i class="fas fa-user-shield me-2"></i>Limit superuser use</h3><p class="mb-0">The <code>postgres</code> superuser is convenient for local administration, but application-style work should normally use a less-privileged role.</p></div></div><div class="col-md-6"><div class="takeaway-card"><h3 class="h6"><i class="fas fa-rotate me-2"></i>Keep minor releases current</h3><p class="mb-0">PostgreSQL recommends running the current minor release for your supported major version because minor releases include bug and security fixes.</p></div></div></div>
+<div class="alert alert-warning mt-4"><strong>Do not weaken authentication just to make a connection error disappear.</strong> Avoid changing PostgreSQL to broad <code>trust</code> authentication or opening <code>listen_addresses</code> to all networks unless you understand the security impact and have an explicit reason.</div>
+</section>
+
+<section class="content-card" id="ready"><div class="section-kicker">Course readiness</div><h2>Ready for IAN 603 checklist</h2>
+<div class="check-grid">
+<div class="check-item"><i class="fas fa-circle-check"></i><div><strong>PostgreSQL server starts</strong><br/><span class="small text-muted">No startup/service error.</span></div></div>
+<div class="check-item"><i class="fas fa-circle-check"></i><div><strong><code>psql --version</code> works</strong><br/><span class="small text-muted">Or you can use the installed SQL shell.</span></div></div>
+<div class="check-item"><i class="fas fa-circle-check"></i><div><strong>You can connect</strong><br/><span class="small text-muted">Using pgAdmin, psql, or both.</span></div></div>
+<div class="check-item"><i class="fas fa-circle-check"></i><div><strong><code>SELECT version()</code> returns a server version</strong><br/><span class="small text-muted">Confirms the server connection.</span></div></div>
+<div class="check-item"><i class="fas fa-circle-check"></i><div><strong>The <code>ian603</code> database exists</strong><br/><span class="small text-muted">A clean place for course work.</span></div></div>
+<div class="check-item"><i class="fas fa-circle-check"></i><div><strong>You can create, insert, and select</strong><br/><span class="small text-muted">The readiness table test succeeds.</span></div></div>
+<div class="check-item"><i class="fas fa-circle-check"></i><div><strong>You know which username/role you use</strong><br/><span class="small text-muted">Avoid confusion between OS and database accounts.</span></div></div>
+<div class="check-item"><i class="fas fa-circle-check"></i><div><strong>You saved required credentials securely</strong><br/><span class="small text-muted">Do not rely on remembering the installer password.</span></div></div>
+</div>
+<div class="alert alert-success mt-4"><strong>Ready:</strong> Once these checks pass, your environment is prepared for the PostgreSQL-based activities in IAN 603.</div>
+</section>
+
+<section class="content-card" id="resources"><div class="section-kicker">Official documentation</div><h2>Official resources and update policy</h2>
+<p>Installation instructions can change as operating systems and PostgreSQL releases evolve. When this page conflicts with an official installer or package page, follow the current official documentation.</p>
+<div class="source-card"><a href="https://www.postgresql.org/download/" target="_blank" rel="noopener">PostgreSQL Downloads</a><br/><span class="small text-muted">Official entry point for Windows, macOS, Linux, source, and other packages.</span></div>
+<div class="source-card"><a href="https://www.postgresql.org/support/versioning/" target="_blank" rel="noopener">PostgreSQL Versioning Policy</a><br/><span class="small text-muted">Supported major versions, current minor releases, and end-of-life dates.</span></div>
+<div class="source-card"><a href="https://www.pgadmin.org/download/" target="_blank" rel="noopener">pgAdmin 4 Downloads</a><br/><span class="small text-muted">Official pgAdmin installers/packages for Windows, macOS, Linux, containers, and more.</span></div>
+<div class="source-card"><a href="https://www.pgadmin.org/docs/pgadmin4/latest/getting_started.html" target="_blank" rel="noopener">pgAdmin Getting Started</a><br/><span class="small text-muted">Official connection and interface guidance.</span></div>
+<div class="source-card"><a href="https://postgresapp.com/documentation/install.html" target="_blank" rel="noopener">Postgres.app Installation Documentation</a><br/><span class="small text-muted">macOS setup, initialization, and command-line PATH configuration.</span></div>
+<div class="source-card"><a href="https://formulae.brew.sh/formula/postgresql@18" target="_blank" rel="noopener">Homebrew PostgreSQL 18 Formula</a><br/><span class="small text-muted">Current Homebrew package details for PostgreSQL 18.</span></div>
+<p class="small text-muted mb-0 mt-3">Guide updated August 12, 2026. Course examples assume a supported PostgreSQL release and are designed around PostgreSQL 18-compatible SQL unless a module says otherwise.</p>
+</section>
+
+</div></div></main>
+<button aria-label="Back to top" class="back-to-top" id="back-to-top" type="button"><i aria-hidden="true" class="fas fa-arrow-up"></i></button>
+<footer class="py-4 border-top"><div class="container d-flex flex-column flex-md-row justify-content-between gap-2"><span>© 2026 Ali Noori, UNCG. All rights reserved.</span><span>IAN 603 · PostgreSQL Installation &amp; Course Setup Guide</span></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+hljs.highlightAll();
+(function(){
+const htmlEl=document.documentElement,themeToggle=document.getElementById('theme-toggle'),hljsTheme=document.getElementById('hljs-theme');
+function applyTheme(theme){htmlEl.setAttribute('data-theme',theme);localStorage.setItem('ian603-theme',theme);const icon=themeToggle?.querySelector('i');if(icon)icon.className=theme==='dark'?'fas fa-sun':'fas fa-moon';if(hljsTheme)hljsTheme.href=theme==='dark'?'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css':'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';}
+applyTheme(localStorage.getItem('ian603-theme')||'dark');themeToggle?.addEventListener('click',()=>applyTheme(htmlEl.getAttribute('data-theme')==='dark'?'light':'dark'));
+const mobile=document.getElementById('mobile-menu-toggle'),navList=document.getElementById('nav-links-list'),dropTrigger=document.querySelector('.dropdown-trigger'),drop=document.querySelector('.dropdown');
+mobile?.addEventListener('click',()=>{const open=navList.classList.toggle('active');mobile.setAttribute('aria-expanded',String(open));});
+if(dropTrigger&&drop)dropTrigger.addEventListener('click',()=>{const open=drop.classList.toggle('open');dropTrigger.setAttribute('aria-expanded',String(open));});
+document.addEventListener('click',e=>{if(drop&&!e.target.closest('.dropdown')){drop.classList.remove('open');dropTrigger?.setAttribute('aria-expanded','false');}if(window.innerWidth<992&&!e.target.closest('.nav-menu')){navList?.classList.remove('active');mobile?.setAttribute('aria-expanded','false');}});
+document.querySelectorAll('.copy-btn').forEach(btn=>btn.addEventListener('click',async()=>{const pre=btn.closest('.code-shell')?.querySelector('pre code');if(!pre)return;try{await navigator.clipboard.writeText(pre.textContent);const old=btn.textContent;btn.textContent='Copied';setTimeout(()=>btn.textContent=old,1300);}catch{}}));
+const back=document.getElementById('back-to-top');window.addEventListener('scroll',()=>back?.classList.toggle('show',window.scrollY>650));back?.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+const tocLinks=[...document.querySelectorAll('.toc-list a')],sections=tocLinks.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);function setActive(id){tocLinks.forEach(a=>{const active=a.getAttribute('href')==='#'+id;a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');});}
+const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top);if(visible[0])setActive(visible[0].target.id);},{rootMargin:'-20% 0px -65% 0px',threshold:[0,.1,.4]});sections.forEach(s=>observer.observe(s));tocLinks.forEach(a=>a.addEventListener('click',()=>setActive(a.getAttribute('href').slice(1))));
+})();
+</script>
+</body></html>
