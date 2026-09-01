@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IAN 603 · Module 2 · Designing Relational Databases</title>
+  <style>
+    :root {
+      --bg: #edf2f7;
+      --surface: #ffffff;
+      --surface-2: #f7f9fc;
+      --text: #182230;
+      --muted: #64748b;
+      --border: #dbe3ec;
+      --primary: #1f5f9b;
+      --primary-2: #2f78b7;
+      --primary-soft: #eaf3fb;
+      --accent: #c67a26;
+      --good: #2d7d59;
+      --bad: #a54444;
+      --code-bg: #111827;
+      --code-text: #e5edf7;
+      --shadow: 0 16px 42px rgba(27, 43, 65, 0.12);
+      --radius: 18px;
+      --slide-pad: clamp(26px, 3.4vw, 58px);
+    }
+
+    body.dark {
+      --bg: #0f1720;
+      --surface: #17212c;
+      --surface-2: #111a24;
+      --text: #edf4fb;
+      --muted: #aab8c8;
+      --border: #324151;
+      --primary: #6aaee6;
+      --primary-2: #8cc2ec;
+      --primary-soft: #162f44;
+      --accent: #e1a45f;
+      --good: #6ec49a;
+      --bad: #e18888;
+      --code-bg: #080d14;
+      --code-text: #eaf2fa;
+      --shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+      transition: background .2s ease, color .2s ease;
+    }
+
+    button, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .app {
+      height: 100vh;
+      display: grid;
+      grid-template-rows: 58px minmax(0, 1fr) 58px;
+    }
+
+    .topbar, .bottombar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 18px;
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      border-color: var(--border);
+      z-index: 20;
+    }
+    .topbar { border-bottom: 1px solid var(--border); }
+    .bottombar { border-top: 1px solid var(--border); justify-content: space-between; }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 250px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .brand-mark {
+      width: 31px; height: 31px;
+      border-radius: 9px;
+      background: var(--primary);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      box-shadow: 0 6px 16px rgba(31,95,155,.22);
+    }
+    .brand small { display: block; font-size: 11px; color: var(--muted); font-weight: 700; }
+
+    .top-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    .control, select {
+      min-height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 7px 11px;
+      font-weight: 700;
+    }
+    select { max-width: 230px; }
+    .control:hover { border-color: var(--primary); }
+    .control.primary { background: var(--primary); color: white; border-color: var(--primary); }
+    .control.ghost { background: transparent; }
+
+    .stage {
+      min-height: 0;
+      padding: 18px 22px;
+      display: grid;
+      place-items: center;
+    }
+    .slide {
+      display: none;
+      width: min(1280px, 100%);
+      height: 100%;
+      max-height: 800px;
+      overflow: auto;
+      scrollbar-width: thin;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: var(--slide-pad);
+      position: relative;
+    }
+    .slide.active { display: block; animation: slideIn .22s ease; }
+    @keyframes slideIn { from { opacity: .5; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+
+    .slide-kicker {
+      color: var(--primary);
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .11em;
+      font-size: 12px;
+      margin-bottom: 7px;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { font-size: clamp(38px, 5.2vw, 72px); line-height: 1.02; letter-spacing: -.045em; margin-bottom: 20px; }
+    h2 { font-size: clamp(28px, 3.3vw, 45px); line-height: 1.08; letter-spacing: -.03em; margin-bottom: 18px; }
+    h3 { font-size: 20px; line-height: 1.2; margin-bottom: 9px; }
+    p { font-size: clamp(16px, 1.5vw, 20px); color: var(--muted); }
+    .lead { max-width: 920px; font-size: clamp(18px, 2vw, 25px); line-height: 1.55; }
+    .small { font-size: 14px; color: var(--muted); }
+    .big-number { font-size: 62px; line-height: 1; font-weight: 900; color: var(--primary); letter-spacing: -.05em; }
+
+    .hero {
+      min-height: 100%;
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 40px;
+      align-items: center;
+    }
+    .hero-visual {
+      min-height: 430px;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      background:
+        radial-gradient(circle at 20% 15%, color-mix(in srgb, var(--primary) 16%, transparent), transparent 32%),
+        radial-gradient(circle at 82% 80%, color-mix(in srgb, var(--accent) 15%, transparent), transparent 35%),
+        var(--surface-2);
+      display: grid;
+      place-items: center;
+      padding: 28px;
+    }
+    .schema-stack { width: 100%; display: grid; gap: 13px; }
+    .schema-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 13px; align-items: center; }
+    .schema-node {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 14px 16px;
+      text-align: center;
+      font-weight: 850;
+      box-shadow: 0 8px 22px rgba(20,40,60,.06);
+    }
+    .schema-arrow { text-align: center; color: var(--primary); font-size: 26px; font-weight: 900; }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 9px; margin: 20px 0; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 8px 11px; border-radius: 999px;
+      background: var(--primary-soft); color: var(--primary);
+      font-size: 13px; font-weight: 800;
+    }
+
+    .grid-2, .grid-3, .grid-4 { display: grid; gap: 18px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+    .card {
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      border-radius: 15px;
+      padding: 18px;
+      min-width: 0;
+    }
+    .card strong { color: var(--text); }
+    .card p, .card li { font-size: 15px; }
+    .card .label { color: var(--primary); font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 7px; }
+    .accent-card { border-left: 5px solid var(--accent); }
+    .primary-card { border-left: 5px solid var(--primary); }
+    .good-card { border-left: 5px solid var(--good); }
+    .bad-card { border-left: 5px solid var(--bad); }
+
+    ul, ol { margin: 10px 0 0; padding-left: 22px; }
+    li { margin: 7px 0; font-size: clamp(15px, 1.35vw, 19px); }
+    code.inline, p code, li code, td code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .92em;
+      background: var(--primary-soft);
+      color: var(--primary);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      align-items: stretch;
+      margin-top: 28px;
+    }
+    .flow-step {
+      padding: 15px 12px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: var(--surface-2);
+      text-align: center;
+    }
+    .flow-step b { display:block; color: var(--primary); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 5px; }
+
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 14px; }
+    table { width: 100%; border-collapse: collapse; min-width: 660px; font-size: 14px; }
+    th, td { padding: 11px 13px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--surface-2); color: var(--text); font-weight: 850; }
+    tr:last-child td { border-bottom: none; }
+    td { color: var(--muted); }
+
+    .callout {
+      margin: 18px 0 0;
+      border-radius: 13px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      background: var(--primary-soft);
+      color: var(--text);
+      font-size: 15px;
+    }
+    .callout strong { color: var(--primary); }
+
+    .erd {
+      display: grid;
+      grid-template-columns: 1fr 110px 1fr 110px 1fr;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .erd-table {
+      border: 2px solid var(--primary);
+      border-radius: 13px;
+      overflow: hidden;
+      background: var(--surface);
+      min-width: 0;
+    }
+    .erd-title { background: var(--primary); color: white; padding: 10px 13px; font-weight: 900; }
+    .erd-row { padding: 7px 11px; border-top: 1px solid var(--border); font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .erd-link { text-align: center; color: var(--muted); font-size: 12px; font-weight: 800; }
+    .erd-link .line { height: 2px; background: var(--primary); margin: 7px 0; position: relative; }
+    .erd-link .line:before, .erd-link .line:after { content:""; position:absolute; width:8px; height:8px; border-radius:50%; top:-3px; background:var(--primary); }
+    .erd-link .line:before { left:0; } .erd-link .line:after { right:0; }
+
+    .code-cell {
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--surface-2);
+    }
+    .code-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .code-title { display:flex; align-items:center; gap:9px; min-width:0; }
+    .code-title .dot { width:10px; height:10px; border-radius:50%; background:var(--primary); }
+    .code-title b { font-size: 14px; }
+    .code-title span { color: var(--muted); font-size: 12px; }
+    .cell-actions { display:flex; gap:6px; flex-wrap:wrap; }
+    .cell-btn {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: 6px 9px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .cell-btn.run { background: var(--primary); border-color: var(--primary); color:white; }
+    .sql-editor {
+      display:block;
+      width:100%;
+      min-height: 190px;
+      resize: vertical;
+      border:0;
+      outline:0;
+      padding: 15px 17px;
+      color: var(--code-text);
+      background: var(--code-bg);
+      font: 13.5px/1.52 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      tab-size: 2;
+      white-space: pre;
+    }
+    .output {
+      display:none;
+      padding: 13px 15px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font: 13px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      max-height: 230px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+    .output.show { display:block; }
+    .output.error { color: var(--bad); }
+    .output.success { color: var(--good); }
+
+    .mini-result { overflow:auto; margin-top:7px; }
+    .mini-result table { min-width: 420px; font-size: 12px; }
+    .mini-result th, .mini-result td { padding: 7px 9px; }
+
+    .norm-stack { display:grid; grid-template-columns: 1fr 46px 1fr 46px 1fr; align-items:stretch; gap:10px; margin-top:24px; }
+    .norm-arrow { display:grid; place-items:center; color:var(--primary); font-size:28px; font-weight:900; }
+    .norm-box { border:1px solid var(--border); border-radius:14px; padding:16px; background:var(--surface-2); }
+    .norm-box h3 { color:var(--primary); }
+
+    .split-label { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+    .split-label .chip { border-radius:999px; padding:5px 9px; font-size:11px; font-weight:900; background:var(--primary-soft); color:var(--primary); }
+
+    .comparison { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:18px; }
+    .comparison > div { border:1px solid var(--border); border-radius:15px; padding:18px; background:var(--surface-2); }
+    .comparison h3 { display:flex; align-items:center; gap:9px; }
+    .xmark { color:var(--bad); } .check { color:var(--good); }
+
+    .question {
+      padding: 17px 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface-2);
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    details {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 13px;
+      background: var(--surface-2);
+      margin-top: 10px;
+    }
+    summary { cursor: pointer; font-weight: 850; color: var(--primary); }
+    details p, details li { font-size: 14px; }
+
+    .footer-left, .footer-right { display:flex; align-items:center; gap:10px; }
+    .slide-count { min-width: 72px; text-align:center; color:var(--muted); font-weight:800; font-size:13px; }
+    .progress-track { flex:1; height:7px; background:var(--border); border-radius:999px; overflow:hidden; max-width:360px; }
+    .progress-bar { height:100%; width:0; background:var(--primary); transition:width .2s ease; }
+    .nav-btn { border:1px solid var(--border); background:var(--surface); color:var(--text); min-height:36px; border-radius:9px; padding:7px 12px; font-weight:850; }
+    .nav-btn:hover { border-color:var(--primary); }
+
+    .slide-num {
+      position:absolute;
+      right:26px;
+      bottom:18px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .status { color:var(--muted); font-size:12px; font-weight:700; white-space:nowrap; }
+    .status.ready { color:var(--good); }
+    .status.error { color:var(--bad); }
+
+    @media (max-width: 900px) {
+      .brand { min-width: auto; }
+      .brand .brand-text { display:none; }
+      select { max-width: 155px; }
+      .control .long { display:none; }
+      .stage { padding:10px; }
+      .slide { padding:25px; border-radius:13px; }
+      .hero, .grid-2, .grid-3, .grid-4, .comparison { grid-template-columns:1fr; }
+      .hero-visual { min-height:300px; }
+      .flow { grid-template-columns:repeat(2,1fr); }
+      .erd { grid-template-columns:1fr; }
+      .erd-link { padding:5px 0; }
+      .erd-link .line { width:2px; height:28px; margin:5px auto; }
+      .erd-link .line:before, .erd-link .line:after { left:-3px; right:auto; }
+      .erd-link .line:before { top:0; } .erd-link .line:after { top:auto; bottom:0; }
+      .norm-stack { grid-template-columns:1fr; }
+      .norm-arrow { transform:rotate(90deg); }
+      .status { display:none; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">DB</div>
+      <div class="brand-text">IAN 603 · Module 2<small>Designing Relational Databases</small></div>
+    </div>
+    <select id="slideSelect" aria-label="Select slide"></select>
+    <div class="top-actions">
+      <span id="dbStatus" class="status">PostgreSQL loading…</span>
+      <button class="control" id="themeBtn" type="button">Dark mode</button>
+      <button class="control" id="fullBtn" type="button">Fullscreen</button>
+      <button class="control primary" id="runSlideBtn" type="button"><span class="long">Run slide</span><span aria-hidden="true"> ▶</span></button>
+    </div>
+  </header>
+
+  <main class="stage" id="stage">
+
+    <section class="slide active" data-title="Start">
+      <div class="hero">
+        <div>
+          <div class="slide-kicker">IAN 603 · Module 2 Slide Lesson</div>
+          <h1>Designing Relational Databases</h1>
+          <p class="lead">Turn a real-world problem into reliable tables, keys, relationships, constraints, and a schema that is ready for analytics.</p>
+          <div class="badges">
+            <span class="badge">Relational modeling</span>
+            <span class="badge">ERDs & keys</span>
+            <span class="badge">Normalization</span>
+            <span class="badge">Executable PostgreSQL</span>
+          </div>
+          <button class="control primary" type="button" onclick="goToSlide(1)">Start presentation →</button>
+          <div class="callout"><strong>How to use:</strong> Next/Previous or arrow keys move between slides. SQL cells are editable. Run them directly in the browser.</div>
+        </div>
+        <div class="hero-visual" aria-label="Relational schema illustration">
+          <div class="schema-stack">
+            <div class="schema-row"><div class="schema-node">Patient</div><div class="schema-arrow">→</div><div class="schema-node">Appointment</div></div>
+            <div class="schema-row"><div class="schema-node">Provider</div><div class="schema-arrow">→</div><div class="schema-node">Appointment</div></div>
+            <div class="schema-row"><div class="schema-node">Appointment</div><div class="schema-arrow">↔</div><div class="schema-node">Service</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Big picture">
+      <div class="slide-kicker">Big picture</div>
+      <h2>Database design comes before SQL queries</h2>
+      <p class="lead">Before analysts can trust a query, the database needs a clear structure for what each row means and which values are allowed.</p>
+      <div class="flow">
+        <div class="flow-step"><b>1 Scope</b>What are we modeling?</div>
+        <div class="flow-step"><b>2 Model</b>What are the entities?</div>
+        <div class="flow-step"><b>3 Connect</b>How do they relate?</div>
+        <div class="flow-step"><b>4 Protect</b>What rules must hold?</div>
+        <div class="flow-step"><b>5 Normalize</b>Where is redundancy?</div>
+        <div class="flow-step"><b>6 Validate</b>Can bad data enter?</div>
+      </div>
+      <div class="callout"><strong>Design question:</strong> If someone inserts data tomorrow using a different application, will the database still protect the rules?</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Learning path">
+      <div class="slide-kicker">Roadmap</div>
+      <h2>Learning path for this session</h2>
+      <div class="grid-3">
+        <div class="card primary-card"><div class="label">01</div><h3>Relational mental model</h3><p>Tables, rows, columns, domains, and row grain.</p></div>
+        <div class="card primary-card"><div class="label">02</div><h3>Scenario → schema</h3><p>Extract entities, attributes, relationships, and rules.</p></div>
+        <div class="card primary-card"><div class="label">03</div><h3>Keys & relationships</h3><p>Identity, foreign keys, cardinality, and junction tables.</p></div>
+        <div class="card accent-card"><div class="label">04</div><h3>Constraints</h3><p>Turn business rules into database guardrails.</p></div>
+        <div class="card accent-card"><div class="label">05</div><h3>Normalization</h3><p>Move from repeating data to a clean 3NF design.</p></div>
+        <div class="card good-card"><div class="label">06</div><h3>Build & test</h3><p>Create a small PostgreSQL schema and challenge it with bad data.</p></div>
+      </div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Relational vocabulary">
+      <div class="slide-kicker">Relational mental model</div>
+      <h2>Four words you should be able to translate</h2>
+      <div class="grid-4">
+        <div class="card"><div class="big-number">01</div><h3>Relation</h3><p>A table describing one subject or event type.</p><code class="inline">patient</code></div>
+        <div class="card"><div class="big-number">02</div><h3>Tuple</h3><p>One row or instance in that table.</p><code class="inline">one patient</code></div>
+        <div class="card"><div class="big-number">03</div><h3>Attribute</h3><p>A column describing each row.</p><code class="inline">birth_date</code></div>
+        <div class="card"><div class="big-number">04</div><h3>Domain</h3><p>The allowed type and rules for a column.</p><code class="inline">status values</code></div>
+      </div>
+      <div class="callout"><strong>Important:</strong> “Atomic” does not mean small. It means the database treats the field as one value. A comma-separated list of service codes is not atomic when each service must be searched or joined separately.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Conceptual logical physical">
+      <div class="slide-kicker">Three design levels</div>
+      <h2>Conceptual → logical → physical</h2>
+      <div class="grid-3">
+        <div class="card primary-card"><div class="label">Conceptual</div><h3>Business view</h3><ul><li>Major subjects</li><li>High-level relationships</li><li>No detailed implementation</li></ul><p><strong>Example:</strong> patients book appointments.</p></div>
+        <div class="card accent-card"><div class="label">Logical</div><h3>Relational blueprint</h3><ul><li>Tables and attributes</li><li>Primary and foreign keys</li><li>Cardinality and optionality</li><li>Normalization</li></ul></div>
+        <div class="card good-card"><div class="label">Physical</div><h3>DBMS implementation</h3><ul><li>PostgreSQL data types</li><li>Indexes</li><li>Partitions/storage</li><li>Deployment choices</li></ul></div>
+      </div>
+      <div class="callout"><strong>Rule of thumb:</strong> Good logical design should still make sense even when the physical implementation changes.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Running case">
+      <div class="slide-kicker">Running case</div>
+      <h2>A small outpatient clinic</h2>
+      <p class="lead">The clinic must track patients, providers, appointments, services, and the services delivered during each appointment.</p>
+      <div class="grid-2">
+        <div class="card primary-card"><h3>What the system should support</h3><ul><li>Schedule appointments</li><li>Assign a patient and provider</li><li>Record one or more services</li><li>Store quantities and charges</li><li>Reconnect records for reporting</li></ul></div>
+        <div class="card bad-card"><h3>What the design must prevent</h3><ul><li>Duplicate patient identifiers</li><li>Appointments with missing parents</li><li>Negative service prices</li><li>End times before start times</li><li>Comma-separated service lists</li></ul></div>
+      </div>
+      <div class="question"><strong>Warm-up:</strong> Which words in this scenario sound like tables? Which words sound like rules?</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Read requirements">
+      <div class="slide-kicker">Scenario → schema</div>
+      <h2>Read requirements in four ways</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Look for</th><th>Usually becomes</th><th>Clinic example</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Nouns</strong></td><td>Candidate entities</td><td>patient, provider, appointment, service</td></tr>
+          <tr><td><strong>Descriptive facts</strong></td><td>Attributes</td><td>birth date, service code, start time</td></tr>
+          <tr><td><strong>Verbs</strong></td><td>Relationships</td><td>a patient books an appointment</td></tr>
+          <tr><td><strong>must / may / only / at least</strong></td><td>Constraints and optionality</td><td>every appointment must have one provider</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout"><strong>Do not start with CREATE TABLE.</strong> First write the business meaning in plain language.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Row grain">
+      <div class="slide-kicker">A critical habit</div>
+      <h2>State the row grain before choosing columns</h2>
+      <p class="lead"><strong>Row grain</strong> answers: “What does one row represent?” It prevents unrelated subjects from being mixed into the same table.</p>
+      <div class="grid-2">
+        <div class="card good-card"><h3>Clear grain</h3><ul><li><code class="inline">patient</code>: one row per patient</li><li><code class="inline">appointment</code>: one row per scheduled encounter</li><li><code class="inline">service</code>: one row per reusable service</li><li><code class="inline">appointment_service</code>: one row per service used in one appointment</li></ul></div>
+        <div class="card bad-card"><h3>Unclear grain</h3><p>One row contains patient details, provider details, appointment times, a list of services, and several charges.</p><p>Now the row describes several different things at once.</p></div>
+      </div>
+      <div class="question"><strong>Ask before every table:</strong> Could I finish the sentence “one row equals one _____”?</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Entity or attribute">
+      <div class="slide-kicker">Entities & attributes</div>
+      <h2>Does this concept deserve its own table?</h2>
+      <div class="comparison">
+        <div><h3><span class="check">✓</span> Separate entity</h3><p>A concept often becomes a table when it:</p><ul><li>has its own identity</li><li>has several descriptive facts</li><li>is reused many times</li><li>has relationships to other concepts</li></ul><p><strong>Example:</strong> service has a code, name, price, and active state.</p></div>
+        <div><h3><span class="xmark">×</span> Simple attribute</h3><p>A concept usually stays a column when it:</p><ul><li>describes another entity</li><li>does not need its own identity</li><li>has no independent relationships</li></ul><p><strong>Examples:</strong> birth date, appointment start time, quantity.</p></div>
+      </div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="PostgreSQL data types">
+      <div class="slide-kicker">Data types</div>
+      <h2>Choose a type by meaning, not appearance</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Meaning</th><th>PostgreSQL type</th><th>Example</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Generated identifier</td><td><code>bigint ... AS IDENTITY</code></td><td>patient_id</td><td>stable system identity</td></tr>
+          <tr><td>Exact decimal</td><td><code>numeric(10,2)</code></td><td>unit_charge</td><td>exact arithmetic for money</td></tr>
+          <tr><td>Whole count</td><td><code>smallint</code> / <code>integer</code></td><td>quantity</td><td>integer domain</td></tr>
+          <tr><td>General text</td><td><code>text</code></td><td>service_name</td><td>no artificial max</td></tr>
+          <tr><td>Calendar date</td><td><code>date</code></td><td>birth_date</td><td>time of day is irrelevant</td></tr>
+          <tr><td>Real-world moment</td><td><code>timestamptz</code></td><td>starts_at</td><td>time-zone-aware event</td></tr>
+          <tr><td>True / false</td><td><code>boolean</code></td><td>is_active</td><td>genuinely binary state</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout"><strong>Text note:</strong> use <code class="inline">varchar(n)</code> when the maximum length is a real business rule. Otherwise <code class="inline">text</code> is often clearer.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="NULL and data dictionary">
+      <div class="slide-kicker">Missingness is a design choice</div>
+      <h2>NULL is not zero and not blank</h2>
+      <p class="lead"><code class="inline">NULL</code> represents unknown, missing, or not-applicable information. Decide column by column whether that state makes sense.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Column</th><th>Nullable?</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td><code>patient.mrn</code></td><td><strong>No</strong></td><td>Every operational patient needs an identifier.</td></tr>
+          <tr><td><code>patient.email</code></td><td>Yes</td><td>Not every patient supplies email.</td></tr>
+          <tr><td><code>appointment.starts_at</code></td><td><strong>No</strong></td><td>A scheduled appointment needs a start time.</td></tr>
+          <tr><td><code>appointment.cancelled_at</code></td><td>Yes</td><td>Only cancelled appointments have a cancellation time.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout"><strong>Data dictionary:</strong> document column name, meaning, type, nullability, allowed values, units, keys, and business rules.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Key vocabulary">
+      <div class="slide-kicker">Keys & identity</div>
+      <h2>A key answers “which row?”</h2>
+      <div class="grid-3">
+        <div class="card"><div class="label">Primary key</div><h3>Official identifier</h3><p>Chosen candidate key used as the table's main row identity.</p><code class="inline">patient_id</code></div>
+        <div class="card"><div class="label">Natural key</div><h3>Business meaning</h3><p>Identifier that exists outside the database.</p><code class="inline">MRN</code> <code class="inline">NPI</code></div>
+        <div class="card"><div class="label">Surrogate key</div><h3>System-generated</h3><p>No business meaning; designed for stable identity.</p><code class="inline">appointment_id</code></div>
+        <div class="card"><div class="label">Alternate key</div><h3>Another candidate</h3><p>Still unique even though it was not selected as primary.</p><code class="inline">mrn UNIQUE</code></div>
+        <div class="card"><div class="label">Composite key</div><h3>Several columns</h3><p>The combination identifies the row.</p><code class="inline">(appointment_id, service_id)</code></div>
+        <div class="card"><div class="label">Foreign key</div><h3>Reference</h3><p>Points to a key in a parent table.</p><code class="inline">appointment.patient_id</code></div>
+      </div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Surrogate plus natural key">
+      <div class="slide-kicker">Common operational pattern</div>
+      <h2>Use a stable surrogate key and still protect the natural key</h2>
+      <p>A generated ID is convenient for relationships. It does <em>not</em> mean the business identifier can be duplicated.</p>
+      <div class="code-cell" data-cell>
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Create a patient table</b><span> · PostgreSQL</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+        <textarea class="sql-editor" spellcheck="false">DROP TABLE IF EXISTS demo_patient;
+
+CREATE TABLE demo_patient (
+  patient_id bigint GENERATED ALWAYS AS IDENTITY,
+  mrn        text NOT NULL,
+  first_name text NOT NULL,
+  last_name  text NOT NULL,
+
+  CONSTRAINT pk_demo_patient PRIMARY KEY (patient_id),
+  CONSTRAINT uq_demo_patient_mrn UNIQUE (mrn)
+);
+
+INSERT INTO demo_patient (mrn, first_name, last_name)
+VALUES ('MRN-1001', 'Maya', 'Brooks');
+
+SELECT * FROM demo_patient;</textarea>
+        <div class="output">Run this cell to see output.</div>
+      </div>
+      <div class="callout"><strong>Read the design:</strong> <code class="inline">patient_id</code> is the database identity. <code class="inline">mrn</code> remains a protected business identifier.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Primary key vs unique">
+      <div class="slide-kicker">Keys in PostgreSQL</div>
+      <h2>PRIMARY KEY and UNIQUE are related, not identical</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Property</th><th>PRIMARY KEY</th><th>UNIQUE</th></tr></thead>
+        <tbody>
+          <tr><td>Role</td><td>Official row identifier</td><td>Protects other candidate keys/rules</td></tr>
+          <tr><td>NULL</td><td>Not allowed</td><td>NULL values are distinct by default in PostgreSQL</td></tr>
+          <tr><td>How many?</td><td>One primary-key constraint per table</td><td>Several unique constraints allowed</td></tr>
+          <tr><td>Index</td><td>Unique index created automatically</td><td>Unique index created automatically</td></tr>
+          <tr><td>Clinic example</td><td><code>patient_id</code></td><td><code>mrn</code>, <code>npi</code>, <code>service_code</code></td></tr>
+        </tbody>
+      </table></div>
+      <div class="question"><strong>Check:</strong> If <code class="inline">patient_id</code> is already a primary key, why is <code class="inline">mrn</code> still UNIQUE?</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Relationship types">
+      <div class="slide-kicker">Relationships & cardinality</div>
+      <h2>How many rows can connect?</h2>
+      <div class="grid-3">
+        <div class="card primary-card"><div class="big-number">1:1</div><h3>One-to-one</h3><p>At most one related row on each side.</p><p><strong>Implementation:</strong> foreign key + UNIQUE.</p></div>
+        <div class="card accent-card"><div class="big-number">1:N</div><h3>One-to-many</h3><p>One parent can have many children.</p><p><strong>Clinic:</strong> one patient → many appointments.</p></div>
+        <div class="card good-card"><div class="big-number">N:M</div><h3>Many-to-many</h3><p>Both sides can connect to many rows.</p><p><strong>Clinic:</strong> appointments ↔ services.</p></div>
+      </div>
+      <div class="callout"><strong>Placement rule:</strong> In 1:N, place the foreign key on the <em>many</em> side. In N:M, introduce a junction table.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="ERD blueprint">
+      <div class="slide-kicker">ERD</div>
+      <h2>The clinic relational blueprint</h2>
+      <div class="erd">
+        <div class="erd-table"><div class="erd-title">patient</div><div class="erd-row">PK patient_id</div><div class="erd-row">AK mrn</div><div class="erd-row">first_name</div><div class="erd-row">last_name</div></div>
+        <div class="erd-link">1 → 0..*<div class="line"></div>books</div>
+        <div class="erd-table"><div class="erd-title">appointment</div><div class="erd-row">PK appointment_id</div><div class="erd-row">FK patient_id</div><div class="erd-row">FK provider_id</div><div class="erd-row">starts_at</div><div class="erd-row">status</div></div>
+        <div class="erd-link">1 → 0..*<div class="line"></div>has lines</div>
+        <div class="erd-table"><div class="erd-title">appointment_service</div><div class="erd-row">PK/FK appointment_id</div><div class="erd-row">PK/FK service_id</div><div class="erd-row">quantity</div><div class="erd-row">unit_charge</div></div>
+      </div>
+      <div class="erd" style="margin-top:18px">
+        <div class="erd-table"><div class="erd-title">provider</div><div class="erd-row">PK provider_id</div><div class="erd-row">AK npi</div><div class="erd-row">provider_name</div><div class="erd-row">specialty</div></div>
+        <div class="erd-link">1 → 0..*<div class="line"></div>conducts</div>
+        <div class="erd-table"><div class="erd-title">appointment</div><div class="erd-row">FK provider_id</div></div>
+        <div class="erd-link">* ← 1<div class="line"></div>uses</div>
+        <div class="erd-table"><div class="erd-title">service</div><div class="erd-row">PK service_id</div><div class="erd-row">AK service_code</div><div class="erd-row">service_name</div><div class="erd-row">standard_price</div></div>
+      </div>
+      <div class="callout"><strong>AK</strong> = alternate key. The junction table turns the appointment ↔ service many-to-many relationship into two one-to-many relationships.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Foreign key placement">
+      <div class="slide-kicker">Translate rules into columns</div>
+      <h2>Business language → relational decisions</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Business rule</th><th>Relational decision</th></tr></thead>
+        <tbody>
+          <tr><td>Every appointment belongs to exactly one patient.</td><td><code>appointment.patient_id</code> is a non-null foreign key.</td></tr>
+          <tr><td>A patient may have no appointments yet.</td><td>No appointment row is required for every patient.</td></tr>
+          <tr><td>Every appointment has exactly one provider.</td><td><code>appointment.provider_id</code> is a non-null foreign key.</td></tr>
+          <tr><td>An appointment may have zero or many service lines.</td><td><code>appointment_service</code> contains optional child rows.</td></tr>
+          <tr><td>A service may appear in many appointments.</td><td>The junction table resolves the many-to-many relationship.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Constraints">
+      <div class="slide-kicker">Integrity constraints</div>
+      <h2>Constraints are executable business rules</h2>
+      <div class="grid-3">
+        <div class="card"><div class="label">NOT NULL</div><p>A value is required.</p><code class="inline">mrn text NOT NULL</code></div>
+        <div class="card"><div class="label">DEFAULT</div><p>Supplies a value when omitted.</p><code class="inline">DEFAULT 'scheduled'</code></div>
+        <div class="card"><div class="label">UNIQUE</div><p>Prevents duplicate protected values.</p><code class="inline">UNIQUE (npi)</code></div>
+        <div class="card"><div class="label">CHECK</div><p>Requires a Boolean condition to be true.</p><code class="inline">CHECK (quantity &gt; 0)</code></div>
+        <div class="card"><div class="label">PRIMARY KEY</div><p>Provides non-null unique row identity.</p><code class="inline">PRIMARY KEY (appointment_id)</code></div>
+        <div class="card"><div class="label">FOREIGN KEY</div><p>Requires a matching parent key.</p><code class="inline">REFERENCES patient</code></div>
+      </div>
+      <div class="callout"><strong>Why constraints matter:</strong> application validation improves user experience; database constraints protect the data no matter which app, script, import, or user writes to the table.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Constraint demo">
+      <div class="slide-kicker">Executable example</div>
+      <h2>Let PostgreSQL reject invalid values</h2>
+      <div class="code-cell" data-cell>
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>CHECK + NOT NULL + DEFAULT</b><span> · edit and rerun</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+        <textarea class="sql-editor" spellcheck="false">DROP TABLE IF EXISTS demo_appointment;
+
+CREATE TABLE demo_appointment (
+  appointment_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  starts_at      timestamptz NOT NULL,
+  ends_at        timestamptz NOT NULL,
+  status         text NOT NULL DEFAULT 'scheduled',
+  CONSTRAINT chk_demo_time CHECK (ends_at > starts_at),
+  CONSTRAINT chk_demo_status CHECK (
+    status IN ('scheduled', 'completed', 'cancelled', 'no_show')
+  )
+);
+
+INSERT INTO demo_appointment (starts_at, ends_at)
+VALUES ('2026-09-08 09:00-04', '2026-09-08 09:30-04');
+
+SELECT appointment_id, starts_at, ends_at, status
+FROM demo_appointment;</textarea>
+        <div class="output">Run this cell to see output.</div>
+      </div>
+      <div class="callout"><strong>Try:</strong> change the end time to 08:30. The table is still valid; the new row is not.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Referential actions">
+      <div class="slide-kicker">Parent deletion behavior</div>
+      <h2>Choose referential actions deliberately</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Action</th><th>Meaning</th><th>Good fit</th></tr></thead>
+        <tbody>
+          <tr><td><code>RESTRICT</code> / <code>NO ACTION</code></td><td>Reject parent deletion while children depend on it.</td><td>Patient/provider/service master data referenced by appointments.</td></tr>
+          <tr><td><code>CASCADE</code></td><td>Delete dependent child rows with the parent.</td><td>Appointment-service lines that have no meaning without their appointment.</td></tr>
+          <tr><td><code>SET NULL</code></td><td>Keep the child but remove the reference.</td><td>Only if the relationship is optional.</td></tr>
+          <tr><td><code>SET DEFAULT</code></td><td>Replace the reference with its default.</td><td>Rare; the default must still reference a valid key.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout"><strong>Do not use CASCADE just because it is convenient.</strong> Use it when the child truly has no independent meaning.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Normalization why">
+      <div class="slide-kicker">Normalization</div>
+      <h2>Why normalize a relational design?</h2>
+      <div class="grid-3">
+        <div class="card bad-card"><div class="label">Update anomaly</div><h3>Copies disagree</h3><p>A provider specialty appears in hundreds of appointment rows. Some copies are updated; others are not.</p></div>
+        <div class="card bad-card"><div class="label">Insertion anomaly</div><h3>You cannot add a fact</h3><p>A new service cannot be added until a fake appointment is created.</p></div>
+        <div class="card bad-card"><div class="label">Deletion anomaly</div><h3>You lose unrelated facts</h3><p>Deleting the only appointment accidentally removes the only copy of patient details.</p></div>
+      </div>
+      <div class="callout"><strong>Normalization goal:</strong> store each fact in a place that matches what determines that fact.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Unnormalized data">
+      <div class="slide-kicker">Starting problem</div>
+      <h2>Unnormalized: lists inside one appointment row</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>appointment_id</th><th>patient</th><th>provider</th><th>starts_at</th><th>service_codes</th><th>charges</th></tr></thead>
+        <tbody><tr><td>A5001</td><td>P1001 · Maya Brooks</td><td>1234567890 · Jordan Chen</td><td>2026-09-08 09:00</td><td><strong>S101, L220</strong></td><td><strong>95.00, 28.00</strong></td></tr></tbody>
+      </table></div>
+      <div class="grid-3" style="margin-top:18px">
+        <div class="card bad-card"><h3>Hard to join</h3><p>How do you reliably join one item inside a comma-separated list?</p></div>
+        <div class="card bad-card"><h3>Hard to validate</h3><p>How can a foreign key check each service code independently?</p></div>
+        <div class="card bad-card"><h3>Easy to misalign</h3><p>Which charge belongs to which service?</p></div>
+      </div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="First normal form">
+      <div class="slide-kicker">1NF</div>
+      <h2>First Normal Form: one value per field</h2>
+      <p>Move each service occurrence to its own row. A possible key is now <code class="inline">(appointment_id, service_code)</code>.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>appointment_id</th><th>patient_mrn</th><th>patient_name</th><th>provider_npi</th><th>service_code</th><th>service_name</th><th>charge</th></tr></thead>
+        <tbody>
+          <tr><td>A5001</td><td>P1001</td><td>Maya Brooks</td><td>1234567890</td><td>S101</td><td>Office Visit</td><td>95.00</td></tr>
+          <tr><td>A5001</td><td>P1001</td><td>Maya Brooks</td><td>1234567890</td><td>L220</td><td>CBC</td><td>28.00</td></tr>
+        </tbody>
+      </table></div>
+      <div class="comparison">
+        <div><h3><span class="check">✓</span> Improved</h3><p>No repeating lists. Each service can be referenced and filtered separately.</p></div>
+        <div><h3><span class="xmark">×</span> Still a problem</h3><p>Patient, provider, appointment, and service facts are repeated in many rows.</p></div>
+      </div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Second normal form">
+      <div class="slide-kicker">2NF</div>
+      <h2>Second Normal Form: depend on the whole composite key</h2>
+      <p class="lead">When the key is <code class="inline">(appointment_id, service_code)</code>, ask whether each non-key column depends on both parts.</p>
+      <div class="grid-3">
+        <div class="card"><div class="label">Depends on appointment_id</div><p>start time, patient information, provider information</p></div>
+        <div class="card"><div class="label">Depends on service_code</div><p>service name, standard price</p></div>
+        <div class="card"><div class="label">Depends on both</div><p>quantity and the charge captured for that service on that appointment</p></div>
+      </div>
+      <div class="callout"><strong>2NF split:</strong> <code class="inline">appointment</code> + <code class="inline">service</code> + <code class="inline">appointment_service</code>.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Third normal form">
+      <div class="slide-kicker">3NF</div>
+      <h2>Third Normal Form: remove transitive dependencies</h2>
+      <p>Even after 2NF, appointment rows should not carry facts that really depend on patient or provider identifiers.</p>
+      <div class="norm-stack">
+        <div class="norm-box"><h3>Appointment row</h3><p>patient_mrn → patient_name</p><p>provider_npi → provider_name, specialty</p></div>
+        <div class="norm-arrow">→</div>
+        <div class="norm-box"><h3>Separate entities</h3><p><code class="inline">patient</code></p><p><code class="inline">provider</code></p><p><code class="inline">appointment</code></p></div>
+        <div class="norm-arrow">→</div>
+        <div class="norm-box"><h3>3NF idea</h3><p>Non-key facts describe the key, the whole key, and not another non-key attribute.</p></div>
+      </div>
+      <div class="callout"><strong>Final core:</strong> patient, provider, appointment, service, appointment_service.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="1NF to 3NF">
+      <div class="slide-kicker">Normalization map</div>
+      <h2>See the progression, not just the definitions</h2>
+      <div class="norm-stack">
+        <div class="norm-box"><div class="label">1NF</div><h3>Atomic rows</h3><p>Remove repeating groups and lists in cells.</p></div>
+        <div class="norm-arrow">→</div>
+        <div class="norm-box"><div class="label">2NF</div><h3>Whole-key dependency</h3><p>Move facts that depend on only part of a composite key.</p></div>
+        <div class="norm-arrow">→</div>
+        <div class="norm-box"><div class="label">3NF</div><h3>No transitive dependency</h3><p>Move facts that depend on another non-key identifier.</p></div>
+      </div>
+      <div class="question"><strong>Fast diagnostic:</strong> If I change a patient's name, how many rows should I have to update? In a well-designed operational schema, usually one patient row.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Build clinic schema">
+      <div class="slide-kicker">Guided SQL lab</div>
+      <h2>Build the normalized clinic schema</h2>
+      <p>Edit the DDL if you want, then run it. This cell creates all five core tables.</p>
+      <div class="code-cell" data-cell>
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Clinic schema</b><span> · five related tables</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+        <textarea class="sql-editor" spellcheck="false">DROP TABLE IF EXISTS appointment_service, appointment, service, provider, patient CASCADE;
+
+CREATE TABLE patient (
+  patient_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  mrn        text NOT NULL UNIQUE,
+  first_name text NOT NULL,
+  last_name  text NOT NULL,
+  birth_date date NOT NULL,
+  email      text UNIQUE
+);
+
+CREATE TABLE provider (
+  provider_id   bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  npi           text NOT NULL UNIQUE,
+  provider_name text NOT NULL,
+  specialty     text,
+  is_active     boolean NOT NULL DEFAULT TRUE,
+  CONSTRAINT chk_provider_npi CHECK (npi ~ '^[0-9]{10}$')
+);
+
+CREATE TABLE service (
+  service_id     bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  service_code   text NOT NULL UNIQUE,
+  service_name   text NOT NULL,
+  standard_price numeric(10,2) NOT NULL CHECK (standard_price >= 0)
+);
+
+CREATE TABLE appointment (
+  appointment_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  patient_id     bigint NOT NULL REFERENCES patient(patient_id) ON DELETE RESTRICT,
+  provider_id    bigint NOT NULL REFERENCES provider(provider_id) ON DELETE RESTRICT,
+  starts_at      timestamptz NOT NULL,
+  ends_at        timestamptz NOT NULL,
+  status         text NOT NULL DEFAULT 'scheduled',
+  CONSTRAINT chk_appointment_time CHECK (ends_at > starts_at),
+  CONSTRAINT chk_appointment_status CHECK (
+    status IN ('scheduled', 'completed', 'cancelled', 'no_show')
+  )
+);
+
+CREATE TABLE appointment_service (
+  appointment_id bigint NOT NULL REFERENCES appointment(appointment_id) ON DELETE CASCADE,
+  service_id     bigint NOT NULL REFERENCES service(service_id) ON DELETE RESTRICT,
+  quantity       smallint NOT NULL DEFAULT 1 CHECK (quantity > 0),
+  unit_charge    numeric(10,2) NOT NULL CHECK (unit_charge >= 0),
+  PRIMARY KEY (appointment_id, service_id)
+);
+
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public'
+ORDER BY table_name;</textarea>
+        <div class="output">Run this cell to create the schema.</div>
+      </div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Load sample data">
+      <div class="slide-kicker">Guided SQL lab</div>
+      <h2>Load valid data and reconnect it with keys</h2>
+      <div class="code-cell" data-cell data-clinic="sample">
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Insert sample records</b><span> · schema is prepared automatically</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+        <textarea class="sql-editor" spellcheck="false">INSERT INTO patient (mrn, first_name, last_name, birth_date, email)
+VALUES
+  ('MRN-1001', 'Maya', 'Brooks', DATE '1988-04-12', 'maya.brooks@example.org'),
+  ('MRN-1002', 'Evan', 'Lee', DATE '1976-11-03', NULL);
+
+INSERT INTO provider (npi, provider_name, specialty)
+VALUES
+  ('1234567890', 'Jordan Chen', 'Family Medicine'),
+  ('2345678901', 'Priya Shah', 'Internal Medicine');
+
+INSERT INTO service (service_code, service_name, standard_price)
+VALUES
+  ('S101', 'Office Visit', 95.00),
+  ('L220', 'Complete Blood Count', 28.00),
+  ('V310', 'Influenza Vaccine', 42.50);
+
+INSERT INTO appointment (patient_id, provider_id, starts_at, ends_at, status)
+SELECT p.patient_id, pr.provider_id,
+       TIMESTAMPTZ '2026-09-08 09:00:00-04',
+       TIMESTAMPTZ '2026-09-08 09:30:00-04',
+       'scheduled'
+FROM patient p CROSS JOIN provider pr
+WHERE p.mrn = 'MRN-1001' AND pr.npi = '1234567890';
+
+INSERT INTO appointment_service (appointment_id, service_id, quantity, unit_charge)
+SELECT a.appointment_id, s.service_id, 1, s.standard_price
+FROM appointment a
+JOIN patient p ON p.patient_id = a.patient_id
+CROSS JOIN service s
+WHERE p.mrn = 'MRN-1001' AND s.service_code IN ('S101', 'L220');
+
+SELECT
+  (SELECT count(*) FROM patient) AS patients,
+  (SELECT count(*) FROM provider) AS providers,
+  (SELECT count(*) FROM service) AS services,
+  (SELECT count(*) FROM appointment) AS appointments,
+  (SELECT count(*) FROM appointment_service) AS service_lines;</textarea>
+        <div class="output">Run this cell to load sample data.</div>
+      </div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Test guardrails">
+      <div class="slide-kicker">Validate the schema</div>
+      <h2>Good design should reject bad data</h2>
+      <div class="grid-2">
+        <div class="card bad-card"><h3>Test 1 · duplicate natural key</h3><p>Try inserting the same MRN twice.</p><code class="inline">UNIQUE</code></div>
+        <div class="card bad-card"><h3>Test 2 · invalid price</h3><p>Try a negative service price.</p><code class="inline">CHECK</code></div>
+        <div class="card bad-card"><h3>Test 3 · orphan reference</h3><p>Try nonexistent patient/provider IDs.</p><code class="inline">FOREIGN KEY</code></div>
+        <div class="card bad-card"><h3>Test 4 · impossible time range</h3><p>Make the appointment end before it starts.</p><code class="inline">CHECK</code></div>
+      </div>
+      <div class="code-cell" data-cell data-clinic="sample">
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Challenge a constraint</b><span> · expected to fail</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+        <textarea class="sql-editor" spellcheck="false">-- Change this test after you run it once.
+-- Expected failure: duplicate MRN
+INSERT INTO patient (mrn, first_name, last_name, birth_date)
+VALUES ('MRN-1001', 'Different', 'Person', DATE '1990-01-01');</textarea>
+        <div class="output">Run this cell. An error is the expected result.</div>
+      </div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Inspect connected data">
+      <div class="slide-kicker">Keys make joins possible</div>
+      <h2>Reconnect normalized tables for analysis</h2>
+      <p>Normalization separates facts for integrity. Queries reconnect them when an analyst needs a wider view.</p>
+      <div class="code-cell" data-cell data-clinic="sample">
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Read across the clinic schema</b><span> · join preview</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+        <textarea class="sql-editor" spellcheck="false">SELECT
+  a.appointment_id,
+  p.last_name || ', ' || p.first_name AS patient,
+  pr.provider_name,
+  a.starts_at,
+  s.service_code,
+  s.service_name,
+  aps.quantity,
+  aps.unit_charge,
+  aps.quantity * aps.unit_charge AS line_total
+FROM appointment AS a
+JOIN patient AS p
+  ON p.patient_id = a.patient_id
+JOIN provider AS pr
+  ON pr.provider_id = a.provider_id
+LEFT JOIN appointment_service AS aps
+  ON aps.appointment_id = a.appointment_id
+LEFT JOIN service AS s
+  ON s.service_id = aps.service_id
+ORDER BY a.starts_at, s.service_code;</textarea>
+        <div class="output">Run this cell to see the joined result.</div>
+      </div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Indexes and foreign keys">
+      <div class="slide-kicker">Design meets performance</div>
+      <h2>Constraints and indexes solve different problems</h2>
+      <div class="grid-2">
+        <div class="card primary-card"><h3>Automatically indexed</h3><ul><li>PRIMARY KEY</li><li>UNIQUE constraints</li></ul><p>PostgreSQL backs these with unique indexes.</p></div>
+        <div class="card accent-card"><h3>Not automatic</h3><ul><li>Child-side foreign key columns</li></ul><p>Index them when real join/update/delete patterns justify it.</p></div>
+      </div>
+      <div class="code-cell" data-cell data-clinic="schema">
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Targeted foreign-key indexes</b><span> · PostgreSQL</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+        <textarea class="sql-editor" spellcheck="false">CREATE INDEX IF NOT EXISTS idx_appointment_patient_time
+  ON appointment (patient_id, starts_at);
+
+CREATE INDEX IF NOT EXISTS idx_appointment_provider_time
+  ON appointment (provider_id, starts_at);
+
+SELECT indexname, indexdef
+FROM pg_indexes
+WHERE tablename = 'appointment'
+ORDER BY indexname;</textarea>
+        <div class="output">Run this cell to inspect the indexes.</div>
+      </div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="OLTP vs analytics">
+      <div class="slide-kicker">Operational → analytical</div>
+      <h2>A normalized source and an analytical model have different goals</h2>
+      <div class="comparison">
+        <div><div class="split-label"><span class="chip">OLTP</span><h3>Normalized operational core</h3></div><ul><li>Protect transaction integrity</li><li>Reduce duplicated facts</li><li>Support inserts/updates safely</li><li>Use primary/foreign keys and constraints</li></ul><p><strong>Example grain:</strong> one appointment-service line.</p></div>
+        <div><div class="split-label"><span class="chip">Analytics</span><h3>Dimensional reporting model</h3></div><ul><li>Fast, understandable analytical joins</li><li>Fact tables store events/measures</li><li>Dimensions describe who/what/when/where</li><li>Star schemas may intentionally repeat descriptive values</li></ul></div>
+      </div>
+      <div class="callout"><strong>Key idea:</strong> a dimensional model complements the normalized operational source. It does not excuse poor source-system design.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Star and snowflake">
+      <div class="slide-kicker">Analytics extension</div>
+      <h2>Star, snowflake, and fact grain</h2>
+      <div class="grid-3">
+        <div class="card primary-card"><div class="label">Fact table</div><h3>Measurements/events</h3><p>Declare the grain first.</p><p><strong>Example:</strong> one row per appointment-service line.</p></div>
+        <div class="card accent-card"><div class="label">Star schema</div><h3>Direct dimensions</h3><p>Fact table connects directly to descriptive dimensions. Fewer joins; analyst-friendly.</p></div>
+        <div class="card good-card"><div class="label">Snowflake</div><h3>Normalized dimensions</h3><p>Some dimensions split into related sub-dimensions. Less redundancy; more joins.</p></div>
+      </div>
+      <div class="question"><strong>Do not skip this question:</strong> What exactly does one row in the fact table represent?</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Governance">
+      <div class="slide-kicker">Governance & reliability</div>
+      <h2>A schema is also a contract to future users</h2>
+      <div class="grid-4">
+        <div class="card"><div class="label">Naming</div><ul><li>Consistent convention</li><li>Named constraints</li><li>ERD + data dictionary</li></ul></div>
+        <div class="card"><div class="label">Change management</div><ul><li>Version migrations</li><li>Review changes</li><li>Test rollback</li></ul></div>
+        <div class="card"><div class="label">Security</div><ul><li>Least privilege</li><li>Separate sensitive data</li><li>Audit access</li></ul></div>
+        <div class="card"><div class="label">Reliability</div><ul><li>Backup & restore</li><li>Quality monitoring</li><li>Lineage and ownership</li></ul></div>
+      </div>
+      <div class="callout"><strong>For analytics:</strong> document table grain, source, owner, refresh behavior, and lineage from source to output.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Bad design diagnostic">
+      <div class="slide-kicker">Diagnose before repairing</div>
+      <h2>What is wrong with this “everything table”?</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>patient_name</th><th>provider_name</th><th>appointment_time</th><th>services_csv</th><th>charge_text</th></tr></thead>
+        <tbody><tr><td>Maya Brooks</td><td>Jordan Chen</td><td>09/08/26 9am</td><td>S101,L220</td><td>$123.00</td></tr></tbody>
+      </table></div>
+      <div class="grid-3" style="margin-top:18px">
+        <div class="card bad-card"><h3>Identity</h3><p>No primary key; names are changeable and non-unique.</p></div>
+        <div class="card bad-card"><h3>Structure</h3><p>Several subjects share one unclear row grain; services are a list.</p></div>
+        <div class="card bad-card"><h3>Types & rules</h3><p>Time and money are stored as text; no foreign keys or domain checks.</p></div>
+      </div>
+      <details><summary>Show repair direction</summary><p>Split into patient, provider, appointment, service, and appointment_service. Add stable keys, proper types, foreign keys, unique business identifiers, NOT NULL rules, and CHECK constraints.</p></details>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Bookstore exercise">
+      <div class="slide-kicker">Guided practice</div>
+      <h2>Exercise: model a bookstore</h2>
+      <p class="lead">A bookstore app tracks customers, books, authors, orders, and the books purchased in each order.</p>
+      <div class="grid-2">
+        <div class="card primary-card"><h3>Your design tasks</h3><ol><li>List the entities.</li><li>Choose a row grain for each table.</li><li>Propose primary and natural keys.</li><li>Identify 1:N and N:M relationships.</li><li>Choose useful types and constraints.</li></ol></div>
+        <div class="card accent-card"><h3>Questions to notice</h3><ul><li>Can one book have several authors?</li><li>Can one order contain several books?</li><li>Should deleting an order delete its line items?</li><li>Should deleting a book erase historical order items?</li></ul></div>
+      </div>
+      <details><summary>Show one reasonable direction</summary><ul><li><code class="inline">customer(customer_id PK, email UNIQUE, ...)</code></li><li><code class="inline">author(author_id PK, author_name, ...)</code></li><li><code class="inline">book(book_id PK, isbn UNIQUE, ...)</code></li><li><code class="inline">book_author(book_id FK, author_id FK, composite PK)</code></li><li><code class="inline">orders(order_id PK, customer_id FK, ...)</code></li><li><code class="inline">order_item(order_id FK, book_id FK, quantity, unit_price, composite PK)</code></li></ul></details>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Constraint exercise">
+      <div class="slide-kicker">Practice business rules</div>
+      <h2>Translate bookstore rules into constraints</h2>
+      <div class="grid-2">
+        <div>
+          <div class="question">1. Customer email must be present and unique.</div>
+          <div class="question">2. Order-item quantity must be positive.</div>
+          <div class="question">3. Unit price cannot be negative.</div>
+        </div>
+        <div>
+          <div class="question">4. Every order item must reference an existing order and book.</div>
+          <div class="question">5. Deleting an order removes its items; deleting a historical book is restricted.</div>
+          <div class="question">6. Status must belong to a controlled set.</div>
+        </div>
+      </div>
+      <details><summary>Show constraint patterns</summary><pre style="white-space:pre-wrap;color:var(--text)">email text NOT NULL UNIQUE
+quantity integer NOT NULL CHECK (quantity &gt; 0)
+unit_price numeric(10,2) NOT NULL CHECK (unit_price &gt;= 0)
+FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE
+FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE RESTRICT</pre></details>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Self-check">
+      <div class="slide-kicker">Check your understanding</div>
+      <h2>Can you explain the design, not just recognize the syntax?</h2>
+      <div class="grid-2">
+        <div class="card"><h3>Keys</h3><p>Why keep a natural identifier UNIQUE when a surrogate primary key exists?</p></div>
+        <div class="card"><h3>Relationships</h3><p>Why does N:M need a junction table?</p></div>
+        <div class="card"><h3>Constraints</h3><p>Which rule needs CHECK versus FOREIGN KEY versus UNIQUE?</p></div>
+        <div class="card"><h3>Normalization</h3><p>Which dependency is removed by 2NF? Which by 3NF?</p></div>
+        <div class="card"><h3>Deletion</h3><p>Why might line items cascade but master data restrict?</p></div>
+        <div class="card"><h3>Analytics</h3><p>Why can a normalized source still feed a star schema?</p></div>
+      </div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Final activity">
+      <div class="slide-kicker">Put it together</div>
+      <h2>Final activity: design a mini operational database</h2>
+      <p>Use the clinic as your model, then apply the same workflow to a different domain.</p>
+      <div class="grid-3">
+        <div class="card primary-card"><div class="label">Design</div><ol><li>Mission and scope</li><li>Entities + row grain</li><li>Attributes + types</li><li>Keys + relationships</li></ol></div>
+        <div class="card accent-card"><div class="label">Protect</div><ol><li>NOT NULL</li><li>UNIQUE</li><li>CHECK</li><li>FOREIGN KEY + delete actions</li></ol></div>
+        <div class="card good-card"><div class="label">Validate</div><ol><li>Valid sample rows</li><li>Invalid test rows</li><li>One joined read query</li><li>Explain 1NF → 3NF</li></ol></div>
+      </div>
+      <div class="question"><strong>Design tradeoff:</strong> identify one deliberate choice you made and explain why it is acceptable for your system.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Summary">
+      <div class="slide-kicker">End of Module 2</div>
+      <h2>Summary</h2>
+      <div class="grid-3">
+        <div class="card"><div class="label">Mental model</div><p>One table has a clear subject and one row has a clear grain.</p></div>
+        <div class="card"><div class="label">Identity</div><p>Primary, natural, surrogate, composite, and foreign keys solve different problems.</p></div>
+        <div class="card"><div class="label">Relationships</div><p>Cardinality determines foreign-key placement and junction tables.</p></div>
+        <div class="card"><div class="label">Integrity</div><p>Constraints turn important rules into database-enforced guardrails.</p></div>
+        <div class="card"><div class="label">Normalization</div><p>1NF, 2NF, and 3NF reduce repetition and data anomalies.</p></div>
+        <div class="card"><div class="label">Analytics</div><p>Reliable operational structure creates a trustworthy source for analytical models.</p></div>
+      </div>
+      <div class="callout"><strong>Next:</strong> use the relational design as the foundation for PostgreSQL querying, filtering, joins, and analytical SQL.</div>
+      <div class="slide-num"></div>
+    </section>
+
+  </main>
+
+  <footer class="bottombar">
+    <div class="footer-left"><button id="prevBtn" class="nav-btn" type="button">← Previous</button></div>
+    <div class="progress-track" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+    <div class="slide-count" id="slideCount">1 / 1</div>
+    <div class="footer-right"><button id="nextBtn" class="nav-btn" type="button">Next →</button></div>
+  </footer>
+</div>
+
+<script>
+
+  const slides = [...document.querySelectorAll('.slide')];
+  const slideSelect = document.getElementById('slideSelect');
+  const slideCount = document.getElementById('slideCount');
+  const progressBar = document.getElementById('progressBar');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const themeBtn = document.getElementById('themeBtn');
+  const fullBtn = document.getElementById('fullBtn');
+  const runSlideBtn = document.getElementById('runSlideBtn');
+  const dbStatus = document.getElementById('dbStatus');
+
+  let current = 0;
+  let pg = null;
+  let pgInitPromise = null;
+  let PGliteCtor = null;
+
+  const CLINIC_SCHEMA = `
+    DROP TABLE IF EXISTS appointment_service, appointment, service, provider, patient CASCADE;
+    CREATE TABLE patient (
+      patient_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+      mrn text NOT NULL UNIQUE,
+      first_name text NOT NULL,
+      last_name text NOT NULL,
+      birth_date date NOT NULL,
+      email text UNIQUE
+    );
+    CREATE TABLE provider (
+      provider_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+      npi text NOT NULL UNIQUE,
+      provider_name text NOT NULL,
+      specialty text,
+      is_active boolean NOT NULL DEFAULT TRUE,
+      CONSTRAINT chk_provider_npi CHECK (npi ~ '^[0-9]{10}$')
+    );
+    CREATE TABLE service (
+      service_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+      service_code text NOT NULL UNIQUE,
+      service_name text NOT NULL,
+      standard_price numeric(10,2) NOT NULL CHECK (standard_price >= 0)
+    );
+    CREATE TABLE appointment (
+      appointment_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+      patient_id bigint NOT NULL REFERENCES patient(patient_id) ON DELETE RESTRICT,
+      provider_id bigint NOT NULL REFERENCES provider(provider_id) ON DELETE RESTRICT,
+      starts_at timestamptz NOT NULL,
+      ends_at timestamptz NOT NULL,
+      status text NOT NULL DEFAULT 'scheduled',
+      CONSTRAINT chk_appointment_time CHECK (ends_at > starts_at),
+      CONSTRAINT chk_appointment_status CHECK (status IN ('scheduled','completed','cancelled','no_show'))
+    );
+    CREATE TABLE appointment_service (
+      appointment_id bigint NOT NULL REFERENCES appointment(appointment_id) ON DELETE CASCADE,
+      service_id bigint NOT NULL REFERENCES service(service_id) ON DELETE RESTRICT,
+      quantity smallint NOT NULL DEFAULT 1 CHECK (quantity > 0),
+      unit_charge numeric(10,2) NOT NULL CHECK (unit_charge >= 0),
+      PRIMARY KEY (appointment_id, service_id)
+    );
+  `;
+
+  const CLINIC_SAMPLE = `
+    INSERT INTO patient (mrn, first_name, last_name, birth_date, email) VALUES
+      ('MRN-1001','Maya','Brooks',DATE '1988-04-12','maya.brooks@example.org'),
+      ('MRN-1002','Evan','Lee',DATE '1976-11-03',NULL);
+    INSERT INTO provider (npi, provider_name, specialty) VALUES
+      ('1234567890','Jordan Chen','Family Medicine'),
+      ('2345678901','Priya Shah','Internal Medicine');
+    INSERT INTO service (service_code, service_name, standard_price) VALUES
+      ('S101','Office Visit',95.00),
+      ('L220','Complete Blood Count',28.00),
+      ('V310','Influenza Vaccine',42.50);
+    INSERT INTO appointment (patient_id, provider_id, starts_at, ends_at, status)
+    SELECT p.patient_id, pr.provider_id,
+           TIMESTAMPTZ '2026-09-08 09:00:00-04', TIMESTAMPTZ '2026-09-08 09:30:00-04', 'scheduled'
+    FROM patient p CROSS JOIN provider pr
+    WHERE p.mrn='MRN-1001' AND pr.npi='1234567890';
+    INSERT INTO appointment_service (appointment_id, service_id, quantity, unit_charge)
+    SELECT a.appointment_id, s.service_id, 1, s.standard_price
+    FROM appointment a
+    JOIN patient p ON p.patient_id=a.patient_id
+    CROSS JOIN service s
+    WHERE p.mrn='MRN-1001' AND s.service_code IN ('S101','L220');
+  `;
+
+  async function initDb() {
+    if (pg) return pg;
+    if (!pgInitPromise) {
+      pgInitPromise = (async () => {
+        try {
+          dbStatus.textContent = 'PostgreSQL loading…';
+          if (!PGliteCtor) {
+            const mod = await import('https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js');
+            PGliteCtor = mod.PGlite;
+          }
+          const instance = await PGliteCtor.create();
+          pg = instance;
+          dbStatus.textContent = 'PostgreSQL ready';
+          dbStatus.classList.add('ready');
+          return pg;
+        } catch (err) {
+          dbStatus.textContent = 'PostgreSQL unavailable';
+          dbStatus.classList.add('error');
+          throw err;
+        }
+      })();
+    }
+    return pgInitPromise;
+  }
+
+  async function resetDb() {
+    try {
+      if (pg && pg.close) await pg.close();
+    } catch (_) {}
+    pg = null;
+    pgInitPromise = null;
+    dbStatus.className = 'status';
+    await initDb();
+  }
+
+  async function prepareClinic(mode) {
+    const db = await initDb();
+    await db.exec(CLINIC_SCHEMA);
+    if (mode === 'sample') await db.exec(CLINIC_SAMPLE);
+    return db;
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  function renderResult(results) {
+    if (!Array.isArray(results)) results = [results];
+    const withRows = [...results].reverse().find(r => r && Array.isArray(r.rows) && r.rows.length);
+    if (!withRows) {
+      const affected = results.reduce((sum, r) => sum + (r?.affectedRows || 0), 0);
+      return affected ? `Executed successfully. ${affected} row(s) affected.` : 'Executed successfully.';
+    }
+    const rows = withRows.rows;
+    const cols = withRows.fields?.map(f => f.name) || Object.keys(rows[0] || {});
+    let html = '<div class="mini-result"><table><thead><tr>' + cols.map(c => `<th>${escapeHtml(c)}</th>`).join('') + '</tr></thead><tbody>';
+    html += rows.slice(0, 100).map(row => '<tr>' + cols.map(c => `<td>${escapeHtml(row[c] ?? 'NULL')}</td>`).join('') + '</tr>').join('');
+    html += '</tbody></table></div>';
+    if (rows.length > 100) html += `<div class="small">Showing first 100 of ${rows.length} rows.</div>`;
+    return html;
+  }
+
+  async function runCell(cell) {
+    const editor = cell.querySelector('.sql-editor');
+    const output = cell.querySelector('.output');
+    const run = cell.querySelector('.run');
+    const mode = cell.dataset.clinic;
+    output.className = 'output show';
+    output.textContent = 'Running…';
+    run.disabled = true;
+    try {
+      const db = mode ? await prepareClinic(mode) : await initDb();
+      const result = await db.exec(editor.value);
+      output.className = 'output show success';
+      output.innerHTML = renderResult(result);
+    } catch (err) {
+      output.className = 'output show error';
+      output.textContent = err?.message || String(err);
+    } finally {
+      run.disabled = false;
+    }
+  }
+
+  document.querySelectorAll('[data-cell]').forEach((cell, idx) => {
+    const editor = cell.querySelector('.sql-editor');
+    editor.dataset.original = editor.value;
+    cell.querySelector('.run').addEventListener('click', () => runCell(cell));
+    cell.querySelector('.reset').addEventListener('click', () => {
+      editor.value = editor.dataset.original;
+      const output = cell.querySelector('.output');
+      output.className = 'output';
+      output.textContent = 'Run this cell to see output.';
+    });
+    cell.querySelector('.copy').addEventListener('click', async (e) => {
+      await navigator.clipboard.writeText(editor.value);
+      const old = e.currentTarget.textContent;
+      e.currentTarget.textContent = 'Copied';
+      setTimeout(() => e.currentTarget.textContent = old, 900);
+    });
+
+    // Keep editing natural: Tab inserts spaces; global slide shortcuts ignore textareas.
+    editor.addEventListener('keydown', e => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const start = editor.selectionStart;
+        const end = editor.selectionEnd;
+        editor.setRangeText('  ', start, end, 'end');
+      }
+    });
+  });
+
+  slides.forEach((slide, i) => {
+    const option = document.createElement('option');
+    option.value = i;
+    option.textContent = `${i + 1}. ${slide.dataset.title || 'Slide'}`;
+    slideSelect.appendChild(option);
+    slide.querySelector('.slide-num').textContent = `IAN 603 · Module 2 · Slide ${i + 1}`;
+  });
+
+  function showSlide(index) {
+    current = Math.max(0, Math.min(index, slides.length - 1));
+    slides.forEach((s, i) => s.classList.toggle('active', i === current));
+    slideSelect.value = current;
+    slideCount.textContent = `${current + 1} / ${slides.length}`;
+    progressBar.style.width = `${((current + 1) / slides.length) * 100}%`;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
+    slides[current].scrollTop = 0;
+    history.replaceState(null, '', `#slide-${current + 1}`);
+  }
+
+  window.goToSlide = showSlide;
+  slideSelect.addEventListener('change', () => showSlide(Number(slideSelect.value)));
+  prevBtn.addEventListener('click', () => showSlide(current - 1));
+  nextBtn.addEventListener('click', () => showSlide(current + 1));
+
+  themeBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    themeBtn.textContent = document.body.classList.contains('dark') ? 'Light mode' : 'Dark mode';
+  });
+
+  fullBtn.addEventListener('click', async () => {
+    if (!document.fullscreenElement) await document.documentElement.requestFullscreen?.();
+    else await document.exitFullscreen?.();
+  });
+
+  runSlideBtn.addEventListener('click', async () => {
+    const cells = [...slides[current].querySelectorAll('[data-cell]')];
+    for (const cell of cells) await runCell(cell);
+  });
+
+  document.addEventListener('keydown', e => {
+    const tag = document.activeElement?.tagName?.toLowerCase();
+    if (tag === 'textarea' || tag === 'input' || tag === 'select' || document.activeElement?.isContentEditable) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); showSlide(current + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); showSlide(current - 1); }
+    if (e.key === 'Home') { e.preventDefault(); showSlide(0); }
+    if (e.key === 'End') { e.preventDefault(); showSlide(slides.length - 1); }
+  });
+
+  const hashMatch = location.hash.match(/slide-(\d+)/);
+  showSlide(hashMatch ? Number(hashMatch[1]) - 1 : 0);
+  initDb().catch(() => {});
+</script>
+</body>
+</html>
