@@ -261,6 +261,52 @@
     }
     .flow-step b { display:block; color: var(--primary); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 5px; }
 
+    .learning-steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .learning-step {
+      position: relative;
+      padding: 18px 15px 16px;
+      border: 1px solid var(--border);
+      border-top: 5px solid var(--primary);
+      border-radius: 14px;
+      background: var(--surface-2);
+    }
+    .learning-step:nth-child(2) { border-top-color: var(--primary-2); }
+    .learning-step:nth-child(3) { border-top-color: var(--accent); }
+    .learning-step:nth-child(4) { border-top-color: var(--good); }
+    .learning-step .step-number {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .learning-step h3 { margin-top: 5px; }
+    .learning-step p { margin-bottom: 0; font-size: 14px; }
+
+    .level-tag {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 7px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      vertical-align: 1px;
+    }
+    .code-title .level-tag {
+      color: var(--primary);
+      font-size: 11px;
+    }
+
     .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 14px; }
     table { width: 100%; border-collapse: collapse; min-width: 660px; font-size: 14px; }
     th, td { padding: 11px 13px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
@@ -497,6 +543,7 @@
       .hero, .grid-2, .grid-3, .grid-4, .comparison { grid-template-columns:1fr; }
       .hero-visual { min-height:300px; }
       .flow { grid-template-columns:repeat(2,1fr); }
+      .learning-steps { grid-template-columns:repeat(2,1fr); }
       .erd { grid-template-columns:1fr; }
       .erd-link { padding:5px 0; }
       .erd-link .line { width:2px; height:28px; margin:5px auto; }
@@ -505,6 +552,11 @@
       .norm-stack { grid-template-columns:1fr; }
       .norm-arrow { transform:rotate(90deg); }
       .status { display:none; }
+    }
+    @media (max-width: 560px) {
+      .learning-steps { grid-template-columns:1fr; }
+      .code-head { align-items:flex-start; }
+      .cell-actions { justify-content:flex-end; }
     }
   </style>
 </head>
@@ -537,9 +589,10 @@
             <span class="badge">ERDs & keys</span>
             <span class="badge">Normalization</span>
             <span class="badge">Executable PostgreSQL</span>
+            <span class="badge">No prior SQL required</span>
           </div>
           <button class="control primary" type="button" onclick="goToSlide(1)">Start presentation →</button>
-          <div class="callout"><strong>How to use:</strong> Next/Previous or arrow keys move between slides. SQL cells are editable. Run them directly in the browser.</div>
+          <div class="callout"><strong>How to use:</strong> Next/Previous or arrow keys move between slides. Start by running completed SQL. Later slides ask you to change, complete, and write small examples.</div>
         </div>
         <div class="hero-visual" aria-label="Relational schema illustration">
           <div class="schema-stack">
@@ -570,15 +623,19 @@
 
     <section class="slide" data-title="Learning path">
       <div class="slide-kicker">Roadmap</div>
-      <h2>Learning path for this session</h2>
+      <h2>Learn the design, then approach SQL gradually</h2>
       <div class="grid-3">
-        <div class="card primary-card"><div class="label">01</div><h3>Relational mental model</h3><p>Tables, rows, columns, domains, and row grain.</p></div>
-        <div class="card primary-card"><div class="label">02</div><h3>Scenario → schema</h3><p>Extract entities, attributes, relationships, and rules.</p></div>
-        <div class="card primary-card"><div class="label">03</div><h3>Keys & relationships</h3><p>Identity, foreign keys, cardinality, and junction tables.</p></div>
-        <div class="card accent-card"><div class="label">04</div><h3>Constraints</h3><p>Turn business rules into database guardrails.</p></div>
-        <div class="card accent-card"><div class="label">05</div><h3>Normalization</h3><p>Move from repeating data to a clean 3NF design.</p></div>
-        <div class="card good-card"><div class="label">06</div><h3>Build & test</h3><p>Create a small PostgreSQL schema and challenge it with bad data.</p></div>
+        <div class="card primary-card"><div class="label">Understand</div><h3>What does each row mean?</h3><p>Identify entities, attributes, row grain, keys, and relationships.</p></div>
+        <div class="card accent-card"><div class="label">Protect</div><h3>Which rules must always hold?</h3><p>Use constraints and normalization to prevent unreliable data.</p></div>
+        <div class="card good-card"><div class="label">Apply</div><h3>How does PostgreSQL implement the design?</h3><p>Run small examples before exploring the complete clinic schema.</p></div>
       </div>
+      <div class="learning-steps">
+        <div class="learning-step"><div class="step-number">Coding step 1</div><h3>Run</h3><p>Execute completed code and inspect the result.</p></div>
+        <div class="learning-step"><div class="step-number">Coding step 2</div><h3>Change</h3><p>Edit one value and observe what changes.</p></div>
+        <div class="learning-step"><div class="step-number">Coding step 3</div><h3>Complete</h3><p>Finish one missing business rule.</p></div>
+        <div class="learning-step"><div class="step-number">Coding step 4</div><h3>Write</h3><p>Create one small table using a starter pattern.</p></div>
+      </div>
+      <div class="callout"><strong>Beginner expectation:</strong> You are learning to read and modify SQL. You are not expected to memorize the complete clinic script.</div>
       <div class="slide-num"></div>
     </section>
 
@@ -676,6 +733,34 @@
       <div class="slide-num"></div>
     </section>
 
+    <section class="slide" data-title="First SQL">
+      <div class="slide-kicker">Level 1 · Run it</div>
+      <h2>Run three statements; do not memorize them yet</h2>
+      <p class="lead">Read the script from top to bottom: create a table, add one row, and then view that row.</p>
+      <div class="code-cell" data-cell>
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b><span class="level-tag">Run</span>Your first PostgreSQL table</b><span> · completed example</span></div></div><div class="cell-actions"><button class="cell-btn run" type="button">▶ Run</button><button class="cell-btn reset" type="button">Reset</button><button class="cell-btn copy" type="button">Copy</button></div></div>
+        <textarea class="sql-editor" spellcheck="false">-- Start fresh so this example is safe to run again.
+DROP TABLE IF EXISTS beginner_patient;
+
+-- 1. Create a table with two columns.
+CREATE TABLE beginner_patient (
+  patient_id   integer PRIMARY KEY,
+  patient_name text NOT NULL
+);
+
+-- 2. Add one row.
+INSERT INTO beginner_patient (patient_id, patient_name)
+VALUES (1, 'Maya Brooks');
+
+-- 3. View the rows in the table.
+SELECT *
+FROM beginner_patient;</textarea>
+        <div class="output">Select Run. PostgreSQL should return one row.</div>
+      </div>
+      <div class="callout"><strong>Your goal:</strong> identify what <code class="inline">CREATE TABLE</code>, <code class="inline">INSERT INTO</code>, and <code class="inline">SELECT</code> do. Writing a complete schema comes later.</div>
+      <div class="slide-num"></div>
+    </section>
+
     <section class="slide" data-title="NULL and data dictionary">
       <div class="slide-kicker">Missingness is a design choice</div>
       <h2>NULL is not zero and not blank</h2>
@@ -708,30 +793,35 @@
     </section>
 
     <section class="slide" data-title="Surrogate plus natural key">
-      <div class="slide-kicker">Common operational pattern</div>
-      <h2>Use a stable surrogate key and still protect the natural key</h2>
-      <p>A generated ID is convenient for relationships. It does <em>not</em> mean the business identifier can be duplicated.</p>
+      <div class="slide-kicker">Guided bridge · Read the pattern</div>
+      <h2>Let PostgreSQL generate an ID while protecting the business ID</h2>
+      <p>A generated key is convenient for relationships. The clinic's existing identifier still needs a uniqueness rule.</p>
       <div class="code-cell" data-cell>
-        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Create a patient table</b><span> · PostgreSQL</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
-        <textarea class="sql-editor" spellcheck="false">DROP TABLE IF EXISTS demo_patient;
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b><span class="level-tag">Read</span>Generated key + protected MRN</b><span> · guided PostgreSQL pattern</span></div></div><div class="cell-actions"><button class="cell-btn run" type="button">▶ Run</button><button class="cell-btn reset" type="button">Reset</button><button class="cell-btn copy" type="button">Copy</button></div></div>
+        <textarea class="sql-editor" spellcheck="false">-- Remove the earlier demonstration table if it exists.
+DROP TABLE IF EXISTS demo_patient;
 
+-- PostgreSQL generates patient_id automatically.
 CREATE TABLE demo_patient (
   patient_id bigint GENERATED ALWAYS AS IDENTITY,
   mrn        text NOT NULL,
   first_name text NOT NULL,
   last_name  text NOT NULL,
 
+  -- The generated ID identifies rows inside the database.
   CONSTRAINT pk_demo_patient PRIMARY KEY (patient_id),
+  -- The clinic's MRN cannot be repeated.
   CONSTRAINT uq_demo_patient_mrn UNIQUE (mrn)
 );
 
+-- patient_id is omitted because PostgreSQL supplies it.
 INSERT INTO demo_patient (mrn, first_name, last_name)
 VALUES ('MRN-1001', 'Maya', 'Brooks');
 
 SELECT * FROM demo_patient;</textarea>
         <div class="output">Run this cell to see output.</div>
       </div>
-      <div class="callout"><strong>Read the design:</strong> <code class="inline">patient_id</code> is the database identity. <code class="inline">mrn</code> remains a protected business identifier.</div>
+      <div class="callout"><strong>Read the design:</strong> <code class="inline">patient_id</code> is the database identity. <code class="inline">mrn</code> is unique within this clinic. A multi-organization system may instead protect <code class="inline">(source_system, mrn)</code>.</div>
       <div class="slide-num"></div>
     </section>
 
@@ -769,19 +859,19 @@ SELECT * FROM demo_patient;</textarea>
       <h2>The clinic relational blueprint</h2>
       <div class="erd">
         <div class="erd-table"><div class="erd-title">patient</div><div class="erd-row">PK patient_id</div><div class="erd-row">AK mrn</div><div class="erd-row">first_name</div><div class="erd-row">last_name</div></div>
-        <div class="erd-link">1 → 0..*<div class="line"></div>books</div>
+        <div class="erd-link">1 → 0..*<div class="line"></div>has appointments</div>
         <div class="erd-table"><div class="erd-title">appointment</div><div class="erd-row">PK appointment_id</div><div class="erd-row">FK patient_id</div><div class="erd-row">FK provider_id</div><div class="erd-row">starts_at</div><div class="erd-row">status</div></div>
-        <div class="erd-link">1 → 0..*<div class="line"></div>has lines</div>
-        <div class="erd-table"><div class="erd-title">appointment_service</div><div class="erd-row">PK/FK appointment_id</div><div class="erd-row">PK/FK service_id</div><div class="erd-row">quantity</div><div class="erd-row">unit_charge</div></div>
+        <div class="erd-link">0..* ← 1<div class="line"></div>conducted by</div>
+        <div class="erd-table"><div class="erd-title">provider</div><div class="erd-row">PK provider_id</div><div class="erd-row">AK npi</div><div class="erd-row">provider_name</div><div class="erd-row">specialty</div></div>
       </div>
       <div class="erd" style="margin-top:18px">
-        <div class="erd-table"><div class="erd-title">provider</div><div class="erd-row">PK provider_id</div><div class="erd-row">AK npi</div><div class="erd-row">provider_name</div><div class="erd-row">specialty</div></div>
-        <div class="erd-link">1 → 0..*<div class="line"></div>conducts</div>
-        <div class="erd-table"><div class="erd-title">appointment</div><div class="erd-row">FK provider_id</div></div>
-        <div class="erd-link">* ← 1<div class="line"></div>uses</div>
+        <div class="erd-table"><div class="erd-title">appointment</div><div class="erd-row">PK appointment_id</div><div class="erd-row">one scheduled encounter</div></div>
+        <div class="erd-link">1 → 0..*<div class="line"></div>contains lines</div>
+        <div class="erd-table"><div class="erd-title">appointment_service</div><div class="erd-row">PK/FK appointment_id</div><div class="erd-row">PK/FK service_id</div><div class="erd-row">quantity</div><div class="erd-row">unit_charge</div></div>
+        <div class="erd-link">0..* ← 1<div class="line"></div>references</div>
         <div class="erd-table"><div class="erd-title">service</div><div class="erd-row">PK service_id</div><div class="erd-row">AK service_code</div><div class="erd-row">service_name</div><div class="erd-row">standard_price</div></div>
       </div>
-      <div class="callout"><strong>AK</strong> = alternate key. The junction table turns the appointment ↔ service many-to-many relationship into two one-to-many relationships.</div>
+      <div class="callout"><strong>Read each row separately:</strong> patient and provider connect to appointment. Appointment and service connect through <code class="inline">appointment_service</code>. <strong>AK</strong> means alternate key.</div>
       <div class="slide-num"></div>
     </section>
 
@@ -812,22 +902,26 @@ SELECT * FROM demo_patient;</textarea>
         <div class="card"><div class="label">PRIMARY KEY</div><p>Provides non-null unique row identity.</p><code class="inline">PRIMARY KEY (appointment_id)</code></div>
         <div class="card"><div class="label">FOREIGN KEY</div><p>Requires a matching parent key.</p><code class="inline">REFERENCES patient</code></div>
       </div>
-      <div class="callout"><strong>Why constraints matter:</strong> application validation improves user experience; database constraints protect the data no matter which app, script, import, or user writes to the table.</div>
+      <div class="callout"><strong>Beginner detail:</strong> <code class="inline">CHECK</code> validates a value when one is present, but it does not make the column required. Combine <code class="inline">NOT NULL</code> and <code class="inline">CHECK</code> when both rules matter.</div>
       <div class="slide-num"></div>
     </section>
 
     <section class="slide" data-title="Constraint demo">
-      <div class="slide-kicker">Executable example</div>
-      <h2>Let PostgreSQL reject invalid values</h2>
+      <div class="slide-kicker">Level 2 · Change it</div>
+      <h2>Change one value and observe the guardrail</h2>
+      <p>First run the completed example. Then change the ending time from <code class="inline">09:30</code> to <code class="inline">08:30</code> and run it again.</p>
       <div class="code-cell" data-cell>
-        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>CHECK + NOT NULL + DEFAULT</b><span> · PostgreSQL · edit and rerun</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
-        <textarea class="sql-editor" spellcheck="false">DROP TABLE IF EXISTS demo_appointment;
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b><span class="level-tag">Change</span>Appointment time rule</b><span> · edit one value and rerun</span></div></div><div class="cell-actions"><button class="cell-btn run" type="button">▶ Run</button><button class="cell-btn reset" type="button">Reset</button><button class="cell-btn copy" type="button">Copy</button></div></div>
+        <textarea class="sql-editor" spellcheck="false">-- Recreate the small demonstration table.
+DROP TABLE IF EXISTS demo_appointment;
 
 CREATE TABLE demo_appointment (
   appointment_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   starts_at      timestamptz NOT NULL,
   ends_at        timestamptz NOT NULL,
   status         text NOT NULL DEFAULT 'scheduled',
+
+  -- The ending time must be later than the starting time.
   CONSTRAINT chk_demo_time CHECK (ends_at > starts_at),
   CONSTRAINT chk_demo_status CHECK (
     status IN ('scheduled', 'completed', 'cancelled', 'no_show')
@@ -841,7 +935,33 @@ SELECT appointment_id, starts_at, ends_at, status
 FROM demo_appointment;</textarea>
         <div class="output">Run this cell to see output.</div>
       </div>
-      <div class="callout"><strong>Try:</strong> change the end time to 08:30. The table is still valid; the new row is not.</div>
+      <div class="callout"><strong>What to notice:</strong> your SQL can be syntactically correct while the requested row is still rejected for breaking a business rule.</div>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Complete a rule">
+      <div class="slide-kicker">Level 3 · Complete it</div>
+      <h2>Finish one business rule by changing one number</h2>
+      <p>The clinic does not allow negative standard prices. The current threshold is deliberately too weak.</p>
+      <div class="code-cell" data-cell data-expected-codes="23514" data-accepted-message="PostgreSQL accepted -5.00 because the CHECK still allows it. Change -100 to 0 and run again.">
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b><span class="level-tag">Complete</span>Repair the price constraint</b><span> · change -100 to 0</span></div></div><div class="cell-actions"><button class="cell-btn run" type="button">▶ Run</button><button class="cell-btn reset" type="button">Reset</button><button class="cell-btn copy" type="button">Copy</button></div></div>
+        <textarea class="sql-editor" spellcheck="false">DROP TABLE IF EXISTS practice_service;
+
+CREATE TABLE practice_service (
+  service_id    integer PRIMARY KEY,
+  service_name  text NOT NULL,
+  standard_price numeric(10,2) NOT NULL,
+
+  -- Repair this rule: a valid price must be 0 or greater.
+  CONSTRAINT chk_practice_price CHECK (standard_price >= -100)
+);
+
+-- This test row should be rejected after you repair the rule.
+INSERT INTO practice_service (service_id, service_name, standard_price)
+VALUES (1, 'Office Visit', -5.00);</textarea>
+        <div class="output">Run once, change <strong>-100</strong> to <strong>0</strong>, and run again.</div>
+      </div>
+      <div class="callout"><strong>Success means rejection:</strong> after the repair, PostgreSQL should refuse the negative price and report a check-constraint violation.</div>
       <div class="slide-num"></div>
     </section>
 
@@ -949,13 +1069,15 @@ FROM demo_appointment;</textarea>
     </section>
 
     <section class="slide" data-title="Build clinic schema">
-      <div class="slide-kicker">Guided SQL lab</div>
-      <h2>Build the normalized clinic schema</h2>
-      <p>Edit the DDL if you want, then run it. This cell creates all five core tables.</p>
+      <div class="slide-kicker">Instructor-guided SQL</div>
+      <h2>Read and run the complete clinic schema</h2>
+      <p>This provided script assembles the ideas you have already studied. Focus on table order, keys, and relationships; do not memorize it.</p>
       <div class="code-cell" data-cell>
-        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Clinic schema</b><span> · PostgreSQL · five related tables</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
-        <textarea class="sql-editor" spellcheck="false">DROP TABLE IF EXISTS appointment_service, appointment, service, provider, patient CASCADE;
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b><span class="level-tag">Guided</span>Complete clinic schema</b><span> · provided PostgreSQL reference</span></div></div><div class="cell-actions"><button class="cell-btn run" type="button">▶ Run</button><button class="cell-btn reset" type="button">Reset</button><button class="cell-btn copy" type="button">Copy</button></div></div>
+        <textarea class="sql-editor" spellcheck="false">-- Reset the five related tables so the script can be rerun.
+DROP TABLE IF EXISTS appointment_service, appointment, service, provider, patient CASCADE;
 
+-- Parent table: one row per patient.
 CREATE TABLE patient (
   patient_id bigint GENERATED ALWAYS AS IDENTITY,
   mrn        text NOT NULL,
@@ -968,6 +1090,7 @@ CREATE TABLE patient (
   CONSTRAINT uq_patient_email UNIQUE (email)
 );
 
+-- Parent table: one row per provider.
 CREATE TABLE provider (
   provider_id   bigint GENERATED ALWAYS AS IDENTITY,
   npi           text NOT NULL,
@@ -979,6 +1102,7 @@ CREATE TABLE provider (
   CONSTRAINT chk_provider_npi CHECK (npi ~ '^[0-9]{10}$')
 );
 
+-- Parent table: one row per reusable service.
 CREATE TABLE service (
   service_id     bigint GENERATED ALWAYS AS IDENTITY,
   service_code   text NOT NULL,
@@ -989,6 +1113,7 @@ CREATE TABLE service (
   CONSTRAINT chk_service_price CHECK (standard_price >= 0)
 );
 
+-- Event table: one row per scheduled appointment.
 CREATE TABLE appointment (
   appointment_id bigint GENERATED ALWAYS AS IDENTITY,
   patient_id     bigint NOT NULL,
@@ -1007,6 +1132,7 @@ CREATE TABLE appointment (
   )
 );
 
+-- Junction table: one row per service used in one appointment.
 CREATE TABLE appointment_service (
   appointment_id bigint NOT NULL,
   service_id     bigint NOT NULL,
@@ -1027,14 +1153,16 @@ WHERE table_schema = 'public'
 ORDER BY table_name;</textarea>
         <div class="output">Run this cell to create the schema.</div>
       </div>
+      <div class="callout"><strong>Beginner focus:</strong> identify the five <code class="inline">CREATE TABLE</code> statements and trace each foreign key to its parent. The exact syntax can remain a reference.</div>
       <div class="slide-num"></div>
     </section>
 
     <section class="slide" data-title="Load sample data">
-      <div class="slide-kicker">Guided SQL lab</div>
-      <h2>Load valid data and reconnect it with keys</h2>
+      <div class="slide-kicker">Instructor-guided SQL</div>
+      <h2>Run the provided loading script and inspect the result</h2>
+      <p>The key lookups preview later modules. You do not need to write <code class="inline">INSERT ... SELECT</code> or <code class="inline">CROSS JOIN</code> yet.</p>
       <div class="code-cell" data-cell data-clinic="schema">
-        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Insert sample records</b><span> · PostgreSQL · clean schema prepared automatically</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b><span class="level-tag">Guided</span>Insert sample records</b><span> · clean schema prepared automatically</span></div></div><div class="cell-actions"><button class="cell-btn run" type="button">▶ Run</button><button class="cell-btn reset" type="button">Reset</button><button class="cell-btn copy" type="button">Copy</button></div></div>
         <textarea class="sql-editor" spellcheck="false">-- Teaching reset: make this sample cell safe to rerun.
 TRUNCATE TABLE appointment_service, appointment, service, provider, patient
 RESTART IDENTITY CASCADE;
@@ -1083,8 +1211,8 @@ SELECT
     </section>
 
     <section class="slide" data-title="Test guardrails">
-      <div class="slide-kicker">Validate the schema</div>
-      <h2>Good design should reject bad data</h2>
+      <div class="slide-kicker">Level 2 · Change it</div>
+      <h2>Let PostgreSQL reject one bad row</h2>
       <div class="grid-2">
         <div class="card bad-card"><h3>Test 1 · duplicate natural key</h3><p>Try inserting the same MRN twice.</p><code class="inline">UNIQUE</code></div>
         <div class="card bad-card"><h3>Test 2 · invalid price</h3><p>Try a negative service price.</p><code class="inline">CHECK</code></div>
@@ -1092,7 +1220,7 @@ SELECT
         <div class="card bad-card"><h3>Test 4 · impossible time range</h3><p>Make the appointment end before it starts.</p><code class="inline">CHECK</code></div>
       </div>
       <div class="code-cell" data-cell data-clinic="sample" data-expected-codes="23502,23503,23505,23514">
-        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Challenge a constraint</b><span> · PostgreSQL · rejection expected</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b><span class="level-tag">Change</span>Challenge one constraint</b><span> · rejection expected</span></div></div><div class="cell-actions"><button class="cell-btn run" type="button">▶ Run</button><button class="cell-btn reset" type="button">Reset</button><button class="cell-btn copy" type="button">Copy</button></div></div>
         <textarea class="sql-editor" spellcheck="false">-- Change this test after you run it once.
 -- Expected failure: duplicate MRN
 INSERT INTO patient (mrn, first_name, last_name, birth_date)
@@ -1103,11 +1231,11 @@ VALUES ('MRN-1001', 'Different', 'Person', DATE '1990-01-01');</textarea>
     </section>
 
     <section class="slide" data-title="Inspect connected data">
-      <div class="slide-kicker">Keys make joins possible</div>
-      <h2>Reconnect normalized tables for analysis</h2>
-      <p>Normalization separates facts for integrity. Queries reconnect them when an analyst needs a wider view.</p>
+      <div class="slide-kicker">Preview · Read and run</div>
+      <h2>See what the keys will make possible later</h2>
+      <p>Normalization separates facts for integrity. This provided query reconnects them. Joins are taught step by step in Module 6.</p>
       <div class="code-cell" data-cell data-clinic="sample">
-        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Read across the clinic schema</b><span> · PostgreSQL · join preview</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b><span class="level-tag">Preview</span>Read across the clinic schema</b><span> · provided join</span></div></div><div class="cell-actions"><button class="cell-btn run" type="button">▶ Run</button><button class="cell-btn reset" type="button">Reset</button><button class="cell-btn copy" type="button">Copy</button></div></div>
         <textarea class="sql-editor" spellcheck="false">SELECT
   a.appointment_id,
   p.last_name || ', ' || p.first_name AS patient,
@@ -1134,14 +1262,14 @@ ORDER BY a.starts_at, s.service_code;</textarea>
     </section>
 
     <section class="slide" data-title="Indexes and foreign keys">
-      <div class="slide-kicker">Design meets performance</div>
-      <h2>Constraints and indexes solve different problems</h2>
+      <div class="slide-kicker">Instructor preview · Performance</div>
+      <h2>Know why indexes exist; writing them can wait</h2>
       <div class="grid-2">
         <div class="card primary-card"><h3>Automatically indexed</h3><ul><li>PRIMARY KEY</li><li>UNIQUE constraints</li></ul><p>PostgreSQL backs these with unique indexes.</p></div>
         <div class="card accent-card"><h3>Not automatic</h3><ul><li>Child-side foreign key columns</li></ul><p>Index them when real join/update/delete patterns justify it.</p></div>
       </div>
       <div class="code-cell" data-cell data-clinic="schema">
-        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Targeted foreign-key indexes</b><span> · PostgreSQL</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b><span class="level-tag">Preview</span>Targeted foreign-key indexes</b><span> · provided PostgreSQL example</span></div></div><div class="cell-actions"><button class="cell-btn run" type="button">▶ Run</button><button class="cell-btn reset" type="button">Reset</button><button class="cell-btn copy" type="button">Copy</button></div></div>
         <textarea class="sql-editor" spellcheck="false">CREATE INDEX IF NOT EXISTS idx_appointment_patient_time
   ON appointment (patient_id, starts_at);
 
@@ -1258,16 +1386,47 @@ FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE RESTRICT</pre></details
       <div class="slide-num"></div>
     </section>
 
-    <section class="slide" data-title="Final activity">
-      <div class="slide-kicker">Put it together</div>
-      <h2>Final activity: design a mini operational database</h2>
-      <p>Use the clinic as your model, then apply the same workflow to a different domain.</p>
-      <div class="grid-3">
-        <div class="card primary-card"><div class="label">Design</div><ol><li>Mission and scope</li><li>Entities + row grain</li><li>Attributes + types</li><li>Keys + relationships</li></ol></div>
-        <div class="card accent-card"><div class="label">Protect</div><ol><li>NOT NULL</li><li>UNIQUE</li><li>CHECK</li><li>FOREIGN KEY + delete actions</li></ol></div>
-        <div class="card good-card"><div class="label">Validate</div><ol><li>Valid sample rows</li><li>Invalid test rows</li><li>One joined read query</li><li>Explain 1NF → 3NF</li></ol></div>
+    <section class="slide" data-title="Write one table">
+      <div class="slide-kicker">Level 4 · Write it</div>
+      <h2>Write one small table from a familiar pattern</h2>
+      <p>Do not start from a blank screen. Use the comments as a checklist and reuse syntax from the earlier two-column example.</p>
+      <div class="code-cell" data-cell>
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b><span class="level-tag">Write</span>Your first independent table</b><span> · starter provided</span></div></div><div class="cell-actions"><button class="cell-btn run" type="button">▶ Run</button><button class="cell-btn reset" type="button">Reset</button><button class="cell-btn copy" type="button">Copy</button></div></div>
+        <textarea class="sql-editor" spellcheck="false">DROP TABLE IF EXISTS practice_room;
+
+-- Create a table named practice_room with:
+--   room_id   integer PRIMARY KEY
+--   room_name text NOT NULL
+--   capacity  integer CHECK (capacity > 0)
+
+-- Write your CREATE TABLE statement below.
+
+
+-- Then add one valid row and select all rows.</textarea>
+        <div class="output">Write the table, add one valid row, and select Run.</div>
       </div>
-      <div class="question"><strong>Design tradeoff:</strong> identify one deliberate choice you made and explain why it is acceptable for your system.</div>
+      <details><summary>Show one possible answer</summary><pre style="white-space:pre-wrap;color:var(--text)">CREATE TABLE practice_room (
+  room_id integer PRIMARY KEY,
+  room_name text NOT NULL,
+  capacity integer CHECK (capacity &gt; 0)
+);
+
+INSERT INTO practice_room (room_id, room_name, capacity)
+VALUES (1, 'Training Room', 24);
+
+SELECT * FROM practice_room;</pre></details>
+      <div class="slide-num"></div>
+    </section>
+
+    <section class="slide" data-title="Final activity">
+      <div class="slide-kicker">Put it together · Beginner pathway</div>
+      <h2>Design a small two-table database</h2>
+      <p>Choose a familiar domain, such as rooms and reservations, customers and orders, or courses and registrations.</p>
+      <div class="grid-2">
+        <div class="card primary-card"><div class="label">Required</div><h3>Build the core</h3><ol><li>Define the purpose and row grain.</li><li>Create two related tables.</li><li>Add a primary key to each table.</li><li>Add one foreign key.</li><li>Use <code>NOT NULL</code> and one <code>CHECK</code>.</li><li>Insert two valid sample rows.</li></ol></div>
+        <div class="card accent-card"><div class="label">Optional challenge</div><h3>Extend when ready</h3><ol><li>Add a protected natural key with <code>UNIQUE</code>.</li><li>Add a third table or junction table.</li><li>Choose an <code>ON DELETE</code> action.</li><li>Run one invalid-data test.</li><li>Use a provided join pattern to reconnect the tables.</li></ol></div>
+      </div>
+      <div class="question"><strong>Working method:</strong> copy a small example, rename it for your domain, change one part at a time, and run after every change.</div>
       <div class="slide-num"></div>
     </section>
 
@@ -1282,7 +1441,7 @@ FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE RESTRICT</pre></details
         <div class="card"><div class="label">Normalization</div><p>1NF, 2NF, and 3NF reduce repetition and data anomalies.</p></div>
         <div class="card"><div class="label">Analytics</div><p>Reliable operational structure creates a trustworthy source for analytical models.</p></div>
       </div>
-      <div class="callout"><strong>Next:</strong> use the relational design as the foundation for PostgreSQL querying, filtering, joins, and analytical SQL.</div>
+      <div class="callout"><strong>Coding habit:</strong> run a correct example, change one part, complete one rule, and then write a small version yourself. Module 3 continues with beginner PostgreSQL querying.</div>
       <div class="slide-num"></div>
     </section>
 
@@ -1413,8 +1572,13 @@ FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE RESTRICT</pre></details
         try {
           dbStatus.textContent = 'PostgreSQL loading…';
           if (!PGliteCtor) {
-            const mod = await import('https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js');
-            PGliteCtor = mod.PGlite;
+            try {
+              const pinned = await import('https://cdn.jsdelivr.net/npm/@electric-sql/pglite@0.5.4/dist/index.js');
+              PGliteCtor = pinned.PGlite;
+            } catch (_) {
+              const fallback = await import('https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js');
+              PGliteCtor = fallback.PGlite;
+            }
           }
           const instance = await PGliteCtor.create();
           pg = instance;
@@ -1622,7 +1786,8 @@ FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE RESTRICT</pre></details
       const result = await db.exec(editor.value);
       if (cell.dataset.expectedCodes) {
         output.className = 'output show error';
-        output.textContent = 'PostgreSQL accepted the statement. Revise the test so it violates one of the intended constraints.';
+        output.textContent = cell.dataset.acceptedMessage
+          || 'PostgreSQL accepted the statement. Revise the test so it violates one of the intended constraints.';
       } else {
         output.className = 'output show success';
         output.innerHTML = renderResult(result);
@@ -1645,6 +1810,8 @@ FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE RESTRICT</pre></details
   document.querySelectorAll('[data-cell]').forEach((cell, idx) => {
     const editor = cell.querySelector('.sql-editor');
     const output = cell.querySelector('.output');
+    const title = cell.querySelector('.code-title b')?.textContent.trim() || `PostgreSQL editor ${idx + 1}`;
+    editor.setAttribute('aria-label', title);
     installPostgresEditor(editor);
     editor.dataset.original = editor.value;
     output.dataset.original = output.textContent.trim();
