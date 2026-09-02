@@ -18,8 +18,20 @@
       --accent: #c67a26;
       --good: #2d7d59;
       --bad: #a54444;
-      --code-bg: #111827;
-      --code-text: #e5edf7;
+      --code-bg: #ffffff;
+      --code-text: #202124;
+      --code-gutter: #f3f5f7;
+      --code-gutter-text: #78828e;
+      --code-divider: #d7dde5;
+      --code-selection: rgba(51, 153, 255, .24);
+      --sql-keyword: #b0008f;
+      --sql-type: #6f42c1;
+      --sql-string: #a31515;
+      --sql-number: #9a5500;
+      --sql-comment: #008000;
+      --sql-function: #795e26;
+      --sql-operator: #005cc5;
+      --sql-identifier: #202124;
       --shadow: 0 16px 42px rgba(27, 43, 65, 0.12);
       --radius: 18px;
       --slide-pad: clamp(26px, 3.4vw, 58px);
@@ -38,8 +50,20 @@
       --accent: #e1a45f;
       --good: #6ec49a;
       --bad: #e18888;
-      --code-bg: #080d14;
-      --code-text: #eaf2fa;
+      --code-bg: #1e1e1e;
+      --code-text: #d4d4d4;
+      --code-gutter: #181818;
+      --code-gutter-text: #858585;
+      --code-divider: #3a3a3a;
+      --code-selection: rgba(38, 79, 120, .68);
+      --sql-keyword: #c586c0;
+      --sql-type: #4ec9b0;
+      --sql-string: #ce9178;
+      --sql-number: #b5cea8;
+      --sql-comment: #6a9955;
+      --sql-function: #dcdcaa;
+      --sql-operator: #9cdcfe;
+      --sql-identifier: #d4d4d4;
       --shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
     }
 
@@ -303,20 +327,91 @@
       font-weight: 800;
     }
     .cell-btn.run { background: var(--primary); border-color: var(--primary); color:white; }
+    .sql-editor-shell {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      background: var(--code-bg);
+    }
+    .sql-highlight,
     .sql-editor {
       display:block;
       width:100%;
       min-height: 190px;
-      resize: vertical;
-      border:0;
-      outline:0;
-      padding: 15px 17px;
-      color: var(--code-text);
-      background: var(--code-bg);
+      margin: 0;
+      border: 0;
+      padding: 15px 17px 15px 61px;
       font: 13.5px/1.52 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-variant-ligatures: none;
       tab-size: 2;
       white-space: pre;
     }
+    .sql-highlight {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+      pointer-events: none;
+      color: var(--sql-identifier);
+      background: var(--code-bg);
+    }
+    .sql-highlight code {
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+    }
+    .sql-editor {
+      position: relative;
+      z-index: 2;
+      resize: vertical;
+      outline: 0;
+      overflow: auto;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      caret-color: var(--code-text);
+      background: transparent;
+    }
+    .sql-editor::selection {
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      background: var(--code-selection);
+    }
+    .sql-editor:focus {
+      box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--primary) 58%, transparent);
+    }
+    .sql-gutter {
+      position: absolute;
+      inset: 0 auto 0 0;
+      z-index: 3;
+      width: 46px;
+      overflow: hidden;
+      pointer-events: none;
+      border-right: 1px solid var(--code-divider);
+      background: var(--code-gutter);
+      color: var(--code-gutter-text);
+    }
+    .sql-gutter-lines {
+      padding-top: 15px;
+      text-align: right;
+      font: 13.5px/1.52 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-variant-ligatures: none;
+      will-change: transform;
+    }
+    .sql-gutter-line {
+      height: 20.52px;
+      padding-right: 10px;
+      user-select: none;
+    }
+    .sql-token-keyword { color: var(--sql-keyword); font-weight: 650; }
+    .sql-token-type { color: var(--sql-type); }
+    .sql-token-string { color: var(--sql-string); }
+    .sql-token-number { color: var(--sql-number); }
+    .sql-token-comment { color: var(--sql-comment); font-style: italic; }
+    .sql-token-function { color: var(--sql-function); }
+    .sql-token-operator { color: var(--sql-operator); }
+    .sql-token-identifier { color: var(--sql-identifier); }
     .output {
       display:none;
       padding: 13px 15px;
@@ -331,6 +426,11 @@
     .output.show { display:block; }
     .output.error { color: var(--bad); }
     .output.success { color: var(--good); }
+    .output.expected {
+      color: var(--good);
+      background: color-mix(in srgb, var(--good) 8%, var(--surface));
+      border-top-color: color-mix(in srgb, var(--good) 35%, var(--border));
+    }
 
     .mini-result { overflow:auto; margin-top:7px; }
     .mini-result table { min-width: 420px; font-size: 12px; }
@@ -572,7 +672,7 @@
           <tr><td>True / false</td><td><code>boolean</code></td><td>is_active</td><td>genuinely binary state</td></tr>
         </tbody>
       </table></div>
-      <div class="callout"><strong>Text note:</strong> use <code class="inline">varchar(n)</code> when the maximum length is a real business rule. Otherwise <code class="inline">text</code> is often clearer.</div>
+      <div class="callout"><strong>PostgreSQL style used throughout:</strong> SQL keywords are uppercase; table and column names use <code class="inline">lower_snake_case</code>; generated keys use <code class="inline">GENERATED ... AS IDENTITY</code>. PostgreSQL does not use MySQL's <code class="inline">AUTO_INCREMENT</code> or backticks. Use <code class="inline">varchar(n)</code> only when the maximum length is a real rule; otherwise <code class="inline">text</code> is often clearer.</div>
       <div class="slide-num"></div>
     </section>
 
@@ -720,7 +820,7 @@ SELECT * FROM demo_patient;</textarea>
       <div class="slide-kicker">Executable example</div>
       <h2>Let PostgreSQL reject invalid values</h2>
       <div class="code-cell" data-cell>
-        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>CHECK + NOT NULL + DEFAULT</b><span> · edit and rerun</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>CHECK + NOT NULL + DEFAULT</b><span> · PostgreSQL · edit and rerun</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
         <textarea class="sql-editor" spellcheck="false">DROP TABLE IF EXISTS demo_appointment;
 
 CREATE TABLE demo_appointment (
@@ -853,41 +953,54 @@ FROM demo_appointment;</textarea>
       <h2>Build the normalized clinic schema</h2>
       <p>Edit the DDL if you want, then run it. This cell creates all five core tables.</p>
       <div class="code-cell" data-cell>
-        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Clinic schema</b><span> · five related tables</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Clinic schema</b><span> · PostgreSQL · five related tables</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
         <textarea class="sql-editor" spellcheck="false">DROP TABLE IF EXISTS appointment_service, appointment, service, provider, patient CASCADE;
 
 CREATE TABLE patient (
-  patient_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  mrn        text NOT NULL UNIQUE,
+  patient_id bigint GENERATED ALWAYS AS IDENTITY,
+  mrn        text NOT NULL,
   first_name text NOT NULL,
   last_name  text NOT NULL,
   birth_date date NOT NULL,
-  email      text UNIQUE
+  email      text,
+  CONSTRAINT pk_patient PRIMARY KEY (patient_id),
+  CONSTRAINT uq_patient_mrn UNIQUE (mrn),
+  CONSTRAINT uq_patient_email UNIQUE (email)
 );
 
 CREATE TABLE provider (
-  provider_id   bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  npi           text NOT NULL UNIQUE,
+  provider_id   bigint GENERATED ALWAYS AS IDENTITY,
+  npi           text NOT NULL,
   provider_name text NOT NULL,
   specialty     text,
   is_active     boolean NOT NULL DEFAULT TRUE,
+  CONSTRAINT pk_provider PRIMARY KEY (provider_id),
+  CONSTRAINT uq_provider_npi UNIQUE (npi),
   CONSTRAINT chk_provider_npi CHECK (npi ~ '^[0-9]{10}$')
 );
 
 CREATE TABLE service (
-  service_id     bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  service_code   text NOT NULL UNIQUE,
+  service_id     bigint GENERATED ALWAYS AS IDENTITY,
+  service_code   text NOT NULL,
   service_name   text NOT NULL,
-  standard_price numeric(10,2) NOT NULL CHECK (standard_price >= 0)
+  standard_price numeric(10,2) NOT NULL,
+  CONSTRAINT pk_service PRIMARY KEY (service_id),
+  CONSTRAINT uq_service_code UNIQUE (service_code),
+  CONSTRAINT chk_service_price CHECK (standard_price >= 0)
 );
 
 CREATE TABLE appointment (
-  appointment_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  patient_id     bigint NOT NULL REFERENCES patient(patient_id) ON DELETE RESTRICT,
-  provider_id    bigint NOT NULL REFERENCES provider(provider_id) ON DELETE RESTRICT,
+  appointment_id bigint GENERATED ALWAYS AS IDENTITY,
+  patient_id     bigint NOT NULL,
+  provider_id    bigint NOT NULL,
   starts_at      timestamptz NOT NULL,
   ends_at        timestamptz NOT NULL,
   status         text NOT NULL DEFAULT 'scheduled',
+  CONSTRAINT pk_appointment PRIMARY KEY (appointment_id),
+  CONSTRAINT fk_appointment_patient
+    FOREIGN KEY (patient_id) REFERENCES patient (patient_id) ON DELETE RESTRICT,
+  CONSTRAINT fk_appointment_provider
+    FOREIGN KEY (provider_id) REFERENCES provider (provider_id) ON DELETE RESTRICT,
   CONSTRAINT chk_appointment_time CHECK (ends_at > starts_at),
   CONSTRAINT chk_appointment_status CHECK (
     status IN ('scheduled', 'completed', 'cancelled', 'no_show')
@@ -895,11 +1008,17 @@ CREATE TABLE appointment (
 );
 
 CREATE TABLE appointment_service (
-  appointment_id bigint NOT NULL REFERENCES appointment(appointment_id) ON DELETE CASCADE,
-  service_id     bigint NOT NULL REFERENCES service(service_id) ON DELETE RESTRICT,
-  quantity       smallint NOT NULL DEFAULT 1 CHECK (quantity > 0),
-  unit_charge    numeric(10,2) NOT NULL CHECK (unit_charge >= 0),
-  PRIMARY KEY (appointment_id, service_id)
+  appointment_id bigint NOT NULL,
+  service_id     bigint NOT NULL,
+  quantity       smallint NOT NULL DEFAULT 1,
+  unit_charge    numeric(10,2) NOT NULL,
+  CONSTRAINT pk_appointment_service PRIMARY KEY (appointment_id, service_id),
+  CONSTRAINT fk_appointment_service_appointment
+    FOREIGN KEY (appointment_id) REFERENCES appointment (appointment_id) ON DELETE CASCADE,
+  CONSTRAINT fk_appointment_service_service
+    FOREIGN KEY (service_id) REFERENCES service (service_id) ON DELETE RESTRICT,
+  CONSTRAINT chk_appointment_service_quantity CHECK (quantity > 0),
+  CONSTRAINT chk_appointment_service_charge CHECK (unit_charge >= 0)
 );
 
 SELECT table_name
@@ -914,9 +1033,13 @@ ORDER BY table_name;</textarea>
     <section class="slide" data-title="Load sample data">
       <div class="slide-kicker">Guided SQL lab</div>
       <h2>Load valid data and reconnect it with keys</h2>
-      <div class="code-cell" data-cell data-clinic="sample">
-        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Insert sample records</b><span> · schema is prepared automatically</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
-        <textarea class="sql-editor" spellcheck="false">INSERT INTO patient (mrn, first_name, last_name, birth_date, email)
+      <div class="code-cell" data-cell data-clinic="schema">
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Insert sample records</b><span> · PostgreSQL · clean schema prepared automatically</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+        <textarea class="sql-editor" spellcheck="false">-- Teaching reset: make this sample cell safe to rerun.
+TRUNCATE TABLE appointment_service, appointment, service, provider, patient
+RESTART IDENTITY CASCADE;
+
+INSERT INTO patient (mrn, first_name, last_name, birth_date, email)
 VALUES
   ('MRN-1001', 'Maya', 'Brooks', DATE '1988-04-12', 'maya.brooks@example.org'),
   ('MRN-1002', 'Evan', 'Lee', DATE '1976-11-03', NULL);
@@ -937,14 +1060,15 @@ SELECT p.patient_id, pr.provider_id,
        TIMESTAMPTZ '2026-09-08 09:00:00-04',
        TIMESTAMPTZ '2026-09-08 09:30:00-04',
        'scheduled'
-FROM patient p CROSS JOIN provider pr
+FROM patient AS p
+CROSS JOIN provider AS pr
 WHERE p.mrn = 'MRN-1001' AND pr.npi = '1234567890';
 
 INSERT INTO appointment_service (appointment_id, service_id, quantity, unit_charge)
 SELECT a.appointment_id, s.service_id, 1, s.standard_price
-FROM appointment a
-JOIN patient p ON p.patient_id = a.patient_id
-CROSS JOIN service s
+FROM appointment AS a
+JOIN patient AS p ON p.patient_id = a.patient_id
+CROSS JOIN service AS s
 WHERE p.mrn = 'MRN-1001' AND s.service_code IN ('S101', 'L220');
 
 SELECT
@@ -967,13 +1091,13 @@ SELECT
         <div class="card bad-card"><h3>Test 3 · orphan reference</h3><p>Try nonexistent patient/provider IDs.</p><code class="inline">FOREIGN KEY</code></div>
         <div class="card bad-card"><h3>Test 4 · impossible time range</h3><p>Make the appointment end before it starts.</p><code class="inline">CHECK</code></div>
       </div>
-      <div class="code-cell" data-cell data-clinic="sample">
-        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Challenge a constraint</b><span> · expected to fail</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+      <div class="code-cell" data-cell data-clinic="sample" data-expected-codes="23502,23503,23505,23514">
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Challenge a constraint</b><span> · PostgreSQL · rejection expected</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
         <textarea class="sql-editor" spellcheck="false">-- Change this test after you run it once.
 -- Expected failure: duplicate MRN
 INSERT INTO patient (mrn, first_name, last_name, birth_date)
 VALUES ('MRN-1001', 'Different', 'Person', DATE '1990-01-01');</textarea>
-        <div class="output">Run this cell. An error is the expected result.</div>
+        <div class="output">Run this cell. PostgreSQL should reject the invalid row.</div>
       </div>
       <div class="slide-num"></div>
     </section>
@@ -983,7 +1107,7 @@ VALUES ('MRN-1001', 'Different', 'Person', DATE '1990-01-01');</textarea>
       <h2>Reconnect normalized tables for analysis</h2>
       <p>Normalization separates facts for integrity. Queries reconnect them when an analyst needs a wider view.</p>
       <div class="code-cell" data-cell data-clinic="sample">
-        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Read across the clinic schema</b><span> · join preview</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
+        <div class="code-head"><div class="code-title"><span class="dot"></span><div><b>Read across the clinic schema</b><span> · PostgreSQL · join preview</span></div></div><div class="cell-actions"><button class="cell-btn run">▶ Run</button><button class="cell-btn reset">Reset</button><button class="cell-btn copy">Copy</button></div></div>
         <textarea class="sql-editor" spellcheck="false">SELECT
   a.appointment_id,
   p.last_name || ', ' || p.first_name AS patient,
@@ -1193,68 +1317,93 @@ FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE RESTRICT</pre></details
   const CLINIC_SCHEMA = `
     DROP TABLE IF EXISTS appointment_service, appointment, service, provider, patient CASCADE;
     CREATE TABLE patient (
-      patient_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-      mrn text NOT NULL UNIQUE,
+      patient_id bigint GENERATED ALWAYS AS IDENTITY,
+      mrn text NOT NULL,
       first_name text NOT NULL,
       last_name text NOT NULL,
       birth_date date NOT NULL,
-      email text UNIQUE
+      email text,
+      CONSTRAINT pk_patient PRIMARY KEY (patient_id),
+      CONSTRAINT uq_patient_mrn UNIQUE (mrn),
+      CONSTRAINT uq_patient_email UNIQUE (email)
     );
     CREATE TABLE provider (
-      provider_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-      npi text NOT NULL UNIQUE,
+      provider_id bigint GENERATED ALWAYS AS IDENTITY,
+      npi text NOT NULL,
       provider_name text NOT NULL,
       specialty text,
       is_active boolean NOT NULL DEFAULT TRUE,
+      CONSTRAINT pk_provider PRIMARY KEY (provider_id),
+      CONSTRAINT uq_provider_npi UNIQUE (npi),
       CONSTRAINT chk_provider_npi CHECK (npi ~ '^[0-9]{10}$')
     );
     CREATE TABLE service (
-      service_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-      service_code text NOT NULL UNIQUE,
+      service_id bigint GENERATED ALWAYS AS IDENTITY,
+      service_code text NOT NULL,
       service_name text NOT NULL,
-      standard_price numeric(10,2) NOT NULL CHECK (standard_price >= 0)
+      standard_price numeric(10,2) NOT NULL,
+      CONSTRAINT pk_service PRIMARY KEY (service_id),
+      CONSTRAINT uq_service_code UNIQUE (service_code),
+      CONSTRAINT chk_service_price CHECK (standard_price >= 0)
     );
     CREATE TABLE appointment (
-      appointment_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-      patient_id bigint NOT NULL REFERENCES patient(patient_id) ON DELETE RESTRICT,
-      provider_id bigint NOT NULL REFERENCES provider(provider_id) ON DELETE RESTRICT,
+      appointment_id bigint GENERATED ALWAYS AS IDENTITY,
+      patient_id bigint NOT NULL,
+      provider_id bigint NOT NULL,
       starts_at timestamptz NOT NULL,
       ends_at timestamptz NOT NULL,
       status text NOT NULL DEFAULT 'scheduled',
+      CONSTRAINT pk_appointment PRIMARY KEY (appointment_id),
+      CONSTRAINT fk_appointment_patient
+        FOREIGN KEY (patient_id) REFERENCES patient (patient_id) ON DELETE RESTRICT,
+      CONSTRAINT fk_appointment_provider
+        FOREIGN KEY (provider_id) REFERENCES provider (provider_id) ON DELETE RESTRICT,
       CONSTRAINT chk_appointment_time CHECK (ends_at > starts_at),
-      CONSTRAINT chk_appointment_status CHECK (status IN ('scheduled','completed','cancelled','no_show'))
+      CONSTRAINT chk_appointment_status CHECK (
+        status IN ('scheduled', 'completed', 'cancelled', 'no_show')
+      )
     );
     CREATE TABLE appointment_service (
-      appointment_id bigint NOT NULL REFERENCES appointment(appointment_id) ON DELETE CASCADE,
-      service_id bigint NOT NULL REFERENCES service(service_id) ON DELETE RESTRICT,
-      quantity smallint NOT NULL DEFAULT 1 CHECK (quantity > 0),
-      unit_charge numeric(10,2) NOT NULL CHECK (unit_charge >= 0),
-      PRIMARY KEY (appointment_id, service_id)
+      appointment_id bigint NOT NULL,
+      service_id bigint NOT NULL,
+      quantity smallint NOT NULL DEFAULT 1,
+      unit_charge numeric(10,2) NOT NULL,
+      CONSTRAINT pk_appointment_service PRIMARY KEY (appointment_id, service_id),
+      CONSTRAINT fk_appointment_service_appointment
+        FOREIGN KEY (appointment_id) REFERENCES appointment (appointment_id) ON DELETE CASCADE,
+      CONSTRAINT fk_appointment_service_service
+        FOREIGN KEY (service_id) REFERENCES service (service_id) ON DELETE RESTRICT,
+      CONSTRAINT chk_appointment_service_quantity CHECK (quantity > 0),
+      CONSTRAINT chk_appointment_service_charge CHECK (unit_charge >= 0)
     );
   `;
 
   const CLINIC_SAMPLE = `
-    INSERT INTO patient (mrn, first_name, last_name, birth_date, email) VALUES
-      ('MRN-1001','Maya','Brooks',DATE '1988-04-12','maya.brooks@example.org'),
-      ('MRN-1002','Evan','Lee',DATE '1976-11-03',NULL);
-    INSERT INTO provider (npi, provider_name, specialty) VALUES
-      ('1234567890','Jordan Chen','Family Medicine'),
-      ('2345678901','Priya Shah','Internal Medicine');
-    INSERT INTO service (service_code, service_name, standard_price) VALUES
-      ('S101','Office Visit',95.00),
-      ('L220','Complete Blood Count',28.00),
-      ('V310','Influenza Vaccine',42.50);
+    INSERT INTO patient (mrn, first_name, last_name, birth_date, email)
+    VALUES
+      ('MRN-1001', 'Maya', 'Brooks', DATE '1988-04-12', 'maya.brooks@example.org'),
+      ('MRN-1002', 'Evan', 'Lee', DATE '1976-11-03', NULL);
+    INSERT INTO provider (npi, provider_name, specialty)
+    VALUES
+      ('1234567890', 'Jordan Chen', 'Family Medicine'),
+      ('2345678901', 'Priya Shah', 'Internal Medicine');
+    INSERT INTO service (service_code, service_name, standard_price)
+    VALUES
+      ('S101', 'Office Visit', 95.00),
+      ('L220', 'Complete Blood Count', 28.00),
+      ('V310', 'Influenza Vaccine', 42.50);
     INSERT INTO appointment (patient_id, provider_id, starts_at, ends_at, status)
     SELECT p.patient_id, pr.provider_id,
            TIMESTAMPTZ '2026-09-08 09:00:00-04', TIMESTAMPTZ '2026-09-08 09:30:00-04', 'scheduled'
-    FROM patient p CROSS JOIN provider pr
-    WHERE p.mrn='MRN-1001' AND pr.npi='1234567890';
+    FROM patient AS p
+    CROSS JOIN provider AS pr
+    WHERE p.mrn = 'MRN-1001' AND pr.npi = '1234567890';
     INSERT INTO appointment_service (appointment_id, service_id, quantity, unit_charge)
     SELECT a.appointment_id, s.service_id, 1, s.standard_price
-    FROM appointment a
-    JOIN patient p ON p.patient_id=a.patient_id
-    CROSS JOIN service s
-    WHERE p.mrn='MRN-1001' AND s.service_code IN ('S101','L220');
+    FROM appointment AS a
+    JOIN patient AS p ON p.patient_id = a.patient_id
+    CROSS JOIN service AS s
+    WHERE p.mrn = 'MRN-1001' AND s.service_code IN ('S101', 'L220');
   `;
 
   async function initDb() {
@@ -1308,6 +1457,121 @@ FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE RESTRICT</pre></details
       .replaceAll("'", '&#039;');
   }
 
+  const POSTGRES_KEYWORDS = new Set((
+    'ABORT ALL ALTER ANALYSE ANALYZE AND ANY ARRAY AS ASC ASYMMETRIC AUTHORIZATION ' +
+    'BEGIN BETWEEN BOTH BY CALL CASCADE CASE CAST CHECK COLLATE COLUMN COMMIT ' +
+    'CONFLICT CONSTRAINT CREATE CROSS CURRENT_DATE CURRENT_ROLE CURRENT_SCHEMA ' +
+    'CURRENT_TIME CURRENT_TIMESTAMP CURRENT_USER DEFAULT DELETE DESC DISTINCT DO ' +
+    'DROP ELSE END EXCEPT EXISTS FALSE FETCH FOR FOREIGN FROM FULL GENERATED GRANT ' +
+    'GROUP HAVING IDENTITY IF ILIKE IN INDEX INITIALLY INNER INSERT INTERSECT INTO ' +
+    'IS JOIN KEY LATERAL LEADING LEFT LIKE LIMIT LOCALTIME LOCALTIMESTAMP NATURAL ' +
+    'NO NOT NULL NULLS OFFSET ON ONLY OR ORDER OUTER OVER PARTITION PLACING PRIMARY ' +
+    'REFERENCES RESTART RESTRICT RETURNING REVOKE RIGHT ROW SELECT SET SOME ' +
+    'SYMMETRIC TABLE THEN TO TRAILING TRANSACTION TRUE TRUNCATE UNION UNIQUE UPDATE ' +
+    'USER USING VALUES VARIADIC VERBOSE WHEN WHERE WINDOW WITH'
+  ).split(/\s+/));
+
+  const POSTGRES_TYPES = new Set((
+    'BIGINT BIGSERIAL BIT BOOLEAN BOX BYTEA CHAR CHARACTER CIDR DATE DECIMAL DOUBLE ' +
+    'INET INT INTEGER INTERVAL JSON JSONB MACADDR MONEY NUMERIC REAL SERIAL SMALLINT ' +
+    'SMALLSERIAL TEXT TIME TIMESTAMP TIMESTAMPTZ UUID VARBIT VARCHAR XML'
+  ).split(/\s+/));
+
+  const POSTGRES_FUNCTIONS = new Set((
+    'AVG COALESCE CONCAT COUNT CURRENT_DATABASE CURRENT_SCHEMA DATE_PART EXTRACT ' +
+    'GREATEST LEAST LENGTH LOWER MAX MIN NOW NULLIF ROUND STRING_AGG SUBSTRING SUM ' +
+    'TO_CHAR TO_DATE UPPER'
+  ).split(/\s+/));
+
+  function highlightPostgresSql(sql) {
+    const tokenPattern = /(--[^\n]*|\/\*[\s\S]*?\*\/|'(?:''|[^'])*'|"(?:""|[^"])*"|\$(?:[A-Za-z_][A-Za-z0-9_]*)?\$|\$\d+|\b\d+(?:\.\d+)?\b|!~~\*?|~~\*?|!~\*?|~\*?|->>|->|#>>|#>|::|<=|>=|<>|!=|:=|\|\||[-+*/%=<>@]|\b[A-Za-z_][A-Za-z0-9_$]*\b)/g;
+    let highlighted = '';
+    let cursor = 0;
+
+    sql.replace(tokenPattern, (token, _match, offset) => {
+      highlighted += escapeHtml(sql.slice(cursor, offset));
+      let tokenClass = 'sql-token-operator';
+      const upper = token.toUpperCase();
+
+      if (token.startsWith('--') || token.startsWith('/*')) {
+        tokenClass = 'sql-token-comment';
+      } else if (token.startsWith("'")) {
+        tokenClass = 'sql-token-string';
+      } else if (token.startsWith('"')) {
+        tokenClass = 'sql-token-identifier';
+      } else if (/^\d/.test(token) || /^\$\d+$/.test(token)) {
+        tokenClass = 'sql-token-number';
+      } else if (/^[A-Za-z_]/.test(token)) {
+        if (POSTGRES_KEYWORDS.has(upper)) tokenClass = 'sql-token-keyword';
+        else if (POSTGRES_TYPES.has(upper)) tokenClass = 'sql-token-type';
+        else if (POSTGRES_FUNCTIONS.has(upper)) tokenClass = 'sql-token-function';
+        else tokenClass = 'sql-token-identifier';
+      }
+
+      highlighted += '<span class="' + tokenClass + '">' + escapeHtml(token) + '</span>';
+      cursor = offset + token.length;
+      return token;
+    });
+
+    highlighted += escapeHtml(sql.slice(cursor));
+    return highlighted + (sql.endsWith('\n') ? ' ' : '');
+  }
+
+  function syncPostgresEditor(editor) {
+    const shell = editor.closest('.sql-editor-shell');
+    if (!shell) return;
+    const highlight = shell.querySelector('.sql-highlight');
+    const gutterLines = shell.querySelector('.sql-gutter-lines');
+    highlight.scrollTop = editor.scrollTop;
+    highlight.scrollLeft = editor.scrollLeft;
+    gutterLines.style.transform = 'translateY(' + (-editor.scrollTop) + 'px)';
+  }
+
+  function refreshPostgresEditor(editor) {
+    const shell = editor.closest('.sql-editor-shell');
+    if (!shell) return;
+    const code = shell.querySelector('.sql-highlight code');
+    const gutterLines = shell.querySelector('.sql-gutter-lines');
+    const lineCount = Math.max(1, editor.value.split('\n').length);
+
+    code.innerHTML = highlightPostgresSql(editor.value);
+    gutterLines.innerHTML = Array.from(
+      { length: lineCount },
+      (_, index) => '<div class="sql-gutter-line">' + (index + 1) + '</div>'
+    ).join('');
+    syncPostgresEditor(editor);
+  }
+
+  function installPostgresEditor(editor) {
+    const parent = editor.parentNode;
+    const shell = document.createElement('div');
+    const gutter = document.createElement('div');
+    const gutterLines = document.createElement('div');
+    const highlight = document.createElement('pre');
+    const code = document.createElement('code');
+
+    shell.className = 'sql-editor-shell';
+    gutter.className = 'sql-gutter';
+    gutterLines.className = 'sql-gutter-lines';
+    highlight.className = 'sql-highlight';
+    gutter.setAttribute('aria-hidden', 'true');
+    highlight.setAttribute('aria-hidden', 'true');
+    editor.setAttribute('wrap', 'off');
+    editor.setAttribute('autocomplete', 'off');
+    editor.setAttribute('autocapitalize', 'off');
+
+    gutter.appendChild(gutterLines);
+    highlight.appendChild(code);
+    parent.insertBefore(shell, editor);
+    shell.appendChild(gutter);
+    shell.appendChild(highlight);
+    shell.appendChild(editor);
+
+    editor.addEventListener('input', () => refreshPostgresEditor(editor));
+    editor.addEventListener('scroll', () => syncPostgresEditor(editor));
+    refreshPostgresEditor(editor);
+  }
+
   function renderResult(results) {
     if (!Array.isArray(results)) results = [results];
     const withRows = [...results].reverse().find(r => r && Array.isArray(r.rows) && r.rows.length);
@@ -1324,6 +1588,27 @@ FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE RESTRICT</pre></details
     return html;
   }
 
+  function getPostgresError(err) {
+    const message = err?.message || String(err);
+    const code = String(err?.code || err?.cause?.code || '').trim();
+    return { message, code };
+  }
+
+  function isExpectedConstraintError(cell, error) {
+    const expectedCodes = (cell.dataset.expectedCodes || '')
+      .split(',')
+      .map(code => code.trim())
+      .filter(Boolean);
+
+    if (!expectedCodes.length) return false;
+    if (error.code && expectedCodes.includes(error.code)) return true;
+
+    // PGlite normally exposes PostgreSQL SQLSTATE codes. The message fallback
+    // keeps the teaching result clear in builds that expose only error text.
+    return /violates\s+(?:not-null|foreign key|unique|check)\s+constraint/i.test(error.message)
+      || /duplicate key value violates unique constraint/i.test(error.message);
+  }
+
   async function runCell(cell) {
     const editor = cell.querySelector('.sql-editor');
     const output = cell.querySelector('.output');
@@ -1335,11 +1620,23 @@ FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE RESTRICT</pre></details
     try {
       const db = mode ? await prepareClinic(mode) : await initDb();
       const result = await db.exec(editor.value);
-      output.className = 'output show success';
-      output.innerHTML = renderResult(result);
+      if (cell.dataset.expectedCodes) {
+        output.className = 'output show error';
+        output.textContent = 'PostgreSQL accepted the statement. Revise the test so it violates one of the intended constraints.';
+      } else {
+        output.className = 'output show success';
+        output.innerHTML = renderResult(result);
+      }
     } catch (err) {
-      output.className = 'output show error';
-      output.textContent = err?.message || String(err);
+      const pgError = getPostgresError(err);
+      const sqlState = pgError.code ? ` (SQLSTATE ${pgError.code})` : '';
+      if (isExpectedConstraintError(cell, pgError)) {
+        output.className = 'output show expected';
+        output.textContent = `✓ PostgreSQL rejected the invalid row as expected${sqlState}.\n${pgError.message}`;
+      } else {
+        output.className = 'output show error';
+        output.textContent = `PostgreSQL error${sqlState}:\n${pgError.message}`;
+      }
     } finally {
       run.disabled = false;
     }
@@ -1347,13 +1644,19 @@ FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE RESTRICT</pre></details
 
   document.querySelectorAll('[data-cell]').forEach((cell, idx) => {
     const editor = cell.querySelector('.sql-editor');
+    const output = cell.querySelector('.output');
+    installPostgresEditor(editor);
     editor.dataset.original = editor.value;
+    output.dataset.original = output.textContent.trim();
+    output.setAttribute('aria-live', 'polite');
+    cell.querySelector('.run').setAttribute('title', 'Run this PostgreSQL code');
+    cell.querySelector('.reset').setAttribute('title', 'Restore the original PostgreSQL code');
     cell.querySelector('.run').addEventListener('click', () => runCell(cell));
     cell.querySelector('.reset').addEventListener('click', () => {
       editor.value = editor.dataset.original;
-      const output = cell.querySelector('.output');
+      refreshPostgresEditor(editor);
       output.className = 'output';
-      output.textContent = 'Run this cell to see output.';
+      output.textContent = output.dataset.original;
     });
     cell.querySelector('.copy').addEventListener('click', async (e) => {
       await navigator.clipboard.writeText(editor.value);
@@ -1369,6 +1672,7 @@ FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE RESTRICT</pre></details
         const start = editor.selectionStart;
         const end = editor.selectionEnd;
         editor.setRangeText('  ', start, end, 'end');
+        refreshPostgresEditor(editor);
       }
     });
   });
