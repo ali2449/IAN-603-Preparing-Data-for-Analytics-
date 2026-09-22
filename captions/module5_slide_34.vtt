@@ -1,0 +1,37 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:05.575
+This example shows how population filtering and CASE
+classification work together The
+
+00:00:05.600 --> 00:00:09.638
+rule concerns completed stays so the WHERE clause
+first removes admissions with
+
+00:00:09.662 --> 00:00:14.188
+no discharge date That prevents an ongoing stay from
+being forced into
+
+00:00:14.212 --> 00:00:19.688
+a category that requires a completed duration
+PostgreSQL can subtract one date
+
+00:00:19.712 --> 00:00:23.962
+from another and return the number of days CASE then
+classifies the
+
+00:00:23.988 --> 00:00:27.300
+duration as Short for fewer than five days Medium
+for five through
+
+00:00:27.325 --> 00:00:31.562
+ten days and Long for anything greater than ten Run
+the query
+
+00:00:31.588 --> 00:00:37.038
+and inspect the boundary values A five-day stay
+should be Medium The
+
+00:00:37.062 --> 00:00:41.200
+broader lesson is to define the population before
+applying a classification rule

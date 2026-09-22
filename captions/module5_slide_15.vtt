@@ -1,0 +1,36 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.612
+A common beginner mistake is writing equals NULL
+That does not test
+
+00:00:04.638 --> 00:00:08.388
+whether a value is missing It asks whether a known
+value is
+
+00:00:08.412 --> 00:00:12.950
+equal to an unknown value and SQL cannot prove the
+comparison The
+
+00:00:12.975 --> 00:00:17.162
+result is UNKNOWN even for rows where the column is
+NULL The
+
+00:00:17.175 --> 00:00:22.825
+same issue affects not-equal NULL SQL provides
+explicit missing-value predicates
+
+00:00:23.062 --> 00:00:27.438
+IS NULL and IS NOT NULL Run the example and inspect
+the
+
+00:00:27.462 --> 00:00:32.263
+calculated columns You should see NULL results
+instead of useful true or
+
+00:00:32.288 --> 00:00:36.525
+false answers When the question is whether a value
+is missing use
+
+00:00:36.538 --> 00:00:40.225
+IS NULL Treat that as a basic SQL habit

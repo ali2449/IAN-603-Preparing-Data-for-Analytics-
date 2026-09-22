@@ -1,0 +1,40 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:03.988
+The reasoning patterns in this module transfer well
+across SQL systems but
+
+00:00:04.000 --> 00:00:09.688
+exact syntax can differ AND OR NOT IS NULL COALESCE
+NULLIF and
+
+00:00:09.712 --> 00:00:14.612
+CASE are broadly familiar across databases IS
+DISTINCT FROM is supported in
+
+00:00:14.625 --> 00:00:18.875
+PostgreSQL and some modern systems but you should
+check the target platform
+
+00:00:19.762 --> 00:00:25.600
+Date arithmetic is especially variable PostgreSQL
+can subtract dates directly while
+
+00:00:25.625 --> 00:00:30.512
+SQL Server and Microsoft Fabric commonly use
+functions such as DATEDIFF The
+
+00:00:30.525 --> 00:00:35.212
+best transfer strategy is to preserve the rule first
+Define the cohort
+
+00:00:35.425 --> 00:00:39.700
+decide how NULL should behave group mixed conditions
+with parentheses order CASE
+
+00:00:39.712 --> 00:00:45.438
+branches and test boundary records Translate
+dialect-specific functions after the logic
+
+00:00:45.450 --> 00:00:46.100
+is correct

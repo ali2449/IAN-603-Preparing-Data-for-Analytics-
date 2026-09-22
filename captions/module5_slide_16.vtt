@@ -1,0 +1,37 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.538
+A blank string is not NULL in PostgreSQL An empty
+string is
+
+00:00:04.562 --> 00:00:08.175
+a known text value with zero characters and a
+whitespace-only string is
+
+00:00:08.200 --> 00:00:12.262
+also a real value until spaces are removed This
+matters when a
+
+00:00:12.288 --> 00:00:16.988
+rule says no usable email Testing only IS NULL would
+miss empty
+
+00:00:17.012 --> 00:00:22.888
+text and whitespace-only text BTRIM removes
+surrounding spaces NULLIF
+
+00:00:22.912 --> 00:00:28.038
+then converts an empty trimmed result to NULL After
+that normalization IS
+
+00:00:28.062 --> 00:00:32.775
+NULL can treat the three cases consistently Run the
+example and inspect
+
+00:00:32.788 --> 00:00:37.900
+the patients returned This is a practical
+preparation pattern because messy text
+
+00:00:37.925 --> 00:00:40.925
+often needs normalization before business rules are
+applied

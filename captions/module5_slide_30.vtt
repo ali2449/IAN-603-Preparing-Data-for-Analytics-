@@ -1,0 +1,37 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.900
+NOT IN can be surprising when the list contains NULL
+Conceptually the
+
+00:00:04.925 --> 00:00:08.050
+predicate asks whether a value is different from
+every item in the
+
+00:00:08.062 --> 00:00:13.088
+list If one item is unknown PostgreSQL cannot prove
+that an ordinary
+
+00:00:13.112 --> 00:00:17.688
+value is different from that unknown value The
+result can become UNKNOWN
+
+00:00:17.712 --> 00:00:21.925
+instead of true Because WHERE keeps only true rows
+that look like
+
+00:00:21.950 --> 00:00:28.125
+obvious non-matches may disappear Run the example
+and inspect the output The
+
+00:00:28.150 --> 00:00:30.775
+safer pattern is to keep NULL out of the list and
+handle
+
+00:00:30.800 --> 00:00:35.100
+missing status explicitly with IS NULL IS NOT NULL
+or another NULL-safe
+
+00:00:35.112 --> 00:00:39.275
+predicate Make the missing-value policy visible in
+the query

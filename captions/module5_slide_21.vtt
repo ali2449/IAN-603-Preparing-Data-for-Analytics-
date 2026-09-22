@@ -1,0 +1,36 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:05.388
+This example combines normalization and fallback
+logic We want the first usable
+
+00:00:05.412 --> 00:00:09.262
+contact method but an empty email or a string
+containing only spaces
+
+00:00:09.288 --> 00:00:13.862
+should not block the fallback Each contact value is
+trimmed and NULLIF
+
+00:00:13.888 --> 00:00:18.762
+converts an empty result to NULL COALESCE then
+chooses the first available
+
+00:00:18.775 --> 00:00:23.988
+value The order expresses priority email then mobile
+then home then a
+
+00:00:24.012 --> 00:00:29.362
+final label Run the query and inspect the edge cases
+Robert Lee
+
+00:00:29.388 --> 00:00:33.325
+and Lisa Ray should fall back to home phone Maria
+Torres should
+
+00:00:33.350 --> 00:00:38.325
+use mobile because her email contains only spaces
+Andre Green should receive
+
+00:00:38.350 --> 00:00:40.400
+the final No contact provided label
