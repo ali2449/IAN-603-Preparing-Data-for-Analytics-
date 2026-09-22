@@ -1,0 +1,71 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:05.712
+This guided practice combines several data-changing
+steps into one small workflow First
+
+00:00:05.912 --> 00:00:10.262
+insert a new patient with a unique MRN Use RETURNING
+so you
+
+00:00:10.275 --> 00:00:15.425
+can immediately see the row that PostgreSQL stored
+Second run a SELECT
+
+00:00:15.450 --> 00:00:21.000
+using that MRN This is your verification step It
+confirms that
+
+00:00:21.025 --> 00:00:25.438
+you can retrieve the same row using a stable key
+Third update
+
+00:00:25.462 --> 00:00:29.688
+the patient's age by one year Again use the MRN in
+the
+
+00:00:29.712 --> 00:00:33.850
+WHERE clause so the target is precise Add RETURNING
+so you can
+
+00:00:33.875 --> 00:00:38.388
+inspect the changed row This practice is important
+because it reflects a
+
+00:00:38.400 --> 00:00:43.738
+more realistic workflow than an isolated SQL command
+Data work often follows
+
+00:00:43.762 --> 00:00:48.638
+a sequence create or change something then verify it
+Use the comments
+
+00:00:48.662 --> 00:00:51.988
+in the editor as a guide You do not have to write
+
+00:00:52.000 --> 00:00:56.462
+everything from memory Look back at the INSERT and
+UPDATE examples if
+
+00:00:56.475 --> 00:01:01.275
+needed After the statements run compare the original
+inserted age with the
+
+00:01:01.300 --> 00:01:05.938
+updated age The identifying MRN and name should
+remain the same while
+
+00:01:05.950 --> 00:01:11.475
+the age changes Also pay attention to errors If you
+accidentally
+
+00:01:11.488 --> 00:01:15.600
+reuse an MRN that already exists a uniqueness
+constraint may reject the
+
+00:01:15.625 --> 00:01:20.412
+insert That is a good reminder that the database
+schema continues protecting
+
+00:01:20.438 --> 00:01:22.262
+the data while you practice DML

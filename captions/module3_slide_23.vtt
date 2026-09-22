@@ -1,0 +1,72 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:03.400
+Sometimes an error message is evidence that the
+database is doing its
+
+00:00:03.412 --> 00:00:08.438
+job correctly In this example patient MRN one zero
+zero four is
+
+00:00:08.450 --> 00:00:12.962
+connected to an admission record The relationship is
+protected by a foreign
+
+00:00:12.988 --> 00:00:17.825
+key that uses ON DELETE RESTRICT That rule means
+PostgreSQL should not
+
+00:00:17.838 --> 00:00:21.088
+allow us to delete the patient while a related
+admission still depends
+
+00:00:21.112 --> 00:00:25.825
+on that patient record When you run the DELETE
+statement PostgreSQL is
+
+00:00:25.850 --> 00:00:29.912
+expected to reject it This is not simply bad luck or
+bad
+
+00:00:29.938 --> 00:00:35.725
+SQL The database is protecting referential integrity
+If the patient
+
+00:00:35.750 --> 00:00:39.575
+disappeared while the admission still pointed to
+that patient ID the admission
+
+00:00:39.588 --> 00:00:43.362
+would reference a row that no longer exists This
+kind of rule
+
+00:00:43.388 --> 00:00:47.138
+is one reason we define keys and relationships when
+designing a database
+
+00:00:48.012 --> 00:00:53.462
+Application code can make mistakes A database
+constraint provides another layer of
+
+00:00:53.488 --> 00:00:59.300
+protection Run the example and read the error
+message Try to identify
+
+00:00:59.325 --> 00:01:03.538
+the foreign key or related table mentioned in the
+message A useful
+
+00:01:03.562 --> 00:01:07.538
+habit is to interpret database errors instead of
+immediately trying to bypass
+
+00:01:07.562 --> 00:01:13.050
+them Ask what rule was violated and why that rule
+exists Constraint
+
+00:01:13.075 --> 00:01:18.175
+errors can reveal important information about
+uniqueness required values valid ranges and
+
+00:01:18.188 --> 00:01:19.788
+relationships between tables

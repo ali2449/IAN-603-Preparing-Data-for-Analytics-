@@ -1,0 +1,72 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:03.312
+MERGE is an optional advanced topic so do not worry
+if this
+
+00:00:03.338 --> 00:00:07.662
+feels more complex than the earlier commands MERGE
+is useful when you
+
+00:00:07.688 --> 00:00:10.338
+have a source dataset and a target table and you
+want one
+
+00:00:10.362 --> 00:00:14.250
+statement to decide what should happen for each
+source row The most
+
+00:00:14.275 --> 00:00:18.462
+important part is the ON condition The ON condition
+defines when a
+
+00:00:18.488 --> 00:00:22.538
+source row and a target row represent the same
+record In this
+
+00:00:22.562 --> 00:00:27.188
+example the match is based on MRN When a source MRN
+already
+
+00:00:27.212 --> 00:00:31.875
+exists in the target the WHEN MATCHED branch updates
+selected fields When
+
+00:00:31.900 --> 00:00:35.362
+a source MRN does not exist the WHEN NOT MATCHED
+branch inserts
+
+00:00:35.388 --> 00:00:40.862
+a new row The example first creates a temporary
+incoming_patients table adds
+
+00:00:40.875 --> 00:00:44.200
+a couple of source rows and then merges that source
+into patients
+
+00:00:45.075 --> 00:00:50.262
+After the MERGE a SELECT shows the relevant records
+If your PostgreSQL
+
+00:00:50.288 --> 00:00:54.088
+environment supports MERGE you can run the example
+and compare the matched
+
+00:00:54.112 --> 00:00:58.412
+row with the newly inserted row The safety lesson is
+more important
+
+00:00:58.438 --> 00:01:02.850
+than the syntax Before using MERGE on important data
+make sure the
+
+00:01:02.875 --> 00:01:06.500
+source does not contain unexpected duplicates and
+make sure the ON condition
+
+00:01:06.525 --> 00:01:10.825
+really identifies the same entity A poor match rule
+can update the
+
+00:01:10.850 --> 00:01:12.725
+wrong records or create duplicates

@@ -1,0 +1,65 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.300
+This completion exercise asks you to filter JSONB
+notes where follow_up is
+
+00:00:04.325 --> 00:00:09.862
+true The SELECT portion already extracts the patient
+ID symptom and severity
+
+00:00:10.750 --> 00:00:14.688
+The missing piece is inside the WHERE condition We
+need to tell
+
+00:00:14.700 --> 00:00:20.338
+PostgreSQL which JSON key contains the Boolean
+follow-up flag Replace the blank
+
+00:00:20.350 --> 00:00:26.012
+with the quoted key name follow_up Because the
+arrow-arrow operator extracts text
+
+00:00:26.225 --> 00:00:30.088
+the expression then casts that text to Boolean using
+double colon boolean
+
+00:00:30.975 --> 00:00:35.675
+Finally it compares the result with true After you
+complete the key
+
+00:00:35.925 --> 00:00:40.825
+run the query Every returned note should represent a
+case where follow_up
+
+00:00:40.850 --> 00:00:46.862
+is true This example combines several ideas in one
+short condition First
+
+00:00:47.088 --> 00:00:53.212
+access a JSON key Second extract the value as text
+Third
+
+00:00:53.362 --> 00:00:57.238
+cast it to the data type you need Fourth compare it
+with
+
+00:00:57.250 --> 00:01:01.788
+the desired value If the syntax feels unusual read
+it from the
+
+00:01:01.812 --> 00:01:07.362
+inside out Start with the note column extract
+follow_up convert that value
+
+00:01:07.388 --> 00:01:11.162
+to Boolean and then ask whether it equals true The
+more you
+
+00:01:11.188 --> 00:01:16.188
+work with JSONB the more natural these operators
+become For now focus
+
+00:01:16.212 --> 00:01:19.425
+on understanding the sequence rather than memorizing
+every symbol

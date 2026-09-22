@@ -1,0 +1,72 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.675
+Relational databases are best known for structured
+rows and columns but PostgreSQL
+
+00:00:04.700 --> 00:00:10.012
+can also work with semi-structured JSON data One
+useful PostgreSQL type is
+
+00:00:10.025 --> 00:00:15.162
+JSONB In our clinical_notes table the note column
+stores values such as
+
+00:00:15.188 --> 00:00:21.212
+symptom severity and follow_up inside a JSON object
+The arrow-arrow operator
+
+00:00:21.438 --> 00:00:25.450
+written as two greater-than symbols after the hyphen
+extracts a JSON value
+
+00:00:25.475 --> 00:00:30.638
+as text For example note arrow-arrow symptom returns
+the symptom value as
+
+00:00:30.662 --> 00:00:34.950
+text We give the extracted value an alias so the
+result has
+
+00:00:34.975 --> 00:00:39.900
+a clean column name For follow_up we want a Boolean
+value rather
+
+00:00:39.912 --> 00:00:45.300
+than text The expression ends with double colon
+boolean That is a
+
+00:00:45.312 --> 00:00:50.488
+PostgreSQL cast It converts the extracted text into
+a Boolean that can
+
+00:00:50.500 --> 00:00:54.500
+be treated as true or false The WHERE clause filters
+notes whose
+
+00:00:54.525 --> 00:00:58.988
+severity is moderate or severe by using IN The
+result is then
+
+00:00:59.012 --> 00:01:04.000
+ordered by patient ID Run the query and inspect the
+extracted fields
+
+00:01:04.862 --> 00:01:08.338
+Notice that the JSON values behave like columns in
+the result even
+
+00:01:08.362 --> 00:01:12.400
+though they are stored inside one JSONB column JSONB
+is useful when
+
+00:01:12.425 --> 00:01:16.388
+some data has a flexible structure but it should not
+automatically replace
+
+00:01:16.400 --> 00:01:20.925
+normal relational columns The design choice depends
+on the data and how
+
+00:01:20.938 --> 00:01:21.888
+you need to query it

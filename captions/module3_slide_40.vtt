@@ -1,0 +1,65 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.912
+Coding Exercise 6 applies what you learned about
+JSONB filtering The task
+
+00:00:04.938 --> 00:00:09.288
+is to return patient ID symptom and severity for
+notes where follow_up
+
+00:00:09.312 --> 00:00:14.575
+is true Then sort the result by patient ID The
+SELECT list
+
+00:00:14.600 --> 00:00:20.025
+already extracts symptom and severity using the
+arrow-arrow operator The missing part
+
+00:00:20.050 --> 00:00:24.888
+is the WHERE condition Use the note column extract
+the follow_up key
+
+00:00:24.912 --> 00:00:28.275
+as text cast the result to Boolean and compare it
+with true
+
+00:00:29.150 --> 00:00:33.988
+The pattern is note arrow-arrow follow_up then
+double colon boolean equals true
+
+00:00:34.862 --> 00:00:39.062
+Keep follow_up inside single quotes because it is
+the JSON key name
+
+00:00:39.938 --> 00:00:44.438
+After the WHERE clause the query should order by
+patient ID Run
+
+00:00:44.462 --> 00:00:48.725
+and Check then inspect the rows The values shown in
+symptom and
+
+00:00:48.750 --> 00:00:52.425
+severity come from inside the JSONB note rather than
+from separate relational
+
+00:00:52.450 --> 00:00:56.925
+columns If the condition causes an error check the
+placement of quotes
+
+00:00:57.038 --> 00:01:02.550
+parentheses and the Boolean cast JSON syntax can
+look unfamiliar at first
+
+00:01:02.812 --> 00:01:07.412
+so compare your line carefully with the earlier
+JSONB example This exercise
+
+00:01:07.438 --> 00:01:12.250
+shows that PostgreSQL can combine relational columns
+and semi-structured JSON values in
+
+00:01:12.275 --> 00:01:16.012
+one query which is useful in many modern data
+preparation workflows

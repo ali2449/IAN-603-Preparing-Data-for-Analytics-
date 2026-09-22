@@ -1,0 +1,68 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:05.712
+This slide introduces text pattern matching with
+PostgreSQL ILIKE ILIKE is similar
+
+00:00:05.738 --> 00:00:10.238
+to LIKE but it is case-insensitive That means the
+pattern can match
+
+00:00:10.262 --> 00:00:14.825
+text even if uppercase and lowercase letters are
+different This is useful
+
+00:00:14.850 --> 00:00:18.500
+when names or other text values were not entered
+with perfectly consistent
+
+00:00:18.525 --> 00:00:24.138
+capitalization The percent sign is a wildcard It can
+represent
+
+00:00:24.162 --> 00:00:28.675
+zero or more characters If the pattern is c percent
+the text
+
+00:00:28.688 --> 00:00:32.775
+must begin with the letter c followed by anything
+else If the
+
+00:00:32.800 --> 00:00:36.825
+pattern is percent son the text must end with son If
+the
+
+00:00:36.850 --> 00:00:40.475
+pattern is percent gar percent then gar can appear
+anywhere inside the
+
+00:00:40.500 --> 00:00:44.850
+text Our query selects MRN and full name from
+patients where the
+
+00:00:44.862 --> 00:00:49.288
+full name starts with c ignoring case Run the query
+and see
+
+00:00:49.312 --> 00:00:53.612
+which names match Then change the pattern to another
+letter such as
+
+00:00:53.638 --> 00:00:57.938
+b percent You can also experiment with a pattern
+that searches for
+
+00:00:57.950 --> 00:01:01.838
+text in the middle of a name Pattern matching is
+useful but
+
+00:01:01.862 --> 00:01:05.475
+remember that broad patterns can return many rows in
+a large database
+
+00:01:06.350 --> 00:01:09.462
+In real systems you should still think carefully
+about what you are
+
+00:01:09.488 --> 00:01:11.688
+searching for and how selective the condition is

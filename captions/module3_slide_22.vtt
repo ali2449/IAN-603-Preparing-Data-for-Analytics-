@@ -1,0 +1,72 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:03.450
+Deleting data is not always the same as making a row
+inactive
+
+00:00:04.338 --> 00:00:08.362
+This slide compares a soft delete with a hard delete
+A soft
+
+00:00:08.388 --> 00:00:11.600
+delete keeps the row in the database but changes a
+status field
+
+00:00:12.462 --> 00:00:16.175
+In our example we use UPDATE to set is_active to
+false for
+
+00:00:16.188 --> 00:00:21.025
+a specific patient The row still exists so its
+history and relationships
+
+00:00:21.038 --> 00:00:24.875
+can remain available but the application can treat
+the record as inactive
+
+00:00:25.750 --> 00:00:29.012
+A hard delete uses DELETE FROM and physically
+removes a row from
+
+00:00:29.038 --> 00:00:33.250
+the table That may be appropriate in some situations
+but it can
+
+00:00:33.275 --> 00:00:38.375
+also remove important history or conflict with
+related records The example on
+
+00:00:38.400 --> 00:00:42.788
+the slide demonstrates a soft delete We target the
+patient using a
+
+00:00:42.812 --> 00:00:47.500
+unique MRN and use RETURNING to verify the new
+active status Run
+
+00:00:47.525 --> 00:00:51.788
+the statement and inspect the returned row Notice
+that the patient still
+
+00:00:51.800 --> 00:00:56.725
+has an ID MRN and name Only the active flag has
+changed
+
+00:00:57.588 --> 00:01:00.950
+In real systems the choice between soft and hard
+delete depends on
+
+00:01:00.975 --> 00:01:06.888
+business rules retention requirements audit needs
+and privacy policies The technical
+
+00:01:06.912 --> 00:01:11.362
+SQL command is only part of the decision For this
+course remember
+
+00:01:11.388 --> 00:01:15.312
+the practical distinction soft delete preserves the
+row and changes its status
+
+00:01:15.600 --> 00:01:17.338
+hard delete removes the row itself

@@ -1,0 +1,68 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.562
+A transaction groups related database operations
+into one controlled unit of work
+
+00:00:05.438 --> 00:00:10.150
+BEGIN starts the transaction After BEGIN we can run
+one or more
+
+00:00:10.175 --> 00:00:15.875
+statements COMMIT keeps the changes ROLLBACK
+discards the changes made
+
+00:00:15.900 --> 00:00:20.488
+since the transaction began The example on this
+slide is designed for
+
+00:00:20.500 --> 00:00:26.000
+safe practice First BEGIN starts a transaction Next
+we
+
+00:00:26.025 --> 00:00:29.338
+update the age for MRN one zero zero three and use
+RETURNING
+
+00:00:29.350 --> 00:00:34.900
+to inspect the changed row Then ROLLBACK undoes that
+update Finally
+
+00:00:35.200 --> 00:00:39.162
+a SELECT checks the patient again When you run the
+full example
+
+00:00:39.350 --> 00:00:43.338
+pay attention to the two ages you see RETURNING
+should show the
+
+00:00:43.362 --> 00:00:48.938
+temporary updated value inside the transaction The
+final SELECT after ROLLBACK
+
+00:00:49.150 --> 00:00:53.450
+should show the original value again This is a
+powerful learning pattern
+
+00:00:53.475 --> 00:00:57.838
+because it lets you practice data-changing SQL
+without permanently keeping the change
+
+00:00:58.712 --> 00:01:03.400
+In real applications transactions are also used when
+several changes belong together
+
+00:01:04.287 --> 00:01:08.788
+For example if one operation succeeds but another
+related operation fails we
+
+00:01:08.800 --> 00:01:11.525
+may want to undo the whole unit rather than leave
+the database
+
+00:01:11.550 --> 00:01:16.112
+in a partial state For now remember the three words
+BEGIN starts
+
+00:01:16.262 --> 00:01:18.162
+COMMIT keeps and ROLLBACK undoes

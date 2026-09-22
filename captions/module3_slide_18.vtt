@@ -1,0 +1,72 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.062
+We are now moving from reading data to changing data
+This is
+
+00:00:04.075 --> 00:00:09.088
+where safe habits become especially important A
+SELECT statement normally builds a
+
+00:00:09.112 --> 00:00:14.475
+result without modifying the stored rows INSERT
+UPDATE and DELETE are different
+
+00:00:14.488 --> 00:00:18.800
+because they can change the database Before running
+one of those statements
+
+00:00:19.000 --> 00:00:25.025
+use a controlled process First preview the target
+rows with SELECT If
+
+00:00:25.038 --> 00:00:28.450
+you plan to update a patient identified by an MRN
+first run
+
+00:00:28.475 --> 00:00:32.525
+a SELECT using that same MRN in the WHERE clause
+Confirm that
+
+00:00:32.550 --> 00:00:36.725
+the row you expected is the row that appears Second
+use a
+
+00:00:36.750 --> 00:00:42.700
+stable identifier A name may be repeated misspelled
+or changed A
+
+00:00:42.712 --> 00:00:47.588
+primary key or a unique MRN is usually safer Third
+use a
+
+00:00:47.612 --> 00:00:52.262
+transaction when appropriate A transaction can let
+you test a change and
+
+00:00:52.275 --> 00:00:56.575
+then roll it back instead of keeping it Fourth use
+RETURNING when
+
+00:00:56.588 --> 00:01:01.712
+PostgreSQL supports the pattern RETURNING shows the
+rows affected by the write
+
+00:01:01.738 --> 00:01:07.475
+operation Finally verify the result Do not assume
+that success
+
+00:01:07.500 --> 00:01:12.175
+means correctness The most important warning on this
+slide is about WHERE
+
+00:01:13.062 --> 00:01:16.175
+An UPDATE or DELETE without a WHERE clause can
+affect every row
+
+00:01:16.200 --> 00:01:20.388
+in a table That is why previewing and verifying
+should become normal
+
+00:01:20.400 --> 00:01:22.562
+habits not optional extra steps

@@ -1,0 +1,72 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.012
+After choosing and filtering rows we often need to
+organize the result
+
+00:00:04.875 --> 00:00:10.075
+Three useful tools are ORDER BY LIMIT and DISTINCT
+ORDER BY controls
+
+00:00:10.100 --> 00:00:14.725
+the order of the returned rows In this example
+admissions are sorted
+
+00:00:14.750 --> 00:00:20.225
+by admission_date descending which places more
+recent dates first We also add
+
+00:00:20.238 --> 00:00:25.400
+admission_id descending as a second sort key A
+second key is useful
+
+00:00:25.425 --> 00:00:28.862
+when two rows have the same date because it gives
+PostgreSQL another
+
+00:00:28.888 --> 00:00:33.300
+rule for ordering them LIMIT keeps only a chosen
+number of rows
+
+00:00:34.188 --> 00:00:38.800
+Here LIMIT three returns only the first three rows
+after sorting This
+
+00:00:38.825 --> 00:00:43.225
+is why ORDER BY and LIMIT often belong together
+LIMIT three by
+
+00:00:43.250 --> 00:00:47.525
+itself does not mean the three newest records It
+only means return
+
+00:00:47.550 --> 00:00:52.650
+three rows from whatever order PostgreSQL produces
+If the meaning is newest
+
+00:00:52.825 --> 00:00:58.650
+oldest highest or lowest define that order
+explicitly DISTINCT is another tool
+
+00:00:59.525 --> 00:01:04.425
+It removes repeated result rows For example if you
+only wanted a
+
+00:01:04.438 --> 00:01:09.912
+list of unique diagnosis values SELECT DISTINCT
+diagnosis could be useful Run
+
+00:01:09.938 --> 00:01:14.338
+the current query and confirm that only three rows
+are returned Then
+
+00:01:14.362 --> 00:01:18.525
+try changing LIMIT three to LIMIT five The key idea
+is that
+
+00:01:18.550 --> 00:01:21.938
+ORDER BY gives meaning to which rows appear first
+while LIMIT controls
+
+00:01:21.962 --> 00:01:23.375
+how many of those rows you keep

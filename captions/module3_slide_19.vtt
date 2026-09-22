@@ -1,0 +1,71 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.162
+INSERT adds a new row to a table In this example we
+
+00:00:04.188 --> 00:00:09.350
+are adding one fictional patient The statement
+begins with INSERT INTO patients
+
+00:00:10.212 --> 00:00:14.500
+Inside parentheses we list the columns that we are
+providing MRN full
+
+00:00:14.525 --> 00:00:19.075
+name age and gender Naming the columns is a good
+habit because
+
+00:00:19.100 --> 00:00:22.225
+it makes the statement clearer and less dependent on
+the physical order
+
+00:00:22.250 --> 00:00:26.612
+of columns in the table The VALUES section provides
+one value for
+
+00:00:26.638 --> 00:00:32.200
+each listed column The order must match the column
+list Text values
+
+00:00:32.225 --> 00:00:36.550
+are surrounded by single quotes The age is numeric
+so it does
+
+00:00:36.562 --> 00:00:41.900
+not need quotes After the values we use RETURNING
+This is a
+
+00:00:41.925 --> 00:00:47.038
+very useful PostgreSQL feature Instead of inserting
+the row and then wondering
+
+00:00:47.050 --> 00:00:50.712
+what happened RETURNING immediately shows selected
+fields from the row that was
+
+00:00:50.738 --> 00:00:55.388
+stored It can also show generated values such as a
+patient ID
+
+00:00:56.262 --> 00:01:00.638
+Run the statement and inspect the returned row Check
+that the MRN
+
+00:01:00.875 --> 00:01:05.400
+name age and gender match what you intended In a
+real workflow
+
+00:01:05.575 --> 00:01:08.612
+you may also run a separate SELECT afterward using
+the new row's
+
+00:01:08.638 --> 00:01:13.675
+stable identifier The main idea is simple add the
+row then verify
+
+00:01:13.700 --> 00:01:17.638
+it Do not treat an INSERT as complete until you have
+confirmed
+
+00:01:17.662 --> 00:01:18.500
+what was stored

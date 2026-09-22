@@ -1,0 +1,68 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.775
+NULL is one of the SQL ideas that often surprises
+beginners NULL
+
+00:00:04.788 --> 00:00:08.712
+represents a missing or unknown value It is not the
+same as
+
+00:00:08.738 --> 00:00:13.162
+zero an empty string or the word null stored as text
+Because
+
+00:00:13.188 --> 00:00:18.962
+NULL represents unknown information ordinary
+equality does not test it correctly Writing
+
+00:00:18.988 --> 00:00:24.550
+discharge_date equals NULL is not the right pattern
+Instead SQL provides
+
+00:00:24.575 --> 00:00:29.025
+the special predicates IS NULL and IS NOT NULL In
+our admissions
+
+00:00:29.050 --> 00:00:32.525
+table a missing discharge date can indicate that an
+admission is still
+
+00:00:32.550 --> 00:00:38.062
+open The query selects admission information where
+discharge_date IS NULL
+
+00:00:38.950 --> 00:00:41.888
+That gives us the rows that do not currently have a
+discharge
+
+00:00:41.900 --> 00:00:47.138
+date Run the example and inspect the result Notice
+that we are
+
+00:00:47.162 --> 00:00:51.262
+asking a clear data question which admissions have
+no discharge date recorded
+
+00:00:52.138 --> 00:00:57.025
+This pattern is very common in data preparation
+Missing values can affect
+
+00:00:57.038 --> 00:01:02.612
+filtering calculations and analysis so you need to
+identify them correctly A
+
+00:01:02.638 --> 00:01:06.050
+simple rule to remember is when checking whether a
+SQL value is
+
+00:01:06.062 --> 00:01:10.550
+missing use IS NULL When checking that a value is
+present use
+
+00:01:10.575 --> 00:01:14.788
+IS NOT NULL Do not use equals NULL or not-equal NULL
+as
+
+00:01:14.812 --> 00:01:16.462
+if NULL were an ordinary value

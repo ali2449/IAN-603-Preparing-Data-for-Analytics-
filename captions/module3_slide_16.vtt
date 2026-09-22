@@ -1,0 +1,72 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:03.312
+SQL is written in one order but it helps to
+understand the
+
+00:00:03.338 --> 00:00:07.325
+conceptual order in which the parts of a query are
+resolved A
+
+00:00:07.350 --> 00:00:11.875
+simplified mental model is FROM then WHERE then
+SELECT then DISTINCT then
+
+00:00:11.888 --> 00:00:17.425
+ORDER BY and finally LIMIT FROM comes first
+conceptually because PostgreSQL needs
+
+00:00:17.438 --> 00:00:21.062
+to know the source of the data WHERE then filters
+the source
+
+00:00:21.088 --> 00:00:25.638
+rows SELECT determines the columns or expressions
+that will appear in the
+
+00:00:25.650 --> 00:00:31.425
+result DISTINCT can remove repeated result rows
+ORDER BY sorts
+
+00:00:31.450 --> 00:00:37.000
+the result LIMIT keeps only the requested number of
+rows Why should
+
+00:00:37.025 --> 00:00:41.400
+a beginner care about this Because it explains some
+behavior that can
+
+00:00:41.425 --> 00:00:46.675
+otherwise feel confusing For example WHERE filters
+rows before the final sorting
+
+00:00:46.700 --> 00:00:51.212
+happens It also explains why a column alias created
+in SELECT may
+
+00:00:51.225 --> 00:00:54.462
+not always be available in an earlier logical part
+of the query
+
+00:00:55.338 --> 00:00:59.950
+You do not need to memorize a full database
+execution engine Think
+
+00:00:59.962 --> 00:01:03.950
+of this as a reasoning tool When a query behaves
+differently than
+
+00:01:03.975 --> 00:01:08.875
+you expected ask what data exists at each conceptual
+stage For now
+
+00:01:09.075 --> 00:01:12.638
+remember the basic flow choose the source filter the
+rows build the
+
+00:01:12.650 --> 00:01:16.412
+result remove duplicates if needed sort it and then
+limit the number
+
+00:01:16.438 --> 00:01:17.000
+of rows
