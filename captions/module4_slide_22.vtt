@@ -1,0 +1,60 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:05.975
+This comparison helps distinguish GROUPING SETS
+ROLLUP and CUBE GROUPING SETS returns
+
+00:00:05.988 --> 00:00:11.438
+only the combinations you explicitly list If you
+request category totals product
+
+00:00:11.462 --> 00:00:17.025
+totals and a grand total PostgreSQL returns exactly
+those levels ROLLUP of
+
+00:00:17.050 --> 00:00:21.125
+A and B follows a hierarchy It produces A and B
+together
+
+00:00:21.312 --> 00:00:24.838
+then A alone then the empty grouping set which
+represents the grand
+
+00:00:24.850 --> 00:00:29.638
+total It does not automatically produce B alone
+because the hierarchy moves
+
+00:00:29.662 --> 00:00:33.488
+from detailed to broader levels from left to right
+CUBE of A
+
+00:00:33.512 --> 00:00:37.138
+and B returns every combination A and B together A
+alone B
+
+00:00:37.162 --> 00:00:41.162
+alone and the grand total A useful way to choose
+among them
+
+00:00:41.175 --> 00:00:44.900
+is to think about the report design If the
+dimensions have a
+
+00:00:44.925 --> 00:00:49.788
+natural parent-child relationship ROLLUP is often a
+good fit If you want
+
+00:00:49.800 --> 00:00:54.800
+every cross-dimensional subtotal CUBE may be
+appropriate If the report needs a
+
+00:00:54.825 --> 00:00:59.812
+custom set of levels GROUPING SETS gives you precise
+control These features
+
+00:00:59.838 --> 00:01:03.438
+can create more rows than beginners expect so always
+inspect the grain
+
+00:01:03.450 --> 00:01:06.000
+of each result row and label subtotal rows clearly

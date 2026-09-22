@@ -1,0 +1,65 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.088
+NULL values can change the population that
+contributes to an aggregate so
+
+00:00:04.112 --> 00:00:08.462
+we need to think carefully about them In this
+example we calculate
+
+00:00:08.475 --> 00:00:13.375
+average completed length of stay An ongoing
+admission has no discharge time
+
+00:00:13.400 --> 00:00:17.800
+yet Because the discharge time is missing there is
+no completed stay
+
+00:00:17.825 --> 00:00:22.250
+duration to calculate for that row The WHERE clause
+removes rows where
+
+00:00:22.275 --> 00:00:28.550
+discharge_time is NULL For the remaining rows
+PostgreSQL subtracts admit_time
+
+00:00:28.562 --> 00:00:33.350
+from discharge_time converts the interval into
+seconds changes that to days and
+
+00:00:33.375 --> 00:00:37.825
+then AVG calculates the mean stay length The result
+is rounded to
+
+00:00:37.850 --> 00:00:44.762
+two decimal places The query also returns COUNT
+discharge_time as completed_admissions
+
+00:00:45.650 --> 00:00:48.788
+This is useful because an average is much easier to
+interpret when
+
+00:00:48.812 --> 00:00:52.925
+we know how many observations contributed to it A
+key point is
+
+00:00:52.950 --> 00:00:57.162
+that AVG ignores NULL expressions but relying on
+that behavior without thinking
+
+00:00:57.188 --> 00:01:01.662
+can hide data-quality or population issues It is
+often better to make
+
+00:01:01.675 --> 00:01:05.450
+the intended population explicit with WHERE and to
+report the sample size
+
+00:01:05.463 --> 00:01:10.550
+beside the average Whenever you calculate an average
+ask two questions which
+
+00:01:10.575 --> 00:01:14.650
+rows are included and how many observations actually
+contributed to the mean

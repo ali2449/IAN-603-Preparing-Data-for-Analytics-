@@ -1,0 +1,56 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:05.025
+Coding Exercise 6 combines row filtering grouping
+aggregation and a group threshold
+
+00:00:05.050 --> 00:00:10.425
+using the grades table The requirement is
+specifically for Fall 2024 so
+
+00:00:10.450 --> 00:00:15.425
+semester equals Fall 2024 is a row-level condition
+Put that in WHERE
+
+00:00:15.450 --> 00:00:19.838
+so only rows from the requested semester enter the
+groups The grain
+
+00:00:19.850 --> 00:00:23.862
+is one row per course so GROUP BY course For each
+course
+
+00:00:24.075 --> 00:00:28.912
+calculate the average grade and enrollment AVG grade
+gives the mean score
+
+00:00:29.162 --> 00:00:31.812
+and COUNT star gives the number of student grade
+rows in the
+
+00:00:31.825 --> 00:00:37.488
+group Give both expressions clear aliases The report
+should include only
+
+00:00:37.512 --> 00:00:41.850
+courses with at least fifty students That condition
+depends on the group
+
+00:00:41.875 --> 00:00:45.188
+count so write HAVING COUNT star greater than or
+equal to fifty
+
+00:00:46.075 --> 00:00:50.788
+Finally sort the courses with the highest average
+first Run and Check
+
+00:00:50.975 --> 00:00:55.988
+then inspect whether every returned course meets the
+enrollment threshold This exercise
+
+00:00:56.000 --> 00:01:00.562
+is useful because it combines the entire aggregation
+workflow row population grain
+
+00:01:00.750 --> 00:01:03.188
+measures group filter and analytical sort

@@ -1,0 +1,60 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:03.712
+In this guided practice the goal is to find
+diagnoses that appear
+
+00:00:03.738 --> 00:00:08.500
+in more than one admission Start with the grain We
+want one
+
+00:00:08.525 --> 00:00:13.712
+output row per diagnosis so diagnosis belongs in
+GROUP BY Next choose
+
+00:00:13.738 --> 00:00:18.075
+the measure We want the number of admissions for
+each diagnosis so
+
+00:00:18.100 --> 00:00:22.462
+COUNT star is appropriate Now think about the
+condition more than one
+
+00:00:22.488 --> 00:00:27.738
+admission That condition describes a completed group
+count not an individual source
+
+00:00:27.762 --> 00:00:33.062
+row Therefore it belongs in HAVING not WHERE The
+query groups by
+
+00:00:33.088 --> 00:00:37.100
+diagnosis applies HAVING COUNT star greater than one
+and then sorts the
+
+00:00:37.112 --> 00:00:42.762
+remaining diagnoses by admission_count descending
+Run the query and inspect which
+
+00:00:42.775 --> 00:00:48.350
+diagnoses survive A diagnosis that appears exactly
+once should not be included
+
+00:00:49.238 --> 00:00:52.538
+This exercise is a good example of how the five-step
+workflow works
+
+00:00:52.562 --> 00:00:56.462
+in practice define the question set the grain choose
+the measure place
+
+00:00:56.488 --> 00:01:00.850
+the group filter correctly and validate the result
+If you can explain
+
+00:01:00.862 --> 00:01:03.788
+why HAVING is used here instead of WHERE you
+understand one of
+
+00:01:03.812 --> 00:01:06.212
+the most important ideas in aggregate SQL

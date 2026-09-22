@@ -1,0 +1,68 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:03.188
+Aggregate functions take a set of rows and turn that
+set into
+
+00:00:03.212 --> 00:00:07.325
+one summary value The five functions on this slide
+are among the
+
+00:00:07.338 --> 00:00:12.275
+most common COUNT answers questions about how many
+rows or values exist
+
+00:00:13.162 --> 00:00:18.712
+SUM adds numeric values together AVG calculates the
+arithmetic mean
+
+00:00:19.600 --> 00:00:24.612
+MIN returns the smallest value and MAX returns the
+largest value One
+
+00:00:24.638 --> 00:00:27.875
+important point is that GROUP BY is not required
+every time you
+
+00:00:27.900 --> 00:00:31.850
+use an aggregate If you run an aggregate over an
+entire table
+
+00:00:31.875 --> 00:00:35.750
+without GROUP BY PostgreSQL can return one summary
+row for the whole
+
+00:00:35.775 --> 00:00:41.775
+table For example SELECT COUNT * FROM sales returns
+one number representing
+
+00:00:41.800 --> 00:00:45.688
+the number of sale rows GROUP BY becomes useful when
+you want
+
+00:00:45.712 --> 00:00:51.188
+several summaries one for each group For example
+total revenue by category
+
+00:00:51.212 --> 00:00:55.762
+creates one result row per category Also remember
+that the type of
+
+00:00:55.788 --> 00:01:00.588
+measure should match the question COUNTing rows is
+different from SUMming quantity
+
+00:01:01.462 --> 00:01:07.000
+AVG price answers a different question from total
+revenue SQL will calculate
+
+00:01:07.025 --> 00:01:10.475
+exactly what you request even if the measure is not
+meaningful for
+
+00:01:10.488 --> 00:01:15.350
+the decision question So before choosing a function
+ask what quantity am
+
+00:01:15.375 --> 00:01:16.450
+I trying to describe

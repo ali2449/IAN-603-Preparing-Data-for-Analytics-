@@ -1,0 +1,64 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:05.200
+So far each GROUP BY query produced one specific
+grain Advanced grouping
+
+00:00:05.225 --> 00:00:10.350
+features let one query return several summary grains
+together GROUPING SETS is
+
+00:00:10.375 --> 00:00:16.412
+the most explicit You list exactly which grouping
+combinations you want This
+
+00:00:16.425 --> 00:00:19.438
+is useful when a report needs selected summary
+levels and you do
+
+00:00:19.450 --> 00:00:25.888
+not want every possible combination ROLLUP is
+designed for hierarchical summaries With
+
+00:00:25.912 --> 00:00:30.425
+category and product it can produce detail by
+category and product subtotals
+
+00:00:30.450 --> 00:00:35.400
+by category and a grand total That is a natural
+hierarchy product
+
+00:00:35.412 --> 00:00:41.262
+belongs under category CUBE produces every grouping
+combination for the listed dimensions
+
+00:00:42.125 --> 00:00:45.588
+With two dimensions it gives detail by both totals
+by the first
+
+00:00:45.750 --> 00:00:50.212
+totals by the second and the overall grand total
+These tools reduce
+
+00:00:50.238 --> 00:00:53.200
+the need to write several separate GROUP BY queries
+and combine them
+
+00:00:53.212 --> 00:00:57.288
+with UNION ALL The tradeoff is that the result
+contains rows with
+
+00:00:57.312 --> 00:01:02.388
+different grains That means we must label subtotal
+and grand-total rows carefully
+
+00:01:02.412 --> 00:01:07.100
+so users can interpret them correctly In the next
+slides pay attention
+
+00:01:07.125 --> 00:01:10.150
+not only to the SQL syntax but also to what each
+output
+
+00:01:10.175 --> 00:01:11.075
+row represents

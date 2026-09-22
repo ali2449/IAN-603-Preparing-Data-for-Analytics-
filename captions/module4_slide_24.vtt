@@ -1,0 +1,60 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:03.962
+CUBE goes beyond ROLLUP by returning every grouping
+combination for the listed
+
+00:00:03.988 --> 00:00:10.650
+dimensions With category and product CUBE produces
+four analytical levels First
+
+00:00:10.788 --> 00:00:16.325
+category and product together Second category totals
+across all products
+
+00:00:17.200 --> 00:00:23.162
+Third product totals across all categories Fourth
+the grand total across everything
+
+00:00:24.050 --> 00:00:29.375
+That product-only subtotal is the important
+difference from the ROLLUP example ROLLUP
+
+00:00:29.400 --> 00:00:35.012
+follows one hierarchy CUBE explores all combinations
+The query
+
+00:00:35.038 --> 00:00:39.350
+again uses GROUPING inside CASE expressions so
+subtotal placeholders can be labeled
+
+00:00:39.375 --> 00:00:44.950
+clearly The grouping_code helps identify which
+dimensions are active in each row
+
+00:00:45.838 --> 00:00:49.800
+Run the query and compare it with the previous slide
+You should
+
+00:00:49.825 --> 00:00:54.512
+see more subtotal rows because CUBE adds the
+product-only level CUBE can
+
+00:00:54.538 --> 00:00:59.325
+be useful in multidimensional reporting but it can
+grow quickly With more
+
+00:00:59.350 --> 00:01:05.025
+dimensions the number of grouping combinations
+increases substantially That can make both
+
+00:01:05.050 --> 00:01:09.650
+the result and the computation larger Use CUBE when
+the report truly
+
+00:01:09.675 --> 00:01:14.238
+needs all combinations If you only need a few
+specific summary levels
+
+00:01:14.500 --> 00:01:16.562
+GROUPING SETS is usually more controlled

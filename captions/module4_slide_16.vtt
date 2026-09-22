@@ -1,0 +1,61 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:03.962
+This example puts WHERE GROUP BY HAVING and ORDER BY
+together in
+
+00:00:03.988 --> 00:00:09.425
+one realistic pattern The goal is to calculate
+category-level sales summaries but
+
+00:00:09.450 --> 00:00:14.038
+only from rows where price is at least twenty-five
+That row-level requirement
+
+00:00:14.050 --> 00:00:17.688
+belongs in WHERE so lower-priced rows are removed
+before the groups are
+
+00:00:17.712 --> 00:00:22.388
+created Next GROUP BY category defines the grain as
+one row per
+
+00:00:22.412 --> 00:00:27.900
+category SUM quantity calculates total units sold
+and SUM of quantity times
+
+00:00:27.912 --> 00:00:34.462
+price calculates category revenue ROUND makes the
+revenue easier to display HAVING
+
+00:00:34.488 --> 00:00:37.988
+SUM quantity greater than ten then removes category
+groups that do not
+
+00:00:38.012 --> 00:00:42.700
+have enough total quantity Notice that this
+condition is about a calculated
+
+00:00:42.712 --> 00:00:48.662
+group value so HAVING is the correct place Finally
+ORDER BY category_revenue
+
+00:00:48.688 --> 00:00:53.538
+descending puts the highest qualifying revenue first
+Run the query and read
+
+00:00:53.562 --> 00:00:58.188
+it in stages Ask which rows enter the calculation
+what one output
+
+00:00:58.212 --> 00:01:03.588
+row represents what measures are calculated and
+which completed groups remain This
+
+00:01:03.600 --> 00:01:08.500
+pattern appears constantly in reporting If you
+understand this slide well you
+
+00:01:08.525 --> 00:01:12.012
+have a strong foundation for many real analytical
+SQL tasks

@@ -1,0 +1,65 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:03.800
+GROUPING SETS gives you direct control over which
+summary levels appear in
+
+00:00:03.825 --> 00:00:08.850
+the result In this query we request three grouping
+sets category alone
+
+00:00:09.050 --> 00:00:14.000
+product alone and the empty grouping set The empty
+parentheses represent the
+
+00:00:14.012 --> 00:00:19.225
+grand total Notice what is not requested We do not
+ask for
+
+00:00:19.250 --> 00:00:24.175
+category-and-product detail in this example so
+PostgreSQL does not return that level
+
+00:00:25.050 --> 00:00:28.375
+This is what makes GROUPING SETS flexible you list
+only the grains
+
+00:00:28.400 --> 00:00:32.737
+that the report needs The CASE expressions again use
+GROUPING to label
+
+00:00:32.763 --> 00:00:38.388
+rolled-up columns The result therefore contains
+category totals product totals and one
+
+00:00:38.412 --> 00:00:42.825
+overall total Run the query and identify the grain
+of each row
+
+00:00:43.712 --> 00:00:48.588
+Some rows mean one category across all products Some
+mean one product
+
+00:00:48.612 --> 00:00:54.150
+across all categories The final row means all data
+GROUPING SETS
+
+00:00:54.162 --> 00:00:57.038
+is often a good option when a report has a specific
+layout
+
+00:00:57.062 --> 00:01:01.438
+that does not fit a simple hierarchy It can replace
+multiple GROUP
+
+00:01:01.462 --> 00:01:05.650
+BY queries that would otherwise need to be combined
+The key skill
+
+00:01:05.662 --> 00:01:10.338
+is still grain awareness One result set can now
+contain several grains
+
+00:01:10.588 --> 00:01:13.575
+so labeling and interpretation become even more
+important

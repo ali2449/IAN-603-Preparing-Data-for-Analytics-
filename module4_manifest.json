@@ -1,6 +1,12 @@
 {
   "prefix": "module4",
+  "voice": "en-US-GuyNeural",
+  "rate": "+0%",
+  "volume": "+0%",
+  "pitch": "+0Hz",
+  "caption_words": 12,
   "slide_count": 45,
+  "slide_markers_found": true,
   "slides": [
     {
       "slide": 1,
@@ -36,7 +42,7 @@
       "slide": 6,
       "audio": "module4_slide_06.mp3",
       "captions": "module4_slide_06.vtt",
-      "text": "Aggregate functions take a set of rows and turn that set into one summary value. The five functions on this slide are among the most common.\n\nCOUNT answers questions about how many rows or values exist. SUM adds numeric values together. AVG calculates the arithmetic mean. MIN returns the smallest value, and MAX returns the largest value.\n\nOne important point is that GROUP BY is not required every time you use an aggregate. If you run an aggregate over an entire table without GROUP BY, PostgreSQL can return one summary row for the whole table. For example, SELECT COUNT star FROM sales returns one number representing the number of sale rows.\n\nGROUP BY becomes useful when you want several summaries, one for each group. For example, total revenue by category creates one result row per category.\n\nAlso remember that the type of measure should match the question. Counting rows is different from summing quantity. Average price answers a different question from total revenue. SQL will calculate exactly what you request, even if the measure is not meaningful for the decision question.\n\nSo before choosing a function, ask: what quantity am I trying to describe?"
+      "text": "Aggregate functions take a set of rows and turn that set into one summary value. The five functions on this slide are among the most common.\n\nCOUNT answers questions about how many rows or values exist. SUM adds numeric values together. AVG calculates the arithmetic mean. MIN returns the smallest value, and MAX returns the largest value.\n\nOne important point is that GROUP BY is not required every time you use an aggregate. If you run an aggregate over an entire table without GROUP BY, PostgreSQL can return one summary row for the whole table. For example, SELECT COUNT(*) FROM sales returns one number representing the number of sale rows.\n\nGROUP BY becomes useful when you want several summaries, one for each group. For example, total revenue by category creates one result row per category.\n\nAlso remember that the type of measure should match the question. COUNTing rows is different from SUMming quantity. AVG price answers a different question from total revenue. SQL will calculate exactly what you request, even if the measure is not meaningful for the decision question.\n\nSo before choosing a function, ask: what quantity am I trying to describe?"
     },
     {
       "slide": 7,

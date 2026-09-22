@@ -1,0 +1,68 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:03.612
+COUNT looks simple but there are several forms and
+they answer different
+
+00:00:03.638 --> 00:00:09.138
+questions COUNT star counts input rows It does not
+care whether a
+
+00:00:09.162 --> 00:00:13.475
+particular column is NULL If a row exists in the
+input set
+
+00:00:13.638 --> 00:00:17.525
+COUNT star includes it COUNT of a column counts only
+the rows
+
+00:00:17.550 --> 00:00:22.288
+where that particular column is not NULL In the
+admissions example COUNT
+
+00:00:22.312 --> 00:00:26.125
+discharge_time can be interpreted as the number of
+admissions that have a
+
+00:00:26.138 --> 00:00:30.850
+recorded discharge time Rows with a missing
+discharge time are ignored by
+
+00:00:30.875 --> 00:00:36.388
+that expression COUNT DISTINCT column goes one step
+further It removes
+
+00:00:36.412 --> 00:00:41.925
+duplicate non-NULL values before counting COUNT
+DISTINCT subject_id therefore
+
+00:00:41.950 --> 00:00:45.375
+tells us how many different patients appear in the
+admissions table not
+
+00:00:45.388 --> 00:00:49.888
+how many admission rows exist Run the example and
+compare the three
+
+00:00:49.912 --> 00:00:55.575
+numbers Ask what population each number represents
+All admissions
+
+00:00:55.738 --> 00:00:59.338
+completed admissions and unique patients are related
+but they are not the
+
+00:00:59.350 --> 00:01:04.950
+same metric This distinction is important in real
+analysis A report
+
+00:01:04.975 --> 00:01:08.188
+can be wrong even when the SQL runs successfully if
+the analyst
+
+00:01:08.200 --> 00:01:12.162
+chooses the wrong form of COUNT Whenever you see
+COUNT try to
+
+00:01:12.175 --> 00:01:14.850
+finish the sentence I am counting what exactly

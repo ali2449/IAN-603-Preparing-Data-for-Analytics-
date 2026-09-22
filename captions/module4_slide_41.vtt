@@ -1,0 +1,61 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:05.638
+Coding Exercise 4 practices conditional aggregation
+with PostgreSQL FILTER The
+
+00:00:05.662 --> 00:00:10.738
+grain is one row per subject_id so GROUP BY
+subject_id is already
+
+00:00:10.762 --> 00:00:14.662
+part of the structure You need two separate counts
+from the same
+
+00:00:14.675 --> 00:00:19.788
+admissions rows For the first metric use COUNT star
+FILTER where diagnosis
+
+00:00:19.812 --> 00:00:25.575
+equals Pneumonia For the second use the same pattern
+with Fracture Give
+
+00:00:25.600 --> 00:00:31.825
+the columns descriptive aliases such as
+pneumonia_admissions and fracture_admissions The
+
+00:00:31.850 --> 00:00:34.912
+benefit of this pattern is that one grouped patient
+row can contain
+
+00:00:34.938 --> 00:00:40.625
+several condition-specific measures PostgreSQL scans
+the same group but applies a different
+
+00:00:40.650 --> 00:00:44.962
+condition to each aggregate Run and Check then look
+at patients who
+
+00:00:44.988 --> 00:00:49.300
+have zero for one of the diagnoses Zero is a
+meaningful result
+
+00:00:49.325 --> 00:00:52.188
+here the patient exists in the grouped data but no
+row in
+
+00:00:52.212 --> 00:00:56.612
+that group matched that diagnosis condition If you
+get a syntax error
+
+00:00:56.850 --> 00:01:01.012
+compare the placement of FILTER WHERE parentheses
+and quotes with the earlier
+
+00:01:01.038 --> 00:01:06.250
+example The main lesson is not only FILTER syntax It
+is the
+
+00:01:06.262 --> 00:01:10.400
+broader idea of generating multiple metrics from the
+same grouped population

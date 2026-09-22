@@ -1,0 +1,61 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:03.712
+This example shows one of the most useful window
+patterns placing group
+
+00:00:03.738 --> 00:00:09.100
+and overall averages beside each detail row AVG
+salary OVER partition by
+
+00:00:09.125 --> 00:00:14.150
+department calculates a separate average for each
+department Every employee in the
+
+00:00:14.175 --> 00:00:19.850
+same department receives the same department_average
+value AVG salary OVER
+
+00:00:19.875 --> 00:00:25.588
+with empty parentheses calculates one average across
+the entire result population Because
+
+00:00:25.612 --> 00:00:30.200
+there is no PARTITION BY every employee row receives
+the same company_average
+
+00:00:30.212 --> 00:00:35.650
+value The employee row itself is not removed We
+still see name
+
+00:00:35.775 --> 00:00:40.700
+department and salary That makes it easy to compare
+one employee's salary
+
+00:00:40.725 --> 00:00:45.000
+with both local and global context Run the query and
+choose one
+
+00:00:45.025 --> 00:00:49.625
+employee Compare that person's salary to the
+department average and then to
+
+00:00:49.638 --> 00:00:54.738
+the company average This is a major difference from
+GROUP BY A
+
+00:00:54.750 --> 00:00:58.075
+GROUP BY query could return one average row per
+department but it
+
+00:00:58.088 --> 00:01:03.075
+would not automatically keep each employee row
+beside that average Window functions
+
+00:01:03.100 --> 00:01:06.538
+are very powerful for feature engineering and
+reporting because they let you
+
+00:01:06.562 --> 00:01:09.388
+add contextual measures without changing the detail
+grain

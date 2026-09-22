@@ -1,0 +1,68 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.325
+Conditional aggregation lets one query calculate
+several metrics from the same set
+
+00:00:04.338 --> 00:00:08.488
+of source rows The main idea is that a condition
+controls which
+
+00:00:08.512 --> 00:00:13.350
+rows contribute to each aggregate For example from
+the same admissions table
+
+00:00:13.375 --> 00:00:16.988
+we might calculate one count for pneumonia and
+another count for fractures
+
+00:00:17.875 --> 00:00:22.425
+There are two common approaches in this module CASE
+is highly flexible
+
+00:00:22.438 --> 00:00:26.938
+and works across many SQL systems We can place a
+CASE expression
+
+00:00:26.962 --> 00:00:30.800
+inside SUM COUNT or another aggregate and map
+matching rows to a
+
+00:00:30.812 --> 00:00:36.612
+useful value PostgreSQL also supports FILTER FILTER
+places
+
+00:00:36.638 --> 00:00:41.188
+a WHERE-like condition directly on an aggregate
+function It is often very
+
+00:00:41.212 --> 00:00:44.362
+readable when we want several independent counts or
+sums in the same
+
+00:00:44.375 --> 00:00:49.812
+SELECT list Both approaches are useful CASE is more
+portable and can
+
+00:00:49.838 --> 00:00:56.300
+handle complex mappings FILTER is concise and
+expressive in PostgreSQL The
+
+00:00:56.312 --> 00:01:00.875
+important concept is not the exact syntax It is that
+one grouped
+
+00:01:00.900 --> 00:01:04.000
+row can contain several measures that each look at a
+different subset
+
+00:01:04.025 --> 00:01:08.550
+of the same underlying rows This is extremely useful
+for dashboards and
+
+00:01:08.575 --> 00:01:12.512
+feature tables because it avoids writing separate
+queries for every category or
+
+00:01:12.525 --> 00:01:13.088
+condition

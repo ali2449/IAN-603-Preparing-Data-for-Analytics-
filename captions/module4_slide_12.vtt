@@ -1,0 +1,61 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.388
+Now we add a second grouping column The result grain
+changes from
+
+00:00:04.412 --> 00:00:09.750
+one row per diagnosis to one row per
+patient-and-diagnosis combination The SELECT
+
+00:00:09.775 --> 00:00:14.388
+list contains subject_id and diagnosis and both
+columns also appear in GROUP
+
+00:00:14.400 --> 00:00:18.562
+BY COUNT star then tells us how many admission rows
+exist for
+
+00:00:18.588 --> 00:00:23.562
+each specific combination Imagine that two different
+patients both have the same
+
+00:00:23.588 --> 00:00:28.812
+diagnosis When we grouped only by diagnosis those
+rows contributed to one
+
+00:00:28.825 --> 00:00:34.425
+shared diagnosis group After adding subject_id those
+rows are separated
+
+00:00:34.450 --> 00:00:40.512
+into different patient-level groups This is why
+grouping columns define detail More
+
+00:00:40.538 --> 00:00:44.962
+grouping columns usually produce a more detailed
+summary while fewer grouping columns
+
+00:00:44.988 --> 00:00:49.625
+produce a more aggregated summary Run the query and
+compare it mentally
+
+00:00:49.650 --> 00:00:54.775
+with the previous slide The source table did not
+change Only the
+
+00:00:54.800 --> 00:01:00.238
+analytical grain changed When building a report be
+deliberate about this choice
+
+00:01:01.112 --> 00:01:06.488
+One row per diagnosis answers a population-level
+question One row per patient
+
+00:01:06.512 --> 00:01:12.762
+and diagnosis answers a more detailed question
+Neither is automatically better The
+
+00:01:12.788 --> 00:01:16.250
+correct grain depends on what the report is supposed
+to represent

@@ -1,0 +1,60 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.625
+This slide calculates the same kind of metrics using
+PostgreSQL FILTER syntax
+
+00:00:05.500 --> 00:00:10.650
+The grain is still one row per subject_id The first
+expression begins
+
+00:00:10.662 --> 00:00:14.638
+with COUNT star but FILTER tells PostgreSQL to count
+only rows where
+
+00:00:14.650 --> 00:00:20.438
+diagnosis equals Pneumonia The second expression
+counts only rows where diagnosis equals
+
+00:00:20.462 --> 00:00:25.562
+Fracture Compared with the CASE version the
+condition is visually separated from
+
+00:00:25.588 --> 00:00:29.662
+the aggregate Many people find that easier to read
+when the goal
+
+00:00:29.675 --> 00:00:33.988
+is a simple filtered count sum or average Run the
+query and
+
+00:00:34.012 --> 00:00:38.425
+compare the result with the CASE example For this
+problem the numbers
+
+00:00:38.450 --> 00:00:43.625
+should match because both statements express the
+same analytical logic FILTER is
+
+00:00:43.650 --> 00:00:48.625
+very useful when one result row needs several
+related measures For example
+
+00:00:48.788 --> 00:00:52.538
+you could count completed and open admissions sum
+online and in-store revenue
+
+00:00:52.800 --> 00:00:57.512
+or average values for several categories in one
+grouped query Remember that
+
+00:00:57.538 --> 00:01:01.162
+FILTER is a PostgreSQL feature and is not supported
+in exactly the
+
+00:01:01.175 --> 00:01:06.125
+same way by every SQL engine The broader idea of
+conditional aggregation
+
+00:01:06.150 --> 00:01:08.388
+is portable even when the syntax changes

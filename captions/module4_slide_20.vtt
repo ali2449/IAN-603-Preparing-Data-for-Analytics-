@@ -1,0 +1,64 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:04.212
+CASE and FILTER can often solve the same conditional
+aggregation problem but
+
+00:00:04.238 --> 00:00:08.600
+they have different strengths Use CASE when
+portability matters or when you
+
+00:00:08.625 --> 00:00:13.262
+need flexible value mapping CASE works in many SQL
+products and can
+
+00:00:13.288 --> 00:00:18.475
+return different values for different conditions It
+is a general expression not
+
+00:00:18.500 --> 00:00:23.450
+only an aggregate feature Use FILTER when you are
+working in PostgreSQL
+
+00:00:23.462 --> 00:00:28.000
+and want a concise condition attached directly to an
+aggregate FILTER is
+
+00:00:28.025 --> 00:00:31.988
+especially clean when you have several independent
+metrics in one SELECT list
+
+00:00:32.875 --> 00:00:37.738
+For example COUNT star FILTER where diagnosis equals
+Pneumonia is immediately readable
+
+00:00:37.762 --> 00:00:41.450
+as count the rows that meet this condition The
+course goal is
+
+00:00:41.462 --> 00:00:45.200
+not to choose one winner You should be able to
+recognize both
+
+00:00:45.225 --> 00:00:49.125
+patterns and understand that they are different ways
+to express conditional metrics
+
+00:00:50.000 --> 00:00:53.925
+When moving SQL between systems CASE is often the
+safer option because
+
+00:00:53.950 --> 00:00:58.788
+it is broadly supported When staying in PostgreSQL
+FILTER can make a
+
+00:00:58.800 --> 00:01:02.950
+report easier to read As always choose the form that
+makes the
+
+00:01:02.975 --> 00:01:06.300
+analytical meaning clearest for the people who will
+maintain or review the
+
+00:01:06.312 --> 00:01:06.775
+query

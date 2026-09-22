@@ -1,0 +1,60 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:05.375
+This guided practice reinforces the difference
+between grouping and window functions The
+
+00:00:05.388 --> 00:00:08.850
+requirement is to keep every employee row but add
+the department average
+
+00:00:08.862 --> 00:00:13.150
+and company average beside each employee Because we
+want to preserve the
+
+00:00:13.175 --> 00:00:17.300
+detail rows GROUP BY alone is not the best fit The
+first
+
+00:00:17.325 --> 00:00:22.912
+window expression uses AVG salary OVER partition by
+department That calculates
+
+00:00:22.938 --> 00:00:26.300
+one departmental average but repeats it on each
+employee row in that
+
+00:00:26.312 --> 00:00:32.050
+department The second window expression uses AVG
+salary OVER empty parentheses
+
+00:00:32.938 --> 00:00:36.738
+That calculates the overall company average and
+repeats it on every row
+
+00:00:37.625 --> 00:00:40.825
+Run the query and verify that the number of employee
+rows has
+
+00:00:40.838 --> 00:00:45.088
+not been reduced Then choose a department and
+confirm that everyone in
+
+00:00:45.112 --> 00:00:49.812
+that department has the same department average This
+pattern is useful whenever
+
+00:00:49.838 --> 00:00:54.225
+you need both detail and context For example you
+might compare a
+
+00:00:54.250 --> 00:00:58.238
+patient's value with the hospital average a
+product's sales with category sales
+
+00:00:58.475 --> 00:01:03.175
+or a student's score with the course average The
+analytical question determines
+
+00:01:03.200 --> 00:01:05.425
+whether you should collapse rows or enrich them
