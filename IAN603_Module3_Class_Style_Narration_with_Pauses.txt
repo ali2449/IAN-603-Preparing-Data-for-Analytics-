@@ -1,0 +1,1125 @@
+Slide 1: Start
+
+Welcome to Module 3, PostgreSQL in Action. In Module 2, we focused on how a relational database is organized. Now we start using that database by reading rows, filtering results, and making controlled changes.
+
+[pause=0.7]
+
+The main goal is not to memorize a long list of SQL commands. Instead, I want you to develop a safe working pattern: understand the question, write the smallest useful statement, run it, inspect the result, and verify any change before keeping it.
+
+[pause=0.8]
+
+Many slides include PostgreSQL code that runs directly in your browser. You can test the examples here first, then use Copy and paste the same SQL into the pgAdmin Query Tool for more practice.
+
+[pause=0.8]
+
+We will begin with SELECT and filtering, then move carefully into INSERT, UPDATE, DELETE, transactions, and JSONB.
+
+[pause=1.0]
+
+Slide 2: Big picture
+
+Module 2 was mostly about structure: tables, keys, relationships, and constraints. Module 3 is where we begin interacting with the data inside that structure.
+
+[pause=0.7]
+
+When we only read data, a mistake may return the wrong rows. When we start changing data, a mistake can also modify or remove rows. That is why we will use a repeatable safety process.
+
+[pause=0.7]
+
+First, define what you need. Then preview the rows that match. Use a stable identifier when possible. Execute the smallest correct statement, and inspect what PostgreSQL returns.
+
+[pause=0.7]
+
+For write operations, verification is especially important. If you are not sure what an UPDATE or DELETE will touch, run a SELECT with the same condition first.
+
+[pause=1.0]
+
+Slide 3: Learning path
+
+We will approach SQL gradually.
+
+[pause=0.7]
+
+The first part is about reading data. You will use SELECT, choose columns, create aliases, apply filters, sort rows, and limit results.
+
+[pause=0.7]
+
+The second part is about changing data with INSERT, UPDATE, and DELETE. Here we add stronger safety habits such as previewing target rows, using unique keys, and using RETURNING to see what changed.
+
+[pause=0.7]
+
+The third part is about protection and control. Transactions let us test changes and either keep them with COMMIT or undo them with ROLLBACK.
+
+[pause=0.7]
+
+The exercises follow the same progression. First run complete examples, then change one piece, then complete missing parts, and finally write short statements yourself. Focus on understanding the pattern before trying to memorize syntax.
+
+[pause=1.0]
+
+Slide 4: Running case
+
+Our running example is a small synthetic healthcare operations database.
+
+[pause=0.8]
+
+The patients table contains a medical record number, name, age, gender, and active status. Doctors contains a name and specialty. Admissions connects patients and doctors with diagnosis and admission information. Clinical notes stores some semi-structured information using PostgreSQL JSONB.
+
+[pause=0.7]
+
+The data is intentionally small so you can inspect the entire result and understand why a query returns particular rows.
+
+[pause=0.8]
+
+For teaching simplicity, the patients table stores age directly. In a real system, age is often calculated from a birth date for a particular reference date.
+
+[pause=0.7]
+
+As you work through the module, use these tables to practice the SQL idea rather than focusing on the healthcare domain itself.
+
+[pause=1.0]
+
+Slide 5: SQL language map
+
+SQL commands are often grouped by the type of work they perform.
+
+[pause=0.7]
+
+DDL defines structure. Commands such as CREATE, ALTER, and DROP change the database schema. You saw much more of this in Module 2.
+
+[pause=0.7]
+
+DQL is commonly used to describe reading data, especially with SELECT.
+
+[pause=0.7]
+
+DML changes stored rows. INSERT adds rows, UPDATE changes existing rows, DELETE removes rows, and newer PostgreSQL versions also support MERGE for synchronization patterns.
+
+[pause=0.7]
+
+Transaction-control commands decide whether a group of changes should be kept or undone.
+
+[pause=0.7]
+
+The labels are useful, but the practical idea is simpler: know whether your statement is only reading data, changing rows, changing structure, or controlling a transaction. That tells you how carefully you need to verify the result.
+
+[pause=1.0]
+
+Slide 6: SELECT pattern
+
+A SELECT query can be read almost like a sentence.
+
+[pause=0.8]
+
+SELECT tells PostgreSQL what columns or expressions should appear in the result. FROM tells it which table supplies the rows. WHERE can remove rows that do not meet a condition. ORDER BY controls presentation order, and LIMIT can keep only a chosen number of rows.
+
+[pause=0.7]
+
+You do not need every clause in every query. Start with the smallest version that answers the question.
+
+[pause=0.8]
+
+A good beginner habit is to list the columns you actually need. SELECT star is useful while exploring, but explicit columns make the result clearer and more predictable.
+
+[pause=0.7]
+
+Before writing a query, try saying the request in plain English. Then map each part of the sentence to the appropriate SQL clause.
+
+[pause=1.0]
+
+Slide 7: Run SELECT
+
+Now let's run the first SELECT example.
+
+[pause=0.8]
+
+Before you select Run, read the query from top to bottom. Notice which columns are requested, which table supplies the data, and how the output is sorted.
+
+[pause=0.8]
+
+Run it directly in the browser and inspect the result table. Look at the column names and the row order. The query is not changing anything in the database. It is only creating a result from stored rows.
+
+[pause=0.8]
+
+Then make a connection between each clause and what you see. SELECT controls what appears as columns. FROM identifies the source table. ORDER BY changes the order in which the rows are displayed.
+
+[pause=0.7]
+
+If you want to practice in pgAdmin, copy the same query into the Query Tool and compare the result.
+
+[pause=1.0]
+
+Slide 8: Choose columns
+
+This slide focuses on choosing only the columns you need.
+
+[pause=0.7]
+
+If a table contains many columns but the question only needs medical record number, patient name, and age, selecting those three columns makes the result easier to understand.
+
+[pause=0.7]
+
+Run the example and look at the output. Notice that the result is narrower than the full table.
+
+[pause=0.8]
+
+SELECT star is not wrong. It can be useful during exploration when you need to see the table structure. But in reports, applications, and reusable queries, explicit columns usually make your intent clearer.
+
+[pause=0.7]
+
+Also notice the sorting in this example. Before running it, predict who should appear first if the rows are sorted from the oldest patient to the youngest. Then compare your prediction with the result.
+
+[pause=1.0]
+
+Slide 9: Aliases expressions
+
+SELECT can return more than stored columns. It can also return expressions.
+
+[pause=0.7]
+
+An alias changes the label shown in the result. It does not rename the stored database column.
+
+[pause=0.7]
+
+An expression can calculate a new value for the result without changing the table. For example, you might derive a value from age or combine text into a more readable label.
+
+[pause=0.8]
+
+Run the example and inspect the output headings. Then compare them with the original table columns.
+
+[pause=0.8]
+
+The important distinction is between a result and stored data. A SELECT expression can make the output more useful while leaving the underlying table unchanged.
+
+[pause=0.7]
+
+If you run the same query in pgAdmin, notice that the alias appears as the result-column heading there as well.
+
+[pause=1.0]
+
+Slide 10: WHERE basics
+
+WHERE controls which source rows stay in the result.
+
+[pause=0.7]
+
+Different questions need different kinds of conditions. For direct comparisons, we can use equals, not equal, greater than, greater than or equal to, less than, or less than or equal to.
+
+[pause=0.7]
+
+BETWEEN is convenient for ranges. IN is useful when a value may belong to a short list. LIKE and PostgreSQL ILIKE support text patterns. Missing values need IS NULL or IS NOT NULL.
+
+[pause=0.7]
+
+We can also combine conditions with AND, OR, and NOT.
+
+[pause=0.7]
+
+A useful habit is to read the condition naturally. Age greater than or equal to sixty-five means sixty-five is included. When conditions become longer, use parentheses to make the intended grouping obvious rather than depending on memory of operator precedence.
+
+[pause=1.0]
+
+Slide 11: Change a filter
+
+This example is designed to show how a small change in a condition changes the result.
+
+[pause=0.8]
+
+First, run the query exactly as shown and inspect which active patients meet the age requirement.
+
+[pause=0.8]
+
+Then change the age threshold from fifty to sixty and run it again. Before the second run, predict which rows should disappear.
+
+[pause=0.8]
+
+Notice that nothing is being updated in the patients table. We are only changing the predicate used to decide which rows appear in the SELECT result.
+
+[pause=0.7]
+
+This is one reason SELECT is a safe place to practice logic. You can adjust conditions and observe the effect without changing stored data.
+
+[pause=0.7]
+
+Try the same two versions in pgAdmin if you want additional practice comparing query results.
+
+[pause=1.0]
+
+Slide 12: BETWEEN and IN
+
+BETWEEN and IN are two readable filtering patterns.
+
+[pause=0.7]
+
+BETWEEN is helpful for a continuous range. When we say age between thirty and sixty, both endpoints are included.
+
+[pause=0.7]
+
+IN is useful when a column may match one of several listed values. Instead of writing several OR conditions, we can list the allowed values together.
+
+[pause=0.7]
+
+This example combines a range condition with a categorical condition.
+
+[pause=0.8]
+
+Before running it, read the WHERE clause in plain language and predict which records can qualify. Then run the query and compare the returned rows with your prediction.
+
+[pause=0.8]
+
+When a filter combines multiple conditions, check whether AND or OR matches the actual requirement. The SQL can be syntactically valid and still answer the wrong question if the logical connector is wrong.
+
+[pause=1.0]
+
+Slide 13: ILIKE
+
+PostgreSQL provides ILIKE for case-insensitive text pattern matching.
+
+[pause=0.7]
+
+The percent sign represents any sequence of characters. A pattern such as C followed by percent means starts with C. Percent followed by son means ends with son. Percent on both sides searches for text appearing anywhere inside the value.
+
+[pause=0.7]
+
+Run the example and look at the patient names that match.
+
+[pause=0.8]
+
+Then try changing the search pattern. Before each run, predict what kind of names should appear.
+
+[pause=0.8]
+
+ILIKE is useful when capitalization should not matter. LIKE is similar, but case behavior can differ depending on the database and collation.
+
+[pause=0.7]
+
+Pattern matching is convenient, but broad patterns can also return many rows. Use a pattern that reflects the actual search requirement.
+
+[pause=1.0]
+
+Slide 14: NULL
+
+NULL represents missing or unknown information, and it does not behave like an ordinary value.
+
+[pause=0.7]
+
+A common beginner mistake is to write a condition that says a column equals NULL. That does not correctly test for missing information.
+
+[pause=0.7]
+
+Instead, use IS NULL when you want rows where a value is missing, and IS NOT NULL when you want rows where a value is present.
+
+[pause=0.7]
+
+In this example, a missing discharge date means the admission is still open.
+
+[pause=0.8]
+
+Run the query and inspect the rows that are returned. Look specifically at the discharge-date column.
+
+[pause=0.8]
+
+A simple way to remember this is that NULL is not a normal value such as zero or an empty string. It represents the absence of a known value, so SQL gives it special predicates.
+
+[pause=1.0]
+
+Slide 15: Sort limit distinct
+
+Three common tools help organize query results.
+
+[pause=0.8]
+
+ORDER BY controls the row order. LIMIT keeps only a chosen number of result rows. DISTINCT removes repeated result rows.
+
+[pause=0.7]
+
+The important point is that LIMIT by itself does not mean latest, oldest, highest, or best. Without a deterministic ORDER BY, PostgreSQL is free to return any qualifying subset.
+
+[pause=0.7]
+
+Run the example that asks for the three most recent admissions. Notice that the date is sorted in descending order before the limit is applied.
+
+[pause=0.8]
+
+Now imagine removing ORDER BY. You may still get three rows, but you would no longer have a reliable reason to call them the three most recent.
+
+[pause=0.7]
+
+Use sorting to define what top or recent actually means before applying a limit.
+
+[pause=1.0]
+
+Slide 16: Logical order
+
+SQL is written in one order, but it is useful to think about its logical processing in another order.
+
+[pause=0.7]
+
+For a simple query, PostgreSQL first identifies the source in FROM, then applies WHERE to filter rows. SELECT defines the result expressions. DISTINCT can remove repeated result rows. ORDER BY sorts the remaining result, and LIMIT keeps the requested number of rows.
+
+[pause=0.8]
+
+This mental model helps explain why filtering happens before sorting.
+
+[pause=0.7]
+
+It also helps explain why an alias created in SELECT is not always available in earlier logical stages.
+
+[pause=0.7]
+
+You do not need to memorize database-engine internals. Use this as a reasoning model. When a query behaves differently from what you expected, ask which stage creates or removes the value you are trying to use.
+
+[pause=1.0]
+
+Slide 17: Complete a query
+
+This slide gives you a small completion exercise.
+
+[pause=0.8]
+
+The query should return active patients who are age fifty or older. One comparison operator is missing.
+
+[pause=0.8]
+
+Before typing anything, translate the requirement into plain language. The age condition needs to include patients who are exactly fifty as well as those who are older.
+
+[pause=0.7]
+
+Replace the placeholder with the operator that expresses that idea, then run the query.
+
+[pause=0.8]
+
+Look at the result and verify that the boundary value would be handled correctly.
+
+[pause=0.7]
+
+This exercise is intentionally small. The goal is to connect one phrase in the requirement to one SQL operator, not to solve a long query all at once.
+
+[pause=0.8]
+
+You can use the browser editor and Run, then compare your output with the expected meaning.
+
+[pause=1.0]
+
+Slide 18: DML safety
+
+Now we move from reading data to changing stored rows, so our safety habits become more important.
+
+[pause=0.7]
+
+Before an UPDATE or DELETE, preview the target rows with SELECT. Use the same WHERE condition you intend to use in the write statement.
+
+[pause=0.7]
+
+Whenever possible, identify rows with a stable primary key or unique key rather than a name or other value that may repeat.
+
+[pause=0.7]
+
+A transaction can provide another layer of protection because you can inspect a change before deciding whether to keep it.
+
+[pause=0.7]
+
+RETURNING is also very useful in PostgreSQL because it immediately shows the rows that were inserted, updated, or deleted.
+
+[pause=0.7]
+
+The most important warning is simple: an UPDATE or DELETE without an appropriate WHERE clause can affect every row in the table.
+
+[pause=1.0]
+
+Slide 19: INSERT
+
+INSERT adds new rows to a table.
+
+[pause=0.7]
+
+A good practice is to name the target columns explicitly. That makes it clear which value belongs to which field and makes the statement more resilient if the table structure later changes.
+
+[pause=0.7]
+
+PostgreSQL RETURNING can immediately show the row that was stored, including a generated primary key.
+
+[pause=0.7]
+
+Before running this example, look at the values and make sure the medical record number is unique and the age satisfies the table constraint.
+
+[pause=0.8]
+
+Then run it and inspect the returned row.
+
+[pause=0.8]
+
+If you copy the statement into pgAdmin, compare the returned values with a SELECT for the same unique key. INSERT changes stored data, so verification is now part of the workflow, not an optional extra step.
+
+[pause=1.0]
+
+Slide 20: Complete INSERT
+
+This exercise asks you to complete an INSERT for a new patient.
+
+[pause=0.8]
+
+Most of the statement is already provided. Your job is to supply a new unique medical record number in the missing location.
+
+[pause=0.7]
+
+Think first about the constraint. Medical record number is unique, so reusing an existing value should cause PostgreSQL to reject the insert.
+
+[pause=0.7]
+
+Enter a new quoted value, run the statement, and inspect what RETURNING shows.
+
+[pause=0.8]
+
+The exercise is not about memorizing the entire INSERT syntax. Focus on the relationship between the target column list and the values list.
+
+[pause=0.8]
+
+If an insert fails, read the error. A constraint error can be useful because it tells you the database is protecting a rule defined in the schema.
+
+[pause=1.0]
+
+Slide 21: UPDATE
+
+UPDATE changes values in rows that already exist.
+
+[pause=0.7]
+
+The safest pattern is to preview the intended target first. In this example, the SELECT and UPDATE use the same key-based condition.
+
+[pause=0.8]
+
+Run the cell and watch the sequence. First identify the row. Then change it. Finally inspect what PostgreSQL returns.
+
+[pause=0.8]
+
+A unique medical record number is safer than a patient name because names can repeat or change.
+
+[pause=0.7]
+
+When writing UPDATE, treat WHERE as a safety boundary. Before you execute, ask how many rows you expect the condition to match.
+
+[pause=0.7]
+
+If the answer is one row, but your preview SELECT returns several, stop and fix the predicate before running the update.
+
+[pause=0.8]
+
+This preview-then-update pattern is one of the most useful habits in practical SQL work.
+
+[pause=1.0]
+
+Slide 22: DELETE
+
+DELETE physically removes rows, so we need to distinguish it from a soft-delete pattern.
+
+[pause=0.7]
+
+A soft delete keeps the row but changes a status field such as is active. That can preserve history while excluding the record from normal active views.
+
+[pause=0.7]
+
+A hard delete removes the row from the table.
+
+[pause=0.7]
+
+Run the soft-delete example and inspect the row after the change. Notice that the patient still exists but the active flag has changed.
+
+[pause=0.8]
+
+Whether a system should use soft or hard deletion depends on retention requirements, audit needs, and business rules.
+
+[pause=0.7]
+
+Before any hard delete, preview the exact target rows. Also remember that foreign-key constraints may block a deletion when related records depend on that row.
+
+[pause=1.0]
+
+Slide 23: Constraints protect data
+
+This example intentionally triggers a foreign-key error.
+
+[pause=0.8]
+
+The patient we are trying to delete has a related admission. The database relationship uses a restrictive delete rule, so PostgreSQL refuses to remove the patient and leave the admission pointing to a missing record.
+
+[pause=0.7]
+
+Run the example and read the error message rather than treating it as a failure of the lesson.
+
+[pause=0.8]
+
+The database is enforcing a relationship rule that was designed in Module 2.
+
+[pause=0.7]
+
+This is an important change in perspective: not every error means your database is broken. A constraint error can be evidence that the database is successfully protecting data integrity.
+
+[pause=0.7]
+
+When you see this kind of error, ask which relationship or constraint is being protected before trying to bypass it.
+
+[pause=1.0]
+
+Slide 24: Transactions
+
+Transactions let us group changes into a controlled unit of work.
+
+[pause=0.7]
+
+BEGIN starts the transaction. After that, changes are visible inside the transaction but have not yet been permanently kept.
+
+[pause=0.7]
+
+COMMIT keeps the changes. ROLLBACK discards them.
+
+[pause=0.7]
+
+In this example, we change a value, inspect the changed row, and then roll the transaction back.
+
+[pause=0.8]
+
+Before running it, note the original age. Then run the code and follow the output. You should see the temporary changed value, and after the rollback the final SELECT should show the original value again.
+
+[pause=0.8]
+
+This is a safe way to practice write statements. In pgAdmin, transactions are also useful when testing a change before deciding whether the result should be committed.
+
+[pause=1.0]
+
+Slide 25: ACID
+
+ACID is a common way to describe important transaction properties.
+
+[pause=0.7]
+
+Atomicity means a related group of changes is treated as one unit. Either the intended transaction succeeds or its work can be undone.
+
+[pause=0.7]
+
+Consistency means database rules and constraints should still hold when a valid transaction finishes.
+
+[pause=0.7]
+
+Isolation deals with concurrent work so transactions do not incorrectly interfere with each other's intermediate states.
+
+[pause=0.7]
+
+Durability means that once a transaction is committed in a durable database system, the committed result is intended to persist even after failures.
+
+[pause=0.7]
+
+For this beginner module, the practical takeaway is not to memorize definitions word for word. Understand why transactions are useful: they give us a controlled boundary around related changes and a clear choice between keeping them and undoing them.
+
+[pause=1.0]
+
+Slide 26: Write transaction
+
+Now you will write a short transaction using the earlier example as a pattern.
+
+[pause=0.8]
+
+The task is to change one patient age, inspect the changed row with RETURNING, then roll the transaction back.
+
+[pause=0.7]
+
+Start with the transaction boundary. Then write an UPDATE that targets the patient by the stable medical record number. Add RETURNING so you can inspect the temporary change.
+
+[pause=0.7]
+
+After that, undo the transaction and use a final SELECT to verify that the original value is back.
+
+[pause=0.7]
+
+Do not rush to copy a complete solution. Build the workflow one step at a time and run it when you think the sequence is correct.
+
+[pause=0.8]
+
+The goal is to understand the lifecycle: begin, change, inspect, undo, verify.
+
+[pause=1.0]
+
+Slide 27: JSONB
+
+PostgreSQL JSONB lets a relational table store and query semi-structured JSON data.
+
+[pause=0.8]
+
+In the clinical notes table, the note column contains keys such as symptom, severity, and follow up.
+
+[pause=0.7]
+
+The arrow with two greater-than symbols extracts a JSON value as text. If the value needs to be compared as a Boolean or number, we may cast that text to the appropriate type.
+
+[pause=0.7]
+
+Run the example and inspect the symptom and severity columns that are extracted from the JSON document.
+
+[pause=0.8]
+
+The original JSONB column still exists as one stored value. The query is simply projecting selected keys into regular result columns.
+
+[pause=0.8]
+
+JSONB is useful when part of the data is flexible, but important relational identifiers and relationships should still be modeled deliberately.
+
+[pause=1.0]
+
+Slide 28: Complete JSONB
+
+This exercise asks you to find notes that need follow-up.
+
+[pause=0.8]
+
+The JSON document contains a Boolean flag, but the key name is missing from the starter condition.
+
+[pause=0.7]
+
+Look at the earlier JSONB example and identify which key stores that follow-up information.
+
+[pause=0.8]
+
+Replace the placeholder with the quoted key name, then run the query.
+
+[pause=0.8]
+
+Inspect the returned notes and confirm that each one represents a true follow-up flag.
+
+[pause=0.7]
+
+Notice that extracting JSON as text is different from comparing a Boolean. The example handles that conversion for you.
+
+[pause=0.8]
+
+Focus on the pattern: choose the JSON key, extract the value, cast it when necessary, then use the result in a condition. You do not need to memorize every JSON operator yet.
+
+[pause=1.0]
+
+Slide 29: Insert select
+
+INSERT INTO followed by SELECT is a useful data-preparation pattern.
+
+[pause=0.7]
+
+Instead of typing individual VALUES, the SELECT query produces the rows that should be inserted into another table.
+
+[pause=0.8]
+
+This appears frequently in staging, ETL and ELT workflows, archives, reporting tables, and derived datasets.
+
+[pause=0.7]
+
+Run the example and inspect the newly created table containing patients in the requested age group.
+
+[pause=0.8]
+
+The important idea is that the SELECT controls which rows and columns move into the destination.
+
+[pause=0.7]
+
+Before using this pattern on larger data, verify the SELECT by itself first. Make sure it returns exactly the records you intend to insert.
+
+[pause=0.7]
+
+That follows the same safety principle we have used throughout the module: preview the result before performing the write operation.
+
+[pause=1.0]
+
+Slide 30: MERGE optional
+
+MERGE is an optional advanced topic in this module.
+
+[pause=0.7]
+
+It can synchronize a source dataset with a target table. If a source record matches an existing target record, one action such as UPDATE can run. If there is no match, another action such as INSERT can run.
+
+[pause=0.8]
+
+The most important part is the matching condition because it defines what PostgreSQL considers the same record.
+
+[pause=0.7]
+
+If your browser engine supports the example, run it and inspect how matched and unmatched rows are handled.
+
+[pause=0.8]
+
+Do not worry if MERGE feels more complex than the earlier DML statements. The core skills are still SELECT, INSERT, UPDATE, and safe matching.
+
+[pause=0.7]
+
+Before using MERGE in important workflows, check for duplicate source keys and verify the match logic very carefully.
+
+[pause=1.0]
+
+Slide 31: Common mistakes
+
+This slide collects several mistakes that are easy to make when learning SQL.
+
+[pause=0.7]
+
+Use IS NULL rather than equality when testing missing values.
+
+[pause=0.7]
+
+When AND and OR appear together, add parentheses so the intended logic is visible.
+
+[pause=0.7]
+
+Do not use LIMIT to claim you have the top or latest rows unless ORDER BY defines what top or latest means.
+
+[pause=0.7]
+
+Avoid updating records by a name when a stable unique key is available.
+
+[pause=0.7]
+
+And before DELETE, preview the target rows with SELECT.
+
+[pause=0.7]
+
+These habits may look small, but they prevent large errors.
+
+[pause=0.7]
+
+When debugging, do not change many parts of the query at once. Read the requirement, identify the specific clause that is responsible, change one thing, run it again, and inspect what changed.
+
+[pause=1.0]
+
+Slide 32: Guided practice 1
+
+In the first guided practice, you will write two read-only queries.
+
+[pause=0.7]
+
+For Task A, return the requested patient columns and sort from oldest to youngest. Before writing the SQL, identify the selected columns and the sort direction.
+
+[pause=0.7]
+
+For Task B, keep only active patients who meet the age threshold, again sorted from oldest to youngest.
+
+[pause=0.7]
+
+Write the query in the browser and run it.
+
+[pause=0.8]
+
+Before checking the provided guidance, inspect your own result. For the reset dataset, think about which patient should appear first in the all-patient query and which patients should remain after the active-and-age filter.
+
+[pause=0.8]
+
+This is a good place to practice debugging because SELECT does not change the stored rows. Change one clause at a time and observe the result.
+
+[pause=1.0]
+
+Slide 33: Guided practice 2
+
+The second guided practice moves into DML.
+
+[pause=0.7]
+
+You will insert a new patient using a unique medical record number, use RETURNING to see what PostgreSQL stored, verify the row with a key-based SELECT, and then update the age.
+
+[pause=0.7]
+
+Work through those steps in order rather than trying to write everything at once.
+
+[pause=0.7]
+
+After the insert, inspect the generated identifier and the values you supplied. Then use the unique key to verify that you are looking at the intended row.
+
+[pause=0.7]
+
+Before the update, preview that same row again. After the update, inspect RETURNING.
+
+[pause=0.7]
+
+The purpose is to make safe verification feel routine. When data changes, always know which row you expected to change and confirm that PostgreSQL changed that row.
+
+[pause=1.0]
+
+Slide 34: Self-check
+
+Before moving to the assignment exercises, use this self-check to explain the ideas without running code.
+
+[pause=0.8]
+
+Why are explicit SELECT columns often better than selecting everything?
+
+[pause=0.7]
+
+Why does a missing value require IS NULL rather than equals NULL?
+
+[pause=0.7]
+
+Why should LIMIT usually be paired with ORDER BY when we care about top, latest, or oldest rows?
+
+[pause=0.7]
+
+What should you run before a new UPDATE or DELETE?
+
+[pause=0.8]
+
+And what is the difference between COMMIT and ROLLBACK?
+
+[pause=0.7]
+
+Try answering each question in your own words before revealing the sample answers.
+
+[pause=0.7]
+
+If you can explain these ideas clearly, you are ready for the coding exercises. The goal is understanding the reasoning behind the SQL, not memorizing one exact query.
+
+[pause=1.0]
+
+Slide 35: Exercise 1 SELECT
+
+Coding Exercise 1 focuses on a simple SELECT and sort.
+
+[pause=0.8]
+
+The required output contains medical record number, patient name, and age. The rows should be ordered from the oldest patient to the youngest.
+
+[pause=0.7]
+
+Before typing, separate the task into two parts: which columns should appear, and what order should the rows use?
+
+[pause=0.7]
+
+Write your SQL directly in the browser and use Run and Check.
+
+[pause=0.8]
+
+If the query runs but does not pass, inspect the result columns and row order. Make sure you are not returning unnecessary columns.
+
+[pause=0.8]
+
+Do not worry about filters yet. This exercise is intentionally focused on selecting the correct columns and using a descending age sort.
+
+[pause=1.0]
+
+Slide 36: Exercise 2 WHERE
+
+Coding Exercise 2 adds filtering.
+
+[pause=0.8]
+
+The result should contain only active patients who are fifty or older, and it should show the requested three columns.
+
+[pause=0.7]
+
+Before writing the WHERE clause, identify the two independent conditions. One condition is about the active flag. The other is about the age threshold.
+
+[pause=0.7]
+
+Then decide which logical operator should connect them if both requirements must be true.
+
+[pause=0.7]
+
+Run and Check, then inspect the youngest patient in the result to make sure the boundary is handled correctly.
+
+[pause=0.8]
+
+If too many rows appear, review the filter. If the correct rows appear in the wrong order, review ORDER BY rather than changing the WHERE condition.
+
+[pause=1.0]
+
+Slide 37: Exercise 3 INSERT
+
+Coding Exercise 3 asks you to insert a specific new patient and verify the inserted row with RETURNING.
+
+[pause=0.8]
+
+The task gives you the medical record number, name, age, and gender.
+
+[pause=0.7]
+
+Start by naming the target columns, then make sure the values are in the same order.
+
+[pause=0.7]
+
+Because the medical record number must be unique, the insert should identify the new row clearly.
+
+[pause=0.7]
+
+Run and Check after you complete the statement.
+
+[pause=0.8]
+
+If PostgreSQL reports a constraint error, read the message carefully. It may mean a required value is missing, a value violates a check, or the unique key already exists.
+
+[pause=0.7]
+
+The goal is to practice a complete insert-and-verify pattern, not simply to make the error disappear.
+
+[pause=1.0]
+
+Slide 38: Exercise 4 UPDATE
+
+Coding Exercise 4 asks you to update one existing patient by a stable key.
+
+[pause=0.8]
+
+The medical record number identifies the intended patient. The new age is given in the task.
+
+[pause=0.7]
+
+Before writing the UPDATE, imagine the preview SELECT you would run in a real workflow. It should return exactly one row for that medical record number.
+
+[pause=0.8]
+
+Then complete the SET and WHERE parts and use RETURNING to inspect the changed row.
+
+[pause=0.7]
+
+Run and Check.
+
+[pause=0.8]
+
+If more than one row could be affected by your condition, the condition is not safe enough. If PostgreSQL updates no rows, verify the key value.
+
+[pause=0.7]
+
+This exercise is about targeting the correct record as much as it is about the UPDATE syntax.
+
+[pause=1.0]
+
+Slide 39: Exercise 5 Transaction
+
+Coding Exercise 5 combines an UPDATE with transaction control.
+
+[pause=0.8]
+
+You need to make a temporary age change, inspect it, roll it back, and then verify that the original value is restored.
+
+[pause=0.7]
+
+Think of the task as a sequence rather than one long statement.
+
+[pause=0.7]
+
+Start the transaction, make the targeted update, inspect the changed row, undo the transaction, and finally select the row again.
+
+[pause=0.7]
+
+Use Run and Check after the sequence is complete.
+
+[pause=0.8]
+
+The final verification is important. A successful rollback should leave the stored age at its original value.
+
+[pause=0.7]
+
+If the final value remains changed, review whether the rollback was executed inside the same transaction before the verification query.
+
+[pause=1.0]
+
+Slide 40: Exercise 6 JSONB
+
+The final coding exercise asks you to filter JSONB notes.
+
+[pause=0.8]
+
+The output needs patient ID, symptom, and severity, but only for notes where the follow-up flag is true.
+
+[pause=0.7]
+
+Use the JSONB extraction pattern from the earlier slides. Think about which values should be returned as text for display and which value needs to be interpreted as a Boolean for filtering.
+
+[pause=0.7]
+
+Then sort the result by patient ID.
+
+[pause=0.7]
+
+Run and Check when you are ready.
+
+[pause=0.8]
+
+If the filter returns both true and false notes, review the Boolean comparison. If the values display with unexpected JSON formatting, review which JSON extraction operator is being used.
+
+[pause=0.7]
+
+This exercise combines semi-structured data with the same SELECT and WHERE reasoning you already know.
+
+[pause=1.0]
+
+Slide 41: Complete Module
+
+This page summarizes your required Module 3 work.
+
+[pause=0.7]
+
+The module tracks ten knowledge checks and six coding exercises.
+
+[pause=0.8]
+
+Before selecting Complete Module, review the counters. If something is incomplete, use the progress information to return to the relevant slide.
+
+[pause=0.7]
+
+When you select Complete Module, the page creates an Assignment 3 submission summary containing your completion status, knowledge-check answers, and the SQL saved for the coding exercises.
+
+[pause=0.8]
+
+Review that summary before copying it to Canvas. If the module is incomplete, the page will warn you before you copy the current progress.
+
+[pause=0.7]
+
+Your progress is stored locally in this browser. Changing devices, clearing browser storage, or using a private window may not carry the saved work with you.
+
+[pause=1.0]
+
+Slide 42: Final activity
+
+The final activity asks you to combine the main ideas into one small PostgreSQL workflow.
+
+[pause=0.7]
+
+Begin with a SELECT using chosen columns, add a WHERE condition, and sort the result.
+
+[pause=0.7]
+
+Then insert one test row with RETURNING and verify that row with a key-based SELECT.
+
+[pause=0.7]
+
+After that, update the row safely.
+
+[pause=0.7]
+
+If you are ready for more, the optional challenge adds a transaction with ROLLBACK, a JSONB query, an INSERT INTO SELECT pattern, and an explanation of a constraint error.
+
+[pause=0.8]
+
+Do not try to do every part at once. Start from a pattern, change one piece, run it, inspect the result, and then add the next step.
+
+[pause=0.8]
+
+That incremental method is how SQL work becomes easier to debug and safer to maintain.
+
+[pause=1.0]
+
+Slide 43: Summary
+
+Let's summarize Module 3.
+
+[pause=0.7]
+
+SELECT defines the data you want to retrieve. WHERE and related predicates decide which rows qualify. ORDER BY, LIMIT, and DISTINCT help organize the result.
+
+[pause=0.7]
+
+INSERT adds rows. UPDATE changes rows. DELETE can remove rows. Because those commands change stored data, previewing targets and using stable keys are important safety habits.
+
+[pause=0.7]
+
+Constraints protect data rules and relationships. Transactions give you a boundary where changes can be committed or rolled back. RETURNING helps you inspect what PostgreSQL changed.
+
+[pause=0.7]
+
+JSONB extends PostgreSQL to semi-structured values, while INSERT INTO SELECT connects query results to data-preparation workflows.
+
+[pause=0.8]
+
+The habit to carry forward is simple: understand the request, preview the target, make the smallest correct change, inspect the result, and verify before you keep it.
+
+[pause=1.0]
