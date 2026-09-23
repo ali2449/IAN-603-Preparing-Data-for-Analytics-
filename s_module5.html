@@ -612,9 +612,6 @@ ccToggle.addEventListener('click',()=>{
 });
 applyCaptionVisibility();
 
-});
-applyCaptionVisibility();
-
 
 function splitSentences(t){
   return String(t||'').replace(/\s+/g,' ').trim().split(/(?<=[.!?])\s+/).filter(Boolean)
@@ -765,7 +762,7 @@ audio.onended=()=>{
   document.getElementById('audioPlayer').classList.remove('playing');
   document.getElementById('audioTitle').textContent='Slide '+(current+1)+' complete';
   document.getElementById('audioPlay').textContent='Play';
-  narrationStatus.textContent='Narration finished. Use Next when you are ready to continue.'
+  subtitleText.textContent='';
 };
 audio.onerror=()=>{
   candidateIndex++;
