@@ -1,77 +1,37 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.612
-This slide shows the transition from Module 3 to
-Module 4 In
+00:00:00.103 --> 00:00:06.105
+Module 3 focused on retrieving filtering and
+changing individual rows Module
 
-00:00:04.638 --> 00:00:10.150
-Module 3 most of our questions returned individual
-records For example we
+00:00:06.132 --> 00:00:11.000
+4 changes the perspective Instead of asking which
+records should I return
 
-00:00:10.175 --> 00:00:15.450
-could retrieve one patient row filter admissions or
-update one record Module
+00:00:11.211 --> 00:00:14.368
+we often ask questions such as how many how much
+what is
 
-00:00:15.475 --> 00:00:18.962
-4 asks us to summarize many rows into information
-that is easier
+00:00:14.395 --> 00:00:19.900
+the average or which group is largest A good
+aggregation starts with
 
-00:00:18.988 --> 00:00:23.250
-to interpret Think about a sales table with hundreds
-or thousands of
+00:00:19.926 --> 00:00:24.495
+the business question Then we define the output
+grain choose the measures
 
-00:00:23.275 --> 00:00:28.988
-transactions A decision-maker may not want to read
-every transaction They
+00:00:24.679 --> 00:00:29.468
+apply row-level filters apply group-level filters
+when needed and finally validate the
 
-00:00:29.012 --> 00:00:32.950
-may want total revenue by category average sale
-price or the number
+00:00:29.482 --> 00:00:34.982
+result A simple way to think about it is detail
+grain measure
 
-00:00:32.962 --> 00:00:38.312
-of unique products sold Aggregation converts the
-detailed rows into that higher-level
+00:00:35.153 --> 00:00:39.813
+filter and validate If the final summary does not
+match the meaning
 
-00:00:38.325 --> 00:00:43.725
-view The workflow on this slide is very important We
-still begin
-
-00:00:43.750 --> 00:00:48.938
-with detail Then we decide the grain of the output
-Next we
-
-00:00:48.962 --> 00:00:53.500
-choose the measure such as a count total or average
-After that
-
-00:00:53.700 --> 00:00:56.775
-we decide whether any source rows should be filtered
-before grouping and
-
-00:00:56.800 --> 00:01:01.750
-whether any summary groups should be filtered after
-grouping Finally we validate
-
-00:01:01.775 --> 00:01:06.262
-the result That last step matters because an
-aggregate can look reasonable
-
-00:01:06.288 --> 00:01:10.550
-even when the grouping or filtering logic is wrong A
-useful habit
-
-00:01:10.562 --> 00:01:13.862
-is to compare the summary back to the source rows
-especially when
-
-00:01:13.888 --> 00:01:17.862
-building a new report So the main idea is simple do
-not
-
-00:01:17.875 --> 00:01:21.675
-start with GROUP BY just because you want a summary
-Start with
-
-00:01:21.700 --> 00:01:24.438
-the question and define what one result row should
-mean
+00:00:39.827 --> 00:00:44.129
+of the question even perfectly valid SQL can produce
+a misleading answer

@@ -1,68 +1,47 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:03.612
-COUNT looks simple but there are several forms and
-they answer different
+00:00:00.103 --> 00:00:03.629
+COUNT can answer different questions so it is
+important to choose the
 
-00:00:03.638 --> 00:00:09.138
-questions COUNT star counts input rows It does not
-care whether a
+00:00:03.655 --> 00:00:09.359
+right version COUNT star counts input rows It does
 
-00:00:09.162 --> 00:00:13.475
-particular column is NULL If a row exists in the
-input set
+00:00:09.372 --> 00:00:14.895
+not care whether individual columns contain missing
+values COUNT of a
 
-00:00:13.638 --> 00:00:17.525
-COUNT star includes it COUNT of a column counts only
-the rows
+00:00:14.908 --> 00:00:20.538
+specific column counts only rows where that
+expression is not NULL COUNT
 
-00:00:17.550 --> 00:00:22.288
-where that particular column is not NULL In the
-admissions example COUNT
+00:00:20.551 --> 00:00:26.127
+DISTINCT counts unique non-null values Now run the
+example in
 
-00:00:22.312 --> 00:00:26.125
-discharge_time can be interpreted as the number of
-admissions that have a
+00:00:26.153 --> 00:00:31.669
+the browser Compare the three result columns The
+total admission
 
-00:00:26.138 --> 00:00:30.850
-recorded discharge time Rows with a missing
-discharge time are ignored by
+00:00:31.695 --> 00:00:36.905
+count should include every admission row The
+completed-admission count should be smaller
 
-00:00:30.875 --> 00:00:36.388
-that expression COUNT DISTINCT column goes one step
-further It removes
+00:00:36.932 --> 00:00:42.353
+because ongoing admissions have no discharge time
+The distinct patient count answers
 
-00:00:36.412 --> 00:00:41.925
-duplicate non-NULL values before counting COUNT
-DISTINCT subject_id therefore
+00:00:42.379 --> 00:00:47.881
+a different question again how many unique patients
+appear If you
 
-00:00:41.950 --> 00:00:45.375
-tells us how many different patients appear in the
-admissions table not
+00:00:47.907 --> 00:00:51.565
+are using pgAdmin copy the query into the Query Tool
+and run
 
-00:00:45.388 --> 00:00:49.888
-how many admission rows exist Run the example and
-compare the three
+00:00:51.591 --> 00:00:56.120
+the same comparison there Look at the labels
+carefully and connect each
 
-00:00:49.912 --> 00:00:55.575
-numbers Ask what population each number represents
-All admissions
-
-00:00:55.738 --> 00:00:59.338
-completed admissions and unique patients are related
-but they are not the
-
-00:00:59.350 --> 00:01:04.950
-same metric This distinction is important in real
-analysis A report
-
-00:01:04.975 --> 00:01:08.188
-can be wrong even when the SQL runs successfully if
-the analyst
-
-00:01:08.200 --> 00:01:12.162
-chooses the wrong form of COUNT Whenever you see
-COUNT try to
-
-00:01:12.175 --> 00:01:14.850
-finish the sentence I am counting what exactly
+00:00:56.147 --> 00:00:57.844
+number to the question it answers

@@ -1,61 +1,48 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.062
-Let us finish Module 4 by connecting the major ideas
-First grain
+00:00:00.103 --> 00:00:06.054
+Let's close Module 4 by connecting the main ideas
+Start with grain
 
-00:00:05.088 --> 00:00:10.200
-comes before GROUP BY syntax Always know what one
-output row represents
+00:00:06.964 --> 00:00:11.017
+Decide what one output row should represent before
+choosing GROUP BY columns
 
-00:00:11.062 --> 00:00:16.488
-Second NULL matters COUNT star counts rows while
-COUNT column counts non-NULL
+00:00:12.759 --> 00:00:17.577
+Remember that NULL affects aggregate functions COUNT
+star and COUNT of a
 
-00:00:16.512 --> 00:00:21.438
-values AVG and other aggregates can also be affected
-by missing values
+00:00:17.603 --> 00:00:23.614
+column answer different questions and AVG ignores
+NULL expressions Use
 
-00:00:21.462 --> 00:00:26.675
-and by the population you choose Third filtering
-happens at different stages
+00:00:23.641 --> 00:00:29.609
+WHERE for source-row conditions and HAVING for
+completed group conditions Conditional
 
-00:00:27.562 --> 00:00:33.088
-WHERE removes source rows before grouping HAVING
-removes completed groups after aggregate
+00:00:29.622 --> 00:00:35.506
+aggregation lets one group produce several measures
+CASE is portable while PostgreSQL
 
-00:00:33.100 --> 00:00:39.100
-values exist Fourth conditional aggregation lets one
-grouped row contain several metrics
+00:00:35.533 --> 00:00:41.169
+FILTER is concise ROLLUP CUBE and GROUPING SETS let
+one query
 
-00:00:39.988 --> 00:00:44.350
-CASE is flexible and portable while PostgreSQL
-FILTER is often concise and
+00:00:41.195 --> 00:00:47.464
+produce multiple summary grains so interpret
+subtotal rows carefully Window
 
-00:00:44.375 --> 00:00:49.625
-readable Fifth GROUPING SETS ROLLUP and CUBE can
-place several summary grains
+00:00:47.491 --> 00:00:52.162
+functions keep detail rows while adding rank
+averages running totals and other
 
-00:00:49.650 --> 00:00:55.262
-in one result GROUPING helps label subtotal rows
-correctly Finally
+00:00:52.188 --> 00:00:57.768
+analytical context The habit to carry forward is
+simple define
 
-00:00:55.462 --> 00:01:00.762
-window functions add analytical context without
-collapsing the detail rows You used
+00:00:57.794 --> 00:01:01.899
+the question define the grain calculate the measure
+filter at the correct
 
-00:01:00.788 --> 00:01:06.112
-them for ranking group averages company averages and
-running totals The larger
-
-00:01:06.138 --> 00:01:09.675
-lesson is a workflow ask a clear question define the
-grain choose
-
-00:01:09.700 --> 00:01:14.712
-meaningful measures filter at the correct stage and
-validate the result Those
-
-00:01:14.738 --> 00:01:18.112
-habits will support the more advanced SQL topics
-that come next
+00:01:01.926 --> 00:01:03.860
+stage and validate the result

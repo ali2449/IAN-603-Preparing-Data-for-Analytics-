@@ -1,61 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:03.962
-This example puts WHERE GROUP BY HAVING and ORDER BY
-together in
+00:00:00.103 --> 00:00:05.834
+This example combines WHERE GROUP BY and HAVING in
+one query The
 
-00:00:03.988 --> 00:00:09.425
-one realistic pattern The goal is to calculate
-category-level sales summaries but
+00:00:05.861 --> 00:00:10.705
+row-level rule keeps sales whose price is at least
+twenty-five dollars Those
 
-00:00:09.450 --> 00:00:14.038
-only from rows where price is at least twenty-five
-That row-level requirement
+00:00:10.718 --> 00:00:16.258
+qualifying rows are then grouped by category We
+calculate total quantity and
 
-00:00:14.050 --> 00:00:17.688
-belongs in WHERE so lower-priced rows are removed
-before the groups are
+00:00:16.284 --> 00:00:21.692
+total revenue for each category Finally HAVING keeps
+only groups whose total
 
-00:00:17.712 --> 00:00:22.388
-created Next GROUP BY category defines the grain as
-one row per
+00:00:21.705 --> 00:00:27.225
+quantity is above the required threshold Before
+running it predict
 
-00:00:22.412 --> 00:00:27.900
-category SUM quantity calculates total units sold
-and SUM of quantity times
+00:00:27.251 --> 00:00:32.017
+whether every category will remain Then run the
+query and compare the
 
-00:00:27.912 --> 00:00:34.462
-price calculates category revenue ROUND makes the
-revenue easier to display HAVING
+00:00:32.030 --> 00:00:37.638
+result Look carefully at the difference between the
+price condition and the
 
-00:00:34.488 --> 00:00:37.988
-SUM quantity greater than ten then removes category
-groups that do not
+00:00:37.651 --> 00:00:42.311
+quantity condition Price belongs to each source row
+so it is checked
 
-00:00:38.012 --> 00:00:42.700
-have enough total quantity Notice that this
-condition is about a calculated
+00:00:42.338 --> 00:00:47.311
+in WHERE Total quantity exists only after grouping
+so it is checked
 
-00:00:42.712 --> 00:00:48.662
-group value so HAVING is the correct place Finally
-ORDER BY category_revenue
+00:00:47.325 --> 00:00:52.604
+in HAVING This is the full aggregation pattern you
+will use frequently
 
-00:00:48.688 --> 00:00:53.538
-descending puts the highest qualifying revenue first
-Run the query and read
-
-00:00:53.562 --> 00:00:58.188
-it in stages Ask which rows enter the calculation
-what one output
-
-00:00:58.212 --> 00:01:03.588
-row represents what measures are calculated and
-which completed groups remain This
-
-00:01:03.600 --> 00:01:08.500
-pattern appears constantly in reporting If you
-understand this slide well you
-
-00:01:08.525 --> 00:01:12.012
-have a strong foundation for many real analytical
-SQL tasks
+00:00:52.630 --> 00:00:54.117
+in real analytical work

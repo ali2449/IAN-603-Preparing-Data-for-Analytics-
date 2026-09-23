@@ -1,68 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:03.425
-WHERE and HAVING both filter data but they work at
-different stages
+00:00:00.103 --> 00:00:05.656
+WHERE and HAVING both filter but they operate at
+different stages WHERE
 
-00:00:03.450 --> 00:00:08.137
-of an aggregate query WHERE filters individual
-source rows before GROUP BY
+00:00:05.682 --> 00:00:11.317
+filters individual source rows before grouping
+happens For example keeping only
 
-00:00:08.162 --> 00:00:12.738
-happens For example WHERE price is greater than or
-equal to twenty-five
+00:00:11.343 --> 00:00:15.066
+sales where price is at least twenty-five dollars
+removes rows before the
 
-00:00:12.750 --> 00:00:17.625
-means that lower-priced sale rows never enter the
-groups HAVING filters completed
+00:00:15.093 --> 00:00:20.979
+category totals are calculated HAVING filters
+completed groups after
 
-00:00:17.650 --> 00:00:22.838
-groups after aggregation For example HAVING SUM
-quantity greater than ten means
+00:00:21.006 --> 00:00:26.758
+aggregation For example keeping categories whose
+total quantity is greater than ten
 
-00:00:22.850 --> 00:00:27.650
-PostgreSQL first creates the category groups
-calculates total quantity for each group
+00:00:26.785 --> 00:00:32.112
+requires the grouped total to exist first A simple
+test is to
 
-00:00:27.888 --> 00:00:31.675
-and then removes groups that do not meet the
-threshold A simple
+00:00:32.125 --> 00:00:35.480
+ask whether the condition refers to an individual
+row or to a
 
-00:00:31.700 --> 00:00:35.262
-way to remember the difference is WHERE asks which
-rows should participate
+00:00:35.494 --> 00:00:41.179
+group measure If it is a row condition think WHERE
+If
 
-00:00:35.500 --> 00:00:39.738
-HAVING asks which summary groups should remain At
-the same query level
+00:00:41.192 --> 00:00:45.284
+it is a condition on COUNT SUM AVG or another
+grouped measure
 
-00:00:39.900 --> 00:00:44.438
-WHERE normally cannot test SUM COUNT or AVG because
-those aggregate values
+00:00:45.442 --> 00:00:51.000
+think HAVING Keeping these roles separate makes
+aggregation queries much
 
-00:00:44.462 --> 00:00:48.725
-do not exist yet HAVING can test them because
-grouping has already
-
-00:00:48.750 --> 00:00:53.400
-occurred Sometimes a condition could technically be
-written in HAVING even though
-
-00:00:53.412 --> 00:00:57.162
-it belongs in WHERE That is usually less clear and
-can do
-
-00:00:57.188 --> 00:01:03.138
-unnecessary work Row-level conditions belong in
-WHERE whenever possible When
-
-00:01:03.150 --> 00:01:07.125
-you see a filtering requirement ask whether it
-describes an individual source
-
-00:01:07.150 --> 00:01:11.625
-row or a calculated group That question usually
-tells you whether to
-
-00:01:11.650 --> 00:01:12.762
-use WHERE or HAVING
+00:00:51.026 --> 00:00:52.302
+easier to reason about

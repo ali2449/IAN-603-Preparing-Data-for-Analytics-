@@ -1,61 +1,40 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.638
-Coding Exercise 3 brings together WHERE GROUP BY
-HAVING and a calculated
+00:00:00.103 --> 00:00:05.768
+Coding Exercise 3 combines row filtering and group
+filtering Use
 
-00:00:04.662 --> 00:00:09.000
-revenue measure The requirement says to use sales
-rows where price is
+00:00:05.795 --> 00:00:10.902
+sales First keep only source rows where price is at
+least twenty-five
 
-00:00:09.025 --> 00:00:14.125
-at least twenty-five That describes individual
-source rows so write the condition
+00:00:11.837 --> 00:00:17.650
+Then group the remaining rows by category Calculate
+total quantity
 
-00:00:14.138 --> 00:00:17.688
-in WHERE before the grouping step The grain is one
-row per
+00:00:17.676 --> 00:00:23.378
+and total revenue for each category After those
+groups exist keep
 
-00:00:17.712 --> 00:00:23.700
-category so GROUP BY category You need
-total_quantity which can be calculated
-
-00:00:23.725 --> 00:00:28.512
-with SUM quantity and total_revenue which can be
-calculated by summing quantity
-
-00:00:28.538 --> 00:00:34.150
-times price Give both expressions clear aliases Next
-keep
-
-00:00:34.175 --> 00:00:39.250
+00:00:23.404 --> 00:00:29.358
 only categories whose total quantity is greater than
-ten That threshold depends
+ten Finally sort
 
-00:00:39.275 --> 00:00:43.775
-on an aggregate so it belongs in HAVING Finally sort
-the highest
+00:00:29.384 --> 00:00:34.937
+with the highest revenue first Think about the order
+conceptually before
 
-00:00:43.800 --> 00:00:48.288
-revenue first Before clicking Run and Check inspect
-the order of your
+00:00:34.964 --> 00:00:40.874
+you write the clauses The price condition belongs to
+individual rows The
 
-00:00:48.312 --> 00:00:53.750
-clauses WHERE should come before GROUP BY HAVING
-should come after GROUP
+00:00:40.887 --> 00:00:46.762
+total-quantity condition belongs to groups Run and
+Check when you are ready
 
-00:00:53.762 --> 00:00:58.012
-BY If the query runs but the result seems wrong
-verify the
+00:00:47.686 --> 00:00:50.975
+If the result does not match verify the placement of
+WHERE and
 
-00:00:58.038 --> 00:01:01.150
-revenue expression and make sure the price filter is
-applied to source
-
-00:01:01.175 --> 00:01:05.662
-rows rather than completed groups This exercise is a
-strong test of
-
-00:01:05.688 --> 00:01:08.575
-whether you understand the logical stages of
-aggregation
+00:00:51.001 --> 00:00:53.462
+HAVING before changing the aggregate expressions

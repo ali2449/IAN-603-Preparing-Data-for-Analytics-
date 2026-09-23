@@ -1,61 +1,40 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.100
-This query creates one summary row for each
-diagnosis That sentence tells
+00:00:00.103 --> 00:00:05.274
+Now let's create a simple grouped summary The goal
+is one row
 
-00:00:05.125 --> 00:00:09.000
-us the grain before we even read the SQL The SELECT
-list
+00:00:05.300 --> 00:00:11.031
+per diagnosis with a count of admissions inside each
+diagnosis The
 
-00:00:09.025 --> 00:00:13.162
-contains diagnosis which is the grouping column and
-COUNT star which counts
+00:00:11.045 --> 00:00:15.426
+diagnosis column defines the groups and COUNT
+calculates a measure within each
 
-00:00:13.188 --> 00:00:18.725
-the admission rows inside each diagnosis group The
-alias admission_count gives the
+00:00:15.439 --> 00:00:21.378
+group Before running the query predict which
+diagnosis will have the largest
 
-00:00:18.738 --> 00:00:23.950
-measure a clear name GROUP BY diagnosis tells
-PostgreSQL to collect rows
+00:00:21.405 --> 00:00:27.664
+count Then run it in the browser and inspect the
+result Notice
 
-00:00:23.975 --> 00:00:28.950
-that share the same diagnosis Then COUNT star is
-calculated separately for
+00:00:27.690 --> 00:00:31.348
+that the original admission rows have been collapsed
+into a smaller summary
 
-00:00:28.975 --> 00:00:33.888
-each group The ORDER BY clause sorts by
-admission_count descending so the
+00:00:31.374 --> 00:00:36.495
+table We no longer see individual admission IDs
+because the output grain
 
-00:00:33.900 --> 00:00:39.275
-most frequent diagnosis appears first Diagnosis is
-used as a secondary sort
+00:00:36.508 --> 00:00:42.037
+is diagnosis If you copy this query into pgAdmin try
 
-00:00:39.300 --> 00:00:43.425
-so groups with the same count still have a
-predictable order Run
+00:00:42.051 --> 00:00:47.211
+adding ORDER BY admission count descending Sorting
+does not change the grouping
 
-00:00:43.450 --> 00:00:47.738
-the query and look at the result Each diagnosis
-should appear once
-
-00:00:47.950 --> 00:00:52.100
-even if several source rows had that diagnosis That
-is the key
-
-00:00:52.125 --> 00:00:55.638
-effect of grouping many detail rows become one
-summary row for the
-
-00:00:55.662 --> 00:01:00.350
-defined grain If you are ever unsure about a grouped
-query temporarily
-
-00:01:00.375 --> 00:01:05.138
-inspect the detail rows for one category Count them
-manually and compare
-
-00:01:05.162 --> 00:01:10.325
-with the aggregate result That validation technique
-is simple and very effective
+00:00:48.145 --> 00:00:51.395
+It simply makes the largest groups easier to
+identify

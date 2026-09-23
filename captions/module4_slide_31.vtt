@@ -1,65 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.100
-Understanding logical execution order explains many
-SQL behaviors that otherwise feel like
+00:00:00.103 --> 00:00:05.182
+Logical execution order explains many SQL rules that
+can otherwise feel arbitrary
 
-00:00:05.125 --> 00:00:10.075
-arbitrary rules The process begins with FROM and
-JOIN which determine the
+00:00:06.923 --> 00:00:11.515
+PostgreSQL conceptually begins with FROM and JOIN
+then applies WHERE forms groups
 
-00:00:10.100 --> 00:00:16.812
-source rows WHERE filters those rows GROUP BY
-creates groups HAVING
+00:00:11.528 --> 00:00:16.475
+with GROUP BY filters groups with HAVING evaluates
+SELECT expressions performs window
 
-00:00:16.838 --> 00:00:22.800
-filters the groups SELECT then produces the
-requested expressions Window
+00:00:16.488 --> 00:00:21.686
+calculations and then applies ORDER BY and LIMIT
+This is why a
 
-00:00:22.812 --> 00:00:27.638
-functions operate after the grouping and HAVING
-stage ORDER BY arranges the
+00:00:21.699 --> 00:00:26.570
+same-level aggregate is not available in WHERE The
+groups do not exist
 
-00:00:27.650 --> 00:00:32.237
-final rows and LIMIT can restrict how many are
-returned This order
+00:00:26.596 --> 00:00:32.221
+yet at that stage HAVING can use aggregate
+expressions because grouping
 
-00:00:32.263 --> 00:00:36.825
-explains why WHERE cannot use a same-level aggregate
-At the WHERE stage
+00:00:32.248 --> 00:00:38.121
+has already happened Window functions are evaluated
+after grouped filtering
 
-00:00:37.025 --> 00:00:40.925
-SUM or COUNT for a group has not been created yet
-HAVING
+00:00:38.411 --> 00:00:41.516
+which is why they can add analytical context to the
+rows that
 
-00:00:40.950 --> 00:00:45.850
-can test those values because grouping has already
-happened It also explains
+00:00:41.529 --> 00:00:47.477
+remain You do not need to memorize every internal
+implementation detail
 
-00:00:45.875 --> 00:00:50.112
-why window functions can work with grouped results
-They see the rows
+00:00:48.401 --> 00:00:52.414
+Use this logical order as a reasoning model for
+understanding which clause
 
-00:00:50.138 --> 00:00:54.288
-that remain after aggregation and HAVING at that
-query level You do
-
-00:00:54.300 --> 00:00:58.462
-not need to memorize this list perfectly on day one
-Use it
-
-00:00:58.488 --> 00:01:02.588
-as a debugging tool When SQL says a column or
-aggregate is
-
-00:01:02.612 --> 00:01:06.138
-not available where you placed it ask whether that
-value exists yet
-
-00:01:06.162 --> 00:01:10.262
-in the logical processing order Thinking in stages
-is one of the
-
-00:01:10.288 --> 00:01:13.138
-best ways to become comfortable with more advanced
-SQL
+00:00:52.440 --> 00:00:53.638
+can see which values

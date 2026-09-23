@@ -1,68 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.450
-This slide intentionally shows a grouping error
-because PostgreSQL is protecting us
+00:00:00.103 --> 00:00:06.111
+This example is intentionally incorrect and the
+error is useful The
 
-00:00:04.475 --> 00:00:10.112
-from an ambiguous result The query asks for
-diagnosis subject_id and
+00:00:06.138 --> 00:00:10.098
+query groups rows only by diagnosis but also tries
+to select subject
 
-00:00:10.138 --> 00:00:14.938
-COUNT star but it groups only by diagnosis That
-creates a problem
+00:00:10.125 --> 00:00:15.811
+ID directly PostgreSQL asks an important question
+which subject ID
 
-00:00:15.812 --> 00:00:21.175
-If one diagnosis group contains several different
-subject IDs which single subject_id
+00:00:15.838 --> 00:00:21.348
+should represent the entire diagnosis group There is
+no single correct
 
-00:00:21.200 --> 00:00:25.638
-should PostgreSQL display for the whole group There
-is no correct answer
+00:00:21.361 --> 00:00:26.842
+subject ID for a group that may contain several
+patients Run this
 
-00:00:25.662 --> 00:00:30.450
-unless we define one That is why PostgreSQL returns
-an error instead
+00:00:26.868 --> 00:00:32.161
+example and read the error message PostgreSQL is
+protecting you from an
 
-00:00:30.462 --> 00:00:34.588
-of choosing an arbitrary value The general rule is
-that a selected
+00:00:32.187 --> 00:00:38.107
+ambiguous result To fix a grouped query every
+selected expression
 
-00:00:34.612 --> 00:00:38.450
-expression should either define the group be derived
-consistently from the grouping
+00:00:38.133 --> 00:00:41.952
+needs a clear role It should either define the group
+such as
 
-00:00:38.462 --> 00:00:43.238
-columns or be calculated with an aggregate function
-In a beginner query
+00:00:41.965 --> 00:00:47.496
+diagnosis or summarize the group such as COUNT or
+AVG Do
 
-00:00:43.375 --> 00:00:48.412
-the simplest rule is selected non-aggregate columns
-belong in GROUP BY Run
+00:00:47.522 --> 00:00:52.406
+not treat grouping errors as obstacles They often
+reveal that the result
 
-00:00:48.438 --> 00:00:53.275
-the example and read the error message Error
-messages are useful teaching
-
-00:00:53.300 --> 00:00:58.162
-tools They often tell you exactly which column is
-causing the ambiguity
-
-00:00:59.050 --> 00:01:02.288
-There are two possible ways to fix this query
-depending on the
-
-00:01:02.300 --> 00:01:07.950
-intended grain If we want one row per diagnosis
-remove subject_id
-
-00:01:07.975 --> 00:01:12.375
-from SELECT If we want one row per patient and
-diagnosis add
-
-00:01:12.400 --> 00:01:17.412
-subject_id to GROUP BY The right fix comes from the
-question not
-
-00:01:17.438 --> 00:01:18.575
-from syntax alone
+00:00:52.432 --> 00:00:54.696
+grain has not been defined clearly enough

@@ -1,61 +1,41 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.788
+00:00:00.103 --> 00:00:06.068
 ROLLUP creates hierarchical subtotals In this
-example category is the higher-level
+example the hierarchy
 
-00:00:05.812 --> 00:00:10.188
-dimension and product is nested underneath it The
-query sums sales and
+00:00:06.095 --> 00:00:11.789
+is category then product followed by a grand total
+Before running
 
-00:00:10.200 --> 00:00:15.712
-groups by ROLLUP category product PostgreSQL first
-returns the most detailed
+00:00:11.815 --> 00:00:16.012
+the query predict the types of rows you expect
+product-level detail within
 
-00:00:15.738 --> 00:00:21.338
-groups one for each category-and-product combination
-It then produces a subtotal for
+00:00:16.039 --> 00:00:21.820
+each category a category subtotal and one final
+total Run
 
-00:00:21.362 --> 00:00:25.550
-each category and finally a grand total across all
-categories and products
+00:00:21.846 --> 00:00:26.744
+the query and inspect where grouped columns become
+NULL Those NULL values
 
-00:00:26.425 --> 00:00:31.338
-Subtotal rows need special labels because PostgreSQL
-uses NULL-like placeholders in rolled-up
+00:00:26.770 --> 00:00:29.520
+may indicate that the column has been rolled up to a
+higher
 
-00:00:31.362 --> 00:00:35.675
-columns The GROUPING function tells us whether a
-column is missing because
+00:00:29.546 --> 00:00:34.976
+summary level Do not interpret every NULL in a
+subtotal report as
 
-00:00:35.700 --> 00:00:38.800
-it was rolled up rather than because the source data
-actually contained
+00:00:34.989 --> 00:00:39.978
+missing source data In advanced grouping output NULL
+can be a structural
 
-00:00:38.825 --> 00:00:43.050
-NULL The CASE expressions use GROUPING to display
-labels such as All
+00:00:39.991 --> 00:00:45.194
+placeholder This is why later we will use GROUPING
+to distinguish a
 
-00:00:43.075 --> 00:00:48.200
-categories or All products The grouping_code is also
-included so you can
-
-00:00:48.225 --> 00:00:52.325
-see which level each row represents Run the query
-and find three
-
-00:00:52.350 --> 00:00:56.850
-kinds of rows detailed product rows category
-subtotal rows and the grand
-
-00:00:56.862 --> 00:01:01.062
-total ROLLUP is a good fit for reports with a
-hierarchy such
-
-00:01:01.075 --> 00:01:05.400
-as region to store category to product or year to
-month The
-
-00:01:05.425 --> 00:01:08.550
-order of columns matters because it defines the
-rollup path
+00:00:45.221 --> 00:00:48.484
+subtotal placeholder from a real NULL value in the
+source

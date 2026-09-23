@@ -1,56 +1,40 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.112
-Coding Exercise 2 asks you to create one summary row
-per diagnosis
+00:00:00.103 --> 00:00:06.299
+Coding Exercise 2 asks for one row per diagnosis
+with an admission count The
 
-00:00:05.000 --> 00:00:09.988
-Start with the grain one row per diagnosis That
-tells you diagnosis
+00:00:06.326 --> 00:00:11.486
+phrase one row per diagnosis tells you the GROUP BY
+grain Add
 
-00:00:10.012 --> 00:00:14.925
-must appear in GROUP BY The measure is
-admission_count so use COUNT
+00:00:11.512 --> 00:00:15.525
+the aggregate count group by diagnosis and sort so
+the largest count
 
-00:00:14.938 --> 00:00:18.650
-star and give it that alias Then sort the result so
-the
+00:00:15.552 --> 00:00:22.257
+appears first Use Run and Check when you are ready
+After
 
-00:00:18.675 --> 00:00:23.312
-largest count appears first Because the alias is
-available for the final
+00:00:22.270 --> 00:00:27.286
+the query runs inspect the first row Ask whether the
+diagnosis with
 
-00:00:23.338 --> 00:00:28.612
-ORDER BY you can sort by admission_count descending
-Read the finished query
+00:00:27.299 --> 00:00:32.274
+the largest number of admissions is at the top If
+your result
 
-00:00:28.638 --> 00:00:32.500
-in plain language for each diagnosis count the
-admission rows and display
+00:00:32.300 --> 00:00:36.287
+has one row per admission instead of one row per
+diagnosis revisit
 
-00:00:32.513 --> 00:00:37.162
-the diagnoses from most frequent to least frequent
-Run and Check then
+00:00:36.313 --> 00:00:41.777
+the grouping If PostgreSQL reports a grouping error
+check whether every selected
 
-00:00:37.188 --> 00:00:42.838
-look at the output Each diagnosis should appear once
-If a diagnosis
+00:00:41.803 --> 00:00:47.515
+non-aggregate column is represented correctly The
+goal is to connect the written
 
-00:00:42.862 --> 00:00:48.375
-appears more than once the grouping is probably
-incomplete If PostgreSQL returns
-
-00:00:48.400 --> 00:00:52.225
-a grouping error check that every selected
-non-aggregate column belongs in GROUP
-
-00:00:52.238 --> 00:00:56.700
-BY This is a small exercise but it represents the
-central GROUP
-
-00:00:56.725 --> 00:01:01.088
-BY pattern used in many dashboards and reports
-category plus aggregate measure
-
-00:01:01.100 --> 00:01:01.750
-plus sorting
+00:00:47.542 --> 00:00:49.844
+requirement directly to the GROUP BY list

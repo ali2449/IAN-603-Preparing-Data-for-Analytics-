@@ -1,69 +1,40 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.962
-This example shows several aggregate functions in
-one query That is common
+00:00:00.103 --> 00:00:05.767
+The same table can support several aggregate
+measures in one query This
 
-00:00:04.975 --> 00:00:08.938
-in analytical SQL because one source table can
-support several useful measures
+00:00:05.794 --> 00:00:11.254
+example summarizes sales using functions such as SUM
+AVG MIN and MAX
 
-00:00:08.962 --> 00:00:12.675
-at the same time COUNT star gives us the number of
-sales
+00:00:12.191 --> 00:00:17.244
+Before running it make a prediction The total
+quantity and total revenue
 
-00:00:12.700 --> 00:00:18.588
-rows SUM quantity adds all units sold AVG price
-calculates
+00:00:17.270 --> 00:00:21.046
+answer different questions while the minimum and
+maximum show the range of
 
-00:00:18.600 --> 00:00:23.012
-the average price across the rows MIN price finds
-the lowest price
+00:00:21.073 --> 00:00:26.891
+individual values Run the query in the browser and
+inspect each result
 
-00:00:23.038 --> 00:00:27.388
-and MAX price finds the highest price Notice that
-average price is
+00:00:26.917 --> 00:00:31.880
+column Notice that PostgreSQL can calculate all of
+these measures from the
 
-00:00:27.412 --> 00:00:32.162
-rounded to two decimal places for presentation The
-ROUND function does not
+00:00:31.894 --> 00:00:36.928
+same set of source rows The important idea is not to
+add
 
-00:00:32.175 --> 00:00:36.825
-change the stored prices It only formats the
-calculated result to a
+00:00:36.941 --> 00:00:41.694
+every aggregate function just because you can Choose
+measures that support the
 
-00:00:36.838 --> 00:00:42.288
-more convenient precision Run the query and compare
-the measures A row
+00:00:41.720 --> 00:00:47.089
+analytical question A decision-maker usually needs a
+small set of clearly named
 
-00:00:42.312 --> 00:00:45.950
-count and a unit count are not the same thing One
-sale
-
-00:00:45.962 --> 00:00:50.812
-row could contain a quantity greater than one
-Similarly average price does
-
-00:00:50.825 --> 00:00:56.300
-not tell us total revenue Revenue usually requires
-multiplying quantity by price
-
-00:00:56.325 --> 00:01:00.138
-and then summing that expression This is a good
-example of why
-
-00:01:00.162 --> 00:01:06.500
-analysts should label output columns clearly Names
-such as sale_rows units_sold
-
-00:01:06.625 --> 00:01:12.288
-average_price lowest_price and highest_price tell
-another reader what each number
-
-00:01:12.312 --> 00:01:17.088
-means When designing a summary choose measures that
-directly answer the business
-
-00:01:17.112 --> 00:01:20.900
-or research question rather than adding aggregates
-simply because they are available
+00:00:47.115 --> 00:00:49.470
+metrics rather than every possible summary

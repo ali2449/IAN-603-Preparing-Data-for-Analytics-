@@ -1,64 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.262
-This query demonstrates conditional aggregation with
-CASE The grain is one row
+00:00:00.103 --> 00:00:05.879
+This example uses CASE inside an aggregate For each
+admission the
 
-00:00:05.275 --> 00:00:09.962
-per subject_id so GROUP BY subject_id appears near
-the end of the
+00:00:05.905 --> 00:00:11.118
+CASE expression asks whether the diagnosis matches a
+condition A matching row
 
-00:00:09.975 --> 00:00:14.825
-statement Inside each patient group the first SUM
-contains a CASE expression
+00:00:11.145 --> 00:00:15.355
+contributes a value such as one and a non-matching
+row contributes zero
 
-00:00:14.850 --> 00:00:20.075
-that checks whether diagnosis equals Pneumonia
-Matching rows contribute one while all
+00:00:16.289 --> 00:00:21.810
+SUM then adds those contributions inside each
+patient group Run the
 
-00:00:20.100 --> 00:00:24.825
-other rows contribute zero Adding those ones and
-zeros gives the pneumonia
+00:00:21.837 --> 00:00:27.386
+query and inspect the separate pneumonia and
+fracture counts Before
 
-00:00:24.850 --> 00:00:30.438
-count The second SUM repeats the same idea for
-Fracture This pattern
+00:00:27.413 --> 00:00:30.597
+running it choose one patient from the data and
+predict the two
 
-00:00:30.462 --> 00:00:34.588
-may look unusual at first but it is very logical We
-are
+00:00:30.623 --> 00:00:36.546
+counts Then compare your prediction with the result
+This
 
-00:00:34.612 --> 00:00:39.200
-converting a condition into numbers and then summing
-the numbers One means
+00:00:36.573 --> 00:00:41.549
+pattern is flexible because CASE can handle more
+than simple equality You
 
-00:00:39.225 --> 00:00:43.325
-this row belongs to the metric zero means it does
-not Run
+00:00:41.575 --> 00:00:46.207
+can build conditions based on ranges multiple
+columns or more complex business
 
-00:00:43.350 --> 00:00:47.362
-the query and inspect a few patient rows A patient
-can have
+00:00:46.233 --> 00:00:51.675
+rules When using CASE for counting make sure the
+values you return
 
-00:00:47.388 --> 00:00:50.938
-zero one or more admissions of each type depending
-on the data
-
-00:00:51.825 --> 00:00:55.012
-CASE is especially useful when you need more than a
-simple yes-or-no
-
-00:00:55.038 --> 00:01:00.012
-filter For example CASE can map categories to
-different weights or values
-
-00:01:00.038 --> 00:01:04.988
-before aggregation For now focus on the pattern
-condition one if true
-
-00:01:05.213 --> 00:01:09.512
-zero if false then SUM within the group That pattern
-transfers to
-
-00:01:09.525 --> 00:01:10.875
-many SQL systems
+00:00:51.701 --> 00:00:53.885
+are appropriate for the aggregate you apply

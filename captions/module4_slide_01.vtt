@@ -1,80 +1,48 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.812
+00:00:00.103 --> 00:00:05.671
 Welcome to Module 4 Aggregating Data with PostgreSQL
-In the previous module
+In the previous
 
-00:00:06.000 --> 00:00:09.750
-we focused mainly on individual rows how to retrieve
-them filter them
+00:00:05.697 --> 00:00:11.158
+module we worked mainly with individual rows Here we
+move from detail
 
-00:00:09.938 --> 00:00:14.825
-and change them safely In this module we move into
-analytical SQL
+00:00:11.184 --> 00:00:16.685
+records to summaries that can answer analytical
+questions The important
 
-00:00:15.688 --> 00:00:18.900
-Instead of asking only which rows do I need we will
-often
+00:00:16.711 --> 00:00:20.685
+idea is that aggregation is not only about writing
+COUNT SUM or
 
-00:00:18.925 --> 00:00:22.550
-ask what do these rows mean as a group This is where
+00:00:20.711 --> 00:00:26.596
+AVG Before you calculate anything decide what one
+result row should represent
 
-00:00:22.562 --> 00:00:26.962
-aggregate functions become useful COUNT can tell us
-how many rows or
+00:00:27.517 --> 00:00:32.783
+That is the grain of the summary Throughout this
+module you can
 
-00:00:26.988 --> 00:00:32.212
-values we have SUM can give us totals AVG can give
-us
+00:00:32.810 --> 00:00:38.194
+run the PostgreSQL examples directly in the browser
+On code slides you
 
-00:00:32.237 --> 00:00:35.750
-averages while MIN and MAX help us find the smallest
-and largest
+00:00:38.220 --> 00:00:41.562
+can also use Copy and paste the same query into the
+pgAdmin
 
-00:00:35.762 --> 00:00:39.788
-values We will combine those functions with GROUP BY
-so that one
+00:00:41.589 --> 00:00:47.575
+Query Tool for additional practice We will build
+from simple aggregate functions
 
-00:00:39.800 --> 00:00:44.675
-large table can become a meaningful summary report
-The most important idea
+00:00:47.602 --> 00:00:52.825
+to GROUP BY WHERE and HAVING conditional aggregation
+subtotals and window functions
 
-00:00:44.688 --> 00:00:49.412
-in this module is grain Grain means what one output
-row represents
+00:00:53.749 --> 00:00:57.196
+Keep asking the same question what does one row in
+my result
 
-00:00:50.275 --> 00:00:53.662
-Before writing GROUP BY try to say the result in
-plain language
-
-00:00:54.538 --> 00:00:58.688
-For example one row per diagnosis one row per sales
-category or
-
-00:00:58.712 --> 00:01:03.050
-one row per department Once that is clear the SQL
-becomes much
-
-00:01:03.075 --> 00:01:07.500
-easier to design We will also compare WHERE and
-HAVING build conditional
-
-00:01:07.525 --> 00:01:11.438
-metrics with CASE and FILTER create subtotal reports
-with ROLLUP CUBE and
-
-00:01:11.450 --> 00:01:15.600
-GROUPING SETS and finish with window functions that
-add analytical context without
-
-00:01:15.625 --> 00:01:19.925
-collapsing the detail rows As you work keep one
-habit in mind
-
-00:01:20.138 --> 00:01:23.838
-start with the question define the grain calculate
-the measures apply the
-
-00:01:23.850 --> 00:01:27.250
-right filters and then validate the result against
-the detailed data
+00:00:57.210 --> 00:00:57.552
+mean

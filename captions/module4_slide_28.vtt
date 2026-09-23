@@ -1,61 +1,40 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.100
-This query ranks employees by salary within each
-department The function is
+00:00:00.103 --> 00:00:05.884
+Now let's rank employees within each department The
+RANK window function
 
-00:00:05.125 --> 00:00:10.588
-RANK followed by an OVER clause PARTITION BY
-department tells PostgreSQL to
+00:00:05.910 --> 00:00:11.558
+calculates a position inside each department
+PARTITION BY restarts the ranking for
 
-00:00:10.612 --> 00:00:15.938
-restart the ranking separately for each department
-ORDER BY salary descending inside
+00:00:11.584 --> 00:00:15.702
+each department and ORDER BY salary descending makes
+the highest salary rank
 
-00:00:15.950 --> 00:00:20.288
-the window means the highest salary receives rank
-one Because this is
+00:00:15.729 --> 00:00:21.998
+first Run the query and inspect the department
+boundaries You
 
-00:00:20.312 --> 00:00:25.162
-a window function the individual employee rows
-remain in the result We
+00:00:22.024 --> 00:00:27.563
+should see rank one appear separately in each
+department Notice that
 
-00:00:25.188 --> 00:00:30.062
-are adding a department_rank column rather than
-collapsing employees into one department
+00:00:27.576 --> 00:00:32.302
+every employee row remains visible That is the major
+difference from a
 
-00:00:30.088 --> 00:00:34.462
-row Run the query and watch what happens when the
-department changes
+00:00:32.315 --> 00:00:38.032
+grouped salary report If two employees have the same
+salary RANK
 
-00:00:35.338 --> 00:00:39.562
-The ranking should start again at one RANK also has
-a specific
+00:00:38.058 --> 00:00:42.377
+can produce ties and skip the next rank number That
+behavior is
 
-00:00:39.588 --> 00:00:44.325
-behavior with ties If two employees have the same
-salary they receive
+00:00:42.403 --> 00:00:46.140
+useful to remember when comparing RANK with other
+ranking functions such as
 
-00:00:44.350 --> 00:00:48.238
-the same rank and the next rank can be skipped Later
-you
-
-00:00:48.262 --> 00:00:54.288
-may also see ROW_NUMBER and DENSE_RANK which handle
-ties differently Notice
-
-00:00:54.312 --> 00:00:58.162
-that there are two ORDER BY ideas in this query One
-is
-
-00:00:58.188 --> 00:01:02.612
-inside OVER and defines how the rank is calculated
-The final ORDER
-
-00:01:02.638 --> 00:01:07.138
-BY controls how the result rows are displayed
-Keeping those two purposes
-
-00:01:07.162 --> 00:01:10.012
-separate is important when working with window
-functions
+00:00:46.153 --> 00:00:48.521
+DENSE_RANK or ROW_NUMBER

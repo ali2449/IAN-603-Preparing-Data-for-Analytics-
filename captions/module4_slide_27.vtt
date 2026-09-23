@@ -1,60 +1,40 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:03.600
-Window functions are different from GROUP BY because
-they can add analytical
+00:00:00.103 --> 00:00:05.903
+Window functions solve a different analytical
+problem from GROUP BY GROUP
 
-00:00:03.625 --> 00:00:08.900
-information while keeping the detail rows GROUP BY
-usually collapses many input
+00:00:05.929 --> 00:00:11.267
+BY collapses many input rows into one row per group
+A window
 
-00:00:08.925 --> 00:00:13.162
-rows into one row per group If we group employees by
-department
+00:00:11.280 --> 00:00:16.069
+function usually keeps the original detail rows and
+adds analytical context beside
 
-00:00:13.362 --> 00:00:17.838
-we lose the individual employee rows unless we do
-additional work A
+00:00:16.096 --> 00:00:21.341
+them For example we can keep every employee row
+while adding a
 
-00:00:17.850 --> 00:00:21.775
-window function can calculate something such as
-department average salary and place
+00:00:21.354 --> 00:00:26.977
+department rank or department average PARTITION BY
+defines groups for the
 
-00:00:21.800 --> 00:00:27.362
-that value beside every employee row The detail
-remains visible The
+00:00:27.003 --> 00:00:31.319
+window calculation while ORDER BY inside OVER can
+define ranking or running
 
-00:00:27.388 --> 00:00:32.513
-OVER clause defines the window PARTITION BY creates
-groups for the calculation
+00:00:31.332 --> 00:00:36.569
+sequence This is powerful because you do not have to
+choose between
 
-00:00:32.538 --> 00:00:37.362
-without collapsing the rows ORDER BY inside OVER can
-define the sequence
+00:00:36.596 --> 00:00:42.881
+detail and summary You can display both in the same
+result When
 
-00:00:37.375 --> 00:00:41.925
-for ranking or running totals This makes window
-functions useful for rank
+00:00:42.894 --> 00:00:46.341
+deciding between GROUP BY and a window function ask
+whether you want
 
-00:00:42.138 --> 00:00:47.000
-running totals moving averages comparisons with
-group averages and many other analytical
-
-00:00:47.025 --> 00:00:51.325
-tasks A simple question can help you choose between
-GROUP BY and
-
-00:00:51.350 --> 00:00:55.425
-a window function If you want one row per group
-GROUP BY
-
-00:00:55.450 --> 00:00:59.275
-is often appropriate If you want to keep each
-original row and
-
-00:00:59.300 --> 00:01:03.925
-add group-level context a window function is often
-the better tool The
-
-00:01:03.938 --> 00:01:06.388
-next examples will make that difference visible
+00:00:46.354 --> 00:00:48.394
+to collapse rows or keep them visible

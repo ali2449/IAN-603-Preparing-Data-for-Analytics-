@@ -1,57 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.412
+00:00:00.103 --> 00:00:04.589
 The analytical reasoning in this module transfers
-well across database systems but
+across SQL systems but some
 
-00:00:04.438 --> 00:00:10.150
-the exact syntax may change For example PostgreSQL
-can subtract timestamps
+00:00:04.616 --> 00:00:10.201
+syntax changes PostgreSQL can subtract timestamps
+directly
 
-00:00:10.175 --> 00:00:14.650
-directly to create an interval Some other systems
-use functions such as
+00:00:10.227 --> 00:00:13.937
+in ways that other databases may express with
+functions such as DATEDIFF
 
-00:00:14.675 --> 00:00:21.062
-DATEDIFF instead PostgreSQL supports FILTER for
-conditional aggregates Other
+00:00:15.687 --> 00:00:20.423
+PostgreSQL FILTER is concise for conditional
+aggregation while SUM with CASE is
 
-00:00:21.088 --> 00:00:24.362
-systems may not so SUM with CASE is often a more
-portable
+00:00:20.437 --> 00:00:26.329
+supported more broadly ROLLUP CUBE GROUPING SETS and
+window functions
 
-00:00:24.375 --> 00:00:29.862
-replacement Support for ROLLUP CUBE GROUPING SETS
-and even some window syntax
+00:00:26.355 --> 00:00:30.895
+are widely available in modern databases but exact
+syntax and supported options
 
-00:00:29.875 --> 00:00:33.812
-can also vary by product and version The important
-lesson is to
+00:00:30.921 --> 00:00:36.460
+can vary When moving a query between systems
+preserve the reasoning first
 
-00:00:33.838 --> 00:00:38.738
-transfer the reasoning before transferring the
-syntax The reasoning is define the
+00:00:36.605 --> 00:00:41.157
+filter source rows define the grain calculate
+measures filter groups and sort
 
-00:00:38.750 --> 00:00:43.675
-source population filter rows choose the grain
-calculate measures apply group thresholds
+00:00:41.184 --> 00:00:48.048
+the report Then adapt the engine-specific syntax
+That
 
-00:00:43.825 --> 00:00:48.150
-and sort the report When you move from PostgreSQL to
-another engine
+00:00:48.061 --> 00:00:52.127
+approach is much safer than copying a PostgreSQL
+query and assuming every
 
-00:00:48.362 --> 00:00:53.375
-consult that engine's documentation for the exact
-functions and syntax Do not
-
-00:00:53.400 --> 00:00:57.862
-assume every database implements every feature in
-the same way If you
-
-00:00:57.875 --> 00:01:02.188
-understand the analytical structure of the query
-adapting the syntax is usually
-
-00:01:02.200 --> 00:01:05.838
-much easier than trying to memorize separate
-solutions for every platform
+00:00:52.140 --> 00:00:54.640
+database interprets it exactly the same way

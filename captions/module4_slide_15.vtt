@@ -1,68 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.938
-This slide presents the logical flow of a complete
-aggregation query The
+00:00:00.103 --> 00:00:05.753
+A complete aggregation query has a natural logical
+flow First
 
-00:00:04.962 --> 00:00:08.462
-written order of SQL starts with SELECT but it is
-often easier
+00:00:05.925 --> 00:00:11.782
+FROM identifies the source WHERE filters individual
+rows GROUP
 
-00:00:08.488 --> 00:00:12.650
-to reason about the query in the order shown here
-FROM identifies
+00:00:11.796 --> 00:00:16.032
+BY forms the groups HAVING removes groups that do
+not meet an
 
-00:00:12.675 --> 00:00:18.200
-the source data WHERE removes source rows that
-should not participate GROUP
+00:00:16.046 --> 00:00:20.993
+aggregate condition SELECT defines the values that
+appear in the result and
 
-00:00:18.212 --> 00:00:24.188
-BY forms the groups HAVING filters those completed
-groups SELECT produces
+00:00:21.019 --> 00:00:26.437
+ORDER BY sorts the final rows The written SQL order
+is familiar
 
-00:00:24.212 --> 00:00:29.462
-the final columns and aggregate values ORDER BY
-arranges the final result
+00:00:26.635 --> 00:00:30.648
+but thinking about the logical stages helps explain
+why certain expressions are
 
-00:00:30.325 --> 00:00:35.438
-This order explains many SQL rules For example WHERE
-cannot refer to
+00:00:30.674 --> 00:00:35.760
+valid in one clause and not another There is also a
+practical
 
-00:00:35.462 --> 00:00:38.662
-a same-level aggregate such as SUM quantity because
-the groups have not
+00:00:35.786 --> 00:00:40.578
+efficiency lesson here If a condition can be applied
+to individual source
 
-00:00:38.675 --> 00:00:43.250
-been created yet when WHERE is evaluated HAVING can
-use SUM quantity
+00:00:40.604 --> 00:00:44.039
+rows put it in WHERE so fewer rows reach the
+grouping stage
 
-00:00:43.262 --> 00:00:47.900
-because it runs after grouping This order also helps
-with performance and
+00:00:45.767 --> 00:00:49.332
+Before running a long summary query read it as a
+pipeline source
 
-00:00:47.925 --> 00:00:51.800
-clarity If a row does not belong in the analysis at
-all
-
-00:00:52.050 --> 00:00:56.138
-filter it in WHERE before the database spends effort
-grouping it When
-
-00:00:56.150 --> 00:01:00.212
-a grouped query becomes confusing rewrite the
-problem as a sequence source
-
-00:01:00.338 --> 00:01:05.050
-row filter grain group filter output sort You can
-even write those
-
-00:01:05.075 --> 00:01:10.125
-words as comments before filling in the SQL
-Analytical SQL becomes much
-
-00:01:10.150 --> 00:01:12.700
-easier when you think of it as a pipeline rather
-than one
-
-00:01:12.712 --> 00:01:13.550
-large statement
+00:00:49.359 --> 00:00:52.793
+rows row filter groups group filter output sort

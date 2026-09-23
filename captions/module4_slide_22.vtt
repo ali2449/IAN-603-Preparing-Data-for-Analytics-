@@ -1,60 +1,43 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.975
-This comparison helps distinguish GROUPING SETS
-ROLLUP and CUBE GROUPING SETS returns
+00:00:00.103 --> 00:00:05.834
+This comparison is worth learning conceptually
+GROUPING SETS produces
 
-00:00:05.988 --> 00:00:11.438
-only the combinations you explicitly list If you
-request category totals product
+00:00:05.860 --> 00:00:11.433
+only the grouping combinations you request ROLLUP of
+A and B produces
 
-00:00:11.462 --> 00:00:17.025
-totals and a grand total PostgreSQL returns exactly
-those levels ROLLUP of
+00:00:11.459 --> 00:00:14.656
+detail at A and B a subtotal at A and a grand
 
-00:00:17.050 --> 00:00:21.125
-A and B follows a hierarchy It produces A and B
-together
+00:00:14.670 --> 00:00:20.681
+total It follows a hierarchy CUBE of A and B
+produces
 
-00:00:21.312 --> 00:00:24.838
-then A alone then the empty grouping set which
-represents the grand
+00:00:20.707 --> 00:00:25.947
+detail subtotals by A subtotals by B and the grand
+total It
 
-00:00:24.850 --> 00:00:29.638
-total It does not automatically produce B alone
-because the hierarchy moves
+00:00:25.973 --> 00:00:31.453
+generates every combination A simple way to choose
+is to ask what
 
-00:00:29.662 --> 00:00:33.488
-from detailed to broader levels from left to right
-CUBE of A
+00:00:31.479 --> 00:00:36.869
+report levels you need If you need a hierarchy
+ROLLUP is often
 
-00:00:33.512 --> 00:00:37.138
-and B returns every combination A and B together A
-alone B
+00:00:36.895 --> 00:00:43.029
+a natural fit If you need all cross-dimensional
+totals consider CUBE If
 
-00:00:37.162 --> 00:00:41.162
-alone and the grand total A useful way to choose
-among them
+00:00:43.056 --> 00:00:49.062
+you want only specific levels GROUPING SETS gives
+you precise control The
 
-00:00:41.175 --> 00:00:44.900
-is to think about the report design If the
-dimensions have a
+00:00:49.089 --> 00:00:53.036
+SQL syntax is different but the same grain reasoning
+still applies to
 
-00:00:44.925 --> 00:00:49.788
-natural parent-child relationship ROLLUP is often a
-good fit If you want
-
-00:00:49.800 --> 00:00:54.800
-every cross-dimensional subtotal CUBE may be
-appropriate If the report needs a
-
-00:00:54.825 --> 00:00:59.812
-custom set of levels GROUPING SETS gives you precise
-control These features
-
-00:00:59.838 --> 00:01:03.438
-can create more rows than beginners expect so always
-inspect the grain
-
-00:01:03.450 --> 00:01:06.000
-of each result row and label subtotal rows clearly
+00:00:53.049 --> 00:00:54.141
+every row produced

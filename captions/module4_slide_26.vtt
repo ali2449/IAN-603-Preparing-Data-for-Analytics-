@@ -1,68 +1,40 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.088
-Advanced grouping creates subtotal rows where
-grouped columns can appear as NULL
+00:00:00.103 --> 00:00:05.674
+Advanced grouping introduces an important NULL
+question Subtotal
 
-00:00:04.975 --> 00:00:08.250
-The challenge is that real source data can also
-contain genuine NULL
+00:00:05.687 --> 00:00:09.647
+and grand-total rows often show NULL in grouping
+columns because that dimension
 
-00:00:08.275 --> 00:00:12.300
-values If we simply use COALESCE and replace every
-NULL with a
+00:00:09.674 --> 00:00:14.005
+has been rolled up But source data can also contain
+genuine NULL
 
-00:00:12.325 --> 00:00:15.912
-label such as All products we can accidentally
-confuse a real missing
+00:00:14.032 --> 00:00:21.163
+values GROUPING helps us distinguish those two
+situations A
 
-00:00:15.938 --> 00:00:21.475
-value with a subtotal placeholder GROUPING solves
-that problem It tells
+00:00:21.177 --> 00:00:25.005
+grouping code tells us which expressions are
+participating in the current row
 
-00:00:21.500 --> 00:00:25.138
-us whether a column is absent because PostgreSQL
-rolled that dimension up
+00:00:25.019 --> 00:00:30.195
+and which have been summarized away The exact code
+is less important
 
-00:00:25.150 --> 00:00:30.025
-for a subtotal With two grouping expressions the
-grouping code can represent
+00:00:30.221 --> 00:00:33.721
+than the principle do not label every NULL with
+COALESCE before you
 
-00:00:30.050 --> 00:00:35.038
-several cases Code zero means both category and
-product participate in the
+00:00:33.747 --> 00:00:38.790
+know why it is NULL In a production report using
+GROUPING can
 
-00:00:35.050 --> 00:00:40.550
-grouping Other codes indicate that one expression
-has been rolled up Code
+00:00:38.817 --> 00:00:43.133
+help you label rows accurately as detail subtotal or
+grand total without
 
-00:00:40.575 --> 00:00:44.938
-three represents the grand total where both
-dimensions are rolled up You
-
-00:00:44.950 --> 00:00:49.800
-do not need to memorize every numeric code
-immediately The important idea
-
-00:00:49.812 --> 00:00:54.075
-is that GROUPING gives you metadata about the
-summary level Whenever a
-
-00:00:54.100 --> 00:00:58.212
-subtotal report can contain real NULL values use
-GROUPING rather than guessing
-
-00:00:58.238 --> 00:01:02.850
-based on NULL alone That makes the report
-semantically correct and prevents
-
-00:01:02.862 --> 00:01:07.588
-misleading labels This is a good example of how
-analytical SQL is
-
-00:01:07.612 --> 00:01:12.112
-not only about calculation It is also about making
-sure users can
-
-00:01:12.138 --> 00:01:14.162
-correctly interpret what each row means
+00:00:43.159 --> 00:00:45.896
+confusing structural placeholders with missing data

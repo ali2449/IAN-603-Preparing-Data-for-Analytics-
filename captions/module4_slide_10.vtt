@@ -1,64 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.412
-GROUP BY defines the grain of the summary result
-Grain is simply
+00:00:00.103 --> 00:00:05.242
+GROUP BY defines the grain of a summary result With
+no GROUP
 
-00:00:04.438 --> 00:00:09.575
-what one output row represents At detail grain one
-row might represent
+00:00:05.255 --> 00:00:09.823
+BY an aggregate can summarize the whole table into
+one row If
 
-00:00:09.600 --> 00:00:14.625
-one admission If you are returning individual
-admission records no grouping is
+00:00:09.850 --> 00:00:15.100
+we group by diagnosis the output becomes one row per
+diagnosis If
 
-00:00:14.638 --> 00:00:20.638
-needed At category grain one row could represent one
-diagnosis Then
+00:00:15.126 --> 00:00:19.310
+we group by patient and diagnosis the result becomes
+more detailed one
 
-00:00:20.650 --> 00:00:24.912
-GROUP BY diagnosis tells PostgreSQL to place rows
-with the same diagnosis
+00:00:19.336 --> 00:00:25.119
+row per patient-and-diagnosis combination This is
+why adding grouping columns
 
-00:00:24.938 --> 00:00:29.850
-into the same group before calculating aggregate
-values A multi-column grain is
+00:00:25.145 --> 00:00:30.708
+usually increases the number of output rows A
+beginner-friendly rule
 
-00:00:29.862 --> 00:00:35.400
-more detailed If we group by subject_id and
-diagnosis one output
+00:00:30.721 --> 00:00:34.590
+is that selected columns that are not inside
+aggregate functions generally need
 
-00:00:35.425 --> 00:00:40.550
-row represents one patient-and-diagnosis combination
-This is why adding a GROUP BY
+00:00:34.603 --> 00:00:39.521
+to appear in GROUP BY But the deeper rule is about
+meaning
 
-00:00:40.575 --> 00:00:45.125
-column usually increases the number of result rows
-You are dividing the
+00:00:40.458 --> 00:00:44.814
+Every selected non-aggregate value should be
+well-defined for the group represented by
 
-00:00:45.138 --> 00:00:49.638
-source data into smaller groups A useful beginner
-rule is that any
+00:00:44.827 --> 00:00:50.541
+that output row Before writing GROUP BY finish the
+sentence one
 
-00:00:49.662 --> 00:00:53.200
-selected column that is not inside an aggregate
-function usually belongs in
-
-00:00:53.212 --> 00:00:57.838
-GROUP BY PostgreSQL enforces this rule because it
-needs to know which
-
-00:00:57.862 --> 00:01:02.762
-single value should represent each group Before
-writing the query try saying
-
-00:01:02.788 --> 00:01:07.012
-the grain aloud If you can clearly say one row per
-diagnosis
-
-00:01:07.162 --> 00:01:10.212
-or one row per patient and diagnosis then you have a
-strong
-
-00:01:10.238 --> 00:01:12.412
-starting point for choosing the GROUP BY columns
+00:00:50.567 --> 00:00:52.409
+row in my result represents one
