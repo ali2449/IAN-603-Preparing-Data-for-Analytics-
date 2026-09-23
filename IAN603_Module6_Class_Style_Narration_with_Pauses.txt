@@ -1,0 +1,1119 @@
+Slide 1: Big picture
+
+Welcome to Module 6, Joining Data in PostgreSQL. Up to this point, we have often worked with one table at a time. Real analytical questions usually require information that is stored across several related tables.
+
+[pause=0.7]
+
+In this module, the important question is not simply, how do I write a JOIN? The more important question is, what should one output row represent, which rows must remain even when no match exists, and can either side match more than once?
+
+[pause=0.7]
+
+We will work with INNER, LEFT, RIGHT, and FULL OUTER joins. We will also compare ON and WHERE, use self joins and cross joins, and spend extra time on cardinality because row multiplication is one of the most common causes of incorrect analytical results.
+
+[pause=0.7]
+
+As you work through the examples, run the SQL directly in the browser. On code slides, you can also use Copy and paste the same query into the pgAdmin Query Tool. The goal is to learn a repeatable reasoning process, not only join syntax.
+
+[pause=1.0]
+
+Slide 2: Learning objectives
+
+By the end of this module, you should be able to choose a join type based on the question rather than by habit. You should be able to explain what rows are preserved, what rows require a match, and where NULL values can appear after an outer join.
+
+[pause=0.7]
+
+You will also practice writing explicit join conditions with table aliases. When two tables contain a column with the same name, aliases make it clear which table the column comes from.
+
+[pause=0.7]
+
+A major learning goal is protecting the grain. Grain means what one row in the result represents. A patient table may have one row per patient, while an admissions table may have several rows for the same patient. When those tables are joined, repeated patient rows may be completely correct.
+
+[pause=0.7]
+
+Finally, you should be able to validate a join. A query running without an error does not prove that the result is analytically correct. We will check counts, distinct identifiers, unmatched rows, and a few known records.
+
+[pause=1.0]
+
+Slide 3: Join decision workflow
+
+Here is the workflow we will use throughout Module 6.
+
+[pause=0.7]
+
+First, define the grain. Ask what one output row should mean. One patient? One admission? One lab test? One department?
+
+[pause=0.7]
+
+Second, identify the two row sets you are combining. Third, define the matching rule. Most often that is a key such as patient ID, but sometimes the relationship uses another identifier.
+
+[pause=0.7]
+
+Fourth, decide which unmatched rows must remain. If every patient must remain even when that patient has no admission, that immediately points toward a LEFT JOIN with patients on the left.
+
+[pause=0.7]
+
+Fifth, predict cardinality. Can one patient match several admissions? Can one patient also match several labs? This prediction tells you whether rows may expand.
+
+[pause=0.7]
+
+Finally, validate. Compare the actual result with the number and type of rows you expected. This reasoning sequence is much safer than starting by typing JOIN and hoping the result looks reasonable.
+
+[pause=1.0]
+
+Slide 4: Practice schema
+
+The examples use a small synthetic healthcare database. The patients table has one row per patient. Admissions, lab results, and prescriptions are child tables, so one patient can have zero, one, or many rows in each of those tables.
+
+[pause=0.7]
+
+Medical staff belongs to departments, and admissions can point to an attending staff member. This gives us several realistic join paths.
+
+[pause=0.7]
+
+The data also includes useful edge cases. At least one patient has no admission or lab activity, and the staging table contains a patient ID that does not exist in the patient master table. Those records help us see what outer joins preserve.
+
+[pause=0.7]
+
+Keep the relationships in mind while reading every query. If the patients table contains one row per patient but admissions contains many rows per patient, a patient-to-admission join naturally changes the grain from patient to admission detail. That is not automatically a duplicate problem. It is a consequence of the relationship.
+
+[pause=1.0]
+
+Slide 5: Join mental model
+
+A useful way to understand joins is to separate matching from preservation.
+
+[pause=0.7]
+
+The ON condition decides whether a row from one table matches a row from another table. For example, an admission matches a patient when the patient IDs are equal.
+
+[pause=0.7]
+
+The join type answers a different question. If no match exists, should that unmatched row disappear, or should it remain with NULL values from the missing side?
+
+[pause=0.7]
+
+This distinction helps explain why the same ON condition can produce different outputs under INNER JOIN and LEFT JOIN.
+
+[pause=0.7]
+
+Also remember that SQL joins combine rows, not just unique IDs. If one patient has two admissions, there are two valid patient-admission combinations. The patient information will appear on both result rows because the grain is now admission detail.
+
+[pause=0.7]
+
+Before moving on, try to explain a join in plain language: compare these two row sets, match them using this rule, and preserve these unmatched rows.
+
+[pause=1.0]
+
+Slide 6: Row preservation map
+
+This slide gives the four main row-preservation patterns.
+
+[pause=0.7]
+
+INNER JOIN keeps only row combinations where the match condition is true. If a patient has no admission, that patient is absent from a patient-to-admission INNER JOIN.
+
+[pause=0.7]
+
+LEFT JOIN keeps every row from the left table. When no right-side match exists, right-side columns become NULL.
+
+[pause=0.7]
+
+RIGHT JOIN is the mirror image. Every row from the right table is preserved, and unmatched left-side columns become NULL.
+
+[pause=0.7]
+
+FULL OUTER JOIN preserves unmatched rows from both sides. This is especially useful when reconciling a master table with an external staging source.
+
+[pause=0.7]
+
+Do not memorize these as shapes only. Read them as population rules. Ask, what population must remain complete? If the answer is all patients, put patients on the preserved side. That simple question often makes the join choice much easier.
+
+[pause=1.0]
+
+Slide 7: INNER JOIN
+
+Now let's run an INNER JOIN.
+
+[pause=0.7]
+
+The patients table is given the alias p, and admissions is given the alias a. The ON condition says an admission matches a patient when their patient IDs are equal.
+
+[pause=0.7]
+
+Run the query in the browser. Then look at the patient IDs and admission IDs. Notice that a patient with multiple admissions appears more than once. That is expected because each result row represents a matching admission.
+
+[pause=0.7]
+
+Also look for the patient who has no admission. That patient should not appear because INNER JOIN requires a match on both sides.
+
+[pause=0.7]
+
+If you are practicing in pgAdmin, use Copy and paste the query into the Query Tool. Before running it, predict roughly how many rows you expect. After running it, compare the number of result rows with the number of admissions in the database. This is a good first validation of the join grain.
+
+[pause=1.0]
+
+Slide 8: Aliases and grain
+
+Aliases and grain solve two different kinds of confusion.
+
+[pause=0.7]
+
+Aliases make the SQL easier to read. Both patients and admissions contain patient ID. Writing p dot patient ID and a dot patient ID tells us exactly which table a column comes from. This becomes even more important when a query joins three or four tables.
+
+[pause=0.7]
+
+Grain helps us interpret repeated values. Suppose Alice has two admissions. Her patient name may appear on two rows after the join. That does not mean the join is wrong. It means the result is at admission grain.
+
+[pause=0.7]
+
+When you see repeated information after a join, do not immediately apply DISTINCT. First ask whether those rows represent different valid events. DISTINCT can hide a modeling problem instead of fixing it.
+
+[pause=0.7]
+
+A good habit is to write a short sentence before the query: one row in this result represents one admission with patient information. That sentence becomes your validation target.
+
+[pause=1.0]
+
+Slide 9: LEFT JOIN
+
+A LEFT JOIN is often the most useful outer join in analytics because it lets us preserve a clearly defined population.
+
+[pause=0.7]
+
+Here, patients is on the left. That means every patient should remain in the output, even if no admission exists.
+
+[pause=0.7]
+
+Run the query. Look for a patient whose admission ID is missing. That NULL does not mean the join failed. It is the expected representation of an unmatched right-side row.
+
+[pause=0.7]
+
+Now compare this result mentally with the INNER JOIN from the previous slide. The ON condition is the same. The difference is preservation. INNER JOIN removes unmatched patients. LEFT JOIN keeps them.
+
+[pause=0.7]
+
+This distinction matters whenever your denominator is all customers, all students, all patients, or all products. If you accidentally use INNER JOIN, entities with no activity may disappear and your analysis can become biased.
+
+[pause=0.7]
+
+You can copy the query into pgAdmin and verify the same behavior there.
+
+[pause=1.0]
+
+Slide 10: Anti-join
+
+An anti-join pattern answers a very useful question: which left-side rows have no related record?
+
+[pause=0.7]
+
+We begin with a LEFT JOIN because we want to preserve every patient. When a patient has no lab result, columns from lab results are NULL. We then filter for a right-side key, test ID, being NULL.
+
+[pause=0.7]
+
+Run the query and inspect the result. In this dataset, the returned patient should be someone who has no lab result at all.
+
+[pause=0.7]
+
+The choice of column in the NULL test matters. A primary key such as test ID is a good choice because a matched lab row cannot legitimately have a NULL primary key.
+
+[pause=0.7]
+
+Read the logic in plain English: keep all patients, try to match lab rows, then keep only the patients for whom no lab row matched.
+
+[pause=0.7]
+
+This same pattern can find customers with no orders, students with no submissions, or products with no sales.
+
+[pause=1.0]
+
+Slide 11: RIGHT JOIN
+
+RIGHT JOIN is valid PostgreSQL syntax and it preserves every row from the right table.
+
+[pause=0.7]
+
+In this example, departments is on the right, so every department remains even if no medical staff member belongs to it. For an unmatched department, the staff columns will be NULL.
+
+[pause=0.7]
+
+Run the query and look for the department with no staff. That row demonstrates why the RIGHT JOIN was used.
+
+[pause=0.7]
+
+In practice, many analysts prefer LEFT JOIN because it reads naturally from left to right: put the population you want to preserve first, then join optional information to it. The same logic could be rewritten by placing departments first and using LEFT JOIN to medical staff.
+
+[pause=0.7]
+
+The important goal is not preferring one keyword. The important goal is making the preserved population obvious to the next person who reads the query.
+
+[pause=1.0]
+
+Slide 12: FULL OUTER JOIN
+
+FULL OUTER JOIN is especially helpful for reconciliation.
+
+[pause=0.7]
+
+The patient master contains official patient rows, while the staging table represents imported data that may not be fully validated. We want to see matches, master records with no staging row, and staging rows with no master record.
+
+[pause=0.7]
+
+Run the query and inspect the match status column. The CASE expression helps interpret each result. One branch identifies a staging record with no patient master, another identifies a patient with no staging row, and the final branch marks matched records.
+
+[pause=0.7]
+
+This is a good data-quality pattern because it does not throw away evidence from either source.
+
+[pause=0.7]
+
+When you use FULL OUTER JOIN, be deliberate about keys in the SELECT and ORDER BY clauses. COALESCE is useful here because the patient ID may come from either side when one side is unmatched.
+
+[pause=1.0]
+
+Slide 13: Outer join comparison
+
+Join selection becomes easier when you translate the business question into a preservation rule.
+
+[pause=0.7]
+
+If the question is only about patients who have admissions, requiring a match is appropriate, so INNER JOIN fits.
+
+[pause=0.7]
+
+If the question says every patient, whether or not an admission exists, then the patient population must be preserved. Put patients on the left and use LEFT JOIN.
+
+[pause=0.7]
+
+If the question says every department, including empty departments, preserve departments. You can do that with RIGHT JOIN as written in the earlier example, or more commonly by moving departments to the left and using LEFT JOIN.
+
+[pause=0.7]
+
+If you need to compare two sources and see unmatched rows from both, FULL OUTER JOIN is a natural choice.
+
+[pause=0.7]
+
+Notice that we are choosing the join from the words every, only matched, and unmatched from both sides. That is much more reliable than choosing a join because it is the one you remember best.
+
+[pause=1.0]
+
+Slide 14: ON vs WHERE
+
+This is one of the most important slides in the module.
+
+[pause=0.7]
+
+ON and WHERE are not interchangeable in an outer join.
+
+[pause=0.7]
+
+The ON condition defines matching. If we put a condition about lab test name inside ON, we are saying only glucose lab rows are eligible to match each patient. Patients without glucose results can still remain because the LEFT JOIN preserves them.
+
+[pause=0.7]
+
+WHERE is evaluated on the joined result. If we filter where the right-side lab test name equals Glucose, unmatched patients have NULL on that right-side column. NULL does not satisfy the equality condition, so those patients are removed.
+
+[pause=0.7]
+
+That means a LEFT JOIN followed by the wrong WHERE condition can behave like an INNER JOIN for that part of the logic.
+
+[pause=0.7]
+
+A useful question is: does this condition describe which right-side rows may match, or does it describe which final result rows I want to keep?
+
+[pause=1.0]
+
+Slide 15: Filter in ON
+
+Now let's see the safer outer-join pattern.
+
+[pause=0.7]
+
+The first ON condition matches lab rows to patients by patient ID. The second ON condition says that only lab rows named Glucose are allowed to match.
+
+[pause=0.7]
+
+Run the query and count the patient IDs. Every patient should still appear because the LEFT JOIN preserves the patient table.
+
+[pause=0.7]
+
+Then inspect the lab columns. Patients who have a glucose result show a test ID and value. Patients who do not have a glucose test remain in the result, but their lab fields are NULL.
+
+[pause=0.7]
+
+This is the key idea: the filter changes matching, not preservation.
+
+[pause=0.7]
+
+Before you run the query, predict which patients will have non-null glucose values. After it runs, compare your prediction with the output. If you use pgAdmin, copy the query and test it there as well.
+
+[pause=1.0]
+
+Slide 16: WHERE trap
+
+This query looks very similar to the previous one, but the meaning changes because the glucose condition moved from ON to WHERE.
+
+[pause=0.7]
+
+The LEFT JOIN first preserves patients and creates NULL-extended lab columns for patients with no matching lab row. Then WHERE asks whether the lab test name equals Glucose.
+
+[pause=0.7]
+
+For unmatched patients, the test name is NULL. That condition is not true, so those rows are filtered out.
+
+[pause=0.7]
+
+Run this query and compare the row count with the previous slide. You should see only patients who actually have glucose tests.
+
+[pause=0.7]
+
+This is a common source of bugs because the SQL still runs successfully. There is no syntax error to warn you.
+
+[pause=0.7]
+
+A strong debugging method is to run both versions side by side and ask which population the business question requires. If the requirement says all patients, the previous ON-filter version is the appropriate pattern.
+
+[pause=1.0]
+
+Slide 17: USING
+
+PostgreSQL offers USING as a convenient alternative to ON when both tables share the same join-key name.
+
+[pause=0.7]
+
+In this query, both patients and admissions contain patient ID. Writing USING patient ID tells PostgreSQL to match the columns with that name and return a single join-key column in the result.
+
+[pause=0.7]
+
+Run the query and compare its result with the earlier INNER JOIN. The relationship is the same.
+
+[pause=0.7]
+
+USING can make a simple join shorter and easier to read, but ON is more flexible. Use ON when the key names differ, when you need more than one matching condition, or when the relationship uses an expression.
+
+[pause=0.7]
+
+The goal is clarity. Do not force USING into a query when it makes the relationship less obvious. Whichever syntax you choose, you should still be able to explain the matching rule in one sentence.
+
+[pause=1.0]
+
+Slide 18: SELF JOIN
+
+A self join is not a special JOIN keyword. It is a regular join where the same table is referenced twice with different aliases.
+
+[pause=0.7]
+
+Here, medical staff is called s one on one side and s two on the other. We match rows that belong to the same department.
+
+[pause=0.7]
+
+The second condition, staff ID from s one is less than staff ID from s two, is very important. Without it, we could produce both Alice-Bob and Bob-Alice, and we could even match a row to itself.
+
+[pause=0.7]
+
+Run the query and inspect the colleague pairs. Notice that each pair appears only once.
+
+[pause=0.7]
+
+Self joins are useful when rows in one table need to be compared with other rows from that same table. Examples include employee-manager relationships, repeated events, price comparisons, and sequence analysis.
+
+[pause=1.0]
+
+Slide 19: Readmissions self join
+
+This self join uses admissions twice so we can compare an earlier encounter with a later encounter for the same patient.
+
+[pause=0.7]
+
+The patient IDs must match. We also require the first admission ID to be lower than the second so the pair has a direction and we avoid reverse duplicates.
+
+[pause=0.7]
+
+After joining the two admission aliases, we join patients to retrieve the patient name. The WHERE clause keeps pairs where the first admission has a discharge date and the later admission begins between one and ninety days afterward.
+
+[pause=0.7]
+
+Run the query and inspect the days-between calculation.
+
+[pause=0.7]
+
+This is a good example of why aliases are more than a formatting convenience. The aliases give the two roles clear meanings: earlier admission and later admission.
+
+[pause=0.7]
+
+When you build self joins, define those roles in plain language before writing the SQL.
+
+[pause=1.0]
+
+Slide 20: CROSS JOIN
+
+CROSS JOIN intentionally creates every possible pair between two row sets.
+
+[pause=0.7]
+
+In this example, we combine selected departments with appointment slots. If we have two departments and three time slots, we expect six combinations.
+
+[pause=0.7]
+
+Run the query and verify that each selected department appears once for each slot.
+
+[pause=0.7]
+
+CROSS JOIN is useful for generating scenario grids, schedules, calendars, test cases, or completeness frameworks. But it must be used deliberately.
+
+[pause=0.7]
+
+Unlike an ordinary join, there is no ON condition restricting matches. That means result size can grow very quickly.
+
+[pause=0.7]
+
+Before running a cross join on large tables, estimate the number of combinations. Multiply the left row count by the right row count. If one side has ten thousand rows and the other has ten thousand rows, the result can reach one hundred million combinations before any later filtering.
+
+[pause=1.0]
+
+Slide 21: Cross join growth
+
+Cross joins make cardinality especially visible because the multiplication is direct.
+
+[pause=0.7]
+
+Two rows crossed with three rows create six result rows. One hundred by one hundred creates ten thousand. Ten thousand by ten thousand creates one hundred million.
+
+[pause=0.7]
+
+This does not mean CROSS JOIN is bad. It means the result size should be intentional.
+
+[pause=0.7]
+
+For example, building every department and every appointment slot can be exactly what you need to find missing schedule assignments. But crossing two large transaction tables would usually be a serious mistake.
+
+[pause=0.7]
+
+The same multiplication idea appears less obviously in ordinary joins when both sides can have several matches for the same key. That is why understanding cardinality is essential before we move into multi-table analytical joins.
+
+[pause=0.7]
+
+Whenever a result suddenly contains far more rows than expected, ask whether you have accidentally created combinations between multiple detail rows.
+
+[pause=1.0]
+
+Slide 22: Cardinality
+
+Cardinality describes how many rows can match a key.
+
+[pause=0.7]
+
+A one-to-one join is simple because each key can match at most once on both sides.
+
+[pause=0.7]
+
+In a one-to-many join, one patient can match several admissions. The patient row repeats once for each matching admission. That is normal and often exactly what we want.
+
+[pause=0.7]
+
+The danger appears when we join several one-to-many child tables at the same time using only the parent key. Suppose one patient has two admissions, two lab tests, and two prescriptions. The join can create two times two times two, or eight, combinations.
+
+[pause=0.7]
+
+Those eight rows are not eight new business events. They are combinations of existing detail rows.
+
+[pause=0.7]
+
+Before you aggregate a multi-table join, predict this behavior. If your target output is one row per patient, consider summarizing each child table to patient grain first.
+
+[pause=1.0]
+
+Slide 23: Row multiplication
+
+This runnable example makes row multiplication visible.
+
+[pause=0.7]
+
+We join patients to admissions, lab results, and prescriptions, all by patient ID. Each of those child tables can contain multiple rows for one patient.
+
+[pause=0.7]
+
+Run the query and focus on a patient with multiple records in several child tables. The joined row count can be much larger than the individual event counts.
+
+[pause=0.7]
+
+Notice the use of COUNT DISTINCT for admission ID, test ID, and prescription ID. Those distinct counts recover the number of original events, while COUNT star counts the combinations created by the join.
+
+[pause=0.7]
+
+This is why COUNT star after a multi-child join can be misleading. It may be counting the shape of the join rather than the business events you intended to measure.
+
+[pause=0.7]
+
+The first question after seeing an unexpectedly large count should be: what is the grain of the joined rows, and which relationships are multiplying one another?
+
+[pause=1.0]
+
+Slide 24: COUNT trap
+
+COUNT star is not wrong. It counts rows exactly as requested. The problem is that the joined row may not represent the event you think it represents.
+
+[pause=0.7]
+
+After joining several one-to-many tables, one row can represent a combination of an admission, a lab test, and a prescription. Counting those rows does not directly count any one of those event types.
+
+[pause=0.7]
+
+COUNT DISTINCT on an event identifier can protect a simple count. For example, counting distinct admission IDs can recover admission count even after other detail tables are joined.
+
+[pause=0.7]
+
+However, pre-aggregating is often easier to reason about when the final grain is one row per patient. You can summarize admissions to one patient row, summarize labs to one patient row, and then join those summaries.
+
+[pause=0.7]
+
+The safest approach is to name the measure explicitly: admissions, lab tests, prescriptions, patients, or joined combinations. Then choose the counting method that matches that meaning.
+
+[pause=1.0]
+
+Slide 25: Pre-aggregate first
+
+This query demonstrates one of the safest patterns for analytical joins.
+
+[pause=0.7]
+
+Each common table expression summarizes one child table to one row per patient. Admission counts has one patient row. Lab counts has one patient row. Prescription counts has one patient row.
+
+[pause=0.7]
+
+Only after those summaries are created do we join them to patients.
+
+[pause=0.7]
+
+Run the query and inspect the patient IDs. Each patient should appear exactly once. Patients with no matching activity are preserved because the joins are LEFT JOINs, and COALESCE converts missing counts to zero.
+
+[pause=0.7]
+
+This structure makes the grain easy to defend. The final result is one row per patient because every source being joined is already at patient grain.
+
+[pause=0.7]
+
+The query is a little longer than directly joining all detail tables, but it is much easier to validate. In analytical SQL, clarity and correctness are usually more valuable than saving a few lines.
+
+[pause=1.0]
+
+Slide 26: Validation checklist
+
+A join should be validated before its result is used for reporting or analysis.
+
+[pause=0.7]
+
+Start with row counts. How many rows were in each input, and how many rows are in the output?
+
+[pause=0.7]
+
+Then count distinct keys. If the final grain should be one row per patient, compare total rows with distinct patient IDs. If those numbers differ, investigate why.
+
+[pause=0.7]
+
+Inspect keys with unusually many matches. A patient with many admissions or labs is useful for understanding whether multiplication is expected.
+
+[pause=0.7]
+
+Also spot-check at least two known cases: one entity with multiple related rows and one entity with no related row.
+
+[pause=0.7]
+
+Finally, write the grain sentence. For example: one row represents one patient with summarized activity counts. If the query output cannot be explained with a clear grain sentence, the join logic may still be ambiguous.
+
+[pause=0.7]
+
+These checks are simple, but they catch a large share of real-world join errors.
+
+[pause=1.0]
+
+Slide 27: Multiple joins
+
+Now we combine several tables in one query.
+
+[pause=0.7]
+
+The first join moves from patients to admissions using patient ID. Because the question is about admission detail, an INNER JOIN is reasonable.
+
+[pause=0.7]
+
+The second join moves from each admission to the attending staff member using attending staff ID. We use LEFT JOIN so an admission can remain even if the staff reference is missing.
+
+[pause=0.7]
+
+Run the query and inspect the path. Each result row represents an admission, enriched with patient and clinician information.
+
+[pause=0.7]
+
+This is a good example of joining through documented relationships rather than connecting tables simply because they share some similar-looking column.
+
+[pause=0.7]
+
+When a query becomes longer, draw or state the path before writing SQL. Patient to admission. Admission to staff. That sequence makes the role of each join easier to verify.
+
+[pause=0.7]
+
+Also keep checking the grain. Adding the staff table should not create extra rows because one attending staff ID points to at most one staff member.
+
+[pause=1.0]
+
+Slide 28: Protect target grain
+
+A correct join key must match the level of the relationship.
+
+[pause=0.7]
+
+Suppose your target result is one row per admission. You already have patients joined to admissions correctly.
+
+[pause=0.7]
+
+Now imagine adding lab results by patient ID only. If that patient has several admissions and several lab tests, every admission can pair with every lab for that patient. The admission grain is destroyed.
+
+[pause=0.7]
+
+The deeper question is whether a lab belongs to the patient generally, to one admission, or to a more specific encounter. The database design should tell you.
+
+[pause=0.7]
+
+This is why knowing that two tables both contain patient ID is not enough evidence that joining them only on patient ID is analytically correct.
+
+[pause=0.7]
+
+Before adding another table, restate the target grain and ask whether the new table is at the same level. If not, aggregate it, filter it, or use a more specific relationship key.
+
+[pause=1.0]
+
+Slide 29: Guided practice 1
+
+For the first guided practice, we want department-level performance.
+
+[pause=0.7]
+
+The requirement says every department must appear, including departments with no admissions or no staff. That tells us departments should be the preserved population.
+
+[pause=0.7]
+
+The query LEFT JOINs admissions and medical staff to departments. Because both joined tables can have multiple rows per department, the counts use DISTINCT event identifiers to avoid counting combinations as separate admissions or staff members.
+
+[pause=0.7]
+
+Run the query and look for the department with zero activity. It should still appear.
+
+[pause=0.7]
+
+Also inspect average stay days and the specialization list. Notice that the result grain is one row per department because GROUP BY is at the department level.
+
+[pause=0.7]
+
+Use this example to practice reading a longer query by sections: preserved table, first relationship, second relationship, group, and measures.
+
+[pause=1.0]
+
+Slide 30: Guided practice 2
+
+This practice is about explanation, not only execution.
+
+[pause=0.7]
+
+Run the multiplication query again and focus on one patient with multiple admissions, lab results, and prescriptions.
+
+[pause=0.7]
+
+Your task is to explain why joined rows is larger than each underlying event count.
+
+[pause=0.7]
+
+A strong explanation would mention combinations. For one patient, each admission can combine with each lab result and each prescription because all three detail tables are joined independently through patient ID.
+
+[pause=0.7]
+
+After you understand the multiplication, compare this result with the pre-aggregation pattern from the earlier slide.
+
+[pause=0.7]
+
+Do not try to memorize a rule such as always use DISTINCT. Instead, identify the target grain and the cardinality of every relationship. When several one-to-many tables are joined to the same parent, multiplication should be one of the first things you check.
+
+[pause=1.0]
+
+Slide 31: Guided practice 3
+
+For the third guided practice, the business question is: list all patients and show glucose tests when they exist.
+
+[pause=0.7]
+
+The words all patients are the key. They tell us the patient population must remain complete.
+
+[pause=0.7]
+
+Run the query with the glucose condition inside ON. Confirm that all patients are present and that only glucose lab rows can match.
+
+[pause=0.7]
+
+Then think back to the WHERE-trap example. Moving the same test-name condition into WHERE removes patients whose lab columns are NULL, so the population becomes only patients with glucose tests.
+
+[pause=0.7]
+
+Try to explain the difference without using the words because SQL does it that way. Instead, use the concepts of matching and final filtering.
+
+[pause=0.7]
+
+ON limits eligible matches. WHERE filters the joined rows after preservation has already created NULL-extended rows.
+
+[pause=1.0]
+
+Slide 32: Project timeline
+
+This project combines joins with skills from earlier modules.
+
+[pause=0.7]
+
+The common table expression creates a patient timeline by stacking admissions, lab tests, and prescriptions with UNION ALL. Each source is transformed into the same four-column event structure: patient ID, date, event type, and event details.
+
+[pause=0.7]
+
+After that event stream is created, we join it to patients using patient ID so the timeline includes the patient name.
+
+[pause=0.7]
+
+Run the query and inspect one patient across several dates. You should see different event types ordered into a single history.
+
+[pause=0.7]
+
+The important join idea is that we first create a source at a clear grain, one row per event, and then enrich those events with patient data.
+
+[pause=0.7]
+
+This is a useful pattern for audit histories, customer journeys, student activity timelines, and operational event streams.
+
+[pause=1.0]
+
+Slide 33: Project transitions
+
+This project combines join reasoning with a window-function idea from the previous module.
+
+[pause=0.7]
+
+Inside the common table expression, LEAD looks forward within each patient's admissions ordered by admit date. That gives us the next department and next admission date.
+
+[pause=0.7]
+
+The outer query keeps rows where a next department exists and where the department actually changes. Then it groups from-department and to-department to summarize transition counts and average days between admissions.
+
+[pause=0.7]
+
+Run the query and inspect the transitions that appear.
+
+[pause=0.7]
+
+Even though the final step is not a traditional join, the same grain thinking applies. The sequence CTE has one row per admission with information about the following admission. The grouped result then changes the grain to one row per department transition pair.
+
+[pause=0.7]
+
+When combining advanced SQL techniques, keep stating the grain after every major step.
+
+[pause=1.0]
+
+Slide 34: Assessment concepts
+
+Before the coding exercises, check whether you can explain the core ideas in your own words.
+
+[pause=0.7]
+
+First, why can a LEFT JOIN followed by a WHERE condition on the right table remove unmatched left rows? Your explanation should mention NULL-extended values and final filtering.
+
+[pause=0.7]
+
+Second, can you choose the join type from the population rule? Only matched records points toward INNER. Every patient points toward LEFT when patients are on the left. Full reconciliation points toward FULL OUTER.
+
+[pause=0.7]
+
+Third, can you explain row multiplication without calling the extra rows duplicates? Multiple admissions, labs, and prescriptions create combinations when joined at patient ID.
+
+[pause=0.7]
+
+Finally, can you design a one-row-per-patient result without inflated counts? The safe pattern is to summarize each child table to patient grain before joining it to the patient master.
+
+[pause=1.0]
+
+Slide 35: Assessment coding strategy
+
+This slide shows the coding strategy that the final exercises build toward.
+
+[pause=0.7]
+
+The requirement is one row per patient with admission count, lab count, and prescription count. We must also preserve patients with no activity.
+
+[pause=0.7]
+
+The solution first aggregates each child table by patient ID. At that point, each summary has at most one row for each patient.
+
+[pause=0.7]
+
+Then patients is LEFT JOINed to those summaries. Because the patient table is preserved, a patient with no activity remains in the result. COALESCE turns missing counts into zero.
+
+[pause=0.7]
+
+Run the query and verify two types of patients: one with several activities and one with no activity.
+
+[pause=0.7]
+
+This pattern is longer than a direct three-child join, but the reasoning is much cleaner. If the target grain is one patient, make the child sources one patient before joining them.
+
+[pause=1.0]
+
+Slide 36: Exercise 1 INNER JOIN
+
+This is Coding Exercise 1.
+
+[pause=0.7]
+
+Your task is to return patients who have admissions. The output needs patient ID, patient name, admission ID, diagnosis, and department.
+
+[pause=0.7]
+
+Because the question is specifically about patients with matching admissions, think about which join requires a match.
+
+[pause=0.7]
+
+Start with patients as p and admissions as a. Decide what condition connects the two tables. Then select the requested fields and sort the result.
+
+[pause=0.7]
+
+Do not worry about producing one row per patient. The correct grain is one row per matching admission, so patients with more than one admission should appear more than once.
+
+[pause=0.7]
+
+Write the SQL directly in the browser and use Run and Check. If your query runs but does not pass, inspect the columns and row count rather than randomly changing syntax. You can also copy your work into pgAdmin for additional practice.
+
+[pause=1.0]
+
+Slide 37: Exercise 2 LEFT JOIN
+
+Coding Exercise 2 changes the population rule.
+
+[pause=0.7]
+
+This time, every patient must appear, even when no admission exists. That phrase every patient tells you which side must be preserved.
+
+[pause=0.7]
+
+The SELECT list is already started. Complete the join between patients and admissions.
+
+[pause=0.7]
+
+Before running it, predict what the unmatched patient row should look like. The patient ID and name should still have values, while admission ID and diagnosis should be NULL.
+
+[pause=0.7]
+
+After you select Run and Check, scan the output for that unmatched patient. Also notice that patients with multiple admissions still create multiple rows.
+
+[pause=0.7]
+
+The goal is to connect the wording of the requirement with the join type. Do not choose LEFT JOIN only because this is a LEFT JOIN exercise. Choose it because the patient population must remain complete.
+
+[pause=1.0]
+
+Slide 38: Exercise 3 Anti-join
+
+Coding Exercise 3 uses the anti-join pattern.
+
+[pause=0.7]
+
+You need patients who do not have any lab results.
+
+[pause=0.7]
+
+Start by preserving all patients. Then try to match lab rows. For patients with no match, the right-side lab columns will be NULL.
+
+[pause=0.7]
+
+Choose a right-side column that cannot be NULL on a real matched lab row. The primary key, test ID, is a good choice.
+
+[pause=0.7]
+
+Then filter for that key being missing.
+
+[pause=0.7]
+
+Run and Check and inspect how many patients are returned. In this practice database, the expected set is small.
+
+[pause=0.7]
+
+Read your query as a sentence: keep patients, try to match lab results, then keep only the patients for whom no lab result was found.
+
+[pause=0.7]
+
+This pattern is widely useful for data-quality and operational questions about missing relationships.
+
+[pause=1.0]
+
+Slide 39: Exercise 4 ON vs WHERE
+
+Coding Exercise 4 checks whether you understand ON versus WHERE.
+
+[pause=0.7]
+
+The requirement says every patient must remain. At the same time, only glucose lab rows should be allowed to match.
+
+[pause=0.7]
+
+That means the glucose condition should be part of the matching logic.
+
+[pause=0.7]
+
+Complete the ON clause. Do not add a WHERE condition that removes patients without glucose tests.
+
+[pause=0.7]
+
+Before running the query, predict the shape of the result. Every patient ID should appear. Some rows will have a glucose test ID and value. Other patients will have NULL lab fields.
+
+[pause=0.7]
+
+Use Run and Check, then inspect both types of rows. If only patients with glucose tests remain, review where you placed the test-name condition.
+
+[pause=0.7]
+
+This exercise is about preserving the population while restricting optional matches.
+
+[pause=1.0]
+
+Slide 40: Exercise 5 Safe counts
+
+Coding Exercise 5 is the most important cardinality exercise in the assignment.
+
+[pause=0.7]
+
+The required grain is one row per patient. You need three counts: admissions, lab tests, and prescriptions. Patients with no activity must still remain.
+
+[pause=0.7]
+
+Do not directly join all three detail tables and then use COUNT star. That creates row combinations and can inflate the measures.
+
+[pause=0.7]
+
+Instead, summarize each child table by patient ID inside the common table expressions. Each summary should return one row per patient with one count.
+
+[pause=0.7]
+
+Then LEFT JOIN those summaries to patients. Use a missing-value fallback so a patient with no activity shows zero instead of NULL.
+
+[pause=0.7]
+
+Run and Check, then verify that the number of rows equals the number of patients. Also inspect a patient with multiple activities and the patient with no activity.
+
+[pause=1.0]
+
+Slide 41: Exercise 6 Department metrics
+
+The final coding exercise combines preservation, cardinality, and aggregation.
+
+[pause=0.7]
+
+The result must contain one row per department, including departments with zero activity.
+
+[pause=0.7]
+
+Start from departments because that is the population to preserve. LEFT JOIN admissions by department, and LEFT JOIN medical staff by department.
+
+[pause=0.7]
+
+Because a department may have several admissions and several staff members, the combined detail rows can multiply. Use distinct identifiers when counting admissions and staff.
+
+[pause=0.7]
+
+Group by department so the final grain is one department per row.
+
+[pause=0.7]
+
+After Run and Check, look for the department with no activity. It should still appear with zero counts. Then inspect a busy department and make sure its counts represent original admissions and staff members, not joined combinations.
+
+[pause=0.7]
+
+This is a realistic example of why join logic and aggregation logic must be designed together.
+
+[pause=1.0]
+
+Slide 42: Complete Module
+
+This is the final completion page for Module 6.
+
+[pause=0.7]
+
+The module tracks ten knowledge checks and six coding exercises. Before selecting Complete Module, review the counters and make sure they reflect the work you intended to finish.
+
+[pause=0.7]
+
+If an activity is incomplete, the page will list it and let you return to the relevant slide.
+
+[pause=0.7]
+
+When you select Complete Module, the page creates a Canvas submission summary. That summary includes your completion status, knowledge-check answers, and the SQL saved for each coding exercise.
+
+[pause=0.7]
+
+Review the summary before copying it. If the module is incomplete, the page will warn you before you copy the current progress.
+
+[pause=0.7]
+
+Remember that progress is stored locally in this browser. Switching devices, using a private window, or clearing browser storage may not carry the saved work with you.
+
+[pause=0.7]
+
+The purpose of this final step is verification. Check the work before you submit it.
+
+[pause=1.0]
+
+Slide 43: Summary
+
+Let's summarize the major ideas from Module 6.
+
+[pause=0.7]
+
+Start with grain. Decide what one result row should represent before writing a join.
+
+[pause=0.7]
+
+Then choose preservation. INNER JOIN keeps only matches. LEFT and RIGHT preserve one designated side. FULL OUTER JOIN preserves unmatched rows from both sources.
+
+[pause=0.7]
+
+Remember that ON controls matching, while WHERE filters the joined result. This distinction is especially important with outer joins.
+
+[pause=0.7]
+
+Cardinality explains why rows repeat or multiply. One-to-many repetition can be completely correct, but several one-to-many child tables joined together can create combinations that inflate counts.
+
+[pause=0.7]
+
+When your target is one row per patient or one row per department, pre-aggregating child tables is often the clearest solution.
+
+[pause=0.7]
+
+Finally, validate. Compare row counts, distinct keys, unmatched cases, and known examples.
+
+[pause=0.7]
+
+If you keep one habit from this module, let it be this: define the grain, predict the matches, run the join, and verify the result before trusting it.
+
+[pause=1.0]
+
+Slide 44: Next: Subqueries
+
+The next module moves from joins to subqueries.
+
+[pause=0.7]
+
+A join combines row sets directly. A subquery lets one query use the result of another query as part of its logic.
+
+[pause=0.7]
+
+You will see subqueries used for membership questions, existence checks, comparisons with summary values, and intermediate analytical steps.
+
+[pause=0.7]
+
+The join skills from this module still matter. When you decide between a join, a subquery, or a common table expression, you should continue asking about grain, cardinality, and clarity.
+
+[pause=0.7]
+
+Before moving on, make sure you can explain the difference between matching and preservation, and make sure you understand why multiple child tables can multiply rows. Those ideas will continue to help as the SQL becomes more expressive.
+
+[pause=1.0]
