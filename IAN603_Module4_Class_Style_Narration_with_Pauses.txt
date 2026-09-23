@@ -1,0 +1,1137 @@
+Slide 1: Start
+
+Welcome to Module 4, Aggregating Data with PostgreSQL. In the previous module, we worked mainly with individual rows. Here, we move from detail records to summaries that can answer analytical questions.
+
+[pause=0.7]
+
+The important idea is that aggregation is not only about writing COUNT, SUM, or AVG. Before you calculate anything, decide what one result row should represent. That is the grain of the summary.
+
+[pause=0.7]
+
+Throughout this module, you can run the PostgreSQL examples directly in the browser. On code slides, you can also use Copy and paste the same query into the pgAdmin Query Tool for additional practice.
+
+[pause=0.8]
+
+We will build from simple aggregate functions to GROUP BY, WHERE and HAVING, conditional aggregation, subtotals, and window functions. Keep asking the same question: what does one row in my result mean?
+
+[pause=1.0]
+
+Slide 2: Big picture
+
+Module 3 focused on retrieving, filtering, and changing individual rows. Module 4 changes the perspective. Instead of asking which records should I return, we often ask questions such as how many, how much, what is the average, or which group is largest.
+
+[pause=0.7]
+
+A good aggregation starts with the business question. Then we define the output grain, choose the measures, apply row-level filters, apply group-level filters when needed, and finally validate the result.
+
+[pause=0.7]
+
+A simple way to think about it is detail, grain, measure, filter, and validate. If the final summary does not match the meaning of the question, even perfectly valid SQL can produce a misleading answer.
+
+[pause=1.0]
+
+Slide 3: Learning path
+
+Here is the learning path for this module.
+
+[pause=0.7]
+
+We begin with the core aggregate functions: COUNT, SUM, AVG, MIN, and MAX. Then we use GROUP BY to create one summary row for each category or combination of categories.
+
+[pause=0.7]
+
+After that, we separate WHERE from HAVING. WHERE decides which source rows are allowed into the aggregation. HAVING decides which completed groups stay in the final result.
+
+[pause=0.7]
+
+We then extend the same ideas with conditional aggregation, PostgreSQL FILTER, ROLLUP, CUBE, GROUPING SETS, and window functions.
+
+[pause=0.7]
+
+The practice pattern also becomes gradually more independent. First you run complete examples, then change them, then fill in missing pieces, and finally write short analytical queries yourself.
+
+[pause=1.0]
+
+Slide 4: Practice schema
+
+The browser lab uses five small synthetic tables.
+
+[pause=0.7]
+
+The admissions table gives us patient admissions, diagnoses, and admission and discharge times. The sales table gives us products, quantities, prices, categories, and dates. Employees is useful for salary and department examples. Product sales is intentionally small so that subtotals from ROLLUP, CUBE, and GROUPING SETS are easy to inspect. Grades gives us course, semester, grade, and enrollment examples.
+
+[pause=0.8]
+
+These are teaching datasets, so you can experiment freely. The PostgreSQL database runs in the browser and can be reset.
+
+[pause=0.8]
+
+Do not paste real confidential or production data into the browser editor. The goal here is to learn the SQL pattern with safe practice data.
+
+[pause=1.0]
+
+Slide 5: Five-step workflow
+
+Before writing an aggregation query, use this five-step workflow.
+
+[pause=0.7]
+
+First, ask the decision question. What are we trying to learn from the data?
+
+[pause=0.7]
+
+Second, set the grain. Decide what one output row should represent. One diagnosis? One category? One department?
+
+[pause=0.7]
+
+Third, choose the measures. That might be a count, a total, an average, a minimum, or a maximum.
+
+[pause=0.7]
+
+Fourth, decide which rows qualify and which groups qualify. This is where WHERE and HAVING play different roles.
+
+[pause=0.7]
+
+Finally, validate the summary against the detail data.
+
+[pause=0.7]
+
+The most important step is grain. If you cannot describe one result row in a short sentence, do not rush into GROUP BY yet. Clarify the intended summary first.
+
+[pause=1.0]
+
+Slide 6: Summary functions
+
+Aggregate functions turn many input rows into summary values.
+
+[pause=0.7]
+
+COUNT answers how many. SUM adds numeric values. AVG calculates the mean. MIN finds the smallest value, and MAX finds the largest.
+
+[pause=0.7]
+
+If you use an aggregate without GROUP BY, PostgreSQL normally returns one summary row for the entire input set. Once you add GROUP BY, the same aggregate is calculated separately inside each group.
+
+[pause=0.7]
+
+For example, AVG salary without grouping gives one company-wide average. AVG salary grouped by department gives one average for each department.
+
+[pause=0.8]
+
+Before choosing a function, name the measure in plain language. Are you counting records, counting known values, adding revenue, or averaging completed stays? That language helps you choose the correct expression.
+
+[pause=1.0]
+
+Slide 7: COUNT meanings
+
+COUNT can answer different questions, so it is important to choose the right version.
+
+[pause=0.7]
+
+COUNT star counts input rows. It does not care whether individual columns contain missing values.
+
+[pause=0.7]
+
+COUNT of a specific column counts only rows where that expression is not NULL.
+
+[pause=0.7]
+
+COUNT DISTINCT counts unique non-null values.
+
+[pause=0.7]
+
+Now run the example in the browser. Compare the three result columns. The total admission count should include every admission row. The completed-admission count should be smaller because ongoing admissions have no discharge time. The distinct patient count answers a different question again: how many unique patients appear.
+
+[pause=0.8]
+
+If you are using pgAdmin, copy the query into the Query Tool and run the same comparison there. Look at the labels carefully and connect each number to the question it answers.
+
+[pause=1.0]
+
+Slide 8: Aggregate example
+
+The same table can support several aggregate measures in one query.
+
+[pause=0.7]
+
+This example summarizes sales using functions such as SUM, AVG, MIN, and MAX. Before running it, make a prediction. The total quantity and total revenue answer different questions, while the minimum and maximum show the range of individual values.
+
+[pause=0.8]
+
+Run the query in the browser and inspect each result column. Notice that PostgreSQL can calculate all of these measures from the same set of source rows.
+
+[pause=0.8]
+
+The important idea is not to add every aggregate function just because you can. Choose measures that support the analytical question. A decision-maker usually needs a small set of clearly named metrics rather than every possible summary.
+
+[pause=1.0]
+
+Slide 9: NULL and averages
+
+NULL values require special attention in aggregation.
+
+[pause=0.7]
+
+In the admissions table, an ongoing admission has no discharge time yet. That means we cannot calculate a completed length of stay for that row.
+
+[pause=0.7]
+
+AVG ignores NULL expressions rather than treating them as zero. That behavior is useful here because an unfinished stay is not a zero-day stay.
+
+[pause=0.7]
+
+Run the example and look at the completed length-of-stay calculation. Think about which admissions actually contribute to the average.
+
+[pause=0.8]
+
+Whenever you report an average, also think about the sample size. An average based on eight completed admissions means something different from an average based on all ten admission rows. Missing values can change which records are included in the measure.
+
+[pause=1.0]
+
+Slide 10: GROUP BY grain
+
+GROUP BY defines the grain of a summary result.
+
+[pause=0.7]
+
+With no GROUP BY, an aggregate can summarize the whole table into one row. If we group by diagnosis, the output becomes one row per diagnosis. If we group by patient and diagnosis, the result becomes more detailed: one row per patient-and-diagnosis combination.
+
+[pause=0.7]
+
+This is why adding grouping columns usually increases the number of output rows.
+
+[pause=0.7]
+
+A beginner-friendly rule is that selected columns that are not inside aggregate functions generally need to appear in GROUP BY.
+
+[pause=0.7]
+
+But the deeper rule is about meaning. Every selected non-aggregate value should be well-defined for the group represented by that output row.
+
+[pause=0.7]
+
+Before writing GROUP BY, finish the sentence: one row in my result represents one...
+
+[pause=1.0]
+
+Slide 11: GROUP BY example
+
+Now let's create a simple grouped summary.
+
+[pause=0.7]
+
+The goal is one row per diagnosis, with a count of admissions inside each diagnosis.
+
+[pause=0.7]
+
+The diagnosis column defines the groups, and COUNT calculates a measure within each group.
+
+[pause=0.7]
+
+Before running the query, predict which diagnosis will have the largest count. Then run it in the browser and inspect the result.
+
+[pause=0.8]
+
+Notice that the original admission rows have been collapsed into a smaller summary table. We no longer see individual admission IDs because the output grain is diagnosis.
+
+[pause=0.7]
+
+If you copy this query into pgAdmin, try adding ORDER BY admission count descending. Sorting does not change the grouping. It simply makes the largest groups easier to identify.
+
+[pause=1.0]
+
+Slide 12: Multi-column grouping
+
+Adding more grouping columns makes the summary more detailed.
+
+[pause=0.7]
+
+Here we group by patient and diagnosis together. One output row now represents one patient-and-diagnosis combination.
+
+[pause=0.7]
+
+Run the example and compare it with the previous one-row-per-diagnosis query. You should see more rows because the grain is more specific.
+
+[pause=0.8]
+
+This is an important design choice. If the question asks how many admissions each diagnosis has overall, patient ID does not belong in the grouping. If the question asks how many admissions each patient has for each diagnosis, then both columns are required.
+
+[pause=0.7]
+
+When a grouped query returns too many or too few rows, inspect the GROUP BY list first and restate the intended grain in plain language.
+
+[pause=1.0]
+
+Slide 13: Useful grouping error
+
+This example is intentionally incorrect, and the error is useful.
+
+[pause=0.8]
+
+The query groups rows only by diagnosis but also tries to select subject ID directly. PostgreSQL asks an important question: which subject ID should represent the entire diagnosis group?
+
+[pause=0.7]
+
+There is no single correct subject ID for a group that may contain several patients.
+
+[pause=0.7]
+
+Run this example and read the error message. PostgreSQL is protecting you from an ambiguous result.
+
+[pause=0.8]
+
+To fix a grouped query, every selected expression needs a clear role. It should either define the group, such as diagnosis, or summarize the group, such as COUNT or AVG.
+
+[pause=0.7]
+
+Do not treat grouping errors as obstacles. They often reveal that the result grain has not been defined clearly enough.
+
+[pause=1.0]
+
+Slide 14: WHERE vs HAVING
+
+WHERE and HAVING both filter, but they operate at different stages.
+
+[pause=0.7]
+
+WHERE filters individual source rows before grouping happens. For example, keeping only sales where price is at least twenty-five dollars removes rows before the category totals are calculated.
+
+[pause=0.8]
+
+HAVING filters completed groups after aggregation. For example, keeping categories whose total quantity is greater than ten requires the grouped total to exist first.
+
+[pause=0.8]
+
+A simple test is to ask whether the condition refers to an individual row or to a group measure.
+
+[pause=0.7]
+
+If it is a row condition, think WHERE. If it is a condition on COUNT, SUM, AVG, or another grouped measure, think HAVING.
+
+[pause=0.7]
+
+Keeping these roles separate makes aggregation queries much easier to reason about.
+
+[pause=1.0]
+
+Slide 15: Complete aggregation pattern
+
+A complete aggregation query has a natural logical flow.
+
+[pause=0.7]
+
+First, FROM identifies the source. WHERE filters individual rows. GROUP BY forms the groups. HAVING removes groups that do not meet an aggregate condition. SELECT defines the values that appear in the result, and ORDER BY sorts the final rows.
+
+[pause=0.7]
+
+The written SQL order is familiar, but thinking about the logical stages helps explain why certain expressions are valid in one clause and not another.
+
+[pause=0.7]
+
+There is also a practical efficiency lesson here. If a condition can be applied to individual source rows, put it in WHERE so fewer rows reach the grouping stage.
+
+[pause=0.7]
+
+Before running a long summary query, read it as a pipeline: source rows, row filter, groups, group filter, output, sort.
+
+[pause=1.0]
+
+Slide 16: WHERE HAVING example
+
+This example combines WHERE, GROUP BY, and HAVING in one query.
+
+[pause=0.8]
+
+The row-level rule keeps sales whose price is at least twenty-five dollars. Those qualifying rows are then grouped by category. We calculate total quantity and total revenue for each category. Finally, HAVING keeps only groups whose total quantity is above the required threshold.
+
+[pause=0.7]
+
+Before running it, predict whether every category will remain. Then run the query and compare the result.
+
+[pause=0.8]
+
+Look carefully at the difference between the price condition and the quantity condition. Price belongs to each source row, so it is checked in WHERE. Total quantity exists only after grouping, so it is checked in HAVING.
+
+[pause=0.7]
+
+This is the full aggregation pattern you will use frequently in real analytical work.
+
+[pause=1.0]
+
+Slide 17: Conditional aggregation
+
+Conditional aggregation lets one grouped query calculate several related metrics from the same input rows.
+
+[pause=0.7]
+
+Suppose we want separate counts for pneumonia and fracture admissions for each patient. We could run separate queries, but conditional aggregation keeps the measures together in one result.
+
+[pause=0.8]
+
+There are two common patterns in this module.
+
+[pause=0.7]
+
+CASE is widely portable and can convert a condition into a value that an aggregate can summarize.
+
+[pause=0.7]
+
+PostgreSQL FILTER attaches a condition directly to an aggregate and is often easier to read when each measure has its own condition.
+
+[pause=0.7]
+
+The important idea is that the group stays the same while different subsets of rows contribute to different measures.
+
+[pause=1.0]
+
+Slide 18: CASE example
+
+This example uses CASE inside an aggregate.
+
+[pause=0.8]
+
+For each admission, the CASE expression asks whether the diagnosis matches a condition. A matching row contributes a value such as one, and a non-matching row contributes zero. SUM then adds those contributions inside each patient group.
+
+[pause=0.7]
+
+Run the query and inspect the separate pneumonia and fracture counts.
+
+[pause=0.8]
+
+Before running it, choose one patient from the data and predict the two counts. Then compare your prediction with the result.
+
+[pause=0.8]
+
+This pattern is flexible because CASE can handle more than simple equality. You can build conditions based on ranges, multiple columns, or more complex business rules.
+
+[pause=0.7]
+
+When using CASE for counting, make sure the values you return are appropriate for the aggregate you apply.
+
+[pause=1.0]
+
+Slide 19: FILTER example
+
+PostgreSQL FILTER gives us another way to calculate conditional measures.
+
+[pause=0.7]
+
+Instead of placing a CASE expression inside COUNT, we write the aggregate and then specify which rows are allowed to contribute to that aggregate.
+
+[pause=0.7]
+
+Run the example and compare its output with the previous CASE version. The counts should express the same analytical idea.
+
+[pause=0.8]
+
+FILTER can be especially readable when a SELECT list contains several independent conditional counts or sums.
+
+[pause=0.7]
+
+If you are practicing in pgAdmin, copy both versions and compare them side by side. The goal is not to decide that one is always better. The goal is to recognize both patterns and choose the one that is clear and appropriate for the SQL system you are using.
+
+[pause=1.0]
+
+Slide 20: CASE vs FILTER
+
+CASE and FILTER can express similar conditional aggregation logic.
+
+[pause=0.7]
+
+CASE is generally more portable because many SQL systems support conditional expressions inside aggregates.
+
+[pause=0.7]
+
+FILTER is concise and readable in PostgreSQL, especially when several measures each have their own condition.
+
+[pause=0.7]
+
+For this course, you should understand both. If you know the query will run in PostgreSQL, FILTER can be a clean choice. If you expect the SQL to move between different platforms, SUM with CASE is often safer.
+
+[pause=0.8]
+
+Whichever style you choose, validate the measure using a small known example. Conditional metrics can look correct while using slightly different conditions, so checking a few rows manually is still important.
+
+[pause=1.0]
+
+Slide 21: Advanced grouping
+
+So far, GROUP BY has produced one summary grain at a time. Advanced grouping features let one query produce several summary levels.
+
+[pause=0.7]
+
+GROUPING SETS lets you explicitly list the summary combinations you want.
+
+[pause=0.7]
+
+ROLLUP is useful for hierarchical reports, such as category, then product, then a grand total.
+
+[pause=0.7]
+
+CUBE generates every grouping combination of the listed dimensions.
+
+[pause=0.7]
+
+These features reduce the need to write several separate aggregation queries and combine them manually.
+
+[pause=0.7]
+
+The tradeoff is that the output contains different grains in the same result. That means you must understand what each row represents and how subtotal placeholders are displayed.
+
+[pause=0.7]
+
+We will use a small product-sales table so you can see those levels clearly.
+
+[pause=1.0]
+
+Slide 22: Grouping comparison
+
+This comparison is worth learning conceptually.
+
+[pause=0.7]
+
+GROUPING SETS produces only the grouping combinations you request.
+
+[pause=0.7]
+
+ROLLUP of A and B produces detail at A and B, a subtotal at A, and a grand total. It follows a hierarchy.
+
+[pause=0.7]
+
+CUBE of A and B produces detail, subtotals by A, subtotals by B, and the grand total. It generates every combination.
+
+[pause=0.7]
+
+A simple way to choose is to ask what report levels you need.
+
+[pause=0.7]
+
+If you need a hierarchy, ROLLUP is often a natural fit. If you need all cross-dimensional totals, consider CUBE. If you want only specific levels, GROUPING SETS gives you precise control.
+
+[pause=0.7]
+
+The SQL syntax is different, but the same grain reasoning still applies to every row produced.
+
+[pause=1.0]
+
+Slide 23: ROLLUP
+
+ROLLUP creates hierarchical subtotals.
+
+[pause=0.7]
+
+In this example, the hierarchy is category, then product, followed by a grand total.
+
+[pause=0.8]
+
+Before running the query, predict the types of rows you expect: product-level detail within each category, a category subtotal, and one final total.
+
+[pause=0.8]
+
+Run the query and inspect where grouped columns become NULL. Those NULL values may indicate that the column has been rolled up to a higher summary level.
+
+[pause=0.8]
+
+Do not interpret every NULL in a subtotal report as missing source data. In advanced grouping output, NULL can be a structural placeholder.
+
+[pause=0.7]
+
+This is why later we will use GROUPING to distinguish a subtotal placeholder from a real NULL value in the source.
+
+[pause=1.0]
+
+Slide 24: CUBE
+
+CUBE expands the idea further by producing every grouping combination.
+
+[pause=0.7]
+
+With category and product, that includes category-and-product detail, category totals, product totals across categories, and the grand total.
+
+[pause=0.7]
+
+Run the example and compare the number and type of rows with the ROLLUP result.
+
+[pause=0.8]
+
+The key difference is that ROLLUP follows a hierarchy, while CUBE creates totals for every dimension combination.
+
+[pause=0.7]
+
+CUBE can be useful for exploratory summary tables, but the number of combinations grows quickly when you add more dimensions.
+
+[pause=0.7]
+
+Before using CUBE in a larger dataset, think about how many grouping combinations you are requesting and whether each one supports a real analytical need.
+
+[pause=1.0]
+
+Slide 25: GROUPING SETS
+
+GROUPING SETS gives you explicit control over which summary levels are returned.
+
+[pause=0.7]
+
+Instead of generating a fixed hierarchy or every possible combination, you list the groupings you actually need.
+
+[pause=0.7]
+
+Run this example and look at the report levels. Compare them with ROLLUP and CUBE.
+
+[pause=0.8]
+
+This feature is useful when a report needs only selected totals, such as category totals and a grand total, but not every product subtotal.
+
+[pause=0.7]
+
+The output still contains rows at different grains, so label or interpret those rows carefully.
+
+[pause=0.7]
+
+Think of GROUPING SETS as a way to ask PostgreSQL for several GROUP BY queries at once, while keeping the requested summary levels under your control.
+
+[pause=1.0]
+
+Slide 26: GROUPING placeholders
+
+Advanced grouping introduces an important NULL question.
+
+[pause=0.7]
+
+Subtotal and grand-total rows often show NULL in grouping columns because that dimension has been rolled up. But source data can also contain genuine NULL values.
+
+[pause=0.7]
+
+GROUPING helps us distinguish those two situations.
+
+[pause=0.7]
+
+A grouping code tells us which expressions are participating in the current row and which have been summarized away.
+
+[pause=0.7]
+
+The exact code is less important than the principle: do not label every NULL with COALESCE before you know why it is NULL.
+
+[pause=0.7]
+
+In a production report, using GROUPING can help you label rows accurately as detail, subtotal, or grand total without confusing structural placeholders with missing data.
+
+[pause=1.0]
+
+Slide 27: Window functions
+
+Window functions solve a different analytical problem from GROUP BY.
+
+[pause=0.7]
+
+GROUP BY collapses many input rows into one row per group.
+
+[pause=0.7]
+
+A window function usually keeps the original detail rows and adds analytical context beside them.
+
+[pause=0.7]
+
+For example, we can keep every employee row while adding a department rank or department average.
+
+[pause=0.8]
+
+PARTITION BY defines groups for the window calculation, while ORDER BY inside OVER can define ranking or running sequence.
+
+[pause=0.8]
+
+This is powerful because you do not have to choose between detail and summary. You can display both in the same result.
+
+[pause=0.7]
+
+When deciding between GROUP BY and a window function, ask whether you want to collapse rows or keep them visible.
+
+[pause=1.0]
+
+Slide 28: Window rank
+
+Now let's rank employees within each department.
+
+[pause=0.7]
+
+The RANK window function calculates a position inside each department. PARTITION BY restarts the ranking for each department, and ORDER BY salary descending makes the highest salary rank first.
+
+[pause=0.7]
+
+Run the query and inspect the department boundaries. You should see rank one appear separately in each department.
+
+[pause=0.8]
+
+Notice that every employee row remains visible. That is the major difference from a grouped salary report.
+
+[pause=0.7]
+
+If two employees have the same salary, RANK can produce ties and skip the next rank number. That behavior is useful to remember when comparing RANK with other ranking functions such as DENSE_RANK or ROW_NUMBER.
+
+[pause=1.0]
+
+Slide 29: Window averages
+
+Window averages let us show detail and context together.
+
+[pause=0.7]
+
+In this example, every employee row remains, while additional columns show the average salary for that employee's department and the average salary for the entire company.
+
+[pause=0.8]
+
+Run the query and look at two employees from the same department. Their department-average value should be the same, because the window partition is the same, while their individual salaries remain different.
+
+[pause=0.8]
+
+Then compare those department averages with the overall company average.
+
+[pause=0.7]
+
+This kind of result is useful when you want to evaluate each individual row relative to a peer group or to the entire dataset without losing the original detail.
+
+[pause=1.0]
+
+Slide 30: Running totals
+
+A running total is another common window-function pattern.
+
+[pause=0.8]
+
+Instead of collapsing sales by date, we can keep each date or row in sequence while showing the cumulative revenue up to that point.
+
+[pause=0.7]
+
+The ORDER BY inside the window defines the progression of the calculation.
+
+[pause=0.7]
+
+Run the example and watch the running total increase as the dates move forward.
+
+[pause=0.8]
+
+This pattern appears in financial balances, cumulative enrollment, inventory movement, project progress, and many other time-ordered analyses.
+
+[pause=0.7]
+
+When you build a running total, make sure the ordering is deterministic. If multiple rows can share the same date, think about whether you need an additional ordering column to define a stable sequence.
+
+[pause=1.0]
+
+Slide 31: Execution order
+
+Logical execution order explains many SQL rules that can otherwise feel arbitrary.
+
+[pause=0.7]
+
+PostgreSQL conceptually begins with FROM and JOIN, then applies WHERE, forms groups with GROUP BY, filters groups with HAVING, evaluates SELECT expressions, performs window calculations, and then applies ORDER BY and LIMIT.
+
+[pause=0.7]
+
+This is why a same-level aggregate is not available in WHERE. The groups do not exist yet at that stage.
+
+[pause=0.7]
+
+HAVING can use aggregate expressions because grouping has already happened.
+
+[pause=0.7]
+
+Window functions are evaluated after grouped filtering, which is why they can add analytical context to the rows that remain.
+
+[pause=0.7]
+
+You do not need to memorize every internal implementation detail. Use this logical order as a reasoning model for understanding which clause can see which values.
+
+[pause=1.0]
+
+Slide 32: Portability
+
+The analytical reasoning in this module transfers across SQL systems, but some syntax changes.
+
+[pause=0.7]
+
+PostgreSQL can subtract timestamps directly in ways that other databases may express with functions such as DATEDIFF.
+
+[pause=0.7]
+
+PostgreSQL FILTER is concise for conditional aggregation, while SUM with CASE is supported more broadly.
+
+[pause=0.7]
+
+ROLLUP, CUBE, GROUPING SETS, and window functions are widely available in modern databases, but exact syntax and supported options can vary.
+
+[pause=0.7]
+
+When moving a query between systems, preserve the reasoning first: filter source rows, define the grain, calculate measures, filter groups, and sort the report.
+
+[pause=0.7]
+
+Then adapt the engine-specific syntax.
+
+[pause=0.7]
+
+That approach is much safer than copying a PostgreSQL query and assuming every database interprets it exactly the same way.
+
+[pause=1.0]
+
+Slide 33: Guided practice 1
+
+For this guided practice, explain the three COUNT patterns without running anything first.
+
+[pause=0.8]
+
+COUNT star answers how many input rows are present.
+
+[pause=0.7]
+
+COUNT of a column answers how many non-null values that expression contains.
+
+[pause=0.7]
+
+COUNT DISTINCT answers how many unique non-null values occur.
+
+[pause=0.7]
+
+Try to create a small mental example with three rows, including one NULL and one repeated value. Predict what each COUNT would return.
+
+[pause=0.8]
+
+Then compare your explanation with the answer shown on the slide.
+
+[pause=0.7]
+
+This type of verbal reasoning is important. If you can explain the measure before you write the SQL, you are less likely to choose a count that answers the wrong question.
+
+[pause=1.0]
+
+Slide 34: Guided practice 2
+
+Now build a grouped query for diagnoses with more than one admission.
+
+[pause=0.7]
+
+Before touching the editor, state the grain: one row per diagnosis.
+
+[pause=0.7]
+
+Then choose the measure: admission count.
+
+[pause=0.7]
+
+Because the condition is based on the completed count, decide whether it belongs in WHERE or HAVING.
+
+[pause=0.7]
+
+Use the starter code in the browser, complete the missing pieces, and run it. Check that only diagnoses with more than one admission remain.
+
+[pause=0.8]
+
+If you are practicing in pgAdmin, you can copy your completed query into the Query Tool and compare the output.
+
+[pause=0.7]
+
+Focus on the sequence: group first, calculate the count, then filter the groups using HAVING.
+
+[pause=1.0]
+
+Slide 35: Guided practice 3
+
+This practice asks you to keep every employee row while adding department and company averages.
+
+[pause=0.7]
+
+That wording tells us not to collapse the result with GROUP BY.
+
+[pause=0.7]
+
+Instead, use window functions. One average should use a department partition. The other should use the full set of remaining rows.
+
+[pause=0.7]
+
+Run the starter example after completing it and inspect several employees from the same department. Their department average should match, while their individual salary values remain different.
+
+[pause=0.8]
+
+Then compare that with the company-wide average.
+
+[pause=0.7]
+
+This is a useful test for deciding between GROUP BY and windows: if the original detail rows must remain visible, a window function is often the better analytical tool.
+
+[pause=1.0]
+
+Slide 36: Assessment tasks
+
+These assessment tasks bring the main ideas together.
+
+[pause=0.7]
+
+One task asks for sales revenue and unique products by category with a group threshold. Another asks for Fall twenty twenty-four course averages but only for courses with enough students. A third asks for separate diagnosis counts by patient. The final task asks for employee detail with department and company averages.
+
+[pause=0.7]
+
+Before writing any query, identify the grain and the type of calculation.
+
+[pause=0.7]
+
+Ask whether you need grouped rows or detail rows, whether the filter is on source rows or completed groups, and whether conditional aggregation or a window function fits the requirement.
+
+[pause=0.7]
+
+The coding exercises that follow break these ideas into smaller pieces so you can practice them independently.
+
+[pause=1.0]
+
+Slide 37: Module challenge
+
+The module challenge asks you to build one analytical query for a decision-maker.
+
+[pause=0.7]
+
+The question is which sales categories generated meaningful revenue and how much each qualifying category contributed.
+
+[pause=0.7]
+
+Start by defining one output row as one category. Then choose at least two useful aggregate measures.
+
+[pause=0.7]
+
+The challenge also requires a row-level condition in WHERE and a group-level condition in HAVING. Make sure you can explain why each condition belongs where you placed it.
+
+[pause=0.7]
+
+Finally, sort the result so the most important categories are easy to see.
+
+[pause=0.7]
+
+Do not focus only on producing SQL that runs. Write two short sentences explaining what the result means and how the row filter differs from the group filter. That explanation is part of the analytical work.
+
+[pause=1.0]
+
+Slide 38: Exercise 1 COUNT
+
+This is Coding Exercise 1.
+
+[pause=0.7]
+
+You need one row containing three different counts from admissions: all admissions, completed admissions, and unique patients.
+
+[pause=0.7]
+
+Think carefully about which COUNT expression answers each question. One measure should count every row. One should count only known discharge times. One should count distinct patient identifiers.
+
+[pause=0.7]
+
+Complete the SQL directly in the browser and select Run and Check.
+
+[pause=0.8]
+
+Before you run it, predict which of the three numbers should be largest and which should be smallest.
+
+[pause=0.8]
+
+If the SQL runs but does not pass, inspect the column aliases and the meaning of each count. Do not replace the query with a memorized answer. Use the definitions from the COUNT section to correct your work.
+
+[pause=1.0]
+
+Slide 39: Exercise 2 GROUP BY
+
+Coding Exercise 2 asks for one row per diagnosis with an admission count.
+
+[pause=0.7]
+
+The phrase one row per diagnosis tells you the GROUP BY grain.
+
+[pause=0.7]
+
+Add the aggregate count, group by diagnosis, and sort so the largest count appears first.
+
+[pause=0.7]
+
+Use Run and Check when you are ready.
+
+[pause=0.8]
+
+After the query runs, inspect the first row. Ask whether the diagnosis with the largest number of admissions is at the top.
+
+[pause=0.8]
+
+If your result has one row per admission instead of one row per diagnosis, revisit the grouping. If PostgreSQL reports a grouping error, check whether every selected non-aggregate column is represented correctly.
+
+[pause=0.7]
+
+The goal is to connect the written requirement directly to the GROUP BY list.
+
+[pause=1.0]
+
+Slide 40: Exercise 3 WHERE HAVING
+
+Coding Exercise 3 combines row filtering and group filtering.
+
+[pause=0.7]
+
+Use sales. First, keep only source rows where price is at least twenty-five. Then group the remaining rows by category.
+
+[pause=0.7]
+
+Calculate total quantity and total revenue for each category.
+
+[pause=0.7]
+
+After those groups exist, keep only categories whose total quantity is greater than ten.
+
+[pause=0.7]
+
+Finally, sort with the highest revenue first.
+
+[pause=0.7]
+
+Think about the order conceptually before you write the clauses. The price condition belongs to individual rows. The total-quantity condition belongs to groups.
+
+[pause=0.7]
+
+Run and Check when you are ready. If the result does not match, verify the placement of WHERE and HAVING before changing the aggregate expressions.
+
+[pause=1.0]
+
+Slide 41: Exercise 4 Conditional
+
+Coding Exercise 4 asks for separate pneumonia and fracture counts for each patient using PostgreSQL FILTER.
+
+[pause=0.7]
+
+The output grain is one row per subject ID.
+
+[pause=0.7]
+
+You need two count expressions, and each one should have its own FILTER condition.
+
+[pause=0.7]
+
+Do not provide the full solution immediately from memory. Build one conditional count first, then create the second using the same pattern with a different diagnosis.
+
+[pause=0.7]
+
+Run and Check, and inspect a patient who has both types of admissions if one exists.
+
+[pause=0.8]
+
+If you are practicing in pgAdmin, copy the query after it works and compare the FILTER version with how you might write the same logic using SUM and CASE.
+
+[pause=1.0]
+
+Slide 42: Exercise 5 Window
+
+Coding Exercise 5 keeps every employee row and adds a salary rank within each department.
+
+[pause=0.7]
+
+Because the detail rows must remain, do not collapse the table with GROUP BY.
+
+[pause=0.7]
+
+Use a ranking window function. The partition should separate departments, and the ordering should place the highest salary first.
+
+[pause=0.7]
+
+Run and Check, then scan each department. The highest-paid employee in each department should have rank one.
+
+[pause=0.8]
+
+If several departments all have a rank-one employee, that is correct. The ranking restarts because of the partition.
+
+[pause=0.7]
+
+This exercise is testing whether you can recognize when analytical context belongs in a window function rather than in a grouped summary.
+
+[pause=1.0]
+
+Slide 43: Exercise 6 Grades
+
+The final coding exercise combines WHERE, GROUP BY, HAVING, and AVG.
+
+[pause=0.7]
+
+Use only Fall twenty twenty-four rows. That semester condition applies to source rows, so think about WHERE.
+
+[pause=0.7]
+
+Create one group per course. Calculate the average grade and enrollment.
+
+[pause=0.7]
+
+Then keep only courses with at least fifty students. Because enrollment is a grouped count, that threshold belongs after grouping.
+
+[pause=0.7]
+
+Sort with the highest average first.
+
+[pause=0.7]
+
+Run and Check when your query is ready.
+
+[pause=0.8]
+
+If a course with fewer than fifty students still appears, inspect the HAVING condition. If Spring rows affect the average, inspect the WHERE condition. Use the meaning of each clause to debug the result.
+
+[pause=1.0]
+
+Slide 44: Complete Module
+
+This is the final completion page for Module 4.
+
+[pause=0.7]
+
+The page tracks ten knowledge checks and six coding exercises. Review the counters before selecting Complete Module.
+
+[pause=0.7]
+
+If something is incomplete, the page lists the missing activity and lets you return to the relevant slide.
+
+[pause=0.7]
+
+When you select Complete Module, the browser creates an Assignment 4 submission summary containing your completion status, knowledge-check answers, and the SQL saved for each coding exercise.
+
+[pause=0.7]
+
+Review that report before copying it to Canvas. If the module is incomplete, you will be asked to confirm before copying the current progress.
+
+[pause=0.7]
+
+Your progress is stored locally in this browser, so changing devices, using a private window, or clearing browser storage may remove the saved state.
+
+[pause=1.0]
+
+Slide 45: Summary
+
+Let's close Module 4 by connecting the main ideas.
+
+[pause=0.7]
+
+Start with grain. Decide what one output row should represent before choosing GROUP BY columns.
+
+[pause=0.7]
+
+Remember that NULL affects aggregate functions. COUNT star and COUNT of a column answer different questions, and AVG ignores NULL expressions.
+
+[pause=0.7]
+
+Use WHERE for source-row conditions and HAVING for completed group conditions.
+
+[pause=0.7]
+
+Conditional aggregation lets one group produce several measures. CASE is portable, while PostgreSQL FILTER is concise.
+
+[pause=0.7]
+
+ROLLUP, CUBE, and GROUPING SETS let one query produce multiple summary grains, so interpret subtotal rows carefully.
+
+[pause=0.7]
+
+Window functions keep detail rows while adding rank, averages, running totals, and other analytical context.
+
+[pause=0.8]
+
+The habit to carry forward is simple: define the question, define the grain, calculate the measure, filter at the correct stage, and validate the result.
+
+[pause=1.0]
