@@ -1,0 +1,54 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:03.761
+A join should be validated before its result is used
+for reporting
+
+00:00:03.774 --> 00:00:09.579
+or analysis Start with row counts How many rows
+
+00:00:09.605 --> 00:00:12.540
+were in each input and how many rows are in the
+output
+
+00:00:14.271 --> 00:00:18.629
+Then count distinct keys If the final grain should
+be one row
+
+00:00:18.642 --> 00:00:24.221
+per patient compare total rows with distinct patient
+IDs If those numbers
+
+00:00:24.247 --> 00:00:30.232
+differ investigate why Inspect keys with unusually
+many matches
+
+00:00:31.169 --> 00:00:35.025
+A patient with many admissions or labs is useful for
+understanding whether
+
+00:00:35.038 --> 00:00:40.657
+multiplication is expected Also spot-check at least
+two known cases
+
+00:00:40.920 --> 00:00:44.539
+one entity with multiple related rows and one entity
+with no related
+
+00:00:44.565 --> 00:00:50.437
+row Finally write the grain sentence For example
+
+00:00:50.687 --> 00:00:55.950
+one row represents one patient with summarized
+activity counts If the query
+
+00:00:55.976 --> 00:00:59.634
+output cannot be explained with a clear grain
+sentence the join logic
+
+00:00:59.647 --> 00:01:04.755
+may still be ambiguous These checks are simple but
+they catch a
+
+00:01:04.781 --> 00:01:06.886
+large share of real-world join errors

@@ -1,0 +1,52 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:04.497
+An anti-join pattern answers a very useful question
+which left-side rows have
+
+00:00:04.511 --> 00:00:09.576
+no related record We begin with a LEFT JOIN because
+we want
+
+00:00:09.589 --> 00:00:14.421
+to preserve every patient When a patient has no lab
+result columns
+
+00:00:14.447 --> 00:00:18.723
+from lab results are NULL We then filter for a
+right-side key
+
+00:00:18.894 --> 00:00:24.527
+test ID being NULL Run the query and inspect the
+result
+
+00:00:25.438 --> 00:00:28.885
+In this dataset the returned patient should be
+someone who has no
+
+00:00:28.912 --> 00:00:33.697
+lab result at all The choice of column in the NULL
+test
+
+00:00:33.710 --> 00:00:37.845
+matters A primary key such as test ID is a good
+choice
+
+00:00:37.858 --> 00:00:41.437
+because a matched lab row cannot legitimately have a
+NULL primary key
+
+00:00:43.179 --> 00:00:46.679
+Read the logic in plain English keep all patients
+try to match
+
+00:00:46.705 --> 00:00:49.863
+lab rows then keep only the patients for whom no lab
+row
+
+00:00:49.876 --> 00:00:55.391
+matched This same pattern can find customers with no
+orders students
+
+00:00:55.417 --> 00:00:58.035
+with no submissions or products with no sales

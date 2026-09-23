@@ -1,0 +1,55 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:05.543
+Now we combine several tables in one query The first
+join moves
+
+00:00:05.569 --> 00:00:10.585
+from patients to admissions using patient ID Because
+the question is about
+
+00:00:10.611 --> 00:00:16.168
+admission detail an INNER JOIN is reasonable The
+second join moves
+
+00:00:16.194 --> 00:00:20.115
+from each admission to the attending staff member
+using attending staff ID
+
+00:00:21.052 --> 00:00:23.999
+We use LEFT JOIN so an admission can remain even if
+the
+
+00:00:24.026 --> 00:00:30.430
+staff reference is missing Run the query and inspect
+the path Each
+
+00:00:30.443 --> 00:00:37.042
+result row represents an admission enriched with
+patient and clinician information This
+
+00:00:37.069 --> 00:00:41.187
+is a good example of joining through documented
+relationships rather than connecting
+
+00:00:41.213 --> 00:00:46.992
+tables simply because they share some
+similar-looking column When a query becomes
+
+00:00:47.018 --> 00:00:52.166
+longer draw or state the path before writing SQL
+Patient to admission
+
+00:00:53.074 --> 00:00:58.060
+Admission to staff That sequence makes the role of
+each join easier
+
+00:00:58.087 --> 00:01:03.610
+to verify Also keep checking the grain Adding
+
+00:01:03.636 --> 00:01:07.320
+the staff table should not create extra rows because
+one attending staff
+
+00:01:07.347 --> 00:01:09.584
+ID points to at most one staff member

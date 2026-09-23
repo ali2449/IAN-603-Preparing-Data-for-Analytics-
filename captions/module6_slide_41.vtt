@@ -1,0 +1,48 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:06.886
+The final coding exercise combines preservation
+cardinality and aggregation The
+
+00:00:06.899 --> 00:00:11.755
+result must contain one row per department including
+departments with zero activity
+
+00:00:13.503 --> 00:00:18.795
+Start from departments because that is the
+population to preserve LEFT JOIN
+
+00:00:18.821 --> 00:00:24.745
+admissions by department and LEFT JOIN medical staff
+by department Because
+
+00:00:24.771 --> 00:00:28.784
+a department may have several admissions and several
+staff members the combined
+
+00:00:28.811 --> 00:00:34.326
+detail rows can multiply Use distinct identifiers
+when counting admissions and
+
+00:00:34.353 --> 00:00:39.872
+staff Group by department so the final grain is one
+department
+
+00:00:39.898 --> 00:00:45.075
+per row After Run and Check look for the department
+with no
+
+00:00:45.088 --> 00:00:50.683
+activity It should still appear with zero counts
+Then inspect a busy
+
+00:00:50.709 --> 00:00:54.775
+department and make sure its counts represent
+original admissions and staff members
+
+00:00:54.999 --> 00:01:00.910
+not joined combinations This is a realistic example
+of why join logic
+
+00:01:00.936 --> 00:01:03.515
+and aggregation logic must be designed together

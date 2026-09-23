@@ -1,0 +1,49 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:03.616
+This self join uses admissions twice so we can
+compare an earlier
+
+00:00:03.642 --> 00:00:09.154
+encounter with a later encounter for the same
+patient The patient IDs
+
+00:00:09.180 --> 00:00:13.748
+must match We also require the first admission ID to
+be lower
+
+00:00:13.775 --> 00:00:16.419
+than the second so the pair has a direction and we
+avoid
+
+00:00:16.446 --> 00:00:22.155
+reverse duplicates After joining the two admission
+aliases we join
+
+00:00:22.168 --> 00:00:26.473
+patients to retrieve the patient name The WHERE
+clause keeps pairs where
+
+00:00:26.487 --> 00:00:29.881
+the first admission has a discharge date and the
+later admission begins
+
+00:00:29.895 --> 00:00:35.346
+between one and ninety days afterward Run the query
+and inspect the
+
+00:00:35.359 --> 00:00:40.893
+days-between calculation This is a good example of
+why aliases
+
+00:00:40.919 --> 00:00:45.514
+are more than a formatting convenience The aliases
+give the two roles
+
+00:00:45.527 --> 00:00:51.344
+clear meanings earlier admission and later admission
+When you build self joins
+
+00:00:51.594 --> 00:00:54.686
+define those roles in plain language before writing
+the SQL

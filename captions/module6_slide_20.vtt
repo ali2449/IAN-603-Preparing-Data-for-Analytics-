@@ -1,0 +1,49 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:06.256
+CROSS JOIN intentionally creates every possible pair
+between two row sets In
+
+00:00:06.282 --> 00:00:11.614
+this example we combine selected departments with
+appointment slots If we have
+
+00:00:11.640 --> 00:00:17.527
+two departments and three time slots we expect six
+combinations Run
+
+00:00:17.553 --> 00:00:21.159
+the query and verify that each selected department
+appears once for each
+
+00:00:21.185 --> 00:00:26.956
+slot CROSS JOIN is useful for generating scenario
+grids schedules
+
+00:00:27.087 --> 00:00:33.248
+calendars test cases or completeness frameworks But
+it must be used deliberately
+
+00:00:34.971 --> 00:00:40.236
+Unlike an ordinary join there is no ON condition
+restricting matches That
+
+00:00:40.263 --> 00:00:45.827
+means result size can grow very quickly Before
+running a cross join
+
+00:00:45.853 --> 00:00:51.224
+on large tables estimate the number of combinations
+Multiply the left row
+
+00:00:51.250 --> 00:00:55.277
+count by the right row count If one side has ten
+thousand
+
+00:00:55.303 --> 00:00:58.527
+rows and the other has ten thousand rows the result
+can reach
+
+00:00:58.553 --> 00:01:01.711
+one hundred million combinations before any later
+filtering

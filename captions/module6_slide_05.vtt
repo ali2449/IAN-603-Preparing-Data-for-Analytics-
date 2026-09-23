@@ -1,0 +1,53 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:04.274
+A useful way to understand joins is to separate
+matching from preservation
+
+00:00:06.011 --> 00:00:09.366
+The ON condition decides whether a row from one
+table matches a
+
+00:00:09.392 --> 00:00:14.145
+row from another table For example an admission
+matches a patient when
+
+00:00:14.171 --> 00:00:19.763
+the patient IDs are equal The join type answers a
+different question
+
+00:00:20.700 --> 00:00:24.529
+If no match exists should that unmatched row
+disappear or should it
+
+00:00:24.542 --> 00:00:30.192
+remain with NULL values from the missing side This
+distinction helps explain
+
+00:00:30.206 --> 00:00:33.863
+why the same ON condition can produce different
+outputs under INNER JOIN
+
+00:00:33.877 --> 00:00:39.551
+and LEFT JOIN Also remember that SQL joins combine
+rows not just
+
+00:00:39.578 --> 00:00:44.501
+unique IDs If one patient has two admissions there
+are two valid
+
+00:00:44.528 --> 00:00:50.028
+patient-admission combinations The patient
+information will appear on both result rows
+
+00:00:50.054 --> 00:00:55.370
+because the grain is now admission detail Before
+moving on try to
+
+00:00:55.383 --> 00:00:58.988
+explain a join in plain language compare these two
+row sets match
+
+00:00:59.002 --> 00:01:01.910
+them using this rule and preserve these unmatched
+rows

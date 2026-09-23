@@ -1,0 +1,55 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:05.772
+Aliases and grain solve two different kinds of
+confusion Aliases
+
+00:00:05.785 --> 00:00:10.893
+make the SQL easier to read Both patients and
+admissions contain patient
+
+00:00:10.919 --> 00:00:15.538
+ID Writing p dot patient ID and a dot patient ID
+tells
+
+00:00:15.564 --> 00:00:19.919
+us exactly which table a column comes from This
+becomes even more
+
+00:00:19.933 --> 00:00:25.302
+important when a query joins three or four tables
+Grain helps us
+
+00:00:25.328 --> 00:00:31.186
+interpret repeated values Suppose Alice has two
+admissions Her
+
+00:00:31.212 --> 00:00:35.462
+patient name may appear on two rows after the join
+That does
+
+00:00:35.476 --> 00:00:39.318
+not mean the join is wrong It means the result is at
+
+00:00:39.344 --> 00:00:45.010
+admission grain When you see repeated information
+after a join do not
+
+00:00:45.023 --> 00:00:51.078
+immediately apply DISTINCT First ask whether those
+rows represent different valid events
+
+00:00:51.986 --> 00:00:57.197
+DISTINCT can hide a modeling problem instead of
+fixing it A good
+
+00:00:57.223 --> 00:01:00.420
+habit is to write a short sentence before the query
+one row
+
+00:01:00.447 --> 00:01:05.844
+in this result represents one admission with patient
+information That sentence becomes
+
+00:01:05.870 --> 00:01:07.226
+your validation target

@@ -1,0 +1,49 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:04.313
+This project combines join reasoning with a
+window-function idea from the previous
+
+00:00:04.339 --> 00:00:09.948
+module Inside the common table expression LEAD looks
+forward within
+
+00:00:09.974 --> 00:00:14.451
+each patient's admissions ordered by admit date That
+gives us the next
+
+00:00:14.477 --> 00:00:19.865
+department and next admission date The outer query
+keeps rows where a
+
+00:00:19.878 --> 00:00:24.881
+next department exists and where the department
+actually changes Then it groups
+
+00:00:24.907 --> 00:00:30.026
+from-department and to-department to summarize
+transition counts and average days between
+admissions
+
+00:00:31.847 --> 00:00:37.110
+Run the query and inspect the transitions that
+appear Even though the
+
+00:00:37.123 --> 00:00:41.228
+final step is not a traditional join the same grain
+thinking applies
+
+00:00:42.165 --> 00:00:46.060
+The sequence CTE has one row per admission with
+information about the
+
+00:00:46.073 --> 00:00:50.599
+following admission The grouped result then changes
+the grain to one row
+
+00:00:50.625 --> 00:00:56.207
+per department transition pair When combining
+advanced SQL techniques
+
+00:00:56.431 --> 00:00:58.865
+keep stating the grain after every major step

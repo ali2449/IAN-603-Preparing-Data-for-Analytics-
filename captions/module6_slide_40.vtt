@@ -1,0 +1,48 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:04.866
+Coding Exercise 5 is the most important cardinality
+exercise in the assignment
+
+00:00:06.611 --> 00:00:11.061
+The required grain is one row per patient You need
+three counts
+
+00:00:11.284 --> 00:00:16.876
+admissions lab tests and prescriptions Patients with
+no activity must still
+
+00:00:16.890 --> 00:00:22.130
+remain Do not directly join all three detail tables
+and then use
+
+00:00:22.143 --> 00:00:29.264
+COUNT star That creates row combinations and can
+inflate the measures Instead
+
+00:00:29.462 --> 00:00:33.712
+summarize each child table by patient ID inside the
+common table expressions
+
+00:00:34.635 --> 00:00:40.043
+Each summary should return one row per patient with
+one count Then
+
+00:00:40.069 --> 00:00:44.967
+LEFT JOIN those summaries to patients Use a
+missing-value fallback so a
+
+00:00:44.980 --> 00:00:50.404
+patient with no activity shows zero instead of NULL
+Run and Check
+
+00:00:50.575 --> 00:00:53.970
+then verify that the number of rows equals the
+number of patients
+
+00:00:54.893 --> 00:00:58.735
+Also inspect a patient with multiple activities and
+the patient with no
+
+00:00:58.748 --> 00:00:59.393
+activity

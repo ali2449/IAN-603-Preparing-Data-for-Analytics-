@@ -1,0 +1,52 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:05.636
+A correct join key must match the level of the
+relationship Suppose
+
+00:00:05.662 --> 00:00:10.494
+your target result is one row per admission You
+already have patients
+
+00:00:10.507 --> 00:00:16.376
+joined to admissions correctly Now imagine adding
+lab results by patient
+
+00:00:16.402 --> 00:00:21.339
+ID only If that patient has several admissions and
+several lab tests
+
+00:00:21.628 --> 00:00:25.984
+every admission can pair with every lab for that
+patient The admission
+
+00:00:26.010 --> 00:00:31.193
+grain is destroyed The deeper question is whether a
+lab belongs to
+
+00:00:31.206 --> 00:00:35.364
+the patient generally to one admission or to a more
+specific encounter
+
+00:00:36.301 --> 00:00:41.169
+The database design should tell you This is why
+knowing that two
+
+00:00:41.195 --> 00:00:44.788
+tables both contain patient ID is not enough
+evidence that joining them
+
+00:00:44.814 --> 00:00:50.551
+only on patient ID is analytically correct Before
+adding another table
+
+00:00:50.827 --> 00:00:53.761
+restate the target grain and ask whether the new
+table is at
+
+00:00:53.788 --> 00:00:58.290
+the same level If not aggregate it filter it or use
+a
+
+00:00:58.303 --> 00:01:00.080
+more specific relationship key

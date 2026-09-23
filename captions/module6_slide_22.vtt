@@ -1,0 +1,49 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:05.674
+Cardinality describes how many rows can match a key
+A one-to-one
+
+00:00:05.700 --> 00:00:08.568
+join is simple because each key can match at most
+once on
+
+00:00:08.595 --> 00:00:14.745
+both sides In a one-to-many join one patient can
+match several admissions
+
+00:00:15.682 --> 00:00:20.524
+The patient row repeats once for each matching
+admission That is normal
+
+00:00:20.537 --> 00:00:25.691
+and often exactly what we want The danger appears
+when we join
+
+00:00:25.718 --> 00:00:29.494
+several one-to-many child tables at the same time
+using only the parent
+
+00:00:29.520 --> 00:00:34.470
+key Suppose one patient has two admissions two lab
+tests and two
+
+00:00:34.497 --> 00:00:39.352
+prescriptions The join can create two times two
+times two or eight
+
+00:00:39.510 --> 00:00:45.832
+combinations Those eight rows are not eight new
+business events They
+
+00:00:45.858 --> 00:00:51.385
+are combinations of existing detail rows Before you
+aggregate a
+
+00:00:51.412 --> 00:00:56.677
+multi-table join predict this behavior If your
+target output is one row
+
+00:00:56.691 --> 00:01:00.875
+per patient consider summarizing each child table to
+patient grain first

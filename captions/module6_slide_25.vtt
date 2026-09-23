@@ -1,0 +1,52 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:06.247
+This query demonstrates one of the safest patterns
+for analytical joins Each
+
+00:00:06.274 --> 00:00:10.458
+common table expression summarizes one child table
+to one row per patient
+
+00:00:11.382 --> 00:00:16.684
+Admission counts has one patient row Lab counts has
+one patient row
+
+00:00:17.605 --> 00:00:23.228
+Prescription counts has one patient row Only after
+those summaries
+
+00:00:23.254 --> 00:00:28.188
+are created do we join them to patients Run the
+query and
+
+00:00:28.215 --> 00:00:34.507
+inspect the patient IDs Each patient should appear
+exactly once Patients
+
+00:00:34.520 --> 00:00:37.994
+with no matching activity are preserved because the
+joins are LEFT JOINs
+
+00:00:38.257 --> 00:00:43.878
+and COALESCE converts missing counts to zero This
+structure makes the grain
+
+00:00:43.904 --> 00:00:48.539
+easy to defend The final result is one row per
+patient because
+
+00:00:48.565 --> 00:00:53.682
+every source being joined is already at patient
+grain The query is
+
+00:00:53.708 --> 00:00:57.261
+a little longer than directly joining all detail
+tables but it is
+
+00:00:57.274 --> 00:01:02.790
+much easier to validate In analytical SQL clarity
+and correctness are usually
+
+00:01:02.803 --> 00:01:05.013
+more valuable than saving a few lines

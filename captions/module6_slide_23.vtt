@@ -1,0 +1,53 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:05.655
+This runnable example makes row multiplication
+visible We join
+
+00:00:05.681 --> 00:00:11.395
+patients to admissions lab results and prescriptions
+all by patient ID Each
+
+00:00:11.421 --> 00:00:17.202
+of those child tables can contain multiple rows for
+one patient Run
+
+00:00:17.228 --> 00:00:20.676
+the query and focus on a patient with multiple
+records in several
+
+00:00:20.702 --> 00:00:24.862
+child tables The joined row count can be much larger
+than the
+
+00:00:24.889 --> 00:00:30.763
+individual event counts Notice the use of COUNT
+DISTINCT for admission ID
+
+00:00:30.934 --> 00:00:36.147
+test ID and prescription ID Those distinct counts
+recover the number of
+
+00:00:36.160 --> 00:00:40.568
+original events while COUNT star counts the
+combinations created by the join
+
+00:00:42.315 --> 00:00:45.946
+This is why COUNT star after a multi-child join can
+be misleading
+
+00:00:46.883 --> 00:00:49.409
+It may be counting the shape of the join rather than
+the
+
+00:00:49.436 --> 00:00:54.771
+business events you intended to measure The first
+question after seeing an
+
+00:00:54.797 --> 00:00:58.113
+unexpectedly large count should be what is the grain
+of the joined
+
+00:00:58.139 --> 00:01:01.337
+rows and which relationships are multiplying one
+another

@@ -1,0 +1,48 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:04.208
+This slide shows the coding strategy that the final
+exercises build toward
+
+00:00:05.939 --> 00:00:09.754
+The requirement is one row per patient with
+admission count lab count
+
+00:00:09.925 --> 00:00:16.815
+and prescription count We must also preserve
+patients with no activity The
+
+00:00:16.842 --> 00:00:22.015
+solution first aggregates each child table by
+patient ID At that point
+
+00:00:22.292 --> 00:00:27.459
+each summary has at most one row for each patient
+Then patients
+
+00:00:27.472 --> 00:00:32.212
+is LEFT JOINed to those summaries Because the
+patient table is preserved
+
+00:00:32.475 --> 00:00:37.264
+a patient with no activity remains in the result
+COALESCE turns missing
+
+00:00:37.291 --> 00:00:42.806
+counts into zero Run the query and verify two types
+of patients
+
+00:00:43.095 --> 00:00:48.334
+one with several activities and one with no activity
+This pattern is
+
+00:00:48.361 --> 00:00:52.137
+longer than a direct three-child join but the
+reasoning is much cleaner
+
+00:00:53.074 --> 00:00:56.613
+If the target grain is one patient make the child
+sources one
+
+00:00:56.627 --> 00:00:58.048
+patient before joining them

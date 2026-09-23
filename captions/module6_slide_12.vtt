@@ -1,0 +1,48 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:05.782
+FULL OUTER JOIN is especially helpful for
+reconciliation The patient
+
+00:00:05.795 --> 00:00:10.479
+master contains official patient rows while the
+staging table represents imported data
+
+00:00:10.506 --> 00:00:14.785
+that may not be fully validated We want to see
+matches master
+
+00:00:14.811 --> 00:00:18.535
+records with no staging row and staging rows with no
+master record
+
+00:00:20.371 --> 00:00:25.044
+Run the query and inspect the match status column
+The CASE expression
+
+00:00:25.071 --> 00:00:30.176
+helps interpret each result One branch identifies a
+staging record with no
+
+00:00:30.189 --> 00:00:34.360
+patient master another identifies a patient with no
+staging row and the
+
+00:00:34.386 --> 00:00:40.116
+final branch marks matched records This is a good
+data-quality pattern because
+
+00:00:40.129 --> 00:00:44.990
+it does not throw away evidence from either source
+When you use
+
+00:00:45.016 --> 00:00:48.556
+FULL OUTER JOIN be deliberate about keys in the
+SELECT and ORDER
+
+00:00:48.582 --> 00:00:53.137
+BY clauses COALESCE is useful here because the
+patient ID may come
+
+00:00:53.164 --> 00:00:55.453
+from either side when one side is unmatched

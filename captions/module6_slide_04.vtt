@@ -1,0 +1,56 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:05.461
+The examples use a small synthetic healthcare
+database The patients table has
+
+00:00:05.487 --> 00:00:10.908
+one row per patient Admissions lab results and
+prescriptions are child tables
+
+00:00:11.105 --> 00:00:14.316
+so one patient can have zero one or many rows in
+each
+
+00:00:14.342 --> 00:00:19.863
+of those tables Medical staff belongs to departments
+and admissions
+
+00:00:19.876 --> 00:00:24.589
+can point to an attending staff member This gives us
+several realistic
+
+00:00:24.602 --> 00:00:30.729
+join paths The data also includes useful edge cases
+At
+
+00:00:30.756 --> 00:00:34.335
+least one patient has no admission or lab activity
+and the staging
+
+00:00:34.361 --> 00:00:37.624
+table contains a patient ID that does not exist in
+the patient
+
+00:00:37.650 --> 00:00:44.261
+master table Those records help us see what outer
+joins preserve Keep
+
+00:00:44.287 --> 00:00:49.118
+the relationships in mind while reading every query
+If the patients table
+
+00:00:49.145 --> 00:00:53.053
+contains one row per patient but admissions contains
+many rows per patient
+
+00:00:53.316 --> 00:00:57.776
+a patient-to-admission join naturally changes the
+grain from patient to admission detail
+
+00:00:58.711 --> 00:01:03.605
+That is not automatically a duplicate problem It is
+a consequence of
+
+00:01:03.632 --> 00:01:04.579
+the relationship

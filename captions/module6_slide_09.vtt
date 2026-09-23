@@ -1,0 +1,56 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:03.326
+A LEFT JOIN is often the most useful outer join in
+analytics
+
+00:00:03.353 --> 00:00:09.037
+because it lets us preserve a clearly defined
+population Here patients
+
+00:00:09.051 --> 00:00:12.948
+is on the left That means every patient should
+remain in the
+
+00:00:12.974 --> 00:00:19.448
+output even if no admission exists Run the query
+Look
+
+00:00:19.475 --> 00:00:23.777
+for a patient whose admission ID is missing That
+NULL does not
+
+00:00:23.790 --> 00:00:28.593
+mean the join failed It is the expected
+representation of an unmatched
+
+00:00:28.619 --> 00:00:34.192
+right-side row Now compare this result mentally with
+the INNER JOIN from
+
+00:00:34.205 --> 00:00:39.760
+the previous slide The ON condition is the same The
+difference is
+
+00:00:39.773 --> 00:00:45.431
+preservation INNER JOIN removes unmatched patients
+LEFT JOIN
+
+00:00:45.444 --> 00:00:51.326
+keeps them This distinction matters whenever your
+denominator is all customers
+
+00:00:51.523 --> 00:00:56.697
+all students all patients or all products If you
+accidentally use INNER
+
+00:00:56.723 --> 00:01:00.868
+JOIN entities with no activity may disappear and
+your analysis can become
+
+00:01:00.895 --> 00:01:06.542
+biased You can copy the query into pgAdmin and
+verify the same
+
+00:01:06.555 --> 00:01:07.397
+behavior there

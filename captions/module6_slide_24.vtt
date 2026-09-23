@@ -1,0 +1,53 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:05.974
+COUNT star is not wrong It counts rows exactly as
+requested The
+
+00:00:06.000 --> 00:00:09.026
+problem is that the joined row may not represent the
+event you
+
+00:00:09.053 --> 00:00:14.636
+think it represents After joining several
+one-to-many tables one
+
+00:00:14.662 --> 00:00:18.202
+row can represent a combination of an admission a
+lab test and
+
+00:00:18.228 --> 00:00:22.757
+a prescription Counting those rows does not directly
+count any one of
+
+00:00:22.783 --> 00:00:28.443
+those event types COUNT DISTINCT on an event
+identifier can protect
+
+00:00:28.469 --> 00:00:34.183
+a simple count For example counting distinct
+admission IDs can recover admission
+
+00:00:34.209 --> 00:00:40.095
+count even after other detail tables are joined
+However pre-aggregating
+
+00:00:40.108 --> 00:00:43.108
+is often easier to reason about when the final grain
+is one
+
+00:00:43.135 --> 00:00:48.150
+row per patient You can summarize admissions to one
+patient row summarize
+
+00:00:48.177 --> 00:00:53.439
+labs to one patient row and then join those
+summaries The safest
+
+00:00:53.465 --> 00:00:58.662
+approach is to name the measure explicitly
+admissions lab tests prescriptions patients
+
+00:00:58.820 --> 00:01:03.836
+or joined combinations Then choose the counting
+method that matches that meaning

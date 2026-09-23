@@ -1,0 +1,52 @@
+WEBVTT
+
+00:00:00.103 --> 00:00:03.589
+This query looks very similar to the previous one
+but the meaning
+
+00:00:03.616 --> 00:00:08.938
+changes because the glucose condition moved from ON
+to WHERE The LEFT
+
+00:00:08.952 --> 00:00:13.307
+JOIN first preserves patients and creates
+NULL-extended lab columns for patients with
+
+00:00:13.333 --> 00:00:17.599
+no matching lab row Then WHERE asks whether the lab
+test name
+
+00:00:17.625 --> 00:00:23.215
+equals Glucose For unmatched patients the test name
+is NULL
+
+00:00:24.139 --> 00:00:29.677
+That condition is not true so those rows are
+filtered out Run
+
+00:00:29.704 --> 00:00:33.904
+this query and compare the row count with the
+previous slide You
+
+00:00:33.930 --> 00:00:39.223
+should see only patients who actually have glucose
+tests This is a
+
+00:00:39.249 --> 00:00:44.107
+common source of bugs because the SQL still runs
+successfully There is
+
+00:00:44.134 --> 00:00:49.373
+no syntax error to warn you A strong debugging
+method is to
+
+00:00:49.400 --> 00:00:52.992
+run both versions side by side and ask which
+population the business
+
+00:00:53.018 --> 00:00:58.876
+question requires If the requirement says all
+patients the previous ON-filter version
+
+00:00:58.902 --> 00:01:00.271
+is the appropriate pattern
