@@ -1,36 +1,48 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.375
-Searched CASE is the flexible form of CASE Each WHEN
-contains a
+00:00:00.102 --> 00:00:05.440
+This is called a searched case expression Each WHEN
+contains a complete
 
-00:00:04.400 --> 00:00:08.425
-complete Boolean condition so it works well for
-ranges compound rules and
+00:00:05.466 --> 00:00:10.635
+Boolean condition That makes searched case useful
+for ranges null checks and
 
-00:00:08.450 --> 00:00:12.825
-NULL checks The billing example handles NULL first
-so a missing amount
+00:00:10.661 --> 00:00:16.692
+compound rules In this example we classify billing
+amounts Missing
 
-00:00:12.838 --> 00:00:17.275
-is not silently classified as low It then checks the
-highest threshold
+00:00:16.718 --> 00:00:21.743
+amounts become Unknown Amounts greater than or equal
+to ten thousand become
 
-00:00:17.450 --> 00:00:20.562
-followed by the next threshold and uses ELSE for the
-remaining known
+00:00:21.769 --> 00:00:26.653
+High Value Amounts greater than or equal to five
+thousand become Standard
 
-00:00:20.588 --> 00:00:26.288
-values A twelve-thousand-dollar bill matches
-High-Value and stops there A
+00:00:27.568 --> 00:00:32.783
+Everything else becomes Low Value We have the full
+SQL in the
 
-00:00:26.312 --> 00:00:32.162
-seventy-five-hundred-dollar bill reaches Standard
-Run the example and inspect zero NULL
+00:00:32.808 --> 00:00:37.294
+runnable code cell Click Run in the browser and
+compare the original
 
-00:00:32.362 --> 00:00:37.088
-and threshold values Searched CASE is especially
-useful when the business rule
+00:00:37.320 --> 00:00:42.008
+bill amount with the new billing tier You can also
+click Copy
 
-00:00:37.112 --> 00:00:39.200
-itself needs to be visible in the SQL
+00:00:42.034 --> 00:00:46.790
+and run the same query in pgAdmin When reading this
+query focus
+
+00:00:46.816 --> 00:00:51.520
+on the decision order rather than the punctuation
+SQL is simply checking
+
+00:00:51.546 --> 00:00:54.252
+each rule from top to bottom and using the first
+rule that
+
+00:00:54.265 --> 00:00:54.819
+matches

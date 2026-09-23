@@ -1,37 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.562
-This comparison makes NULL policy very concrete With
-ordinary not-equal a NULL
+00:00:00.102 --> 00:00:05.781
+Here we compare two different policies The first
+query uses ordinary
 
-00:00:05.588 --> 00:00:10.275
-payment status does not produce true It produces
-UNKNOWN so the row
+00:00:05.807 --> 00:00:10.744
+not equal to Paid If payment status is null that
+comparison becomes
 
-00:00:10.288 --> 00:00:15.862
-is removed by WHERE IS DISTINCT FROM returns a
-definite answer A
+00:00:10.770 --> 00:00:15.409
+UNKNOWN so the row is filtered out The second query
+uses IS
 
-00:00:15.875 --> 00:00:18.988
-NULL status is distinct from the text Paid so that
-row is
+00:00:15.435 --> 00:00:19.881
+DISTINCT FROM Paid Now a missing status is treated
+as different from
 
-00:00:19.012 --> 00:00:24.638
-included Neither rule is universally correct The
-right choice depends
+00:00:19.906 --> 00:00:24.133
+Paid and the record is included Run both queries in
+the browser
 
-00:00:24.662 --> 00:00:28.312
-on the question If you want only known statuses that
-are not
+00:00:24.159 --> 00:00:28.579
+and compare the results You should see one important
+difference caused by
 
-00:00:28.338 --> 00:00:32.850
-Paid ordinary inequality may match the rule If you
-want everything that
+00:00:28.592 --> 00:00:33.218
+the null status You can also copy the queries into
+pgAdmin and
 
-00:00:32.862 --> 00:00:37.350
-is not definitely Paid including missing status for
-review IS DISTINCT FROM
+00:00:33.244 --> 00:00:38.115
+run them separately Neither query is automatically
+the right query for every
 
-00:00:37.375 --> 00:00:41.262
-is better Run both statements and compare the row
-counts
+00:00:38.141 --> 00:00:43.347
+situation The correct choice depends on the question
+Do we mean a
+
+00:00:43.373 --> 00:00:46.388
+status that is known and not Paid or do we mean
+anything
+
+00:00:46.414 --> 00:00:47.870
+that is not definitely Paid

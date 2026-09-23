@@ -1,33 +1,45 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.400
-Coding Exercise 2 combines text normalization and
-fallback logic Do not use
+00:00:00.102 --> 00:00:05.851
+Exercise 2 asks you to create a preferred contact
+value The priority
 
-00:00:05.412 --> 00:00:08.712
-COALESCE directly on the raw email field because an
-empty string or
+00:00:05.864 --> 00:00:10.144
+should be email then mobile phone then home phone
+But there is
 
-00:00:08.738 --> 00:00:14.125
-whitespace-only string is not NULL Normalize each
-contact field first with BTRIM
+00:00:10.169 --> 00:00:14.473
+an extra requirement blank text or text containing
+only spaces should count
 
-00:00:14.150 --> 00:00:18.962
-and NULLIF Then use COALESCE in the requested
-priority order email mobile
+00:00:14.499 --> 00:00:19.731
+as missing Think about the two functions we just
+practiced Use B
 
-00:00:18.988 --> 00:00:24.262
-phone home phone and finally No contact provided
-After running inspect the
+00:00:19.757 --> 00:00:24.975
+trim and null if to normalize each candidate value
+Then use coalesce
 
-00:00:24.275 --> 00:00:29.588
-edge cases Robert Lee should fall back to home phone
-Lisa Ray
+00:00:25.001 --> 00:00:29.474
+to choose the first usable result A final text
+fallback should be
 
-00:00:29.612 --> 00:00:33.900
-should also use home phone Maria Torres should use
-mobile because the
+00:00:29.500 --> 00:00:34.858
+used if no contact method is available You can
+complete and test
 
-00:00:33.925 --> 00:00:39.362
-email contains only spaces Andre Green should
-receive the final fallback text
+00:00:34.884 --> 00:00:38.996
+the SQL directly in the browser using Run and Check
+You can
+
+00:00:39.022 --> 00:00:42.437
+also copy the starter code into pgAdmin if you want
+a larger
+
+00:00:42.462 --> 00:00:46.921
+workspace or want to inspect the data separately
+Once it works there
+
+00:00:47.127 --> 00:00:49.937
+paste your final answer back into the browser and
+check it

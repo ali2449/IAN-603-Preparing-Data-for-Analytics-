@@ -1,32 +1,41 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.338
-NULLIF compares two expressions When they are equal
-it returns NULL otherwise
+00:00:00.102 --> 00:00:05.723
+Null if is another simple but useful SQL function It
+compares two
 
-00:00:05.362 --> 00:00:10.100
-it returns the first expression A useful
-text-cleaning pattern is NULLIF of
+00:00:05.748 --> 00:00:11.420
+expressions If they are equal it returns null
+Otherwise it
 
-00:00:10.125 --> 00:00:15.175
-trimmed text and an empty string BTRIM removes
-surrounding whitespace and NULLIF
+00:00:11.446 --> 00:00:15.969
+returns the first expression On this slide we use B
+trim to
 
-00:00:15.200 --> 00:00:20.012
-converts the empty result to NULL This gives several
-representations of no
+00:00:15.995 --> 00:00:20.621
+remove spaces around an email address Then null if
+converts an empty
 
-00:00:20.038 --> 00:00:26.362
-usable text one consistent missing-value state Run
-the query and compare original_email
+00:00:20.647 --> 00:00:27.429
+string into null This helps us normalize text before
+later logic There
 
-00:00:26.388 --> 00:00:31.938
-with normalized_email Normal email values remain
-unchanged while empty
+00:00:27.454 --> 00:00:31.915
+is a runnable example below Click Run in the browser
+and compare
 
-00:00:32.038 --> 00:00:37.362
-or whitespace-only text becomes NULL This small
-transformation makes later IS NULL
+00:00:31.940 --> 00:00:36.910
+the original email with the normalized email Then if
+you want to
 
-00:00:37.375 --> 00:00:39.575
-and COALESCE logic easier to reason about
+00:00:36.936 --> 00:00:41.974
+practice in PostgreSQL directly click Copy open
+pgAdmin and run the query
+
+00:00:42.000 --> 00:00:46.551
+in the Query Tool Pay special attention to records
+containing blank or
+
+00:00:46.576 --> 00:00:51.447
+whitespace-only text Those are the records where
+this pattern is most useful

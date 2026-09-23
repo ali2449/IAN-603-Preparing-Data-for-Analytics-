@@ -1,36 +1,45 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.612
-A common beginner mistake is writing equals NULL
-That does not test
+00:00:00.102 --> 00:00:03.362
+A very common beginner mistake is trying to compare
+a value to
 
-00:00:04.638 --> 00:00:08.388
-whether a value is missing It asks whether a known
-value is
+00:00:03.388 --> 00:00:08.939
+null using the equals operator For example writing
+email address
 
-00:00:08.412 --> 00:00:12.950
-equal to an unknown value and SQL cannot prove the
-comparison The
+00:00:08.965 --> 00:00:13.245
+equals null does not test whether the email is
+missing The result
 
-00:00:12.975 --> 00:00:17.162
-result is UNKNOWN even for rows where the column is
-NULL The
+00:00:13.271 --> 00:00:18.593
+is UNKNOWN The same problem happens with not equal
+to null To
 
-00:00:17.175 --> 00:00:22.825
-same issue affects not-equal NULL SQL provides
-explicit missing-value predicates
+00:00:18.619 --> 00:00:23.116
+test for missing data SQL provides special
+predicates IS NULL and IS
 
-00:00:23.062 --> 00:00:27.438
-IS NULL and IS NOT NULL Run the example and inspect
-the
+00:00:23.129 --> 00:00:28.696
+NOT NULL The code on this slide intentionally
+demonstrates the incorrect
 
-00:00:27.462 --> 00:00:32.263
-calculated columns You should see NULL results
-instead of useful true or
+00:00:28.722 --> 00:00:33.285
+comparison so you can see what PostgreSQL returns
+Run it in the
 
-00:00:32.288 --> 00:00:36.525
-false answers When the question is whether a value
-is missing use
+00:00:33.311 --> 00:00:38.169
+browser and look at the equals-null and
+not-equals-null columns You can also
 
-00:00:36.538 --> 00:00:40.225
-IS NULL Treat that as a basic SQL habit
+00:00:38.195 --> 00:00:43.811
+copy the code into pgAdmin The rule to remember is
+simple when
+
+00:00:43.836 --> 00:00:47.174
+checking whether a value is missing use IS NULL or
+IS NOT
+
+00:00:47.200 --> 00:00:51.724
+NULL Do not use ordinary equals or not-equals
+comparisons

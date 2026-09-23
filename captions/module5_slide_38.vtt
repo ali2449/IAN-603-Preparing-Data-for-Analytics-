@@ -1,36 +1,41 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.950
-This guided practice applies the normalization
-pattern to a different column The
+00:00:00.102 --> 00:00:05.622
+Now let's practice text normalization and fallback
+values The goal
 
-00:00:04.975 --> 00:00:09.212
-stored table should not be changed We only want a
-display value
+00:00:05.648 --> 00:00:10.495
+is to display a preferred language If the language
+contains useful text
 
-00:00:09.238 --> 00:00:14.962
-in the query result Start by trimming
-preferred_language Use
+00:00:10.611 --> 00:00:15.495
+keep it If it is null empty or only spaces display
+Language
 
-00:00:14.988 --> 00:00:19.462
-NULLIF to convert an empty trimmed value to NULL
-Then use COALESCE
+00:00:15.521 --> 00:00:19.580
+not recorded The query first uses B trim and null if
+to
 
-00:00:19.488 --> 00:00:24.138
-to replace the missing result with Language not
-recorded The practice data
+00:00:19.593 --> 00:00:26.184
+normalize the text Then coalesce provides the final
+fallback Run
 
-00:00:24.162 --> 00:00:28.612
-includes one patient whose preferred language is
-NULL Run the query and
+00:00:26.210 --> 00:00:30.127
+the example in the browser and compare preferred
+language with language display
 
-00:00:28.638 --> 00:00:33.075
-confirm that the stored column remains NULL while
-the derived language_display column
+00:00:31.646 --> 00:00:35.977
+You can also click Copy and run the query in pgAdmin
+Try
 
-00:00:33.100 --> 00:00:38.412
-shows the fallback label A SELECT expression can
-standardize output without overwriting
+00:00:35.990 --> 00:00:41.080
+to identify which records actually needed the
+fallback This pattern is useful
 
-00:00:38.438 --> 00:00:39.112
-source data
+00:00:41.106 --> 00:00:46.724
+far beyond this example Whenever user-entered text
+may contain blank or whitespace-only
+
+00:00:46.737 --> 00:00:51.402
+values normalizing before applying business logic
+makes the result much more reliable

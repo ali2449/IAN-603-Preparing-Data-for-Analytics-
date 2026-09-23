@@ -1,33 +1,41 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.762
-Branch order matters when CASE conditions overlap If
-age greater than or
+00:00:00.102 --> 00:00:05.337
+This slide demonstrates one of the easiest case
+mistakes to make In
 
-00:00:04.788 --> 00:00:09.112
-equal to eighteen comes first every senior also
-satisfies that condition so
+00:00:05.350 --> 00:00:08.468
+the first query we check whether age is at least
+eighteen before
 
-00:00:09.125 --> 00:00:13.100
-the senior branch can never run The correct order
-places the more
+00:00:08.481 --> 00:00:13.754
+checking whether age is at least sixty-five A
+sixty-five-year-old also satisfies the
 
-00:00:13.125 --> 00:00:18.588
-specific senior threshold first then the broader
-adult threshold Run both versions
+00:00:13.766 --> 00:00:18.058
+first condition so SQL immediately labels that
+person Adult and never reaches
 
-00:00:18.612 --> 00:00:23.050
-and inspect the classifications for the older
-patients This is the same
+00:00:18.083 --> 00:00:23.921
+the Senior branch That makes the Senior branch
+unreachable In the corrected
 
-00:00:23.075 --> 00:00:26.575
-general rule you will use for billing tiers and
-priority labels place
+00:00:23.947 --> 00:00:28.058
+version we place the more specific condition first
+age at least sixty-five
 
-00:00:26.600 --> 00:00:32.438
-specific or high-priority conditions before broad
-conditions If one branch logically contains
+00:00:28.225 --> 00:00:33.373
+followed by age at least eighteen Both versions are
+provided in the
 
-00:00:32.450 --> 00:00:35.338
-another the narrower branch normally needs to come
-first
+00:00:33.399 --> 00:00:38.645
+code cell Run them in the browser and compare the
+results You
+
+00:00:38.671 --> 00:00:44.519
+can also copy them into pgAdmin Remember when
+conditions overlap
+
+00:00:44.777 --> 00:00:47.728
+put the more specific condition before the broader
+condition

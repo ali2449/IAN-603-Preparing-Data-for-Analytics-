@@ -1,36 +1,39 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:03.888
-COALESCE evaluates expressions from left to right
-and returns the first one
+00:00:00.102 --> 00:00:05.679
+Now let's introduce coalesce Coalesce returns the
+first value in
 
-00:00:03.912 --> 00:00:08.962
-that is not NULL That makes it useful for fallback
-logic A
+00:00:05.705 --> 00:00:09.637
+a list that is not null For example we might try an
 
-00:00:08.975 --> 00:00:12.875
-preferred contact rule might try email first then
-mobile phone then home
+00:00:09.662 --> 00:00:15.023
+email address first If that is missing try the
+mobile phone If
 
-00:00:12.888 --> 00:00:18.912
-phone and finally a readable message But COALESCE
-only understands NULL An
+00:00:15.049 --> 00:00:19.546
+that is also missing try the home phone Finally we
+can return
 
-00:00:18.938 --> 00:00:22.350
-empty string or whitespace-only string is still
-non-NULL and can stop the
+00:00:19.572 --> 00:00:24.160
+a readable fallback This is a very useful function
+but we should
 
-00:00:22.375 --> 00:00:26.875
-fallback too early That is why COALESCE is often
-combined with NULLIF
+00:00:24.186 --> 00:00:29.095
+use it carefully A fallback should have a real
+meaning We do
 
-00:00:26.900 --> 00:00:32.425
-and trimming Be careful with numeric defaults as
-well Replacing a missing
+00:00:29.121 --> 00:00:32.137
+not want to replace missing data with a value that
+changes the
 
-00:00:32.450 --> 00:00:36.925
-bill with zero makes a strong domain assumption Use
-a fallback only
+00:00:32.150 --> 00:00:36.583
+meaning of the information In a few slides we will
+combine coalesce
 
-00:00:36.938 --> 00:00:39.275
-when its meaning is intentional and documented
+00:00:36.608 --> 00:00:39.456
+with null if so that blank text is treated as
+missing before
+
+00:00:39.469 --> 00:00:41.711
+we choose the first usable contact method

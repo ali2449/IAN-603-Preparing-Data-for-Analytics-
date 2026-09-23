@@ -1,40 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:03.988
-The reasoning patterns in this module transfer well
-across SQL systems but
+00:00:00.102 --> 00:00:03.993
+Most of the reasoning in this module transfers to
+other database systems
 
-00:00:04.000 --> 00:00:09.688
-exact syntax can differ AND OR NOT IS NULL COALESCE
-NULLIF and
+00:00:05.722 --> 00:00:09.974
+AND OR NOT IS NULL coalesce null if and case are
+widely
 
-00:00:09.712 --> 00:00:14.612
-CASE are broadly familiar across databases IS
-DISTINCT FROM is supported in
+00:00:10.000 --> 00:00:16.110
+supported concepts But some syntax varies across
+database systems For
 
-00:00:14.625 --> 00:00:18.875
-PostgreSQL and some modern systems but you should
-check the target platform
+00:00:16.123 --> 00:00:21.702
+example PostgreSQL supports IS DISTINCT FROM Other
+database systems
 
-00:00:19.762 --> 00:00:25.600
-Date arithmetic is especially variable PostgreSQL
-can subtract dates directly while
+00:00:21.728 --> 00:00:27.231
+may handle null-safe comparison differently
+PostgreSQL can subtract one date
 
-00:00:25.625 --> 00:00:30.512
-SQL Server and Microsoft Fabric commonly use
-functions such as DATEDIFF The
+00:00:27.257 --> 00:00:31.767
+from another directly Another system may use a
+function such as date
 
-00:00:30.525 --> 00:00:35.212
-best transfer strategy is to preserve the rule first
-Define the cohort
+00:00:31.793 --> 00:00:36.522
+diff So when you move from PostgreSQL to another
+database keep the
 
-00:00:35.425 --> 00:00:39.700
-decide how NULL should behave group mixed conditions
-with parentheses order CASE
+00:00:36.548 --> 00:00:40.362
+logical rule the same but check whether any syntax
+needs to change
 
-00:00:39.712 --> 00:00:45.438
-branches and test boundary records Translate
-dialect-specific functions after the logic
+00:00:41.264 --> 00:00:45.233
+The best skill to carry between systems is not
+memorizing every command
 
-00:00:45.450 --> 00:00:46.100
-is correct
+00:00:46.135 --> 00:00:49.112
+It is being able to explain the rule clearly and
+then translate
+
+00:00:49.138 --> 00:00:51.290
+that rule into the target SQL dialect

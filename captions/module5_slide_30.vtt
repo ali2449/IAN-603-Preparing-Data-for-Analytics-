@@ -1,37 +1,41 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.900
-NOT IN can be surprising when the list contains NULL
-Conceptually the
+00:00:00.102 --> 00:00:05.283
+This is a classic SQL trap The query asks for
+records whose
 
-00:00:04.925 --> 00:00:08.050
-predicate asks whether a value is different from
-every item in the
+00:00:05.309 --> 00:00:09.395
+payment status is not in a list containing Paid and
+null At
 
-00:00:08.062 --> 00:00:13.088
-list If one item is unknown PostgreSQL cannot prove
-that an ordinary
+00:00:09.421 --> 00:00:13.700
+first that may look reasonable But a null inside the
+NOT IN
 
-00:00:13.112 --> 00:00:17.688
-value is different from that unknown value The
-result can become UNKNOWN
+00:00:13.725 --> 00:00:17.475
+list can cause comparisons that appear to be
+non-matches to become UNKNOWN
 
-00:00:17.712 --> 00:00:21.925
-instead of true Because WHERE keeps only true rows
-that look like
+00:00:18.390 --> 00:00:21.689
+The database cannot prove that a value is different
+from an unknown
 
-00:00:21.950 --> 00:00:28.125
-obvious non-matches may disappear Run the example
-and inspect the output The
+00:00:21.702 --> 00:00:27.361
+list element Run the example in the browser and
+observe the result
 
-00:00:28.150 --> 00:00:30.775
-safer pattern is to keep NULL out of the list and
-handle
+00:00:28.786 --> 00:00:33.400
+Then copy it into pgAdmin if you want to test
+variations For
 
-00:00:30.800 --> 00:00:35.100
-missing status explicitly with IS NULL IS NOT NULL
-or another NULL-safe
+00:00:33.413 --> 00:00:38.130
+example remove null from the list and compare the
+output The safer
 
-00:00:35.112 --> 00:00:39.275
-predicate Make the missing-value policy visible in
-the query
+00:00:38.156 --> 00:00:40.875
+approach is normally to keep null out of the list
+and handle
+
+00:00:40.888 --> 00:00:43.761
+missing values explicitly according to the business
+rule

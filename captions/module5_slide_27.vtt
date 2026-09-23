@@ -1,36 +1,41 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.550
-A good tiering rule makes its boundaries explicit In
-the source rule
+00:00:00.102 --> 00:00:05.822
+When we create categories exact boundaries need to
+be intentional Here
 
-00:00:04.738 --> 00:00:09.112
-NULL is handled first as Unknown Amounts of ten
-thousand or more
+00:00:05.848 --> 00:00:11.163
+our billing rule begins with missing values Then we
+handle amounts greater
 
-00:00:09.138 --> 00:00:13.875
-are High-Value Amounts of five thousand or more but
-below ten thousand
+00:00:11.188 --> 00:00:15.571
+than or equal to ten thousand Next we handle amounts
+greater than
 
-00:00:14.000 --> 00:00:19.588
-are Standard Remaining known amounts are Low-Value
-Because the thresholds are
+00:00:15.597 --> 00:00:20.662
+or equal to five thousand Everything else goes into
+the low-value category
 
-00:00:19.612 --> 00:00:23.912
-written from high to low each amount reaches the
-intended branch An
+00:00:21.576 --> 00:00:25.030
+If we add a special zero category zero also needs to
+appear
 
-00:00:23.925 --> 00:00:27.938
-exact ten thousand belongs to High-Value and an
-exact five thousand belongs
+00:00:25.043 --> 00:00:28.973
+before the broad final ELSE branch When you design a
+rule like
 
-00:00:27.962 --> 00:00:32.450
-to Standard Later practice adds a separate No Charge
-category for an
+00:00:28.999 --> 00:00:34.760
+this test the exact boundary values Try zero five
+thousand ten thousand
 
-00:00:32.462 --> 00:00:37.888
-exact zero When you design tiers test NULL zero
-exact thresholds and
+00:00:35.017 --> 00:00:39.115
+a value just below each threshold and a null value A
+query
 
-00:00:37.912 --> 00:00:40.000
-values just above and below each boundary
+00:00:39.141 --> 00:00:42.479
+that works for ordinary records may still contain a
+logic error at
+
+00:00:42.504 --> 00:00:46.680
+the boundaries so boundary testing is an important
+part of validating SQL

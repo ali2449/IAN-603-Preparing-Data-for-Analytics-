@@ -1,33 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.475
-This slide isolates one rule that explains many
-NULL-related surprises WHERE keeps
+00:00:00.102 --> 00:00:05.112
+Here we make the behavior of WHERE very clear We
+create three
 
-00:00:04.488 --> 00:00:09.250
-only TRUE The example creates three rows with
-Boolean states true false
+00:00:05.138 --> 00:00:08.914
+sample rows one with TRUE one with FALSE and one
+with UNKNOWN
 
-00:00:09.388 --> 00:00:14.725
-and NULL then applies WHERE flag Only the true row
-remains The
+00:00:10.346 --> 00:00:15.479
+Then we use the Boolean field directly in the WHERE
+clause Before
 
-00:00:14.750 --> 00:00:17.938
-false row is removed as expected and the unknown row
-is also
+00:00:15.505 --> 00:00:20.223
+running the example predict what will happen Only
+the TRUE row will
 
-00:00:17.962 --> 00:00:22.325
-removed because SQL cannot prove the condition true
-This matters when a
+00:00:20.236 --> 00:00:26.481
+remain FALSE is removed and UNKNOWN is also removed
+Click
 
-00:00:22.350 --> 00:00:26.662
-nullable field such as consent is used in a filter
-Decide whether
+00:00:26.507 --> 00:00:31.146
+Run in the browser to confirm this You can copy the
+same
 
-00:00:26.675 --> 00:00:31.838
-unknown values should be excluded included for
-review or treated separately Do
+00:00:31.172 --> 00:00:36.251
+SQL into pgAdmin if you want to experiment For
+example you could
 
-00:00:31.862 --> 00:00:35.588
-not let WHERE's default behavior make that policy
-decision accidentally
+00:00:36.277 --> 00:00:40.877
+change the values or add another row This small
+example is important
+
+00:00:40.890 --> 00:00:44.550
+because later when null appears in a comparison the
+result may become
+
+00:00:44.576 --> 00:00:47.952
+UNKNOWN and disappear from your query even though
+you did not explicitly
+
+00:00:47.978 --> 00:00:49.331
+ask SQL to remove it

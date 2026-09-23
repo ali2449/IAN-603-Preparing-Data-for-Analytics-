@@ -1,32 +1,40 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:03.588
-This practice refines the billing CASE by giving an
-exact zero bill
+00:00:00.102 --> 00:00:03.864
+Here we improve our billing case expression by
+adding a special category
 
-00:00:03.612 --> 00:00:09.262
-its own category The order is deliberate Check NULL
-first so missing
+00:00:03.890 --> 00:00:10.089
+for an exact zero The order is important First
 
-00:00:09.288 --> 00:00:14.600
-values are not confused with zero Then check
-bill_amount equals zero and
+00:00:10.296 --> 00:00:14.898
+check for null Second check for zero and label it No
+Charge
 
-00:00:14.625 --> 00:00:19.175
-label it No Charge After that test the high and
-standard thresholds
+00:00:16.314 --> 00:00:21.560
+Then check the High Value threshold After that check
+the Standard threshold
 
-00:00:19.350 --> 00:00:23.650
-and use ELSE for the remaining positive low-value
-bills Run the query
+00:00:23.054 --> 00:00:28.561
+Finally use Low Value for the remaining known
+amounts The complete
 
-00:00:23.675 --> 00:00:28.975
-and inspect patient 107 whose bill is exactly zero
-That record should
+00:00:28.587 --> 00:00:33.035
+query is available in the code cell Before running
+it predict what
 
-00:00:29.000 --> 00:00:33.925
-now show No Charge rather than Low-Value This
-demonstrates how domain meaning
+00:00:33.060 --> 00:00:38.381
+will happen to zero five thousand ten thousand and
+null Then click
 
-00:00:33.938 --> 00:00:35.175
-affects branch design
+00:00:38.407 --> 00:00:42.906
+Run in the browser and verify your predictions You
+can also copy
+
+00:00:42.932 --> 00:00:47.893
+the SQL into pgAdmin This is a good example of
+boundary testing
+
+00:00:48.808 --> 00:00:52.726
+The exact values at the edges of categories deserve
+special attention

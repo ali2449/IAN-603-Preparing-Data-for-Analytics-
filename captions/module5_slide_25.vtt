@@ -1,35 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.738
-Simple CASE compares one expression with a list of
-exact values It
+00:00:00.102 --> 00:00:05.583
+There is another form called simple case Simple case
+is useful when
 
-00:00:04.762 --> 00:00:09.338
-is a good fit for direct code-to-label mappings In
-this example Paid
+00:00:05.608 --> 00:00:10.777
+we are comparing one expression against several
+exact values Here we start
 
-00:00:09.350 --> 00:00:12.450
-and No Charge map to Closed Open maps to Follow up
-Pending
+00:00:10.803 --> 00:00:16.370
+with payment status If the status is Paid return
+Closed If
 
-00:00:12.462 --> 00:00:16.900
-Review maps to Investigate and anything else reaches
-ELSE The row with
+00:00:16.383 --> 00:00:21.190
+it is No Charge also return Closed If it is Open
+return
 
-00:00:16.925 --> 00:00:21.962
-a NULL payment status therefore becomes Status
-missing Simple CASE is concise
+00:00:21.216 --> 00:00:27.105
+Follow up If it is Pending Review return Investigate
+Otherwise
 
-00:00:21.988 --> 00:00:25.588
-when the rule is based on exact values It is not the
+00:00:27.298 --> 00:00:32.502
+return Status missing Run the query in the browser
+and compare the
 
-00:00:25.600 --> 00:00:28.438
-best form for ranges such as amount greater than or
-equal to
+00:00:32.515 --> 00:00:37.576
+payment status with the action column You can also
+copy the query
 
-00:00:28.462 --> 00:00:32.700
-five thousand searched CASE is clearer for that Run
-the query and
+00:00:37.602 --> 00:00:42.501
+into pgAdmin Compare this syntax with the searched
+case from the previous
 
-00:00:32.725 --> 00:00:34.138
-compare the mapped actions
+00:00:42.526 --> 00:00:46.843
+slide Use simple case when you are matching one
+value against a
+
+00:00:46.869 --> 00:00:51.263
+list of exact options Use searched case when each
+branch needs its
+
+00:00:51.289 --> 00:00:52.346
+own full condition

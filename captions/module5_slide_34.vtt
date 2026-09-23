@@ -1,37 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.575
-This example shows how population filtering and CASE
-classification work together The
+00:00:00.102 --> 00:00:05.867
+Here we calculate length of stay PostgreSQL allows
+us to subtract
 
-00:00:05.600 --> 00:00:09.638
-rule concerns completed stays so the WHERE clause
-first removes admissions with
+00:00:05.893 --> 00:00:08.779
+one date from another to get the number of days
+between them
 
-00:00:09.662 --> 00:00:14.188
-no discharge date That prevents an ongoing stay from
-being forced into
+00:00:09.696 --> 00:00:14.876
+But first we define the population We only want
+completed stays so
 
-00:00:14.212 --> 00:00:19.688
-a category that requires a completed duration
-PostgreSQL can subtract one date
+00:00:14.902 --> 00:00:19.686
+the WHERE clause removes records where the discharge
+date is null Then
 
-00:00:19.712 --> 00:00:23.962
-from another and return the number of days CASE then
-classifies the
+00:00:19.712 --> 00:00:24.920
+the case expression categorizes the calculated stay
+Less than five days is
 
-00:00:23.988 --> 00:00:27.300
-duration as Short for fewer than five days Medium
-for five through
+00:00:24.946 --> 00:00:30.229
+Short Five through ten days is Medium More than ten
+days is
 
-00:00:27.325 --> 00:00:31.562
-ten days and Long for anything greater than ten Run
-the query
+00:00:30.255 --> 00:00:33.760
+Long Run the code in the browser and look at both
+the
 
-00:00:31.588 --> 00:00:37.038
-and inspect the boundary values A five-day stay
-should be Medium The
+00:00:33.786 --> 00:00:39.321
+calculated number of days and the final category You
+can also copy
 
-00:00:37.062 --> 00:00:41.200
-broader lesson is to define the population before
-applying a classification rule
+00:00:39.347 --> 00:00:44.027
+the query into pgAdmin This is a good example of
+separating two
+
+00:00:44.052 --> 00:00:48.614
+questions first which records belong in the analysis
+and second how should
+
+00:00:48.640 --> 00:00:50.547
+the included records be classified

@@ -1,33 +1,42 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.162
-NOT negates a Boolean expression In this example
-active records are kept
+00:00:00.102 --> 00:00:05.053
+Next we have NOT NOT is used when we want to exclude
 
-00:00:05.188 --> 00:00:10.288
-while selected diagnoses are excluded Parentheses
-make the target of NOT clear
+00:00:05.079 --> 00:00:10.003
+a condition In this example we keep active patients
+but we exclude
 
-00:00:10.550 --> 00:00:15.138
-the entire IN expression is being negated With
-ordinary true and false
+00:00:10.029 --> 00:00:16.189
+two diagnoses Notice the parentheses around the
+diagnosis condition They
 
-00:00:15.162 --> 00:00:20.925
-values NOT reverses the result But SQL also has
-UNKNOWN If
+00:00:16.202 --> 00:00:19.230
+make it very clear which part of the logic we are
+reversing
 
-00:00:20.938 --> 00:00:24.525
-an expression is unknown because it depends on NULL
-NOT UNKNOWN remains
+00:00:21.066 --> 00:00:25.049
+The query is available in the SQL box Run it here in
 
-00:00:24.538 --> 00:00:29.950
-UNKNOWN That matters because WHERE keeps only true
-rows Use NOT when
+00:00:25.075 --> 00:00:29.559
+the browser first Look at the results and confirm
+that the excluded
 
-00:00:29.975 --> 00:00:33.438
-the exclusion rule is clear but be careful when
-nullable values are
+00:00:29.585 --> 00:00:35.226
+diagnoses do not appear You can also copy the query
+into pgAdmin
 
-00:00:33.450 --> 00:00:39.062
-involved Sometimes an explicit NULL-safe predicate
-communicates the rule more accurately
+00:00:35.251 --> 00:00:39.493
+and run it against the same practice tables One
+important point is
+
+00:00:39.505 --> 00:00:43.951
+that NOT does not magically solve missing values If
+a condition is
+
+00:00:43.977 --> 00:00:48.346
+UNKNOWN because of null applying NOT still leaves it
+UNKNOWN We will
+
+00:00:48.371 --> 00:00:50.407
+see why that matters in a few slides

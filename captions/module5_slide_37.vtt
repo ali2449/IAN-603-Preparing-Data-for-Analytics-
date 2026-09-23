@@ -1,37 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.438
-For this guided practice predict before you run
-Compare the unparenthesized rule
+00:00:00.102 --> 00:00:05.710
+Let's do a reasoning exercise before writing more
+SQL We have two
 
-00:00:05.462 --> 00:00:10.100
-with the parenthesized rule Because AND binds before
-OR Version A allows
+00:00:05.736 --> 00:00:10.029
+versions of a condition In Version A age greater
+than or equal
 
-00:00:10.125 --> 00:00:13.525
-any patient age sixty-five or older even when
-consent is not true
+00:00:10.055 --> 00:00:15.454
+to sixty-five is connected by OR to a
+diagnosis-and-consent condition In Version
 
-00:00:14.412 --> 00:00:19.138
-Version B applies the consent requirement to both
-alternatives Look for the
+00:00:15.480 --> 00:00:20.106
+B age or diagnosis is grouped inside parentheses and
+consent is required
 
-00:00:19.150 --> 00:00:23.962
-record that satisfies the age condition but has
-false consent That record
+00:00:20.132 --> 00:00:25.093
+afterward Try to identify the patient who appears
+only when the parentheses
 
-00:00:23.988 --> 00:00:27.875
-should appear only in Version A The purpose is not
-just to
+00:00:25.119 --> 00:00:29.191
+are omitted A useful strategy is to look for an
+older patient
 
-00:00:27.900 --> 00:00:33.538
-identify the row Explain which subexpression
-admitted it If you can
+00:00:29.217 --> 00:00:34.114
+whose consent is false Ask yourself in Version A
+does the consent
 
-00:00:33.562 --> 00:00:37.250
-say that the age branch was evaluated independently
-of consent because AND
+00:00:34.140 --> 00:00:39.164
+condition apply to the age branch Then compare that
+with Version B
 
-00:00:37.275 --> 00:00:40.712
-bound to the diagnosis branch you understand the
-precedence problem
+00:00:40.068 --> 00:00:43.006
+You can test the related query in the browser from
+the earlier
+
+00:00:43.032 --> 00:00:48.579
+slide or copy it into pgAdmin and modify it yourself
+The
+
+00:00:48.605 --> 00:00:51.182
+goal here is to explain why the results differ

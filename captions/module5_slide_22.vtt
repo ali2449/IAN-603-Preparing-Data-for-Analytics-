@@ -1,33 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.775
-NULLIF is also useful for numeric safety Division by
-zero is an
+00:00:00.102 --> 00:00:05.305
+This example shows another use for null if Suppose
+we want to
 
-00:00:04.800 --> 00:00:10.525
-error and the practice data includes a zero bill
-NULLIF bill_amount zero
+00:00:05.331 --> 00:00:09.856
+calculate the percentage of a bill that has been
+paid Normally we
 
-00:00:10.550 --> 00:00:15.725
-converts an exact zero denominator to NULL Division
-by NULL then returns
+00:00:09.882 --> 00:00:13.902
+divide amount paid by bill amount But what happens
+if the bill
 
-00:00:15.750 --> 00:00:19.812
-NULL rather than raising an error Here that means
-the percentage is
+00:00:13.928 --> 00:00:19.469
+amount is zero Division by zero causes a problem
+Here we use
 
-00:00:19.825 --> 00:00:25.150
-not computable which is different from zero percent
-The numerator uses COALESCE
+00:00:19.495 --> 00:00:23.889
+null if on the bill amount If the denominator is
+zero null
 
-00:00:25.175 --> 00:00:29.425
-amount_paid to zero which is a separate assumption
-that should be justified
+00:00:23.915 --> 00:00:28.735
+if returns null instead The result of the
+calculation then becomes null
 
-00:00:29.438 --> 00:00:33.562
-by the domain Run the query and inspect the No
-Charge record
+00:00:29.018 --> 00:00:34.209
+which tells us the percentage is not computable Run
+the SQL in
 
-00:00:34.438 --> 00:00:37.950
-Safe SQL should avoid errors while preserving the
-meaning of the data
+00:00:34.235 --> 00:00:38.721
+the browser and inspect the percent paid column You
+can also copy
+
+00:00:38.747 --> 00:00:44.559
+it into pgAdmin Notice that null does not mean zero
+percent It
+
+00:00:44.585 --> 00:00:49.971
+means we could not meaningfully calculate the ratio
+That distinction is important
+
+00:00:49.997 --> 00:00:51.956
+when preparing data for analysis

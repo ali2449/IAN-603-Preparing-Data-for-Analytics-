@@ -1,37 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:06.025
-The practice database contains four small tables and
-one convenience view patient_info
+00:00:00.102 --> 00:00:06.251
+Throughout this module we will use a small synthetic
+healthcare-style dataset We
 
-00:00:06.050 --> 00:00:12.575
-includes demographics contacts activity status
-consent and preferred language diagnostics
+00:00:06.277 --> 00:00:11.252
+have a patient information table with demographic
+and contact fields We have
 
-00:00:12.588 --> 00:00:18.225
-adds diagnosis severity and confirmation state
-patient_billing includes
+00:00:11.265 --> 00:00:16.394
+a diagnostics table a patient billing table and an
+admissions table We
 
-00:00:18.250 --> 00:00:23.838
-bill amounts payments and payment status admissions
-contains admission and discharge
+00:00:16.420 --> 00:00:20.982
+also have a convenience view called patient case
+This view brings several
 
-00:00:23.850 --> 00:00:28.938
-dates The patient_case view combines the first three
-tables so this module
+00:00:21.008 --> 00:00:24.822
+useful fields together so we can focus on SQL logic
+without spending
 
-00:00:28.962 --> 00:00:33.812
-can focus on logic rather than join syntax The data
-intentionally includes
+00:00:24.848 --> 00:00:28.984
+all of our time writing joins The data is synthetic
+so it
 
-00:00:33.838 --> 00:00:38.575
-NULL values empty strings whitespace-only strings a
-zero bill a missing payment
+00:00:29.010 --> 00:00:32.786
+is safe to use for practice When we reach a slide
+with
 
-00:00:38.600 --> 00:00:43.350
-status and an unknown consent value Those edge cases
-make the logic
+00:00:32.812 --> 00:00:36.678
+executable SQL you can run the code directly here in
+the browser
 
-00:00:43.375 --> 00:00:48.862
-visible Everything is synthetic and disposable so
-students can experiment safely
+00:00:37.580 --> 00:00:40.569
+You can also use the Copy button open the Query Tool
+in
+
+00:00:40.595 --> 00:00:45.917
+pgAdmin paste the query and run it in PostgreSQL
+there Using both
+
+00:00:45.943 --> 00:00:47.489
+approaches is good practice

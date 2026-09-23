@@ -1,36 +1,41 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:03.675
-Coding Exercise 4 tests whether you can encode a
-policy that includes
+00:00:00.102 --> 00:00:04.238
+Exercise 4 asks for billing rows that are not
+definitely Paid including
 
-00:00:03.688 --> 00:00:09.100
-missing status The wording is not definitely Paid
-That means a NULL
+00:00:04.264 --> 00:00:09.351
+records where the payment status is missing That
+final phrase is the
 
-00:00:09.125 --> 00:00:13.688
-status should remain in the result for review
-Ordinary not-equal does not
+00:00:09.364 --> 00:00:13.824
+important part If you use ordinary not equal to Paid
+rows with
 
-00:00:13.700 --> 00:00:17.375
-satisfy that policy because NULL compared with Paid
-becomes UNKNOWN and is
+00:00:13.850 --> 00:00:18.257
+null status will disappear because the result is
+UNKNOWN So you need
 
-00:00:17.388 --> 00:00:22.150
-filtered out Use IS DISTINCT FROM to get a definite
-Boolean result
+00:00:18.283 --> 00:00:23.798
+the null-safe comparison we practiced earlier
+Complete the WHERE clause
 
-00:00:23.025 --> 00:00:27.812
-After running you should see six billing rows The
-missing status record
+00:00:23.824 --> 00:00:28.558
+in the browser then select Run and Check You can
+also copy
 
-00:00:27.838 --> 00:00:32.562
-is an important part of the expected result This
-short exercise captures
+00:00:28.584 --> 00:00:32.991
+the query into pgAdmin and compare ordinary
+inequality with the null-safe version
 
-00:00:32.588 --> 00:00:36.088
-an important distinction between a known non-Paid
-status and a status that
+00:00:33.907 --> 00:00:38.753
+This is a short exercise but it tests an important
+idea Before
 
-00:00:36.100 --> 00:00:37.562
-is simply not known to be Paid
+00:00:38.778 --> 00:00:43.327
+writing the operator translate the requirement into
+plain language include anything that
+
+00:00:43.340 --> 00:00:46.420
+is different from Paid even if the current status is
+missing

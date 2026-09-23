@@ -1,36 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:02.988
-If a CASE expression has no ELSE and no WHEN branch
-matches
+00:00:00.102 --> 00:00:04.915
+An ELSE branch in a case expression is optional If
+there is
 
-00:00:03.212 --> 00:00:08.700
-PostgreSQL returns NULL That can be intentional when
-NULL means unclassified but
+00:00:04.941 --> 00:00:08.459
+no ELSE and none of the WHEN conditions match SQL
+returns null
 
-00:00:08.712 --> 00:00:12.200
-it can also create ambiguity if the analyst expected
-a value such
+00:00:09.376 --> 00:00:13.422
+Sometimes that is exactly what we want But it should
+be a
 
-00:00:12.212 --> 00:00:17.575
-as Other The example labels respiratory diagnoses
-and leaves all other diagnoses
+00:00:13.448 --> 00:00:19.363
+deliberate decision not an accident In this example
+only selected respiratory
 
-00:00:17.600 --> 00:00:23.588
-NULL Run it and inspect the unmatched rows Before
-omitting ELSE decide
+00:00:19.376 --> 00:00:24.878
+diagnoses receive the label Respiratory Other
+diagnoses receive null because
 
-00:00:23.612 --> 00:00:27.888
-what the missing result means The same idea applies
-when the input
+00:00:24.891 --> 00:00:29.740
+there is no ELSE branch Run the SQL in the browser
+and
 
-00:00:27.912 --> 00:00:31.888
-can be NULL If a missing measure needs a separate
-category such
+00:00:29.765 --> 00:00:34.934
+inspect the diagnosis group column You can also copy
+it into pgAdmin
 
-00:00:31.900 --> 00:00:35.238
-as Needs review add an explicit NULL branch rather
-than letting the
+00:00:36.346 --> 00:00:40.535
+Then think about the purpose of the output Would
+null be meaningful
 
-00:00:35.262 --> 00:00:36.912
-value fall through accidentally
+00:00:40.561 --> 00:00:43.744
+here or would a label such as Other be easier for
+users
+
+00:00:43.770 --> 00:00:47.919
+to understand The answer depends on the business
+rule and how the
+
+00:00:47.932 --> 00:00:49.156
+result will be used

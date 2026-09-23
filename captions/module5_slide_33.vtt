@@ -1,36 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.538
-This report combines contact normalization and CASE
-classification in one output For
+00:00:00.102 --> 00:00:05.885
+This example creates two useful outputs at the same
+time First we
 
-00:00:05.562 --> 00:00:10.300
-contact information blank and whitespace-only text
-are normalized before COALESCE selects the
+00:00:05.911 --> 00:00:11.029
+create a preferred contact method We normalize blank
+values and use email
 
-00:00:10.312 --> 00:00:15.412
-first usable contact method For billing the query
-makes a different decision
+00:00:11.196 --> 00:00:15.694
+mobile phone and home phone in that order Second we
+create a
 
-00:00:16.300 --> 00:00:21.000
-A missing bill is not converted to zero Instead CASE
-labels it
+00:00:15.719 --> 00:00:20.926
+billing category Notice that missing bill amounts
+become Needs review rather than
 
-00:00:21.025 --> 00:00:25.538
-Needs review An exact zero gets No Charge then
-higher tiers are
+00:00:20.951 --> 00:00:25.694
+being placed into the Low Value category An exact
+zero becomes No
 
-00:00:25.550 --> 00:00:30.625
-checked from specific thresholds down to the
-low-value default Sometimes a fallback
+00:00:25.719 --> 00:00:32.468
+Charge Then we apply the High Value and Standard
+thresholds The
 
-00:00:30.638 --> 00:00:35.738
-is appropriate for display Other times a missing
-value carries data-quality meaning
+00:00:32.481 --> 00:00:36.787
+SQL is available below Run it in the browser and
+study the
 
-00:00:35.762 --> 00:00:39.838
-that should remain visible Run the query and compare
-the NULL bill
+00:00:36.812 --> 00:00:42.084
+preferred contact and billing tier columns You can
+also use Copy and
 
-00:00:39.862 --> 00:00:41.512
-record with the zero bill record
+00:00:42.110 --> 00:00:47.728
+run it in pgAdmin The important design idea is that
+presentation
+
+00:00:47.754 --> 00:00:52.408
+defaults should not hide data-quality problems A
+missing bill is not the
+
+00:00:52.420 --> 00:00:53.967
+same thing as a small bill

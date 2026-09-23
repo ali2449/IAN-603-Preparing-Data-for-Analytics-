@@ -1,36 +1,44 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.875
-The most dangerous logic errors are often not syntax
-errors PostgreSQL executes
+00:00:00.102 --> 00:00:05.661
+Let's collect several common mistakes in one place
+First mixing
 
-00:00:05.888 --> 00:00:09.712
-the statement successfully but the result does not
-match the intended rule
+00:00:05.674 --> 00:00:08.806
+OR and AND without parentheses can change the
+meaning of the rule
 
-00:00:10.588 --> 00:00:15.262
-Mixed AND and OR can be grouped incorrectly Equals
-NULL cannot test
+00:00:09.709 --> 00:00:13.189
+Second comparing a field to null with equals does
+not work as
 
-00:00:15.288 --> 00:00:21.612
-missingness NOT IN can behave unexpectedly when the
-list contains NULL Ordinary
+00:00:13.214 --> 00:00:18.382
+a missing-value test Third NOT IN becomes dangerous
+when the list itself
 
-00:00:21.638 --> 00:00:26.375
-not-equal excludes a missing value as UNKNOWN CASE
-can hide a specific
+00:00:18.395 --> 00:00:24.104
+contains null Fourth ordinary not-equal comparisons
+can silently exclude records
 
-00:00:26.400 --> 00:00:30.812
-rule behind a broader earlier branch Because these
-statements run without a
+00:00:24.129 --> 00:00:29.347
+where the value is null Finally putting a broad case
+condition before
 
-00:00:30.825 --> 00:00:36.638
-syntax error prediction and edge-case testing are
-essential Whenever logic matters test
+00:00:29.373 --> 00:00:34.297
+a more specific condition can make the specific
+branch unreachable Notice that
 
-00:00:36.662 --> 00:00:41.200
-records with NULL zero blank text FALSE exact
-thresholds and values that
+00:00:34.323 --> 00:00:39.606
+most of these queries are syntactically valid
+PostgreSQL may run them without
 
-00:00:41.225 --> 00:00:42.925
-satisfy more than one condition
+00:00:39.619 --> 00:00:43.975
+displaying an error That is why testing SQL is not
+only about
+
+00:00:43.988 --> 00:00:47.982
+asking whether the query runs We also need to ask
+whether the
+
+00:00:47.995 --> 00:00:49.864
+result matches the intended rule

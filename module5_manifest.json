@@ -1,306 +1,356 @@
 {
   "prefix": "module5",
   "voice": "en-US-GuyNeural",
-  "rate": "+0%",
+  "rate": "-3%",
   "volume": "+0%",
   "pitch": "+0Hz",
   "caption_words": 12,
   "slide_count": 49,
   "slide_markers_found": true,
+  "pause_marker_format": "[pause=seconds] or [pause=millisecondsms]",
   "slides": [
     {
       "slide": 1,
       "audio": "module5_slide_01.mp3",
       "captions": "module5_slide_01.vtt",
-      "text": "Welcome to Module 5, Reasoning with SQL Logic. Earlier modules focused on retrieving rows, changing data safely, and creating summaries. Now we focus on the rules that decide which rows qualify and how values should be classified. Real data is not always simple: conditions overlap, fields may be missing, and SQL can produce an UNKNOWN truth state. We will work with AND, OR, and NOT, then study TRUE, FALSE, and UNKNOWN. We will use NULL-safe tools such as IS NULL, IS DISTINCT FROM, COALESCE, and NULLIF, and we will build CASE expressions where branch order matters. The main habit is to reason before writing syntax: state the rule, decide how missing values should behave, write the SQL, and test edge cases."
+      "text": "Welcome to Module 5, Reasoning with SQL Logic.\n\n[pause=0.7]\n\nIn the previous module, we focused on summarizing data. In this module, we are going to focus on decision making. In other words, how can we tell SQL exactly which records we want, how different conditions should work together, and what should happen when information is missing?\n\nWe will work with AND, OR, and NOT. We will also look at TRUE, FALSE, and UNKNOWN, because SQL does not always work with only two logical states. Later, we will use tools such as coalesce, null if, and case expressions to build more realistic business rules.\n\nAs you move through this module, do not just memorize the syntax. Try to read each SQL condition as a sentence. Ask yourself, what rule am I actually giving to the database?\n\n[pause=1.0]",
+      "pause_markers": 2
     },
     {
       "slide": 2,
       "audio": "module5_slide_02.mp3",
       "captions": "module5_slide_02.vtt",
-      "text": "Module 4 asked questions such as how many, how much, or what is the average. Module 5 asks a different question: which rule applies? A decision rule can involve several conditions at once. For example, a record might qualify only when it is active, consent is explicitly true, a diagnosis belongs to a target set, and usable contact information is missing. Some of those fields may be NULL. That is why this module emphasizes structure. Define the condition, inspect missingness, group related tests with parentheses, order CASE branches carefully, and test boundary values such as zero, blank text, FALSE, and NULL. The goal is not merely SQL that runs. The goal is SQL whose output matches the written rule."
+      "text": "Before we start writing code, I want to connect this module to what we already learned.\n\n[pause=0.7]\n\nIn Module 4, we summarized rows. We counted records, calculated averages, grouped data, and created analytical summaries.\n\nModule 5 is different. Now we are asking SQL to make decisions about individual values and records.\n\nFor example, should this patient be included in a report? Is this billing record considered high value? Does this patient have a usable contact method? What should happen when a value is missing?\n\nA good habit is to first explain the rule in normal language. Then break that rule into smaller conditions. After that, translate those conditions into SQL.\n\nWe will also test edge cases, because a query can run successfully and still give the wrong answer.\n\n[pause=1.0]",
+      "pause_markers": 2
     },
     {
       "slide": 3,
       "audio": "module5_slide_03.mp3",
       "captions": "module5_slide_03.vtt",
-      "text": "By the end of this module, you should be able to compose Boolean conditions, explain SQL's three-valued logic, and handle missing values deliberately. You will learn when to use IS NULL, IS TRUE, IS FALSE, IS UNKNOWN, and IS DISTINCT FROM. You will use COALESCE for fallback logic and NULLIF for normalization and safe ratios. You will build searched and simple CASE expressions with clear boundaries and explicit handling of missing values. Finally, you will combine these tools in realistic rules and explain why each row was included, excluded, or classified. These are reasoning skills rather than memorization tasks. If you understand why the query behaves as it does, adapting it to a new dataset becomes much easier."
+      "text": "Here is what we are going to learn in this module.\n\n[pause=0.7]\n\nFirst, we will combine conditions using AND, OR, and NOT.\n\n[pause=0.4]\n\nNext, we will discuss three-valued logic. This is important because SQL conditions can evaluate to TRUE, FALSE, or UNKNOWN.\n\n[pause=0.4]\n\nThen we will work with missing values and learn why null needs special treatment.\n\nWe will also use case expressions to convert business rules into categories and labels.\n\n[pause=0.5]\n\nFinally, we will combine these ideas in realistic examples and exercises.\n\nAs you work through the module, focus on understanding what each condition means. If you can explain the logic clearly in plain language, writing the SQL becomes much easier.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 4,
       "audio": "module5_slide_04.mp3",
       "captions": "module5_slide_04.vtt",
-      "text": "This six-step workflow is the foundation for the module. First, state the rule in plain language. Second, identify which fields can be missing. Third, group related Boolean tests with parentheses, especially when AND and OR appear together. Fourth, when using CASE, put specific or high-priority branches before broad branches because the first true branch wins. Fifth, test edge cases such as exact thresholds, zero, empty text, whitespace, FALSE, and NULL. Finally, compare the output with the written rule. This workflow prevents a common kind of SQL problem: a statement that is syntactically correct and runs without an error, but quietly returns the wrong cohort or label."
+      "text": "This slide gives us a simple workflow for building SQL logic.\n\n[pause=0.7]\n\nStep one is to define the rule in plain language. Do not start with SQL yet.\n\n[pause=0.4]\n\nStep two is to inspect the fields involved and ask whether any of them can contain null values.\n\n[pause=0.4]\n\nStep three is to group related conditions. This is where parentheses become very important.\n\n[pause=0.4]\n\nStep four is to decide the order of your case conditions. Remember that the first matching case branch wins.\n\n[pause=0.4]\n\nStep five is to test unusual records, including null values, blank text, zero values, and exact boundaries.\n\n[pause=0.7]\n\nFinally, validate the result against the original rule.\n\nThe main idea is simple: reason first, then write the SQL. A clear rule usually leads to clearer code.\n\n[pause=1.0]",
+      "pause_markers": 7
     },
     {
       "slide": 5,
       "audio": "module5_slide_05.mp3",
       "captions": "module5_slide_05.vtt",
-      "text": "The practice database contains four small tables and one convenience view. patient_info includes demographics, contacts, activity status, consent, and preferred language. diagnostics adds diagnosis, severity, and confirmation state. patient_billing includes bill amounts, payments, and payment status. admissions contains admission and discharge dates. The patient_case view combines the first three tables so this module can focus on logic rather than join syntax. The data intentionally includes NULL values, empty strings, whitespace-only strings, a zero bill, a missing payment status, and an unknown consent value. Those edge cases make the logic visible. Everything is synthetic and disposable, so students can experiment safely."
+      "text": "Throughout this module, we will use a small synthetic healthcare-style dataset.\n\n[pause=0.7]\n\nWe have a patient information table with demographic and contact fields. We have a diagnostics table, a patient billing table, and an admissions table.\n\nWe also have a convenience view called patient case. This view brings several useful fields together so we can focus on SQL logic without spending all of our time writing joins.\n\nThe data is synthetic, so it is safe to use for practice.\n\nWhen we reach a slide with executable SQL, you can run the code directly here in the browser. You can also use the Copy button, open the Query Tool in pgAdmin, paste the query, and run it in PostgreSQL there.\n\nUsing both approaches is good practice.\n\n[pause=1.0]",
+      "pause_markers": 2
     },
     {
       "slide": 6,
       "audio": "module5_slide_06.mp3",
       "captions": "module5_slide_06.vtt",
-      "text": "AND, OR, and NOT are the basic building blocks of SQL decision rules. AND requires all connected conditions to be true. OR requires at least one. NOT reverses a known Boolean result. SQL also has UNKNOWN, usually because a comparison involves NULL. That extra state changes how some compound expressions behave. Think about the practical effect: AND usually narrows a cohort, OR usually broadens it, and NOT excludes a condition only when the truth state is known. The next slides separate the operators so you can see their behavior before combining them with missing values and precedence rules."
+      "text": "Three operators are at the center of most SQL decision rules: AND, OR, and NOT.\n\n[pause=0.7]\n\nAND means that all connected conditions need to be true.\n\nOR means that at least one of the connected conditions needs to be true.\n\nNOT reverses a known logical condition.\n\nA simple way to remember this is that AND usually makes a result more restrictive, while OR usually makes it broader.\n\nBut there is one important detail. SQL has a third logical state called UNKNOWN. This normally appears when null values are involved.\n\nSo as we work through these examples, do not assume every condition is simply true or false. Sometimes SQL does not have enough information to make that decision.\n\n[pause=1.0]",
+      "pause_markers": 2
     },
     {
       "slide": 7,
       "audio": "module5_slide_07.mp3",
       "captions": "module5_slide_07.vtt",
-      "text": "AND means every connected condition must be true for the row to qualify. Here the record must be active, the age must be at least forty, and severity must be High. If any one condition is false, the row does not remain. Run the query and inspect the result. Then imagine removing one condition and notice that the cohort would usually become larger. A useful beginner habit is to read the WHERE clause as a sentence. If the sentence requires several things at the same time, AND is usually the correct connector. If you intended alternatives, OR may be more appropriate."
+      "text": "Now let's start with AND.\n\n[pause=0.7]\n\nAND means every connected condition must be satisfied.\n\nHere, our rule says that the patient must be active, the age must be greater than or equal to forty, and the severity must be High.\n\nNotice how each additional AND condition makes the result more restrictive.\n\n[pause=0.8]\n\nBelow the explanation, we have a SQL code cell. You can click Run and execute this query directly in the browser. After it runs, look at the result and check whether every returned row satisfies all three conditions.\n\n[pause=0.5]\n\nYou can also click Copy, open pgAdmin, paste the query into the Query Tool, and run exactly the same SQL there.\n\nWhen reading the WHERE clause, say it as a sentence: keep records where the patient is active, and age is at least forty, and severity is High.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 8,
       "audio": "module5_slide_08.mp3",
       "captions": "module5_slide_08.vtt",
-      "text": "OR represents alternatives. A row remains when at least one condition is true. In this example, the diagnosis can be Pneumonia, Flu, or Asthma. This normally broadens the result because several different values can qualify. When multiple OR conditions compare the same column with a list of values, IN can often express the rule more compactly. The important idea is that OR does not require all options to be true. Any qualifying alternative is enough. Later, when OR is mixed with AND, parentheses become especially important because the grouping of those conditions changes the meaning."
+      "text": "Now let's compare AND with OR.\n\n[pause=0.7]\n\nOR means that a record can satisfy any one of several alternatives.\n\nIn this example, we want patients whose diagnosis is Pneumonia, Flu, or Asthma.\n\nBecause these are alternatives, OR makes sense.\n\n[pause=0.8]\n\nWe have a runnable SQL example at the bottom of the slide. Try running it in the browser and look at the diagnosis column in the result. Each returned row should match at least one of the three diagnoses.\n\n[pause=0.5]\n\nIf you are practicing with pgAdmin, use the Copy button and paste the query into the Query Tool.\n\nLater, when several alternatives all apply to the same column, we can often make the query shorter with an IN condition. But first, it is useful to understand exactly what the OR statements are doing.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 9,
       "audio": "module5_slide_09.mp3",
       "captions": "module5_slide_09.vtt",
-      "text": "NOT negates a Boolean expression. In this example, active records are kept while selected diagnoses are excluded. Parentheses make the target of NOT clear: the entire IN expression is being negated. With ordinary true and false values, NOT reverses the result. But SQL also has UNKNOWN. If an expression is unknown because it depends on NULL, NOT UNKNOWN remains UNKNOWN. That matters because WHERE keeps only true rows. Use NOT when the exclusion rule is clear, but be careful when nullable values are involved. Sometimes an explicit NULL-safe predicate communicates the rule more accurately."
+      "text": "Next we have NOT.\n\n[pause=0.7]\n\nNOT is used when we want to exclude a condition.\n\nIn this example, we keep active patients, but we exclude two diagnoses.\n\nNotice the parentheses around the diagnosis condition. They make it very clear which part of the logic we are reversing.\n\n[pause=0.8]\n\nThe query is available in the SQL box. Run it here in the browser first. Look at the results and confirm that the excluded diagnoses do not appear.\n\n[pause=0.5]\n\nYou can also copy the query into pgAdmin and run it against the same practice tables.\n\nOne important point is that NOT does not magically solve missing values. If a condition is UNKNOWN because of null, applying NOT still leaves it UNKNOWN. We will see why that matters in a few slides.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 10,
       "audio": "module5_slide_10.mp3",
       "captions": "module5_slide_10.vtt",
-      "text": "PostgreSQL has a precedence order for logical operators. NOT is evaluated before AND, and AND is evaluated before OR. So A OR B AND C means A OR the combination of B AND C. Knowing that rule is useful, but relying on memory is risky. Parentheses make the intended business logic visible and protect the rule when another person edits the query later. For this course, treat parentheses as documentation. When AND and OR appear together, group the related tests explicitly so the query is easier to explain and harder to misread."
+      "text": "When AND, OR, and NOT appear together, SQL follows an order of operations.\n\n[pause=0.7]\n\nNOT is evaluated first, then AND, and then OR.\n\nThis is similar to the idea of order of operations in mathematics.\n\nThe problem is that a query can be technically correct but still be difficult for another person to read.\n\nThat is why I recommend using parentheses whenever AND and OR are mixed in the same rule.\n\nParentheses are not only for the database. They are also documentation for you and for anyone else reading the query later.\n\nIf your business rule says that two conditions belong together, show that relationship explicitly with parentheses.\n\n[pause=1.0]",
+      "pause_markers": 2
     },
     {
       "slide": 11,
       "audio": "module5_slide_11.mp3",
       "captions": "module5_slide_11.vtt",
-      "text": "These two conditions look similar, but they represent different policies. Without parentheses, AND is evaluated first, so the consent requirement applies only to the Kidney Disease branch. Any patient age sixty-five or older can qualify even when consent is false. With parentheses, the age and diagnosis alternatives are grouped together, and explicit consent is required for the entire rule. Run both statements and compare the rows. Lisa Ray is the useful boundary record: age seventy-one, but consent is false. She appears only in the unparenthesized version. This is why parentheses are part of the meaning, not just formatting."
+      "text": "This slide is very important because the two conditions look similar, but they do not mean the same thing.\n\n[pause=0.7]\n\nIn the first version, SQL evaluates the AND portion before the OR portion. This means the consent requirement does not necessarily apply to every patient selected by the age condition.\n\nIn the second version, we put age or diagnosis inside parentheses, and then require consent for the entire group.\n\n[pause=0.8]\n\nYou have both versions in the code cell.\n\n[pause=0.7]\n\nBefore you click Run, make a prediction. Which patient might appear in the first result but disappear in the second?\n\n[pause=0.4]\n\nThen run the code in the browser and compare the outputs.\n\nYou can also copy both queries into pgAdmin and run them one at a time.\n\nThis is a good example of why parentheses are part of the meaning of the rule, not just formatting.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 12,
       "audio": "module5_slide_12.mp3",
       "captions": "module5_slide_12.vtt",
-      "text": "SQL does not use only two truth states. When NULL is involved, a condition can become UNKNOWN. NULL means missing, unknown, or not applicable. It is not zero, an empty string, a space, or false. Because SQL does not know the missing value, ordinary comparisons involving NULL often cannot be proven true or false. The result is UNKNOWN. The practical rule to remember is that WHERE keeps only TRUE. FALSE rows are excluded, and UNKNOWN rows are also excluded. A row can disappear not because a condition was definitely false, but because the data was insufficient to prove it true."
+      "text": "SQL logic has three possible results: TRUE, FALSE, and UNKNOWN.\n\n[pause=0.7]\n\nTRUE means the condition is satisfied.\n\nFALSE means the condition is not satisfied.\n\nUNKNOWN means SQL does not have enough information to determine whether the condition is true or false.\n\nThis usually happens because a null value is involved.\n\n[pause=0.7]\n\nThe most important rule on this slide is about the WHERE clause.\n\nA WHERE clause keeps only rows where the condition evaluates to TRUE.\n\nRows that evaluate to FALSE are removed, but rows that evaluate to UNKNOWN are also removed.\n\nThat behavior explains many surprising results when we start working with missing data.\n\n[pause=1.0]",
+      "pause_markers": 3
     },
     {
       "slide": 13,
       "audio": "module5_slide_13.mp3",
       "captions": "module5_slide_13.vtt",
-      "text": "Three-valued logic becomes easier when you inspect a few important combinations. TRUE AND UNKNOWN is UNKNOWN because the unknown side could still be false. FALSE AND UNKNOWN is definitely false because one false value is enough. TRUE OR UNKNOWN is definitely true because one true value is enough. FALSE OR UNKNOWN remains unknown because the unknown side could still be true. NOT UNKNOWN remains unknown. Run the truth table and scan the combinations. You do not need to memorize every row. Instead, ask whether the known part of the expression is already enough to determine the final result."
+      "text": "This slide lets us see how UNKNOWN behaves when combined with TRUE and FALSE.\n\n[pause=0.7]\n\nFor example, TRUE AND UNKNOWN becomes UNKNOWN, because we do not know whether the missing side would have been true.\n\nFALSE AND UNKNOWN becomes FALSE, because one false condition is already enough to make the entire AND expression false.\n\nTRUE OR UNKNOWN becomes TRUE, because one true condition is enough.\n\n[pause=0.8]\n\nAt the bottom, we have a runnable example that creates combinations of TRUE, FALSE, and UNKNOWN.\n\nRun it in the browser and inspect the output table.\n\n[pause=0.5]\n\nIf you want to study the behavior more closely, copy the query into pgAdmin and run it there.\n\nYou do not need to memorize every combination immediately. Focus on understanding why SQL sometimes cannot make a definite decision.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 14,
       "audio": "module5_slide_14.mp3",
       "captions": "module5_slide_14.vtt",
-      "text": "This slide isolates one rule that explains many NULL-related surprises: WHERE keeps only TRUE. The example creates three rows with Boolean states true, false, and NULL, then applies WHERE flag. Only the true row remains. The false row is removed as expected, and the unknown row is also removed because SQL cannot prove the condition true. This matters when a nullable field such as consent is used in a filter. Decide whether unknown values should be excluded, included for review, or treated separately. Do not let WHERE's default behavior make that policy decision accidentally."
+      "text": "Here we make the behavior of WHERE very clear.\n\n[pause=0.7]\n\nWe create three sample rows: one with TRUE, one with FALSE, and one with UNKNOWN.\n\n[pause=0.4]\n\nThen we use the Boolean field directly in the WHERE clause.\n\n[pause=0.7]\n\nBefore running the example, predict what will happen.\n\nOnly the TRUE row will remain. FALSE is removed, and UNKNOWN is also removed.\n\n[pause=0.8]\n\nClick Run in the browser to confirm this.\n\n[pause=0.5]\n\nYou can copy the same SQL into pgAdmin if you want to experiment. For example, you could change the values or add another row.\n\nThis small example is important because later, when null appears in a comparison, the result may become UNKNOWN and disappear from your query even though you did not explicitly ask SQL to remove it.\n\n[pause=1.0]",
+      "pause_markers": 6
     },
     {
       "slide": 15,
       "audio": "module5_slide_15.mp3",
       "captions": "module5_slide_15.vtt",
-      "text": "A common beginner mistake is writing equals NULL. That does not test whether a value is missing. It asks whether a known value is equal to an unknown value, and SQL cannot prove the comparison. The result is UNKNOWN, even for rows where the column is NULL. The same issue affects not-equal NULL. SQL provides explicit missing-value predicates: IS NULL and IS NOT NULL. Run the example and inspect the calculated columns. You should see NULL results instead of useful true or false answers. When the question is whether a value is missing, use IS NULL. Treat that as a basic SQL habit."
+      "text": "A very common beginner mistake is trying to compare a value to null using the equals operator.\n\n[pause=0.7]\n\nFor example, writing email address equals null does not test whether the email is missing.\n\nThe result is UNKNOWN.\n\nThe same problem happens with not equal to null.\n\nTo test for missing data, SQL provides special predicates: IS NULL and IS NOT NULL.\n\n[pause=0.8]\n\nThe code on this slide intentionally demonstrates the incorrect comparison so you can see what PostgreSQL returns.\n\nRun it in the browser and look at the equals-null and not-equals-null columns.\n\nYou can also copy the code into pgAdmin.\n\n[pause=0.7]\n\nThe rule to remember is simple: when checking whether a value is missing, use IS NULL or IS NOT NULL. Do not use ordinary equals or not-equals comparisons.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 16,
       "audio": "module5_slide_16.mp3",
       "captions": "module5_slide_16.vtt",
-      "text": "A blank string is not NULL in PostgreSQL. An empty string is a known text value with zero characters, and a whitespace-only string is also a real value until spaces are removed. This matters when a rule says no usable email. Testing only IS NULL would miss empty text and whitespace-only text. BTRIM removes surrounding spaces. NULLIF then converts an empty trimmed result to NULL. After that normalization, IS NULL can treat the three cases consistently. Run the example and inspect the patients returned. This is a practical preparation pattern because messy text often needs normalization before business rules are applied."
+      "text": "Missing text and blank text are not the same thing.\n\n[pause=0.7]\n\nA null value means the value is missing or unknown.\n\nAn empty string means we have text, but its length is zero.\n\nWe can also have text containing only spaces.\n\nIn real datasets, all three situations can appear.\n\nA useful pattern is to first trim spaces using B trim, and then use null if to convert an empty result into null.\n\n[pause=0.8]\n\nThe query on this slide finds email addresses that are either missing or effectively blank.\n\nRun it directly in the browser and inspect the records it finds.\n\nYou can also copy the SQL to pgAdmin and run it there.\n\nThis kind of normalization is very useful before we start making decisions about whether a contact value is usable.\n\n[pause=1.0]",
+      "pause_markers": 3
     },
     {
       "slide": 17,
       "audio": "module5_slide_17.mp3",
       "captions": "module5_slide_17.vtt",
-      "text": "A nullable Boolean can represent three different states. Consent can be explicitly true, explicitly false, or unknown because no value was recorded. Those states may have very different meanings. Explicit false can mean do not contact. Unknown may mean send the record for review rather than treating it as a refusal. PostgreSQL provides IS TRUE, IS FALSE, and IS UNKNOWN. Run the example and inspect the patient whose consent is NULL. explicitly_yes and explicitly_no should both be false, while not_recorded is true. This pattern is useful whenever a Boolean field represents permission, approval, or verification and unknown is not equivalent to no."
+      "text": "Boolean columns can also contain null.\n\n[pause=0.7]\n\nSuppose consent to contact is a Boolean field.\n\nTRUE can mean the person explicitly said yes.\n\nFALSE can mean the person explicitly said no.\n\nBut null may mean that the answer was never recorded.\n\nThose three states can have different business meanings.\n\nPostgreSQL lets us test them explicitly using IS TRUE, IS FALSE, and IS UNKNOWN.\n\n[pause=0.8]\n\nRun the example in the browser and look at the three output columns. They clearly show which state each record belongs to.\n\n[pause=0.5]\n\nYou can copy the query into pgAdmin as well.\n\n[pause=0.7]\n\nThe main lesson is not to automatically treat FALSE and UNKNOWN as the same thing. In many applications, “no” and “we do not know” should lead to different actions.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 18,
       "audio": "module5_slide_18.mp3",
       "captions": "module5_slide_18.vtt",
-      "text": "IS DISTINCT FROM is useful when you need a definite comparison between nullable values. Ordinary equality or inequality can become UNKNOWN when NULL is involved. IS DISTINCT FROM avoids that uncertainty. Two equal non-NULL values are not distinct. Two NULL values are also treated as not distinct. A NULL compared with a non-NULL value is distinct. The companion predicate IS NOT DISTINCT FROM works like NULL-safe equality. Run the example and focus on rows containing NULL. The output still contains true or false rather than unknown. Use these predicates when missingness is part of the comparison itself."
+      "text": "Ordinary equality and inequality comparisons can produce UNKNOWN when null is involved.\n\n[pause=0.7]\n\nPostgreSQL provides a useful alternative called IS DISTINCT FROM.\n\nYou can think of this as a null-safe comparison.\n\nIS DISTINCT FROM tells us whether two values are different, even when one of them is null.\n\nIS NOT DISTINCT FROM tells us whether two values match, including the case where both are null.\n\nThe useful part is that these comparisons return TRUE or FALSE rather than UNKNOWN.\n\n[pause=0.8]\n\nThe SQL example compares bill amount with amount paid.\n\nRun it in the browser and inspect the two comparison columns.\n\n[pause=0.5]\n\nYou can also copy the query into pgAdmin and experiment with the values.\n\nThis operator becomes very useful when the business rule needs missing values to be handled explicitly.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 19,
       "audio": "module5_slide_19.mp3",
       "captions": "module5_slide_19.vtt",
-      "text": "COALESCE evaluates expressions from left to right and returns the first one that is not NULL. That makes it useful for fallback logic. A preferred contact rule might try email first, then mobile phone, then home phone, and finally a readable message. But COALESCE only understands NULL. An empty string or whitespace-only string is still non-NULL and can stop the fallback too early. That is why COALESCE is often combined with NULLIF and trimming. Be careful with numeric defaults as well. Replacing a missing bill with zero makes a strong domain assumption. Use a fallback only when its meaning is intentional and documented."
+      "text": "Now let's introduce coalesce.\n\n[pause=0.7]\n\nCoalesce returns the first value in a list that is not null.\n\nFor example, we might try an email address first. If that is missing, try the mobile phone. If that is also missing, try the home phone. Finally, we can return a readable fallback.\n\nThis is a very useful function, but we should use it carefully.\n\nA fallback should have a real meaning. We do not want to replace missing data with a value that changes the meaning of the information.\n\nIn a few slides, we will combine coalesce with null if so that blank text is treated as missing before we choose the first usable contact method.\n\n[pause=1.0]",
+      "pause_markers": 2
     },
     {
       "slide": 20,
       "audio": "module5_slide_20.mp3",
       "captions": "module5_slide_20.vtt",
-      "text": "NULLIF compares two expressions. When they are equal, it returns NULL; otherwise it returns the first expression. A useful text-cleaning pattern is NULLIF of trimmed text and an empty string. BTRIM removes surrounding whitespace, and NULLIF converts the empty result to NULL. This gives several representations of no usable text one consistent missing-value state. Run the query and compare original_email with normalized_email. Normal email values remain unchanged, while empty or whitespace-only text becomes NULL. This small transformation makes later IS NULL and COALESCE logic easier to reason about."
+      "text": "Null if is another simple but useful SQL function.\n\n[pause=0.7]\n\nIt compares two expressions. If they are equal, it returns null. Otherwise, it returns the first expression.\n\nOn this slide, we use B trim to remove spaces around an email address. Then null if converts an empty string into null.\n\nThis helps us normalize text before later logic.\n\n[pause=0.8]\n\nThere is a runnable example below.\n\nClick Run in the browser and compare the original email with the normalized email.\n\n[pause=0.5]\n\nThen, if you want to practice in PostgreSQL directly, click Copy, open pgAdmin, and run the query in the Query Tool.\n\nPay special attention to records containing blank or whitespace-only text. Those are the records where this pattern is most useful.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 21,
       "audio": "module5_slide_21.mp3",
       "captions": "module5_slide_21.vtt",
-      "text": "This example combines normalization and fallback logic. We want the first usable contact method, but an empty email or a string containing only spaces should not block the fallback. Each contact value is trimmed, and NULLIF converts an empty result to NULL. COALESCE then chooses the first available value. The order expresses priority: email, then mobile, then home, then a final label. Run the query and inspect the edge cases. Robert Lee and Lisa Ray should fall back to home phone. Maria Torres should use mobile because her email contains only spaces. Andre Green should receive the final No contact provided label."
+      "text": "Now we combine the previous two ideas.\n\n[pause=0.7]\n\nFirst, we clean each possible contact value. We trim extra spaces and convert blank values into null.\n\n[pause=0.4]\n\nThen we use coalesce to choose the first usable contact method.\n\nThe priority in this example is email first, then mobile phone, then home phone, and finally the text No contact provided.\n\n[pause=0.8]\n\nThe SQL may look longer, but the logic is actually very systematic.\n\n[pause=0.8]\n\nRun the query in the browser and look at the preferred contact column.\n\n[pause=0.4]\n\nThen try copying it into pgAdmin.\n\nAs you read the expression, do not try to pronounce every parenthesis. Think about the workflow: clean email, clean mobile, clean home, and then choose the first value that is actually available.\n\n[pause=1.0]",
+      "pause_markers": 6
     },
     {
       "slide": 22,
       "audio": "module5_slide_22.mp3",
       "captions": "module5_slide_22.vtt",
-      "text": "NULLIF is also useful for numeric safety. Division by zero is an error, and the practice data includes a zero bill. NULLIF bill_amount, zero converts an exact zero denominator to NULL. Division by NULL then returns NULL rather than raising an error. Here that means the percentage is not computable, which is different from zero percent. The numerator uses COALESCE amount_paid to zero, which is a separate assumption that should be justified by the domain. Run the query and inspect the No Charge record. Safe SQL should avoid errors while preserving the meaning of the data."
+      "text": "This example shows another use for null if.\n\n[pause=0.7]\n\nSuppose we want to calculate the percentage of a bill that has been paid.\n\nNormally, we divide amount paid by bill amount.\n\nBut what happens if the bill amount is zero?\n\nDivision by zero causes a problem.\n\nHere we use null if on the bill amount. If the denominator is zero, null if returns null instead. The result of the calculation then becomes null, which tells us the percentage is not computable.\n\n[pause=0.8]\n\nRun the SQL in the browser and inspect the percent paid column.\n\nYou can also copy it into pgAdmin.\n\nNotice that null does not mean zero percent. It means we could not meaningfully calculate the ratio. That distinction is important when preparing data for analysis.\n\n[pause=1.0]",
+      "pause_markers": 3
     },
     {
       "slide": 23,
       "audio": "module5_slide_23.mp3",
       "captions": "module5_slide_23.vtt",
-      "text": "CASE creates derived values without modifying the stored table. PostgreSQL checks WHEN clauses from top to bottom. As soon as one WHEN condition is true, CASE stops and returns that branch's THEN expression. Later branches are not evaluated for that row. If no WHEN matches, ELSE is used; if ELSE is omitted, the result is NULL. This makes branch order part of the rule. A broad branch placed too early can make a more specific branch unreachable. Before writing CASE, identify overlapping conditions and decide which outcomes have higher priority. Specific exceptions and higher thresholds usually belong before broader defaults."
+      "text": "Now we move to one of the most useful tools in this module: the case expression.\n\n[pause=0.7]\n\nThink of case as a sequence of questions.\n\nSQL checks the first WHEN condition. If it is TRUE, SQL returns the corresponding THEN value and stops.\n\nIf it is not true, SQL moves to the next WHEN condition.\n\nIf none of the conditions match, SQL uses ELSE.\n\nIf there is no ELSE, the result becomes null.\n\n[pause=0.7]\n\nThe most important phrase to remember is: first match wins.\n\nThat means the order of the branches matters.\n\nWhenever you build a case expression, read the conditions from top to bottom and ask whether an earlier condition could accidentally capture records that were supposed to reach a later condition.\n\n[pause=1.0]",
+      "pause_markers": 3
     },
     {
       "slide": 24,
       "audio": "module5_slide_24.mp3",
       "captions": "module5_slide_24.vtt",
-      "text": "Searched CASE is the flexible form of CASE. Each WHEN contains a complete Boolean condition, so it works well for ranges, compound rules, and NULL checks. The billing example handles NULL first so a missing amount is not silently classified as low. It then checks the highest threshold, followed by the next threshold, and uses ELSE for the remaining known values. A twelve-thousand-dollar bill matches High-Value and stops there. A seventy-five-hundred-dollar bill reaches Standard. Run the example and inspect zero, NULL, and threshold values. Searched CASE is especially useful when the business rule itself needs to be visible in the SQL."
+      "text": "This is called a searched case expression.\n\n[pause=0.7]\n\nEach WHEN contains a complete Boolean condition.\n\nThat makes searched case useful for ranges, null checks, and compound rules.\n\nIn this example, we classify billing amounts.\n\nMissing amounts become Unknown. Amounts greater than or equal to ten thousand become High Value. Amounts greater than or equal to five thousand become Standard. Everything else becomes Low Value.\n\n[pause=0.8]\n\nWe have the full SQL in the runnable code cell.\n\nClick Run in the browser and compare the original bill amount with the new billing tier.\n\n[pause=0.5]\n\nYou can also click Copy and run the same query in pgAdmin.\n\nWhen reading this query, focus on the decision order rather than the punctuation. SQL is simply checking each rule from top to bottom and using the first rule that matches.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 25,
       "audio": "module5_slide_25.mp3",
       "captions": "module5_slide_25.vtt",
-      "text": "Simple CASE compares one expression with a list of exact values. It is a good fit for direct code-to-label mappings. In this example, Paid and No Charge map to Closed, Open maps to Follow up, Pending Review maps to Investigate, and anything else reaches ELSE. The row with a NULL payment status therefore becomes Status missing. Simple CASE is concise when the rule is based on exact values. It is not the best form for ranges such as amount greater than or equal to five thousand; searched CASE is clearer for that. Run the query and compare the mapped actions."
+      "text": "There is another form called simple case.\n\n[pause=0.7]\n\nSimple case is useful when we are comparing one expression against several exact values.\n\nHere, we start with payment status.\n\nIf the status is Paid, return Closed. If it is No Charge, also return Closed. If it is Open, return Follow up. If it is Pending Review, return Investigate. Otherwise, return Status missing.\n\n[pause=0.8]\n\nRun the query in the browser and compare the payment status with the action column.\n\n[pause=0.5]\n\nYou can also copy the query into pgAdmin.\n\nCompare this syntax with the searched case from the previous slide.\n\nUse simple case when you are matching one value against a list of exact options. Use searched case when each branch needs its own full condition.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 26,
       "audio": "module5_slide_26.mp3",
       "captions": "module5_slide_26.vtt",
-      "text": "Branch order matters when CASE conditions overlap. If age greater than or equal to eighteen comes first, every senior also satisfies that condition, so the senior branch can never run. The correct order places the more specific senior threshold first, then the broader adult threshold. Run both versions and inspect the classifications for the older patients. This is the same general rule you will use for billing tiers and priority labels: place specific or high-priority conditions before broad conditions. If one branch logically contains another, the narrower branch normally needs to come first."
+      "text": "This slide demonstrates one of the easiest case mistakes to make.\n\n[pause=0.7]\n\nIn the first query, we check whether age is at least eighteen before checking whether age is at least sixty-five.\n\nA sixty-five-year-old also satisfies the first condition, so SQL immediately labels that person Adult and never reaches the Senior branch.\n\nThat makes the Senior branch unreachable.\n\nIn the corrected version, we place the more specific condition first: age at least sixty-five, followed by age at least eighteen.\n\n[pause=0.8]\n\nBoth versions are provided in the code cell.\n\nRun them in the browser and compare the results.\n\nYou can also copy them into pgAdmin.\n\n[pause=0.7]\n\nRemember: when conditions overlap, put the more specific condition before the broader condition.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 27,
       "audio": "module5_slide_27.mp3",
       "captions": "module5_slide_27.vtt",
-      "text": "A good tiering rule makes its boundaries explicit. In the source rule, NULL is handled first as Unknown. Amounts of ten thousand or more are High-Value. Amounts of five thousand or more, but below ten thousand, are Standard. Remaining known amounts are Low-Value. Because the thresholds are written from high to low, each amount reaches the intended branch. An exact ten thousand belongs to High-Value, and an exact five thousand belongs to Standard. Later practice adds a separate No Charge category for an exact zero. When you design tiers, test NULL, zero, exact thresholds, and values just above and below each boundary."
+      "text": "When we create categories, exact boundaries need to be intentional.\n\n[pause=0.7]\n\nHere our billing rule begins with missing values.\n\n[pause=0.4]\n\nThen we handle amounts greater than or equal to ten thousand.\n\nNext we handle amounts greater than or equal to five thousand.\n\nEverything else goes into the low-value category.\n\nIf we add a special zero category, zero also needs to appear before the broad final ELSE branch.\n\nWhen you design a rule like this, test the exact boundary values.\n\nTry zero, five thousand, ten thousand, a value just below each threshold, and a null value.\n\nA query that works for ordinary records may still contain a logic error at the boundaries, so boundary testing is an important part of validating SQL.\n\n[pause=1.0]",
+      "pause_markers": 3
     },
     {
       "slide": 28,
       "audio": "module5_slide_28.mp3",
       "captions": "module5_slide_28.vtt",
-      "text": "If a CASE expression has no ELSE and no WHEN branch matches, PostgreSQL returns NULL. That can be intentional when NULL means unclassified, but it can also create ambiguity if the analyst expected a value such as Other. The example labels respiratory diagnoses and leaves all other diagnoses NULL. Run it and inspect the unmatched rows. Before omitting ELSE, decide what the missing result means. The same idea applies when the input can be NULL. If a missing measure needs a separate category such as Needs review, add an explicit NULL branch rather than letting the value fall through accidentally."
+      "text": "An ELSE branch in a case expression is optional.\n\n[pause=0.7]\n\nIf there is no ELSE and none of the WHEN conditions match, SQL returns null.\n\nSometimes that is exactly what we want.\n\nBut it should be a deliberate decision, not an accident.\n\nIn this example, only selected respiratory diagnoses receive the label Respiratory. Other diagnoses receive null because there is no ELSE branch.\n\n[pause=0.8]\n\nRun the SQL in the browser and inspect the diagnosis group column.\n\nYou can also copy it into pgAdmin.\n\n[pause=0.4]\n\nThen think about the purpose of the output. Would null be meaningful here, or would a label such as Other be easier for users to understand?\n\nThe answer depends on the business rule and how the result will be used.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 29,
       "audio": "module5_slide_29.mp3",
       "captions": "module5_slide_29.vtt",
-      "text": "The most dangerous logic errors are often not syntax errors. PostgreSQL executes the statement successfully, but the result does not match the intended rule. Mixed AND and OR can be grouped incorrectly. Equals NULL cannot test missingness. NOT IN can behave unexpectedly when the list contains NULL. Ordinary not-equal excludes a missing value as UNKNOWN. CASE can hide a specific rule behind a broader earlier branch. Because these statements run without a syntax error, prediction and edge-case testing are essential. Whenever logic matters, test records with NULL, zero, blank text, FALSE, exact thresholds, and values that satisfy more than one condition."
+      "text": "Let's collect several common mistakes in one place.\n\n[pause=0.7]\n\nFirst, mixing OR and AND without parentheses can change the meaning of the rule.\n\nSecond, comparing a field to null with equals does not work as a missing-value test.\n\nThird, NOT IN becomes dangerous when the list itself contains null.\n\nFourth, ordinary not-equal comparisons can silently exclude records where the value is null.\n\n[pause=0.5]\n\nFinally, putting a broad case condition before a more specific condition can make the specific branch unreachable.\n\nNotice that most of these queries are syntactically valid. PostgreSQL may run them without displaying an error.\n\nThat is why testing SQL is not only about asking whether the query runs. We also need to ask whether the result matches the intended rule.\n\n[pause=1.0]",
+      "pause_markers": 3
     },
     {
       "slide": 30,
       "audio": "module5_slide_30.mp3",
       "captions": "module5_slide_30.vtt",
-      "text": "NOT IN can be surprising when the list contains NULL. Conceptually, the predicate asks whether a value is different from every item in the list. If one item is unknown, PostgreSQL cannot prove that an ordinary value is different from that unknown value. The result can become UNKNOWN instead of true. Because WHERE keeps only true, rows that look like obvious non-matches may disappear. Run the example and inspect the output. The safer pattern is to keep NULL out of the list and handle missing status explicitly with IS NULL, IS NOT NULL, or another NULL-safe predicate. Make the missing-value policy visible in the query."
+      "text": "This is a classic SQL trap.\n\n[pause=0.7]\n\nThe query asks for records whose payment status is not in a list containing Paid and null.\n\nAt first, that may look reasonable.\n\nBut a null inside the NOT IN list can cause comparisons that appear to be non-matches to become UNKNOWN.\n\nThe database cannot prove that a value is different from an unknown list element.\n\n[pause=0.8]\n\nRun the example in the browser and observe the result.\n\n[pause=0.4]\n\nThen copy it into pgAdmin if you want to test variations.\n\nFor example, remove null from the list and compare the output.\n\nThe safer approach is normally to keep null out of the list and handle missing values explicitly according to the business rule.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 31,
       "audio": "module5_slide_31.mp3",
       "captions": "module5_slide_31.vtt",
-      "text": "This comparison makes NULL policy very concrete. With ordinary not-equal, a NULL payment status does not produce true. It produces UNKNOWN, so the row is removed by WHERE. IS DISTINCT FROM returns a definite answer. A NULL status is distinct from the text Paid, so that row is included. Neither rule is universally correct. The right choice depends on the question. If you want only known statuses that are not Paid, ordinary inequality may match the rule. If you want everything that is not definitely Paid, including missing status for review, IS DISTINCT FROM is better. Run both statements and compare the row counts."
+      "text": "Here we compare two different policies.\n\n[pause=0.7]\n\nThe first query uses ordinary not equal to Paid.\n\nIf payment status is null, that comparison becomes UNKNOWN, so the row is filtered out.\n\nThe second query uses IS DISTINCT FROM Paid.\n\nNow a missing status is treated as different from Paid and the record is included.\n\nRun both queries in the browser and compare the results.\n\nYou should see one important difference caused by the null status.\n\nYou can also copy the queries into pgAdmin and run them separately.\n\nNeither query is automatically the right query for every situation.\n\nThe correct choice depends on the question. Do we mean a status that is known and not Paid, or do we mean anything that is not definitely Paid?\n\n[pause=1.0]",
+      "pause_markers": 2
     },
     {
       "slide": 32,
       "audio": "module5_slide_32.mp3",
       "captions": "module5_slide_32.vtt",
-      "text": "This applied query combines several ideas from the module into one cohort rule. The record must be active. Consent must be explicitly true, which means NULL consent is not treated as permission. The diagnosis must be either Diabetes or Kidney Disease. Finally, the email field is normalized so NULL, empty text, and whitespace-only text all count as unavailable. Every condition is connected with AND because all requirements must be satisfied. Run the query and inspect the result. Robert Lee is a useful record because the diagnosis is Kidney Disease, consent is true, and email is NULL. Susan Gray has Kidney Disease but consent is unknown, so the row should not qualify."
+      "text": "Now we start combining several ideas into a more realistic rule.\n\n[pause=0.7]\n\nWe want active patients who explicitly consented to contact, have either Diabetes or Kidney Disease, and do not have a usable email address.\n\nNotice how carefully the requirements are defined.\n\nActive must be true.\n\nConsent must explicitly be true. UNKNOWN consent is not treated as permission.\n\nThe diagnosis must be one of the target diagnoses.\n\n[pause=0.5]\n\nFinally, we normalize the email before checking whether it is missing.\n\n[pause=0.8]\n\nThe full query is available in the code cell.\n\nRun it in the browser and examine each returned record against the written rule.\n\n[pause=0.5]\n\nYou can also copy the query into pgAdmin.\n\nThis is a good example of translating a real requirement into several small, testable SQL conditions.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 33,
       "audio": "module5_slide_33.mp3",
       "captions": "module5_slide_33.vtt",
-      "text": "This report combines contact normalization and CASE classification in one output. For contact information, blank and whitespace-only text are normalized before COALESCE selects the first usable contact method. For billing, the query makes a different decision. A missing bill is not converted to zero. Instead, CASE labels it Needs review. An exact zero gets No Charge, then higher tiers are checked from specific thresholds down to the low-value default. Sometimes a fallback is appropriate for display. Other times a missing value carries data-quality meaning that should remain visible. Run the query and compare the NULL bill record with the zero bill record."
+      "text": "This example creates two useful outputs at the same time.\n\n[pause=0.7]\n\nFirst, we create a preferred contact method. We normalize blank values and use email, mobile phone, and home phone in that order.\n\nSecond, we create a billing category.\n\nNotice that missing bill amounts become Needs review rather than being placed into the Low Value category.\n\nAn exact zero becomes No Charge.\n\n[pause=0.4]\n\nThen we apply the High Value and Standard thresholds.\n\n[pause=0.8]\n\nThe SQL is available below.\n\nRun it in the browser and study the preferred contact and billing tier columns.\n\n[pause=0.5]\n\nYou can also use Copy and run it in pgAdmin.\n\n[pause=0.7]\n\nThe important design idea is that presentation defaults should not hide data-quality problems. A missing bill is not the same thing as a small bill.\n\n[pause=1.0]",
+      "pause_markers": 6
     },
     {
       "slide": 34,
       "audio": "module5_slide_34.mp3",
       "captions": "module5_slide_34.vtt",
-      "text": "This example shows how population filtering and CASE classification work together. The rule concerns completed stays, so the WHERE clause first removes admissions with no discharge date. That prevents an ongoing stay from being forced into a category that requires a completed duration. PostgreSQL can subtract one date from another and return the number of days. CASE then classifies the duration as Short for fewer than five days, Medium for five through ten days, and Long for anything greater than ten. Run the query and inspect the boundary values. A five-day stay should be Medium. The broader lesson is to define the population before applying a classification rule."
+      "text": "Here we calculate length of stay.\n\n[pause=0.7]\n\nPostgreSQL allows us to subtract one date from another to get the number of days between them.\n\nBut first, we define the population.\n\nWe only want completed stays, so the WHERE clause removes records where the discharge date is null.\n\n[pause=0.4]\n\nThen the case expression categorizes the calculated stay.\n\nLess than five days is Short. Five through ten days is Medium. More than ten days is Long.\n\nRun the code in the browser and look at both the calculated number of days and the final category.\n\n[pause=0.5]\n\nYou can also copy the query into pgAdmin.\n\nThis is a good example of separating two questions: first, which records belong in the analysis, and second, how should the included records be classified?\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 35,
       "audio": "module5_slide_35.mp3",
       "captions": "module5_slide_35.vtt",
-      "text": "Time-based rules can change from day to day if they use the current system date. For teaching and grading, that can make results hard to reproduce. The source module therefore uses a fixed reference date: August 11, 2026. The WHERE clause selects admissions from the preceding thirty days and keeps Pneumonia or Flu diagnoses. The CASE expression identifies high-risk respiratory cases when the patient is at least sixty years old. Other respiratory cases receive a simpler label. Run the query and inspect the dates. Because the reference date is fixed, every student should get the same result even when they run the lesson later."
+      "text": "Date-based rules can change every day if we always use the current system date.\n\n[pause=0.7]\n\nFor teaching and reproducible analysis, sometimes we want a fixed reference date.\n\nIn this example, the reference date is August eleventh, twenty twenty-six.\n\nWe look at admissions in a thirty-day window and create a respiratory risk category.\n\n[pause=0.8]\n\nThe query also joins admissions with patient information so we can use age in the rule.\n\nRun the example here in the browser and inspect the admission dates and category.\n\nYou can copy it into pgAdmin as well.\n\nBecause the reference date is fixed, you and your classmates should get the same cohort even if you run the example on different days.\n\nLater, in a production system, a dynamic date may be more appropriate.\n\n[pause=1.0]",
+      "pause_markers": 3
     },
     {
       "slide": 36,
       "audio": "module5_slide_36.mp3",
       "captions": "module5_slide_36.vtt",
-      "text": "The reasoning patterns in this module transfer well across SQL systems, but exact syntax can differ. AND, OR, NOT, IS NULL, COALESCE, NULLIF, and CASE are broadly familiar across databases. IS DISTINCT FROM is supported in PostgreSQL and some modern systems, but you should check the target platform. Date arithmetic is especially variable. PostgreSQL can subtract dates directly, while SQL Server and Microsoft Fabric commonly use functions such as DATEDIFF. The best transfer strategy is to preserve the rule first. Define the cohort, decide how NULL should behave, group mixed conditions with parentheses, order CASE branches, and test boundary records. Translate dialect-specific functions after the logic is correct."
+      "text": "Most of the reasoning in this module transfers to other database systems.\n\n[pause=0.7]\n\nAND, OR, NOT, IS NULL, coalesce, null if, and case are widely supported concepts.\n\nBut some syntax varies across database systems.\n\nFor example, PostgreSQL supports IS DISTINCT FROM. Other database systems may handle null-safe comparison differently.\n\nPostgreSQL can subtract one date from another directly. Another system may use a function such as date diff.\n\nSo when you move from PostgreSQL to another database, keep the logical rule the same, but check whether any syntax needs to change.\n\nThe best skill to carry between systems is not memorizing every command. It is being able to explain the rule clearly and then translate that rule into the target SQL dialect.\n\n[pause=1.0]",
+      "pause_markers": 2
     },
     {
       "slide": 37,
       "audio": "module5_slide_37.mp3",
       "captions": "module5_slide_37.vtt",
-      "text": "For this guided practice, predict before you run. Compare the unparenthesized rule with the parenthesized rule. Because AND binds before OR, Version A allows any patient age sixty-five or older even when consent is not true. Version B applies the consent requirement to both alternatives. Look for the record that satisfies the age condition but has false consent. That record should appear only in Version A. The purpose is not just to identify the row. Explain which subexpression admitted it. If you can say that the age branch was evaluated independently of consent because AND bound to the diagnosis branch, you understand the precedence problem."
+      "text": "Let's do a reasoning exercise before writing more SQL.\n\n[pause=0.7]\n\nWe have two versions of a condition.\n\nIn Version A, age greater than or equal to sixty-five is connected by OR to a diagnosis-and-consent condition.\n\nIn Version B, age or diagnosis is grouped inside parentheses, and consent is required afterward.\n\nTry to identify the patient who appears only when the parentheses are omitted.\n\nA useful strategy is to look for an older patient whose consent is false.\n\nAsk yourself: in Version A, does the consent condition apply to the age branch?\n\n[pause=0.4]\n\nThen compare that with Version B.\n\nYou can test the related query in the browser from the earlier slide, or copy it into pgAdmin and modify it yourself.\n\n[pause=0.7]\n\nThe goal here is to explain why the results differ.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 38,
       "audio": "module5_slide_38.mp3",
       "captions": "module5_slide_38.vtt",
-      "text": "This guided practice applies the normalization pattern to a different column. The stored table should not be changed. We only want a display value in the query result. Start by trimming preferred_language. Use NULLIF to convert an empty trimmed value to NULL. Then use COALESCE to replace the missing result with Language not recorded. The practice data includes one patient whose preferred language is NULL. Run the query and confirm that the stored column remains NULL while the derived language_display column shows the fallback label. A SELECT expression can standardize output without overwriting source data."
+      "text": "Now let's practice text normalization and fallback values.\n\n[pause=0.7]\n\nThe goal is to display a preferred language.\n\nIf the language contains useful text, keep it.\n\nIf it is null, empty, or only spaces, display Language not recorded.\n\nThe query first uses B trim and null if to normalize the text. Then coalesce provides the final fallback.\n\n[pause=0.8]\n\nRun the example in the browser and compare preferred language with language display.\n\n[pause=0.5]\n\nYou can also click Copy and run the query in pgAdmin.\n\nTry to identify which records actually needed the fallback.\n\nThis pattern is useful far beyond this example. Whenever user-entered text may contain blank or whitespace-only values, normalizing before applying business logic makes the result much more reliable.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 39,
       "audio": "module5_slide_39.mp3",
       "captions": "module5_slide_39.vtt",
-      "text": "This practice refines the billing CASE by giving an exact zero bill its own category. The order is deliberate. Check NULL first so missing values are not confused with zero. Then check bill_amount equals zero and label it No Charge. After that, test the high and standard thresholds, and use ELSE for the remaining positive low-value bills. Run the query and inspect patient 107, whose bill is exactly zero. That record should now show No Charge rather than Low-Value. This demonstrates how domain meaning affects branch design."
+      "text": "Here we improve our billing case expression by adding a special category for an exact zero.\n\n[pause=0.7]\n\nThe order is important.\n\n[pause=0.4]\n\nFirst, check for null.\n\nSecond, check for zero and label it No Charge.\n\n[pause=0.4]\n\nThen check the High Value threshold.\n\nAfter that, check the Standard threshold.\n\n[pause=0.5]\n\nFinally, use Low Value for the remaining known amounts.\n\n[pause=0.8]\n\nThe complete query is available in the code cell.\n\nBefore running it, predict what will happen to zero, five thousand, ten thousand, and null.\n\n[pause=0.4]\n\nThen click Run in the browser and verify your predictions.\n\nYou can also copy the SQL into pgAdmin.\n\nThis is a good example of boundary testing. The exact values at the edges of categories deserve special attention.\n\n[pause=1.0]",
+      "pause_markers": 7
     },
     {
       "slide": 40,
       "audio": "module5_slide_40.mp3",
       "captions": "module5_slide_40.vtt",
-      "text": "This guided practice is about policy, not just syntax. Run the two status filters from the earlier slide and compare the results. Ordinary not-equal excludes the NULL status because the comparison becomes UNKNOWN. IS DISTINCT FROM returns true for NULL compared with Paid, so the missing-status record is included. The additional row is Susan Gray's billing record, where payment_status is NULL. Now explain the business meaning. The first query means known status and not Paid. The second query means anything that is not definitely Paid, including a missing status that may need review. Both can be valid. The important skill is choosing the one that matches the intended rule."
+      "text": "This practice asks a conceptual question.\n\n[pause=0.7]\n\nWhy does the null-safe filter return one extra row?\n\nThe ordinary condition says payment status is not equal to Paid.\n\nA null payment status cannot be proven to be different from Paid, so the comparison becomes UNKNOWN and the row is removed.\n\nThe null-safe version says payment status IS DISTINCT FROM Paid.\n\nNow null can be included because PostgreSQL can make a definite true-or-false decision.\n\nLook for the record with a missing payment status.\n\n[pause=0.4]\n\nThen decide which business question you actually mean.\n\nDo you want records that are known to be something other than Paid?\n\nOr do you want records that are not definitely Paid?\n\nThose are different questions, and they require different SQL.\n\n[pause=1.0]",
+      "pause_markers": 3
     },
     {
       "slide": 41,
       "audio": "module5_slide_41.mp3",
       "captions": "module5_slide_41.vtt",
-      "text": "This practice changes only the reference date in the recent respiratory report. Replace August 11, 2026 with August 5, 2026 and think about the new thirty-day window. Before running, identify which admissions are near the boundaries. Moving the reference date earlier changes which dates qualify, but it does not change patient ages or the age-sixty risk threshold. This separation is important. The WHERE clause defines the cohort. The CASE expression classifies the rows that remain. A change to the population does not automatically change the classification rule. After predicting, run the revised query and compare the set of admissions with the original result."
+      "text": "For this practice, we change the fixed reference date.\n\n[pause=0.7]\n\nInstead of August eleventh, use August fifth, twenty twenty-six.\n\nBefore running the query, predict which admissions will move outside the thirty-day window.\n\nThis is a good exercise because it separates two different parts of the logic.\n\nChanging the reference date changes which records are included in the cohort.\n\nIt does not change the rule that uses diagnosis and age to assign the risk category.\n\nIf you want, copy the earlier date query into pgAdmin and change only the reference date.\n\nYou can also make the same change in the browser code.\n\nTry to change one part of the rule at a time. That makes it much easier to understand why the output changes.\n\n[pause=1.0]",
+      "pause_markers": 2
     },
     {
       "slide": 42,
       "audio": "module5_slide_42.mp3",
       "captions": "module5_slide_42.vtt",
-      "text": "Coding Exercise 1 checks whether you can translate a mixed AND and OR rule correctly. The two alternatives are age sixty-five or older and Kidney Disease. Those belong together inside parentheses. Then explicit consent must apply to the entire grouped condition. Your result should include only the columns requested in the starter. Before clicking Run and Check, read the WHERE clause aloud. It should sound like age sixty-five or older, or Kidney Disease, and in either case consent must be explicitly true. If a patient with false consent appears, review the placement of the parentheses. This exercise is designed to catch exactly the precedence error we studied earlier."
+      "text": "Now we are starting the coding exercises for Assignment 5.\n\n[pause=0.7]\n\nIn Exercise 1, you need to return patients who are either age sixty-five or older, or have Kidney Disease, but explicit consent must apply to the entire rule.\n\nThe key idea is grouping.\n\nPut the age and diagnosis alternatives inside parentheses. Then add the consent requirement with AND.\n\n[pause=0.8]\n\nYou can write the SQL directly in the browser.\n\nWhen you are ready, select Run and Check. The browser will test your answer.\n\nYour work is saved locally in this browser.\n\n[pause=0.5]\n\nIf you prefer working in pgAdmin, you can also copy the starter query, finish it in the Query Tool, test it there, and then bring your completed SQL back to the browser for checking.\n\nFocus on the logic before the syntax.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 43,
       "audio": "module5_slide_43.mp3",
       "captions": "module5_slide_43.vtt",
-      "text": "Coding Exercise 2 combines text normalization and fallback logic. Do not use COALESCE directly on the raw email field because an empty string or whitespace-only string is not NULL. Normalize each contact field first with BTRIM and NULLIF. Then use COALESCE in the requested priority order: email, mobile phone, home phone, and finally No contact provided. After running, inspect the edge cases. Robert Lee should fall back to home phone. Lisa Ray should also use home phone. Maria Torres should use mobile because the email contains only spaces. Andre Green should receive the final fallback text."
+      "text": "Exercise 2 asks you to create a preferred contact value.\n\n[pause=0.7]\n\nThe priority should be email, then mobile phone, then home phone.\n\nBut there is an extra requirement: blank text or text containing only spaces should count as missing.\n\nThink about the two functions we just practiced.\n\nUse B trim and null if to normalize each candidate value.\n\n[pause=0.4]\n\nThen use coalesce to choose the first usable result.\n\nA final text fallback should be used if no contact method is available.\n\n[pause=0.8]\n\nYou can complete and test the SQL directly in the browser using Run and Check.\n\nYou can also copy the starter code into pgAdmin if you want a larger workspace or want to inspect the data separately.\n\nOnce it works there, paste your final answer back into the browser and check it.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 44,
       "audio": "module5_slide_44.mp3",
       "captions": "module5_slide_44.vtt",
-      "text": "Coding Exercise 3 asks you to build a searched CASE with clear boundaries. Begin with an explicit NULL branch. Then add exact zero as No Charge. Next add the high-value threshold and the standard threshold, in that order. Use ELSE for the remaining known positive bills. The order matters because CASE stops at the first true branch. The NULL branch preserves missingness as Unknown rather than classifying it as low. The zero branch separates a no-charge state from a low-value charge. After running, inspect patient 103, patient 107, patient 101, and patient 102. Those records exercise the main branches of the rule."
+      "text": "Exercise 3 focuses on a boundary-safe case expression.\n\n[pause=0.7]\n\nYou need five outcomes: missing, exact zero, High Value, Standard, and Low Value.\n\n[pause=0.7]\n\nThe order matters.\n\nStart with null.\n\n[pause=0.4]\n\nThen handle exact zero.\n\nAfter that, check the ten-thousand threshold.\n\n[pause=0.4]\n\nThen check the five-thousand threshold.\n\n[pause=0.5]\n\nFinally, use ELSE for the remaining known values.\n\n[pause=0.8]\n\nComplete the case expression in the browser and use Run and Check.\n\nYou can also copy the starter query into pgAdmin and test it there.\n\nI recommend testing a few values mentally before you run the query.\n\nAsk yourself: where should zero go? Where should exactly five thousand go? What about exactly ten thousand? What about null?\n\nIf those four cases are correct, your boundaries are probably in good shape.\n\n[pause=1.0]",
+      "pause_markers": 7
     },
     {
       "slide": 45,
       "audio": "module5_slide_45.mp3",
       "captions": "module5_slide_45.vtt",
-      "text": "Coding Exercise 4 tests whether you can encode a policy that includes missing status. The wording is not definitely Paid. That means a NULL status should remain in the result for review. Ordinary not-equal does not satisfy that policy because NULL compared with Paid becomes UNKNOWN and is filtered out. Use IS DISTINCT FROM to get a definite Boolean result. After running, you should see six billing rows. The missing status record is an important part of the expected result. This short exercise captures an important distinction between a known non-Paid status and a status that is simply not known to be Paid."
+      "text": "Exercise 4 asks for billing rows that are not definitely Paid, including records where the payment status is missing.\n\n[pause=0.7]\n\nThat final phrase is the important part.\n\nIf you use ordinary not equal to Paid, rows with null status will disappear because the result is UNKNOWN.\n\nSo you need the null-safe comparison we practiced earlier.\n\n[pause=0.8]\n\nComplete the WHERE clause in the browser, then select Run and Check.\n\n[pause=0.5]\n\nYou can also copy the query into pgAdmin and compare ordinary inequality with the null-safe version.\n\nThis is a short exercise, but it tests an important idea.\n\nBefore writing the operator, translate the requirement into plain language: include anything that is different from Paid, even if the current status is missing.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 46,
       "audio": "module5_slide_46.mp3",
       "captions": "module5_slide_46.vtt",
-      "text": "Coding Exercise 5 combines a population filter, a derived measure, and CASE classification. First, keep only completed admissions using discharge_date IS NOT NULL. Then calculate length_of_stay_days by subtracting admission_date from discharge_date. Build the categories exactly as defined: Short for fewer than five days, Medium for five through ten days, and Long for more than ten days. Check the boundary behavior carefully. A five-day stay belongs in Medium, not Short. A twelve-day stay belongs in Long. The expected result contains six completed admissions. If ongoing admissions appear, review the WHERE clause before changing the CASE expression."
+      "text": "Exercise 5 combines filtering, date arithmetic, and case logic.\n\n[pause=0.7]\n\nFirst, calculate the number of days between admission date and discharge date.\n\nSecond, classify the stay as Short, Medium, or Long.\n\nThird, remove ongoing admissions where the discharge date is missing.\n\nUse the five-day and ten-day boundaries shown earlier in the module.\n\n[pause=0.8]\n\nYou can write and test the query directly in the browser.\n\n[pause=0.5]\n\nIf you want to work in PostgreSQL, click Copy, paste the starter query into pgAdmin, complete it, and run it there.\n\nWhen you are satisfied with the result, place the final SQL back in the browser and use Run and Check.\n\nTry to keep the steps separate in your mind: calculate, classify, and filter.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 47,
       "audio": "module5_slide_47.mp3",
       "captions": "module5_slide_47.vtt",
-      "text": "Coding Exercise 6 brings the entire module together in one CASE expression. The highest-priority rule is Do not contact for inactive records or explicit refusal. Put that first. Next comes the specific Urgent rule: active, explicit consent, high severity, and no usable email. Then the broader Routine rule covers active patients with explicit consent who did not match Urgent. Everything else becomes Review. Branch order matters. If Routine comes before Urgent, the urgent branch becomes unreachable for consenting active patients. The exercise also requires NULL-aware email handling. Blank and whitespace-only email should count as unavailable."
+      "text": "This final coding exercise combines several concepts from the module.\n\n[pause=0.7]\n\nYou need to assign one of four outreach priorities: Do not contact, Urgent, Routine, or Review.\n\nStart with the most restrictive rule.\n\nIf the patient is inactive or has explicitly refused contact, the result should be Do not contact.\n\nNext comes the specific urgent condition: active, consented, high severity, and no usable email.\n\nAfter that, the broader active-and-consented group can become Routine.\n\nEverything else becomes Review.\n\n[pause=0.7]\n\nBecause the conditions overlap, branch order is very important.\n\n[pause=0.8]\n\nComplete the case expression in the browser and select Run and Check.\n\nYou can also copy the starter SQL into pgAdmin, build it one branch at a time, and test the output there before submitting it in the browser.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 48,
       "audio": "module5_slide_48.mp3",
       "captions": "module5_slide_48.vtt",
-      "text": "This is the final completion step for Assignment 5. The slide deck tracks ten knowledge checks and six coding exercises, for sixteen required activities in total. Before selecting Complete Module, review the counters. If anything is missing, the page will list incomplete activities and let you jump back to the relevant slide. When you complete the module, the page creates a Canvas submission summary that includes your knowledge-check status and the SQL from each coding exercise. Review the report before copying it. Your work is stored locally in the current browser, so it may not follow you to another device, private window, or cleared browser storage."
+      "text": "This is the final step for Module 5.\n\n[pause=0.7]\n\nThe page keeps track of your knowledge checks and coding exercises.\n\nBefore completing the module, review your progress and make sure you have attempted the required activities.\n\nWhen you select Complete Module, the page generates an Assignment 5 submission report.\n\nYou can copy that report and paste it into the Canvas Assignment 5 text-entry box.\n\nRemember that the progress on this page is stored locally in your current browser and on this device. It is not automatically sent to Canvas.\n\nIf you completed some SQL in pgAdmin, make sure the final required answers are also entered and checked in the browser so they are included in your module progress.\n\nReview anything incomplete before creating your final submission report.\n\n[pause=1.0]",
+      "pause_markers": 2
     },
     {
       "slide": 49,
       "audio": "module5_slide_49.mp3",
       "captions": "module5_slide_49.vtt",
-      "text": "Let us close Module 5 by connecting the main ideas. AND, OR, and NOT build compound rules, but mixed conditions should be grouped with parentheses so the intended logic is visible. SQL uses TRUE, FALSE, and UNKNOWN, and WHERE keeps only TRUE. NULL is not the same as zero or blank text. Use IS NULL for missingness, Boolean predicates for nullable true and false fields, and IS DISTINCT FROM when you need a definite comparison involving NULL. NULLIF can normalize sentinel values such as blank text or zero denominators. COALESCE can choose the first available fallback when the fallback reflects a documented rule. CASE evaluates from top to bottom, so specific overlapping branches belong before broad ones. Finally, validate edge cases."
+      "text": "Let's finish by reviewing the main ideas from Module 5.\n\n[pause=0.7]\n\nWhen AND and OR appear together, use parentheses to make the intended grouping clear.\n\nRemember that SQL uses three logical states: TRUE, FALSE, and UNKNOWN.\n\nTreat null values explicitly. Use IS NULL, Boolean predicates, and null-safe comparisons when the business rule requires them.\n\nFor text, normalize blank values before using fallbacks.\n\nWith case expressions, remember that the first true branch wins, so branch order matters.\n\nAnd finally, test edge cases. Check null values, blanks, zero, exact thresholds, and overlapping conditions.\n\nThroughout this module, you were able to run SQL directly in the browser, and you can also copy those same examples into pgAdmin for additional PostgreSQL practice.\n\nThe goal is not only to write SQL that runs. The goal is to write SQL that accurately represents the rule you intended.\n\n[pause=1.0]",
+      "pause_markers": 2
     }
   ]
 }
