@@ -33,7 +33,7 @@ button,select,input,textarea{font:inherit}
 @media(max-width:760px){body{overflow:auto}.app{height:auto;grid-template-rows:auto auto auto}.stage{overflow:visible}.bottombar{grid-template-columns:1fr;position:sticky;bottom:0;z-index:20}.audio-block,.bottom-nav{grid-column:1;grid-row:auto}.two-col,.cols-2,.cols-3,.cols-4,.cols-5,.branches,.children,.leak-grid,.case-grid{grid-template-columns:1fr}.flow{flex-wrap:wrap}.flow-arrow{display:none}#slidesHost{width:calc(100vw - 20px);height:auto;aspect-ratio:auto}.slide{position:relative;height:auto;min-height:720px}.viz-grid{grid-template-columns:1fr}.narration-controls{flex-wrap:wrap}}
 </style></head><body>
 <div class="app">
-<header class="topbar"><div class="brand"><div class="brand-mark">8</div><div>IAN 603<small>Module 8 · Strings and Dates in PostgreSQL</small></div></div><div class="top-actions"><span class="db-status" id="dbStatus">Loading PostgreSQL...</span><button class="control" id="themeBtn" type="button">Dark mode</button><button class="control" id="fullBtn" type="button">Full screen</button></div></header>
+<header class="topbar"><div class="brand"><div class="brand-mark">8</div><div>IAN 603<small>Module 8 · Strings and Dates in PostgreSQL</small></div></div><div class="top-actions"><span class="db-status" id="dbStatus">Loading PostgreSQL...</span><button class="control" id="themeBtn" type="button">Dark mode</button><button class="control" id="fullBtn" type="button">Full screen</button><button class="control" id="courseModulesBtn" type="button" aria-haspopup="dialog" aria-controls="courseModulesDrawer"><span class="cmn-btn-icon">☰</span><span class="cmn-btn-label">Course Modules</span></button></div></header>
 <main class="stage"><div id="slidesHost"><section class="slide active" data-title="Start"><div class="slide-inner"><div class="slide-kicker">IAN 603 · Module 8</div><div class="title-layout"><div><span class="module-pill">IAN 603 · Module 8</span><h1>Strings and Dates in PostgreSQL</h1><p class="lead">Prepare messy text and temporal data without losing meaning, traceability, or analytical usefulness.</p><div class="topic-pills"><span>Text cleaning</span><span>Parsing</span><span>Regex</span><span>Date/time types</span><span>Intervals</span><span>Time zones</span></div><div class="start-actions"><button class="control primary" id="startWithNarration" type="button">Start Narration</button><button class="control" type="button" onclick="goToSlide(1)">Start Slides</button></div></div><div class="title-visual"><div class="flow"><div class="flow-step"><span>1</span><b>Inspect</b></div><div class="flow-arrow">→</div><div class="flow-step"><span>2</span><b>Normalize</b></div><div class="flow-arrow">→</div><div class="flow-step"><span>3</span><b>Type</b></div><div class="flow-arrow">→</div><div class="flow-step"><span>4</span><b>Transform</b></div><div class="flow-arrow">→</div><div class="flow-step"><span>5</span><b>Validate</b></div></div></div></div><div class="slide-footer">IAN 603 · Module 8 · Slide 1</div></div></section><section class="slide" data-title="Why this module matters"><div class="slide-inner"><div class="slide-kicker">Start here</div><h2>Text and time are analytical data, not display details</h2><div class="cards cols-4"><article class="info-card"><span class="eyebrow">Text</span><h3>Small differences create different values</h3><p>Extra spaces, inconsistent case, abbreviations, and invalid email shapes can break matching and grouping.</p></article><article class="info-card"><span class="eyebrow">Time</span><h3>Type controls meaning</h3><p>A date, local timestamp, instant in time, and duration are not the same thing.</p></article><article class="info-card"><span class="eyebrow">Analytics</span><h3>Transformations change grain</h3><p>A timestamp can be analyzed at hour, day, week, month, or quarter level.</p></article><article class="info-card"><span class="eyebrow">Quality</span><h3>Cleaning needs rules</h3><p>Normalize only what is justified and keep raw values when traceability matters.</p></article></div><div class="slide-footer">IAN 603 · Module 8 · Slide 2</div></div></section><section class="slide" data-title="Learning goals"><div class="slide-inner"><div class="slide-kicker">Start here</div><h2>What you should be able to do by the end</h2><div class="cards cols-5"><article class="info-card"><h3>Normalize text</h3><p>Use case, trimming, replacement, parsing, and regular expressions appropriately.</p></article><article class="info-card"><h3>Choose temporal types</h3><p>Distinguish date, timestamp, timestamptz, and interval.</p></article><article class="info-card"><h3>Change analytical grain</h3><p>Use EXTRACT and DATE_TRUNC correctly.</p></article><article class="info-card"><h3>Calculate time</h3><p>Use subtraction, intervals, AGE, and epoch conversion.</p></article><article class="info-card"><h3>Parse and format</h3><p>Keep typed values for analytics and format only when needed for humans.</p></article></div><div class="slide-footer">IAN 603 · Module 8 · Slide 3</div></div></section><section class="slide" data-title="PostgreSQL-specific correction"><div class="slide-inner"><div class="slide-kicker">Start here</div><h2>Use PostgreSQL date/time vocabulary</h2><div class="two-col"><div><div class="cards cols-1"><article class="info-card"><h3>PostgreSQL patterns</h3><p>Use subtraction, INTERVAL, EXTRACT, DATE_TRUNC, AGE, TO_DATE, TO_TIMESTAMP, and TO_CHAR.</p></article></div></div><div><div class="cards cols-1"><article class="info-card"><h3>Do not teach as PostgreSQL</h3><p>DATEADD and DATEDIFF are common in other SQL dialects but are not PostgreSQL functions.</p></article></div></div></div><div class="callout"><strong>Important</strong><span>The concept may be portable across databases, but the function names are dialect-specific.</span></div><div class="slide-footer">IAN 603 · Module 8 · Slide 4</div></div></section><section class="slide" data-title="Module roadmap"><div class="slide-inner"><div class="slide-kicker">Start here</div><h2>Two main halves, then integrated practice</h2><div class="flow"><div class="flow-step"><span>1</span><b>Text inspection</b><small>See raw inconsistencies.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>2</span><b>Text normalization</b><small>Case, spaces, parsing, regex.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>3</span><b>Temporal types</b><small>Choose date/time meaning.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>4</span><b>Temporal analysis</b><small>Extract, truncate, subtract, shift.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>5</span><b>Projects</b><small>Combine text and time.</small></div></div><div class="slide-footer">IAN 603 · Module 8 · Slide 5</div></div></section><section class="slide" data-title="Teaching database"><div class="slide-inner"><div class="slide-kicker">Database</div><h2>The browser database includes healthcare and retail examples</h2><div class="table-wrap "><table><thead><tr><th>Table</th><th>Used for</th></tr></thead><tbody><tr><td>patients</td><td>messy names, emails, addresses, admission date</td></tr><tr><td>admissions</td><td>admit and discharge timestamps</td></tr><tr><td>products</td><td>product names and abbreviated descriptions</td></tr><tr><td>customers</td><td>contact data and signup timestamps</td></tr><tr><td>orders</td><td>timestamped transactions and revenue</td></tr><tr><td>staging_dates</td><td>raw date strings in several formats</td></tr></tbody></table></div><div class="slide-footer">IAN 603 · Module 8 · Slide 6</div></div></section><section class="slide" data-title="Inspect raw text first"><div class="slide-inner"><div class="slide-kicker">Text preparation</div><h2>Do not clean before you know what is messy</h2><div class="pg-cell"><div class="pg-head"><div><b>Inspect patient text</b><small>PostgreSQL · Query Tool</small></div><div class="pg-actions"><button class="pg-btn pg-run" type="button">Run</button><button class="pg-btn pg-reset" type="button">Reset</button><button class="pg-btn pg-copy" type="button">Copy</button></div></div><div class="pg-shell"><div class="pg-gutter"><div class="pg-gutter-lines"></div></div><pre class="pg-highlight"></pre><textarea class="pg-editor" spellcheck="false">SELECT subject_id, name, email, address
 FROM patients
 ORDER BY subject_id;</textarea></div><div class="pg-output">Run this and look for boundary spaces, inconsistent case, repeated spaces, and inconsistent addresses.</div></div><div class="slide-footer">IAN 603 · Module 8 · Slide 7</div></div></section><section class="slide" data-title="Text cleaning pipeline"><div class="slide-inner"><div class="slide-kicker">Text preparation</div><h2>Cleaning is a sequence of decisions</h2><div class="flow"><div class="flow-step"><span>1</span><b>Inspect</b><small>What patterns are present?</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>2</span><b>Normalize</b><small>Remove known formatting noise.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>3</span><b>Parse</b><small>Extract meaningful components.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>4</span><b>Validate</b><small>Does the cleaned value follow the expected shape?</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>5</span><b>Use</b><small>Analyze, match, or report.</small></div></div><div class="callout"><strong>Preserve evidence</strong><span>When auditability matters, keep the raw value and create a cleaned field rather than overwriting the source.</span></div><div class="slide-footer">IAN 603 · Module 8 · Slide 8</div></div></section><section class="slide" data-title="Raw vs cleaned values"><div class="slide-inner"><div class="slide-kicker">Text preparation</div><h2>Keep the transformation visible</h2><div class="table-wrap "><table><thead><tr><th>Raw value</th><th>Possible cleaned value</th><th>What changed</th></tr></thead><tbody><tr><td>'  Carol   White  '</td><td>'Carol White'</td><td>boundary and repeated spaces</td></tr><tr><td>'DAVID  Brown  '</td><td>'David Brown'</td><td>spacing and display case</td></tr><tr><td>' david.brown@email.com '</td><td>'david.brown@email.com'</td><td>boundary spaces</td></tr><tr><td>'789 Pine Rd, GSO'</td><td>'789 Pine Rd, Greensboro'</td><td>documented abbreviation</td></tr></tbody></table></div><div class="callout"><strong>Cleaning is context-dependent</strong><span>Do not change content unless the rule is justified.</span></div><div class="slide-footer">IAN 603 · Module 8 · Slide 9</div></div></section><section class="slide" data-title="Case functions"><div class="slide-inner"><div class="slide-kicker">Text functions</div><h2>UPPER, LOWER, and INITCAP solve different presentation problems</h2><div class="table-wrap "><table><thead><tr><th>Function</th><th>Example</th><th>Common use</th></tr></thead><tbody><tr><td>UPPER(name)</td><td>ALICE SMITH</td><td>case-insensitive matching or standardized codes</td></tr><tr><td>LOWER(email)</td><td>alice@example.com</td><td>normalize case for many email workflows</td></tr><tr><td>INITCAP(text)</td><td>Alice Smith</td><td>human-readable display text</td></tr></tbody></table></div><div class="callout"><strong>Caution</strong><span>INITCAP is convenient for teaching but real names can have capitalization rules that require domain-specific handling.</span></div><div class="slide-footer">IAN 603 · Module 8 · Slide 10</div></div></section><section class="slide" data-title="Case + trim + length"><div class="slide-inner"><div class="slide-kicker">Text functions</div><h2>See exactly what each function changes</h2><div class="pg-cell"><div class="pg-head"><div><b>Case, trim, and length</b><small>PostgreSQL · Query Tool</small></div><div class="pg-actions"><button class="pg-btn pg-run" type="button">Run</button><button class="pg-btn pg-reset" type="button">Reset</button><button class="pg-btn pg-copy" type="button">Copy</button></div></div><div class="pg-shell"><div class="pg-gutter"><div class="pg-gutter-lines"></div></div><pre class="pg-highlight"></pre><textarea class="pg-editor" spellcheck="false">SELECT subject_id, name,
@@ -191,4 +191,158 @@ document.getElementById('startNarration').onclick=playCurrentNarration;document.
 audio.onplay=()=>{document.getElementById('audioPlayer').classList.add('playing');document.getElementById('audioPlay').textContent='Pause'};audio.onpause=()=>{document.getElementById('audioPlayer').classList.remove('playing');document.getElementById('audioPlay').textContent='Play'};audio.ontimeupdate=()=>{const d=Number.isFinite(audio.duration)?audio.duration:0,t=audio.currentTime||0;document.getElementById('audioSeek').value=d?String((t/d)*100):'0';document.getElementById('audioTime').textContent=fmt(t)+' / '+fmt(d);if(state.ccEnabled!==false&&currentCues.length){let idx=-1;const timed=currentCues.some(c=>Number.isFinite(c.start)&&Number.isFinite(c.end));if(timed)idx=currentCues.findIndex(c=>t>=c.start&&t<c.end);else if(d)idx=Math.min(currentCues.length-1,Math.floor((t/d)*currentCues.length));if(idx!==activeCueIndex){activeCueIndex=idx;subtitleText.textContent=idx>=0?currentCues[idx].text:''}}};audio.onended=()=>{document.getElementById('audioPlayer').classList.remove('playing');document.getElementById('audioPlay').textContent='Play';document.getElementById('audioTitle').textContent='Slide '+(current+1)+' complete';subtitleText.textContent=''};audio.onerror=()=>document.getElementById('audioTitle').textContent='Audio not found for Slide '+(current+1);
 document.getElementById('transcriptBtn').onclick=()=>document.getElementById('transcriptPanel').classList.toggle('open');document.getElementById('transcriptClose').onclick=()=>document.getElementById('transcriptPanel').classList.remove('open');
 const hash=location.hash.match(/slide-(\d+)/);goToSlide(hash?Number(hash[1])-1:0);
-</script></body></html>
+</script><!-- COURSE_MODULE_NAV_START -->
+<style id="courseModuleNavStyles">
+#courseModulesBtn{display:inline-flex;align-items:center;gap:7px}
+#courseModulesBtn .cmn-btn-icon{font-size:14px;line-height:1}
+.cmn-backdrop{position:fixed;inset:0;background:rgba(10,18,27,.42);backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:.2s ease;z-index:1400}
+.cmn-backdrop.open{opacity:1;visibility:visible}
+.cmn-drawer{position:absolute;top:0;right:0;width:min(430px,92vw);height:100%;background:var(--surface,#fff);color:var(--text,#142033);border-left:1px solid var(--border,#d7e1eb);box-shadow:-24px 0 60px rgba(0,0,0,.2);transform:translateX(100%);transition:transform .24s ease;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto}
+.cmn-backdrop.open .cmn-drawer{transform:translateX(0)}
+.cmn-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:20px 20px 16px;border-bottom:1px solid var(--border,#d7e1eb)}
+.cmn-kicker{display:block;color:var(--primary,#185f99);font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.cmn-head h2{font-size:22px;line-height:1.1;margin:0!important;letter-spacing:-.02em}
+.cmn-head p{font-size:12px;color:var(--muted,#627189);margin:6px 0 0}
+.cmn-close{width:36px;height:36px;border:1px solid var(--border,#d7e1eb);border-radius:10px;background:var(--surface2,var(--surface-2,#f7f9fc));color:var(--text,#142033);font-size:20px;cursor:pointer}
+.cmn-home-row{padding:12px 20px;border-bottom:1px solid var(--border,#d7e1eb)}
+.cmn-home{display:flex;align-items:center;justify-content:space-between;gap:12px;text-decoration:none;border:1px solid var(--border,#d7e1eb);background:var(--primary-soft,#e5f1fb);border-radius:12px;padding:11px 13px;color:var(--text,#142033);font-size:13px;font-weight:900}
+.cmn-home small{display:block;color:var(--muted,#627189);font-size:10px;font-weight:700;margin-top:2px}
+.cmn-list{overflow:auto;padding:12px 12px 18px;display:grid;gap:7px;align-content:start}
+.cmn-module-link{display:grid;grid-template-columns:42px minmax(0,1fr) 18px;align-items:center;gap:10px;text-decoration:none;padding:9px 10px;border:1px solid transparent;border-radius:12px;color:var(--text,#142033);background:transparent}
+.cmn-module-link:hover{background:var(--surface2,var(--surface-2,#f7f9fc));border-color:var(--border,#d7e1eb)}
+.cmn-module-link.current{background:var(--primary-soft,#e5f1fb);border-color:color-mix(in srgb,var(--primary,#185f99) 45%,transparent)}
+.cmn-num{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--surface2,var(--surface-2,#f7f9fc));border:1px solid var(--border,#d7e1eb);color:var(--muted,#627189);font-size:11px;font-weight:900}
+.cmn-module-link.current .cmn-num{background:var(--primary,#185f99);border-color:var(--primary,#185f99);color:#fff}
+.cmn-link-copy{min-width:0}
+.cmn-link-copy b{display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmn-link-copy small{display:block;color:var(--muted,#627189);font-size:10px;margin-top:2px}
+.cmn-arrow{font-size:20px;color:var(--muted,#627189);text-align:center}
+.cmn-footer{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 20px 18px;border-top:1px solid var(--border,#d7e1eb);background:var(--surface,#fff)}
+.cmn-step{display:grid;grid-template-columns:auto 1fr;column-gap:7px;text-decoration:none;border:1px solid var(--border,#d7e1eb);background:var(--surface2,var(--surface-2,#f7f9fc));border-radius:11px;padding:9px 10px;color:var(--text,#142033)}
+.cmn-step>span{grid-row:1/3;align-self:center;color:var(--primary,#185f99);font-weight:900}
+.cmn-step small{font-size:9px;color:var(--muted,#627189);font-weight:800}
+.cmn-step b{font-size:11px}
+.cmn-step.disabled{opacity:.48}
+body.cmn-lock{overflow:hidden}
+@media(max-width:720px){
+  #courseModulesBtn .cmn-btn-label{display:none}
+  #courseModulesBtn{padding-left:10px;padding-right:10px}
+  .cmn-head{padding:16px 16px 13px}.cmn-home-row{padding:10px 16px}.cmn-footer{padding:10px 16px 14px}
+}
+</style>
+<div class="cmn-backdrop" id="courseModulesBackdrop" aria-hidden="true">
+  <aside class="cmn-drawer" id="courseModulesDrawer" role="dialog" aria-modal="true" aria-labelledby="courseModulesTitle">
+    <div class="cmn-head">
+      <div>
+        <span class="cmn-kicker">IAN 603 · Course Navigation</span>
+        <h2 id="courseModulesTitle">Course Modules</h2>
+        <p>Jump to another narrated module without returning to the course hub first.</p>
+      </div>
+      <button class="cmn-close" id="courseModulesClose" type="button" aria-label="Close course modules">×</button>
+    </div>
+    <div class="cmn-home-row">
+      <a class="cmn-home" href="s_index.html">
+        <span>Course Home<small>Overview, learning path, and all modules</small></span>
+        <span>⌂</span>
+      </a>
+    </div>
+    <nav class="cmn-list" aria-label="IAN 603 modules">
+    <a class="cmn-module-link" href="s_module1.html">
+      <span class="cmn-num">01</span>
+      <span class="cmn-link-copy"><b>Understanding Data in Informatics</b><small>Module 1</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module2.html">
+      <span class="cmn-num">02</span>
+      <span class="cmn-link-copy"><b>Designing Relational Databases</b><small>Module 2</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module3.html">
+      <span class="cmn-num">03</span>
+      <span class="cmn-link-copy"><b>PostgreSQL in Action</b><small>Module 3</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module4.html">
+      <span class="cmn-num">04</span>
+      <span class="cmn-link-copy"><b>Aggregating Data with PostgreSQL</b><small>Module 4</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module5.html">
+      <span class="cmn-num">05</span>
+      <span class="cmn-link-copy"><b>Reasoning with SQL Logic</b><small>Module 5</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module6.html">
+      <span class="cmn-num">06</span>
+      <span class="cmn-link-copy"><b>Joining Data in PostgreSQL</b><small>Module 6</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module7.html">
+      <span class="cmn-num">07</span>
+      <span class="cmn-link-copy"><b>Subqueries in PostgreSQL</b><small>Module 7</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link current" href="s_module8.html" aria-current="page">
+      <span class="cmn-num">08</span>
+      <span class="cmn-link-copy"><b>Strings and Dates in PostgreSQL</b><small>Module 8 · Current</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module9.html">
+      <span class="cmn-num">09</span>
+      <span class="cmn-link-copy"><b>Data Cleaning in PostgreSQL</b><small>Module 9</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module10.html">
+      <span class="cmn-num">10</span>
+      <span class="cmn-link-copy"><b>Reshaping Data in PostgreSQL</b><small>Module 10</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module11.html">
+      <span class="cmn-num">11</span>
+      <span class="cmn-link-copy"><b>Advanced SQL: CTEs & Window Functions</b><small>Module 11</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module12.html">
+      <span class="cmn-num">12</span>
+      <span class="cmn-link-copy"><b>Views & Modular Queries</b><small>Module 12</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module13.html">
+      <span class="cmn-num">13</span>
+      <span class="cmn-link-copy"><b>Introduction to Spark SQL</b><small>Module 13</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    </nav>
+    <div class="cmn-footer"><a class="cmn-step" href="s_module7.html"><span>←</span><small>Previous</small><b>Module 7</b></a><a class="cmn-step" href="s_module9.html"><span>→</span><small>Next</small><b>Module 9</b></a></div>
+  </aside>
+</div>
+<script id="courseModuleNavScript">
+(()=>{
+  const btn=document.getElementById('courseModulesBtn');
+  const backdrop=document.getElementById('courseModulesBackdrop');
+  const drawer=document.getElementById('courseModulesDrawer');
+  const closeBtn=document.getElementById('courseModulesClose');
+  if(!btn||!backdrop||!drawer||!closeBtn)return;
+  let lastFocus=null;
+  function openNav(){
+    lastFocus=document.activeElement;
+    backdrop.classList.add('open');
+    backdrop.setAttribute('aria-hidden','false');
+    document.body.classList.add('cmn-lock');
+    requestAnimationFrame(()=>closeBtn.focus());
+  }
+  function closeNav(){
+    backdrop.classList.remove('open');
+    backdrop.setAttribute('aria-hidden','true');
+    document.body.classList.remove('cmn-lock');
+    if(lastFocus&&typeof lastFocus.focus==='function')lastFocus.focus();
+  }
+  btn.addEventListener('click',openNav);
+  closeBtn.addEventListener('click',closeNav);
+  backdrop.addEventListener('click',e=>{if(e.target===backdrop)closeNav()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&backdrop.classList.contains('open'))closeNav()});
+})();
+</script>
+<!-- COURSE_MODULE_NAV_END -->
+</body>
+</html>
