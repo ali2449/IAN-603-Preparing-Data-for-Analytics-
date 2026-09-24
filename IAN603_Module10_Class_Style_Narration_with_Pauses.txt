@@ -1,0 +1,1341 @@
+Slide 1: Start
+
+Welcome to Module 10, Reshaping Data in PostgreSQL.
+
+[pause=0.7]
+
+Reshaping changes structure, not the underlying facts.
+
+[pause=0.7]
+
+We will move between long and wide forms, pivot categories into columns, unpivot columns back into rows, preserve meaningful NULL values, and protect the intended analytical grain.
+
+[pause=0.7]
+
+The most important habit in this module is to say what one output row represents before you write the reshape query.
+
+[pause=1.0]
+
+Slide 2: Reshaping changes structure
+
+Long and wide are not quality levels.
+
+[pause=0.7]
+
+They are different ways to arrange information.
+
+[pause=0.7]
+
+Long data usually stores categories as row values.
+
+[pause=0.7]
+
+Wide data turns selected category values into columns.
+
+[pause=0.7]
+
+The dangerous part is that many pivots also aggregate.
+
+[pause=0.7]
+
+When several source rows map to one pivot cell, detail may be permanently removed.
+
+[pause=1.0]
+
+Slide 3: Learning goals
+
+By the end of this module, you should be able to identify long and wide structures, pivot and unpivot data in PostgreSQL, and explain the grain of each result.
+
+[pause=0.7]
+
+You should also be able to detect when a reshape changes more than structure because aggregation or a join has altered the facts.
+
+[pause=0.7]
+
+Finally, you should be able to choose a shape based on what happens next: visualization, reporting, or modeling.
+
+[pause=1.0]
+
+Slide 4: Module roadmap
+
+The module starts with the shape itself.
+
+[pause=0.7]
+
+Then we will pivot long data to wide form.
+
+[pause=0.7]
+
+After that, we will unpivot wide data back to long form.
+
+[pause=0.7]
+
+Next comes the most important safeguard: grain.
+
+[pause=0.7]
+
+Finally, we validate totals and choose the output shape that best serves the downstream use.
+
+[pause=1.0]
+
+Slide 5: Teaching database
+
+The teaching database includes several examples because reshaping appears in many domains.
+
+[pause=0.8]
+
+Admissions and sales begin in long form.
+
+[pause=0.7]
+
+Monthly sales and patient metrics begin in wide form.
+
+[pause=0.7]
+
+Survey responses and grades are useful for matrix-style pivots.
+
+[pause=0.7]
+
+The different examples help you focus on the reshape pattern rather than memorizing one dataset.
+
+[pause=1.0]
+
+Slide 6: Long form
+
+In long form, the month is stored as a value in a column.
+
+[pause=0.7]
+
+Laptop January and Laptop February occupy different rows.
+
+[pause=0.7]
+
+This shape is flexible because a new month can simply become another row.
+
+[pause=0.7]
+
+Long form is common for time-series analysis, plotting, grouping, and tidy analytical workflows.
+
+[pause=1.0]
+
+Slide 7: Wide form
+
+In wide form, January and February are separate columns.
+
+[pause=0.7]
+
+Now one row represents a product rather than a product-month.
+
+[pause=0.7]
+
+This can be convenient for scorecards, matrices, and fixed reports.
+
+[pause=0.7]
+
+The same business relationship is being displayed differently, but the row grain has changed.
+
+[pause=1.0]
+
+Slide 8: Same facts, different shape
+
+These two tables represent the same simplified information.
+
+[pause=0.7]
+
+The long table has one product-month per row.
+
+[pause=0.7]
+
+The wide table has one product per row.
+
+[pause=0.7]
+
+Before reshaping, state both grains clearly.
+
+[pause=0.7]
+
+That makes it easier to identify what has changed and whether any information has been aggregated away.
+
+[pause=1.0]
+
+Slide 9: What is grain?
+
+Grain means what one row represents.
+
+[pause=0.7]
+
+A sales fact table may have one row per transaction.
+
+[pause=0.7]
+
+After grouping, the grain may become one product-month.
+
+[pause=0.7]
+
+After pivoting months into columns, the grain may become one product.
+
+[pause=0.7]
+
+If you cannot state the row grain, it is difficult to know whether a reshape is correct.
+
+[pause=1.0]
+
+Slide 10: State grain before SQL
+
+Before writing a pivot, complete one sentence: one output row represents what?
+
+[pause=0.7]
+
+Once the row meaning is clear, identify which category values should become columns.
+
+[pause=0.7]
+
+Then identify the measure that belongs in each cell.
+
+[pause=0.7]
+
+Finally ask whether several source rows can map to the same cell.
+
+[pause=0.7]
+
+If they can, you need an aggregation rule.
+
+[pause=1.0]
+
+Slide 11: Prefer long form when
+
+Long form is often the more flexible analytical shape.
+
+[pause=0.7]
+
+If categories change frequently, new values simply appear in rows.
+
+[pause=0.7]
+
+Long form also works naturally with trend charts, filtering, grouping, and many modeling workflows.
+
+[pause=0.7]
+
+It avoids changing the schema every time a new category appears.
+
+[pause=1.0]
+
+Slide 12: Prefer wide form when
+
+Wide form is useful when categories are stable and users want side-by-side comparison.
+
+[pause=0.7]
+
+A scorecard with January, February, and March columns is easy to scan.
+
+[pause=0.7]
+
+A grade matrix can place courses in fixed columns.
+
+[pause=0.7]
+
+But wide schemas become harder to maintain when categories change frequently.
+
+[pause=1.0]
+
+Slide 13: Reshaping is not always only reshaping
+
+A pivot often requires aggregation.
+
+[pause=0.7]
+
+If only one source row maps to each output cell, the reshape can preserve that value directly.
+
+[pause=0.7]
+
+But if multiple source rows map to one cell, PostgreSQL needs an aggregate such as SUM, COUNT, MAX, or AVG.
+
+[pause=0.7]
+
+That aggregation changes the level of detail, so it must be chosen deliberately.
+
+[pause=1.0]
+
+Slide 14: Inspect long admissions
+
+Before pivoting admissions, inspect the long source.
+
+[pause=0.8]
+
+Each admission is a row.
+
+[pause=0.7]
+
+Diagnosis is stored as a value, not as a column.
+
+[pause=0.7]
+
+The pivot will create separate diagnosis count columns by month.
+
+[pause=0.7]
+
+Understanding the source grain makes the later GROUP BY easier to interpret.
+
+[pause=1.0]
+
+Slide 15: Pivot mental model
+
+A pivot can be planned with four decisions.
+
+[pause=0.7]
+
+First, define the output row grain.
+
+[pause=0.7]
+
+Second, identify the category values that should become columns.
+
+[pause=0.7]
+
+Third, choose the measure.
+
+[pause=0.7]
+
+Fourth, choose the aggregate needed to fill each cell.
+
+[pause=0.7]
+
+For the diagnosis example, one output row is one month, the categories are diagnoses, and the measure is admission count.
+
+[pause=1.0]
+
+Slide 16: Conditional aggregation
+
+PostgreSQL does not require a special PIVOT keyword for the core patterns taught here.
+
+[pause=0.7]
+
+You can use conditional aggregation.
+
+[pause=0.7]
+
+One common form is SUM with CASE.
+
+[pause=0.7]
+
+PostgreSQL also supports FILTER on aggregate functions, which can be very readable.
+
+[pause=0.7]
+
+Both approaches use the same underlying idea: one grouped output row with category-specific aggregate columns.
+
+[pause=1.0]
+
+Slide 17: Pivot with CASE
+
+This query groups admissions by month.
+
+[pause=0.8]
+
+Inside each SUM, CASE contributes one when the row matches a selected diagnosis and zero otherwise.
+
+[pause=0.7]
+
+The sum becomes the diagnosis count for that month.
+
+[pause=0.7]
+
+Run the query and verify that each result row represents one month.
+
+[pause=1.0]
+
+Slide 18: Read the CASE pivot
+
+In the CASE pivot, each output measure has a different condition.
+
+[pause=0.7]
+
+The GROUP BY defines one output row per month.
+
+[pause=0.7]
+
+Inside that month, each SUM looks only at rows belonging to its diagnosis category.
+
+[pause=0.7]
+
+This separation between row grain and category condition is the core pivot pattern.
+
+[pause=1.0]
+
+Slide 19: Pivot with FILTER
+
+PostgreSQL FILTER attaches a condition directly to an aggregate.
+
+[pause=0.7]
+
+COUNT star FILTER where diagnosis equals Pneumonia counts only matching rows.
+
+[pause=0.7]
+
+The query is often easier to scan because the aggregate and its condition appear together.
+
+[pause=0.8]
+
+Run it and compare the result with the CASE version.
+
+[pause=0.8]
+
+The output should express the same business meaning.
+
+[pause=1.0]
+
+Slide 20: CASE vs FILTER
+
+CASE and FILTER are two styles for conditional aggregation.
+
+[pause=0.7]
+
+CASE is broadly portable and flexible.
+
+[pause=0.7]
+
+FILTER is particularly readable in PostgreSQL when you want category-specific counts or sums.
+
+[pause=0.7]
+
+Choose the form that is clear for the environment you are using.
+
+[pause=0.7]
+
+The output grain and aggregate meaning matter more than the stylistic choice.
+
+[pause=1.0]
+
+Slide 21: Pivot revenue
+
+A pivot can aggregate revenue instead of counts.
+
+[pause=0.7]
+
+This query groups by sale month.
+
+[pause=0.8]
+
+Each filtered SUM collects revenue for one product.
+
+[pause=0.7]
+
+The result has one row per month and separate revenue columns for Laptop, Mouse, and Keyboard.
+
+[pause=0.7]
+
+Always identify both the output grain and the measure being aggregated.
+
+[pause=1.0]
+
+Slide 22: Pivot survey responses
+
+Survey data often arrives in long form with one row per respondent-question.
+
+[pause=0.7]
+
+If there is at most one score for each respondent and question, MAX can be used as a convenient aggregate to place that value into the correct column.
+
+[pause=0.7]
+
+The output grain becomes one respondent.
+
+[pause=0.7]
+
+The Q1, Q2, and Q3 categories become columns.
+
+[pause=1.0]
+
+Slide 23: NULL and zero are different
+
+An empty pivot cell should not automatically become zero.
+
+[pause=0.7]
+
+NULL may mean no observation was recorded.
+
+[pause=0.7]
+
+Zero may mean the observation exists and its measured value is zero.
+
+[pause=0.7]
+
+Those are different facts.
+
+[pause=0.7]
+
+Before using ELSE zero or COALESCE, decide what an absent source row means for the analytical question.
+
+[pause=1.0]
+
+Slide 24: NULL semantics example
+
+This example shows two versions of the same pivot cell.
+
+[pause=0.8]
+
+The first CASE has no ELSE zero, so a missing Q3 response stays NULL.
+
+[pause=0.7]
+
+The second explicitly forces zero.
+
+[pause=0.7]
+
+Run the query and find respondents with no Q3 observation.
+
+[pause=0.8]
+
+Ask whether zero is a real score or simply a convenient placeholder.
+
+[pause=0.7]
+
+That distinction affects later averages and models.
+
+[pause=1.0]
+
+Slide 25: Validate pivot totals
+
+A reshape should be validated.
+
+[pause=0.7]
+
+For additive measures such as revenue, calculate the total from the source.
+
+[pause=0.7]
+
+Then calculate the total represented by the pivot cells.
+
+[pause=0.7]
+
+The totals should agree when the same observations are included.
+
+[pause=0.7]
+
+This simple check catches many grouping and join mistakes.
+
+[pause=1.0]
+
+Slide 26: Inspect a wide source
+
+Now we reverse the direction.
+
+[pause=0.7]
+
+The monthly sales table stores January, February, and March as separate columns.
+
+[pause=0.7]
+
+That is convenient for a fixed report, but less flexible for many analytical tasks.
+
+[pause=0.7]
+
+Unpivoting turns those month columns back into row values.
+
+[pause=1.0]
+
+Slide 27: Unpivot mental model
+
+Unpivoting converts repeated measure columns into rows.
+
+[pause=0.7]
+
+The wide source has one product row with several month columns.
+
+[pause=0.7]
+
+The long result will have a month column and a revenue column.
+
+[pause=0.7]
+
+The row grain changes from one product to one product-month.
+
+[pause=1.0]
+
+Slide 28: Method 1: UNION ALL
+
+UNION ALL is a straightforward unpivot pattern.
+
+[pause=0.7]
+
+Write one SELECT for each source column.
+
+[pause=0.7]
+
+Give each SELECT the same output structure.
+
+[pause=0.7]
+
+Then stack the rows with UNION ALL.
+
+[pause=0.7]
+
+This is verbose but very beginner-friendly because each source column is visible in its own SELECT.
+
+[pause=1.0]
+
+Slide 29: Unpivot with UNION ALL
+
+This query produces three SELECT blocks.
+
+[pause=0.8]
+
+Each one assigns a month date and uses the corresponding wide revenue column.
+
+[pause=0.7]
+
+UNION ALL stacks the results.
+
+[pause=0.7]
+
+Run it and verify that one product row has expanded into multiple product-month rows.
+
+[pause=1.0]
+
+Slide 30: Method 2: LATERAL VALUES
+
+PostgreSQL offers a compact unpivot pattern with CROSS JOIN LATERAL and VALUES.
+
+[pause=0.7]
+
+For each monthly sales row, VALUES creates several month-revenue pairs.
+
+[pause=0.7]
+
+LATERAL allows those pairs to reference jan revenue, feb revenue, and mar revenue from the current source row.
+
+[pause=0.7]
+
+This is often cleaner than repeating full SELECT statements.
+
+[pause=1.0]
+
+Slide 31: Unpivot with LATERAL VALUES
+
+This query keeps the source table once.
+
+[pause=0.8]
+
+The lateral VALUES block emits three rows for each product.
+
+[pause=0.7]
+
+Each generated row contains a sale month and the corresponding revenue.
+
+[pause=0.7]
+
+Run the query and compare the output with UNION ALL.
+
+[pause=0.8]
+
+The two forms should represent the same long relationship.
+
+[pause=1.0]
+
+Slide 32: UNION ALL vs LATERAL
+
+Both methods are useful.
+
+[pause=0.7]
+
+UNION ALL is explicit and easy to read when there are only a few columns.
+
+[pause=0.7]
+
+LATERAL VALUES is compact when many columns follow the same repeated structure.
+
+[pause=0.7]
+
+The correct choice is the one that keeps the transformation clear and maintainable.
+
+[pause=1.0]
+
+Slide 33: Unpivot patient metrics
+
+Patient metrics provides another unpivot example.
+
+[pause=0.8]
+
+Heart rate, systolic blood pressure, diastolic blood pressure, and oxygen saturation are separate wide columns.
+
+[pause=0.7]
+
+The lateral VALUES block converts them into metric and value rows.
+
+[pause=0.7]
+
+This can be useful for generic plotting, rule processing, or feature inspection.
+
+[pause=1.0]
+
+Slide 34: Common type requirement
+
+When several source columns become one value column, PostgreSQL needs a common data type.
+
+[pause=0.7]
+
+If one metric is integer and another is numeric, explicit casts may be helpful.
+
+[pause=0.7]
+
+The patient metric example casts selected values to numeric.
+
+[pause=0.8]
+
+Do not let type coercion become an accidental part of the reshape.
+
+[pause=0.7]
+
+Choose the long value type deliberately.
+
+[pause=1.0]
+
+Slide 35: Preserve or drop NULL cells
+
+Unpivoting raises a NULL-policy question.
+
+[pause=0.7]
+
+You can preserve rows whose value is NULL.
+
+[pause=0.7]
+
+That keeps the category present and marks the measurement missing.
+
+[pause=0.7]
+
+Or you can drop NULL rows after unpivoting.
+
+[pause=0.7]
+
+The right choice depends on whether missingness itself matters to the analysis.
+
+[pause=1.0]
+
+Slide 36: Drop NULL after unpivot
+
+This query uses the lateral VALUES pattern and then filters out rows whose generated revenue is NULL.
+
+[pause=0.8]
+
+The WHERE clause makes the policy explicit.
+
+[pause=0.7]
+
+Run it and compare the row count with a version that keeps all generated rows.
+
+[pause=0.8]
+
+Always document whether missing cells were preserved or removed.
+
+[pause=1.0]
+
+Slide 37: Round trip
+
+A reshape round trip is not automatically reversible.
+
+[pause=0.7]
+
+If the pivot aggregated transaction rows to monthly totals, unpivoting can only recover those monthly totals.
+
+[pause=0.7]
+
+It cannot recreate the original transaction IDs or individual amounts.
+
+[pause=0.7]
+
+The grain that survives is the aggregated grain.
+
+[pause=1.0]
+
+Slide 38: Round-trip SQL
+
+This query first creates a wide product-level table with month totals.
+
+[pause=0.8]
+
+Then it unpivots the wide columns into product-month rows.
+
+[pause=0.7]
+
+The result is long again, but it is not the original transaction table.
+
+[pause=0.7]
+
+It is one row per product-month total.
+
+[pause=0.7]
+
+That is the key distinction between reshaping and recovering detail.
+
+[pause=1.0]
+
+Slide 39: Reversible vs lossy
+
+A reshape is more reversible when each source value maps cleanly to one output cell and category labels are preserved.
+
+[pause=0.7]
+
+It becomes lossy when several rows are aggregated into one cell.
+
+[pause=0.7]
+
+Dropping NULL rows can also remove missingness information.
+
+[pause=0.7]
+
+Collapsing categories can remove distinctions.
+
+[pause=0.7]
+
+Always identify which information survives the transformation.
+
+[pause=1.0]
+
+Slide 40: Grain is the safeguard
+
+The seeded sales table intentionally contains multiple Laptop transactions in January.
+
+[pause=0.7]
+
+A product by month pivot has only one Laptop January cell.
+
+[pause=0.7]
+
+That means the two transaction rows must be combined.
+
+[pause=0.7]
+
+If the measure is revenue, SUM is a reasonable choice.
+
+[pause=0.7]
+
+But the transaction-level detail is no longer present in that cell.
+
+[pause=1.0]
+
+Slide 41: Check source grain
+
+This query groups the sales source by product and month.
+
+[pause=0.8]
+
+COUNT tells us how many transaction rows exist in each product-month group.
+
+[pause=0.7]
+
+SUM shows the total revenue that would fill a pivot cell.
+
+[pause=0.7]
+
+Look for groups where source rows is greater than one.
+
+[pause=0.7]
+
+Those groups prove that the pivot requires aggregation.
+
+[pause=1.0]
+
+Slide 42: See information loss
+
+The first query shows the individual Laptop January sale rows.
+
+[pause=0.8]
+
+The second query sums them into one product-month value.
+
+[pause=0.8]
+
+That one total can be placed into a pivot cell.
+
+[pause=0.7]
+
+But after aggregation, the individual sale IDs and amounts cannot be recovered from the total alone.
+
+[pause=0.7]
+
+This is the detail lost by aggregation.
+
+[pause=1.0]
+
+Slide 43: Join before pivot carefully
+
+Reshaping often happens after joins.
+
+[pause=0.7]
+
+The danger is that a join can multiply fact rows.
+
+[pause=0.7]
+
+If you join a patient dimension to admissions, the admission grain can remain intact.
+
+[pause=0.7]
+
+But joining admissions to another one-to-many child table can create repeated admission combinations.
+
+[pause=0.7]
+
+Always check cardinality before pivoting joined data.
+
+[pause=1.0]
+
+Slide 44: Patient admissions by month
+
+This query starts from patients and left joins admissions.
+
+[pause=0.8]
+
+The patient table contributes one descriptive row per patient.
+
+[pause=0.7]
+
+Admissions provides the events being counted.
+
+[pause=0.7]
+
+Filtered counts create January, February, and March admission columns.
+
+[pause=0.7]
+
+The GROUP BY keeps one output row per patient.
+
+[pause=0.7]
+
+Because the join relationship is understood, the counts remain meaningful.
+
+[pause=1.0]
+
+Slide 45: One-to-many multiplication risk
+
+The important question is whether the join preserves the measure's fact grain.
+
+[pause=0.7]
+
+A many-to-one lookup often preserves the fact rows.
+
+[pause=0.7]
+
+A broad join between two fact-like tables can multiply them.
+
+[pause=0.7]
+
+If rows are already duplicated before the pivot, the pivot aggregates inflated facts.
+
+[pause=0.7]
+
+Check row counts and key relationships first.
+
+[pause=1.0]
+
+Slide 46: Pre-aggregate before reshaping
+
+Pre-aggregation can help control grain.
+
+[pause=0.7]
+
+First summarize the fact table to the level you actually need.
+
+[pause=0.7]
+
+Then perform later joins or pivots from that stable grain.
+
+[pause=0.7]
+
+This separates fact aggregation from presentation reshaping and can make the query easier to verify.
+
+[pause=1.0]
+
+Slide 47: Pre-aggregate sales
+
+The CTE first creates one row per product, category, and month.
+
+[pause=0.7]
+
+The outer query then groups by category and creates month columns.
+
+[pause=0.8]
+
+So there are two grain changes.
+
+[pause=0.7]
+
+Run the query and state both of them.
+
+[pause=0.8]
+
+Being explicit about intermediate grain is one of the best protections against accidental double counting.
+
+[pause=1.0]
+
+Slide 48: Dynamic categories
+
+Wide pivot columns are part of the schema.
+
+[pause=0.7]
+
+If the categories are stable, that is manageable.
+
+[pause=0.7]
+
+If new products or diagnoses appear frequently, the SQL must change to add columns.
+
+[pause=0.7]
+
+Long form handles dynamic categories more naturally because new categories become new rows.
+
+[pause=0.7]
+
+Often a BI tool can create the presentation matrix from long data.
+
+[pause=1.0]
+
+Slide 49: Discover categories first
+
+Before creating a static pivot, inspect the category values.
+
+[pause=0.8]
+
+This script lists distinct diagnoses and products.
+
+[pause=0.7]
+
+If the current data includes categories you did not plan for, a fixed pivot may omit them.
+
+[pause=0.7]
+
+Discovery helps make the schema decision explicit.
+
+[pause=1.0]
+
+Slide 50: Static category pivot
+
+This static pivot creates three diagnosis columns.
+
+[pause=0.7]
+
+It works well when those categories are intentionally selected and stable.
+
+[pause=0.7]
+
+The advantage is a predictable schema.
+
+[pause=0.7]
+
+The limitation is that any new diagnosis category will not automatically appear as a new column.
+
+[pause=1.0]
+
+Slide 51: Optional crosstab
+
+PostgreSQL has an optional crosstab function through the tablefunc extension.
+
+[pause=0.7]
+
+It can create pivot tables, but it requires extension support and explicit output-column definitions.
+
+[pause=0.7]
+
+For this course, conditional aggregation is the core pattern because it is transparent and works well in the browser environment.
+
+[pause=0.7]
+
+You can explore crosstab later for selected reporting scenarios.
+
+[pause=1.0]
+
+Slide 52: Choose shape for the next task
+
+There is no universally best shape.
+
+[pause=0.7]
+
+A fixed dashboard matrix may be easier to read in wide form.
+
+[pause=0.7]
+
+A trend chart usually benefits from long form because the category and time dimensions stay as values.
+
+[pause=0.7]
+
+Choose the shape based on the next analytical or reporting task.
+
+[pause=1.0]
+
+Slide 53: Long result for charting
+
+This query creates a long monthly product summary.
+
+[pause=0.8]
+
+Each row represents one product-month.
+
+[pause=0.7]
+
+The time dimension, category dimension, and measure stay in separate columns.
+
+[pause=0.7]
+
+This shape is flexible for charting because new products become new rows instead of requiring new columns.
+
+[pause=1.0]
+
+Slide 54: Long vs wide downstream
+
+Reshaping should be driven by the downstream consumer.
+
+[pause=0.7]
+
+Long form is often more robust for charts, modeling, and changing categories.
+
+[pause=0.7]
+
+Wide form is useful for fixed business reports and interfaces.
+
+[pause=0.7]
+
+A good pipeline can keep a reusable long analytical table and create wide presentation outputs only where needed.
+
+[pause=1.0]
+
+Slide 55: Practice 1
+
+Practice 1 reshapes student grades.
+
+[pause=0.8]
+
+The source is long: one student-course grade per row.
+
+[pause=0.7]
+
+The output should have one row per student and fixed course columns.
+
+[pause=0.7]
+
+A missing course should remain NULL because no recorded grade is not the same as a grade of zero.
+
+[pause=1.0]
+
+Slide 56: Grade matrix solution
+
+This query left joins students to grades and groups by student.
+
+[pause=0.8]
+
+Filtered MAX expressions place each course grade in its own column.
+
+[pause=0.7]
+
+MAX works because the exercise expects at most one grade per student-course.
+
+[pause=0.7]
+
+Run the query and inspect how missing courses remain NULL.
+
+[pause=1.0]
+
+Slide 57: Practice 2
+
+Practice 2 creates a patient-month admission matrix.
+
+[pause=0.8]
+
+The output grain is one row per patient.
+
+[pause=0.7]
+
+Month columns contain admission counts, and total admissions provides an overall measure.
+
+[pause=0.7]
+
+Because the query starts from patients with a left join, patients with no admissions are still represented.
+
+[pause=1.0]
+
+Slide 58: Patient month solution
+
+This query creates January, February, and March admission counts plus a total.
+
+[pause=0.8]
+
+The left join preserves patients with no admissions.
+
+[pause=0.7]
+
+Run the query and compare total admissions with the displayed month columns.
+
+[pause=0.8]
+
+If the dataset contains only those months, the totals should align with their sum.
+
+[pause=1.0]
+
+Slide 59: Retail project
+
+The retail project asks you to build two different outputs from the same facts.
+
+[pause=0.8]
+
+The long table supports trend analysis.
+
+[pause=0.7]
+
+The wide table supports a scorecard.
+
+[pause=0.7]
+
+Both should represent the same revenue at different shapes.
+
+[pause=0.7]
+
+The project is not complete until you compare totals across the source and both reshaped outputs.
+
+[pause=1.0]
+
+Slide 60: Project validation
+
+A strong reshape project includes validation.
+
+[pause=0.8]
+
+State the grain at every stage.
+
+[pause=0.7]
+
+Compare additive totals.
+
+[pause=0.8]
+
+Document the NULL policy.
+
+[pause=0.7]
+
+Confirm that expected categories and months are present.
+
+[pause=0.7]
+
+These checks make the transformation reproducible and reduce the chance of silent data loss.
+
+[pause=1.0]
+
+Slide 61: Recognition checkpoint
+
+Use this checkpoint to test conceptual understanding.
+
+[pause=0.8]
+
+Explain the row grain.
+
+[pause=0.7]
+
+Explain why an aggregate may be required.
+
+[pause=0.7]
+
+Explain the difference between missing and zero.
+
+[pause=0.7]
+
+Explain the common-type requirement for unpivoted values.
+
+[pause=0.7]
+
+And explain why an aggregate pivot-unpivot round trip cannot recreate original transactions.
+
+[pause=1.0]
+
+Slide 62: Applied challenge
+
+The applied challenge asks you to reshape the long sales table into one row per product.
+
+[pause=0.7]
+
+Create January, February, and March revenue columns.
+
+[pause=0.7]
+
+Preserve NULL when there is no observation for a product-month.
+
+[pause=0.7]
+
+Then explain why the result has fewer rows than the source.
+
+[pause=0.7]
+
+Do not start with syntax alone. First state the output grain and the measure that belongs in each pivot cell.
+
+[pause=1.0]
+
+Slide 63: Module 10 takeaways
+
+These are the key habits from Module 10.
+
+[pause=0.7]
+
+State the grain first.
+
+[pause=0.7]
+
+Use conditional aggregation for pivots.
+
+[pause=0.7]
+
+Use UNION ALL or lateral VALUES for unpivoting.
+
+[pause=0.7]
+
+Protect the distinction between NULL and zero.
+
+[pause=0.7]
+
+Validate totals and row counts.
+
+[pause=0.7]
+
+And choose long or wide form based on the downstream task, not because one format is always better.
+
+[pause=1.0]
+
+Slide 64: Reshaping decision guide
+
+Use this guide when deciding how to reshape.
+
+[pause=0.7]
+
+If category values should become columns, pivot with conditional aggregation.
+
+[pause=0.7]
+
+If columns should become rows, use UNION ALL or lateral VALUES.
+
+[pause=0.7]
+
+Keep dynamic categories long when possible.
+
+[pause=0.7]
+
+Use a wide form for stable matrix reporting.
+
+[pause=0.7]
+
+And whenever several source rows map to one cell, make the aggregate decision explicit.
+
+[pause=1.0]
+
+Slide 65: Next: Module 11
+
+Module 11 builds on the SQL foundations developed so far.
+
+[pause=0.7]
+
+You now have experience with relational design, joins, subqueries, strings and dates, cleaning, and reshaping.
+
+[pause=0.7]
+
+Advanced SQL will combine those ideas into more powerful analytical patterns.
+
+[pause=0.7]
+
+Carry forward the grain habit from this module, because advanced queries are only trustworthy when you know what each row represents.
+
+[pause=1.0]
