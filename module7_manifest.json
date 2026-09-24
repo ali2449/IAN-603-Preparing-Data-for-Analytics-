@@ -1,0 +1,468 @@
+{
+  "prefix": "module7",
+  "voice": "en-US-GuyNeural",
+  "rate": "-5%",
+  "volume": "+0%",
+  "pitch": "+0Hz",
+  "caption_words": 15,
+  "slide_count": 65,
+  "slide_markers_found": true,
+  "pause_marker_format": "[pause=seconds] or [pause=millisecondsms]",
+  "slides": [
+    {
+      "slide": 1,
+      "audio": "module7_slide_01.mp3",
+      "captions": "module7_slide_01.vtt",
+      "text": "Welcome to Module 7, Subqueries in PostgreSQL.\n\n[pause=0.7]\n\nA subquery is a query used inside another query. The important part is not the parentheses. The important part is understanding what the inner query returns and what the outer query expects.\n\n[pause=0.8]\n\nWe will build this gradually, starting with result shapes and then moving through scalar subqueries, membership, existence, ANY and ALL, correlated subqueries, and derived tables.\n\n[pause=0.7]\n\nEvery SQL example can run directly in the browser. You can also copy the query into pgAdmin for more practice.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 2,
+      "audio": "module7_slide_02.mp3",
+      "captions": "module7_slide_02.vtt",
+      "text": "Subqueries become useful when one part of the question depends on the result of another query.\n\n[pause=0.8]\n\nSometimes the inner query produces one benchmark such as average age.\n\n[pause=0.8]\n\nSometimes it produces a set of patient IDs.\n\n[pause=0.7]\n\nSometimes we only need to know whether a matching related row exists.\n\n[pause=0.7]\n\nAnd sometimes the inner query depends on the current outer row.\n\n[pause=0.8]\n\nThese are different contracts, and recognizing the contract is more useful than memorizing syntax.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 3,
+      "audio": "module7_slide_03.mp3",
+      "captions": "module7_slide_03.vtt",
+      "text": "Module 7 builds on earlier SQL ideas.\n\n[pause=0.7]\n\nYou should already recognize basic SELECT queries, aggregate functions, simple joins, and NULL.\n\n[pause=0.7]\n\nSubqueries combine those familiar pieces in a new structure.\n\n[pause=0.7]\n\nIf you can read a simple query on its own, the main new skill is understanding how the result of one query is used by another.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 4,
+      "audio": "module7_slide_04.mp3",
+      "captions": "module7_slide_04.vtt",
+      "text": "We will start with the result shape of the inner query.\n\n[pause=0.8]\n\nThen we will learn scalar subqueries, followed by set-oriented patterns such as IN, EXISTS, ANY, and ALL.\n\n[pause=0.7]\n\nAfter that, we will study correlated subqueries, where the inner query depends on the current outer row.\n\n[pause=0.8]\n\nFinally, we will compare placements and rewrites.\n\n[pause=0.7]\n\nThis order makes subqueries easier to understand because every new pattern answers a specific kind of question.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 5,
+      "audio": "module7_slide_05.mp3",
+      "captions": "module7_slide_05.vtt",
+      "text": "The module uses a small healthcare-style teaching database.\n\n[pause=0.7]\n\nPatients is the main entity. Admissions, lab results, and prescriptions connect back to patients.\n\n[pause=0.7]\n\nAdmissions also connect to departments.\n\n[pause=0.7]\n\nThe review queue contains one patient ID and one deliberate NULL. That NULL is important because we will use it to demonstrate the NOT IN trap.\n\n[pause=0.7]\n\nThe database loads automatically in the browser.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 6,
+      "audio": "module7_slide_06.mp3",
+      "captions": "module7_slide_06.vtt",
+      "text": "Most examples in this module depend on the same relationship.\n\n[pause=0.8]\n\nA patient can have many admissions, many lab results, and many prescriptions.\n\n[pause=0.7]\n\nWhen you see a correlated condition such as a dot patient ID equals p dot patient ID, it is connecting a child row to the current patient row.\n\n[pause=0.7]\n\nKeeping the relationship map simple lets us focus on the subquery behavior rather than on a complicated schema.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 7,
+      "audio": "module7_slide_07.mp3",
+      "captions": "module7_slide_07.vtt",
+      "text": "Before writing nested queries, inspect the underlying rows.\n\n[pause=0.7]\n\nRun this simple SELECT and look at the patient IDs and ages.\n\n[pause=0.8]\n\nLater, when the subquery returns a set of IDs or an average age, you will be able to connect the result back to real rows in the teaching dataset.\n\n[pause=0.8]\n\nThis is also a good real-world habit. Understand the source tables before debugging a complex query.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 8,
+      "audio": "module7_slide_08.mp3",
+      "captions": "module7_slide_08.vtt",
+      "text": "The best mental model is to treat the inner query as a result producer.\n\n[pause=0.8]\n\nThe inner query produces something.\n\n[pause=0.8]\n\nThe outer query then uses that result.\n\n[pause=0.8]\n\nThe result might be one value, a set of values, or rows that behave like an intermediate table.\n\n[pause=0.7]\n\nBefore writing the SQL, ask what shape the outer query needs.\n\n[pause=0.8]\n\nThat question prevents many common subquery errors.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 9,
+      "audio": "module7_slide_09.mp3",
+      "captions": "module7_slide_09.vtt",
+      "text": "Three ideas appear repeatedly.\n\n[pause=0.7]\n\nA scalar subquery behaves like one value.\n\n[pause=0.8]\n\nA set subquery returns zero or more values, usually from one column.\n\n[pause=0.8]\n\nA correlated subquery refers to the current outer row, so its result can change as the outer row changes.\n\n[pause=0.8]\n\nWhen you identify the shape and dependency, the SQL operator becomes easier to choose.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 10,
+      "audio": "module7_slide_10.mp3",
+      "captions": "module7_slide_10.vtt",
+      "text": "This table turns business questions into subquery contracts.\n\n[pause=0.8]\n\nOne benchmark suggests a scalar.\n\n[pause=0.7]\n\nMembership in a returned list suggests IN.\n\n[pause=0.7]\n\nExistence of any matching row suggests EXISTS.\n\n[pause=0.7]\n\nAt least one comparison suggests ANY, while every comparison suggests ALL.\n\n[pause=0.7]\n\nA per-row calculation often uses a correlated scalar.\n\n[pause=0.7]\n\nThis translation from question to contract is the main skill of the module.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 11,
+      "audio": "module7_slide_11.mp3",
+      "captions": "module7_slide_11.vtt",
+      "text": "A scalar subquery has a strict result contract.\n\n[pause=0.8]\n\nIt returns one column and at most one row.\n\n[pause=0.7]\n\nOne row gives the scalar value.\n\n[pause=0.7]\n\nZero rows become NULL.\n\n[pause=0.7]\n\nMore than one row is an error because the surrounding expression expected one value.\n\n[pause=0.7]\n\nUnderstanding this contract is more important than remembering where the parentheses go.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 12,
+      "audio": "module7_slide_12.mp3",
+      "captions": "module7_slide_12.vtt",
+      "text": "The inner query calculates average age across all patients.\n\n[pause=0.8]\n\nThat produces one number.\n\n[pause=0.7]\n\nThe outer WHERE clause compares each patient age with that one benchmark.\n\n[pause=0.7]\n\nRead the condition as a sentence: keep the patient when age is greater than the average age returned by the inner query.\n\n[pause=0.8]\n\nRun the query and compare the returned ages with the full patient list.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 13,
+      "audio": "module7_slide_13.mp3",
+      "captions": "module7_slide_13.vtt",
+      "text": "When a scalar query feels confusing, isolate the inner query mentally.\n\n[pause=0.8]\n\nAsk what it returns.\n\n[pause=0.7]\n\nHere it returns one average age.\n\n[pause=0.7]\n\nNow imagine replacing the parenthesized SELECT with that number.\n\n[pause=0.7]\n\nThe outer query becomes an ordinary age comparison.\n\n[pause=0.8]\n\nThis simple mental substitution works well for many scalar subqueries.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 14,
+      "audio": "module7_slide_14.mp3",
+      "captions": "module7_slide_14.vtt",
+      "text": "A scalar subquery can also appear in the SELECT list.\n\n[pause=0.8]\n\nHere, the inner query calculates one overall average age.\n\n[pause=0.8]\n\nBecause it is not correlated, the same value appears beside every patient row.\n\n[pause=0.7]\n\nThis is useful when you want to show a row value and a benchmark together.\n\n[pause=0.7]\n\nRun the query and notice that the average does not change from patient to patient.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 15,
+      "audio": "module7_slide_15.mp3",
+      "captions": "module7_slide_15.vtt",
+      "text": "A scalar subquery may return zero rows.\n\n[pause=0.8]\n\nWhen that happens, PostgreSQL turns the missing scalar into NULL.\n\n[pause=0.7]\n\nThe requested test ID in this example does not exist.\n\n[pause=0.8]\n\nSo the inner query returns no row, and the scalar result becomes NULL.\n\n[pause=0.8]\n\nRemember this when the scalar participates in a comparison, because comparisons involving NULL follow three-valued logic.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 16,
+      "audio": "module7_slide_16.mp3",
+      "captions": "module7_slide_16.vtt",
+      "text": "Now we deliberately violate the scalar contract.\n\n[pause=0.7]\n\nThe inner query returns many patient IDs from admissions.\n\n[pause=0.8]\n\nThe outer expression expects one value.\n\n[pause=0.7]\n\nPostgreSQL cannot choose one row for you, so it raises an error.\n\n[pause=0.7]\n\nDo not automatically add LIMIT one just to remove the error. Only do that if choosing an arbitrary single row actually matches the business meaning.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 17,
+      "audio": "module7_slide_17.mp3",
+      "captions": "module7_slide_17.vtt",
+      "text": "Before using a scalar subquery, ask three questions.\n\n[pause=0.8]\n\nDoes it return one column?\n\n[pause=0.7]\n\nCan it ever return more than one row?\n\n[pause=0.7]\n\nAnd what should happen if it returns no row?\n\n[pause=0.7]\n\nThis small checklist catches most scalar-subquery problems before you run the query.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 18,
+      "audio": "module7_slide_18.mp3",
+      "captions": "module7_slide_18.vtt",
+      "text": "IN is a membership operator.\n\n[pause=0.7]\n\nThe inner query should return a one-column set.\n\n[pause=0.8]\n\nThe outer value is compared with the values in that set.\n\n[pause=0.7]\n\nIf it matches one of them, the membership test succeeds.\n\n[pause=0.7]\n\nThink of IN as asking, is this value in that returned list?\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 19,
+      "audio": "module7_slide_19.mp3",
+      "captions": "module7_slide_19.vtt",
+      "text": "The inner query returns patient IDs from Cardiology admissions.\n\n[pause=0.8]\n\nThe outer query keeps patients whose patient ID appears in that set.\n\n[pause=0.8]\n\nThis is a natural use of IN because the business question is membership.\n\n[pause=0.7]\n\nRun the query and connect each returned patient with the Cardiology admissions table.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 20,
+      "audio": "module7_slide_20.mp3",
+      "captions": "module7_slide_20.vtt",
+      "text": "IN and JOIN may appear to answer similar questions, but they have different semantics.\n\n[pause=0.7]\n\nIN asks whether an outer value belongs to a set.\n\n[pause=0.7]\n\nA join returns matching row combinations.\n\n[pause=0.7]\n\nIf one patient has multiple admissions, the join can repeat that patient.\n\n[pause=0.7]\n\nThe IN query keeps the patient-level outer grain.\n\n[pause=0.8]\n\nRun both queries and compare the outputs carefully.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 21,
+      "audio": "module7_slide_21.mp3",
+      "captions": "module7_slide_21.vtt",
+      "text": "NOT IN looks like a simple anti-membership test.\n\n[pause=0.7]\n\nBut if the inner set contains NULL, PostgreSQL cannot prove that an outer value differs from the unknown value.\n\n[pause=0.7]\n\nThe condition can become UNKNOWN rather than TRUE.\n\n[pause=0.7]\n\nBecause WHERE keeps only TRUE, rows you expected may disappear.\n\n[pause=0.7]\n\nThis is one of the most important edge cases in this module.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 22,
+      "audio": "module7_slide_22.mp3",
+      "captions": "module7_slide_22.vtt",
+      "text": "SQL uses three-valued logic.\n\n[pause=0.7]\n\nA condition can be TRUE, FALSE, or UNKNOWN.\n\n[pause=0.7]\n\nComparing a normal value with NULL gives UNKNOWN, not FALSE.\n\n[pause=0.7]\n\nAnd NOT UNKNOWN remains UNKNOWN.\n\n[pause=0.7]\n\nBecause WHERE returns only rows whose condition is TRUE, UNKNOWN behaves like a filtered-out row.\n\n[pause=0.7]\n\nThis explains the NOT IN behavior.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 23,
+      "audio": "module7_slide_23.mp3",
+      "captions": "module7_slide_23.vtt",
+      "text": "The review queue contains patient 1003 and a NULL.\n\n[pause=0.7]\n\nFor another patient such as 1001, PostgreSQL knows 1001 is not equal to 1003.\n\n[pause=0.7]\n\nBut it cannot know whether 1001 is different from the NULL value.\n\n[pause=0.7]\n\nThat unknown comparison prevents the full NOT IN condition from becoming TRUE.\n\n[pause=0.7]\n\nRun the query and observe the result.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 24,
+      "audio": "module7_slide_24.mp3",
+      "captions": "module7_slide_24.vtt",
+      "text": "NOT EXISTS expresses the anti-match directly.\n\n[pause=0.7]\n\nFor each patient, the inner query searches for a review-queue row with the same patient ID.\n\n[pause=0.8]\n\nIf no matching row exists, the patient is kept.\n\n[pause=0.7]\n\nThe unrelated NULL row does not create the same problem because it does not match the current patient ID.\n\n[pause=0.7]\n\nThis is why NOT EXISTS is often the clearer starting point for anti-join questions.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 25,
+      "audio": "module7_slide_25.mp3",
+      "captions": "module7_slide_25.vtt",
+      "text": "EXISTS asks only whether the inner query returns at least one row.\n\n[pause=0.8]\n\nThe actual selected value inside the subquery usually does not matter.\n\n[pause=0.8]\n\nThat is why SELECT one is common.\n\n[pause=0.7]\n\nThe business meaning is simply: does any related row satisfy this condition?\n\n[pause=0.7]\n\nThis makes EXISTS especially natural for relationship checks.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 26,
+      "audio": "module7_slide_26.mp3",
+      "captions": "module7_slide_26.vtt",
+      "text": "For each patient, the inner query searches lab results for the same patient ID.\n\n[pause=0.8]\n\nIt looks for any result outside the normal range.\n\n[pause=0.7]\n\nWe do not need a count.\n\n[pause=0.7]\n\nWe only need at least one abnormal row.\n\n[pause=0.7]\n\nThat makes EXISTS a direct match for the question.\n\n[pause=0.7]\n\nRun the query and identify the patients that satisfy the condition.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 27,
+      "audio": "module7_slide_27.mp3",
+      "captions": "module7_slide_27.vtt",
+      "text": "NOT EXISTS asks whether no matching row can be found.\n\n[pause=0.7]\n\nFor each patient, the inner query searches prescriptions.\n\n[pause=0.8]\n\nIf there is no prescription with that patient ID, the patient is returned.\n\n[pause=0.7]\n\nThis pattern appears everywhere: customers with no orders, students with no submissions, devices with no alerts, and patients with no prescription record.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 28,
+      "audio": "module7_slide_28.mp3",
+      "captions": "module7_slide_28.vtt",
+      "text": "IN and EXISTS can sometimes be rewritten into equivalent forms.\n\n[pause=0.7]\n\nBut when writing the first version, choose the operator that expresses the business question clearly.\n\n[pause=0.7]\n\nMembership suggests IN.\n\n[pause=0.7]\n\nExistence suggests EXISTS.\n\n[pause=0.7]\n\nAbsence of a related match suggests NOT EXISTS.\n\n[pause=0.7]\n\nClear semantics make the query easier to explain, review, and debug.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 29,
+      "audio": "module7_slide_29.mp3",
+      "captions": "module7_slide_29.vtt",
+      "text": "ANY and ALL compare one outer value with an entire set.\n\n[pause=0.7]\n\nANY means at least one comparison must succeed.\n\n[pause=0.7]\n\nALL means every comparison must succeed.\n\n[pause=0.7]\n\nPostgreSQL also supports SOME as a synonym for ANY.\n\n[pause=0.7]\n\nThe difference sounds small, but it can produce very different result sets.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 30,
+      "audio": "module7_slide_30.mp3",
+      "captions": "module7_slide_30.vtt",
+      "text": "Greater than ANY means the outer age must be greater than at least one age returned by the inner query.\n\n[pause=0.8]\n\nFor a nonempty set without NULL complications, a helpful intuition is to compare with the minimum.\n\n[pause=0.7]\n\nIf your age is greater than the smallest returned age, at least one comparison succeeds.\n\n[pause=0.7]\n\nRun the query and compare the result with that intuition.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 31,
+      "audio": "module7_slide_31.mp3",
+      "captions": "module7_slide_31.vtt",
+      "text": "Greater than ALL is stricter.\n\n[pause=0.7]\n\nThe outer age must be greater than every age returned by the inner query.\n\n[pause=0.8]\n\nA useful intuition is to compare with the maximum.\n\n[pause=0.7]\n\nTo be greater than all returned ages, the outer value must exceed the largest one.\n\n[pause=0.7]\n\nRun the query and compare the row count with the ANY example.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 32,
+      "audio": "module7_slide_32.mp3",
+      "captions": "module7_slide_32.vtt",
+      "text": "ANY and ALL can be summarized with a simple contrast.\n\n[pause=0.7]\n\nANY needs at least one successful comparison.\n\n[pause=0.7]\n\nALL needs every comparison to succeed.\n\n[pause=0.7]\n\nEquality with ANY behaves much like IN.\n\n[pause=0.7]\n\nThese are useful intuitions, but always remember that NULL values and empty sets can affect the formal SQL logic.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 33,
+      "audio": "module7_slide_33.mp3",
+      "captions": "module7_slide_33.vtt",
+      "text": "Empty sets create an important edge case.\n\n[pause=0.7]\n\nANY needs at least one successful comparison.\n\n[pause=0.7]\n\nIf the set is empty, no comparison can succeed, so ANY is FALSE.\n\n[pause=0.7]\n\nALL asks whether every comparison succeeds. With no values, there is no failing comparison, so ALL is TRUE.\n\n[pause=0.7]\n\nThis can feel surprising, but it follows the logic of existential and universal conditions.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 34,
+      "audio": "module7_slide_34.mp3",
+      "captions": "module7_slide_34.vtt",
+      "text": "A correlated subquery uses a value from the current outer row.\n\n[pause=0.8]\n\nFor example, the outer query may define patients as p.\n\n[pause=0.8]\n\nInside the subquery, a condition may compare a child patient ID with p patient ID.\n\n[pause=0.8]\n\nWhen the outer patient changes, the inner query's matching value changes too.\n\n[pause=0.8]\n\nThis is why correlated subqueries are useful for per-row calculations.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 35,
+      "audio": "module7_slide_35.mp3",
+      "captions": "module7_slide_35.vtt",
+      "text": "To identify correlation, look for an alias that was defined outside the subquery but used inside it.\n\n[pause=0.8]\n\nIf the inner query needs p patient ID from the outer patient row, it is correlated.\n\n[pause=0.8]\n\nA quick diagnostic is to ask whether the inner query can run meaningfully by itself unchanged.\n\n[pause=0.8]\n\nIf it needs an outer value, the answer is no.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 36,
+      "audio": "module7_slide_36.mp3",
+      "captions": "module7_slide_36.vtt",
+      "text": "This query uses correlation to calculate a test-specific benchmark.\n\n[pause=0.8]\n\nFor a Glucose row, the inner query calculates the average Glucose result.\n\n[pause=0.8]\n\nFor a Cholesterol row, it calculates the average Cholesterol result.\n\n[pause=0.7]\n\nThe outer test name changes the inner query.\n\n[pause=0.8]\n\nThis is a powerful pattern when one global benchmark would not be meaningful.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 37,
+      "audio": "module7_slide_37.mp3",
+      "captions": "module7_slide_37.vtt",
+      "text": "A correlated query becomes easier if you trace one outer row at a time.\n\n[pause=0.8]\n\nImagine the current row is a Glucose test.\n\n[pause=0.7]\n\nThe inner query uses the outer test name to average only Glucose values.\n\n[pause=0.8]\n\nThen the current result is compared with that benchmark.\n\n[pause=0.7]\n\nWhen the outer row changes to another test, the inner benchmark changes as well.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 38,
+      "audio": "module7_slide_38.mp3",
+      "captions": "module7_slide_38.vtt",
+      "text": "A correlated scalar subquery can appear in SELECT.\n\n[pause=0.8]\n\nFor each patient, the inner query counts admissions for that patient ID.\n\n[pause=0.8]\n\nCOUNT returns one scalar value, so the scalar contract is satisfied.\n\n[pause=0.7]\n\nThe result keeps one row per patient while adding an admission count.\n\n[pause=0.7]\n\nThis form is direct and easy to read for a simple per-row metric.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 39,
+      "audio": "module7_slide_39.mp3",
+      "captions": "module7_slide_39.vtt",
+      "text": "This pattern finds the latest admission for each patient.\n\n[pause=0.7]\n\nFor the current patient, the inner query finds the maximum admission date.\n\n[pause=0.8]\n\nThe outer admission row is kept when its date equals that patient-specific maximum.\n\n[pause=0.7]\n\nThis pattern is useful for latest order, latest event, newest status, or most recent activity.\n\n[pause=0.7]\n\nIf two rows share the same maximum date, both can be returned.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 40,
+      "audio": "module7_slide_40.mp3",
+      "captions": "module7_slide_40.vtt",
+      "text": "Subqueries can appear in different clauses because each clause expects a different role.\n\n[pause=0.7]\n\nA subquery in WHERE contributes to filtering.\n\n[pause=0.8]\n\nA scalar subquery in SELECT becomes an output value.\n\n[pause=0.8]\n\nA subquery in FROM becomes an intermediate table.\n\n[pause=0.8]\n\nChoose the placement based on what you need the inner result to do.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 41,
+      "audio": "module7_slide_41.mp3",
+      "captions": "module7_slide_41.vtt",
+      "text": "WHERE is the most familiar location for subqueries.\n\n[pause=0.7]\n\nThe inner result can become a benchmark, a membership set, an existence condition, or a set comparison.\n\n[pause=0.7]\n\nThe final job is always Boolean: should the current outer row remain?\n\n[pause=0.7]\n\nThat is why many subquery patterns appear naturally in WHERE.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 42,
+      "audio": "module7_slide_42.mp3",
+      "captions": "module7_slide_42.vtt",
+      "text": "A subquery in SELECT must behave like a scalar for each output row.\n\n[pause=0.8]\n\nIf it is uncorrelated, the same value may repeat.\n\n[pause=0.7]\n\nIf it is correlated, the value can change from row to row.\n\n[pause=0.7]\n\nThis placement is useful when you want to enrich each row with one related summary value.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 43,
+      "audio": "module7_slide_43.mp3",
+      "captions": "module7_slide_43.vtt",
+      "text": "A subquery in FROM is called a derived table.\n\n[pause=0.8]\n\nThe inner query produces rows and columns.\n\n[pause=0.8]\n\nThe outer query treats those rows like an intermediate table for that statement.\n\n[pause=0.8]\n\nThis is especially useful when you want to aggregate first and then join.\n\n[pause=0.7]\n\nAlways ask what one row in the derived table represents.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 44,
+      "audio": "module7_slide_44.mp3",
+      "captions": "module7_slide_44.vtt",
+      "text": "The inner query groups admissions by patient ID.\n\n[pause=0.8]\n\nThat creates one admission-count row per patient ID.\n\n[pause=0.7]\n\nThe outer query left joins those counts to the patient table.\n\n[pause=0.8]\n\nCOALESCE converts missing counts to zero for patients with no admissions.\n\n[pause=0.7]\n\nThis pattern makes the intermediate grain very clear.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 45,
+      "audio": "module7_slide_45.mp3",
+      "captions": "module7_slide_45.vtt",
+      "text": "A correlated scalar and a pre-aggregated join can sometimes produce the same result.\n\n[pause=0.7]\n\nThe correlated form may be simpler to read.\n\n[pause=0.7]\n\nThe derived-table form may be convenient when several aggregated features are needed.\n\n[pause=0.7]\n\nDo not assume one form is always faster.\n\n[pause=0.7]\n\nPostgreSQL can transform queries during optimization.\n\n[pause=0.7]\n\nUse correct semantics first, then inspect the plan on representative data.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 46,
+      "audio": "module7_slide_46.mp3",
+      "captions": "module7_slide_46.vtt",
+      "text": "This query rewrites the admission-count problem.\n\n[pause=0.8]\n\nThe inner query groups admissions once by patient ID.\n\n[pause=0.8]\n\nThe outer query joins those counts to patients.\n\n[pause=0.8]\n\nRun it and compare the result with the correlated scalar version.\n\n[pause=0.8]\n\nThe business meaning and patient-level grain should remain the same.\n\n[pause=0.7]\n\nWhen rewriting, always verify that the result did not change.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 47,
+      "audio": "module7_slide_47.mp3",
+      "captions": "module7_slide_47.vtt",
+      "text": "EXPLAIN shows PostgreSQL's planned execution strategy.\n\n[pause=0.7]\n\nThis is useful for learning how the database intends to access and combine rows.\n\n[pause=0.7]\n\nIn this tiny browser dataset, use the plan only to learn structure.\n\n[pause=0.7]\n\nReal performance tuning requires representative data volume, indexes, statistics, and workload.\n\n[pause=0.7]\n\nDo not make production performance claims from a small teaching example.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 48,
+      "audio": "module7_slide_48.mp3",
+      "captions": "module7_slide_48.vtt",
+      "text": "Performance should come after correctness.\n\n[pause=0.7]\n\nA faster query that changes row grain or NULL behavior is not an improvement.\n\n[pause=0.8]\n\nWrite the clearest correct query first.\n\n[pause=0.8]\n\nThen inspect the execution plan and consider rewrites or indexes.\n\n[pause=0.7]\n\nWhenever you rewrite a subquery, compare the result sets carefully.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 49,
+      "audio": "module7_slide_49.mp3",
+      "captions": "module7_slide_49.vtt",
+      "text": "This table summarizes the practical choices.\n\n[pause=0.7]\n\nOne benchmark suggests a scalar.\n\n[pause=0.7]\n\nMembership suggests IN.\n\n[pause=0.7]\n\nExistence suggests EXISTS.\n\n[pause=0.7]\n\nNo matching row suggests NOT EXISTS.\n\n[pause=0.7]\n\nAt least one and every comparison suggest ANY and ALL.\n\n[pause=0.7]\n\nA calculation that depends on the current row suggests correlation.\n\n[pause=0.7]\n\nAnd an aggregate-first workflow often suggests a derived table.\n\n[pause=1.0]",
+      "pause_markers": 8
+    },
+    {
+      "slide": 50,
+      "audio": "module7_slide_50.mp3",
+      "captions": "module7_slide_50.vtt",
+      "text": "The guided practice combines several patterns.\n\n[pause=0.8]\n\nWe want patients who satisfy four conditions.\n\n[pause=0.7]\n\nInstead of writing one long query immediately, test each condition separately.\n\n[pause=0.8]\n\nFirst the scalar age benchmark.\n\n[pause=0.7]\n\nThen the admission count.\n\n[pause=0.7]\n\nThen abnormal-lab existence.\n\n[pause=0.7]\n\nThen the medication count.\n\n[pause=0.7]\n\nFinally, combine the verified conditions with AND.\n\n[pause=1.0]",
+      "pause_markers": 8
+    },
+    {
+      "slide": 51,
+      "audio": "module7_slide_51.mp3",
+      "captions": "module7_slide_51.vtt",
+      "text": "Start with the average-age condition.\n\n[pause=0.7]\n\nThis is the same scalar pattern from earlier.\n\n[pause=0.7]\n\nRun it and note which patients are above the overall average.\n\n[pause=0.8]\n\nThese rows become candidates for the final combined query.\n\n[pause=0.8]\n\nTesting the condition separately makes later debugging much easier.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 52,
+      "audio": "module7_slide_52.mp3",
+      "captions": "module7_slide_52.vtt",
+      "text": "Now calculate admission counts.\n\n[pause=0.7]\n\nThe correlated scalar returns one count per patient.\n\n[pause=0.7]\n\nLook for counts greater than one.\n\n[pause=0.7]\n\nYou could place the count directly in WHERE, but displaying it first lets you verify the numbers and understand the condition before combining it.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 53,
+      "audio": "module7_slide_53.mp3",
+      "captions": "module7_slide_53.vtt",
+      "text": "The third condition asks whether at least one abnormal lab exists.\n\n[pause=0.7]\n\nBecause we only need one qualifying related row, EXISTS is the natural contract.\n\n[pause=0.7]\n\nRun the query and identify the patients that satisfy this part of the practice problem.\n\n[pause=1.0]",
+      "pause_markers": 3
+    },
+    {
+      "slide": 54,
+      "audio": "module7_slide_54.mp3",
+      "captions": "module7_slide_54.vtt",
+      "text": "The fourth condition counts distinct medications for each patient.\n\n[pause=0.7]\n\nCOUNT DISTINCT returns one scalar value for the current patient.\n\n[pause=0.7]\n\nRun the query and identify which patients have more than one distinct medication.\n\n[pause=0.8]\n\nNow all four pieces of the final practice query have been tested independently.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 55,
+      "audio": "module7_slide_55.mp3",
+      "captions": "module7_slide_55.vtt",
+      "text": "Now combine the four conditions.\n\n[pause=0.7]\n\nThe first is an uncorrelated scalar average.\n\n[pause=0.7]\n\nThe second is a correlated scalar count.\n\n[pause=0.7]\n\nThe third is correlated EXISTS.\n\n[pause=0.7]\n\nThe fourth is another correlated scalar count.\n\n[pause=0.7]\n\nRead the WHERE clause one condition at a time.\n\n[pause=0.7]\n\nBecause each piece has already been tested, the complete query is easier to understand and trust.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 56,
+      "audio": "module7_slide_56.mp3",
+      "captions": "module7_slide_56.vtt",
+      "text": "Project A uses subqueries to build a patient-level feature table.\n\n[pause=0.8]\n\nEach patient receives an admission count, abnormal-lab count, and distinct-medication count.\n\n[pause=0.7]\n\nThe query then combines those features into a simple teaching score.\n\n[pause=0.8]\n\nThe score is not a clinical model.\n\n[pause=0.7]\n\nThe SQL lesson is to create features at one clear grain and then calculate a derived value from them.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 57,
+      "audio": "module7_slide_57.mp3",
+      "captions": "module7_slide_57.vtt",
+      "text": "The common table expression creates patient-level features.\n\n[pause=0.7]\n\nInside it, correlated scalar subqueries calculate each patient's admission count, abnormal-lab count, and distinct-medication count.\n\n[pause=0.7]\n\nThe outer SELECT then calculates the synthetic score.\n\n[pause=0.7]\n\nWhen reading a long query, identify the row grain and feature columns first.\n\n[pause=0.8]\n\nOnly then interpret the final derived expression.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 58,
+      "audio": "module7_slide_58.mp3",
+      "captions": "module7_slide_58.vtt",
+      "text": "Project B changes the output grain from patient to department.\n\n[pause=0.8]\n\nThe outer query groups admissions by department.\n\n[pause=0.8]\n\nIt calculates total admissions, distinct patients, and average stay.\n\n[pause=0.7]\n\nA correlated subquery adds the count of open admissions for the current department.\n\n[pause=0.8]\n\nThis shows that correlation can use a grouping value such as department, not only a patient ID.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 59,
+      "audio": "module7_slide_59.mp3",
+      "captions": "module7_slide_59.vtt",
+      "text": "Run the department query and focus first on row grain.\n\n[pause=0.8]\n\nEach row represents one department.\n\n[pause=0.7]\n\nThe outer aggregate functions summarize admission rows.\n\n[pause=0.7]\n\nThe correlated scalar subquery uses the current department name to count open admissions only for that department.\n\n[pause=0.8]\n\nThis is a useful pattern for dashboards and grouped summaries.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 60,
+      "audio": "module7_slide_60.mp3",
+      "captions": "module7_slide_60.vtt",
+      "text": "Use this checkpoint to test the contracts.\n\n[pause=0.8]\n\nA comparison such as age greater than parentheses requires one scalar value.\n\n[pause=0.7]\n\nIN expects a one-column set.\n\n[pause=0.7]\n\nEXISTS only needs to know whether any row exists.\n\n[pause=0.7]\n\nAnd a subquery is correlated when it references the current outer row.\n\n[pause=0.8]\n\nIf you can identify these contracts, the syntax becomes much easier to reconstruct.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 61,
+      "audio": "module7_slide_61.mp3",
+      "captions": "module7_slide_61.vtt",
+      "text": "The NULL checkpoint reviews one of the most practical lessons in the module.\n\n[pause=0.8]\n\nNOT IN can behave unexpectedly when NULL appears in the returned set.\n\n[pause=0.7]\n\nNOT EXISTS tests whether a matching row exists and avoids that classic issue.\n\n[pause=0.7]\n\nNOT IN is not always wrong.\n\n[pause=0.7]\n\nThe important point is that you must understand the possible NULL values before relying on it.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 62,
+      "audio": "module7_slide_62.mp3",
+      "captions": "module7_slide_62.vtt",
+      "text": "This challenge asks for patients whose admission count is above the average admission count among patients who have at least one admission.\n\n[pause=0.7]\n\nBreak the task into stages.\n\n[pause=0.7]\n\nFirst create patient-level admission counts.\n\n[pause=0.7]\n\nThen calculate the average of those counts.\n\n[pause=0.7]\n\nFinally compare each patient's count with that average.\n\n[pause=0.7]\n\nUse the starter and test the query incrementally rather than writing everything at once.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 63,
+      "audio": "module7_slide_63.mp3",
+      "captions": "module7_slide_63.vtt",
+      "text": "These are the key contracts.\n\n[pause=0.7]\n\nScalar means one value.\n\n[pause=0.7]\n\nIN means membership.\n\n[pause=0.7]\n\nEXISTS means existence.\n\n[pause=0.7]\n\nANY and ALL compare one value with a set.\n\n[pause=0.7]\n\nCorrelation means the inner query depends on the current outer row.\n\n[pause=0.8]\n\nA derived table means the inner query produces rows for the outer query to use.\n\n[pause=0.8]\n\nIf you understand the meaning, you can rebuild the syntax when needed.\n\n[pause=1.0]",
+      "pause_markers": 8
+    },
+    {
+      "slide": 64,
+      "audio": "module7_slide_64.mp3",
+      "captions": "module7_slide_64.vtt",
+      "text": "Use this final guide when you are unsure.\n\n[pause=0.7]\n\nAsk what the outer query needs from the inner query.\n\n[pause=0.8]\n\nOne value suggests a scalar.\n\n[pause=0.7]\n\nMembership suggests IN.\n\n[pause=0.7]\n\nA related-row question suggests EXISTS or NOT EXISTS.\n\n[pause=0.7]\n\nA comparison against a set suggests ANY or ALL.\n\n[pause=0.7]\n\nIntermediate rows suggest a derived table.\n\n[pause=0.7]\n\nThen ask whether the inner query depends on the current outer row. If yes, it is correlated.\n\n[pause=1.0]",
+      "pause_markers": 8
+    },
+    {
+      "slide": 65,
+      "audio": "module7_slide_65.mp3",
+      "captions": "module7_slide_65.vtt",
+      "text": "Module 8 moves from query structure to value transformation.\n\n[pause=0.8]\n\nYou will work with text functions, pattern matching, dates, timestamps, and date arithmetic.\n\n[pause=0.7]\n\nThe subquery ideas from this module will continue to be useful because real queries often combine nested logic with transformations.\n\n[pause=0.8]\n\nBefore moving on, make sure you can explain what the inner query returns and why the outer operator matches that result.\n\n[pause=1.0]",
+      "pause_markers": 4
+    }
+  ]
+}
