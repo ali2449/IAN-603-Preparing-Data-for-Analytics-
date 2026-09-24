@@ -1,0 +1,433 @@
+{
+  "prefix": "module9",
+  "voice": "en-US-GuyNeural",
+  "rate": "-5%",
+  "volume": "+0%",
+  "pitch": "+0Hz",
+  "caption_words": 15,
+  "slide_count": 60,
+  "slide_markers_found": true,
+  "pause_marker_format": "[pause=seconds] or [pause=millisecondsms]",
+  "slides": [
+    {
+      "slide": 1,
+      "audio": "module9_slide_01.mp3",
+      "captions": "module9_slide_01.vtt",
+      "text": "Welcome to Module 9, Data Cleaning in PostgreSQL.\n\n[pause=0.7]\n\nThis module brings together the ideas from earlier modules and turns them into a repeatable cleaning workflow.\n\n[pause=0.7]\n\nWe will profile missing and invalid values, standardize representation, validate business rules, identify duplicate groups, quarantine questionable records, preview updates safely, and add constraints when the rules are known.\n\n[pause=0.7]\n\nThe most important principle is simple: cleaning should make uncertainty visible, not hide it.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 2,
+      "audio": "module9_slide_02.mp3",
+      "captions": "module9_slide_02.vtt",
+      "text": "Cleaning is not a collection of random fixes.\n\n[pause=0.7]\n\nIt is a sequence of evidence-based decisions.\n\n[pause=0.7]\n\nFirst, understand the source problems.\n\n[pause=0.7]\n\nThen apply only rules you can explain.\n\n[pause=0.7]\n\nKeep raw values when provenance matters.\n\n[pause=0.7]\n\nAnd when the correct value is unknown, do not invent one.\n\n[pause=0.7]\n\nA review flag is often more honest than an automatic replacement.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 3,
+      "audio": "module9_slide_03.mp3",
+      "captions": "module9_slide_03.vtt",
+      "text": "Suppose a product price is negative.\n\n[pause=0.7]\n\nIt may be tempting to use ABS and make it positive.\n\n[pause=0.7]\n\nBut that silently invents a correction.\n\n[pause=0.7]\n\nThe negative value is evidence that something went wrong.\n\n[pause=0.7]\n\nA safer workflow flags the value, preserves the source, and corrects it only when reliable evidence identifies the intended price.\n\n[pause=0.7]\n\nThis principle applies to dates, phone numbers, emails, categories, and other fields.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 4,
+      "audio": "module9_slide_04.mp3",
+      "captions": "module9_slide_04.vtt",
+      "text": "By the end of this module, you should be able to build a cleaning workflow rather than a one-off fix.\n\n[pause=0.7]\n\nYou should be able to profile quality problems, normalize representation, validate rules, identify duplicates, and use safer SQL patterns for changes.\n\n[pause=0.7]\n\nYou should also be able to explain what your cleaning logic knows and what it does not know.\n\n[pause=1.0]",
+      "pause_markers": 3
+    },
+    {
+      "slide": 5,
+      "audio": "module9_slide_05.mp3",
+      "captions": "module9_slide_05.vtt",
+      "text": "This six-stage workflow organizes the module.\n\n[pause=0.7]\n\nProfile first.\n\n[pause=0.7]\n\nPreserve the source.\n\n[pause=0.7]\n\nNormalize representation where the rule is known.\n\n[pause=0.7]\n\nValidate values against documented rules.\n\n[pause=0.7]\n\nResolve duplicates or questionable rows with explicit logic.\n\n[pause=0.7]\n\nFinally, move stable rules closer to data entry through constraints or monitoring.\n\n[pause=0.7]\n\nThe order matters because prevention should come after you understand the data and the rules.\n\n[pause=1.0]",
+      "pause_markers": 8
+    },
+    {
+      "slide": 6,
+      "audio": "module9_slide_06.mp3",
+      "captions": "module9_slide_06.vtt",
+      "text": "This simple record illustrates representation cleaning.\n\n[pause=0.7]\n\nThe name changes spacing and display case.\n\n[pause=0.7]\n\nThe email is trimmed and lowercased.\n\n[pause=0.7]\n\nThe phone keeps only digits.\n\n[pause=0.7]\n\nEach transformation is explainable.\n\n[pause=0.7]\n\nBut the cleaned value should not erase the source evidence.\n\n[pause=0.7]\n\nIn many analytical workflows, raw and cleaned layers are both valuable.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 7,
+      "audio": "module9_slide_07.mp3",
+      "captions": "module9_slide_07.vtt",
+      "text": "The teaching database intentionally contains imperfect data.\n\n[pause=0.7]\n\nCustomers includes formatting differences, missing values, and duplicates.\n\n[pause=0.7]\n\nProducts includes inconsistent categories and invalid numeric values.\n\n[pause=0.7]\n\nMessy customers is a staging table designed for the integrated cleaning project.\n\n[pause=0.8]\n\nThe problems are deliberate so that we can practice detection and resolution instead of working with already-perfect data.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 8,
+      "audio": "module9_slide_08.mp3",
+      "captions": "module9_slide_08.vtt",
+      "text": "Start by inspecting the source rows.\n\n[pause=0.8]\n\nLook for visible and invisible formatting differences.\n\n[pause=0.7]\n\nNotice missing emails or phones, blank values, inconsistent punctuation, and possible duplicate people.\n\n[pause=0.7]\n\nThe purpose of this first query is not to fix anything.\n\n[pause=0.8]\n\nIt is to build evidence about the source before defining rules.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 9,
+      "audio": "module9_slide_09.mp3",
+      "captions": "module9_slide_09.vtt",
+      "text": "A source review becomes more useful when we quantify the problems.\n\n[pause=0.7]\n\nHow many values are missing?\n\n[pause=0.7]\n\nHow many fail a validation rule?\n\n[pause=0.7]\n\nHow many duplicate groups appear after normalization?\n\n[pause=0.7]\n\nAre unusual values rare but plausible, or clearly impossible?\n\n[pause=0.7]\n\nProfiling gives you a baseline and helps you measure whether a cleaning step actually improves the dataset.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 10,
+      "audio": "module9_slide_10.mp3",
+      "captions": "module9_slide_10.vtt",
+      "text": "This query distinguishes NULL from blank text.\n\n[pause=0.8]\n\nCOUNT column ignores NULL values but still counts empty strings.\n\n[pause=0.7]\n\nCOUNT of NULLIF BTRIM column comma empty string excludes both NULL and blank-after-trimming values.\n\n[pause=0.7]\n\nRun the query and compare the non-null and non-blank counts.\n\n[pause=0.8]\n\nThat difference is an important part of completeness profiling.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 11,
+      "audio": "module9_slide_11.mp3",
+      "captions": "module9_slide_11.vtt",
+      "text": "Missing data can appear in several forms.\n\n[pause=0.7]\n\nNULL is a database null.\n\n[pause=0.7]\n\nBlank text is still a string value.\n\n[pause=0.7]\n\nA sentinel such as all zeros is an ordinary value unless the business rule says it represents missingness.\n\n[pause=0.7]\n\nThe word Unknown is also ordinary text unless its meaning is documented.\n\n[pause=0.7]\n\nDo not collapse these states automatically without understanding the source convention.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 12,
+      "audio": "module9_slide_12.mp3",
+      "captions": "module9_slide_12.vtt",
+      "text": "This query labels different phone states.\n\n[pause=0.8]\n\nA true SQL NULL is labeled NULL.\n\n[pause=0.7]\n\nA trimmed empty string is labeled blank.\n\n[pause=0.7]\n\nAll-zero or all-nine digit patterns are labeled sentinel for this teaching example.\n\n[pause=0.8]\n\nEverything else is treated as a candidate value.\n\n[pause=0.7]\n\nThis classification step is useful before deciding whether any states should be normalized together.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 13,
+      "audio": "module9_slide_13.mp3",
+      "captions": "module9_slide_13.vtt",
+      "text": "Sometimes blank strings and NULL represent the same business state.\n\n[pause=0.7]\n\nIf that rule is documented, NULLIF can convert a blank-after-trimming string into NULL.\n\n[pause=0.7]\n\nThis can make later logic easier because one missing representation is easier to handle than several.\n\n[pause=0.7]\n\nBut do this only when blank truly means missing for that field.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 14,
+      "audio": "module9_slide_14.mp3",
+      "captions": "module9_slide_14.vtt",
+      "text": "COALESCE returns the first non-null expression.\n\n[pause=0.7]\n\nHere, we try cleaned email first, then cleaned phone, then a text label saying no contact method.\n\n[pause=0.7]\n\nThis is a reporting or business-logic fallback.\n\n[pause=0.7]\n\nIt does not repair the missing email or phone.\n\n[pause=0.7]\n\nThe source still has the same missingness; we are simply choosing a value for the current output.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 15,
+      "audio": "module9_slide_15.mp3",
+      "captions": "module9_slide_15.vtt",
+      "text": "Standardization and correction should not be treated as the same operation.\n\n[pause=0.7]\n\nTrimming an email or changing case preserves the intended value.\n\n[pause=0.7]\n\nMapping tech to Electronics may be appropriate if the business taxonomy explicitly defines that equivalence.\n\n[pause=0.7]\n\nChanging a negative price to a positive price makes a much stronger claim about reality.\n\n[pause=0.7]\n\nThat kind of correction needs evidence.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 16,
+      "audio": "module9_slide_16.mp3",
+      "captions": "module9_slide_16.vtt",
+      "text": "This query trims name boundaries, collapses repeated whitespace, and applies title-style capitalization.\n\n[pause=0.8]\n\nRun it and compare raw and cleaned names.\n\n[pause=0.8]\n\nThe goal is to create a more consistent analytical representation.\n\n[pause=0.7]\n\nIn production, name capitalization can be domain-sensitive, so treat INITCAP as a teaching convenience rather than a universal truth.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 17,
+      "audio": "module9_slide_17.mp3",
+      "captions": "module9_slide_17.vtt",
+      "text": "Email standardization starts with a small set of explainable transformations.\n\n[pause=0.7]\n\nTrim boundary spaces.\n\n[pause=0.7]\n\nConvert empty strings to NULL if blank means missing.\n\n[pause=0.7]\n\nLowercase the value for a consistent analytical representation.\n\n[pause=0.7]\n\nThis does not validate the email.\n\n[pause=0.7]\n\nIt only standardizes the representation before validation.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 18,
+      "audio": "module9_slide_18.mp3",
+      "captions": "module9_slide_18.vtt",
+      "text": "This phone example performs two different tasks.\n\n[pause=0.8]\n\nFirst, it removes non-digit characters to create a digits-only candidate.\n\n[pause=0.7]\n\nSecond, it checks whether the candidate has exactly ten digits.\n\n[pause=0.7]\n\nIf it does not, the validated ten-digit output becomes NULL.\n\n[pause=0.7]\n\nNotice that formatting normalization does not automatically make a phone number valid.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 19,
+      "audio": "module9_slide_19.mp3",
+      "captions": "module9_slide_19.vtt",
+      "text": "Category standardization is more than text cleaning.\n\n[pause=0.7]\n\nIf several labels should map to one canonical category, that mapping reflects business meaning.\n\n[pause=0.7]\n\nYou need a documented rule.\n\n[pause=0.7]\n\nDo not merge categories simply because their names look similar.\n\n[pause=0.7]\n\nThe transformation should reflect the intended taxonomy.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 20,
+      "audio": "module9_slide_20.mp3",
+      "captions": "module9_slide_20.vtt",
+      "text": "This CASE expression maps several known labels to standard categories.\n\n[pause=0.7]\n\nElectronics, electronic, and tech map to Electronics.\n\n[pause=0.7]\n\nOther documented variants map to their canonical labels.\n\n[pause=0.7]\n\nFor a small teaching example, CASE is readable.\n\n[pause=0.8]\n\nFor a larger production taxonomy, a reference or mapping table is usually easier to maintain.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 21,
+      "audio": "module9_slide_21.mp3",
+      "captions": "module9_slide_21.vtt",
+      "text": "This query classifies product prices.\n\n[pause=0.8]\n\nMissing values are labeled missing.\n\n[pause=0.7]\n\nZero or negative prices are flagged invalid and require review.\n\n[pause=0.7]\n\nPositive prices are valid candidates.\n\n[pause=0.7]\n\nNotice that the query does not change the values.\n\n[pause=0.8]\n\nValidation should often begin by identifying problems, not by overwriting them.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 22,
+      "audio": "module9_slide_22.mp3",
+      "captions": "module9_slide_22.vtt",
+      "text": "Validation tests values against documented rules.\n\n[pause=0.7]\n\nA rule might describe a text pattern, a length, a domain, or a numeric range.\n\n[pause=0.7]\n\nPassing a rule means the value satisfies that rule.\n\n[pause=0.7]\n\nIt does not necessarily prove the value is correct in the real world.\n\n[pause=0.7]\n\nKeep the distinction between validity and accuracy from Module 1.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 23,
+      "audio": "module9_slide_23.mp3",
+      "captions": "module9_slide_23.vtt",
+      "text": "This query checks email shape.\n\n[pause=0.8]\n\nMissing values receive a missing status.\n\n[pause=0.7]\n\nValues matching the teaching-level regular expression are labeled valid shape.\n\n[pause=0.7]\n\nOther nonmissing values are flagged for review.\n\n[pause=0.7]\n\nThe phrase valid shape is important because the regex does not prove the mailbox exists.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 24,
+      "audio": "module9_slide_24.mp3",
+      "captions": "module9_slide_24.vtt",
+      "text": "Phone validation first strips punctuation and other non-digit characters.\n\n[pause=0.7]\n\nThen it checks whether the resulting candidate has ten digits.\n\n[pause=0.7]\n\nMissing values are separated from invalid-shaped values.\n\n[pause=0.7]\n\nThis is a good pattern: normalize representation first, then apply the validation rule.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 25,
+      "audio": "module9_slide_25.mp3",
+      "captions": "module9_slide_25.vtt",
+      "text": "This query applies several product rules in priority order.\n\n[pause=0.8]\n\nIt checks for a missing product name, missing price, invalid price, and negative stock.\n\n[pause=0.7]\n\nIf none of those selected rules fail, the row passes the selected checks.\n\n[pause=0.7]\n\nA production system might store several issue codes instead of only the first one, but this CASE expression is a clear beginner-friendly start.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 26,
+      "audio": "module9_slide_26.mp3",
+      "captions": "module9_slide_26.vtt",
+      "text": "Row-level validation is useful, but managers and analysts often need a summary.\n\n[pause=0.7]\n\nThis query combines several issue detectors with UNION ALL.\n\n[pause=0.8]\n\nThen it groups by entity and issue type to count how many problems exist.\n\n[pause=0.7]\n\nThis turns cleaning logic into a measurable quality report.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 27,
+      "audio": "module9_slide_27.mp3",
+      "captions": "module9_slide_27.vtt",
+      "text": "Data quality has multiple dimensions.\n\n[pause=0.7]\n\nCompleteness is not the same as validity.\n\n[pause=0.7]\n\nValidity is not the same as uniqueness.\n\n[pause=0.7]\n\nTimeliness asks a different question again.\n\n[pause=0.7]\n\nMeasure these dimensions separately whenever possible.\n\n[pause=0.7]\n\nA single score can be useful for triage, but it can hide which problem actually caused the low score.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 28,
+      "audio": "module9_slide_28.mp3",
+      "captions": "module9_slide_28.vtt",
+      "text": "This query creates an illustrative score out of four component checks.\n\n[pause=0.8]\n\nEach contributes twenty-five points.\n\n[pause=0.7]\n\nThat weighting is a policy choice for teaching.\n\n[pause=0.7]\n\nAnother organization might value the dimensions differently.\n\n[pause=0.7]\n\nThe important lesson is to keep the component checks visible and avoid treating a composite score as an objective truth.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 29,
+      "audio": "module9_slide_29.mp3",
+      "captions": "module9_slide_29.vtt",
+      "text": "This query converts numeric quality scores into broad bands and counts customers in each band.\n\n[pause=0.8]\n\nA summary like this can help prioritize review.\n\n[pause=0.7]\n\nBut the band does not replace the underlying dimensions.\n\n[pause=0.7]\n\nIf a row has a low score, you should still be able to explain whether the problem is missingness, invalid contact data, timeliness, or something else.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 30,
+      "audio": "module9_slide_30.mp3",
+      "captions": "module9_slide_30.vtt",
+      "text": "Deduplication has two separate problems.\n\n[pause=0.7]\n\nFirst, detect which rows appear to represent the same entity.\n\n[pause=0.7]\n\nSecond, decide which row should survive or how the records should be merged.\n\n[pause=0.7]\n\nDo not jump directly from detection to deletion.\n\n[pause=0.7]\n\nThe duplicate key and survivor rule both need to be explicit.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 31,
+      "audio": "module9_slide_31.mp3",
+      "captions": "module9_slide_31.vtt",
+      "text": "This query creates normalized email and name keys.\n\n[pause=0.8]\n\nIt groups rows by those normalized values.\n\n[pause=0.7]\n\nGroups with more than one row become duplicate candidates.\n\n[pause=0.7]\n\nARRAY_AGG shows the source IDs in each group.\n\n[pause=0.7]\n\nThis is detection only.\n\n[pause=0.7]\n\nIt does not yet say which source row is better.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 32,
+      "audio": "module9_slide_32.mp3",
+      "captions": "module9_slide_32.vtt",
+      "text": "Duplicate detection depends on the identity rule.\n\n[pause=0.7]\n\nEmail alone may be useful but can fail when emails are shared or changed.\n\n[pause=0.7]\n\nName plus email can be stronger but may miss rows with incomplete values.\n\n[pause=0.7]\n\nPhone can provide supporting evidence but is not perfect.\n\n[pause=0.7]\n\nFor sensitive data, possible duplicates often need multiple signals and review.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 33,
+      "audio": "module9_slide_33.mp3",
+      "captions": "module9_slide_33.vtt",
+      "text": "After detecting duplicates, define a survivor rule.\n\n[pause=0.7]\n\nA row with more useful fields might rank higher.\n\n[pause=0.7]\n\nA more recent record might be preferred when recency is meaningful.\n\n[pause=0.7]\n\nSome systems have a designated authoritative source.\n\n[pause=0.7]\n\nAnd ties should be broken deterministically.\n\n[pause=0.7]\n\nThe important point is that survivor selection is a policy, not an automatic property of SQL.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 34,
+      "audio": "module9_slide_34.mp3",
+      "captions": "module9_slide_34.vtt",
+      "text": "This query calculates a simple completeness score.\n\n[pause=0.8]\n\nThen ROW_NUMBER ranks rows inside each normalized duplicate group.\n\n[pause=0.7]\n\nThe most complete row ranks first, with signup date and ID used as additional ordering.\n\n[pause=0.7]\n\nThis does not mean the first row is always truly correct.\n\n[pause=0.7]\n\nIt means the rule is explicit, reproducible, and reviewable.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 35,
+      "audio": "module9_slide_35.mp3",
+      "captions": "module9_slide_35.vtt",
+      "text": "This query creates pairs of customers that share the same normalized phone number.\n\n[pause=0.8]\n\nThe condition a ID less than b ID avoids comparing a row with itself and avoids duplicate pair orderings.\n\n[pause=0.7]\n\nThese are possible duplicates, not proven duplicates.\n\n[pause=0.7]\n\nA shared phone number may represent one person, a household, or reused contact information.\n\n[pause=0.7]\n\nReview may be necessary.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 36,
+      "audio": "module9_slide_36.mp3",
+      "captions": "module9_slide_36.vtt",
+      "text": "Duplicate detection and duplicate resolution are different stages.\n\n[pause=0.7]\n\nDetection tries to find plausible candidate groups.\n\n[pause=0.7]\n\nResolution decides what to do with them.\n\n[pause=0.7]\n\nThat could mean choosing a survivor, merging complementary fields, quarantining the group, or sending it for human review.\n\n[pause=0.7]\n\nSeparating the stages makes deduplication safer.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 37,
+      "audio": "module9_slide_37.mp3",
+      "captions": "module9_slide_37.vtt",
+      "text": "Quarantine is a useful pattern when values are questionable but not safely correctable.\n\n[pause=0.7]\n\nThe source remains intact.\n\n[pause=0.7]\n\nIssue flags identify what needs attention.\n\n[pause=0.7]\n\nA view or table exposes the review subset.\n\n[pause=0.7]\n\nAfter review, records can be corrected, approved, or excluded according to policy.\n\n[pause=0.7]\n\nThis is often safer than automatic replacement.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 38,
+      "audio": "module9_slide_38.mp3",
+      "captions": "module9_slide_38.vtt",
+      "text": "This example creates a view with quality flags.\n\n[pause=0.8]\n\nIt marks missing names, invalid email shapes, and invalid phone shapes.\n\n[pause=0.7]\n\nThe final SELECT returns only rows that need attention.\n\n[pause=0.7]\n\nBecause the source customer table is unchanged, the view becomes a transparent review layer.\n\n[pause=0.7]\n\nThis is a strong pattern for reproducible cleaning.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 39,
+      "audio": "module9_slide_39.mp3",
+      "captions": "module9_slide_39.vtt",
+      "text": "Views can help separate source data from analytical representation.\n\n[pause=0.7]\n\nThe raw table preserves provenance.\n\n[pause=0.7]\n\nA clean view applies standardized transformations.\n\n[pause=0.7]\n\nA quality view exposes rows that need review.\n\n[pause=0.7]\n\nDownstream analysis can use the prepared layer without permanently overwriting the source.\n\n[pause=0.7]\n\nThis also makes the cleaning logic visible in SQL.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 40,
+      "audio": "module9_slide_40.mp3",
+      "captions": "module9_slide_40.vtt",
+      "text": "This query creates a clean preview view.\n\n[pause=0.8]\n\nNames, emails, phones, and addresses are transformed into candidate analytical fields.\n\n[pause=0.7]\n\nThe original customer rows remain unchanged.\n\n[pause=0.7]\n\nThis gives you a reusable prepared layer while keeping the source available for comparison and audit.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 41,
+      "audio": "module9_slide_41.mp3",
+      "captions": "module9_slide_41.vtt",
+      "text": "After you understand the data and reconcile legacy problems, stable rules can move closer to data entry.\n\n[pause=0.7]\n\nNOT NULL protects required values.\n\n[pause=0.7]\n\nCHECK can enforce a pattern or domain.\n\n[pause=0.7]\n\nUNIQUE can protect a field that truly must be unique.\n\n[pause=0.7]\n\nForeign keys protect relationships.\n\n[pause=0.7]\n\nConstraints prevent known defects from reappearing, but they should reflect real business rules.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 42,
+      "audio": "module9_slide_42.mp3",
+      "captions": "module9_slide_42.vtt",
+      "text": "This example creates a small table with several constraints.\n\n[pause=0.8]\n\nEmail is required.\n\n[pause=0.7]\n\nThe email must match a teaching-level shape check.\n\n[pause=0.7]\n\nPhone is either NULL or exactly ten digits.\n\n[pause=0.7]\n\nEmail is also unique.\n\n[pause=0.7]\n\nRun the valid insert first.\n\n[pause=0.8]\n\nThen try changing a value to violate one rule and observe PostgreSQL reject it.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 43,
+      "audio": "module9_slide_43.mp3",
+      "captions": "module9_slide_43.vtt",
+      "text": "Constraints are powerful, but timing matters.\n\n[pause=0.7]\n\nIf you add a strict rule before understanding legacy data, valid historical exceptions may be blocked or the migration may fail.\n\n[pause=0.7]\n\nProfile first.\n\n[pause=0.7]\n\nResolve existing violations.\n\n[pause=0.7]\n\nConfirm the business rule and its owner.\n\n[pause=0.7]\n\nThen add the constraint and monitor future data.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 44,
+      "audio": "module9_slide_44.mp3",
+      "captions": "module9_slide_44.vtt",
+      "text": "When a cleaning rule is strong enough to update data, use a controlled workflow.\n\n[pause=0.7]\n\nPreview with SELECT.\n\n[pause=0.7]\n\nStart a transaction.\n\n[pause=0.7]\n\nRun UPDATE with a narrow condition.\n\n[pause=0.8]\n\nUse RETURNING to inspect the changed rows.\n\n[pause=0.8]\n\nThen either commit the change or roll it back.\n\n[pause=0.7]\n\nThis makes destructive cleaning much safer.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 45,
+      "audio": "module9_slide_45.mp3",
+      "captions": "module9_slide_45.vtt",
+      "text": "This script begins a transaction.\n\n[pause=0.7]\n\nIt lowercases and trims emails only when the stored value is actually different.\n\n[pause=0.7]\n\nRETURNING shows which rows changed.\n\n[pause=0.7]\n\nThen ROLLBACK discards the changes.\n\n[pause=0.7]\n\nThis is a useful teaching pattern because you can inspect the effect without permanently modifying the source table.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 46,
+      "audio": "module9_slide_46.mp3",
+      "captions": "module9_slide_46.vtt",
+      "text": "IS DISTINCT FROM is useful in cleaning updates because it handles NULL explicitly.\n\n[pause=0.7]\n\nOrdinary equality follows three-valued logic.\n\n[pause=0.7]\n\nIS DISTINCT FROM tells you whether two values are meaningfully different, including cases where one is NULL.\n\n[pause=0.7]\n\nThis can help avoid unnecessary updates and make conditions more predictable.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 47,
+      "audio": "module9_slide_47.mp3",
+      "captions": "module9_slide_47.vtt",
+      "text": "Some cleaning shortcuts make a dataset look better while reducing its truthfulness.\n\n[pause=0.7]\n\nA bad date should not become today's date.\n\n[pause=0.7]\n\nA negative price should not become positive without evidence.\n\n[pause=0.7]\n\nA missing phone should remain missing unless a reliable source provides one.\n\n[pause=0.7]\n\nA possible duplicate should not be deleted just because its ID is larger.\n\n[pause=0.7]\n\nCleaning should preserve uncertainty when the truth is unknown.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 48,
+      "audio": "module9_slide_48.mp3",
+      "captions": "module9_slide_48.vtt",
+      "text": "Production cleaning pipelines often need lineage fields.\n\n[pause=0.7]\n\nSource ID links the prepared row back to the raw record.\n\n[pause=0.7]\n\nA rule version identifies which logic was used.\n\n[pause=0.7]\n\nA timestamp records when cleaning occurred.\n\n[pause=0.7]\n\nIssue codes explain detected problems.\n\n[pause=0.7]\n\nReview status records the resolution state.\n\n[pause=0.7]\n\nThese fields make the cleaning process reproducible and auditable.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 49,
+      "audio": "module9_slide_49.mp3",
+      "captions": "module9_slide_49.vtt",
+      "text": "The integrated project uses a staging table with messy customer data.\n\n[pause=0.8]\n\nYou will normalize text, parse supported date formats, rank duplicate candidates, and label records that need review.\n\n[pause=0.7]\n\nThe objective is a transparent candidate-clean output.\n\n[pause=0.7]\n\nUnsupported or ambiguous values should remain visible as uncertainty rather than being guessed.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 50,
+      "audio": "module9_slide_50.mp3",
+      "captions": "module9_slide_50.vtt",
+      "text": "Run the project query once so you can see the final columns.\n\n[pause=0.8]\n\nThe query uses several common table expressions.\n\n[pause=0.8]\n\nThe first stage normalizes name, email, and phone values.\n\n[pause=0.7]\n\nThe second parses supported dates.\n\n[pause=0.7]\n\nThe third ranks duplicates.\n\n[pause=0.7]\n\nThe final SELECT creates clean output fields and a row status.\n\n[pause=0.7]\n\nWe will unpack those stages separately.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 51,
+      "audio": "module9_slide_51.mp3",
+      "captions": "module9_slide_51.vtt",
+      "text": "The first CTE performs representation normalization.\n\n[pause=0.7]\n\nIt does not yet claim that the values are valid.\n\n[pause=0.7]\n\nNames are cleaned for whitespace.\n\n[pause=0.7]\n\nEmails are trimmed and lowercased.\n\n[pause=0.7]\n\nPhone values become digit-only candidates.\n\n[pause=0.7]\n\nThe raw signup date is carried forward unchanged.\n\n[pause=0.7]\n\nThis separation makes the pipeline easier to reason about.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 52,
+      "audio": "module9_slide_52.mp3",
+      "captions": "module9_slide_52.vtt",
+      "text": "The second CTE parses dates.\n\n[pause=0.7]\n\nIt recognizes two documented formats.\n\n[pause=0.7]\n\nIf the raw text matches one of them, PostgreSQL creates a typed date.\n\n[pause=0.7]\n\nIf the value does not match a supported format, the clean date becomes NULL.\n\n[pause=0.7]\n\nThat preserves the distinction between known and unsupported input.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 53,
+      "audio": "module9_slide_53.mp3",
+      "captions": "module9_slide_53.vtt",
+      "text": "The third CTE ranks possible duplicates.\n\n[pause=0.7]\n\nRows with the same normalized identity key are placed in the same partition.\n\n[pause=0.7]\n\nA simple completeness expression helps prefer the more useful record.\n\n[pause=0.7]\n\nID provides a stable tie-breaker.\n\n[pause=0.7]\n\nAgain, the rank is a reproducible policy, not proof that one record is universally correct.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 54,
+      "audio": "module9_slide_54.mp3",
+      "captions": "module9_slide_54.vtt",
+      "text": "The final SELECT exposes the results of the pipeline.\n\n[pause=0.7]\n\nPhone candidates are only kept when they satisfy the ten-digit teaching rule.\n\n[pause=0.7]\n\nUnsupported dates remain NULL.\n\n[pause=0.7]\n\nDuplicate rank remains visible.\n\n[pause=0.7]\n\nThe row status flags records that still contain important unresolved problems.\n\n[pause=0.7]\n\nThis is what transparent cleaning looks like: useful output plus visible uncertainty.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 55,
+      "audio": "module9_slide_55.mp3",
+      "captions": "module9_slide_55.vtt",
+      "text": "The phrase candidate clean row is intentional.\n\n[pause=0.7]\n\nPassing selected checks does not mean every fact is verified.\n\n[pause=0.7]\n\nIt means the row satisfies the rules we implemented for this exercise.\n\n[pause=0.7]\n\nReview rows still need attention.\n\n[pause=0.7]\n\nDuplicate ranking still requires policy or evidence.\n\n[pause=0.7]\n\nUse labels that accurately describe what your process knows.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 56,
+      "audio": "module9_slide_56.mp3",
+      "captions": "module9_slide_56.vtt",
+      "text": "Use this checkpoint to test whether you understand the reasoning, not only the SQL.\n\n[pause=0.8]\n\nExplain why NULL differs from blank text.\n\n[pause=0.7]\n\nExplain why an invalid value should be detected before it is corrected.\n\n[pause=0.7]\n\nExplain why duplicate detection and survivor selection are separate.\n\n[pause=0.7]\n\nExplain the limits of regex validation.\n\n[pause=0.7]\n\nAnd explain why a transaction makes cleaning updates safer.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 57,
+      "audio": "module9_slide_57.mp3",
+      "captions": "module9_slide_57.vtt",
+      "text": "The applied assessment asks you to produce one row per customer with cleaned fields, a quality status, and a duplicate rank.\n\n[pause=0.7]\n\nDo not overwrite the customer source table.\n\n[pause=0.7]\n\nBuild the solution in stages.\n\n[pause=0.7]\n\nStart with normalization.\n\n[pause=0.7]\n\nAdd validation.\n\n[pause=0.7]\n\nThen add duplicate ranking.\n\n[pause=0.7]\n\nFinally create the row-level status.\n\n[pause=0.7]\n\nRun each stage as you build it so errors remain easy to locate.\n\n[pause=1.0]",
+      "pause_markers": 8
+    },
+    {
+      "slide": 58,
+      "audio": "module9_slide_58.mp3",
+      "captions": "module9_slide_58.vtt",
+      "text": "These are the main habits from Module 9.\n\n[pause=0.7]\n\nProfile before cleaning.\n\n[pause=0.7]\n\nPreserve uncertainty rather than inventing corrections.\n\n[pause=0.7]\n\nKeep standardization, validation, duplicate handling, and correction conceptually separate.\n\n[pause=0.7]\n\nUse views, quarantine patterns, transactions, and lineage to make work safer and reproducible.\n\n[pause=0.7]\n\nAdd constraints after the rules are stable.\n\n[pause=0.7]\n\nAnd keep quality dimensions visible instead of hiding everything behind one score.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 59,
+      "audio": "module9_slide_59.mp3",
+      "captions": "module9_slide_59.vtt",
+      "text": "Use this guide to decide what kind of action the evidence supports.\n\n[pause=0.7]\n\nA known formatting difference can be standardized.\n\n[pause=0.7]\n\nA documented blank-as-missing convention can be normalized.\n\n[pause=0.7]\n\nAn invalid value with unknown truth should be flagged or quarantined.\n\n[pause=0.7]\n\nPossible duplicates need detection and resolution logic.\n\n[pause=0.7]\n\nA supported correction can be applied safely.\n\n[pause=0.7]\n\nAnd stable rules can become constraints for future prevention.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 60,
+      "audio": "module9_slide_60.mp3",
+      "captions": "module9_slide_60.vtt",
+      "text": "Module 10 moves from cleaning to reshaping.\n\n[pause=0.7]\n\nOnce data is trustworthy enough for the task, we often need to change its structure for reporting, comparison, or modeling.\n\n[pause=0.7]\n\nYou will work with analytical grain and wide versus long representations.\n\n[pause=0.7]\n\nThe cleaning principles from Module 9 remain important because reshaping bad or ambiguous data does not fix its quality problems.\n\n[pause=1.0]",
+      "pause_markers": 4
+    }
+  ]
+}
