@@ -33,7 +33,7 @@ button,select,input,textarea{font:inherit}
 @media(max-width:760px){body{overflow:auto}.app{height:auto;grid-template-rows:auto auto auto}.stage{overflow:visible}.bottombar{grid-template-columns:1fr;position:sticky;bottom:0;z-index:20}.audio-block,.bottom-nav{grid-column:1;grid-row:auto}.two-col,.cols-2,.cols-3,.cols-4,.cols-5,.branches,.children,.leak-grid,.case-grid{grid-template-columns:1fr}.flow{flex-wrap:wrap}.flow-arrow{display:none}#slidesHost{width:calc(100vw - 20px);height:auto;aspect-ratio:auto}.slide{position:relative;height:auto;min-height:720px}.viz-grid{grid-template-columns:1fr}.narration-controls{flex-wrap:wrap}}
 </style></head><body>
 <div class="app">
-<header class="topbar"><div class="brand"><div class="brand-mark">11</div><div>IAN 603<small>Module 11 · Advanced SQL: CTEs & Window Functions</small></div></div><div class="top-actions"><span class="db-status" id="dbStatus">Loading PostgreSQL...</span><button class="control" id="themeBtn" type="button">Dark mode</button><button class="control" id="fullBtn" type="button">Full screen</button></div></header>
+<header class="topbar"><div class="brand"><div class="brand-mark">11</div><div>IAN 603<small>Module 11 · Advanced SQL: CTEs & Window Functions</small></div></div><div class="top-actions"><span class="db-status" id="dbStatus">Loading PostgreSQL...</span><button class="control" id="themeBtn" type="button">Dark mode</button><button class="control" id="fullBtn" type="button">Full screen</button><button class="control" id="courseModulesBtn" type="button" aria-haspopup="dialog" aria-controls="courseModulesDrawer"><span class="cmn-btn-icon">☰</span><span class="cmn-btn-label">Course Modules</span></button></div></header>
 <main class="stage"><div id="slidesHost"><section class="slide active" data-title="Start"><div class="slide-inner"><div class="slide-kicker">IAN 603 · Module 11</div><div class="title-layout"><div><span class="module-pill">IAN 603 · Module 11</span><h1>Advanced SQL: CTEs &amp; Window Functions</h1><p class="lead">Break complex analysis into named stages and calculate across related rows without losing the current row.</p><div class="topic-pills"><span>CTEs</span><span>Recursive CTEs</span><span>Window functions</span><span>Ranking</span><span>LAG / LEAD</span><span>Frames</span></div><div class="start-actions"><button class="control primary" id="startWithNarration" type="button">Start Narration</button><button class="control" type="button" onclick="goToSlide(1)">Start Slides</button></div></div><div class="title-visual"><div class="flow"><div class="flow-step"><span>1</span><b>Stage</b></div><div class="flow-arrow">→</div><div class="flow-step"><span>2</span><b>Context</b></div><div class="flow-arrow">→</div><div class="flow-step"><span>3</span><b>Order</b></div><div class="flow-arrow">→</div><div class="flow-step"><span>4</span><b>Frame</b></div><div class="flow-arrow">→</div><div class="flow-step"><span>5</span><b>Interpret</b></div></div></div></div><div class="slide-footer">IAN 603 · Module 11 · Slide 1</div></div></section><section class="slide" data-title="What advanced SQL is really doing"><div class="slide-inner"><div class="slide-kicker">Start here</div><h2>Control intermediate results and row context</h2><div class="cards cols-4"><article class="info-card"><span class="eyebrow">CTE</span><h3>Name an intermediate result</h3><p>Break one complicated statement into logical stages.</p></article><article class="info-card"><span class="eyebrow">Window</span><h3>Add context without collapsing rows</h3><p>Compare or summarize related rows while keeping the current row.</p></article><article class="info-card"><span class="eyebrow">Sequence</span><h3>Use order meaningfully</h3><p>Previous, next, running, and moving calculations depend on a defined sequence.</p></article><article class="info-card"><span class="eyebrow">Grain</span><h3>Keep row meaning explicit</h3><p>Advanced syntax does not fix unclear grain.</p></article></div><div class="slide-footer">IAN 603 · Module 11 · Slide 2</div></div></section><section class="slide" data-title="Learning goals"><div class="slide-inner"><div class="slide-kicker">Start here</div><h2>What you should be able to do</h2><div class="cards cols-5"><article class="info-card"><h3>Structure</h3><p>Use one or more CTEs to build readable analytical stages.</p></article><article class="info-card"><h3>Recurse</h3><p>Explain anchor and recursive terms in a hierarchy traversal.</p></article><article class="info-card"><h3>Rank</h3><p>Choose ROW_NUMBER, RANK, or DENSE_RANK based on tie behavior.</p></article><article class="info-card"><h3>Sequence</h3><p>Use LAG and LEAD for previous, next, and interval questions.</p></article><article class="info-card"><h3>Frame</h3><p>Control running and moving windows explicitly.</p></article></div><div class="slide-footer">IAN 603 · Module 11 · Slide 3</div></div></section><section class="slide" data-title="Module roadmap"><div class="slide-inner"><div class="slide-kicker">Start here</div><h2>Build from stages to analytical pipelines</h2><div class="flow"><div class="flow-step"><span>1</span><b>CTEs</b><small>Name intermediate results.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>2</span><b>Recursion</b><small>Repeat a relationship.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>3</span><b>OVER</b><small>Define row context.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>4</span><b>Rank / offset</b><small>Use order.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>5</span><b>Frames</b><small>Control visible ordered rows.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>6</span><b>Patterns</b><small>Combine stages and windows.</small></div></div><div class="slide-footer">IAN 603 · Module 11 · Slide 4</div></div></section><section class="slide" data-title="Teaching database"><div class="slide-inner"><div class="slide-kicker">Database</div><h2>Four small datasets support the examples</h2><div class="table-wrap "><table><thead><tr><th>Table</th><th>Used for</th></tr></thead><tbody><tr><td>patients / admissions</td><td>patient features, stay duration, readmission sequence</td></tr><tr><td>employees</td><td>hierarchy, salary ranking, ties, department partitions</td></tr><tr><td>sales</td><td>running totals, moving averages, top products, percent of total</td></tr><tr><td>website_visits</td><td>next-event and time-between-visits analysis</td></tr></tbody></table></div><div class="slide-footer">IAN 603 · Module 11 · Slide 5</div></div></section><section class="slide" data-title="The grain rule still applies"><div class="slide-inner"><div class="slide-kicker">Foundations</div><h2>Advanced syntax never replaces row meaning</h2><div class="cards cols-4"><article class="info-card"><h3>CTE stage</h3><p>What does one row in this named result represent?</p></article><article class="info-card"><h3>Window output</h3><p>Does the output stay at transaction, admission, employee, or patient grain?</p></article><article class="info-card"><h3>Final filter</h3><p>Does filtering a rank preserve the intended row detail?</p></article><article class="info-card"><h3>Validation</h3><p>Can you explain why the row count changed or stayed the same?</p></article></div><div class="slide-footer">IAN 603 · Module 11 · Slide 6</div></div></section><section class="slide" data-title="CTE mental model"><div class="slide-inner"><div class="slide-kicker">CTEs</div><h2>A CTE gives a stage a name</h2><div class="flow"><div class="flow-step"><span>1</span><b>Raw rows</b><small>patients + admissions</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>2</span><b>Named stage</b><small>admission_counts</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>3</span><b>Next stage</b><small>patient_features</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>4</span><b>Final SELECT</b><small>consume the prepared result</small></div></div><div class="callout"><strong>WITH</strong><span>A CTE exists for the statement. Think of it as a named intermediate relation.</span></div><div class="slide-footer">IAN 603 · Module 11 · Slide 7</div></div></section><section class="slide" data-title="CTE syntax anatomy"><div class="slide-inner"><div class="slide-kicker">CTEs</div><h2>WITH name AS (...) creates a named result</h2><div class="table-wrap "><table><thead><tr><th>Part</th><th>Role</th></tr></thead><tbody><tr><td>WITH older_patients AS (...)</td><td>define the CTE</td></tr><tr><td>SELECT ... FROM patients</td><td>build the intermediate rows</td></tr><tr><td>SELECT ... FROM older_patients</td><td>consume the CTE</td></tr><tr><td>optional later CTEs</td><td>build a dependency chain</td></tr></tbody></table></div><div class="callout"><strong>CTE is not a permanent table</strong><span>It exists for the statement unless you explicitly create a table or view.</span></div><div class="slide-footer">IAN 603 · Module 11 · Slide 8</div></div></section><section class="slide" data-title="When a CTE helps"><div class="slide-inner"><div class="slide-kicker">CTEs</div><h2>Use CTEs when a logical stage deserves a name</h2><div class="cards cols-4"><article class="info-card"><h3>Readable pipeline</h3><p>Break one large query into meaningful stages.</p></article><article class="info-card"><h3>Rank then filter</h3><p>Calculate a window result in one stage, filter it in the next.</p></article><article class="info-card"><h3>Reuse in statement</h3><p>Reference a named result from later stages.</p></article><article class="info-card"><h3>Recursion</h3><p>Recursive CTEs are required for self-referencing traversal.</p></article></div><div class="slide-footer">IAN 603 · Module 11 · Slide 9</div></div></section><section class="slide" data-title="When a CTE does not help"><div class="slide-inner"><div class="slide-kicker">CTEs</div><h2>Do not add layers without a reason</h2><div class="cards cols-4"><article class="info-card"><h3>Short query</h3><p>A direct SELECT may already be clearer.</p></article><article class="info-card"><h3>Unclear grain</h3><p>A CTE name does not fix ambiguous row meaning.</p></article><article class="info-card"><h3>Performance myth</h3><p>CTEs do not automatically cache or speed up a query.</p></article><article class="info-card"><h3>Hidden complexity</h3><p>Too many tiny stages can make a simple idea harder to follow.</p></article></div><div class="slide-footer">IAN 603 · Module 11 · Slide 10</div></div></section><section class="slide" data-title="Basic CTE example"><div class="slide-inner"><div class="slide-kicker">CTEs</div><h2>Filter first, then analyze the named subset</h2><div class="pg-cell"><div class="pg-head"><div><b>Older patients CTE</b><small>PostgreSQL · Query Tool</small></div><div class="pg-actions"><button class="pg-btn pg-run" type="button">Run</button><button class="pg-btn pg-reset" type="button">Reset</button><button class="pg-btn pg-copy" type="button">Copy</button></div></div><div class="pg-shell"><div class="pg-gutter"><div class="pg-gutter-lines"></div></div><pre class="pg-highlight"></pre><textarea class="pg-editor" spellcheck="false">WITH older_patients AS (
     SELECT subject_id, name, age
     FROM patients
@@ -264,4 +264,158 @@ document.getElementById('startNarration').onclick=playCurrentNarration;document.
 audio.onplay=()=>{document.getElementById('audioPlayer').classList.add('playing');document.getElementById('audioPlay').textContent='Pause'};audio.onpause=()=>{document.getElementById('audioPlayer').classList.remove('playing');document.getElementById('audioPlay').textContent='Play'};audio.ontimeupdate=()=>{const d=Number.isFinite(audio.duration)?audio.duration:0,t=audio.currentTime||0;document.getElementById('audioSeek').value=d?String((t/d)*100):'0';document.getElementById('audioTime').textContent=fmt(t)+' / '+fmt(d);if(state.ccEnabled!==false&&currentCues.length){let idx=-1;const timed=currentCues.some(c=>Number.isFinite(c.start)&&Number.isFinite(c.end));if(timed)idx=currentCues.findIndex(c=>t>=c.start&&t<c.end);else if(d)idx=Math.min(currentCues.length-1,Math.floor((t/d)*currentCues.length));if(idx!==activeCueIndex){activeCueIndex=idx;subtitleText.textContent=idx>=0?currentCues[idx].text:''}}};audio.onended=()=>{document.getElementById('audioPlayer').classList.remove('playing');document.getElementById('audioPlay').textContent='Play';document.getElementById('audioTitle').textContent='Slide '+(current+1)+' complete';subtitleText.textContent=''};audio.onerror=()=>document.getElementById('audioTitle').textContent='Audio not found for Slide '+(current+1);
 document.getElementById('transcriptBtn').onclick=()=>document.getElementById('transcriptPanel').classList.toggle('open');document.getElementById('transcriptClose').onclick=()=>document.getElementById('transcriptPanel').classList.remove('open');
 const hash=location.hash.match(/slide-(\d+)/);goToSlide(hash?Number(hash[1])-1:0);
-</script></body></html>
+</script><!-- COURSE_MODULE_NAV_START -->
+<style id="courseModuleNavStyles">
+#courseModulesBtn{display:inline-flex;align-items:center;gap:7px}
+#courseModulesBtn .cmn-btn-icon{font-size:14px;line-height:1}
+.cmn-backdrop{position:fixed;inset:0;background:rgba(10,18,27,.42);backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:.2s ease;z-index:1400}
+.cmn-backdrop.open{opacity:1;visibility:visible}
+.cmn-drawer{position:absolute;top:0;right:0;width:min(430px,92vw);height:100%;background:var(--surface,#fff);color:var(--text,#142033);border-left:1px solid var(--border,#d7e1eb);box-shadow:-24px 0 60px rgba(0,0,0,.2);transform:translateX(100%);transition:transform .24s ease;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto}
+.cmn-backdrop.open .cmn-drawer{transform:translateX(0)}
+.cmn-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:20px 20px 16px;border-bottom:1px solid var(--border,#d7e1eb)}
+.cmn-kicker{display:block;color:var(--primary,#185f99);font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.cmn-head h2{font-size:22px;line-height:1.1;margin:0!important;letter-spacing:-.02em}
+.cmn-head p{font-size:12px;color:var(--muted,#627189);margin:6px 0 0}
+.cmn-close{width:36px;height:36px;border:1px solid var(--border,#d7e1eb);border-radius:10px;background:var(--surface2,var(--surface-2,#f7f9fc));color:var(--text,#142033);font-size:20px;cursor:pointer}
+.cmn-home-row{padding:12px 20px;border-bottom:1px solid var(--border,#d7e1eb)}
+.cmn-home{display:flex;align-items:center;justify-content:space-between;gap:12px;text-decoration:none;border:1px solid var(--border,#d7e1eb);background:var(--primary-soft,#e5f1fb);border-radius:12px;padding:11px 13px;color:var(--text,#142033);font-size:13px;font-weight:900}
+.cmn-home small{display:block;color:var(--muted,#627189);font-size:10px;font-weight:700;margin-top:2px}
+.cmn-list{overflow:auto;padding:12px 12px 18px;display:grid;gap:7px;align-content:start}
+.cmn-module-link{display:grid;grid-template-columns:42px minmax(0,1fr) 18px;align-items:center;gap:10px;text-decoration:none;padding:9px 10px;border:1px solid transparent;border-radius:12px;color:var(--text,#142033);background:transparent}
+.cmn-module-link:hover{background:var(--surface2,var(--surface-2,#f7f9fc));border-color:var(--border,#d7e1eb)}
+.cmn-module-link.current{background:var(--primary-soft,#e5f1fb);border-color:color-mix(in srgb,var(--primary,#185f99) 45%,transparent)}
+.cmn-num{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--surface2,var(--surface-2,#f7f9fc));border:1px solid var(--border,#d7e1eb);color:var(--muted,#627189);font-size:11px;font-weight:900}
+.cmn-module-link.current .cmn-num{background:var(--primary,#185f99);border-color:var(--primary,#185f99);color:#fff}
+.cmn-link-copy{min-width:0}
+.cmn-link-copy b{display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmn-link-copy small{display:block;color:var(--muted,#627189);font-size:10px;margin-top:2px}
+.cmn-arrow{font-size:20px;color:var(--muted,#627189);text-align:center}
+.cmn-footer{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 20px 18px;border-top:1px solid var(--border,#d7e1eb);background:var(--surface,#fff)}
+.cmn-step{display:grid;grid-template-columns:auto 1fr;column-gap:7px;text-decoration:none;border:1px solid var(--border,#d7e1eb);background:var(--surface2,var(--surface-2,#f7f9fc));border-radius:11px;padding:9px 10px;color:var(--text,#142033)}
+.cmn-step>span{grid-row:1/3;align-self:center;color:var(--primary,#185f99);font-weight:900}
+.cmn-step small{font-size:9px;color:var(--muted,#627189);font-weight:800}
+.cmn-step b{font-size:11px}
+.cmn-step.disabled{opacity:.48}
+body.cmn-lock{overflow:hidden}
+@media(max-width:720px){
+  #courseModulesBtn .cmn-btn-label{display:none}
+  #courseModulesBtn{padding-left:10px;padding-right:10px}
+  .cmn-head{padding:16px 16px 13px}.cmn-home-row{padding:10px 16px}.cmn-footer{padding:10px 16px 14px}
+}
+</style>
+<div class="cmn-backdrop" id="courseModulesBackdrop" aria-hidden="true">
+  <aside class="cmn-drawer" id="courseModulesDrawer" role="dialog" aria-modal="true" aria-labelledby="courseModulesTitle">
+    <div class="cmn-head">
+      <div>
+        <span class="cmn-kicker">IAN 603 · Course Navigation</span>
+        <h2 id="courseModulesTitle">Course Modules</h2>
+        <p>Jump to another narrated module without returning to the course hub first.</p>
+      </div>
+      <button class="cmn-close" id="courseModulesClose" type="button" aria-label="Close course modules">×</button>
+    </div>
+    <div class="cmn-home-row">
+      <a class="cmn-home" href="s_index.html">
+        <span>Course Home<small>Overview, learning path, and all modules</small></span>
+        <span>⌂</span>
+      </a>
+    </div>
+    <nav class="cmn-list" aria-label="IAN 603 modules">
+    <a class="cmn-module-link" href="s_module1.html">
+      <span class="cmn-num">01</span>
+      <span class="cmn-link-copy"><b>Understanding Data in Informatics</b><small>Module 1</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module2.html">
+      <span class="cmn-num">02</span>
+      <span class="cmn-link-copy"><b>Designing Relational Databases</b><small>Module 2</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module3.html">
+      <span class="cmn-num">03</span>
+      <span class="cmn-link-copy"><b>PostgreSQL in Action</b><small>Module 3</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module4.html">
+      <span class="cmn-num">04</span>
+      <span class="cmn-link-copy"><b>Aggregating Data with PostgreSQL</b><small>Module 4</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module5.html">
+      <span class="cmn-num">05</span>
+      <span class="cmn-link-copy"><b>Reasoning with SQL Logic</b><small>Module 5</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module6.html">
+      <span class="cmn-num">06</span>
+      <span class="cmn-link-copy"><b>Joining Data in PostgreSQL</b><small>Module 6</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module7.html">
+      <span class="cmn-num">07</span>
+      <span class="cmn-link-copy"><b>Subqueries in PostgreSQL</b><small>Module 7</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module8.html">
+      <span class="cmn-num">08</span>
+      <span class="cmn-link-copy"><b>Strings and Dates in PostgreSQL</b><small>Module 8</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module9.html">
+      <span class="cmn-num">09</span>
+      <span class="cmn-link-copy"><b>Data Cleaning in PostgreSQL</b><small>Module 9</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module10.html">
+      <span class="cmn-num">10</span>
+      <span class="cmn-link-copy"><b>Reshaping Data in PostgreSQL</b><small>Module 10</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link current" href="s_module11.html" aria-current="page">
+      <span class="cmn-num">11</span>
+      <span class="cmn-link-copy"><b>Advanced SQL: CTEs & Window Functions</b><small>Module 11 · Current</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module12.html">
+      <span class="cmn-num">12</span>
+      <span class="cmn-link-copy"><b>Views & Modular Queries</b><small>Module 12</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module13.html">
+      <span class="cmn-num">13</span>
+      <span class="cmn-link-copy"><b>Introduction to Spark SQL</b><small>Module 13</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    </nav>
+    <div class="cmn-footer"><a class="cmn-step" href="s_module10.html"><span>←</span><small>Previous</small><b>Module 10</b></a><a class="cmn-step" href="s_module12.html"><span>→</span><small>Next</small><b>Module 12</b></a></div>
+  </aside>
+</div>
+<script id="courseModuleNavScript">
+(()=>{
+  const btn=document.getElementById('courseModulesBtn');
+  const backdrop=document.getElementById('courseModulesBackdrop');
+  const drawer=document.getElementById('courseModulesDrawer');
+  const closeBtn=document.getElementById('courseModulesClose');
+  if(!btn||!backdrop||!drawer||!closeBtn)return;
+  let lastFocus=null;
+  function openNav(){
+    lastFocus=document.activeElement;
+    backdrop.classList.add('open');
+    backdrop.setAttribute('aria-hidden','false');
+    document.body.classList.add('cmn-lock');
+    requestAnimationFrame(()=>closeBtn.focus());
+  }
+  function closeNav(){
+    backdrop.classList.remove('open');
+    backdrop.setAttribute('aria-hidden','true');
+    document.body.classList.remove('cmn-lock');
+    if(lastFocus&&typeof lastFocus.focus==='function')lastFocus.focus();
+  }
+  btn.addEventListener('click',openNav);
+  closeBtn.addEventListener('click',closeNav);
+  backdrop.addEventListener('click',e=>{if(e.target===backdrop)closeNav()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&backdrop.classList.contains('open'))closeNav()});
+})();
+</script>
+<!-- COURSE_MODULE_NAV_END -->
+</body>
+</html>
