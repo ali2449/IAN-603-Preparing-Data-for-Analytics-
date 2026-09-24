@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="IAN 603 Preparing Data for Analytics narrated course hub with Modules 1 through 13.">
+<title>IAN 603 · Preparing Data for Analytics · Narrated Course Hub</title>
+<style>
+:root{
+  --bg:#eef3f8;--surface:#ffffff;--surface2:#f7f9fc;--surface3:#eaf2f9;--text:#142033;--muted:#627189;
+  --border:#d7e1eb;--primary:#185f99;--primary2:#2b79b8;--primary-soft:#e5f1fb;--accent:#c47724;
+  --good:#2d7d59;--shadow:0 18px 48px rgba(37,58,82,.10);--radius:20px;
+}
+body.dark{
+  --bg:#101923;--surface:#18232f;--surface2:#202d3b;--surface3:#263646;--text:#edf4fb;--muted:#aab8c8;
+  --border:#3b4b5d;--primary:#69b7f0;--primary2:#8ac8f5;--primary-soft:#163b58;--accent:#e8a45b;
+  --good:#7cc9a4;--shadow:0 18px 48px rgba(0,0,0,.30);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI",Arial,sans-serif;line-height:1.6}
+a{color:inherit}
+button,input{font:inherit}
+.site-header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:1220px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;gap:16px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:900;text-decoration:none;min-width:240px}
+.brand-mark{width:38px;height:38px;border-radius:10px;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:900}
+.brand small{display:block;color:var(--muted);font-size:11px;font-weight:700}
+.nav{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nav a,.theme-btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:8px 11px;text-decoration:none;font-size:13px;font-weight:800;cursor:pointer}
+.nav a:hover,.theme-btn:hover{border-color:var(--primary);color:var(--primary)}
+.hero{max-width:1220px;margin:0 auto;padding:72px 22px 38px;display:grid;grid-template-columns:1.28fr .72fr;gap:34px;align-items:center}
+.kicker{color:var(--primary);font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+h1,h2,h3{line-height:1.1;letter-spacing:-.03em}
+h1{font-size:clamp(44px,6vw,76px);margin:0 0 20px}
+h2{font-size:clamp(30px,4vw,46px);margin:0 0 14px}
+h3{margin:0 0 8px}
+.lead{font-size:20px;color:var(--muted);max-width:820px;margin:0 0 22px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 15px;border-radius:11px;font-weight:900;text-decoration:none;border:1px solid var(--border);background:var(--surface)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn:hover{transform:translateY(-1px)}
+.hero-panel{border:1px solid var(--border);border-radius:22px;background:linear-gradient(145deg,var(--surface),var(--primary-soft));padding:22px;box-shadow:var(--shadow)}
+.hero-panel h3{font-size:22px}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.quick-stat{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:14px}
+.quick-stat b{display:block;font-size:25px;color:var(--primary)}
+.quick-stat span{font-size:12px;color:var(--muted)}
+main{max-width:1220px;margin:0 auto;padding:0 22px 70px}
+.section{padding:42px 0}
+.section-head{max-width:850px;margin-bottom:24px}
+.section-head p{color:var(--muted);margin:0}
+.feature-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.feature-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:19px;box-shadow:0 8px 24px rgba(32,53,75,.04)}
+.feature-card .icon{width:36px;height:36px;border-radius:10px;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;font-weight:900;margin-bottom:12px}
+.feature-card p{color:var(--muted);font-size:14px;margin:0}
+.course-path{display:grid;gap:12px}
+.path-step{display:grid;grid-template-columns:64px 1fr;gap:16px;align-items:start;padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:16px}
+.path-index{width:48px;height:48px;border-radius:13px;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:900}
+.path-content p{margin:4px 0 10px;color:var(--muted)}
+.path-modules{display:flex;gap:7px;flex-wrap:wrap}
+.path-modules a{min-width:42px;text-align:center;padding:5px 9px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);text-decoration:none;font-size:12px;font-weight:900}
+.path-modules a:hover{border-color:var(--primary);color:var(--primary)}
+.how-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+.steps{display:grid;gap:10px}
+.step{display:grid;grid-template-columns:42px 1fr;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:15px}
+.step-number{width:34px;height:34px;border-radius:50%;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;font-weight:900}
+.step p{margin:3px 0 0;color:var(--muted);font-size:14px}
+.tip-panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px}
+.tip-panel ul{padding-left:20px;margin:10px 0 0}
+.tip-panel li{margin:8px 0;color:var(--muted)}
+.notice{margin-top:14px;padding:13px 15px;border-radius:12px;background:var(--primary-soft);border-left:4px solid var(--primary);font-size:13px}
+.toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;margin:18px 0;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:280px;max-width:620px}
+.search-wrap input{width:100%;padding:12px 14px 12px 40px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);outline:none}
+.search-wrap input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.progress-card{min-width:260px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 12px}
+.progress-line{display:flex;justify-content:space-between;font-size:12px;font-weight:900;margin-bottom:6px}
+.progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--good);transition:width .2s}
+.module-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.module-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:21px;box-shadow:0 10px 30px rgba(35,56,79,.05);display:flex;flex-direction:column;min-height:325px;transition:.18s ease}
+.module-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--primary) 45%,var(--border))}
+.module-card.hidden{display:none}
+.module-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.module-number{width:48px;height:48px;border-radius:13px;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:900;font-size:17px}
+.module-meta{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.phase-badge,.slide-badge{font-size:10px;font-weight:900;border-radius:999px;padding:6px 8px;background:var(--surface2);border:1px solid var(--border);color:var(--muted)}
+.phase-badge{background:var(--primary-soft);color:var(--primary);border-color:transparent}
+.module-card h3{font-size:22px;margin-top:18px}
+.module-card p{color:var(--muted);font-size:14px;margin:0 0 14px}
+.topic-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.topic-list span{font-size:10.5px;border-radius:999px;padding:5px 7px;background:var(--surface2);border:1px solid var(--border);color:var(--muted)}
+.module-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--border);margin-top:17px;padding-top:14px}
+.open-module{display:inline-flex;align-items:center;gap:7px;background:var(--primary);color:#fff;text-decoration:none;padding:9px 12px;border-radius:10px;font-size:13px;font-weight:900}
+.complete-control{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);cursor:pointer}
+.complete-control input{accent-color:var(--good)}
+.use-cases{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.use-case{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px}
+.use-case p{color:var(--muted);font-size:14px;margin-bottom:0}
+.faq{display:grid;gap:10px}
+details{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:14px 16px}
+summary{cursor:pointer;font-weight:900}
+details p{color:var(--muted);font-size:14px;margin:10px 0 0}
+footer{border-top:1px solid var(--border);background:var(--surface);padding:24px 22px;color:var(--muted);font-size:13px}
+.footer-inner{max-width:1220px;margin:0 auto;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.no-results{display:none;text-align:center;padding:30px;background:var(--surface);border:1px dashed var(--border);border-radius:16px;color:var(--muted)}
+.no-results.show{display:block}
+@media(max-width:960px){
+ .hero{grid-template-columns:1fr;padding-top:50px}.feature-grid{grid-template-columns:1fr 1fr}.how-grid{grid-template-columns:1fr}
+ .module-grid{grid-template-columns:1fr}.use-cases{grid-template-columns:1fr 1fr}
+}
+@media(max-width:620px){
+ .header-inner{padding:10px 14px}.brand{min-width:0}.brand span:last-child{display:none}.nav a{display:none}
+ .hero,main{padding-left:14px;padding-right:14px}.hero{padding-top:36px}.quick-grid,.feature-grid,.use-cases{grid-template-columns:1fr}
+ h1{font-size:42px}.module-actions{align-items:flex-start;flex-direction:column}.path-step{grid-template-columns:48px 1fr}
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#top">
+      <span class="brand-mark">603</span>
+      <span>IAN 603<small>Preparing Data for Analytics</small></span>
+    </a>
+    <nav class="nav" aria-label="Course navigation">
+      <a href="#course">Course</a>
+      <a href="#how-to-use">How to Use</a>
+      <a href="#modules">Modules</a>
+      <button class="theme-btn" id="themeBtn" type="button">Dark mode</button>
+    </nav>
+  </div>
+</header>
+
+<div id="top"></div>
+<section class="hero">
+  <div>
+    <div class="kicker">Narrated Interactive Course Hub</div>
+    <h1>Preparing Data for Analytics</h1>
+    <p class="lead">A 13-module learning path that moves from understanding data and relational design to PostgreSQL data preparation, advanced analytical SQL, reusable database interfaces, and Spark SQL.</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="s_module1.html">Start with Module 1 →</a>
+      <a class="btn" href="#modules">Browse all modules</a>
+      <a class="btn" href="#how-to-use">How to use the course</a>
+    </div>
+  </div>
+  <aside class="hero-panel">
+    <div class="kicker">Course at a glance</div>
+    <h3>Learn by reading, listening, running, and checking.</h3>
+    <p style="color:var(--muted);margin:0">Each module is a slide-based lesson with instructor narration, closed captions, transcript access, worked examples, and hands-on practice.</p>
+    <div class="quick-grid">
+      <div class="quick-stat"><b>13</b><span>Narrated modules</span></div>
+      <div class="quick-stat"><b>SQL → Spark</b><span>Progressive learning path</span></div>
+      <div class="quick-stat"><b>CC + Audio</b><span>Built-in learning support</span></div>
+      <div class="quick-stat"><b>Hands-on</b><span>Runnable examples where supported</span></div>
+    </div>
+  </aside>
+</section>
+
+<main>
+  <section class="section" id="course">
+    <div class="section-head">
+      <div class="kicker">About the course</div>
+      <h2>From raw data to analysis-ready data</h2>
+      <p>IAN 603 focuses on the practical work that happens before analysis and modeling: understanding data structure, querying relational data, combining sources, cleaning values, reshaping datasets, building reusable analytical SQL, and scaling familiar ideas to Spark.</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card"><div class="icon">1</div><h3>Understand the data</h3><p>Identify row grain, variable meaning, data types, quality issues, keys, and relationships before writing transformations.</p></div>
+      <div class="feature-card"><div class="icon">2</div><h3>Prepare with SQL</h3><p>Filter, aggregate, join, clean, standardize, validate, reshape, and create analysis-ready outputs with PostgreSQL.</p></div>
+      <div class="feature-card"><div class="icon">3</div><h3>Reason about correctness</h3><p>Protect grain, NULL meaning, cardinality, duplicate logic, temporal meaning, and the interpretation of analytical results.</p></div>
+      <div class="feature-card"><div class="icon">4</div><h3>Build reusable workflows</h3><p>Use advanced SQL, views, modular query design, and distributed Spark concepts to move beyond one-off queries.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div class="kicker">Learning path</div>
+      <h2>How the 13 modules fit together</h2>
+      <p>The sequence is cumulative. Later modules assume the reasoning habits developed earlier, especially row grain, NULL handling, relationships, and validation.</p>
+    </div>
+    <div class="course-path"><div class="path-step">
+   <div class="path-index">01</div>
+   <div class="path-content">
+     <h3>Foundations</h3>
+     <p>Understand analytical data, relational design, and basic PostgreSQL querying.</p>
+     <div class="path-modules"><a href="s_module1.html">M1</a><a href="s_module2.html">M2</a><a href="s_module3.html">M3</a></div>
+   </div>
+ </div><div class="path-step">
+   <div class="path-index">02</div>
+   <div class="path-content">
+     <h3>Core SQL</h3>
+     <p>Build reliable summaries, logic, joins, and nested-query reasoning.</p>
+     <div class="path-modules"><a href="s_module4.html">M4</a><a href="s_module5.html">M5</a><a href="s_module6.html">M6</a><a href="s_module7.html">M7</a></div>
+   </div>
+ </div><div class="path-step">
+   <div class="path-index">03</div>
+   <div class="path-content">
+     <h3>Data Preparation</h3>
+     <p>Clean, transform, validate, and reshape data for analytical use.</p>
+     <div class="path-modules"><a href="s_module8.html">M8</a><a href="s_module9.html">M9</a><a href="s_module10.html">M10</a></div>
+   </div>
+ </div><div class="path-step">
+   <div class="path-index">04</div>
+   <div class="path-content">
+     <h3>Advanced Analytics</h3>
+     <p>Create multi-stage analytical SQL and reusable database interfaces.</p>
+     <div class="path-modules"><a href="s_module11.html">M11</a><a href="s_module12.html">M12</a></div>
+   </div>
+ </div><div class="path-step">
+   <div class="path-index">05</div>
+   <div class="path-content">
+     <h3>Scale & Distributed Analytics</h3>
+     <p>Extend familiar relational ideas to distributed processing with Spark.</p>
+     <div class="path-modules"><a href="s_module13.html">M13</a></div>
+   </div>
+ </div></div>
+  </section>
+
+  <section class="section" id="how-to-use">
+    <div class="section-head">
+      <div class="kicker">How to use the narrated slides</div>
+      <h2>Use each module as a guided lesson and a practice environment</h2>
+      <p>You do not need to rush through a module in one sitting. Pause the narration, run examples, inspect results, and return to difficult slides as needed.</p>
+    </div>
+    <div class="how-grid">
+      <div class="steps">
+        <div class="step"><div class="step-number">1</div><div><h3>Open a module</h3><p>Choose a module from the directory below. Use the module sequence if you are learning the material for the first time.</p></div></div>
+        <div class="step"><div class="step-number">2</div><div><h3>Start narration</h3><p>Select <b>Start Narration</b>. The audio explains the slide in more detail than the visible text, including code reasoning and what to observe.</p></div></div>
+        <div class="step"><div class="step-number">3</div><div><h3>Use CC or Transcript</h3><p>Turn closed captions on or off from the bottom controls. Use <b>Transcript</b> when you want to read the complete narration at your own pace.</p></div></div>
+        <div class="step"><div class="step-number">4</div><div><h3>Run the examples</h3><p>Where the module includes a browser database, edit SQL and choose <b>Run</b>. Read the result table before moving to the next slide.</p></div></div>
+        <div class="step"><div class="step-number">5</div><div><h3>Practice outside the slides</h3><p>Use <b>Copy</b> to move SQL into pgAdmin when you want a full PostgreSQL environment. Spark examples should be practiced in an actual Spark environment such as Fabric, Databricks, or Apache Spark.</p></div></div>
+        <div class="step"><div class="step-number">6</div><div><h3>Complete the checks</h3><p>Use guided practice, checkpoints, and project slides to make sure you can explain the result, not only run the code.</p></div></div>
+      </div>
+      <aside class="tip-panel">
+        <div class="kicker">Useful controls</div>
+        <h3>Inside most modules</h3>
+        <ul>
+          <li><b>Previous / Next</b> and arrow keys move between slides.</li>
+          <li><b>CC On / Off</b> controls bottom subtitles.</li>
+          <li><b>Transcript</b> opens the current slide narration text.</li>
+          <li><b>Playback speed</b> lets you slow down or speed up narration.</li>
+          <li><b>Seek bar</b> lets you revisit part of the current audio.</li>
+          <li><b>Dark mode</b> and <b>Full screen</b> are available in the top controls.</li>
+          <li>The narration <b>does not automatically move to the next slide</b>. You decide when to continue.</li>
+        </ul>
+        <div class="notice"><b>Browser practice note:</b> PostgreSQL modules may use a browser-based teaching database. This is designed for practice. You can copy the same SQL to pgAdmin for a full local PostgreSQL workflow.</div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div class="kicker">Recommended study workflow</div>
+      <h2>Do more than watch the presentation</h2>
+      <p>The most effective pattern is to alternate explanation with practice. Data preparation is a reasoning skill, so try to predict a result before you run the query.</p>
+    </div>
+    <div class="use-cases">
+      <div class="use-case"><h3>Watch & listen</h3><p>Use narration to understand why a technique is used, what row grain it creates, and which mistakes it is designed to avoid.</p></div>
+      <div class="use-case"><h3>Pause & predict</h3><p>Before running SQL, predict the number of rows, columns, NULL behavior, grouping level, or expected category result.</p></div>
+      <div class="use-case"><h3>Run & inspect</h3><p>Read the output carefully. Do not treat a successful query as proof that the logic is correct.</p></div>
+      <div class="use-case"><h3>Modify</h3><p>Change a condition, category, date range, join type, or grouping level and observe how the result changes.</p></div>
+      <div class="use-case"><h3>Explain</h3><p>Try to explain the query in plain language. If you cannot explain what one row represents, review the grain before continuing.</p></div>
+      <div class="use-case"><h3>Apply</h3><p>Use the same pattern on an assignment or a new dataset rather than copying the teaching example unchanged.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="modules">
+    <div class="section-head">
+      <div class="kicker">Module directory</div>
+      <h2>All narrated modules</h2>
+      <p>Search by topic or module name. The completion boxes below are optional and are stored only in your current browser.</p>
+    </div>
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input id="moduleSearch" type="search" placeholder="Search modules: joins, cleaning, window functions, Spark..." aria-label="Search modules">
+      </div>
+      <div class="progress-card">
+        <div class="progress-line"><span>Your optional module progress</span><span id="progressText">0 / 13</span></div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+    </div>
+    <div class="module-grid" id="moduleGrid">
+<article class="module-card" data-module="1" data-search="understanding data in informatics build the mental model for analytical data: observations, variables, data types, quality, grain, summaries, and the role of relational data in analytics. data types data quality grain eda analytics foundations foundations">
+  <div class="module-card-top">
+    <div class="module-number">01</div>
+    <div class="module-meta">
+      <span class="phase-badge">Foundations</span>
+      <span class="slide-badge">66 slides</span>
+    </div>
+  </div>
+  <h3>Understanding Data in Informatics</h3>
+  <p>Build the mental model for analytical data: observations, variables, data types, quality, grain, summaries, and the role of relational data in analytics.</p>
+  <div class="topic-list"><span>data types</span><span>data quality</span><span>grain</span><span>EDA</span><span>analytics foundations</span></div>
+  <div class="module-actions">
+    <a class="open-module" href="s_module1.html">Open Module 1<span aria-hidden="true">→</span></a>
+    <label class="complete-control">
+      <input class="module-check" type="checkbox" data-module="1">
+      <span>Mark complete</span>
+    </label>
+  </div>
+</article>
+<article class="module-card" data-module="2" data-search="designing relational databases learn how relational databases organize analytical data through tables, keys, relationships, normalization, and thoughtful schema design. tables keys relationships normalization database design foundations">
+  <div class="module-card-top">
+    <div class="module-number">02</div>
+    <div class="module-meta">
+      <span class="phase-badge">Foundations</span>
+      <span class="slide-badge">43 slides</span>
+    </div>
+  </div>
+  <h3>Designing Relational Databases</h3>
+  <p>Learn how relational databases organize analytical data through tables, keys, relationships, normalization, and thoughtful schema design.</p>
+  <div class="topic-list"><span>tables</span><span>keys</span><span>relationships</span><span>normalization</span><span>database design</span></div>
+  <div class="module-actions">
+    <a class="open-module" href="s_module2.html">Open Module 2<span aria-hidden="true">→</span></a>
+    <label class="complete-control">
+      <input class="module-check" type="checkbox" data-module="2">
+      <span>Mark complete</span>
+    </label>
+  </div>
+</article>
+<article class="module-card" data-module="3" data-search="postgresql in action start working directly with postgresql syntax and relational data. practice selecting, filtering, ordering, and exploring records step by step. postgresql select where order by query basics foundations">
+  <div class="module-card-top">
+    <div class="module-number">03</div>
+    <div class="module-meta">
+      <span class="phase-badge">Foundations</span>
+      <span class="slide-badge">43 slides</span>
+    </div>
+  </div>
+  <h3>PostgreSQL in Action</h3>
+  <p>Start working directly with PostgreSQL syntax and relational data. Practice selecting, filtering, ordering, and exploring records step by step.</p>
+  <div class="topic-list"><span>PostgreSQL</span><span>SELECT</span><span>WHERE</span><span>ORDER BY</span><span>query basics</span></div>
+  <div class="module-actions">
+    <a class="open-module" href="s_module3.html">Open Module 3<span aria-hidden="true">→</span></a>
+    <label class="complete-control">
+      <input class="module-check" type="checkbox" data-module="3">
+      <span>Mark complete</span>
+    </label>
+  </div>
+</article>
+<article class="module-card" data-module="4" data-search="aggregating data with postgresql move from individual rows to analytical summaries using aggregate functions, group by, having, and grouped reporting patterns. count sum avg group by having core sql">
+  <div class="module-card-top">
+    <div class="module-number">04</div>
+    <div class="module-meta">
+      <span class="phase-badge">Core SQL</span>
+      <span class="slide-badge">45 slides</span>
+    </div>
+  </div>
+  <h3>Aggregating Data with PostgreSQL</h3>
+  <p>Move from individual rows to analytical summaries using aggregate functions, GROUP BY, HAVING, and grouped reporting patterns.</p>
+  <div class="topic-list"><span>COUNT</span><span>SUM</span><span>AVG</span><span>GROUP BY</span><span>HAVING</span></div>
+  <div class="module-actions">
+    <a class="open-module" href="s_module4.html">Open Module 4<span aria-hidden="true">→</span></a>
+    <label class="complete-control">
+      <input class="module-check" type="checkbox" data-module="4">
+      <span>Mark complete</span>
+    </label>
+  </div>
+</article>
+<article class="module-card" data-module="5" data-search="reasoning with sql logic use sql conditions to express real analytical rules with boolean logic, case expressions, null-aware reasoning, and controlled categorization. case boolean logic null conditions classification core sql">
+  <div class="module-card-top">
+    <div class="module-number">05</div>
+    <div class="module-meta">
+      <span class="phase-badge">Core SQL</span>
+      <span class="slide-badge">49 slides</span>
+    </div>
+  </div>
+  <h3>Reasoning with SQL Logic</h3>
+  <p>Use SQL conditions to express real analytical rules with Boolean logic, CASE expressions, NULL-aware reasoning, and controlled categorization.</p>
+  <div class="topic-list"><span>CASE</span><span>Boolean logic</span><span>NULL</span><span>conditions</span><span>classification</span></div>
+  <div class="module-actions">
+    <a class="open-module" href="s_module5.html">Open Module 5<span aria-hidden="true">→</span></a>
+    <label class="complete-control">
+      <input class="module-check" type="checkbox" data-module="5">
+      <span>Mark complete</span>
+    </label>
+  </div>
+</article>
+<article class="module-card" data-module="6" data-search="joining data in postgresql combine related tables safely with inner, left, right, full, cross, and self joins while protecting row grain and avoiding accidental multiplication. join left join self join cardinality grain core sql">
+  <div class="module-card-top">
+    <div class="module-number">06</div>
+    <div class="module-meta">
+      <span class="phase-badge">Core SQL</span>
+      <span class="slide-badge">44 slides</span>
+    </div>
+  </div>
+  <h3>Joining Data in PostgreSQL</h3>
+  <p>Combine related tables safely with INNER, LEFT, RIGHT, FULL, CROSS, and self joins while protecting row grain and avoiding accidental multiplication.</p>
+  <div class="topic-list"><span>JOIN</span><span>LEFT JOIN</span><span>self join</span><span>cardinality</span><span>grain</span></div>
+  <div class="module-actions">
+    <a class="open-module" href="s_module6.html">Open Module 6<span aria-hidden="true">→</span></a>
+    <label class="complete-control">
+      <input class="module-check" type="checkbox" data-module="6">
+      <span>Mark complete</span>
+    </label>
+  </div>
+</article>
+<article class="module-card" data-module="7" data-search="subqueries in postgresql use scalar, membership, existence, set-comparison, correlated, and derived-table subqueries to solve multi-step analytical questions. subqueries in exists any / all correlated queries core sql">
+  <div class="module-card-top">
+    <div class="module-number">07</div>
+    <div class="module-meta">
+      <span class="phase-badge">Core SQL</span>
+      <span class="slide-badge">65 slides</span>
+    </div>
+  </div>
+  <h3>Subqueries in PostgreSQL</h3>
+  <p>Use scalar, membership, existence, set-comparison, correlated, and derived-table subqueries to solve multi-step analytical questions.</p>
+  <div class="topic-list"><span>subqueries</span><span>IN</span><span>EXISTS</span><span>ANY / ALL</span><span>correlated queries</span></div>
+  <div class="module-actions">
+    <a class="open-module" href="s_module7.html">Open Module 7<span aria-hidden="true">→</span></a>
+    <label class="complete-control">
+      <input class="module-check" type="checkbox" data-module="7">
+      <span>Mark complete</span>
+    </label>
+  </div>
+</article>
+<article class="module-card" data-module="8" data-search="strings and dates in postgresql prepare messy text and temporal data using string functions, parsing, regular expressions, dates, timestamps, intervals, and time-zone operations. strings regex dates timestamps time zones data preparation">
+  <div class="module-card-top">
+    <div class="module-number">08</div>
+    <div class="module-meta">
+      <span class="phase-badge">Data Preparation</span>
+      <span class="slide-badge">72 slides</span>
+    </div>
+  </div>
+  <h3>Strings and Dates in PostgreSQL</h3>
+  <p>Prepare messy text and temporal data using string functions, parsing, regular expressions, dates, timestamps, intervals, and time-zone operations.</p>
+  <div class="topic-list"><span>strings</span><span>regex</span><span>dates</span><span>timestamps</span><span>time zones</span></div>
+  <div class="module-actions">
+    <a class="open-module" href="s_module8.html">Open Module 8<span aria-hidden="true">→</span></a>
+    <label class="complete-control">
+      <input class="module-check" type="checkbox" data-module="8">
+      <span>Mark complete</span>
+    </label>
+  </div>
+</article>
+<article class="module-card" data-module="9" data-search="data cleaning in postgresql build a transparent cleaning workflow: profile problems, standardize representation, validate rules, handle duplicates, quarantine uncertainty, and update safely. missing data validation standardization deduplication quality data preparation">
+  <div class="module-card-top">
+    <div class="module-number">09</div>
+    <div class="module-meta">
+      <span class="phase-badge">Data Preparation</span>
+      <span class="slide-badge">60 slides</span>
+    </div>
+  </div>
+  <h3>Data Cleaning in PostgreSQL</h3>
+  <p>Build a transparent cleaning workflow: profile problems, standardize representation, validate rules, handle duplicates, quarantine uncertainty, and update safely.</p>
+  <div class="topic-list"><span>missing data</span><span>validation</span><span>standardization</span><span>deduplication</span><span>quality</span></div>
+  <div class="module-actions">
+    <a class="open-module" href="s_module9.html">Open Module 9<span aria-hidden="true">→</span></a>
+    <label class="complete-control">
+      <input class="module-check" type="checkbox" data-module="9">
+      <span>Mark complete</span>
+    </label>
+  </div>
+</article>
+<article class="module-card" data-module="10" data-search="reshaping data in postgresql move between long and wide analytical structures with pivot and unpivot patterns while preserving grain, null meaning, and additive totals. long vs wide pivot unpivot filter grain data preparation">
+  <div class="module-card-top">
+    <div class="module-number">10</div>
+    <div class="module-meta">
+      <span class="phase-badge">Data Preparation</span>
+      <span class="slide-badge">65 slides</span>
+    </div>
+  </div>
+  <h3>Reshaping Data in PostgreSQL</h3>
+  <p>Move between long and wide analytical structures with pivot and unpivot patterns while preserving grain, NULL meaning, and additive totals.</p>
+  <div class="topic-list"><span>long vs wide</span><span>pivot</span><span>unpivot</span><span>FILTER</span><span>grain</span></div>
+  <div class="module-actions">
+    <a class="open-module" href="s_module10.html">Open Module 10<span aria-hidden="true">→</span></a>
+    <label class="complete-control">
+      <input class="module-check" type="checkbox" data-module="10">
+      <span>Mark complete</span>
+    </label>
+  </div>
+</article>
+<article class="module-card" data-module="11" data-search="advanced sql: ctes & window functions structure complex analysis with ctes and use window functions for ranking, previous/next events, running totals, moving averages, and top-n problems. ctes window functions ranking lag / lead frames advanced analytics">
+  <div class="module-card-top">
+    <div class="module-number">11</div>
+    <div class="module-meta">
+      <span class="phase-badge">Advanced Analytics</span>
+      <span class="slide-badge">72 slides</span>
+    </div>
+  </div>
+  <h3>Advanced SQL: CTEs & Window Functions</h3>
+  <p>Structure complex analysis with CTEs and use window functions for ranking, previous/next events, running totals, moving averages, and top-N problems.</p>
+  <div class="topic-list"><span>CTEs</span><span>window functions</span><span>ranking</span><span>LAG / LEAD</span><span>frames</span></div>
+  <div class="module-actions">
+    <a class="open-module" href="s_module11.html">Open Module 11<span aria-hidden="true">→</span></a>
+    <label class="complete-control">
+      <input class="module-check" type="checkbox" data-module="11">
+      <span>Mark complete</span>
+    </label>
+  </div>
+</article>
+<article class="module-card" data-module="12" data-search="views & modular queries turn stable sql logic into reusable interfaces using standard views, updatable views, materialized views, refresh policies, and modular architecture. views materialized views refresh modularity access boundaries advanced analytics">
+  <div class="module-card-top">
+    <div class="module-number">12</div>
+    <div class="module-meta">
+      <span class="phase-badge">Advanced Analytics</span>
+      <span class="slide-badge">62 slides</span>
+    </div>
+  </div>
+  <h3>Views & Modular Queries</h3>
+  <p>Turn stable SQL logic into reusable interfaces using standard views, updatable views, materialized views, refresh policies, and modular architecture.</p>
+  <div class="topic-list"><span>views</span><span>materialized views</span><span>refresh</span><span>modularity</span><span>access boundaries</span></div>
+  <div class="module-actions">
+    <a class="open-module" href="s_module12.html">Open Module 12<span aria-hidden="true">→</span></a>
+    <label class="complete-control">
+      <input class="module-check" type="checkbox" data-module="12">
+      <span>Mark complete</span>
+    </label>
+  </div>
+</article>
+<article class="module-card" data-module="13" data-search="spark sql transfer relational thinking to distributed analytics. learn spark sql, dataframes, partitions, stages, tasks, shuffle, lakehouse concepts, and scalable execution. spark sql dataframes partitions shuffle distributed analytics scale & distributed analytics">
+  <div class="module-card-top">
+    <div class="module-number">13</div>
+    <div class="module-meta">
+      <span class="phase-badge">Scale & Distributed Analytics</span>
+      <span class="slide-badge">53 slides</span>
+    </div>
+  </div>
+  <h3>Spark SQL</h3>
+  <p>Transfer relational thinking to distributed analytics. Learn Spark SQL, DataFrames, partitions, stages, tasks, shuffle, lakehouse concepts, and scalable execution.</p>
+  <div class="topic-list"><span>Spark SQL</span><span>DataFrames</span><span>partitions</span><span>shuffle</span><span>distributed analytics</span></div>
+  <div class="module-actions">
+    <a class="open-module" href="s_module13.html">Open Module 13<span aria-hidden="true">→</span></a>
+    <label class="complete-control">
+      <input class="module-check" type="checkbox" data-module="13">
+      <span>Mark complete</span>
+    </label>
+  </div>
+</article></div>
+    <div class="no-results" id="noResults">No modules match that search. Try another topic.</div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div class="kicker">Course use guide</div>
+      <h2>Common questions</h2>
+    </div>
+    <div class="faq">
+      <details><summary>Do I need PostgreSQL installed to use the slides?</summary><p>No for many teaching examples. Several modules provide a browser-based PostgreSQL environment for practice. For assignments, larger projects, or a full database workflow, use pgAdmin/PostgreSQL when instructed.</p></details>
+      <details><summary>Should I watch all narration without stopping?</summary><p>No. The narration is designed to guide you through the lesson, but you should pause frequently for code, checkpoints, tables, and comparisons. The slides never force you to move forward when audio ends.</p></details>
+      <details><summary>What is the difference between captions and transcript?</summary><p>Closed captions display the current timed narration at the bottom. The transcript gives you the full narration text for the current slide so you can read or review it independently of audio playback.</p></details>
+      <details><summary>Why do the modules repeatedly discuss row grain?</summary><p>Many data-preparation mistakes come from losing track of what one row represents. Grain affects joins, aggregation, reshaping, window functions, data quality checks, and reusable views, so it is intentionally reinforced throughout the course.</p></details>
+      <details><summary>Can I jump directly to an advanced module?</summary><p>You can, but Modules 11 through 13 build on concepts such as joins, aggregation, NULL logic, temporal preparation, and grain. If an advanced example feels difficult, use the learning path above to identify the prerequisite module.</p></details>
+      <details><summary>Where is my completion progress saved?</summary><p>The checkboxes on this page use your browser's local storage only. They are a personal study aid and are not automatically submitted to a learning-management system or sent to a server.</p></details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span><b>IAN 603 · Preparing Data for Analytics</b></span>
+    <span>Narrated interactive learning hub · Modules 1–13</span>
+  </div>
+</footer>
+
+<script>
+const STORAGE_KEY='ian603_s_index_progress_v1';
+const themeBtn=document.getElementById('themeBtn');
+function applyTheme(){
+  const dark=document.body.classList.contains('dark');
+  themeBtn.textContent=dark?'Light mode':'Dark mode';
+}
+try{
+  const savedTheme=localStorage.getItem('ian603_s_index_theme');
+  if(savedTheme==='dark') document.body.classList.add('dark');
+}catch(e){}
+applyTheme();
+themeBtn.addEventListener('click',()=>{
+  document.body.classList.toggle('dark');
+  try{localStorage.setItem('ian603_s_index_theme',document.body.classList.contains('dark')?'dark':'light')}catch(e){}
+  applyTheme();
+});
+
+const checks=[...document.querySelectorAll('.module-check')];
+let completed={};
+try{completed=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')||{}}catch(e){completed={}}
+function updateProgress(){
+  checks.forEach(c=>c.checked=!!completed[c.dataset.module]);
+  const done=checks.filter(c=>c.checked).length;
+  document.getElementById('progressText').textContent=done+' / '+checks.length;
+  document.getElementById('progressFill').style.width=((done/checks.length)*100)+'%';
+}
+checks.forEach(c=>c.addEventListener('change',()=>{
+  completed[c.dataset.module]=c.checked;
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(completed))}catch(e){}
+  updateProgress();
+}));
+updateProgress();
+
+const search=document.getElementById('moduleSearch');
+const cards=[...document.querySelectorAll('.module-card')];
+const noResults=document.getElementById('noResults');
+function filterModules(){
+  const q=search.value.trim().toLowerCase();
+  let visible=0;
+  cards.forEach(card=>{
+    const match=!q||card.dataset.search.includes(q)||('module '+card.dataset.module).includes(q);
+    card.classList.toggle('hidden',!match);
+    if(match) visible++;
+  });
+  noResults.classList.toggle('show',visible===0);
+}
+search.addEventListener('input',filterModules);
+</script>
+</body>
+</html>
