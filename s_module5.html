@@ -257,7 +257,7 @@ body.dark .mini-result th{
     font-size:12.5px;
   }
 }
-</style></head><body><div class="app"><header class="topbar"><div class="brand"><div class="brand-mark">DB</div><div>IAN 603 · Module 5<small>Reasoning with SQL Logic</small></div></div><div class="top-actions"><span id="dbStatus" class="status">PostgreSQL loading...</span><button class="control" id="progressBtn">Progress <span id="progressPct">0%</span></button><button class="control" id="themeBtn">Dark mode</button><button class="control" id="fullBtn">Fullscreen</button><button class="control primary" id="runSlideBtn">Run slide</button></div></header><main class="stage"><div id="slidesHost"><section class="slide active" data-title="Start"><div class="slide-kicker">IAN 603 · Module 5</div><div class='hero'><div><h1>Reasoning with SQL Logic</h1><p class='lead'>Build accurate decision rules with Boolean operators, three-valued logic, NULL-safe expressions, and PostgreSQL <code>CASE</code>.</p><div class='badges'><span class='badge'>AND / OR / NOT</span><span class='badge'>TRUE / FALSE / UNKNOWN</span><span class='badge'>NULL handling</span><span class='badge'>COALESCE / NULLIF</span><span class='badge'>CASE</span><span class='badge'>Applied rules</span></div><div class='start-actions'><button class='control primary' id='startWithNarration' type='button'>Start with Narration ▶</button><button class='control' type='button' onclick='goToSlide(1)'>Start without Narration →</button></div><div class='callout'><strong>Essential question:</strong> How can SQL express business rules accurately when conditions overlap and missing values make ordinary comparisons uncertain?</div></div><div class='hero-visual'><div class='query-stack'><div class='query-node'><b>1</b><span>Define the rule</span></div><div class='query-node'><b>2</b><span>Inspect NULLs</span></div><div class='query-node'><b>3</b><span>Group conditions</span></div><div class='query-node'><b>4</b><span>Order CASE branches</span></div><div class='query-node'><b>5</b><span>Test edges</span></div><div class='query-node'><b>6</b><span>Validate</span></div></div></div></div><div class="slide-num"></div></section><section class="slide" data-title="Big picture"><div class="slide-kicker">From aggregation to logic</div><h2>From summaries to decision rules</h2><p class='lead'>Module 4 summarized rows. Module 5 decides how rows and values should be interpreted.</p><div class='flow'><div class='flow-step'><b>Condition</b>What must be true?</div><div class='flow-step'><b>Missingness</b>What if a value is unknown?</div><div class='flow-step'><b>Grouping</b>Which tests belong together?</div><div class='flow-step'><b>Priority</b>Which CASE branch wins?</div><div class='flow-step'><b>Validation</b>Do edge cases behave correctly?</div></div><div class='callout'><strong>Main habit:</strong> translate a business rule into small tests, make NULL behavior explicit, then validate boundary records.</div><div class="slide-num"></div></section><section class="slide" data-title="Learning objectives"><div class="slide-kicker">Roadmap</div><h2>What you will learn</h2><div class='grid-3'><div class='card primary-card'><div class='label'>Compose</div><h3>Boolean conditions</h3><p>Use <code>AND</code>, <code>OR</code>, <code>NOT</code>, and parentheses.</p></div><div class='card accent-card'><div class='label'>Reason</div><h3>Three-valued logic</h3><p>Predict TRUE, FALSE, and UNKNOWN.</p></div><div class='card good-card'><div class='label'>Handle</div><h3>Missing values</h3><p>Use NULL-safe tests and fallbacks.</p></div><div class='card'><div class='label'>Transform</div><h3>CASE expressions</h3><p>Translate ordered rules into labels.</p></div><div class='card'><div class='label'>Apply</div><h3>Reusable patterns</h3><p>Avoid common logic traps.</p></div><div class='card'><div class='label'>Validate</div><h3>Applied rules</h3><p>Test realistic PostgreSQL decisions.</p></div></div><div class="slide-num"></div></section><section class="slide" data-title="Six-step workflow"><div class="slide-kicker">Logic workflow</div><h2>The Six-Step Logic Workflow</h2><div class='process'><div class='step'><b>1 Define</b>State the rule in plain language.</div><div class='step'><b>2 Inspect</b>List fields that can be NULL.</div><div class='step'><b>3 Group</b>Add parentheses around related tests.</div><div class='step'><b>4 Order</b>Put specific CASE branches first.</div><div class='step'><b>5 Test</b>Include edges, blanks, and NULLs.</div><div class='step'><b>6 Validate</b>Compare output with the written rule.</div></div><div class='callout'><strong>Reason first:</strong> if the plain-language rule is ambiguous, the SQL will be ambiguous too.</div><div class="slide-num"></div></section><section class="slide" data-title="Practice schema"><div class="slide-kicker">Running dataset</div><h2>Four tables plus one convenience view</h2><p class='lead'>The browser lab uses synthetic data so the logic can be tested safely.</p><div class='grid-3'><div class='card'><h3>patient_info</h3><p>Demographics, contacts, activity, consent, language.</p></div><div class='card'><h3>diagnostics</h3><p>Diagnosis, severity, confirmation state.</p></div><div class='card'><h3>patient_billing</h3><p>Bills, payments, zero balances, missing status.</p></div><div class='card'><h3>admissions</h3><p>Admission and discharge dates.</p></div><div class='card'><h3>patient_case</h3><p>Convenience view for logic examples.</p></div></div><div class='callout'><strong>Teaching choice:</strong> the view keeps this module focused on logic. Later work can build the joins explicitly.</div><div class="slide-num"></div></section><section class="slide" data-title="Boolean logic map"><div class="slide-kicker">Boolean operators</div><h2>Three operators build most compound rules</h2><div class='grid-3'><div class='card primary-card'><h3>AND</h3><p>All connected conditions must be TRUE.</p><p class='small'>Usually narrows a cohort.</p></div><div class='card accent-card'><h3>OR</h3><p>At least one connected condition must be TRUE.</p><p class='small'>Usually broadens a cohort.</p></div><div class='card good-card'><h3>NOT</h3><p>Negates a known Boolean state.</p><p class='small'><code>NOT UNKNOWN</code> remains UNKNOWN.</p></div></div><div class='callout'><strong>Important:</strong> SQL also has UNKNOWN, so Boolean logic is not always just TRUE and FALSE.</div><div class="slide-num"></div></section><section class="slide" data-title="AND"><div class="slide-kicker">Boolean logic</div><h2><code>AND</code> requires every connected condition</h2><p class='lead'>Each additional requirement can remove rows from the result.</p><div class='grid-3'><div class='card'><h3>Active</h3><p><code>active IS TRUE</code></p></div><div class='card'><h3>Age</h3><p><code>age &gt;= 40</code></p></div><div class='card'><h3>Severity</h3><p><code>severity = 'High'</code></p></div></div><div class='callout'><strong>Read it aloud:</strong> active AND age 40+ AND high severity.</div><div class="code-cell teaching-cell"><div class="code-head"><div><b>AND narrows a cohort</b><small>PostgreSQL example</small></div><div class="cell-actions"><button class="cell-btn run teach-run" type="button">Run</button><button class="cell-btn teach-reset" type="button">Reset</button><button class="cell-btn teach-copy" type="button">Copy</button></div></div><textarea class="sql-editor">SELECT patient_id, patient_name, age, diagnosis, severity
+</style></head><body><div class="app"><header class="topbar"><div class="brand"><div class="brand-mark">DB</div><div>IAN 603 · Module 5<small>Reasoning with SQL Logic</small></div></div><div class="top-actions"><span id="dbStatus" class="status">PostgreSQL loading...</span><button class="control" id="progressBtn">Progress <span id="progressPct">0%</span></button><button class="control" id="themeBtn">Dark mode</button><button class="control" id="fullBtn">Fullscreen</button><button class="control primary" id="runSlideBtn">Run slide</button><button class="control" id="courseModulesBtn" type="button" aria-haspopup="dialog" aria-controls="courseModulesDrawer"><span class="cmn-btn-icon">☰</span><span class="cmn-btn-label">Course Modules</span></button></div></header><main class="stage"><div id="slidesHost"><section class="slide active" data-title="Start"><div class="slide-kicker">IAN 603 · Module 5</div><div class='hero'><div><h1>Reasoning with SQL Logic</h1><p class='lead'>Build accurate decision rules with Boolean operators, three-valued logic, NULL-safe expressions, and PostgreSQL <code>CASE</code>.</p><div class='badges'><span class='badge'>AND / OR / NOT</span><span class='badge'>TRUE / FALSE / UNKNOWN</span><span class='badge'>NULL handling</span><span class='badge'>COALESCE / NULLIF</span><span class='badge'>CASE</span><span class='badge'>Applied rules</span></div><div class='start-actions'><button class='control primary' id='startWithNarration' type='button'>Start with Narration ▶</button><button class='control' type='button' onclick='goToSlide(1)'>Start without Narration →</button></div><div class='callout'><strong>Essential question:</strong> How can SQL express business rules accurately when conditions overlap and missing values make ordinary comparisons uncertain?</div></div><div class='hero-visual'><div class='query-stack'><div class='query-node'><b>1</b><span>Define the rule</span></div><div class='query-node'><b>2</b><span>Inspect NULLs</span></div><div class='query-node'><b>3</b><span>Group conditions</span></div><div class='query-node'><b>4</b><span>Order CASE branches</span></div><div class='query-node'><b>5</b><span>Test edges</span></div><div class='query-node'><b>6</b><span>Validate</span></div></div></div></div><div class="slide-num"></div></section><section class="slide" data-title="Big picture"><div class="slide-kicker">From aggregation to logic</div><h2>From summaries to decision rules</h2><p class='lead'>Module 4 summarized rows. Module 5 decides how rows and values should be interpreted.</p><div class='flow'><div class='flow-step'><b>Condition</b>What must be true?</div><div class='flow-step'><b>Missingness</b>What if a value is unknown?</div><div class='flow-step'><b>Grouping</b>Which tests belong together?</div><div class='flow-step'><b>Priority</b>Which CASE branch wins?</div><div class='flow-step'><b>Validation</b>Do edge cases behave correctly?</div></div><div class='callout'><strong>Main habit:</strong> translate a business rule into small tests, make NULL behavior explicit, then validate boundary records.</div><div class="slide-num"></div></section><section class="slide" data-title="Learning objectives"><div class="slide-kicker">Roadmap</div><h2>What you will learn</h2><div class='grid-3'><div class='card primary-card'><div class='label'>Compose</div><h3>Boolean conditions</h3><p>Use <code>AND</code>, <code>OR</code>, <code>NOT</code>, and parentheses.</p></div><div class='card accent-card'><div class='label'>Reason</div><h3>Three-valued logic</h3><p>Predict TRUE, FALSE, and UNKNOWN.</p></div><div class='card good-card'><div class='label'>Handle</div><h3>Missing values</h3><p>Use NULL-safe tests and fallbacks.</p></div><div class='card'><div class='label'>Transform</div><h3>CASE expressions</h3><p>Translate ordered rules into labels.</p></div><div class='card'><div class='label'>Apply</div><h3>Reusable patterns</h3><p>Avoid common logic traps.</p></div><div class='card'><div class='label'>Validate</div><h3>Applied rules</h3><p>Test realistic PostgreSQL decisions.</p></div></div><div class="slide-num"></div></section><section class="slide" data-title="Six-step workflow"><div class="slide-kicker">Logic workflow</div><h2>The Six-Step Logic Workflow</h2><div class='process'><div class='step'><b>1 Define</b>State the rule in plain language.</div><div class='step'><b>2 Inspect</b>List fields that can be NULL.</div><div class='step'><b>3 Group</b>Add parentheses around related tests.</div><div class='step'><b>4 Order</b>Put specific CASE branches first.</div><div class='step'><b>5 Test</b>Include edges, blanks, and NULLs.</div><div class='step'><b>6 Validate</b>Compare output with the written rule.</div></div><div class='callout'><strong>Reason first:</strong> if the plain-language rule is ambiguous, the SQL will be ambiguous too.</div><div class="slide-num"></div></section><section class="slide" data-title="Practice schema"><div class="slide-kicker">Running dataset</div><h2>Four tables plus one convenience view</h2><p class='lead'>The browser lab uses synthetic data so the logic can be tested safely.</p><div class='grid-3'><div class='card'><h3>patient_info</h3><p>Demographics, contacts, activity, consent, language.</p></div><div class='card'><h3>diagnostics</h3><p>Diagnosis, severity, confirmation state.</p></div><div class='card'><h3>patient_billing</h3><p>Bills, payments, zero balances, missing status.</p></div><div class='card'><h3>admissions</h3><p>Admission and discharge dates.</p></div><div class='card'><h3>patient_case</h3><p>Convenience view for logic examples.</p></div></div><div class='callout'><strong>Teaching choice:</strong> the view keeps this module focused on logic. Later work can build the joins explicitly.</div><div class="slide-num"></div></section><section class="slide" data-title="Boolean logic map"><div class="slide-kicker">Boolean operators</div><h2>Three operators build most compound rules</h2><div class='grid-3'><div class='card primary-card'><h3>AND</h3><p>All connected conditions must be TRUE.</p><p class='small'>Usually narrows a cohort.</p></div><div class='card accent-card'><h3>OR</h3><p>At least one connected condition must be TRUE.</p><p class='small'>Usually broadens a cohort.</p></div><div class='card good-card'><h3>NOT</h3><p>Negates a known Boolean state.</p><p class='small'><code>NOT UNKNOWN</code> remains UNKNOWN.</p></div></div><div class='callout'><strong>Important:</strong> SQL also has UNKNOWN, so Boolean logic is not always just TRUE and FALSE.</div><div class="slide-num"></div></section><section class="slide" data-title="AND"><div class="slide-kicker">Boolean logic</div><h2><code>AND</code> requires every connected condition</h2><p class='lead'>Each additional requirement can remove rows from the result.</p><div class='grid-3'><div class='card'><h3>Active</h3><p><code>active IS TRUE</code></p></div><div class='card'><h3>Age</h3><p><code>age &gt;= 40</code></p></div><div class='card'><h3>Severity</h3><p><code>severity = 'High'</code></p></div></div><div class='callout'><strong>Read it aloud:</strong> active AND age 40+ AND high severity.</div><div class="code-cell teaching-cell"><div class="code-head"><div><b>AND narrows a cohort</b><small>PostgreSQL example</small></div><div class="cell-actions"><button class="cell-btn run teach-run" type="button">Run</button><button class="cell-btn teach-reset" type="button">Reset</button><button class="cell-btn teach-copy" type="button">Copy</button></div></div><textarea class="sql-editor">SELECT patient_id, patient_name, age, diagnosis, severity
 FROM patient_case
 WHERE active IS TRUE
   AND age &gt;= 40
@@ -777,4 +777,158 @@ audio.onerror=()=>{
 document.getElementById('transcriptBtn').onclick=()=>document.getElementById('transcriptPanel').classList.toggle('open');
 document.getElementById('transcriptClose').onclick=()=>document.getElementById('transcriptPanel').classList.remove('open');
 updateProgress();goToSlide(state.lastSlide||0);initDb().catch(()=>{});
-</script></body></html>
+</script><!-- COURSE_MODULE_NAV_START -->
+<style id="courseModuleNavStyles">
+#courseModulesBtn{display:inline-flex;align-items:center;gap:7px}
+#courseModulesBtn .cmn-btn-icon{font-size:14px;line-height:1}
+.cmn-backdrop{position:fixed;inset:0;background:rgba(10,18,27,.42);backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:.2s ease;z-index:1400}
+.cmn-backdrop.open{opacity:1;visibility:visible}
+.cmn-drawer{position:absolute;top:0;right:0;width:min(430px,92vw);height:100%;background:var(--surface,#fff);color:var(--text,#142033);border-left:1px solid var(--border,#d7e1eb);box-shadow:-24px 0 60px rgba(0,0,0,.2);transform:translateX(100%);transition:transform .24s ease;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto}
+.cmn-backdrop.open .cmn-drawer{transform:translateX(0)}
+.cmn-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:20px 20px 16px;border-bottom:1px solid var(--border,#d7e1eb)}
+.cmn-kicker{display:block;color:var(--primary,#185f99);font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.cmn-head h2{font-size:22px;line-height:1.1;margin:0!important;letter-spacing:-.02em}
+.cmn-head p{font-size:12px;color:var(--muted,#627189);margin:6px 0 0}
+.cmn-close{width:36px;height:36px;border:1px solid var(--border,#d7e1eb);border-radius:10px;background:var(--surface2,var(--surface-2,#f7f9fc));color:var(--text,#142033);font-size:20px;cursor:pointer}
+.cmn-home-row{padding:12px 20px;border-bottom:1px solid var(--border,#d7e1eb)}
+.cmn-home{display:flex;align-items:center;justify-content:space-between;gap:12px;text-decoration:none;border:1px solid var(--border,#d7e1eb);background:var(--primary-soft,#e5f1fb);border-radius:12px;padding:11px 13px;color:var(--text,#142033);font-size:13px;font-weight:900}
+.cmn-home small{display:block;color:var(--muted,#627189);font-size:10px;font-weight:700;margin-top:2px}
+.cmn-list{overflow:auto;padding:12px 12px 18px;display:grid;gap:7px;align-content:start}
+.cmn-module-link{display:grid;grid-template-columns:42px minmax(0,1fr) 18px;align-items:center;gap:10px;text-decoration:none;padding:9px 10px;border:1px solid transparent;border-radius:12px;color:var(--text,#142033);background:transparent}
+.cmn-module-link:hover{background:var(--surface2,var(--surface-2,#f7f9fc));border-color:var(--border,#d7e1eb)}
+.cmn-module-link.current{background:var(--primary-soft,#e5f1fb);border-color:color-mix(in srgb,var(--primary,#185f99) 45%,transparent)}
+.cmn-num{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--surface2,var(--surface-2,#f7f9fc));border:1px solid var(--border,#d7e1eb);color:var(--muted,#627189);font-size:11px;font-weight:900}
+.cmn-module-link.current .cmn-num{background:var(--primary,#185f99);border-color:var(--primary,#185f99);color:#fff}
+.cmn-link-copy{min-width:0}
+.cmn-link-copy b{display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmn-link-copy small{display:block;color:var(--muted,#627189);font-size:10px;margin-top:2px}
+.cmn-arrow{font-size:20px;color:var(--muted,#627189);text-align:center}
+.cmn-footer{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 20px 18px;border-top:1px solid var(--border,#d7e1eb);background:var(--surface,#fff)}
+.cmn-step{display:grid;grid-template-columns:auto 1fr;column-gap:7px;text-decoration:none;border:1px solid var(--border,#d7e1eb);background:var(--surface2,var(--surface-2,#f7f9fc));border-radius:11px;padding:9px 10px;color:var(--text,#142033)}
+.cmn-step>span{grid-row:1/3;align-self:center;color:var(--primary,#185f99);font-weight:900}
+.cmn-step small{font-size:9px;color:var(--muted,#627189);font-weight:800}
+.cmn-step b{font-size:11px}
+.cmn-step.disabled{opacity:.48}
+body.cmn-lock{overflow:hidden}
+@media(max-width:720px){
+  #courseModulesBtn .cmn-btn-label{display:none}
+  #courseModulesBtn{padding-left:10px;padding-right:10px}
+  .cmn-head{padding:16px 16px 13px}.cmn-home-row{padding:10px 16px}.cmn-footer{padding:10px 16px 14px}
+}
+</style>
+<div class="cmn-backdrop" id="courseModulesBackdrop" aria-hidden="true">
+  <aside class="cmn-drawer" id="courseModulesDrawer" role="dialog" aria-modal="true" aria-labelledby="courseModulesTitle">
+    <div class="cmn-head">
+      <div>
+        <span class="cmn-kicker">IAN 603 · Course Navigation</span>
+        <h2 id="courseModulesTitle">Course Modules</h2>
+        <p>Jump to another narrated module without returning to the course hub first.</p>
+      </div>
+      <button class="cmn-close" id="courseModulesClose" type="button" aria-label="Close course modules">×</button>
+    </div>
+    <div class="cmn-home-row">
+      <a class="cmn-home" href="s_index.html">
+        <span>Course Home<small>Overview, learning path, and all modules</small></span>
+        <span>⌂</span>
+      </a>
+    </div>
+    <nav class="cmn-list" aria-label="IAN 603 modules">
+    <a class="cmn-module-link" href="s_module1.html">
+      <span class="cmn-num">01</span>
+      <span class="cmn-link-copy"><b>Understanding Data in Informatics</b><small>Module 1</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module2.html">
+      <span class="cmn-num">02</span>
+      <span class="cmn-link-copy"><b>Designing Relational Databases</b><small>Module 2</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module3.html">
+      <span class="cmn-num">03</span>
+      <span class="cmn-link-copy"><b>PostgreSQL in Action</b><small>Module 3</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module4.html">
+      <span class="cmn-num">04</span>
+      <span class="cmn-link-copy"><b>Aggregating Data with PostgreSQL</b><small>Module 4</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link current" href="s_module5.html" aria-current="page">
+      <span class="cmn-num">05</span>
+      <span class="cmn-link-copy"><b>Reasoning with SQL Logic</b><small>Module 5 · Current</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module6.html">
+      <span class="cmn-num">06</span>
+      <span class="cmn-link-copy"><b>Joining Data in PostgreSQL</b><small>Module 6</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module7.html">
+      <span class="cmn-num">07</span>
+      <span class="cmn-link-copy"><b>Subqueries in PostgreSQL</b><small>Module 7</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module8.html">
+      <span class="cmn-num">08</span>
+      <span class="cmn-link-copy"><b>Strings and Dates in PostgreSQL</b><small>Module 8</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module9.html">
+      <span class="cmn-num">09</span>
+      <span class="cmn-link-copy"><b>Data Cleaning in PostgreSQL</b><small>Module 9</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module10.html">
+      <span class="cmn-num">10</span>
+      <span class="cmn-link-copy"><b>Reshaping Data in PostgreSQL</b><small>Module 10</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module11.html">
+      <span class="cmn-num">11</span>
+      <span class="cmn-link-copy"><b>Advanced SQL: CTEs & Window Functions</b><small>Module 11</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module12.html">
+      <span class="cmn-num">12</span>
+      <span class="cmn-link-copy"><b>Views & Modular Queries</b><small>Module 12</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module13.html">
+      <span class="cmn-num">13</span>
+      <span class="cmn-link-copy"><b>Introduction to Spark SQL</b><small>Module 13</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    </nav>
+    <div class="cmn-footer"><a class="cmn-step" href="s_module4.html"><span>←</span><small>Previous</small><b>Module 4</b></a><a class="cmn-step" href="s_module6.html"><span>→</span><small>Next</small><b>Module 6</b></a></div>
+  </aside>
+</div>
+<script id="courseModuleNavScript">
+(()=>{
+  const btn=document.getElementById('courseModulesBtn');
+  const backdrop=document.getElementById('courseModulesBackdrop');
+  const drawer=document.getElementById('courseModulesDrawer');
+  const closeBtn=document.getElementById('courseModulesClose');
+  if(!btn||!backdrop||!drawer||!closeBtn)return;
+  let lastFocus=null;
+  function openNav(){
+    lastFocus=document.activeElement;
+    backdrop.classList.add('open');
+    backdrop.setAttribute('aria-hidden','false');
+    document.body.classList.add('cmn-lock');
+    requestAnimationFrame(()=>closeBtn.focus());
+  }
+  function closeNav(){
+    backdrop.classList.remove('open');
+    backdrop.setAttribute('aria-hidden','true');
+    document.body.classList.remove('cmn-lock');
+    if(lastFocus&&typeof lastFocus.focus==='function')lastFocus.focus();
+  }
+  btn.addEventListener('click',openNav);
+  closeBtn.addEventListener('click',closeNav);
+  backdrop.addEventListener('click',e=>{if(e.target===backdrop)closeNav()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&backdrop.classList.contains('open'))closeNav()});
+})();
+</script>
+<!-- COURSE_MODULE_NAV_END -->
+</body>
+</html>
