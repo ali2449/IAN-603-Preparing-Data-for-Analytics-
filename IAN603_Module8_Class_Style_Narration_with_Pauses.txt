@@ -1,0 +1,1571 @@
+Slide 1: Start
+
+Welcome to Module 8, Strings and Dates in PostgreSQL.
+
+[pause=0.7]
+
+Text and time values often look simple on the screen, but they carry important analytical meaning.
+
+[pause=0.7]
+
+In this module, we will clean text carefully, parse structured pieces from strings, use regular expressions when simple functions are not enough, choose appropriate date and time types, calculate intervals, group events by time grain, and work with time zones.
+
+[pause=0.7]
+
+Every SQL example can run directly in the browser, and you can copy the same query into pgAdmin for additional practice.
+
+[pause=1.0]
+
+Slide 2: Why this module matters
+
+This module is about more than display formatting.
+
+[pause=0.7]
+
+A trailing space can create a different category. Inconsistent case can fragment groups. A date stored as text cannot safely participate in date arithmetic.
+
+[pause=0.7]
+
+Time values also have different meanings. A calendar date is different from a local clock timestamp, and both are different from an instant stored with time-zone meaning.
+
+[pause=0.7]
+
+The goal is to prepare these values without accidentally changing what they mean.
+
+[pause=1.0]
+
+Slide 3: Learning goals
+
+By the end of the module, you should be able to normalize common text problems, choose the right temporal type, change time grain, calculate durations, and separate parsing from formatting.
+
+[pause=0.7]
+
+You should also be able to explain why a transformation is appropriate.
+
+[pause=0.7]
+
+The objective is not to memorize a long list of functions. It is to select the right function based on the meaning of the value and the analytical task.
+
+[pause=1.0]
+
+Slide 4: PostgreSQL-specific correction
+
+One correction is important before we start.
+
+[pause=0.7]
+
+PostgreSQL does not use DATEADD and DATEDIFF as native functions.
+
+[pause=0.7]
+
+Instead, PostgreSQL commonly uses date or timestamp subtraction, INTERVAL values, EXTRACT, DATE_TRUNC, AGE, TO_DATE, TO_TIMESTAMP, and TO_CHAR.
+
+[pause=0.8]
+
+The underlying analytical ideas are portable, but the SQL syntax depends on the database system.
+
+[pause=1.0]
+
+Slide 5: Module roadmap
+
+The module has two main halves.
+
+[pause=0.7]
+
+First, we work with text: inspect, normalize, parse, and validate.
+
+[pause=0.7]
+
+Second, we work with time: choose the correct type, extract components, change analytical grain, calculate durations, and handle time zones.
+
+[pause=0.7]
+
+At the end, we combine the ideas in practical preparation tasks and projects.
+
+[pause=1.0]
+
+Slide 6: Teaching database
+
+The teaching database combines healthcare-style and retail-style examples.
+
+[pause=0.8]
+
+Patients gives us messy contact text.
+
+[pause=0.7]
+
+Admissions gives us timestamps for elapsed-time calculations.
+
+[pause=0.7]
+
+Products helps with substring and replacement examples.
+
+[pause=0.8]
+
+Orders gives us timestamps and numeric measures for monthly summaries.
+
+[pause=0.7]
+
+Staging dates contains raw text dates in different formats so we can practice safe parsing.
+
+[pause=1.0]
+
+Slide 7: Inspect raw text first
+
+The first step in text cleaning is inspection.
+
+[pause=0.7]
+
+Run this query and look closely at names, emails, and addresses.
+
+[pause=0.8]
+
+Do not decide on a cleaning rule before you understand the patterns that actually occur.
+
+[pause=0.7]
+
+Some values may have extra spaces, inconsistent capitalization, or abbreviations.
+
+[pause=0.7]
+
+The cleaning rule should respond to observed problems, not blindly transform every string.
+
+[pause=1.0]
+
+Slide 8: Text cleaning pipeline
+
+Text cleaning is a pipeline, not one magic function.
+
+[pause=0.7]
+
+First inspect the raw value.
+
+[pause=0.7]
+
+Then normalize only known formatting noise.
+
+[pause=0.7]
+
+If the string contains meaningful structure, parse the pieces you need.
+
+[pause=0.7]
+
+Validation is a separate step that asks whether the cleaned value follows an expected rule.
+
+[pause=0.7]
+
+Finally, use the cleaned field for analysis or reporting.
+
+[pause=0.7]
+
+When traceability matters, preserve the raw source value as well.
+
+[pause=1.0]
+
+Slide 9: Raw vs cleaned values
+
+A cleaned value should be explainable.
+
+[pause=0.7]
+
+In these examples, we remove formatting noise and apply a documented abbreviation rule.
+
+[pause=0.8]
+
+We are not inventing new information.
+
+[pause=0.7]
+
+Keeping raw and cleaned values side by side is useful during development because it makes every transformation visible.
+
+[pause=0.7]
+
+That helps catch over-cleaning and makes the process easier to audit.
+
+[pause=1.0]
+
+Slide 10: Case functions
+
+PostgreSQL provides several case functions.
+
+[pause=0.7]
+
+UPPER makes all letters uppercase.
+
+[pause=0.7]
+
+LOWER makes all letters lowercase and is commonly useful for normalization before comparison.
+
+[pause=0.7]
+
+INITCAP capitalizes words for display.
+
+[pause=0.7]
+
+Be careful with names because real capitalization can be more complex than a simple function.
+
+[pause=0.7]
+
+A cleaning rule should fit the domain rather than assuming one display convention is universally correct.
+
+[pause=1.0]
+
+Slide 11: Case + trim + length
+
+Run this example to compare several functions at once.
+
+[pause=0.8]
+
+UPPER and LOWER change letter case.
+
+[pause=0.7]
+
+BTRIM removes spaces from the beginning and end.
+
+[pause=0.7]
+
+INITCAP creates a display-style name after trimming.
+
+[pause=0.7]
+
+LENGTH shows why invisible spaces matter: raw and trimmed strings can have different lengths even when they look similar on screen.
+
+[pause=1.0]
+
+Slide 12: BTRIM handles boundaries
+
+BTRIM is excellent for boundary whitespace.
+
+[pause=0.7]
+
+It removes spaces from the start and end of a string.
+
+[pause=0.7]
+
+But it does not collapse repeated spaces inside the value.
+
+[pause=0.7]
+
+That distinction is important.
+
+[pause=0.7]
+
+If you need to normalize internal whitespace, you need a different function such as REGEXP_REPLACE with a repeated-whitespace pattern.
+
+[pause=1.0]
+
+Slide 13: Why LENGTH is useful
+
+LENGTH is useful because text problems are not always visually obvious.
+
+[pause=0.7]
+
+Boundary spaces and repeated internal spaces increase the character count.
+
+[pause=0.7]
+
+Comparing length before and after cleaning can help confirm that your transformation is doing what you expect.
+
+[pause=0.7]
+
+Think of LENGTH as a diagnostic function during data preparation.
+
+[pause=1.0]
+
+Slide 14: Repeated whitespace
+
+Repeated internal whitespace requires a pattern-based solution.
+
+[pause=0.7]
+
+The PostgreSQL regular-expression pattern bracket colon space colon bracket represents whitespace.
+
+[pause=0.7]
+
+The plus means one or more occurrences.
+
+[pause=0.7]
+
+Replacing that run with one ordinary space turns values with inconsistent spacing into a more stable representation.
+
+[pause=0.8]
+
+We usually trim boundaries first and then normalize the internal whitespace.
+
+[pause=1.0]
+
+Slide 15: Normalize repeated spaces
+
+This query combines two cleaning steps.
+
+[pause=0.8]
+
+BTRIM removes boundary spaces.
+
+[pause=0.7]
+
+REGEXP_REPLACE then collapses repeated internal whitespace to one space.
+
+[pause=0.7]
+
+The g flag means replace every matching occurrence, not just the first.
+
+[pause=0.7]
+
+Run the query and compare the raw and normalized names row by row.
+
+[pause=1.0]
+
+Slide 16: Combine fields carefully
+
+Sometimes the goal is to build one readable field from several columns.
+
+[pause=0.7]
+
+CONCAT_WS means concatenate with separator.
+
+[pause=0.7]
+
+It is especially useful when some components can be NULL because it avoids producing unnecessary separators for missing arguments.
+
+[pause=0.7]
+
+NULLIF can convert an empty string to NULL first.
+
+[pause=0.7]
+
+That combination helps create clean display lines without confusing blanks.
+
+[pause=1.0]
+
+Slide 17: Build a contact line
+
+This query creates one contact line.
+
+[pause=0.8]
+
+The name is trimmed and has repeated whitespace normalized.
+
+[pause=0.7]
+
+The email is trimmed, and NULLIF turns an empty string into NULL.
+
+[pause=0.7]
+
+The address is trimmed.
+
+[pause=0.7]
+
+CONCAT_WS joins the available pieces with a vertical-bar separator and skips NULL arguments.
+
+[pause=0.7]
+
+Run the query and inspect how missing values affect the output.
+
+[pause=1.0]
+
+Slide 18: Structured strings can be parsed
+
+Some strings contain meaningful internal structure.
+
+[pause=0.7]
+
+An email address has a delimiter between the user portion and domain.
+
+[pause=0.7]
+
+If the delimiter is reliable, SPLIT_PART can extract pieces based on structure.
+
+[pause=0.7]
+
+This is usually easier to understand than using fixed character positions, which can break when string lengths vary.
+
+[pause=1.0]
+
+Slide 19: SPLIT_PART example
+
+This query first trims the email and converts it to lowercase.
+
+[pause=0.8]
+
+SPLIT_PART then returns the text before or after the at sign.
+
+[pause=0.7]
+
+POSITION reports where the delimiter occurs.
+
+[pause=0.7]
+
+Run the query and compare the parsed user and domain values.
+
+[pause=0.8]
+
+Also notice what happens for missing or malformed email values.
+
+[pause=1.0]
+
+Slide 20: POSITION answers where
+
+POSITION returns the location of one substring inside another.
+
+[pause=0.7]
+
+It is useful when you need to know whether a delimiter exists or where it occurs.
+
+[pause=0.7]
+
+For many parsing tasks, SPLIT_PART is clearer when the delimiter already defines meaningful parts.
+
+[pause=0.7]
+
+POSITION is especially useful during inspection and validation.
+
+[pause=1.0]
+
+Slide 21: SUBSTRING
+
+SUBSTRING is useful when character position has a documented meaning.
+
+[pause=0.7]
+
+For example, we may take the first three characters of a product name to build a teaching code.
+
+[pause=0.8]
+
+But fixed positions can be fragile when string structures vary.
+
+[pause=0.7]
+
+Use position-based extraction only when the structure is stable enough to justify it.
+
+[pause=1.0]
+
+Slide 22: Create product codes
+
+This example builds a simple teaching product code.
+
+[pause=0.8]
+
+BTRIM cleans the product name.
+
+[pause=0.7]
+
+SUBSTRING takes the first three characters.
+
+[pause=0.7]
+
+UPPER standardizes the prefix.
+
+[pause=0.7]
+
+LPAD pads the numeric ID to three digits.
+
+[pause=0.7]
+
+The double-pipe operator concatenates the pieces.
+
+[pause=0.7]
+
+The important lesson is that each part of the code comes from a documented transformation.
+
+[pause=1.0]
+
+Slide 23: REPLACE
+
+REPLACE is useful for direct literal substitution.
+
+[pause=0.7]
+
+If the source system consistently uses a known abbreviation and the business rule says to expand it, REPLACE can be clear and reproducible.
+
+[pause=0.7]
+
+But it does not understand context.
+
+[pause=0.7]
+
+For flexible patterns, use regular expressions or a lookup table rather than stacking many fragile replacements.
+
+[pause=1.0]
+
+Slide 24: REPLACE example
+
+This example replaces the literal text KB with keyboard.
+
+[pause=0.8]
+
+Run the query and compare the raw description with the expanded version.
+
+[pause=0.8]
+
+This is appropriate because the transformation rule is explicit and easy to audit.
+
+[pause=0.7]
+
+In larger projects, repeated mapping rules may be better stored in reference tables rather than hard-coded into one long SQL expression.
+
+[pause=1.0]
+
+Slide 25: Regular expressions
+
+Regular expressions are useful when simple literal functions are not enough.
+
+[pause=0.7]
+
+REGEXP_REPLACE can remove or standardize patterns.
+
+[pause=0.7]
+
+The tilde operator checks whether a string matches a pattern.
+
+[pause=0.7]
+
+Regex is powerful, so keep the rule as simple and explainable as possible.
+
+[pause=0.7]
+
+A complicated expression that nobody can review is a data-quality risk of its own.
+
+[pause=1.0]
+
+Slide 26: Regex email cleanup
+
+This example trims the email, removes characters outside a teaching-level allowed set, and converts the result to lowercase.
+
+[pause=0.8]
+
+Run it and compare original and cleaned values.
+
+[pause=0.8]
+
+Notice that cleaning a string does not prove the result is valid.
+
+[pause=0.7]
+
+Transformation and validation are separate steps.
+
+[pause=0.7]
+
+That distinction is important in data preparation.
+
+[pause=1.0]
+
+Slide 27: Regex validation
+
+This query uses a regular expression to check the general shape of an email address.
+
+[pause=0.8]
+
+Rows that match are labeled valid shape.
+
+[pause=0.7]
+
+Other rows are labeled review.
+
+[pause=0.7]
+
+The phrase valid shape is deliberate.
+
+[pause=0.7]
+
+A regex can check structure, but it cannot prove that the mailbox exists or that every possible valid internet email syntax is covered.
+
+[pause=0.7]
+
+Production validation rules should match the application requirements.
+
+[pause=1.0]
+
+Slide 28: Cleaning vs validation
+
+Cleaning, parsing, validation, and verification are different tasks.
+
+[pause=0.7]
+
+Cleaning changes known formatting noise.
+
+[pause=0.7]
+
+Parsing extracts meaningful components.
+
+[pause=0.7]
+
+Validation checks whether a value follows a rule.
+
+[pause=0.7]
+
+Verification asks whether the value corresponds to reality.
+
+[pause=0.7]
+
+Keeping these tasks separate makes a preparation pipeline easier to reason about and audit.
+
+[pause=1.0]
+
+Slide 29: Text-function decision guide
+
+This table summarizes the text half of the module.
+
+[pause=0.7]
+
+Use the simplest function that matches the actual problem.
+
+[pause=0.7]
+
+Do not use regex when TRIM solves the issue.
+
+[pause=0.7]
+
+Do not use fixed positions when a reliable delimiter defines the structure.
+
+[pause=0.7]
+
+And do not treat cleaning as proof of validity.
+
+[pause=0.7]
+
+Clear, small transformations are easier to maintain and explain.
+
+[pause=1.0]
+
+Slide 30: Temporal types
+
+Now we move from text to temporal data.
+
+[pause=0.7]
+
+The first decision is the data type.
+
+[pause=0.7]
+
+DATE represents a calendar date.
+
+[pause=0.7]
+
+TIMESTAMP represents a date and clock time without time-zone interpretation.
+
+[pause=0.7]
+
+TIMESTAMPTZ represents an instant in time.
+
+[pause=0.7]
+
+INTERVAL represents a duration.
+
+[pause=0.7]
+
+Choosing the correct type is more important than choosing a formatting function.
+
+[pause=1.0]
+
+Slide 31: DATE
+
+DATE is appropriate when the calendar day matters but the time of day does not.
+
+[pause=0.7]
+
+Examples include birth date or a reporting date.
+
+[pause=0.8]
+
+A typed date can be sorted chronologically and used in date arithmetic.
+
+[pause=0.7]
+
+A text string that merely looks like a date does not provide the same analytical guarantees.
+
+[pause=1.0]
+
+Slide 32: TIMESTAMP
+
+TIMESTAMP stores a date and local clock time.
+
+[pause=0.7]
+
+It does not carry a time-zone interpretation.
+
+[pause=0.7]
+
+That can be appropriate when the time zone is fixed or irrelevant.
+
+[pause=0.7]
+
+But if records come from multiple regions or you need to compare global instants, a plain timestamp can become ambiguous.
+
+[pause=1.0]
+
+Slide 33: TIMESTAMPTZ
+
+TIMESTAMPTZ is PostgreSQL's timestamp with time zone type.
+
+[pause=0.7]
+
+Conceptually, it represents an instant.
+
+[pause=0.7]
+
+PostgreSQL can display that instant in different time zones.
+
+[pause=0.7]
+
+This is useful for events collected across locations.
+
+[pause=0.7]
+
+The key distinction is between the stored instant and the clock representation shown to a user.
+
+[pause=1.0]
+
+Slide 34: INTERVAL
+
+INTERVAL represents duration.
+
+[pause=0.7]
+
+You can add an interval to a date or timestamp to create a future or past point.
+
+[pause=0.7]
+
+Timestamp subtraction also returns an interval.
+
+[pause=0.7]
+
+Intervals are central to PostgreSQL temporal arithmetic and replace many dialect-specific date-add patterns.
+
+[pause=1.0]
+
+Slide 35: Temporal type decision guide
+
+Choose the type based on meaning.
+
+[pause=0.7]
+
+If only the calendar day matters, DATE may be enough.
+
+[pause=0.7]
+
+If you need a local date and time without global time-zone meaning, TIMESTAMP may fit.
+
+[pause=0.7]
+
+If the value represents an instant, use TIMESTAMPTZ.
+
+[pause=0.7]
+
+If the value is duration, use INTERVAL.
+
+[pause=0.7]
+
+Remember that storage precision and analytical grain are separate decisions.
+
+[pause=1.0]
+
+Slide 36: PostgreSQL date arithmetic
+
+Here is the PostgreSQL-native approach to common temporal tasks.
+
+[pause=0.7]
+
+Subtract timestamps to obtain an interval.
+
+[pause=0.7]
+
+Add INTERVAL values to shift time.
+
+[pause=0.7]
+
+Use EXTRACT to read components.
+
+[pause=0.7]
+
+Use DATE_TRUNC to change analytical grain.
+
+[pause=0.8]
+
+Use AGE when you want a symbolic calendar interval.
+
+[pause=0.7]
+
+These patterns are clearer and more portable within PostgreSQL than borrowing function names from another SQL dialect.
+
+[pause=1.0]
+
+Slide 37: EXTRACT
+
+EXTRACT reads one component from a date or timestamp.
+
+[pause=0.7]
+
+You can extract year, month, day of week, hour, and many other fields.
+
+[pause=0.7]
+
+The result is a component value, not a new grouped timestamp.
+
+[pause=0.7]
+
+This distinction matters when comparing EXTRACT with DATE_TRUNC.
+
+[pause=1.0]
+
+Slide 38: EXTRACT example
+
+This query extracts several components from admission timestamps.
+
+[pause=0.8]
+
+YEAR and MONTH are straightforward.
+
+[pause=0.7]
+
+DOW gives PostgreSQL's numeric day-of-week representation.
+
+[pause=0.7]
+
+HOUR gives the clock-hour component.
+
+[pause=0.7]
+
+These values are useful as analytical features, but they do not preserve the full timestamp or create a time bucket on their own.
+
+[pause=1.0]
+
+Slide 39: Day-of-week caution
+
+Day-of-week values need documentation.
+
+[pause=0.7]
+
+In PostgreSQL, EXTRACT DOW uses zero for Sunday and six for Saturday.
+
+[pause=0.7]
+
+Other tools may use different conventions.
+
+[pause=0.7]
+
+Whenever a numeric code represents a temporal category, document the mapping before using it in analysis or modeling.
+
+[pause=1.0]
+
+Slide 40: DATE_TRUNC
+
+DATE_TRUNC changes the analytical grain of a timestamp.
+
+[pause=0.8]
+
+A timestamp can be truncated to day, week, month, quarter, or other levels.
+
+[pause=0.8]
+
+The returned value represents the start of that period.
+
+[pause=0.7]
+
+This makes DATE_TRUNC especially useful for GROUP BY because all timestamps in the same period receive the same bucket value.
+
+[pause=1.0]
+
+Slide 41: DATE_TRUNC example
+
+Run this query and compare several truncated versions of each order timestamp.
+
+[pause=0.8]
+
+The original timestamp keeps the precise event time.
+
+[pause=0.7]
+
+The day version maps it to the start of the day.
+
+[pause=0.7]
+
+The month version maps it to the start of the month.
+
+[pause=0.7]
+
+This is how a precise event can be analyzed at a coarser reporting grain without changing the stored source value.
+
+[pause=1.0]
+
+Slide 42: EXTRACT vs DATE_TRUNC
+
+EXTRACT and DATE_TRUNC solve different problems.
+
+[pause=0.8]
+
+EXTRACT month gives a number such as three.
+
+[pause=0.7]
+
+DATE_TRUNC month gives a full month bucket such as March first, twenty twenty-six at midnight.
+
+[pause=0.8]
+
+If you group only by month number, March from multiple years can be combined accidentally.
+
+[pause=0.7]
+
+DATE_TRUNC often gives a safer full-period key for time-series aggregation.
+
+[pause=1.0]
+
+Slide 43: Monthly aggregation
+
+This query truncates each order timestamp to month grain.
+
+[pause=0.8]
+
+It then groups orders by that month bucket.
+
+[pause=0.7]
+
+COUNT measures order volume, and SUM calculates monthly revenue.
+
+[pause=0.7]
+
+The cast to date is mainly for a simpler displayed month label.
+
+[pause=0.7]
+
+The important analytical decision is the month-level grain created by DATE_TRUNC.
+
+[pause=1.0]
+
+Slide 44: Monthly revenue visual
+
+This visual shows the effect of changing grain.
+
+[pause=0.7]
+
+The source table has one row per order.
+
+[pause=0.7]
+
+After DATE_TRUNC and GROUP BY, the result has one row per month.
+
+[pause=0.8]
+
+The chart is not just a different display. It represents a different analytical grain.
+
+[pause=0.7]
+
+Always be clear about what one row means before and after aggregation.
+
+[pause=1.0]
+
+Slide 45: Timestamp subtraction
+
+PostgreSQL can subtract one timestamp from another.
+
+[pause=0.7]
+
+The result is an INTERVAL representing elapsed time.
+
+[pause=0.7]
+
+This is the direct way to answer questions such as length of stay or processing duration.
+
+[pause=0.7]
+
+If you later need a numeric number of hours or days, that is a separate conversion step.
+
+[pause=1.0]
+
+Slide 46: Length of stay
+
+This query first subtracts admit time from discharge time.
+
+[pause=0.8]
+
+That produces an interval.
+
+[pause=0.7]
+
+It also converts the interval to seconds using EXTRACT EPOCH, divides by the number of seconds in a day, and rounds the result.
+
+[pause=0.7]
+
+The interval is a typed duration.
+
+[pause=0.7]
+
+The numeric day value is an analytical representation derived from that duration.
+
+[pause=1.0]
+
+Slide 47: EPOCH conversion
+
+EXTRACT EPOCH returns the total number of seconds represented by an interval.
+
+[pause=0.7]
+
+From there, you can convert to hours or days.
+
+[pause=0.7]
+
+The unit you choose should match the analysis.
+
+[pause=0.7]
+
+A numeric duration is often convenient for statistics or modeling, while the interval type can be more expressive for SQL temporal operations.
+
+[pause=1.0]
+
+Slide 48: Adding intervals
+
+Intervals can also shift time.
+
+[pause=0.7]
+
+Adding fourteen days to a discharge timestamp creates a follow-up point two weeks later.
+
+[pause=0.7]
+
+Adding thirty days creates a longer window.
+
+[pause=0.7]
+
+The interval makes the rule explicit and readable in PostgreSQL.
+
+[pause=1.0]
+
+Slide 49: Follow-up dates
+
+This query creates two follow-up timestamps.
+
+[pause=0.8]
+
+The original discharge time remains visible.
+
+[pause=0.7]
+
+Then PostgreSQL adds fourteen-day and thirty-day intervals.
+
+[pause=0.7]
+
+Keeping the original and derived times side by side makes the transformation easy to audit and explain.
+
+[pause=1.0]
+
+Slide 50: AGE vs subtraction
+
+AGE and direct subtraction both compare two temporal values, but their emphasis differs.
+
+[pause=0.8]
+
+AGE expresses a symbolic calendar interval using years, months, and days.
+
+[pause=0.7]
+
+Direct subtraction gives the elapsed interval between two timestamps.
+
+[pause=0.7]
+
+For hospital length of stay, direct subtraction is usually easier to interpret.
+
+[pause=0.7]
+
+For calendar-style age differences, AGE may be more natural.
+
+[pause=1.0]
+
+Slide 51: AGE example
+
+This query shows AGE and direct subtraction side by side.
+
+[pause=0.8]
+
+For short hospital stays, the displayed results may look similar.
+
+[pause=0.7]
+
+The conceptual difference becomes more important across months and years.
+
+[pause=0.7]
+
+Always choose the function based on the meaning you want to communicate rather than because two examples happen to produce similar text.
+
+[pause=1.0]
+
+Slide 52: Parsing vs formatting
+
+Parsing and formatting move in opposite directions.
+
+[pause=0.7]
+
+Parsing starts with text and creates a typed date or timestamp.
+
+[pause=0.7]
+
+That typed value can be sorted, compared, grouped, and used in arithmetic.
+
+[pause=0.8]
+
+Formatting starts with a typed temporal value and creates text for human presentation.
+
+[pause=0.7]
+
+For analytics, parse early and format late.
+
+[pause=1.0]
+
+Slide 53: Casting vs parsing
+
+Sometimes a direct cast is sufficient.
+
+[pause=0.7]
+
+If the text is already in a clear date format that PostgreSQL recognizes and you have validated the input, casting to date can be simple.
+
+[pause=0.7]
+
+When the format is different, TO_DATE lets you specify the pattern.
+
+[pause=0.7]
+
+For mixed raw input, first identify the shape and then apply the appropriate parser.
+
+[pause=0.7]
+
+Blindly parsing unknown text can cause errors or incorrect interpretations.
+
+[pause=1.0]
+
+Slide 54: Safe parsing workflow
+
+A safe parsing workflow starts by cleaning boundary whitespace.
+
+[pause=0.7]
+
+Then identify the input shape.
+
+[pause=0.7]
+
+Apply the parser that matches that shape.
+
+[pause=0.7]
+
+If the value does not match an expected format, return NULL or flag it for review instead of guessing.
+
+[pause=0.7]
+
+Parsing converts representation. It does not prove that the underlying business value is accurate.
+
+[pause=1.0]
+
+Slide 55: Safe date parsing
+
+This query uses CASE to handle several known date formats.
+
+[pause=0.8]
+
+Blank strings become NULL.
+
+[pause=0.7]
+
+ISO-style text can be cast to date.
+
+[pause=0.7]
+
+Slash-formatted text uses TO_DATE with a month-day-year pattern.
+
+[pause=0.7]
+
+Eight-digit text uses a year-month-day pattern.
+
+[pause=0.7]
+
+Anything else becomes NULL for review.
+
+[pause=0.7]
+
+The important idea is explicit, controlled parsing rather than guessing.
+
+[pause=1.0]
+
+Slide 56: TO_CHAR
+
+TO_CHAR converts a typed date or timestamp into formatted text.
+
+[pause=0.7]
+
+This is useful for reports, labels, exports, and human-facing displays.
+
+[pause=0.7]
+
+But once you turn a timestamp into arbitrary text, temporal sorting and arithmetic become less direct.
+
+[pause=0.7]
+
+Keep the value typed through analytical processing and format it near the reporting boundary.
+
+[pause=1.0]
+
+Slide 57: Format admission timestamps
+
+Run this query and compare the original admit timestamp with the formatted strings.
+
+[pause=0.8]
+
+The first label is designed for human readability.
+
+[pause=0.7]
+
+The second creates ISO-style date text.
+
+[pause=0.7]
+
+Both outputs are text.
+
+[pause=0.7]
+
+The original admit time remains the typed analytical value.
+
+[pause=1.0]
+
+Slide 58: Why formatting comes late
+
+Typed timestamps are more useful for analysis than display strings.
+
+[pause=0.7]
+
+They sort chronologically, support arithmetic, and retain temporal semantics.
+
+[pause=0.7]
+
+A formatted string is useful for a person but less flexible for computation.
+
+[pause=0.7]
+
+That is why formatting generally belongs near the output boundary rather than early in the preparation pipeline.
+
+[pause=1.0]
+
+Slide 59: Time zones
+
+Time zones are easier when you separate the instant from its display.
+
+[pause=0.7]
+
+A timestamptz represents an instant.
+
+[pause=0.7]
+
+That instant can be displayed using Eastern time, UTC, or another zone.
+
+[pause=0.7]
+
+The clock reading changes, but the underlying instant does not.
+
+[pause=0.7]
+
+This distinction is essential for logs, orders, and events collected across locations.
+
+[pause=1.0]
+
+Slide 60: Timestamp vs timestamptz
+
+A plain timestamp stores a local date and time without time-zone interpretation.
+
+[pause=0.7]
+
+A timestamptz represents an instant.
+
+[pause=0.7]
+
+If data crosses regions, plain local timestamps can become ambiguous.
+
+[pause=0.7]
+
+When the same event must be understood consistently across systems, timestamptz is usually the safer model.
+
+[pause=1.0]
+
+Slide 61: AT TIME ZONE
+
+This query displays order timestamps using two time zones.
+
+[pause=0.8]
+
+AT TIME ZONE America slash New York gives an Eastern local clock representation.
+
+[pause=0.7]
+
+AT TIME ZONE UTC gives a UTC clock representation.
+
+[pause=0.7]
+
+Run the query and compare the displayed times.
+
+[pause=0.8]
+
+The underlying event instant is the same; only the clock representation changes.
+
+[pause=1.0]
+
+Slide 62: Combined practice overview
+
+Now we combine the two halves of the module.
+
+[pause=0.7]
+
+A realistic preparation query often cleans text and transforms time in the same result.
+
+[pause=0.8]
+
+We will normalize the patient name, extract an email domain, reduce the admission timestamp to month grain, and calculate length of stay.
+
+[pause=0.7]
+
+The key is that each transformation has a clear purpose.
+
+[pause=1.0]
+
+Slide 63: Combined patient profile
+
+This query joins patients with admissions.
+
+[pause=0.8]
+
+The name is trimmed, repeated whitespace is collapsed, and display case is applied.
+
+[pause=0.7]
+
+The email domain is extracted from a normalized email.
+
+[pause=0.7]
+
+Admission time is reduced to month grain.
+
+[pause=0.7]
+
+Length of stay is converted to numeric days.
+
+[pause=0.7]
+
+Read the query column by column rather than as one large block.
+
+[pause=1.0]
+
+Slide 64: Project A overview
+
+Project A creates a contact-data quality view.
+
+[pause=0.8]
+
+The raw name remains visible beside the cleaned name.
+
+[pause=0.7]
+
+The email is normalized and checked for a teaching-level valid shape.
+
+[pause=0.7]
+
+The address uses a documented abbreviation replacement.
+
+[pause=0.7]
+
+This design is audit-friendly because the transformation does not hide the original values.
+
+[pause=1.0]
+
+Slide 65: Project A SQL
+
+Run the contact-data quality project.
+
+[pause=0.8]
+
+Focus on one output column at a time.
+
+[pause=0.7]
+
+Compare raw and clean names.
+
+[pause=0.8]
+
+Check how email normalization affects the domain.
+
+[pause=0.7]
+
+Look at the email status field and address replacement.
+
+[pause=0.7]
+
+The goal is to make data-quality decisions visible rather than silently modifying the source.
+
+[pause=1.0]
+
+Slide 66: Project B overview
+
+Project B focuses on time grain.
+
+[pause=0.8]
+
+The source table has one row per order event.
+
+[pause=0.7]
+
+We truncate the timestamp to month, then group at that new grain.
+
+[pause=0.8]
+
+The output contains monthly order count, distinct customers, revenue, and average order value.
+
+[pause=0.7]
+
+This is the kind of feature table commonly used for dashboards or later modeling.
+
+[pause=1.0]
+
+Slide 67: Project B SQL
+
+Run the monthly order project and verify the row meaning.
+
+[pause=0.8]
+
+Each row now represents one month, not one order.
+
+[pause=0.7]
+
+The grouped measures summarize all order events in that month.
+
+[pause=0.7]
+
+This is a good example of using temporal preparation to create an analysis-ready table at a new grain.
+
+[pause=1.0]
+
+Slide 68: Recognition checkpoint
+
+Use this checkpoint to test function choice.
+
+[pause=0.8]
+
+Boundary spaces suggest trimming.
+
+[pause=0.7]
+
+A reliable delimiter suggests SPLIT_PART.
+
+[pause=0.7]
+
+A full month grouping key suggests DATE_TRUNC rather than only extracting the month number.
+
+[pause=0.8]
+
+Timestamp subtraction returns an interval.
+
+[pause=0.7]
+
+TO_CHAR is generally a presentation step.
+
+[pause=0.7]
+
+The important skill is matching the function to the meaning of the task.
+
+[pause=1.0]
+
+Slide 69: Applied challenge
+
+The applied challenge combines the module.
+
+[pause=0.7]
+
+Return one row per admission.
+
+[pause=0.7]
+
+Create a normalized patient name.
+
+[pause=0.7]
+
+Extract the email domain while preserving admissions for patients with missing email.
+
+[pause=0.7]
+
+Create an admission month bucket.
+
+[pause=0.7]
+
+Add a human-readable admission label.
+
+[pause=0.7]
+
+Calculate length of stay in hours.
+
+[pause=0.7]
+
+Build and test one output column at a time instead of trying to finish the entire SELECT immediately.
+
+[pause=1.0]
+
+Slide 70: Module 8 takeaways
+
+These are the main ideas to remember.
+
+[pause=0.7]
+
+Normalize text deliberately and keep validation separate from transformation.
+
+[pause=0.7]
+
+Use string structure when parsing.
+
+[pause=0.7]
+
+Choose temporal types based on meaning.
+
+[pause=0.7]
+
+Remember that EXTRACT reads a component while DATE_TRUNC creates a time bucket.
+
+[pause=0.8]
+
+Use PostgreSQL interval arithmetic for elapsed and shifted time.
+
+[pause=0.7]
+
+And keep dates and timestamps typed until you truly need display text.
+
+[pause=1.0]
+
+Slide 71: Final decision guide
+
+Use this final decision guide when you are unsure.
+
+[pause=0.7]
+
+Start from the problem, not from a favorite function.
+
+[pause=0.7]
+
+Choose the smallest operation that expresses the intended transformation.
+
+[pause=0.7]
+
+That produces SQL that is easier to read, test, and maintain.
+
+[pause=0.7]
+
+Module 9 will build on these ideas by applying broader data-cleaning strategies across complete datasets.
+
+[pause=1.0]
+
+Slide 72: Next: Module 9
+
+Module 9 expands from individual text and time transformations to broader data-cleaning workflows.
+
+[pause=0.7]
+
+You will use SQL to identify missing values, standardize inconsistent data, validate rules, and address duplicate records.
+
+[pause=0.7]
+
+The ideas from Module 8 remain important because many cleaning tasks depend on correct text normalization and temporal interpretation.
+
+[pause=0.7]
+
+Before moving on, make sure you can explain what each transformation changes and what meaning it preserves.
+
+[pause=1.0]
