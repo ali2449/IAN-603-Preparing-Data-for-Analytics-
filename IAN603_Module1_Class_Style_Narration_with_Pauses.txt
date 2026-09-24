@@ -1,0 +1,1735 @@
+Slide 1: Start
+
+Welcome to Module 1, Understanding Data in Informatics. This module is the foundation for everything that follows in IAN 603.
+
+[pause=0.7]
+
+Before we clean, transform, query, or model data, we need to understand what kind of data we have, what each variable actually means, and whether the values are trustworthy enough for the intended use.
+
+[pause=0.7]
+
+We will move slowly and use one small patient-encounter example throughout the module. You will also see short Python examples and one PostgreSQL preview, but the main goal is conceptual understanding.
+
+[pause=0.8]
+
+As you move through the slides, focus on one question at a time. What is the data? What does the variable mean? Is the value trustworthy? And what analytical treatment makes sense because of that meaning?
+
+[pause=1.0]
+
+Slide 2: Why this module matters
+
+Why do we spend an entire module on understanding data?
+
+[pause=0.7]
+
+Because the same-looking value can mean very different things. The number 27401 may look numeric, but if it is a ZIP code, subtracting or averaging it makes no analytical sense. A satisfaction score of four is stored as an integer, but it represents an ordered category rather than a true measured distance.
+
+[pause=0.7]
+
+We also need to ask whether the data is trustworthy. If important values are missing, duplicated, stale, or outside the allowed domain, later analysis can become misleading.
+
+[pause=0.7]
+
+The main habit in this module is to separate meaning from representation. Software tells us how a value is stored. We still have to decide what the value means.
+
+[pause=1.0]
+
+Slide 3: Learning objectives
+
+By the end of the module, you should be able to talk about a dataset at several different levels.
+
+[pause=0.7]
+
+You should be able to describe how the dataset is organized, evaluate whether the data is fit for purpose, classify variables by measurement scale, and distinguish counts from measurements.
+
+[pause=0.7]
+
+You should also be able to explain why a particular chart, summary, encoding, or storage type is appropriate.
+
+[pause=0.7]
+
+The final goal is not memorizing definitions. It is being able to justify an analytical choice in plain language.
+
+[pause=1.0]
+
+Slide 4: Learning map
+
+Here is the learning path.
+
+[pause=0.7]
+
+We first classify the organization of the dataset. Then we evaluate data quality.
+
+[pause=0.7]
+
+Next, we classify individual variables by meaning. Only after those conceptual decisions do we choose summaries, visualizations, encodings, pandas dtypes, or database storage types.
+
+[pause=0.7]
+
+This order is intentional. Technical preprocessing should follow the conceptual decision rather than replacing it.
+
+[pause=0.7]
+
+If you ever feel unsure later in the module, return to this sequence: organization, quality, meaning, analytical treatment, and implementation.
+
+[pause=1.0]
+
+Slide 5: Four meanings of data type
+
+The phrase data type is often used too loosely.
+
+[pause=0.7]
+
+In this course, we separate four different questions.
+
+[pause=0.7]
+
+Data organization describes the structure of the dataset as a whole. Measurement scale describes the meaning of one variable. Numeric behavior asks whether a quantitative value comes from counting or measuring. Technical representation describes how software stores the value.
+
+[pause=0.7]
+
+A single variable can have answers at several layers. For example, temperature may appear in a structured table, be interval scale, represent a continuous phenomenon, and be stored as a floating-point number.
+
+[pause=0.8]
+
+Keeping these layers separate prevents many common mistakes.
+
+[pause=1.0]
+
+Slide 6: Data organization layer
+
+The first layer is the organization of the dataset.
+
+[pause=0.7]
+
+Structured data follows a predefined schema. Semi-structured data has labels or keys but allows more flexibility and nesting. Unstructured data does not naturally arrive as a table.
+
+[pause=0.8]
+
+This classification describes the dataset container or record format. It does not tell us whether the values are clean, whether they are numeric, or whether they are appropriate for a particular analysis.
+
+[pause=0.7]
+
+That distinction will matter throughout the module.
+
+[pause=1.0]
+
+Slide 7: Measurement scale layer
+
+The second layer is measurement scale.
+
+[pause=0.7]
+
+Here we are no longer asking how the dataset is organized. We are asking what the values of one variable mean.
+
+[pause=0.7]
+
+Nominal and ordinal are categorical scales. Interval and ratio are numeric scales.
+
+[pause=0.7]
+
+The important differences are whether order exists, whether differences are meaningful and equal, and whether zero represents the absence of the measured quantity.
+
+[pause=0.7]
+
+Those properties determine which arithmetic operations and summaries are defensible.
+
+[pause=1.0]
+
+Slide 8: Numeric behavior layer
+
+The third layer applies to numeric concepts.
+
+[pause=0.7]
+
+Discrete variables usually arise from counting events or units. Continuous variables arise from measurement and can conceptually take values within a range.
+
+[pause=0.7]
+
+Do not classify only by looking at the stored dtype.
+
+[pause=0.7]
+
+Heart rate may be stored as an integer because the device reports whole beats per minute. That does not automatically mean the physiological phenomenon is a discrete count in the same sense as number of visits.
+
+[pause=0.7]
+
+Classify the underlying concept first, then note the recording precision separately.
+
+[pause=1.0]
+
+Slide 9: Technical representation layer
+
+The fourth layer is technical representation.
+
+[pause=0.7]
+
+Software needs a physical or logical representation for each value. pandas uses dtypes. Files use formats such as CSV or JSON. Databases use column types such as text, integer, date, or numeric.
+
+[pause=0.7]
+
+Those choices matter, but they do not define analytical meaning by themselves.
+
+[pause=0.7]
+
+An identifier can be stored as an integer and still be nominal. An ordinal category can be stored as text. A date may arrive as a string and still represent time.
+
+[pause=0.7]
+
+Implementation should preserve and support the meaning we already identified.
+
+[pause=1.0]
+
+Slide 10: Same value different meaning
+
+This table shows why software storage does not tell the whole story.
+
+[pause=0.7]
+
+ZIP codes may contain only digits, but they are labels. Satisfaction values are numeric codes, but they primarily express order. ER visits are true counts. Celsius temperature is numeric, but its zero point is arbitrary.
+
+[pause=0.8]
+
+The analytical meaning comes from the concept and the measurement process, not from whether a column happens to be stored as integer or float.
+
+[pause=0.7]
+
+Whenever you see a numeric-looking column, ask what operations make sense in the real world before you calculate a mean or ratio.
+
+[pause=1.0]
+
+Slide 11: Running case
+
+We will reuse a small patient-encounter example so each new concept connects to something familiar.
+
+[pause=0.8]
+
+Patient ID is an identifier. Triage level is an ordered category. Temperature is a measurement. ER visits is a count. Device payload is nested JSON. Clinical note is free text.
+
+[pause=0.7]
+
+Notice that these examples mix several layers.
+
+[pause=0.8]
+
+The JSON question is about organization. The triage question is about measurement scale. The ER-visits question is about numeric behavior.
+
+[pause=0.7]
+
+Learning to identify which question you are answering is one of the main goals of the module.
+
+[pause=1.0]
+
+Slide 12: Warm-up
+
+Before moving forward, make a prediction.
+
+[pause=0.7]
+
+Which variable is clearly nominal? Which variable has a meaningful order? Which variable is created by counting events? And which fields cannot immediately be treated like ordinary table columns?
+
+[pause=0.7]
+
+Try to answer without opening the explanation.
+
+[pause=0.7]
+
+This warm-up is not graded. It is meant to make you actively classify the variables before I explain the framework in more detail.
+
+[pause=1.0]
+
+Slide 13: Section: Data organization
+
+We are starting Part 1: how data is organized.
+
+[pause=0.7]
+
+The key question here is about the shape and structure of the dataset as a whole.
+
+[pause=0.7]
+
+We will compare structured, semi-structured, and unstructured data, then connect those forms to the types of work an informatics professional may need to do before analysis.
+
+[pause=1.0]
+
+Slide 14: Structured data
+
+Structured data follows a predefined arrangement.
+
+[pause=0.7]
+
+A relational table is the clearest example. Each row follows the same column structure, and the system can often enforce data types and constraints.
+
+[pause=0.8]
+
+CSV and Parquet files can also contain structured data even though they are not databases.
+
+[pause=0.7]
+
+Structured does not mean perfect. A structured table can still contain missing values, inconsistent labels, duplicates, or implausible measurements.
+
+[pause=0.8]
+
+The word structured only describes organization.
+
+[pause=1.0]
+
+Slide 15: Structured example
+
+Here is a simple structured example.
+
+[pause=0.8]
+
+Every patient record follows the same columns. That makes the table easy to scan, validate, and query.
+
+[pause=0.7]
+
+But look inside the table. Patient ID is an identifier. Date of birth is temporal. Sex and blood type are categorical. ZIP code looks numeric but should usually be treated as a label.
+
+[pause=0.8]
+
+This is another reminder that dataset organization and variable meaning are separate questions.
+
+[pause=1.0]
+
+Slide 16: Semi-structured data
+
+Semi-structured data has some organization, but the schema is more flexible.
+
+[pause=0.7]
+
+JSON is a common example. A record can have named fields and nested objects, yet a second record may add a new key or omit an existing one.
+
+[pause=0.8]
+
+That flexibility is useful for APIs, devices, logs, and rapidly changing applications.
+
+[pause=0.7]
+
+The tradeoff is that analysts may need to flatten nested values, handle optional fields, and manage schema changes before the data behaves like an ordinary table.
+
+[pause=1.0]
+
+Slide 17: JSON example
+
+This JSON record is self-describing because the keys tell us what each value represents.
+
+[pause=0.7]
+
+But it is not a flat table. Heart rate is nested inside metrics. Latitude and longitude are nested inside location.
+
+[pause=0.7]
+
+A second record may contain oxygen saturation, while another may omit sleep hours.
+
+[pause=0.7]
+
+Before analysis, we often normalize or flatten the JSON into columns.
+
+[pause=0.7]
+
+The important point is that flexible structure creates a schema-management task. We still need to decide which fields matter, how to handle missing keys, and what each value means.
+
+[pause=1.0]
+
+Slide 18: Unstructured data
+
+Unstructured data does not arrive with a fixed tabular schema.
+
+[pause=0.7]
+
+A clinical note contains meaningful information, but the meaning is embedded in natural language. An image contains visual information. Audio contains signals over time.
+
+[pause=0.7]
+
+To analyze these sources, we usually need an extraction step.
+
+[pause=0.7]
+
+For text, that may involve NLP. For images, computer vision. For scanned documents, OCR. For audio, speech or signal processing.
+
+[pause=0.7]
+
+After extraction, some of the derived information may become structured features that can be analyzed alongside ordinary tables.
+
+[pause=1.0]
+
+Slide 19: Organization comparison
+
+This comparison summarizes the three forms.
+
+[pause=0.7]
+
+Structured data gives us the clearest predefined schema. Semi-structured data contains labels but allows flexibility. Unstructured data requires more interpretation before it can become analytical features.
+
+[pause=0.8]
+
+Real projects often combine all three.
+
+[pause=0.7]
+
+A health analytics project might use a structured encounter table, JSON device data, and free-text notes at the same time.
+
+[pause=0.7]
+
+The challenge is not choosing one format. It is integrating information from different forms while preserving meaning and quality.
+
+[pause=1.0]
+
+Slide 20: The 3Vs
+
+You may hear modern data described using the three Vs: volume, velocity, and variety.
+
+[pause=0.7]
+
+Volume is about scale. Velocity is about how quickly data arrives or must be processed. Variety is about the mixture of data forms.
+
+[pause=0.7]
+
+Our focus in this section is mostly variety.
+
+[pause=0.7]
+
+An informatics professional may need to integrate relational tables, JSON records, documents, and sensor streams. Understanding the organizational form tells you what kind of preparation is needed before you even begin statistical analysis.
+
+[pause=1.0]
+
+Slide 21: Section: Data quality
+
+Now we move to Part 2: data quality.
+
+[pause=0.7]
+
+A dataset can be perfectly structured and still be poor quality.
+
+[pause=0.7]
+
+The question is not whether the data is absolutely good or bad. The question is whether it is fit for the decision or analysis we want to support.
+
+[pause=0.7]
+
+We will use six practical quality dimensions and a simple workflow for investigating problems.
+
+[pause=1.0]
+
+Slide 22: Why quality comes first
+
+Data quality should be assessed before sophisticated analysis.
+
+[pause=0.7]
+
+If duplicates inflate counts, a better visualization does not solve the problem. If a real-time dashboard uses data that is one month old, a more advanced model does not make the dashboard timely.
+
+[pause=0.7]
+
+Quality work is not always about deleting bad rows.
+
+[pause=0.7]
+
+Sometimes we correct a value. Sometimes we flag it. Sometimes we keep it but document uncertainty. Sometimes we exclude it for one analysis but retain it for another.
+
+[pause=0.7]
+
+The correct response depends on the intended use and the evidence available.
+
+[pause=1.0]
+
+Slide 23: Six quality dimensions
+
+These six dimensions give us a practical checklist.
+
+[pause=0.7]
+
+Accuracy asks whether the value reflects reality. Completeness asks whether required information is present. Consistency asks whether the same concept is represented in compatible ways.
+
+[pause=0.7]
+
+Timeliness asks whether the data is current enough for the task. Uniqueness looks for unintended duplicate representations. Validity checks whether a value conforms to the documented domain or rule.
+
+[pause=0.7]
+
+These dimensions can overlap. A blank required field is incomplete and may also be invalid.
+
+[pause=0.7]
+
+Use the dimensions to organize your investigation rather than treating them as perfectly separate boxes.
+
+[pause=1.0]
+
+Slide 24: Accuracy
+
+Accuracy is about correspondence with reality.
+
+[pause=0.7]
+
+A value of five hundred kilograms may be suspicious, but we should not automatically replace it without investigation.
+
+[pause=0.7]
+
+Maybe the units were entered incorrectly. Maybe a decimal point was misplaced. Maybe the patient really has an extreme value.
+
+[pause=0.7]
+
+Accuracy often requires more than a simple rule. It may require comparison with the source system, domain knowledge, or another measurement.
+
+[pause=0.7]
+
+Automated rules are useful for flagging records. They do not always tell us the final truth.
+
+[pause=1.0]
+
+Slide 25: Completeness
+
+Completeness measures whether the information needed for the intended use is present.
+
+[pause=0.7]
+
+The percentage of missing values alone does not tell the whole story.
+
+[pause=0.7]
+
+An optional email field can be incomplete without breaking an analysis. A missing patient identifier may make a record impossible to link safely.
+
+[pause=0.7]
+
+You should examine missingness by field, by source, by time, and sometimes by subgroup.
+
+[pause=0.7]
+
+Also ask why data is missing. Random missingness and systematic missingness can have very different analytical consequences.
+
+[pause=1.0]
+
+Slide 26: Consistency
+
+Consistency is about representing the same concept in compatible ways.
+
+[pause=0.7]
+
+Different date formats are a simple example. Category labels may also vary because of capitalization, abbreviations, or source-system conventions.
+
+[pause=0.8]
+
+Unit inconsistency can be especially dangerous. A number without a clear unit can look valid while representing something completely different.
+
+[pause=0.7]
+
+Consistency work often includes standardization, shared definitions, mapping tables, and referential integrity.
+
+[pause=0.7]
+
+The goal is not just making values look the same. The goal is making sure they mean the same thing after standardization.
+
+[pause=1.0]
+
+Slide 27: Timeliness
+
+Timeliness is about whether data is current enough for the task.
+
+[pause=0.7]
+
+A monthly report may be perfectly acceptable when refreshed once per month. An emergency operations dashboard may require updates within minutes.
+
+[pause=0.7]
+
+That means timeliness is not a single universal threshold.
+
+[pause=0.7]
+
+Document source timestamps, load times, refresh schedules, and expected latency.
+
+[pause=0.7]
+
+When a user sees a dashboard, they should be able to understand how current the information actually is.
+
+[pause=1.0]
+
+Slide 28: Uniqueness
+
+Uniqueness asks whether an entity appears the intended number of times.
+
+[pause=0.7]
+
+An exact duplicate row is relatively easy to detect.
+
+[pause=0.7]
+
+Entity duplication is harder. The same patient may appear under different identifiers because two systems created separate records.
+
+[pause=0.7]
+
+That problem may require entity resolution using names, dates, addresses, or other identifiers.
+
+[pause=0.7]
+
+Database UNIQUE constraints can prevent some duplicate keys, but they cannot solve every real-world identity problem.
+
+[pause=0.7]
+
+Always distinguish duplicate records from duplicate representations of the same entity.
+
+[pause=1.0]
+
+Slide 29: Validity
+
+Validity asks whether a value conforms to the allowed domain or rule.
+
+[pause=0.7]
+
+This is often easier to automate than accuracy.
+
+[pause=0.7]
+
+We can test whether a status belongs to an approved list, whether a count is nonnegative, or whether a date follows an expected format.
+
+[pause=0.7]
+
+But the rule itself must be justified.
+
+[pause=0.7]
+
+A temperature range of thirty to forty-five degrees Celsius may be useful as a teaching validation rule, but a real clinical system would need domain-approved thresholds and careful handling of edge cases.
+
+[pause=0.8]
+
+Validity rules should be explicit, documented, and reviewed.
+
+[pause=1.0]
+
+Slide 30: Quality workflow
+
+A practical quality workflow has five steps.
+
+[pause=0.7]
+
+First, profile the data. Understand distributions, missingness, ranges, categories, and uniqueness.
+
+[pause=0.7]
+
+Second, detect potential problems. Third, investigate the source and context rather than immediately changing values.
+
+[pause=0.7]
+
+Fourth, decide what to do. You may correct, retain, exclude, impute, or flag a record.
+
+[pause=0.7]
+
+Finally, document the decision.
+
+[pause=0.7]
+
+That last step matters because cleaning changes the analytical dataset. Future users should be able to understand what rules were applied and what uncertainty remains.
+
+[pause=1.0]
+
+Slide 31: Heart-rate scenario
+
+The heart-rate scenario shows why unusual does not always mean wrong.
+
+[pause=0.7]
+
+A value of minus one is clearly incompatible with an ordinary heart-rate measurement and should be flagged.
+
+[pause=0.7]
+
+A blank value is a completeness issue.
+
+[pause=0.7]
+
+A value of two hundred is extreme, but it may be physiologically possible in some contexts. That means we investigate before deleting it.
+
+[pause=0.7]
+
+Quality rules should help us find records that deserve attention. They should not replace domain reasoning.
+
+[pause=1.0]
+
+Slide 32: Quality decisions
+
+After detecting a quality issue, we still need a decision.
+
+[pause=0.7]
+
+Correction is appropriate when we have evidence for the correct value. Exclusion may be appropriate for one analysis but should not mean silently destroying the source record.
+
+[pause=0.7]
+
+Imputation can be useful, but it introduces assumptions and should be justified.
+
+[pause=0.7]
+
+Sometimes the best choice is simply to retain the value and attach a quality flag.
+
+[pause=0.7]
+
+Good data preparation is transparent. The goal is not to make the dataset look perfect. The goal is to make analytical limitations explicit and manageable.
+
+[pause=1.0]
+
+Slide 33: Section: Variable meaning
+
+We are moving to Part 3: measurement meaning.
+
+[pause=0.7]
+
+Now we focus on individual variables rather than the organization of the dataset.
+
+[pause=0.7]
+
+The central question is: what operations are meaningful for this variable?
+
+[pause=0.7]
+
+Measurement scales give us a framework for answering that question.
+
+[pause=1.0]
+
+Slide 34: Categorical or numeric
+
+The first split is categorical versus numeric.
+
+[pause=0.7]
+
+Categorical variables represent labels or ordered levels. Nominal and ordinal variables live on this side.
+
+[pause=0.8]
+
+Numeric variables represent quantities. Interval and ratio variables live on this side.
+
+[pause=0.7]
+
+Do not decide only from the symbols in the file.
+
+[pause=0.7]
+
+A ZIP code contains digits but is categorical. A satisfaction score contains numbers but is usually ordinal.
+
+[pause=0.7]
+
+Start with the meaning of the values.
+
+[pause=1.0]
+
+Slide 35: Measurement decision tree
+
+This decision tree gives you a simple reasoning process.
+
+[pause=0.7]
+
+First ask whether the values are labels or quantities.
+
+[pause=0.8]
+
+If they are labels, ask whether a meaningful order exists. No order suggests nominal. Meaningful order suggests ordinal.
+
+[pause=0.8]
+
+If they are quantities, ask whether the scale has a meaningful true zero. If not, interval may be appropriate. If yes, ratio may be appropriate.
+
+[pause=0.7]
+
+This framework works well for many common variables, but domain context still matters.
+
+[pause=0.7]
+
+When you are unsure, explain what arithmetic or comparison would be meaningful in the real world.
+
+[pause=1.0]
+
+Slide 36: Nominal scale
+
+Nominal variables distinguish categories without placing them in an inherent order.
+
+[pause=0.7]
+
+Blood types are different, but one blood type is not greater than another.
+
+[pause=0.7]
+
+ZIP codes and patient IDs are common traps because they may contain digits. Those digits identify categories or records rather than measuring an amount.
+
+[pause=0.7]
+
+Counts and proportions are natural summaries for nominal variables.
+
+[pause=0.7]
+
+A bar chart is often a good starting visualization because bar length represents how common each category is without implying a numeric distance between category labels.
+
+[pause=1.0]
+
+Slide 37: Nominal visualization
+
+Here is an example of a nominal-variable visualization.
+
+[pause=0.8]
+
+The bars show counts for blood-type categories. The length of the bars is quantitative, but the category labels themselves are not measured on a numeric scale.
+
+[pause=0.8]
+
+We can reorder the bars by frequency or use a conventional category order without changing the meaning of the variable.
+
+[pause=0.7]
+
+The chart helps compare prevalence without pretending that O minus A or B divided by AB is meaningful.
+
+[pause=1.0]
+
+Slide 38: Ordinal scale
+
+Ordinal variables have a meaningful order.
+
+[pause=0.7]
+
+Urgent is more severe than non-urgent, and emergent is more severe than urgent.
+
+[pause=0.7]
+
+But the distance between those levels is not necessarily equal.
+
+[pause=0.7]
+
+That is why assigning codes zero, one, and two can be convenient for storage while still requiring care in analysis.
+
+[pause=0.7]
+
+Medians, percentiles, and ordered category displays are often useful. The key is to preserve rank without automatically inventing equal numerical spacing.
+
+[pause=1.0]
+
+Slide 39: Likert caution
+
+Likert-style responses are a useful example of ordinal data.
+
+[pause=0.8]
+
+A response of five is higher than a response of four. But we cannot automatically assume that the difference between one and two is psychologically identical to the difference between four and five.
+
+[pause=0.7]
+
+Means are commonly reported in practice, especially for multi-item scales, but the decision should be justified.
+
+[pause=0.7]
+
+For a single coarse item, medians, distributions, and rank-based methods may provide a more defensible description, especially when responses are skewed.
+
+[pause=1.0]
+
+Slide 40: Interval scale
+
+Interval scales support meaningful differences.
+
+[pause=0.7]
+
+A change of five degrees Celsius has the same size anywhere on the scale.
+
+[pause=0.7]
+
+But zero Celsius is not the absence of temperature.
+
+[pause=0.7]
+
+Because the zero point is arbitrary, ratios are not meaningful in the same way they are for a true ratio scale.
+
+[pause=0.7]
+
+This is why twenty degrees Celsius should not be described as twice as hot as ten degrees Celsius.
+
+[pause=1.0]
+
+Slide 41: Ratio scale
+
+Ratio scales have equal differences and a meaningful zero.
+
+[pause=0.7]
+
+Zero ER visits means no visits. Zero elapsed seconds means no elapsed time.
+
+[pause=0.7]
+
+Because the zero point represents absence, ratios can be meaningful when the context supports them.
+
+[pause=0.7]
+
+Four visits are twice two visits. Ten kilograms is twice five kilograms.
+
+[pause=0.7]
+
+Ratio scales support the broadest range of arithmetic operations, but you still need to consider distribution, units, and whether a particular summary is appropriate.
+
+[pause=1.0]
+
+Slide 42: Interval vs ratio
+
+Interval and ratio variables can look very similar because both are numeric and have meaningful differences.
+
+[pause=0.7]
+
+The key difference is the zero point.
+
+[pause=0.7]
+
+Celsius zero is a reference point, not the absence of temperature. Zero visits means no visits occurred.
+
+[pause=0.7]
+
+That difference determines whether ratio statements are meaningful.
+
+[pause=0.7]
+
+When classifying a numeric variable, ask what zero means in the real-world measurement process.
+
+[pause=1.0]
+
+Slide 43: Discrete counts
+
+Discrete numeric variables often come from counting.
+
+[pause=0.7]
+
+A patient can have zero, one, two, or three emergency visits.
+
+[pause=0.7]
+
+For the individual count, values such as two point four visits usually do not make sense.
+
+[pause=0.7]
+
+Counts are usually ratio-scale variables because zero means none.
+
+[pause=0.7]
+
+They are often skewed and may contain many zeros, so later analytical methods should respect that distribution rather than assuming every numeric variable behaves like a symmetric continuous measurement.
+
+[pause=1.0]
+
+Slide 44: Continuous measurements
+
+Continuous variables arise from measurement.
+
+[pause=0.7]
+
+Temperature, duration, height, and laboratory values are common examples.
+
+[pause=0.8]
+
+A device may report temperature to one decimal place or heart rate to a whole number, but that recording precision does not automatically change the underlying phenomenon into a discrete count.
+
+[pause=0.7]
+
+Think about how the value is generated.
+
+[pause=0.7]
+
+Was it counted as separate events, or measured along a scale?
+
+[pause=0.7]
+
+That conceptual distinction can matter later when choosing distributions, models, and transformations.
+
+[pause=1.0]
+
+Slide 45: Discrete vs continuous
+
+This comparison is simple but important.
+
+[pause=0.7]
+
+Discrete variables come from counting. Continuous variables come from measurement.
+
+[pause=0.7]
+
+Storage does not always reveal the difference.
+
+[pause=0.7]
+
+A continuous variable may be rounded to an integer. A count may be stored as a floating-point value because of software defaults.
+
+[pause=0.7]
+
+Classify the concept first.
+
+[pause=0.7]
+
+Ask how the observation was generated in the real world.
+
+[pause=1.0]
+
+Slide 46: Classification traps
+
+These classification traps are worth reviewing carefully.
+
+[pause=0.7]
+
+The visual appearance of a value often tempts us to classify it too quickly.
+
+[pause=0.7]
+
+ZIP code and patient ID are labels. Satisfaction is ordered but not necessarily equally spaced. Heart rate may be stored as an integer while representing a measured phenomenon.
+
+[pause=0.8]
+
+ER visits is a true count. Celsius temperature is interval rather than ratio.
+
+[pause=0.7]
+
+When in doubt, describe the variable in a sentence and ask what mathematical operations would make real-world sense.
+
+[pause=1.0]
+
+Slide 47: Section: From type to decision
+
+Now we move from classification to decision-making.
+
+[pause=0.7]
+
+Knowing that a variable is nominal, ordinal, interval, or ratio should change what we do with it.
+
+[pause=0.7]
+
+We will connect measurement meaning to summaries, visualizations, and encoding choices.
+
+[pause=0.7]
+
+The goal is not to create rigid rules. It is to make choices that can be defended based on the variable's meaning.
+
+[pause=1.0]
+
+Slide 48: Decision guide
+
+This decision guide connects classification to practical choices.
+
+[pause=0.7]
+
+Nominal variables naturally support counts and percentages. Ordinal variables add order, so medians and ordered displays can be useful.
+
+[pause=0.7]
+
+Continuous numeric variables often use histograms, box plots, means, or medians depending on distribution.
+
+[pause=0.7]
+
+Counts deserve special attention because they are numeric but may be heavily skewed or contain many zeros.
+
+[pause=0.7]
+
+Use this guide as a starting point. Distribution, study design, and analytical goals still matter.
+
+[pause=1.0]
+
+Slide 49: Visualization guide
+
+Visualization should respect the structure of the variable.
+
+[pause=0.7]
+
+Bar charts are natural for nominal categories. Ordered bars preserve the sequence of ordinal categories.
+
+[pause=0.7]
+
+Histograms show the distribution of continuous numeric variables. Scatterplots show relationships between two numeric variables.
+
+[pause=0.7]
+
+A chart should make the intended comparison easier to see without implying structure that the data does not contain.
+
+[pause=0.7]
+
+For example, connecting unordered categories with a line can accidentally suggest continuity or progression where none exists.
+
+[pause=1.0]
+
+Slide 50: Summary statistics guide
+
+Choosing a summary is also a conceptual decision.
+
+[pause=0.7]
+
+Counts and proportions work naturally for categories.
+
+[pause=0.7]
+
+Median and interquartile range are robust summaries for skewed numeric data and can also be useful with ordinal variables.
+
+[pause=0.7]
+
+Mean and standard deviation can be informative for numeric variables when the mean is meaningful and the distribution supports that description.
+
+[pause=0.7]
+
+Do not apply the same summary mechanically to every column in a dataframe.
+
+[pause=0.7]
+
+A data dictionary should help explain what each variable represents before the summary is chosen.
+
+[pause=1.0]
+
+Slide 51: Membership tier
+
+Membership tier is an ordered category, but there is more than one way to represent it technically.
+
+[pause=0.7]
+
+An ordinal code preserves the rank from Bronze through Platinum.
+
+[pause=0.7]
+
+A one-hot representation creates separate indicators and avoids representing the category as a single numeric distance.
+
+[pause=0.7]
+
+Neither representation changes the underlying business meaning.
+
+[pause=0.7]
+
+The right choice depends on what the analytical method will infer from the values.
+
+[pause=1.0]
+
+Slide 52: One-hot encoding
+
+One-hot encoding creates indicator columns.
+
+[pause=0.7]
+
+With Bronze as the reference category, Silver, Gold, and Platinum each receive their own column. Bronze is represented by zeros across those generated indicators.
+
+[pause=0.7]
+
+This is a common choice for nominal variables because a single integer code could cause some models to infer a false order or distance.
+
+[pause=0.7]
+
+One-hot encoding can also be used for ordered categories when you do not want the model to assume a simple linear spacing between ranks.
+
+[pause=0.7]
+
+The cost is that variables with many categories can create many columns.
+
+[pause=1.0]
+
+Slide 53: Ordinal encoding
+
+Ordinal encoding maps ordered categories to ordered numbers.
+
+[pause=0.7]
+
+The advantage is that the representation is compact and preserves rank.
+
+[pause=0.7]
+
+The caution is that some analytical methods may treat the codes as if the distance from Bronze to Silver is the same as the distance from Gold to Platinum.
+
+[pause=0.7]
+
+That assumption may or may not be appropriate.
+
+[pause=0.7]
+
+Whenever you use ordinal codes, document the intended order and understand how the downstream model will interpret the values.
+
+[pause=1.0]
+
+Slide 54: Why integer codes can mislead
+
+Integer codes are convenient, but they can introduce unintended meaning.
+
+[pause=0.7]
+
+If mobile, tablet, and desktop are nominal categories, assigning zero, one, and two creates a numerical order that does not exist conceptually.
+
+[pause=0.7]
+
+For membership tiers, a numeric order is more defensible because the business defines a rank.
+
+[pause=0.7]
+
+Even then, equal numeric spacing is an additional assumption.
+
+[pause=0.7]
+
+Before encoding a category with numbers, ask what the downstream method might infer from those numbers.
+
+[pause=1.0]
+
+Slide 55: Data leakage
+
+One important idea to look ahead to is data leakage.
+
+[pause=0.7]
+
+Suppose we standardize numeric variables using the mean and standard deviation of the full dataset before evaluating a predictive model.
+
+[pause=0.7]
+
+Information from the validation or test set has influenced the transformation.
+
+[pause=0.7]
+
+A safer workflow fits encoders, scalers, and other learned preprocessing steps on the training data, then applies those fitted transformations to validation and test data.
+
+[pause=0.7]
+
+Module 1 is not a machine-learning module, but this habit is worth establishing early because preprocessing choices can affect the fairness of model evaluation.
+
+[pause=1.0]
+
+Slide 56: Section: Guided Python lab
+
+Now we move into the guided Python lab.
+
+[pause=0.8]
+
+The goal is not advanced programming.
+
+[pause=0.7]
+
+We will use short code blocks to show how the conceptual decisions become technical representations.
+
+[pause=0.7]
+
+The most important rule is to inspect and classify the variables before transforming them.
+
+[pause=1.0]
+
+Slide 57: Create the dataset
+
+The first lab step creates a small dataframe.
+
+[pause=0.8]
+
+Read the variable names before looking at the code details.
+
+[pause=0.7]
+
+Patient ID is an identifier. Sex is a nominal category as defined in this teaching dataset. Triage level and membership tier are ordered categories. Temperature is an interval measurement. ER visits is a ratio count.
+
+[pause=0.7]
+
+Run this code in Jupyter, Colab, or VS Code.
+
+[pause=0.8]
+
+The point is to create a small dataset that is easy to inspect manually while we practice representation choices.
+
+[pause=1.0]
+
+Slide 58: Inspect before transforming
+
+Before changing dtypes or encoding categories, inspect the dataframe.
+
+[pause=0.7]
+
+Head gives a quick look at sample rows. Info shows the current technical dtypes and non-null counts. Missingness counts reveal obvious completeness issues. Unique-value counts help identify possible categorical variables or suspicious identifiers.
+
+[pause=0.7]
+
+These commands do not tell us the final analytical meaning.
+
+[pause=0.7]
+
+They give us evidence that we combine with domain knowledge.
+
+[pause=0.7]
+
+The sequence is important: inspect first, classify conceptually, then transform.
+
+[pause=1.0]
+
+Slide 59: Assign pandas dtypes
+
+Now we assign more meaningful pandas dtypes.
+
+[pause=0.7]
+
+The nominal sex variable becomes a category. Triage and membership tier use ordered categorical dtypes with explicit category order.
+
+[pause=0.7]
+
+Patient ID becomes a string because it identifies a record rather than measuring a quantity.
+
+[pause=0.7]
+
+The technical dtype is now better aligned with the conceptual meaning.
+
+[pause=0.7]
+
+That does not mean the dtype contains the full analytical interpretation. We should still document what the variable means and why the order exists.
+
+[pause=1.0]
+
+Slide 60: Encode categories
+
+This code uses two different encoders because the variables have different meanings.
+
+[pause=0.7]
+
+The nominal variable uses one-hot encoding. The ordered membership tier uses an ordinal encoder with the category sequence written explicitly.
+
+[pause=0.7]
+
+That explicit category list is important.
+
+[pause=0.7]
+
+Software should not guess that alphabetical order is the intended business order.
+
+[pause=0.7]
+
+The conceptual classification is deciding the preprocessing pattern.
+
+[pause=1.0]
+
+Slide 61: Standardize selected numeric features
+
+Standardization changes the numerical scale used by software.
+
+[pause=0.7]
+
+It does not change the conceptual measurement scale.
+
+[pause=0.7]
+
+Temperature remains an interval measurement. ER visits remains a ratio count, even if both are transformed into z-scores for a model that is sensitive to feature scale.
+
+[pause=0.7]
+
+In a real predictive workflow, fit the scaler only on training data.
+
+[pause=0.7]
+
+Then apply that fitted scaler to validation and test data to avoid leakage.
+
+[pause=1.0]
+
+Slide 62: Flatten JSON
+
+This example uses pandas json_normalize to flatten nested JSON.
+
+[pause=0.8]
+
+Nested keys become column names such as metrics heart rate and metrics steps.
+
+[pause=0.7]
+
+Notice what happens when a key appears in only one record. The other row receives a missing value.
+
+[pause=0.7]
+
+Flattening solves the structural problem, but it creates new quality and meaning questions.
+
+[pause=0.7]
+
+What does oxygen saturation represent? Is it a proportion or percentage? Are the units documented? Is missingness expected?
+
+[pause=0.7]
+
+Technical normalization is only the beginning of analytical understanding.
+
+[pause=1.0]
+
+Slide 63: Add quality checks
+
+The final lab step adds basic quality checks.
+
+[pause=0.8]
+
+We inspect missingness, verify that patient IDs are unique, test simple validity ranges, and review categorical frequencies.
+
+[pause=0.7]
+
+Assertions are useful for teaching because they make a rule explicit.
+
+[pause=0.7]
+
+In production systems, we usually need more robust handling so a pipeline can record the problem, report affected rows, and decide whether processing should continue.
+
+[pause=0.7]
+
+The important idea is that a quality rule should be written down in a form that can be checked consistently.
+
+[pause=1.0]
+
+Slide 64: Python lab takeaway
+
+The Python lab follows one consistent logic.
+
+[pause=0.8]
+
+First define the conceptual meaning. Then evaluate quality. Then choose a technical dtype and any necessary encoding or scaling. Finally perform the analysis.
+
+[pause=0.7]
+
+The temptation is to start from what pandas reports and let the software decide.
+
+[pause=0.7]
+
+Instead, use software to implement a decision you can explain.
+
+[pause=0.7]
+
+That habit will become even more important later when preprocessing becomes more complex.
+
+[pause=1.0]
+
+Slide 65: Section: Database storage
+
+Part 6 briefly connects the concepts to database storage.
+
+[pause=0.7]
+
+This is only a preview because Module 2 focuses much more deeply on relational database design.
+
+[pause=0.7]
+
+The central idea is that analytical meaning influences our choices, but storage also depends on precision, application requirements, and database behavior.
+
+[pause=1.0]
+
+Slide 66: Storage choices
+
+Storage type is a practical engineering decision.
+
+[pause=0.7]
+
+Identifiers may use text, UUID, or integer keys depending on the system. Counts usually use integer types. Currency often uses exact numeric types rather than floating point.
+
+[pause=0.7]
+
+Dates and event times should use dedicated temporal types instead of arbitrary text when possible.
+
+[pause=0.7]
+
+The important point is that storage and measurement scale are related but not identical.
+
+[pause=0.7]
+
+A nominal identifier can be stored as a number. A ratio-scale measurement can be stored as text in a poorly designed file.
+
+[pause=0.7]
+
+Good implementation tries to preserve meaning and support appropriate validation.
+
+[pause=1.0]
+
+Slide 67: SQL constraint preview
+
+This PostgreSQL preview shows how storage choices and quality rules can meet.
+
+[pause=0.7]
+
+Patient ID is required text. Encounter date uses a date type. Triage level is text with a controlled list. Temperature receives a teaching range check. ER visits must be nonnegative. Total charge uses exact numeric storage and cannot be negative.
+
+[pause=0.7]
+
+Run the valid example first.
+
+[pause=0.8]
+
+Then try changing ER visits to negative one or using an unapproved triage label.
+
+[pause=0.8]
+
+PostgreSQL should reject the invalid row. That is an example of moving a documented validity rule into the database itself.
+
+[pause=0.8]
+
+Module 2 will develop these database ideas in much more detail.
+
+[pause=1.0]
+
+Slide 68: Section: Applied cases
+
+Now we apply the framework to two realistic examples.
+
+[pause=0.8]
+
+The goal is not just to name the measurement scale.
+
+[pause=0.7]
+
+For each case, connect classification to a practical analytical choice: a summary, a visualization, an encoding, or a storage decision.
+
+[pause=0.8]
+
+Try the task first before opening the reasoning on the next slide.
+
+[pause=1.0]
+
+Slide 69: Healthcare case
+
+Case A uses healthcare encounter variables.
+
+[pause=0.8]
+
+Pause before moving on and classify them.
+
+[pause=0.7]
+
+Diagnosis code is an identifier-like category. Pain score has order. Celsius temperature has meaningful differences. Age has a meaningful zero. Comorbidity count is created by counting. Length of stay measures elapsed time.
+
+[pause=0.7]
+
+Also choose one visualization for pain score and one for length of stay.
+
+[pause=0.7]
+
+Finally, think about how a diagnosis code might be represented for a model without inventing a false numeric order.
+
+[pause=1.0]
+
+Slide 70: Healthcare case reasoning
+
+Here is one defensible direction for the healthcare case.
+
+[pause=0.8]
+
+Diagnosis code is nominal. Pain score is ordinal. Celsius temperature is interval. Age is ratio. Comorbidity count is a discrete ratio count. Length of stay represents measured time and is usually treated as a ratio measurement.
+
+[pause=0.7]
+
+For pain score, an ordered bar chart keeps the sequence visible.
+
+[pause=0.7]
+
+For length of stay, a histogram or box plot can show skew and outliers.
+
+[pause=0.7]
+
+Diagnosis codes are usually treated categorically rather than converted to arbitrary integers and interpreted as quantities.
+
+[pause=1.0]
+
+Slide 71: E-commerce case
+
+Case B shifts to e-commerce activity.
+
+[pause=0.8]
+
+Classify device type, membership tier, session duration, weekday, purchases in thirty days, and revenue.
+
+[pause=0.7]
+
+Think carefully about weekday. The days have a calendar sequence, but for many analytical tasks weekday is treated as a nominal cyclical category rather than a simple ordinal scale.
+
+[pause=0.7]
+
+Choose encodings for device type and membership tier.
+
+[pause=0.7]
+
+Then choose a visualization for purchase counts and session duration, and decide how revenue should be stored in PostgreSQL.
+
+[pause=1.0]
+
+Slide 72: E-commerce case reasoning
+
+Here is one defensible direction.
+
+[pause=0.7]
+
+Device type is nominal and is a natural candidate for one-hot encoding. Membership tier is ordinal when the business defines a real rank.
+
+[pause=0.7]
+
+Session duration is a ratio measurement. Purchases are a ratio count.
+
+[pause=0.7]
+
+Weekday often behaves more like a nominal or cyclical category than a simple ordinal variable because Sunday connects back to Monday.
+
+[pause=0.7]
+
+Revenue is a ratio-scale monetary amount, but storage should use an exact numeric type and should document currency separately.
+
+[pause=0.7]
+
+The small charts illustrate how counts and continuous durations may have different distribution shapes.
+
+[pause=1.0]
+
+Slide 73: Section: Assessment
+
+We are at the final part of Module 1.
+
+[pause=0.7]
+
+The assessment moves through three levels.
+
+[pause=0.7]
+
+First, recognize the measurement scale. Second, justify why that classification is appropriate. Third, apply the framework to a small analytical situation.
+
+[pause=0.7]
+
+Try to explain your reasoning rather than answering with only one word.
+
+[pause=1.0]
+
+Slide 74: Checkpoint: recognition
+
+Checkpoint 1 is recognition.
+
+[pause=0.8]
+
+Classify each variable as nominal, ordinal, interval, or ratio.
+
+[pause=0.7]
+
+For numeric variables, also decide whether the concept is counted or measured.
+
+[pause=0.7]
+
+Try to answer before opening the sample classifications.
+
+[pause=0.7]
+
+If you are unsure, return to the key questions: Is it a label or quantity? Does order exist? Are differences meaningful? Does zero represent none? Was the value counted or measured?
+
+[pause=1.0]
+
+Slide 75: Checkpoint: justification
+
+Checkpoint 2 asks for justification.
+
+[pause=0.8]
+
+This is more important than memorizing the label.
+
+[pause=0.8]
+
+Explain why ZIP code is nominal even when the file stores it as an integer.
+
+[pause=0.7]
+
+Explain why Celsius temperature supports meaningful differences but not meaningful ratio statements.
+
+[pause=0.7]
+
+Explain why integer codes for unordered categories can mislead a model.
+
+[pause=0.7]
+
+If you can explain the reason in ordinary language, you understand the concept well enough to apply it to new variables.
+
+[pause=1.0]
+
+Slide 76: Checkpoint: application
+
+Checkpoint 3 asks you to put the ideas together.
+
+[pause=0.8]
+
+Start with quality. What values could be missing, duplicated, outside an allowed domain, or implausible?
+
+[pause=0.7]
+
+Then classify the variables.
+
+[pause=0.7]
+
+Next, choose a summary and a visualization that match the measurement meaning.
+
+[pause=0.7]
+
+Finally, recommend one technical representation or storage decision.
+
+[pause=0.7]
+
+The exact answer can vary. What matters is that the choices are consistent with one another and can be justified.
+
+[pause=1.0]
+
+Slide 77: Sample reasoning
+
+A strong analytical answer connects the classification to an action.
+
+[pause=0.7]
+
+Patient ID is nominal, so uniqueness and identity matter more than arithmetic.
+
+[pause=0.7]
+
+Triage level is ordinal, so preserving order matters.
+
+[pause=0.7]
+
+Heart rate is a measurement, so plausible-range checks and distribution summaries make sense.
+
+[pause=0.7]
+
+Length of stay is nonnegative measured time and may be skewed, so a histogram or box plot can be useful.
+
+[pause=0.7]
+
+This concept-to-action connection is the main skill I want you to carry into later modules.
+
+[pause=1.0]
+
+Slide 78: Five key takeaways
+
+Let's reduce the module to five key ideas.
+
+[pause=0.7]
+
+First, separate dataset organization from variable meaning.
+
+[pause=0.7]
+
+Second, assess quality before trusting the analysis.
+
+[pause=0.7]
+
+Third, use measurement scale to decide what comparisons and summaries make sense.
+
+[pause=0.7]
+
+Fourth, remember that software dtypes and SQL types are representations, not definitions of meaning.
+
+[pause=0.7]
+
+Fifth, make preprocessing decisions deliberately and fit learned transformations carefully so later model evaluation remains honest.
+
+[pause=1.0]
+
+Slide 79: Glossary
+
+This glossary gives you a quick review of the core vocabulary.
+
+[pause=0.7]
+
+Do not worry about memorizing every sentence exactly.
+
+[pause=0.7]
+
+What matters is that you can distinguish the terms when you encounter a real variable or dataset.
+
+[pause=0.7]
+
+If you can explain the difference between structured and semi-structured, nominal and ordinal, interval and ratio, and discrete and continuous, you have the conceptual foundation needed for the next modules.
+
+[pause=1.0]
+
+Slide 80: Next: Module 2
+
+Module 2 builds directly on this foundation.
+
+[pause=0.7]
+
+Now that we can talk about data meaning and quality, we will design relational structures that preserve that meaning.
+
+[pause=0.7]
+
+You will define row grain, identify entities and attributes, choose keys, connect tables through relationships, and use constraints to protect important rules.
+
+[pause=0.7]
+
+The same habits continue.
+
+[pause=0.7]
+
+Define the concept first. Then choose the technical representation that supports it.
+
+[pause=1.0]
