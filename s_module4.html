@@ -30,7 +30,7 @@ body.cc-off .subtitle-bar{display:none}
 .output{border-top:1px solid #aab5c1;background:#f8fafc;color:#1f2937;padding:0;font:12px/1.45 Consolas,"Courier New",monospace;max-height:250px}.output.show{display:block}.output.success{color:#1f2937}.output.error{padding:12px 14px;color:#9f1d20;background:#fff5f5}.output.show.success:not(:has(.mini-result)){padding:12px 14px}.mini-result{overflow:auto;background:#fff}.mini-result table{min-width:520px;width:100%;border-collapse:collapse;background:#fff;color:#1f2937;font-size:12px}.mini-result th{position:sticky;top:0;z-index:1;padding:8px 10px;background:#e8edf3;color:#23364a;border-right:1px solid #c7d0d9;border-bottom:1px solid #aeb9c4;font-weight:700;white-space:nowrap}.mini-result td{padding:7px 10px;background:#fff;color:#202a34;border-right:1px solid #e1e6eb;border-bottom:1px solid #e1e6eb;white-space:nowrap}.mini-result tbody tr:nth-child(even) td{background:#f8fafc}.mini-result tbody tr:hover td{background:#eaf3fb}
 body.dark .output,body.dark .mini-result,body.dark .mini-result table,body.dark .mini-result td{background:#f8fafc;color:#1f2937}body.dark .mini-result th{background:#e8edf3;color:#23364a}
 @media(max-width:700px){.pgadmin-gutter{width:40px}.pgadmin-highlight,.pgadmin-editor-shell .sql-editor{left:40px;width:calc(100% - 40px);font-size:12.5px}}
-</style></head><body><div class="app"><header class="topbar"><div class="brand"><div class="brand-mark">DB</div><div class="brand-text">IAN 603 · Module 4<small>Aggregating Data with PostgreSQL</small></div></div><div class="top-actions"><span id="dbStatus" class="status">PostgreSQL loading…</span><button class="control" id="progressBtn">Progress <span id="progressPct">0%</span></button><button class="control" id="themeBtn">Dark mode</button><button class="control" id="fullBtn">Fullscreen</button><button class="control primary" id="runSlideBtn">Run slide ▶</button></div></header><main class="stage"><section class="slide" data-title="Start"><div class="slide-kicker">IAN 603 · Module 4</div><div class="hero"><div><h1>Aggregating Data with PostgreSQL</h1><p class="lead">Turn detailed rows into meaningful summaries with aggregate functions, grouping, conditional metrics, subtotals, and window functions.</p><div class="badges"><span class="badge">COUNT / SUM / AVG</span><span class="badge">GROUP BY</span><span class="badge">WHERE vs HAVING</span><span class="badge">CASE / FILTER</span><span class="badge">ROLLUP / CUBE</span><span class="badge">Window functions</span></div><div class="start-actions"><button class="control primary" type="button" onclick="goToSlide(1)">Start presentation →</button><button class="control" id="startWithNarration" type="button">Start Narration</button></div><div class="callout"><strong>Essential question:</strong> How can we summarize many rows without losing the meaning, grain, and filtering logic behind the result?</div></div><div class="hero-visual"><div class="query-stack"><div class="query-node"><b>1</b><span>Start with detailed rows</span></div><div class="query-node"><b>2</b><span>Define one output-row grain</span></div><div class="query-node"><b>3</b><span>Calculate useful measures</span></div><div class="query-node"><b>4</b><span>Filter rows and groups correctly</span></div><div class="query-node"><b>5</b><span>Validate the summary</span></div></div></div></div><div class="slide-num"></div></section>
+</style></head><body><div class="app"><header class="topbar"><div class="brand"><div class="brand-mark">DB</div><div class="brand-text">IAN 603 · Module 4<small>Aggregating Data with PostgreSQL</small></div></div><div class="top-actions"><span id="dbStatus" class="status">PostgreSQL loading…</span><button class="control" id="progressBtn">Progress <span id="progressPct">0%</span></button><button class="control" id="themeBtn">Dark mode</button><button class="control" id="fullBtn">Fullscreen</button><button class="control primary" id="runSlideBtn">Run slide ▶</button><button class="control" id="courseModulesBtn" type="button" aria-haspopup="dialog" aria-controls="courseModulesDrawer"><span class="cmn-btn-icon">☰</span><span class="cmn-btn-label">Course Modules</span></button></div></header><main class="stage"><section class="slide" data-title="Start"><div class="slide-kicker">IAN 603 · Module 4</div><div class="hero"><div><h1>Aggregating Data with PostgreSQL</h1><p class="lead">Turn detailed rows into meaningful summaries with aggregate functions, grouping, conditional metrics, subtotals, and window functions.</p><div class="badges"><span class="badge">COUNT / SUM / AVG</span><span class="badge">GROUP BY</span><span class="badge">WHERE vs HAVING</span><span class="badge">CASE / FILTER</span><span class="badge">ROLLUP / CUBE</span><span class="badge">Window functions</span></div><div class="start-actions"><button class="control primary" type="button" onclick="goToSlide(1)">Start presentation →</button><button class="control" id="startWithNarration" type="button">Start Narration</button></div><div class="callout"><strong>Essential question:</strong> How can we summarize many rows without losing the meaning, grain, and filtering logic behind the result?</div></div><div class="hero-visual"><div class="query-stack"><div class="query-node"><b>1</b><span>Start with detailed rows</span></div><div class="query-node"><b>2</b><span>Define one output-row grain</span></div><div class="query-node"><b>3</b><span>Calculate useful measures</span></div><div class="query-node"><b>4</b><span>Filter rows and groups correctly</span></div><div class="query-node"><b>5</b><span>Validate the summary</span></div></div></div></div><div class="slide-num"></div></section>
 <section class="slide" data-title="Big picture"><div class="slide-kicker">From Module 3 to Module 4</div><h2>From individual rows to analytical summaries</h2><p class="lead">Module 3 focused on retrieving and changing rows. Module 4 asks a different question: how can we summarize many rows without losing the meaning behind the result?</p><div class="flow"><div class="flow-step"><b>Detail</b>Start with source rows.</div><div class="flow-step"><b>Grain</b>Decide what one result row means.</div><div class="flow-step"><b>Measure</b>Count, sum, or average.</div><div class="flow-step"><b>Filter</b>Separate row and group conditions.</div><div class="flow-step"><b>Validate</b>Compare back to detail.</div></div><div class="callout"><strong>Main habit:</strong> state the question → choose the grain → define measures → filter rows → filter groups → validate.</div><div class="slide-num"></div></section>
 <section class="slide" data-title="Learning path"><div class="slide-kicker">Roadmap</div><h2>What you will learn</h2><div class="grid-4"><div class="card primary-card"><div class="label">Summarize</div><h3>Aggregate functions</h3><p>COUNT, SUM, AVG, MIN, and MAX.</p></div><div class="card accent-card"><div class="label">Group</div><h3>GROUP BY</h3><p>Define the grain of a summary result.</p></div><div class="card good-card"><div class="label">Filter</div><h3>WHERE &amp; HAVING</h3><p>Filter rows before grouping and groups after grouping.</p></div><div class="card"><div class="label">Extend</div><h3>Advanced analytics</h3><p>Conditional metrics, subtotals, and windows.</p></div></div><div class="learning-steps"><div class="learning-step"><div class="step-number">Step 1</div><h3>Run</h3><p>Execute a complete aggregation.</p></div><div class="learning-step"><div class="step-number">Step 2</div><h3>Change</h3><p>Edit one measure or filter.</p></div><div class="learning-step"><div class="step-number">Step 3</div><h3>Complete</h3><p>Fill in a missing clause.</p></div><div class="learning-step"><div class="step-number">Step 4</div><h3>Write</h3><p>Build a short analytical query.</p></div></div><div class="slide-num"></div></section>
 <section class="slide" data-title="Practice schema"><div class="slide-kicker">Running datasets</div><h2>Five small practice tables</h2><p class="lead">The browser lab uses synthetic data only.</p><div class="grid-3"><div class="card"><h3>admissions</h3><p>Patients, diagnoses, admission times, discharge times.</p></div><div class="card"><h3>sales</h3><p>Products, quantities, prices, categories, dates.</p></div><div class="card"><h3>employees</h3><p>Names, salaries, departments, hire dates.</p></div><div class="card"><h3>product_sales</h3><p>Compact data for ROLLUP, CUBE, and GROUPING SETS.</p></div><div class="card"><h3>grades</h3><p>Student, course, grade, semester.</p></div></div><div class="callout"><strong>Important:</strong> the database runs in the browser and resets easily. Do not paste sensitive or production data into the editor.</div><div class="slide-num"></div></section>
@@ -354,4 +354,158 @@ document.getElementById('transcriptBtn').onclick=()=>document.getElementById('tr
 document.getElementById('transcriptClose').onclick=()=>document.getElementById('transcriptPanel').classList.remove('open');
 
 updateProgress();showSlide(state.lastSlide||0);initDb().catch(()=>{});
-</script></body></html>
+</script><!-- COURSE_MODULE_NAV_START -->
+<style id="courseModuleNavStyles">
+#courseModulesBtn{display:inline-flex;align-items:center;gap:7px}
+#courseModulesBtn .cmn-btn-icon{font-size:14px;line-height:1}
+.cmn-backdrop{position:fixed;inset:0;background:rgba(10,18,27,.42);backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:.2s ease;z-index:1400}
+.cmn-backdrop.open{opacity:1;visibility:visible}
+.cmn-drawer{position:absolute;top:0;right:0;width:min(430px,92vw);height:100%;background:var(--surface,#fff);color:var(--text,#142033);border-left:1px solid var(--border,#d7e1eb);box-shadow:-24px 0 60px rgba(0,0,0,.2);transform:translateX(100%);transition:transform .24s ease;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto}
+.cmn-backdrop.open .cmn-drawer{transform:translateX(0)}
+.cmn-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:20px 20px 16px;border-bottom:1px solid var(--border,#d7e1eb)}
+.cmn-kicker{display:block;color:var(--primary,#185f99);font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.cmn-head h2{font-size:22px;line-height:1.1;margin:0!important;letter-spacing:-.02em}
+.cmn-head p{font-size:12px;color:var(--muted,#627189);margin:6px 0 0}
+.cmn-close{width:36px;height:36px;border:1px solid var(--border,#d7e1eb);border-radius:10px;background:var(--surface2,var(--surface-2,#f7f9fc));color:var(--text,#142033);font-size:20px;cursor:pointer}
+.cmn-home-row{padding:12px 20px;border-bottom:1px solid var(--border,#d7e1eb)}
+.cmn-home{display:flex;align-items:center;justify-content:space-between;gap:12px;text-decoration:none;border:1px solid var(--border,#d7e1eb);background:var(--primary-soft,#e5f1fb);border-radius:12px;padding:11px 13px;color:var(--text,#142033);font-size:13px;font-weight:900}
+.cmn-home small{display:block;color:var(--muted,#627189);font-size:10px;font-weight:700;margin-top:2px}
+.cmn-list{overflow:auto;padding:12px 12px 18px;display:grid;gap:7px;align-content:start}
+.cmn-module-link{display:grid;grid-template-columns:42px minmax(0,1fr) 18px;align-items:center;gap:10px;text-decoration:none;padding:9px 10px;border:1px solid transparent;border-radius:12px;color:var(--text,#142033);background:transparent}
+.cmn-module-link:hover{background:var(--surface2,var(--surface-2,#f7f9fc));border-color:var(--border,#d7e1eb)}
+.cmn-module-link.current{background:var(--primary-soft,#e5f1fb);border-color:color-mix(in srgb,var(--primary,#185f99) 45%,transparent)}
+.cmn-num{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--surface2,var(--surface-2,#f7f9fc));border:1px solid var(--border,#d7e1eb);color:var(--muted,#627189);font-size:11px;font-weight:900}
+.cmn-module-link.current .cmn-num{background:var(--primary,#185f99);border-color:var(--primary,#185f99);color:#fff}
+.cmn-link-copy{min-width:0}
+.cmn-link-copy b{display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmn-link-copy small{display:block;color:var(--muted,#627189);font-size:10px;margin-top:2px}
+.cmn-arrow{font-size:20px;color:var(--muted,#627189);text-align:center}
+.cmn-footer{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 20px 18px;border-top:1px solid var(--border,#d7e1eb);background:var(--surface,#fff)}
+.cmn-step{display:grid;grid-template-columns:auto 1fr;column-gap:7px;text-decoration:none;border:1px solid var(--border,#d7e1eb);background:var(--surface2,var(--surface-2,#f7f9fc));border-radius:11px;padding:9px 10px;color:var(--text,#142033)}
+.cmn-step>span{grid-row:1/3;align-self:center;color:var(--primary,#185f99);font-weight:900}
+.cmn-step small{font-size:9px;color:var(--muted,#627189);font-weight:800}
+.cmn-step b{font-size:11px}
+.cmn-step.disabled{opacity:.48}
+body.cmn-lock{overflow:hidden}
+@media(max-width:720px){
+  #courseModulesBtn .cmn-btn-label{display:none}
+  #courseModulesBtn{padding-left:10px;padding-right:10px}
+  .cmn-head{padding:16px 16px 13px}.cmn-home-row{padding:10px 16px}.cmn-footer{padding:10px 16px 14px}
+}
+</style>
+<div class="cmn-backdrop" id="courseModulesBackdrop" aria-hidden="true">
+  <aside class="cmn-drawer" id="courseModulesDrawer" role="dialog" aria-modal="true" aria-labelledby="courseModulesTitle">
+    <div class="cmn-head">
+      <div>
+        <span class="cmn-kicker">IAN 603 · Course Navigation</span>
+        <h2 id="courseModulesTitle">Course Modules</h2>
+        <p>Jump to another narrated module without returning to the course hub first.</p>
+      </div>
+      <button class="cmn-close" id="courseModulesClose" type="button" aria-label="Close course modules">×</button>
+    </div>
+    <div class="cmn-home-row">
+      <a class="cmn-home" href="s_index.html">
+        <span>Course Home<small>Overview, learning path, and all modules</small></span>
+        <span>⌂</span>
+      </a>
+    </div>
+    <nav class="cmn-list" aria-label="IAN 603 modules">
+    <a class="cmn-module-link" href="s_module1.html">
+      <span class="cmn-num">01</span>
+      <span class="cmn-link-copy"><b>Understanding Data in Informatics</b><small>Module 1</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module2.html">
+      <span class="cmn-num">02</span>
+      <span class="cmn-link-copy"><b>Designing Relational Databases</b><small>Module 2</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module3.html">
+      <span class="cmn-num">03</span>
+      <span class="cmn-link-copy"><b>PostgreSQL in Action</b><small>Module 3</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link current" href="s_module4.html" aria-current="page">
+      <span class="cmn-num">04</span>
+      <span class="cmn-link-copy"><b>Aggregating Data with PostgreSQL</b><small>Module 4 · Current</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module5.html">
+      <span class="cmn-num">05</span>
+      <span class="cmn-link-copy"><b>Reasoning with SQL Logic</b><small>Module 5</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module6.html">
+      <span class="cmn-num">06</span>
+      <span class="cmn-link-copy"><b>Joining Data in PostgreSQL</b><small>Module 6</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module7.html">
+      <span class="cmn-num">07</span>
+      <span class="cmn-link-copy"><b>Subqueries in PostgreSQL</b><small>Module 7</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module8.html">
+      <span class="cmn-num">08</span>
+      <span class="cmn-link-copy"><b>Strings and Dates in PostgreSQL</b><small>Module 8</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module9.html">
+      <span class="cmn-num">09</span>
+      <span class="cmn-link-copy"><b>Data Cleaning in PostgreSQL</b><small>Module 9</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module10.html">
+      <span class="cmn-num">10</span>
+      <span class="cmn-link-copy"><b>Reshaping Data in PostgreSQL</b><small>Module 10</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module11.html">
+      <span class="cmn-num">11</span>
+      <span class="cmn-link-copy"><b>Advanced SQL: CTEs & Window Functions</b><small>Module 11</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module12.html">
+      <span class="cmn-num">12</span>
+      <span class="cmn-link-copy"><b>Views & Modular Queries</b><small>Module 12</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module13.html">
+      <span class="cmn-num">13</span>
+      <span class="cmn-link-copy"><b>Introduction to Spark SQL</b><small>Module 13</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    </nav>
+    <div class="cmn-footer"><a class="cmn-step" href="s_module3.html"><span>←</span><small>Previous</small><b>Module 3</b></a><a class="cmn-step" href="s_module5.html"><span>→</span><small>Next</small><b>Module 5</b></a></div>
+  </aside>
+</div>
+<script id="courseModuleNavScript">
+(()=>{
+  const btn=document.getElementById('courseModulesBtn');
+  const backdrop=document.getElementById('courseModulesBackdrop');
+  const drawer=document.getElementById('courseModulesDrawer');
+  const closeBtn=document.getElementById('courseModulesClose');
+  if(!btn||!backdrop||!drawer||!closeBtn)return;
+  let lastFocus=null;
+  function openNav(){
+    lastFocus=document.activeElement;
+    backdrop.classList.add('open');
+    backdrop.setAttribute('aria-hidden','false');
+    document.body.classList.add('cmn-lock');
+    requestAnimationFrame(()=>closeBtn.focus());
+  }
+  function closeNav(){
+    backdrop.classList.remove('open');
+    backdrop.setAttribute('aria-hidden','true');
+    document.body.classList.remove('cmn-lock');
+    if(lastFocus&&typeof lastFocus.focus==='function')lastFocus.focus();
+  }
+  btn.addEventListener('click',openNav);
+  closeBtn.addEventListener('click',closeNav);
+  backdrop.addEventListener('click',e=>{if(e.target===backdrop)closeNav()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&backdrop.classList.contains('open'))closeNav()});
+})();
+</script>
+<!-- COURSE_MODULE_NAV_END -->
+</body>
+</html>
