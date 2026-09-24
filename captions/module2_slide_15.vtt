@@ -1,56 +1,45 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:02.379
-PRIMARY KEY and UNIQUE are related but
+00:00:00.103 --> 00:00:03.287
+PRIMARY KEY and UNIQUE are related but they are not
+the same
 
-00:00:02.405 --> 00:00:05.579
-they are not the same thing The
+00:00:03.313 --> 00:00:08.882
+thing The primary key is the table's official row
+identity and cannot
 
-00:00:05.606 --> 00:00:07.790
-primary key is the table's official row
+00:00:08.895 --> 00:00:13.740
+be NULL A table has one primary-key constraint
+although that key may
 
-00:00:07.816 --> 00:00:10.885
-identity and cannot be NULL A table
+00:00:13.766 --> 00:00:19.651
+contain multiple columns UNIQUE protects other
+candidate keys or business
 
-00:00:10.911 --> 00:00:13.556
-has one primary-key constraint although that key
+00:00:19.678 --> 00:00:26.387
+rules A table can have several unique constraints
+PostgreSQL
 
-00:00:13.569 --> 00:00:18.178
-may contain multiple columns UNIQUE protects other
+00:00:26.413 --> 00:00:30.623
+also has specific behavior around NULL values in
+unique constraints so do
 
-00:00:18.191 --> 00:00:21.614
-candidate keys or business rules A table
+00:00:30.637 --> 00:00:36.026
+not assume a UNIQUE column behaves exactly like a
+primary key In
 
-00:00:21.641 --> 00:00:26.676
-can have several unique constraints PostgreSQL also
+00:00:36.039 --> 00:00:40.434
+the clinic example patient ID is the primary key
+while MRN remains
 
-00:00:26.702 --> 00:00:29.044
-has specific behavior around NULL values in
-
-00:00:29.071 --> 00:00:31.176
-unique constraints so do not assume a
-
-00:00:31.189 --> 00:00:33.716
-UNIQUE column behaves exactly like a primary
-
-00:00:33.742 --> 00:00:37.960
-key In the clinic example patient ID
-
-00:00:37.973 --> 00:00:40.434
-is the primary key while MRN remains
-
-00:00:40.460 --> 00:00:43.184
+00:00:40.460 --> 00:00:44.973
 unique because duplicate medical record numbers
-would
+would still be a serious data-quality
 
-00:00:43.210 --> 00:00:47.415
-still be a serious data-quality problem A
+00:00:44.999 --> 00:00:50.599
+problem A useful question is if the system-generated
+ID is
 
-00:00:47.441 --> 00:00:50.454
-useful question is if the system-generated ID
-
-00:00:50.468 --> 00:00:53.428
-is already unique which business identifiers still
-
-00:00:53.441 --> 00:00:54.915
-need independent protection
+00:00:50.625 --> 00:00:54.915
+already unique which business identifiers still need
+independent protection

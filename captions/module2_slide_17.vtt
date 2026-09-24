@@ -1,55 +1,45 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:02.616
-This ERD shows the logical blueprint for
+00:00:00.103 --> 00:00:06.123
+This ERD shows the logical blueprint for the clinic
+Patient and provider
 
-00:00:02.629 --> 00:00:06.794
-the clinic Patient and provider each connect
+00:00:06.150 --> 00:00:11.297
+each connect to appointment Appointment then
+connects to service through the appointment
 
-00:00:06.821 --> 00:00:10.415
-to appointment Appointment then connects to service
+00:00:11.323 --> 00:00:16.974
+service junction table Read each relationship
+separately rather than trying
 
-00:00:10.442 --> 00:00:14.632
-through the appointment service junction table Read
+00:00:16.987 --> 00:00:22.505
+to understand the entire diagram at once Patient to
+appointment is
 
-00:00:14.658 --> 00:00:17.106
-each relationship separately rather than trying to
+00:00:22.531 --> 00:00:28.034
+one-to-many Provider to appointment is one-to-many
+Appointment to
 
-00:00:17.132 --> 00:00:21.597
-understand the entire diagram at once Patient
+00:00:28.060 --> 00:00:33.812
+service is many-to-many so appointment service sits
+between them Notice
 
-00:00:21.623 --> 00:00:25.481
-to appointment is one-to-many Provider to
-appointment
+00:00:33.839 --> 00:00:38.115
+that appointment service also stores facts about the
+relationship such as quantity
 
-00:00:25.494 --> 00:00:29.376
-is one-to-many Appointment to service is
-many-to-many
+00:00:38.141 --> 00:00:42.710
+and unit charge Those values do not belong only to
+the appointment
 
-00:00:29.586 --> 00:00:33.812
-so appointment service sits between them Notice
+00:00:42.736 --> 00:00:47.236
+or only to the service They belong to the specific
+service used
 
-00:00:33.839 --> 00:00:36.154
-that appointment service also stores facts about
+00:00:47.249 --> 00:00:52.748
+in a specific appointment That is one reason
+junction tables are often
 
-00:00:36.167 --> 00:00:38.575
-the relationship such as quantity and unit
-
-00:00:38.602 --> 00:00:41.828
-charge Those values do not belong only
-
-00:00:41.854 --> 00:00:43.512
-to the appointment or only to the
-
-00:00:43.525 --> 00:00:46.894
-service They belong to the specific service
-
-00:00:46.920 --> 00:00:50.735
-used in a specific appointment That is
-
-00:00:50.762 --> 00:00:52.972
-one reason junction tables are often real
-
-00:00:52.985 --> 00:00:55.854
-business entities rather than only technical
+00:00:52.762 --> 00:00:55.854
+real business entities rather than only technical
 connectors

@@ -1,50 +1,37 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:03.208
+00:00:00.103 --> 00:00:05.870
 This example shows an unnormalized appointment
-record
+record The row contains
 
-00:00:05.055 --> 00:00:08.252
-The row contains patient information provider
-information
+00:00:05.884 --> 00:00:11.620
+patient information provider information appointment
+time a comma-separated list of service codes
 
-00:00:08.436 --> 00:00:11.239
-appointment time a comma-separated list of service
+00:00:11.791 --> 00:00:17.306
+and a matching list of charges That design creates
+several problems
 
-00:00:11.265 --> 00:00:13.305
-codes and a matching list of charges
+00:00:19.031 --> 00:00:23.452
+A foreign key cannot easily validate each service
+code inside a comma-separated
 
-00:00:15.043 --> 00:00:19.517
-That design creates several problems A foreign
+00:00:23.478 --> 00:00:28.994
+list Joining to one service is difficult The charges
+can become
 
-00:00:19.531 --> 00:00:22.031
-key cannot easily validate each service code
+00:00:29.020 --> 00:00:34.507
+misaligned with the service codes The row also mixes
+several different subjects
 
-00:00:22.057 --> 00:00:25.665
-inside a comma-separated list Joining to one
+00:00:36.219 --> 00:00:40.377
+Before normalizing state the problem clearly one row
+is trying to represent
 
-00:00:25.691 --> 00:00:28.994
-service is difficult The charges can become
+00:00:40.390 --> 00:00:45.695
+an appointment and several service occurrences at
+the same time The first
 
-00:00:29.020 --> 00:00:32.178
-misaligned with the service codes The row
-
-00:00:32.191 --> 00:00:37.284
-also mixes several different subjects Before
-normalizing
-
-00:00:37.442 --> 00:00:39.442
-state the problem clearly one row is
-
-00:00:39.469 --> 00:00:41.508
-trying to represent an appointment and several
-
-00:00:41.534 --> 00:00:45.366
-service occurrences at the same time The
-
-00:00:45.393 --> 00:00:48.406
-first normalization step will separate those
-repeated
-
-00:00:48.432 --> 00:00:50.735
+00:00:45.722 --> 00:00:50.735
+normalization step will separate those repeated
 service values into individual rows

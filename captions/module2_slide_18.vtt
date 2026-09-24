@@ -1,50 +1,40 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:02.813
+00:00:00.103 --> 00:00:05.655
 Now let's translate business rules into relational
+decisions If every
 
-00:00:02.826 --> 00:00:07.247
-decisions If every appointment belongs to exactly
+00:00:05.681 --> 00:00:10.379
+appointment belongs to exactly one patient
+appointment needs a non-null patient foreign
 
-00:00:07.274 --> 00:00:10.037
-one patient appointment needs a non-null patient
+00:00:10.392 --> 00:00:15.885
+key A patient may exist before any appointment is
+scheduled so the
 
-00:00:10.063 --> 00:00:14.030
-foreign key A patient may exist before
+00:00:15.911 --> 00:00:21.457
+patient table does not require a child appointment
+row The same reasoning
 
-00:00:14.043 --> 00:00:16.279
-any appointment is scheduled so the patient
+00:00:21.484 --> 00:00:27.012
+applies to provider An appointment may have zero or
+many service lines
 
-00:00:16.306 --> 00:00:18.503
-table does not require a child appointment
+00:00:27.301 --> 00:00:32.835
+so those optional child rows belong in appointment
+service A service can
 
-00:00:18.529 --> 00:00:22.681
-row The same reasoning applies to provider
-
-00:00:24.407 --> 00:00:26.209
-An appointment may have zero or many
-
-00:00:26.236 --> 00:00:28.854
-service lines so those optional child rows
-
-00:00:28.867 --> 00:00:32.835
-belong in appointment service A service can
-
-00:00:32.861 --> 00:00:35.269
+00:00:32.861 --> 00:00:36.651
 appear in many appointments which confirms that
+appointment and service form a
 
-00:00:35.282 --> 00:00:38.190
-appointment and service form a many-to-many
-relationship
+00:00:36.677 --> 00:00:42.418
+many-to-many relationship The key habit is to read
+the business sentence first
 
-00:00:39.918 --> 00:00:41.220
-The key habit is to read the
+00:00:42.681 --> 00:00:46.023
+then decide where the foreign key belongs and
+whether that relationship is
 
-00:00:41.247 --> 00:00:43.536
-business sentence first then decide where the
-
-00:00:43.549 --> 00:00:45.878
-foreign key belongs and whether that relationship
-
-00:00:45.891 --> 00:00:47.299
-is required or optional
+00:00:46.049 --> 00:00:47.299
+required or optional

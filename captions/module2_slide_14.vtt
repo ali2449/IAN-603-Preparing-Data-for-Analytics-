@@ -1,52 +1,44 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:02.405
-This example shows a very common design
+00:00:00.103 --> 00:00:04.458
+This example shows a very common design a generated
+surrogate key plus
 
-00:00:02.708 --> 00:00:05.089
-a generated surrogate key plus a protected
+00:00:04.471 --> 00:00:10.299
+a protected natural identifier PostgreSQL generates
+patient
 
-00:00:05.116 --> 00:00:10.773
-natural identifier PostgreSQL generates patient ID
+00:00:10.326 --> 00:00:15.078
+ID automatically That gives us a stable internal key
+that can be
 
-00:00:10.786 --> 00:00:14.355
-automatically That gives us a stable internal
+00:00:15.105 --> 00:00:20.895
+used in relationships The clinic's medical record
+number still has business
 
-00:00:14.368 --> 00:00:16.460
-key that can be used in relationships
+00:00:20.921 --> 00:00:25.805
+meaning so it receives a UNIQUE constraint The
+surrogate key does not
 
-00:00:18.211 --> 00:00:20.474
-The clinic's medical record number still has
+00:00:25.819 --> 00:00:31.414
+make the natural business identifier irrelevant Run
+the example in
 
-00:00:20.500 --> 00:00:22.763
-business meaning so it receives a UNIQUE
+00:00:31.441 --> 00:00:35.891
+the browser Notice that the INSERT does not provide
+a patient ID
 
-00:00:22.790 --> 00:00:26.029
-constraint The surrogate key does not make
-
-00:00:26.055 --> 00:00:30.625
-the natural business identifier irrelevant Run the
-
-00:00:30.651 --> 00:00:33.733
-example in the browser Notice that the
-
-00:00:33.746 --> 00:00:35.891
-INSERT does not provide a patient ID
-
-00:00:35.904 --> 00:00:40.625
+00:00:35.904 --> 00:00:41.441
 because PostgreSQL generates it Then inspect the
+returned row
 
-00:00:40.638 --> 00:00:44.666
-returned row and the table structure If
+00:00:41.454 --> 00:00:47.495
+and the table structure If you copy this example
+into pgAdmin focus
 
-00:00:44.692 --> 00:00:47.495
-you copy this example into pgAdmin focus
+00:00:47.521 --> 00:00:51.153
+on the two different roles patient ID is the
+internal row identity
 
-00:00:47.521 --> 00:00:49.679
-on the two different roles patient ID
-
-00:00:49.692 --> 00:00:52.100
-is the internal row identity while MRN
-
-00:00:52.113 --> 00:00:53.784
-is protected business identity
+00:00:51.429 --> 00:00:53.784
+while MRN is protected business identity
