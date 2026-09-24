@@ -1,0 +1,1299 @@
+Slide 1: Start
+
+Welcome to Module 12, Views and Modular Queries.
+
+[pause=0.7]
+
+This module is about turning useful SQL logic into reusable database interfaces.
+
+[pause=0.7]
+
+We will learn standard views, materialized views, updatable views, check options, dependency inspection, freshness policies, and modular query design.
+
+[pause=0.8]
+
+The central idea is that a view is not just saved text. It is an interface with a row grain, a set of columns, and a meaning that downstream users may depend on.
+
+[pause=1.0]
+
+Slide 2: Why views matter
+
+Views solve several problems at once.
+
+[pause=0.7]
+
+They let us centralize shared SQL logic.
+
+[pause=0.7]
+
+They create a stable interface with deliberate columns and row meaning.
+
+[pause=0.7]
+
+They can reduce accidental exposure by omitting unnecessary fields, although actual authorization still depends on database security controls.
+
+[pause=0.7]
+
+And materialized views can store reusable results when freshness does not need to be immediate.
+
+[pause=1.0]
+
+Slide 3: Learning goals
+
+By the end of this module, you should be able to create standard views, inspect their definitions and dependencies, explain when a view is updatable, and use a check option to control writes through a filtered view.
+
+[pause=0.8]
+
+You should also understand materialized-view freshness and be able to decide whether logic belongs in a statement-level CTE, a reusable standard view, or a stored materialized result.
+
+[pause=1.0]
+
+Slide 4: Module roadmap
+
+We will start with modularity and standard views.
+
+[pause=0.7]
+
+Then we will inspect reusable objects and their dependencies.
+
+[pause=0.8]
+
+After that, we will explore controlled writes and access boundaries.
+
+[pause=0.7]
+
+Materialized views come next, with a focus on freshness and refresh policy.
+
+[pause=0.8]
+
+Finally, we will combine views and CTEs into a small reusable analytics layer.
+
+[pause=1.0]
+
+Slide 5: Teaching database
+
+The database contains a few small source areas.
+
+[pause=0.7]
+
+Patient and admission tables support healthcare-style views.
+
+[pause=0.7]
+
+Employee, department, and sales-order tables support a performance interface.
+
+[pause=0.7]
+
+Customer transactions support recent-activity and retention examples.
+
+[pause=0.8]
+
+Reusable objects are placed in an analytics schema so the source tables and analytical interfaces are clearly separated.
+
+[pause=1.0]
+
+Slide 6: Modular architecture
+
+Modularity works best when each layer has one responsibility.
+
+[pause=0.7]
+
+Base tables store source facts.
+
+[pause=0.7]
+
+A shared view can own stable relational logic.
+
+[pause=0.7]
+
+A report-level CTE can own a temporary threshold, ranking rule, or sequence calculation.
+
+[pause=0.7]
+
+The final query produces the consumer-specific result.
+
+[pause=0.8]
+
+This separation makes each layer easier to test and change.
+
+[pause=1.0]
+
+Slide 7: Three reusable choices
+
+The three main choices in this module differ in lifetime and storage.
+
+[pause=0.7]
+
+A CTE exists for one statement.
+
+[pause=0.7]
+
+A standard view is a persistent database object, but it stores the query definition rather than a result snapshot.
+
+[pause=0.8]
+
+A materialized view is persistent and stores the query result.
+
+[pause=0.8]
+
+Choose among them based on reuse, freshness, and computational cost.
+
+[pause=1.0]
+
+Slide 8: What a standard view stores
+
+A standard view stores a query definition.
+
+[pause=0.8]
+
+It does not normally store a separate snapshot of the result.
+
+[pause=0.7]
+
+When the view is queried, PostgreSQL uses the view definition to access current underlying data.
+
+[pause=0.7]
+
+For consumers, the view behaves like a named relation with columns and rows.
+
+[pause=1.0]
+
+Slide 9: View contract
+
+Think of a view as a contract.
+
+[pause=0.7]
+
+The object name matters.
+
+[pause=0.7]
+
+The exposed columns and types matter.
+
+[pause=0.7]
+
+The row grain matters.
+
+[pause=0.7]
+
+And consumers should understand how fresh the data is.
+
+[pause=0.7]
+
+If you change a shared view in a way that breaks one of these expectations, downstream queries can fail or change meaning.
+
+[pause=1.0]
+
+Slide 10: Explore database objects
+
+Run the schema exploration query first.
+
+[pause=0.8]
+
+Look at objects in the public and analytics schemas.
+
+[pause=0.7]
+
+The public schema contains source tables.
+
+[pause=0.7]
+
+The analytics schema contains reusable interfaces.
+
+[pause=0.7]
+
+This separation is helpful because object location can communicate purpose.
+
+[pause=1.0]
+
+Slide 11: Query a view
+
+This query reads the patient-admission summary view.
+
+[pause=0.8]
+
+Consumers do not need to repeat the join or stay-duration expression.
+
+[pause=0.7]
+
+The view already defines that interface.
+
+[pause=0.7]
+
+Run it and identify the grain.
+
+[pause=0.8]
+
+One row represents one admission with selected patient attributes and a derived stay duration.
+
+[pause=1.0]
+
+Slide 12: Create a view
+
+Before creating a view, make four decisions.
+
+[pause=0.7]
+
+Choose a meaningful name.
+
+[pause=0.7]
+
+Define the row grain.
+
+[pause=0.7]
+
+Choose the columns intentionally.
+
+[pause=0.7]
+
+Then write the SELECT that implements that interface.
+
+[pause=0.7]
+
+Starting with the contract makes the SQL easier to evaluate.
+
+[pause=1.0]
+
+Slide 13: CREATE OR REPLACE VIEW
+
+CREATE OR REPLACE VIEW lets you update a compatible view definition without first dropping the object.
+
+[pause=0.7]
+
+This is useful when the interface should remain available under the same name.
+
+[pause=0.7]
+
+But compatibility matters.
+
+[pause=0.7]
+
+Changing column names, meanings, types, or grain can still affect downstream users, even if the SQL command succeeds.
+
+[pause=1.0]
+
+Slide 14: Use the view for aggregation
+
+Once the patient-admission interface exists, later reports can start from it.
+
+[pause=0.7]
+
+This query groups the reusable admission rows by department.
+
+[pause=0.8]
+
+The report author does not need to repeat patient joins or stay-duration calculations.
+
+[pause=0.7]
+
+That is the value of modular SQL: stable logic is centralized, and consumer queries become smaller.
+
+[pause=1.0]
+
+Slide 15: Naming conventions
+
+This course uses vw as a prefix for standard views and mv for materialized views.
+
+[pause=0.7]
+
+PostgreSQL does not require that naming convention.
+
+[pause=0.7]
+
+The goal is readability and discoverability.
+
+[pause=0.7]
+
+Whatever convention a team chooses, use it consistently and document the intended grain and meaning of important shared objects.
+
+[pause=1.0]
+
+Slide 16: Inspect view definitions
+
+Shared database objects should not be mysterious.
+
+[pause=0.7]
+
+PostgreSQL's information schema can show view names and definitions.
+
+[pause=0.7]
+
+Run this query and inspect the SQL behind the analytics views.
+
+[pause=0.8]
+
+Being able to inspect a view helps with debugging, documentation, and change review.
+
+[pause=1.0]
+
+Slide 17: Inspect dependencies
+
+A shared view depends on other database objects.
+
+[pause=0.7]
+
+This query uses information schema metadata to show which tables feed each view.
+
+[pause=0.8]
+
+Dependency awareness matters because changing a base object or shared view can affect several downstream consumers.
+
+[pause=0.7]
+
+Before making a breaking change, understand the dependency chain.
+
+[pause=1.0]
+
+Slide 18: Dependency chain
+
+A view can sit in the middle of a dependency chain.
+
+[pause=0.7]
+
+Base tables feed the shared interface.
+
+[pause=0.7]
+
+A report-specific CTE reads the view.
+
+[pause=0.7]
+
+A report consumes the final result.
+
+[pause=0.7]
+
+If the view grain or column meaning changes, every downstream layer may be affected.
+
+[pause=0.7]
+
+Treat important shared views as versioned contracts, not disposable snippets.
+
+[pause=1.0]
+
+Slide 19: Change management
+
+Change management goes beyond syntax.
+
+[pause=0.7]
+
+A CREATE OR REPLACE command may succeed, but a semantic change can still break analytics.
+
+[pause=0.7]
+
+Consumers may depend on a column name, data type, business definition, or row grain.
+
+[pause=0.7]
+
+Review those contract elements before changing a shared object.
+
+[pause=1.0]
+
+Slide 20: Simple views can be updatable
+
+Some simple PostgreSQL views are automatically updatable.
+
+[pause=0.7]
+
+A write through the view can flow to the underlying table.
+
+[pause=0.7]
+
+But this is not true for every view.
+
+[pause=0.7]
+
+Joins, aggregates, grouping, and other features can make a view non-updatable.
+
+[pause=0.7]
+
+Treat writable views as a deliberate interface and test their behavior.
+
+[pause=1.0]
+
+Slide 21: Update through a view
+
+This example updates city through a simple active-patient view.
+
+[pause=0.8]
+
+RETURNING shows the changed row.
+
+[pause=0.7]
+
+The transaction then rolls back, so the demonstration does not permanently modify the teaching database.
+
+[pause=0.7]
+
+This is a good pattern when learning or testing write behavior.
+
+[pause=1.0]
+
+Slide 22: Filtered updatable view
+
+A filtered view introduces an important write question.
+
+[pause=0.7]
+
+If the view only shows active patients, what should happen when an update through the view sets active to false?
+
+[pause=0.7]
+
+Without a check option, the row may simply disappear from the view after the update.
+
+[pause=0.7]
+
+WITH CHECK OPTION can enforce the view condition for writes performed through the view.
+
+[pause=1.0]
+
+Slide 23: WITH CHECK OPTION
+
+WITH CHECK OPTION enforces the view's filter for writes through the view.
+
+[pause=0.7]
+
+If an update would make a row no longer satisfy the active equals true condition, PostgreSQL rejects the write.
+
+[pause=0.7]
+
+This turns the filtered view into a more controlled write interface.
+
+[pause=0.7]
+
+It does not replace general database constraints or permissions.
+
+[pause=1.0]
+
+Slide 24: CHECK OPTION failure
+
+This example intentionally fails.
+
+[pause=0.8]
+
+The active-patient view shows only active rows and includes a check option.
+
+[pause=0.7]
+
+The update tries to set an active patient to inactive through that view.
+
+[pause=0.7]
+
+Because the resulting row would no longer satisfy the view condition, PostgreSQL rejects the update.
+
+[pause=0.7]
+
+This is expected behavior.
+
+[pause=1.0]
+
+Slide 25: Do not infer writability
+
+Do not assume every view is writable.
+
+[pause=0.7]
+
+A simple one-table view may support automatic updates.
+
+[pause=0.7]
+
+A join or aggregate view does not have the same direct row mapping.
+
+[pause=0.7]
+
+Materialized views are stored query results, not ordinary write-through interfaces.
+
+[pause=0.8]
+
+Always check the actual PostgreSQL behavior for the view definition you are designing.
+
+[pause=1.0]
+
+Slide 26: Views as access boundaries
+
+A view can reduce accidental exposure by publishing only the columns required for an analytical task.
+
+[pause=0.7]
+
+For example, an analytics interface may expose an age band and city instead of direct contact fields.
+
+[pause=0.8]
+
+But hiding columns in a view definition is not the same as granting or denying access.
+
+[pause=0.7]
+
+Actual authorization depends on PostgreSQL privileges and, where appropriate, row-level security or other controls.
+
+[pause=1.0]
+
+Slide 27: Limited analytics view
+
+This analytics view exposes subject ID, age band, city, and active status.
+
+[pause=0.7]
+
+It omits name, email, and date of birth.
+
+[pause=0.7]
+
+That creates a narrower analytical interface.
+
+[pause=0.7]
+
+Run it and compare the result with the source patient table.
+
+[pause=0.8]
+
+The design reduces unnecessary fields, but access to objects must still be configured separately.
+
+[pause=1.0]
+
+Slide 28: security_invoker
+
+PostgreSQL supports a security invoker option for views.
+
+[pause=0.7]
+
+With security invoker, permissions on underlying relations are checked using the invoking user's rights.
+
+[pause=0.7]
+
+This can matter in a real multi-role security design.
+
+[pause=0.7]
+
+Our browser lab is useful for syntax and object behavior, but it does not reproduce a full production authorization environment.
+
+[pause=1.0]
+
+Slide 29: security_invoker SQL
+
+This query recreates the patient analytics view with security invoker enabled.
+
+[pause=0.8]
+
+It still exposes the same selected analytical columns.
+
+[pause=0.7]
+
+The key difference is how PostgreSQL evaluates underlying access permissions.
+
+[pause=0.7]
+
+In a production environment, you would test this with real roles and grants.
+
+[pause=1.0]
+
+Slide 30: Security boundaries
+
+Views are useful security-adjacent interfaces, but they should not be described as secure or compliant simply because they hide columns.
+
+[pause=0.7]
+
+Permissions still matter.
+
+[pause=0.7]
+
+Row-level security may matter.
+
+[pause=0.7]
+
+Application access paths matter.
+
+[pause=0.7]
+
+Compliance depends on a broader system of controls.
+
+[pause=0.7]
+
+Keep the claim proportional to what the view actually does.
+
+[pause=1.0]
+
+Slide 31: Materialized views
+
+A materialized view is fundamentally different from a standard view.
+
+[pause=0.7]
+
+The materialized view stores query results.
+
+[pause=0.8]
+
+That can make repeated reads of an expensive summary convenient.
+
+[pause=0.7]
+
+But the stored result can become stale as base tables change.
+
+[pause=0.7]
+
+Freshness therefore becomes part of the object's contract.
+
+[pause=1.0]
+
+Slide 32: When materialization helps
+
+Materialization is useful when an expensive result is read repeatedly and consumers can tolerate a known refresh lag.
+
+[pause=0.8]
+
+The database object alone is not the whole design.
+
+[pause=0.7]
+
+You also need a refresh schedule, freshness metadata, and a plan for refresh failures.
+
+[pause=0.8]
+
+Without those, consumers may not know how current the snapshot is.
+
+[pause=1.0]
+
+Slide 33: Create materialized view
+
+This query creates a diagnosis summary materialized view.
+
+[pause=0.8]
+
+The result has one row per diagnosis.
+
+[pause=0.7]
+
+It stores admission count, distinct patient count, average stay, and a refresh timestamp.
+
+[pause=0.8]
+
+The refresh timestamp documents when the snapshot was generated.
+
+[pause=0.8]
+
+It does not update every time someone reads the materialized view.
+
+[pause=1.0]
+
+Slide 34: Materialized view grain
+
+Materialized views still need a clear grain.
+
+[pause=0.7]
+
+In this example, one row represents one diagnosis.
+
+[pause=0.8]
+
+The measures summarize admissions for that diagnosis.
+
+[pause=0.7]
+
+The refreshed-at value records when the stored result was produced.
+
+[pause=0.8]
+
+Consumers need both the grain and freshness information to interpret the data correctly.
+
+[pause=1.0]
+
+Slide 35: Query the snapshot
+
+Once the materialized view exists, consumers can query the stored summary directly.
+
+[pause=0.8]
+
+The consuming query is simple because the aggregation has already been computed.
+
+[pause=0.8]
+
+But remember that the result is only as fresh as the last successful refresh.
+
+[pause=1.0]
+
+Slide 36: Freshness timeline
+
+Materialized-view freshness is easiest to understand as a timeline.
+
+[pause=0.7]
+
+The snapshot is built.
+
+[pause=0.7]
+
+Later, a new base-table row arrives.
+
+[pause=0.7]
+
+The standard base query can see it immediately, but the materialized view does not.
+
+[pause=0.8]
+
+After a refresh, the stored snapshot catches up.
+
+[pause=0.8]
+
+That delay must be documented for users.
+
+[pause=1.0]
+
+Slide 37: Create stale snapshot demo
+
+This example inserts another Influenza admission into the base table.
+
+[pause=0.8]
+
+Then it compares the live base-table count with the stored materialized-view count.
+
+[pause=0.8]
+
+The base table changes immediately.
+
+[pause=0.7]
+
+The snapshot remains unchanged because it has not been refreshed.
+
+[pause=0.8]
+
+This demonstrates staleness directly.
+
+[pause=1.0]
+
+Slide 38: Refresh materialized view
+
+REFRESH MATERIALIZED VIEW recomputes the stored result from the underlying query.
+
+[pause=0.8]
+
+Run this after creating the stale condition.
+
+[pause=0.8]
+
+The Influenza count should now match the current base data.
+
+[pause=0.7]
+
+The refreshed-at value should also be recomputed, documenting the new snapshot time.
+
+[pause=1.0]
+
+Slide 39: Freshness is a contract
+
+Freshness policy is part of the data product.
+
+[pause=0.7]
+
+Consumers need to know how often the materialized view refreshes.
+
+[pause=0.8]
+
+They need a way to see the last successful refresh.
+
+[pause=0.8]
+
+The team should know what happens when refresh fails.
+
+[pause=0.8]
+
+And the expected maximum latency should be documented rather than assumed.
+
+[pause=1.0]
+
+Slide 40: Index a materialized view
+
+Because a materialized view stores rows, PostgreSQL can index those rows.
+
+[pause=0.7]
+
+This example creates a unique index on diagnosis.
+
+[pause=0.8]
+
+Indexes may support faster reads and are also relevant to certain PostgreSQL concurrent refresh requirements.
+
+[pause=0.8]
+
+Choose indexes based on real query patterns and constraints, not simply because the object is materialized.
+
+[pause=1.0]
+
+Slide 41: Concurrent refresh note
+
+Production PostgreSQL supports REFRESH MATERIALIZED VIEW CONCURRENTLY under specific conditions.
+
+[pause=0.8]
+
+An appropriate unique index is required.
+
+[pause=0.7]
+
+Concurrent refresh is an availability technique.
+
+[pause=0.8]
+
+It does not remove the need for a refresh policy, freshness metadata, or monitoring.
+
+[pause=1.0]
+
+Slide 42: Compare live and snapshot
+
+A useful monitoring pattern is to compare the live result with the stored snapshot.
+
+[pause=0.8]
+
+This query shows diagnosis counts from both sources.
+
+[pause=0.8]
+
+After a successful refresh, the values should agree for the same logic.
+
+[pause=0.8]
+
+If they differ unexpectedly, investigate whether the snapshot is stale or the definitions are inconsistent.
+
+[pause=1.0]
+
+Slide 43: CTE vs view vs materialized view
+
+This comparison helps choose the right object.
+
+[pause=0.7]
+
+A CTE is local to one statement.
+
+[pause=0.7]
+
+A standard view is shared and live.
+
+[pause=0.7]
+
+A materialized view is shared and stored.
+
+[pause=0.7]
+
+Temporary business thresholds usually belong close to the report.
+
+[pause=0.7]
+
+Stable shared relational meaning often belongs in a standard view.
+
+[pause=0.7]
+
+Expensive reused summaries may justify materialization if the freshness tradeoff is acceptable.
+
+[pause=1.0]
+
+Slide 44: Promote only stable logic
+
+A useful architecture rule is to promote stable meaning into persistent objects.
+
+[pause=0.7]
+
+If many consumers agree on what a patient-admission row means, that can become a view.
+
+[pause=0.7]
+
+If one report uses a temporary thirty-day threshold, keep that logic in the report.
+
+[pause=0.7]
+
+If a summary is expensive and reused frequently, materialization may be appropriate.
+
+[pause=0.7]
+
+Do not turn every query into a database object.
+
+[pause=1.0]
+
+Slide 45: View + CTE
+
+This query combines Modules 11 and 12.
+
+[pause=0.8]
+
+The view owns the stable patient-admission interface.
+
+[pause=0.7]
+
+The CTEs own report-specific sequence and readmission logic.
+
+[pause=0.7]
+
+LAG calculates the previous discharge.
+
+[pause=0.7]
+
+The final threshold checks whether the gap is within thirty days.
+
+[pause=0.7]
+
+This separation keeps the stable data interface reusable while allowing reports to define their own analytical rules.
+
+[pause=1.0]
+
+Slide 46: Project architecture
+
+The project asks you to design a small analytics layer for three needs.
+
+[pause=0.8]
+
+Employee performance is stable shared logic and fits a standard view.
+
+[pause=0.7]
+
+Recent customer activity can be a shared view, while the at-risk threshold remains in a CTE because it may vary by report.
+
+[pause=0.7]
+
+The diagnosis dashboard uses a repeated summary and can use a materialized view when a refresh delay is acceptable.
+
+[pause=1.0]
+
+Slide 47: Employee performance view
+
+This view joins employees to departments and sales orders.
+
+[pause=0.7]
+
+It aggregates orders and sales amount.
+
+[pause=0.7]
+
+One output row represents one employee.
+
+[pause=0.7]
+
+Because this definition can support several operations reports, publishing it as a reusable view is reasonable.
+
+[pause=1.0]
+
+Slide 48: Consume employee view
+
+This query consumes the employee performance interface.
+
+[pause=0.8]
+
+The total-sales threshold remains outside the view.
+
+[pause=0.7]
+
+That is useful because different reports may choose different thresholds.
+
+[pause=0.7]
+
+The stable performance definition stays shared, while temporary business rules remain report-specific.
+
+[pause=1.0]
+
+Slide 49: Recent activity view
+
+The recent-activity view publishes completed transactions from a defined six-month window.
+
+[pause=0.7]
+
+That shared definition can support multiple retention analyses.
+
+[pause=0.7]
+
+It creates a smaller, clearer interface than asking every report author to repeat the transaction-status logic.
+
+[pause=1.0]
+
+Slide 50: Retention CTE
+
+This retention query starts from the recent-activity view.
+
+[pause=0.8]
+
+A CTE finds the last transaction per customer.
+
+[pause=0.7]
+
+Another CTE applies a sixty-day inactivity threshold.
+
+[pause=0.7]
+
+That threshold is intentionally report-specific.
+
+[pause=0.7]
+
+If another report wants ninety days, the shared activity view does not need to change.
+
+[pause=1.0]
+
+Slide 51: Diagnosis dashboard object
+
+The diagnosis dashboard is a good materialized-view example.
+
+[pause=0.8]
+
+Its grain and measures are stable.
+
+[pause=0.7]
+
+The summary may be read frequently.
+
+[pause=0.7]
+
+And leadership can tolerate a documented refresh interval.
+
+[pause=0.8]
+
+The materialized view becomes a small data product with both a schema contract and a freshness contract.
+
+[pause=1.0]
+
+Slide 52: Object catalog
+
+An analytics layer should be discoverable.
+
+[pause=0.7]
+
+This query lists views and materialized views in the analytics schema.
+
+[pause=0.8]
+
+Object catalogs help teams understand what reusable interfaces already exist before creating duplicates.
+
+[pause=0.7]
+
+They also support documentation and governance.
+
+[pause=1.0]
+
+Slide 53: Architecture review questions
+
+Before publishing a reusable object, review more than the SQL.
+
+[pause=0.7]
+
+State the grain.
+
+[pause=0.7]
+
+Review what the interface exposes.
+
+[pause=0.7]
+
+Document freshness.
+
+[pause=0.7]
+
+Inspect dependencies.
+
+[pause=0.8]
+
+And identify ownership of the business definition and operational process.
+
+[pause=0.7]
+
+These questions turn a view from an ad hoc query into a maintainable interface.
+
+[pause=1.0]
+
+Slide 54: Recognition checkpoint
+
+Use this checkpoint to connect requirements with objects.
+
+[pause=0.7]
+
+Temporary stages suggest a CTE.
+
+[pause=0.7]
+
+Shared live relational logic suggests a standard view.
+
+[pause=0.7]
+
+An expensive summary with acceptable refresh delay suggests a materialized view.
+
+[pause=0.8]
+
+A controlled filtered one-table interface may use an updatable view and check option.
+
+[pause=0.7]
+
+The object choice should follow the contract you need.
+
+[pause=1.0]
+
+Slide 55: Freshness checkpoint
+
+Freshness is one of the clearest differences among these objects.
+
+[pause=0.7]
+
+A later CTE statement uses current source data.
+
+[pause=0.7]
+
+A standard view reads through to the current underlying data.
+
+[pause=0.7]
+
+A materialized view stays at its last snapshot until refreshed.
+
+[pause=0.8]
+
+Consumers should never have to guess which freshness model they are using.
+
+[pause=1.0]
+
+Slide 56: Access checkpoint
+
+A limited view can reduce the columns and rows exposed through that interface.
+
+[pause=0.7]
+
+That is useful.
+
+[pause=0.7]
+
+But it does not by itself guarantee that users cannot access the base table.
+
+[pause=0.7]
+
+It does not replace grants, row-level security, or broader compliance controls.
+
+[pause=0.7]
+
+Use precise language about what the view actually protects.
+
+[pause=1.0]
+
+Slide 57: Assessment task
+
+The assessment has two parts.
+
+[pause=0.8]
+
+First, create analytics dot vw employee department info with employee name, salary, and department name.
+
+[pause=0.7]
+
+Second, use only that view to calculate the average salary for Sales.
+
+[pause=0.7]
+
+The point is not only the syntax.
+
+[pause=0.7]
+
+You should also state the grain and explain why the view is a reusable interface.
+
+[pause=1.0]
+
+Slide 58: Assessment reasoning
+
+Before looking at a sample solution, explain your design.
+
+[pause=0.7]
+
+The view should have one row per employee.
+
+[pause=0.7]
+
+It should expose the columns required for employee-department analysis.
+
+[pause=0.7]
+
+The consuming query should rely on that interface rather than rebuilding the join.
+
+[pause=0.8]
+
+That is how you demonstrate modular design rather than only SQL syntax.
+
+[pause=1.0]
+
+Slide 59: Sample assessment solution
+
+This sample creates the employee-department view by joining employees and departments.
+
+[pause=0.7]
+
+Then it queries only that view to calculate the Sales average salary.
+
+[pause=0.7]
+
+Compare it with your own approach.
+
+[pause=0.8]
+
+The important points are the interface grain, exposed columns, and reuse of the published object.
+
+[pause=1.0]
+
+Slide 60: Module 12 takeaways
+
+These are the key habits from Module 12.
+
+[pause=0.7]
+
+Treat important views as contracts.
+
+[pause=0.7]
+
+Separate stable reusable meaning from report-specific logic.
+
+[pause=0.7]
+
+Understand whether a view is writable.
+
+[pause=0.7]
+
+Be precise about the difference between limiting an interface and enforcing authorization.
+
+[pause=0.7]
+
+Remember that materialized views create a freshness obligation.
+
+[pause=0.7]
+
+And inspect dependencies before changing shared objects.
+
+[pause=1.0]
+
+Slide 61: Object decision guide
+
+Use this decision guide when designing modular SQL.
+
+[pause=0.7]
+
+Choose a CTE for statement-local stages.
+
+[pause=0.7]
+
+Choose a standard view for stable shared live logic.
+
+[pause=0.7]
+
+Use a simple updatable view only when write behavior is intentional.
+
+[pause=0.7]
+
+Use views with proper privileges for controlled interfaces.
+
+[pause=0.7]
+
+Choose a materialized view when storing a reusable result is worth the freshness tradeoff.
+
+[pause=0.7]
+
+Keep highly changeable report thresholds outside stable shared objects.
+
+[pause=1.0]
+
+Slide 62: Next: Module 13
+
+Module 13 moves from PostgreSQL database objects into distributed analytical processing with Spark SQL.
+
+[pause=0.7]
+
+The relational concepts remain familiar: tables, joins, filters, grouping, and reusable transformations.
+
+[pause=0.7]
+
+The new challenge is scale and distributed execution.
+
+[pause=0.7]
+
+Carry forward the interface and grain habits from this module because they remain important when data processing moves to a distributed engine.
+
+[pause=1.0]
