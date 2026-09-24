@@ -1,0 +1,1575 @@
+Slide 1: Start
+
+Welcome to Module 11, Advanced SQL: CTEs and Window Functions.
+
+[pause=0.7]
+
+The word advanced can make these topics sound harder than they are.
+
+[pause=0.7]
+
+Most of the difficulty comes from two questions. First, what does each intermediate result represent? Second, which related rows are visible to the current calculation?
+
+[pause=0.7]
+
+We will answer those questions gradually with Common Table Expressions, recursive CTEs, window functions, ranking, LAG and LEAD, and explicit window frames.
+
+[pause=0.7]
+
+Every SQL example can run directly in the browser, and you can also copy it into pgAdmin.
+
+[pause=1.0]
+
+Slide 2: What advanced SQL is really doing
+
+Advanced SQL is mostly about controlling intermediate results and row context.
+
+[pause=0.7]
+
+A CTE gives a meaningful name to a stage in the query.
+
+[pause=0.8]
+
+A window function lets one row see related rows without automatically collapsing the result.
+
+[pause=0.7]
+
+Sequence functions depend on a meaningful order.
+
+[pause=0.7]
+
+And throughout the module, grain still matters.
+
+[pause=0.7]
+
+At every stage, you should be able to complete the sentence: one row represents what?
+
+[pause=1.0]
+
+Slide 3: Learning goals
+
+By the end of the module, you should be able to structure multi-step SQL with CTEs, trace a recursive query, choose the correct ranking function, analyze sequences with LAG and LEAD, and write explicit frames for running and moving calculations.
+
+[pause=0.8]
+
+You should also understand the difference between GROUP BY and PARTITION BY.
+
+[pause=0.7]
+
+The goal is not only to run the syntax. You should be able to explain the row meaning at every stage.
+
+[pause=1.0]
+
+Slide 4: Module roadmap
+
+We will start with ordinary CTEs because they make complex queries easier to read.
+
+[pause=0.7]
+
+Then we will introduce recursive CTEs for hierarchies.
+
+[pause=0.7]
+
+After that, we will study the OVER clause and window functions.
+
+[pause=0.7]
+
+Ranking and sequence functions come next.
+
+[pause=0.7]
+
+Then we will make frames explicit.
+
+[pause=0.7]
+
+Finally, we will combine CTEs and windows into useful analytical patterns.
+
+[pause=1.0]
+
+Slide 5: Teaching database
+
+The teaching database includes several small datasets.
+
+[pause=0.7]
+
+Patients and admissions support healthcare-style analytical examples.
+
+[pause=0.8]
+
+Employees includes a manager hierarchy and salary ties.
+
+[pause=0.7]
+
+Sales supports running totals, moving averages, ranking, and percent-of-total calculations.
+
+[pause=0.8]
+
+Website visits provides ordered event sequences.
+
+[pause=0.7]
+
+The variety helps you see that the SQL patterns are general.
+
+[pause=1.0]
+
+Slide 6: The grain rule still applies
+
+Grain remains the central safety rule.
+
+[pause=0.7]
+
+A CTE can have a different grain from the source table.
+
+[pause=0.7]
+
+A window function usually preserves the current row grain.
+
+[pause=0.7]
+
+A later filter can reduce the number of rows without changing what one row represents.
+
+[pause=0.7]
+
+If you cannot explain the row meaning at each stage, advanced syntax can hide mistakes instead of solving them.
+
+[pause=1.0]
+
+Slide 7: CTE mental model
+
+A Common Table Expression begins with WITH.
+
+[pause=0.7]
+
+Think of it as a named intermediate relation inside one statement.
+
+[pause=0.7]
+
+The first stage can summarize or clean the source.
+
+[pause=0.7]
+
+A later stage can join or enrich that result.
+
+[pause=0.7]
+
+The final SELECT consumes the prepared data.
+
+[pause=0.7]
+
+Naming the stages helps you reason about the transformation one step at a time.
+
+[pause=1.0]
+
+Slide 8: CTE syntax anatomy
+
+A CTE has a simple structure.
+
+[pause=0.7]
+
+WITH gives the stage a name.
+
+[pause=0.7]
+
+The query inside the parentheses defines the rows and columns of that stage.
+
+[pause=0.8]
+
+The final query can read the CTE by name.
+
+[pause=0.8]
+
+You can also define several CTEs separated by commas.
+
+[pause=0.7]
+
+The CTE is not a permanent table. It belongs to the statement.
+
+[pause=1.0]
+
+Slide 9: When a CTE helps
+
+A CTE is useful when one stage deserves a name.
+
+[pause=0.7]
+
+It can make a multi-step query easier to read.
+
+[pause=0.8]
+
+It is especially helpful when you need to calculate a window value first and filter that result later.
+
+[pause=0.7]
+
+Recursive queries also use the CTE structure.
+
+[pause=0.7]
+
+Use a CTE because it clarifies the logic, not simply because the query is long.
+
+[pause=1.0]
+
+Slide 10: When a CTE does not help
+
+CTEs are not automatically better.
+
+[pause=0.7]
+
+A short query may be clearer without one.
+
+[pause=0.8]
+
+A CTE also does not repair unclear grain.
+
+[pause=0.7]
+
+And it does not automatically make a query faster.
+
+[pause=0.8]
+
+Use named stages when they improve reasoning and maintainability.
+
+[pause=1.0]
+
+Slide 11: Basic CTE example
+
+This query first creates a CTE named older patients.
+
+[pause=0.8]
+
+That stage contains one row per patient older than fifty.
+
+[pause=0.7]
+
+The final query left joins admissions and counts admissions per older patient.
+
+[pause=0.8]
+
+Run it and identify the grain of each stage.
+
+[pause=0.8]
+
+The CTE is patient grain, and the final grouped result is also one row per patient.
+
+[pause=1.0]
+
+Slide 12: Read the basic CTE
+
+When reading a CTE query, do not read top to bottom as one giant statement.
+
+[pause=0.8]
+
+First understand the CTE by itself.
+
+[pause=0.7]
+
+Then ask what the final query does with that stage.
+
+[pause=0.8]
+
+Here the CTE filters patients.
+
+[pause=0.7]
+
+The final query joins admissions and aggregates.
+
+[pause=0.8]
+
+This staged reading style is one reason CTEs improve clarity.
+
+[pause=1.0]
+
+Slide 13: Multiple CTEs
+
+Multiple CTEs can depend on earlier CTEs.
+
+[pause=0.7]
+
+This creates a pipeline.
+
+[pause=0.7]
+
+The first stage summarizes admissions.
+
+[pause=0.7]
+
+The second stage joins those counts to patient attributes.
+
+[pause=0.7]
+
+The final query creates a visit-pattern label.
+
+[pause=0.8]
+
+Each stage has one focused job and one explainable grain.
+
+[pause=1.0]
+
+Slide 14: Multiple CTE SQL
+
+Run this multi-CTE query and read it stage by stage.
+
+[pause=0.8]
+
+Admission counts has one row per patient with an admission count.
+
+[pause=0.7]
+
+Patient features joins that result to every patient and replaces missing counts with zero.
+
+[pause=0.7]
+
+The final SELECT classifies repeat versus single or none.
+
+[pause=0.7]
+
+Notice how naming intermediate results makes the logic easier to discuss.
+
+[pause=1.0]
+
+Slide 15: CTE + join + aggregation
+
+This example creates stay days in the CTE.
+
+[pause=0.8]
+
+Each CTE row represents one completed admission.
+
+[pause=0.7]
+
+The final query joins patients and calculates admission count and average stay per patient.
+
+[pause=0.8]
+
+The grain changes only in the final GROUP BY.
+
+[pause=0.7]
+
+That separation makes the transformation easier to validate.
+
+[pause=1.0]
+
+Slide 16: CTEs and performance
+
+CTEs are mainly a query-organization tool.
+
+[pause=0.8]
+
+PostgreSQL can sometimes inline or fold a non-recursive CTE into the surrounding query.
+
+[pause=0.8]
+
+In other situations, materialization behavior can matter.
+
+[pause=0.7]
+
+The practical lesson for this course is simple: use CTEs for clarity, and inspect the execution plan when performance matters.
+
+[pause=0.8]
+
+Do not assume WITH automatically makes a query faster.
+
+[pause=1.0]
+
+Slide 17: Inspect a CTE plan
+
+EXPLAIN shows how PostgreSQL plans to execute the statement.
+
+[pause=0.7]
+
+The purpose here is not to memorize every plan node.
+
+[pause=0.7]
+
+It is to build the habit of checking instead of guessing.
+
+[pause=0.7]
+
+On real workloads, data volume, indexes, statistics, and PostgreSQL version all affect the plan.
+
+[pause=1.0]
+
+Slide 18: Recursive CTEs
+
+A recursive CTE has two parts.
+
+[pause=0.7]
+
+The anchor term starts the result.
+
+[pause=0.7]
+
+The recursive term refers to the CTE and finds the next level.
+
+[pause=0.7]
+
+UNION ALL combines the rows.
+
+[pause=0.7]
+
+The process continues until the recursive term produces no more matching rows.
+
+[pause=0.7]
+
+This is useful for hierarchies and parent-child structures.
+
+[pause=1.0]
+
+Slide 19: Anchor vs recursive term
+
+When reading recursion, identify the anchor first.
+
+[pause=0.7]
+
+Then identify the self-reference.
+
+[pause=0.7]
+
+The join condition defines how one level connects to the next.
+
+[pause=0.7]
+
+Adding a depth or path column can make the traversal much easier to inspect and debug.
+
+[pause=0.8]
+
+Do not try to understand the whole recursive statement at once.
+
+[pause=1.0]
+
+Slide 20: Employee hierarchy
+
+An organization hierarchy is a classic recursive example.
+
+[pause=0.8]
+
+We start with the root employee whose manager ID is NULL.
+
+[pause=0.7]
+
+Then we find employees who report to that root.
+
+[pause=0.7]
+
+Then employees who report to those employees.
+
+[pause=0.7]
+
+Depth tells us the level, and a path string lets us see the route from the top of the hierarchy.
+
+[pause=1.0]
+
+Slide 21: Recursive hierarchy SQL
+
+The anchor selects top-level employees with no manager.
+
+[pause=0.7]
+
+The recursive term joins employees to the current organization result when an employee's manager ID matches a current employee ID.
+
+[pause=0.7]
+
+Depth increases by one.
+
+[pause=0.7]
+
+Path appends the employee name.
+
+[pause=0.7]
+
+Run the query and inspect how the hierarchy expands level by level.
+
+[pause=1.0]
+
+Slide 22: Trace recursion manually
+
+A recursive query is easier to understand if you simulate it.
+
+[pause=0.8]
+
+Iteration zero returns the anchor.
+
+[pause=0.7]
+
+The next iteration finds direct reports.
+
+[pause=0.7]
+
+The following iteration finds reports of those employees.
+
+[pause=0.7]
+
+When no new child rows match, recursion stops.
+
+[pause=0.7]
+
+This mental model helps you debug the join relationship.
+
+[pause=1.0]
+
+Slide 23: Recursive safety
+
+Recursive queries require extra care.
+
+[pause=0.7]
+
+A wrong join condition can produce too many rows.
+
+[pause=0.7]
+
+Cycles in the source hierarchy can also create problematic traversal.
+
+[pause=0.7]
+
+Test the anchor by itself.
+
+[pause=0.7]
+
+Inspect the recursive join.
+
+[pause=0.8]
+
+Use depth or path information while developing the query.
+
+[pause=0.8]
+
+Start with a small dataset so the behavior is visible.
+
+[pause=1.0]
+
+Slide 24: Window functions
+
+Window functions are powerful because they preserve row detail.
+
+[pause=0.7]
+
+GROUP BY usually reduces multiple rows to one grouped row.
+
+[pause=0.7]
+
+A window function can calculate a group average, rank, running total, or previous value while still returning the individual row.
+
+[pause=0.8]
+
+This is why windows are ideal when you need both detail and context in the same result.
+
+[pause=1.0]
+
+Slide 25: OVER clause anatomy
+
+A window expression has up to four important pieces.
+
+[pause=0.7]
+
+The function tells us what is calculated.
+
+[pause=0.7]
+
+PARTITION BY defines independent groups.
+
+[pause=0.7]
+
+ORDER BY defines sequence.
+
+[pause=0.7]
+
+The frame determines which ordered rows participate in some window calculations.
+
+[pause=0.7]
+
+When a window query is confusing, identify these pieces separately.
+
+[pause=1.0]
+
+Slide 26: Window anatomy SQL
+
+This query uses two windows over the same employee rows.
+
+[pause=0.8]
+
+AVG salary with PARTITION BY department calculates the department average.
+
+[pause=0.7]
+
+ROW_NUMBER with partition and order assigns a sequence within each department.
+
+[pause=0.7]
+
+No GROUP BY is used.
+
+[pause=0.7]
+
+Every employee row remains in the output, with additional context beside it.
+
+[pause=1.0]
+
+Slide 27: PARTITION BY
+
+PARTITION BY divides rows into independent window groups.
+
+[pause=0.7]
+
+Without a partition, the window can operate over all rows.
+
+[pause=0.7]
+
+With department partitioning, calculations restart for each department.
+
+[pause=0.7]
+
+With patient partitioning, sequence calculations restart for each patient.
+
+[pause=0.7]
+
+Partition changes the calculation context, not the number of output rows by itself.
+
+[pause=1.0]
+
+Slide 28: ORDER BY inside OVER
+
+ORDER BY inside OVER is part of the analytical definition.
+
+[pause=0.7]
+
+For ranking, it defines higher and lower positions.
+
+[pause=0.7]
+
+For LAG and LEAD, it defines previous and next.
+
+[pause=0.7]
+
+For running totals, it defines the sequence of accumulation.
+
+[pause=0.8]
+
+When ordering values can tie, add a stable tie-breaker when deterministic row sequence matters.
+
+[pause=1.0]
+
+Slide 29: Window frames
+
+A frame describes which rows within an ordered partition contribute to the current calculation.
+
+[pause=0.7]
+
+For a running total, the frame may start at the beginning and end at the current row.
+
+[pause=0.8]
+
+For a three-row moving average, it may include two preceding rows and the current row.
+
+[pause=0.7]
+
+For some value functions, the frame may need to extend to the end of the partition.
+
+[pause=1.0]
+
+Slide 30: Ranking functions
+
+ROW_NUMBER, RANK, and DENSE_RANK look similar until ties occur.
+
+[pause=0.7]
+
+ROW_NUMBER always assigns a unique sequence.
+
+[pause=0.7]
+
+RANK gives equal values the same rank and leaves gaps afterward.
+
+[pause=0.7]
+
+DENSE_RANK also shares ranks but does not leave gaps.
+
+[pause=0.7]
+
+Choose the function based on what ties should mean for the business question.
+
+[pause=1.0]
+
+Slide 31: ROW_NUMBER
+
+ROW_NUMBER assigns a unique sequence even when values tie.
+
+[pause=0.7]
+
+This makes it useful for selecting exactly the top two or top three rows per group.
+
+[pause=0.7]
+
+But if salaries tie and you only order by salary, the sequence among tied rows may not be deterministic.
+
+[pause=0.7]
+
+Add a stable tie-breaker such as employee ID when the order matters.
+
+[pause=1.0]
+
+Slide 32: RANK
+
+RANK behaves like a competition ranking.
+
+[pause=0.7]
+
+If two employees tie for second, both receive rank two.
+
+[pause=0.7]
+
+The next rank is four.
+
+[pause=0.7]
+
+This is useful when the numeric rank should reflect positions consumed by the tie.
+
+[pause=1.0]
+
+Slide 33: DENSE_RANK
+
+DENSE_RANK also gives tied values the same rank.
+
+[pause=0.7]
+
+But it does not leave gaps.
+
+[pause=0.7]
+
+If two employees tie for second, the next distinct salary gets rank three.
+
+[pause=0.7]
+
+This is often useful for grouping distinct ordered levels.
+
+[pause=1.0]
+
+Slide 34: Compare ranking ties
+
+Run this query and focus on rows with the same salary.
+
+[pause=0.8]
+
+ROW_NUMBER still gives them different sequence numbers.
+
+[pause=0.7]
+
+RANK gives them the same rank and leaves a gap.
+
+[pause=0.7]
+
+DENSE_RANK gives the same rank but no gap.
+
+[pause=0.7]
+
+This side-by-side comparison makes the business differences visible.
+
+[pause=1.0]
+
+Slide 35: Deterministic ordering
+
+Deterministic ordering matters when you use ROW_NUMBER.
+
+[pause=0.7]
+
+If two employees have equal salary, salary alone does not define which comes first.
+
+[pause=0.7]
+
+Adding employee ID creates a stable order.
+
+[pause=0.7]
+
+But be careful with RANK and DENSE_RANK.
+
+[pause=0.7]
+
+If you include employee ID inside the ranking ORDER BY, the tied salary rows are no longer peers.
+
+[pause=0.7]
+
+Choose the ordering based on the meaning you want.
+
+[pause=1.0]
+
+Slide 36: Rank within groups
+
+Partitioning makes ranking local to a group.
+
+[pause=0.7]
+
+If we partition by department, each department gets its own rank sequence.
+
+[pause=0.7]
+
+An employee can be rank one in Analytics even if someone in Engineering has a higher salary.
+
+[pause=0.7]
+
+The comparison set is defined by the partition.
+
+[pause=1.0]
+
+Slide 37: Department ranking SQL
+
+This query partitions employees by department and orders salary descending.
+
+[pause=0.8]
+
+RANK restarts at one for each department.
+
+[pause=0.7]
+
+Run the query and notice the boundaries between departments.
+
+[pause=0.8]
+
+This is a common pattern for top earners, top products, or highest values within categories.
+
+[pause=1.0]
+
+Slide 38: LAG
+
+LAG is used when a question contains words such as previous, change, or time since.
+
+[pause=0.7]
+
+The current row remains in the result.
+
+[pause=0.7]
+
+LAG retrieves a value from an earlier row in the defined order.
+
+[pause=0.7]
+
+Partitioning prevents one patient's sequence from mixing with another patient's sequence.
+
+[pause=0.7]
+
+The order is part of the definition of previous.
+
+[pause=1.0]
+
+Slide 39: LAG admissions example
+
+This query sequences admissions within each patient.
+
+[pause=0.8]
+
+LAG retrieves the previous discharge time.
+
+[pause=0.7]
+
+The outer query subtracts that previous discharge from the current admit time.
+
+[pause=0.8]
+
+The result is the interval between encounters.
+
+[pause=0.7]
+
+The first admission for each patient has no previous discharge, so it is excluded in the final stage.
+
+[pause=1.0]
+
+Slide 40: LEAD
+
+LEAD is the forward-looking counterpart to LAG.
+
+[pause=0.7]
+
+It retrieves a value from the next ordered row.
+
+[pause=0.7]
+
+This is useful for time until next visit, next purchase, or next event.
+
+[pause=0.7]
+
+Again, the partition and order define the sequence.
+
+[pause=1.0]
+
+Slide 41: LEAD visits example
+
+This query partitions website visits by user and orders them by visit time and visit ID.
+
+[pause=0.8]
+
+LEAD retrieves the next visit timestamp.
+
+[pause=0.7]
+
+Subtracting the current timestamp gives time to the next visit.
+
+[pause=0.7]
+
+The last visit in each user sequence has no next row, so LEAD returns NULL.
+
+[pause=1.0]
+
+Slide 42: Sequence order must be meaningful
+
+Sequence analysis depends on order.
+
+[pause=0.7]
+
+A timestamp usually defines the main sequence.
+
+[pause=0.7]
+
+If two events share the same timestamp, a stable event ID can break the tie.
+
+[pause=0.7]
+
+Without a meaningful order, previous and next are undefined from an analytical perspective.
+
+[pause=0.7]
+
+Always treat the ordering clause as part of the business logic.
+
+[pause=1.0]
+
+Slide 43: Running totals
+
+A running total uses an ordered window frame.
+
+[pause=0.8]
+
+The calculation starts at the beginning of the partition and ends at the current row.
+
+[pause=0.7]
+
+As the current row moves forward, the frame grows.
+
+[pause=0.7]
+
+If we partition by department, each department gets its own running total.
+
+[pause=1.0]
+
+Slide 44: Running total SQL
+
+This query first creates daily revenue by department.
+
+[pause=0.8]
+
+Then a window SUM accumulates those daily values.
+
+[pause=0.7]
+
+The frame is explicit: from unbounded preceding through the current row.
+
+[pause=0.7]
+
+Run it and watch the cumulative revenue increase within each department.
+
+[pause=0.8]
+
+The partition restarts the running total for each department.
+
+[pause=1.0]
+
+Slide 45: Moving averages
+
+A moving average uses a sliding frame rather than an ever-growing frame.
+
+[pause=0.7]
+
+With two preceding rows and the current row, the calculation uses up to three ordered rows.
+
+[pause=0.7]
+
+At the beginning of the sequence, fewer than three rows may be available.
+
+[pause=0.7]
+
+The frame moves forward with the current row.
+
+[pause=1.0]
+
+Slide 46: Moving average SQL
+
+The daily CTE produces one revenue value per date.
+
+[pause=0.7]
+
+The window AVG orders those dates and uses a frame from two preceding rows through the current row.
+
+[pause=0.7]
+
+Run the query and compare the raw daily revenue with the smoothed moving average.
+
+[pause=0.8]
+
+Remember that this is a three-row window, not necessarily three calendar days if dates are missing.
+
+[pause=1.0]
+
+Slide 47: ROWS frame
+
+The ROWS frame counts ordered rows.
+
+[pause=0.7]
+
+Two preceding means up to two earlier rows.
+
+[pause=0.7]
+
+It does not mean two days, two hours, or two months unless every time unit has exactly one row.
+
+[pause=0.7]
+
+This distinction matters when the sequence has gaps.
+
+[pause=1.0]
+
+Slide 48: Explicit frame example
+
+This query writes the cumulative frame explicitly.
+
+[pause=0.8]
+
+It starts at the first row of the ordered partition and ends at the current row.
+
+[pause=0.7]
+
+Writing the frame makes the intended behavior visible to the reader.
+
+[pause=0.7]
+
+That is especially useful in teaching and in production queries where the frame meaning matters.
+
+[pause=1.0]
+
+Slide 49: LAST_VALUE pitfall
+
+LAST_VALUE often surprises students.
+
+[pause=0.7]
+
+The function does not automatically look to the final row of the partition.
+
+[pause=0.7]
+
+It returns the last value in the current frame.
+
+[pause=0.7]
+
+With the default ordered frame, that frame commonly ends at the current peer group.
+
+[pause=0.7]
+
+If you want the final value across the entire partition, make the frame extend through unbounded following.
+
+[pause=1.0]
+
+Slide 50: LAST_VALUE frame example
+
+This query places two LAST_VALUE calculations side by side.
+
+[pause=0.8]
+
+The first uses the default ordered frame.
+
+[pause=0.7]
+
+The second explicitly extends from unbounded preceding to unbounded following.
+
+[pause=0.7]
+
+Run the query and compare the columns.
+
+[pause=0.8]
+
+This example shows why frame boundaries are part of the meaning of a window function.
+
+[pause=1.0]
+
+Slide 51: GROUP BY vs PARTITION BY
+
+GROUP BY and PARTITION BY both organize rows into groups, but they affect output very differently.
+
+[pause=0.7]
+
+GROUP BY collapses rows to the grouping grain.
+
+[pause=0.7]
+
+PARTITION BY defines a window context while preserving the detail rows.
+
+[pause=0.7]
+
+Choose based on the output grain you need, not because window functions are newer or more advanced.
+
+[pause=1.0]
+
+Slide 52: GROUP BY stay duration
+
+This query calculates average stay per patient using GROUP BY.
+
+[pause=0.8]
+
+The output has one row per patient.
+
+[pause=0.7]
+
+Individual admission rows are no longer present.
+
+[pause=0.7]
+
+That is correct when the desired output grain is patient level.
+
+[pause=1.0]
+
+Slide 53: PARTITION BY stay duration
+
+This query keeps each completed admission.
+
+[pause=0.8]
+
+It calculates stay days for the admission and also calculates the patient's average stay using a window.
+
+[pause=0.7]
+
+The average is repeated beside each admission for that patient.
+
+[pause=0.7]
+
+This is useful when you need to compare an individual stay with the patient's usual pattern.
+
+[pause=1.0]
+
+Slide 54: Compare output row counts
+
+This query counts the rows produced by the GROUP BY approach and the window approach.
+
+[pause=0.8]
+
+The grouped result has one row per patient.
+
+[pause=0.7]
+
+The window result has one row per admission.
+
+[pause=0.7]
+
+Neither is automatically better.
+
+[pause=0.7]
+
+They answer different analytical output-grain questions.
+
+[pause=1.0]
+
+Slide 55: Percent of total
+
+Percent of total is a classic window pattern.
+
+[pause=0.7]
+
+Each sale row remains visible.
+
+[pause=0.7]
+
+The denominator uses SUM revenue over all rows.
+
+[pause=0.7]
+
+Dividing the current row revenue by that total produces the row's contribution percentage.
+
+[pause=0.7]
+
+A GROUP BY would not preserve each individual sale row in the same way.
+
+[pause=1.0]
+
+Slide 56: Percent-of-total SQL
+
+This query calculates each sale's percent of all revenue.
+
+[pause=0.8]
+
+SUM revenue OVER empty parentheses means the window covers all returned rows.
+
+[pause=0.7]
+
+There is no partition.
+
+[pause=0.7]
+
+Each sale remains in the output.
+
+[pause=0.7]
+
+Run the query and inspect the largest contributions.
+
+[pause=1.0]
+
+Slide 57: Top N per group
+
+Top N per group is a common CTE plus window pattern.
+
+[pause=0.7]
+
+First calculate a rank inside each group.
+
+[pause=0.7]
+
+Then put that ranked result in a CTE.
+
+[pause=0.7]
+
+Finally filter the rank in the outer query.
+
+[pause=0.8]
+
+The separation is useful because window functions are computed before the outer filtering stage.
+
+[pause=1.0]
+
+Slide 58: Top N with ROW_NUMBER
+
+This query uses ROW_NUMBER within each department.
+
+[pause=0.8]
+
+Salary descending defines the main order.
+
+[pause=0.7]
+
+Employee ID breaks exact salary ties deterministically.
+
+[pause=0.7]
+
+The outer query filters row number less than or equal to two.
+
+[pause=0.8]
+
+That returns at most two rows per department.
+
+[pause=1.0]
+
+Slide 59: Top N including ties
+
+This version uses RANK instead of ROW_NUMBER.
+
+[pause=0.7]
+
+If two employees share the second-highest salary, both can receive rank two and both can pass the rank less than or equal to two condition.
+
+[pause=0.7]
+
+That means the output may contain more than two employees in a department.
+
+[pause=0.7]
+
+Choose this behavior when ties should be included.
+
+[pause=1.0]
+
+Slide 60: CTE + window pipeline
+
+CTEs and windows are most useful when combined into a pipeline.
+
+[pause=0.7]
+
+The first CTE aggregates revenue to department-product grain.
+
+[pause=0.7]
+
+The second stage ranks those product totals inside each department.
+
+[pause=0.7]
+
+The final query filters to the top ranks.
+
+[pause=0.8]
+
+Each stage has a different job and a clear row meaning.
+
+[pause=1.0]
+
+Slide 61: Pipeline SQL
+
+The product totals CTE creates one row per department and product.
+
+[pause=0.7]
+
+The ranked CTE keeps the same grain but adds DENSE_RANK within each department.
+
+[pause=0.7]
+
+The final SELECT filters to the top two rank groups.
+
+[pause=0.7]
+
+Run the query and trace the grain through all three stages.
+
+[pause=0.8]
+
+This is a strong example of readable advanced SQL.
+
+[pause=1.0]
+
+Slide 62: Readmission project
+
+The applied project combines several concepts.
+
+[pause=0.8]
+
+We sequence admissions for each patient.
+
+[pause=0.7]
+
+LAG retrieves the previous discharge.
+
+[pause=0.7]
+
+A second CTE calculates the gap.
+
+[pause=0.7]
+
+The final query joins patient names and classifies whether the new admission occurred within thirty days.
+
+[pause=0.8]
+
+This is a practical sequence-analysis pipeline.
+
+[pause=1.0]
+
+Slide 63: Readmission SQL
+
+The first CTE remains at admission grain and adds previous discharge.
+
+[pause=0.7]
+
+The second CTE keeps only admissions with a previous encounter and calculates the gap.
+
+[pause=0.7]
+
+The final query joins patient names and applies the thirty-day classification.
+
+[pause=0.8]
+
+Run it and read the query stage by stage.
+
+[pause=0.8]
+
+Notice that the patient join is delayed until the final result because it is descriptive rather than needed for sequence logic.
+
+[pause=1.0]
+
+Slide 64: Project reasoning
+
+A strong advanced SQL solution includes reasoning.
+
+[pause=0.7]
+
+Sequenced is still one row per admission.
+
+[pause=0.7]
+
+Intervals is one row per admission that has a previous encounter.
+
+[pause=0.7]
+
+The final output keeps that repeat-admission grain while adding a name and classification.
+
+[pause=0.7]
+
+Being able to explain these stages is more important than memorizing the exact query.
+
+[pause=1.0]
+
+Slide 65: Recognition checkpoint
+
+Use this checkpoint to connect business questions with SQL patterns.
+
+[pause=0.8]
+
+Named stages suggest CTEs.
+
+[pause=0.7]
+
+Hierarchies suggest recursion.
+
+[pause=0.7]
+
+Group context beside detail suggests window functions.
+
+[pause=0.7]
+
+Previous-event questions suggest LAG.
+
+[pause=0.7]
+
+Top N per group suggests ranking in one stage and filtering in another.
+
+[pause=0.7]
+
+The pattern choice should follow the analytical question.
+
+[pause=1.0]
+
+Slide 66: Grain checkpoint
+
+The GROUP BY versus PARTITION BY choice is fundamentally a grain decision.
+
+[pause=0.7]
+
+If you want one row per patient, GROUP BY may be correct.
+
+[pause=0.7]
+
+If you need every admission and the patient average beside it, a window is a better fit.
+
+[pause=0.7]
+
+Ask whether detail should be collapsed or preserved.
+
+[pause=1.0]
+
+Slide 67: Ranking checkpoint
+
+Ranking functions should be chosen from the tie rule.
+
+[pause=0.7]
+
+If you need exactly two rows, ROW_NUMBER is appropriate.
+
+[pause=0.7]
+
+If tied second-place employees should all be included, RANK fits better.
+
+[pause=0.7]
+
+If you want compact rank levels without gaps, use DENSE_RANK.
+
+[pause=0.7]
+
+The business meaning of ties determines the function.
+
+[pause=1.0]
+
+Slide 68: Sequence checkpoint
+
+Sequence analysis needs two things before LAG or LEAD can make sense.
+
+[pause=0.7]
+
+First, define whose sequence you are analyzing with PARTITION BY.
+
+[pause=0.7]
+
+Second, define the event order.
+
+[pause=0.7]
+
+Then choose LAG for a previous value or LEAD for a next value.
+
+[pause=0.7]
+
+If the order is ambiguous, the sequence result is ambiguous too.
+
+[pause=1.0]
+
+Slide 69: Applied challenge
+
+The applied challenge returns the two longest completed stays per department.
+
+[pause=0.7]
+
+The CTE calculates stay days and assigns ROW_NUMBER within each department.
+
+[pause=0.7]
+
+Stay duration descending defines the main order.
+
+[pause=0.7]
+
+Admission ID breaks exact duration ties.
+
+[pause=0.7]
+
+The outer query keeps row numbers one and two.
+
+[pause=0.8]
+
+After running it, explain why admission-level detail is preserved.
+
+[pause=1.0]
+
+Slide 70: Module 11 takeaways
+
+These are the main habits from Module 11.
+
+[pause=0.7]
+
+Use CTEs to name logical stages.
+
+[pause=0.7]
+
+Keep row grain explicit.
+
+[pause=0.7]
+
+Use windows when you need context without losing detail.
+
+[pause=0.7]
+
+Treat ORDER BY as part of the analytical definition.
+
+[pause=0.7]
+
+Write frame boundaries when they matter.
+
+[pause=0.7]
+
+And choose ranking functions based on the meaning of ties.
+
+[pause=1.0]
+
+Slide 71: Advanced SQL decision guide
+
+Use this guide when selecting advanced SQL tools.
+
+[pause=0.7]
+
+Named stages suggest CTEs.
+
+[pause=0.7]
+
+Hierarchies suggest recursive CTEs.
+
+[pause=0.7]
+
+Detail plus group context suggests windows.
+
+[pause=0.7]
+
+Top N requires a ranking rule.
+
+[pause=0.7]
+
+Previous and next suggest LAG and LEAD.
+
+[pause=0.7]
+
+Running and moving calculations require ordered windows and meaningful frames.
+
+[pause=0.8]
+
+And if you truly want one row per group, GROUP BY may still be the simplest correct choice.
+
+[pause=1.0]
+
+Slide 72: Next: Module 12
+
+Module 12 moves from advanced one-statement analysis to reusable SQL interfaces.
+
+[pause=0.7]
+
+You will work with views and modular query design so frequently used logic does not have to be rewritten in every analysis.
+
+[pause=0.8]
+
+The CTE habits from this module will help because good views also depend on clear grain, clear naming, and understandable transformation logic.
+
+[pause=1.0]
