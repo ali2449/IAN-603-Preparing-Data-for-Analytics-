@@ -1,0 +1,517 @@
+{
+  "prefix": "module11",
+  "voice": "en-US-GuyNeural",
+  "rate": "-5%",
+  "volume": "+0%",
+  "pitch": "+0Hz",
+  "caption_words": 15,
+  "slide_count": 72,
+  "slide_markers_found": true,
+  "pause_marker_format": "[pause=seconds] or [pause=millisecondsms]",
+  "slides": [
+    {
+      "slide": 1,
+      "audio": "module11_slide_01.mp3",
+      "captions": "module11_slide_01.vtt",
+      "text": "Welcome to Module 11, Advanced SQL: CTEs and Window Functions.\n\n[pause=0.7]\n\nThe word advanced can make these topics sound harder than they are.\n\n[pause=0.7]\n\nMost of the difficulty comes from two questions. First, what does each intermediate result represent? Second, which related rows are visible to the current calculation?\n\n[pause=0.7]\n\nWe will answer those questions gradually with Common Table Expressions, recursive CTEs, window functions, ranking, LAG and LEAD, and explicit window frames.\n\n[pause=0.7]\n\nEvery SQL example can run directly in the browser, and you can also copy it into pgAdmin.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 2,
+      "audio": "module11_slide_02.mp3",
+      "captions": "module11_slide_02.vtt",
+      "text": "Advanced SQL is mostly about controlling intermediate results and row context.\n\n[pause=0.7]\n\nA CTE gives a meaningful name to a stage in the query.\n\n[pause=0.8]\n\nA window function lets one row see related rows without automatically collapsing the result.\n\n[pause=0.7]\n\nSequence functions depend on a meaningful order.\n\n[pause=0.7]\n\nAnd throughout the module, grain still matters.\n\n[pause=0.7]\n\nAt every stage, you should be able to complete the sentence: one row represents what?\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 3,
+      "audio": "module11_slide_03.mp3",
+      "captions": "module11_slide_03.vtt",
+      "text": "By the end of the module, you should be able to structure multi-step SQL with CTEs, trace a recursive query, choose the correct ranking function, analyze sequences with LAG and LEAD, and write explicit frames for running and moving calculations.\n\n[pause=0.8]\n\nYou should also understand the difference between GROUP BY and PARTITION BY.\n\n[pause=0.7]\n\nThe goal is not only to run the syntax. You should be able to explain the row meaning at every stage.\n\n[pause=1.0]",
+      "pause_markers": 3
+    },
+    {
+      "slide": 4,
+      "audio": "module11_slide_04.mp3",
+      "captions": "module11_slide_04.vtt",
+      "text": "We will start with ordinary CTEs because they make complex queries easier to read.\n\n[pause=0.7]\n\nThen we will introduce recursive CTEs for hierarchies.\n\n[pause=0.7]\n\nAfter that, we will study the OVER clause and window functions.\n\n[pause=0.7]\n\nRanking and sequence functions come next.\n\n[pause=0.7]\n\nThen we will make frames explicit.\n\n[pause=0.7]\n\nFinally, we will combine CTEs and windows into useful analytical patterns.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 5,
+      "audio": "module11_slide_05.mp3",
+      "captions": "module11_slide_05.vtt",
+      "text": "The teaching database includes several small datasets.\n\n[pause=0.7]\n\nPatients and admissions support healthcare-style analytical examples.\n\n[pause=0.8]\n\nEmployees includes a manager hierarchy and salary ties.\n\n[pause=0.7]\n\nSales supports running totals, moving averages, ranking, and percent-of-total calculations.\n\n[pause=0.8]\n\nWebsite visits provides ordered event sequences.\n\n[pause=0.7]\n\nThe variety helps you see that the SQL patterns are general.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 6,
+      "audio": "module11_slide_06.mp3",
+      "captions": "module11_slide_06.vtt",
+      "text": "Grain remains the central safety rule.\n\n[pause=0.7]\n\nA CTE can have a different grain from the source table.\n\n[pause=0.7]\n\nA window function usually preserves the current row grain.\n\n[pause=0.7]\n\nA later filter can reduce the number of rows without changing what one row represents.\n\n[pause=0.7]\n\nIf you cannot explain the row meaning at each stage, advanced syntax can hide mistakes instead of solving them.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 7,
+      "audio": "module11_slide_07.mp3",
+      "captions": "module11_slide_07.vtt",
+      "text": "A Common Table Expression begins with WITH.\n\n[pause=0.7]\n\nThink of it as a named intermediate relation inside one statement.\n\n[pause=0.7]\n\nThe first stage can summarize or clean the source.\n\n[pause=0.7]\n\nA later stage can join or enrich that result.\n\n[pause=0.7]\n\nThe final SELECT consumes the prepared data.\n\n[pause=0.7]\n\nNaming the stages helps you reason about the transformation one step at a time.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 8,
+      "audio": "module11_slide_08.mp3",
+      "captions": "module11_slide_08.vtt",
+      "text": "A CTE has a simple structure.\n\n[pause=0.7]\n\nWITH gives the stage a name.\n\n[pause=0.7]\n\nThe query inside the parentheses defines the rows and columns of that stage.\n\n[pause=0.8]\n\nThe final query can read the CTE by name.\n\n[pause=0.8]\n\nYou can also define several CTEs separated by commas.\n\n[pause=0.7]\n\nThe CTE is not a permanent table. It belongs to the statement.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 9,
+      "audio": "module11_slide_09.mp3",
+      "captions": "module11_slide_09.vtt",
+      "text": "A CTE is useful when one stage deserves a name.\n\n[pause=0.7]\n\nIt can make a multi-step query easier to read.\n\n[pause=0.8]\n\nIt is especially helpful when you need to calculate a window value first and filter that result later.\n\n[pause=0.7]\n\nRecursive queries also use the CTE structure.\n\n[pause=0.7]\n\nUse a CTE because it clarifies the logic, not simply because the query is long.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 10,
+      "audio": "module11_slide_10.mp3",
+      "captions": "module11_slide_10.vtt",
+      "text": "CTEs are not automatically better.\n\n[pause=0.7]\n\nA short query may be clearer without one.\n\n[pause=0.8]\n\nA CTE also does not repair unclear grain.\n\n[pause=0.7]\n\nAnd it does not automatically make a query faster.\n\n[pause=0.8]\n\nUse named stages when they improve reasoning and maintainability.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 11,
+      "audio": "module11_slide_11.mp3",
+      "captions": "module11_slide_11.vtt",
+      "text": "This query first creates a CTE named older patients.\n\n[pause=0.8]\n\nThat stage contains one row per patient older than fifty.\n\n[pause=0.7]\n\nThe final query left joins admissions and counts admissions per older patient.\n\n[pause=0.8]\n\nRun it and identify the grain of each stage.\n\n[pause=0.8]\n\nThe CTE is patient grain, and the final grouped result is also one row per patient.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 12,
+      "audio": "module11_slide_12.mp3",
+      "captions": "module11_slide_12.vtt",
+      "text": "When reading a CTE query, do not read top to bottom as one giant statement.\n\n[pause=0.8]\n\nFirst understand the CTE by itself.\n\n[pause=0.7]\n\nThen ask what the final query does with that stage.\n\n[pause=0.8]\n\nHere the CTE filters patients.\n\n[pause=0.7]\n\nThe final query joins admissions and aggregates.\n\n[pause=0.8]\n\nThis staged reading style is one reason CTEs improve clarity.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 13,
+      "audio": "module11_slide_13.mp3",
+      "captions": "module11_slide_13.vtt",
+      "text": "Multiple CTEs can depend on earlier CTEs.\n\n[pause=0.7]\n\nThis creates a pipeline.\n\n[pause=0.7]\n\nThe first stage summarizes admissions.\n\n[pause=0.7]\n\nThe second stage joins those counts to patient attributes.\n\n[pause=0.7]\n\nThe final query creates a visit-pattern label.\n\n[pause=0.8]\n\nEach stage has one focused job and one explainable grain.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 14,
+      "audio": "module11_slide_14.mp3",
+      "captions": "module11_slide_14.vtt",
+      "text": "Run this multi-CTE query and read it stage by stage.\n\n[pause=0.8]\n\nAdmission counts has one row per patient with an admission count.\n\n[pause=0.7]\n\nPatient features joins that result to every patient and replaces missing counts with zero.\n\n[pause=0.7]\n\nThe final SELECT classifies repeat versus single or none.\n\n[pause=0.7]\n\nNotice how naming intermediate results makes the logic easier to discuss.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 15,
+      "audio": "module11_slide_15.mp3",
+      "captions": "module11_slide_15.vtt",
+      "text": "This example creates stay days in the CTE.\n\n[pause=0.8]\n\nEach CTE row represents one completed admission.\n\n[pause=0.7]\n\nThe final query joins patients and calculates admission count and average stay per patient.\n\n[pause=0.8]\n\nThe grain changes only in the final GROUP BY.\n\n[pause=0.7]\n\nThat separation makes the transformation easier to validate.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 16,
+      "audio": "module11_slide_16.mp3",
+      "captions": "module11_slide_16.vtt",
+      "text": "CTEs are mainly a query-organization tool.\n\n[pause=0.8]\n\nPostgreSQL can sometimes inline or fold a non-recursive CTE into the surrounding query.\n\n[pause=0.8]\n\nIn other situations, materialization behavior can matter.\n\n[pause=0.7]\n\nThe practical lesson for this course is simple: use CTEs for clarity, and inspect the execution plan when performance matters.\n\n[pause=0.8]\n\nDo not assume WITH automatically makes a query faster.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 17,
+      "audio": "module11_slide_17.mp3",
+      "captions": "module11_slide_17.vtt",
+      "text": "EXPLAIN shows how PostgreSQL plans to execute the statement.\n\n[pause=0.7]\n\nThe purpose here is not to memorize every plan node.\n\n[pause=0.7]\n\nIt is to build the habit of checking instead of guessing.\n\n[pause=0.7]\n\nOn real workloads, data volume, indexes, statistics, and PostgreSQL version all affect the plan.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 18,
+      "audio": "module11_slide_18.mp3",
+      "captions": "module11_slide_18.vtt",
+      "text": "A recursive CTE has two parts.\n\n[pause=0.7]\n\nThe anchor term starts the result.\n\n[pause=0.7]\n\nThe recursive term refers to the CTE and finds the next level.\n\n[pause=0.7]\n\nUNION ALL combines the rows.\n\n[pause=0.7]\n\nThe process continues until the recursive term produces no more matching rows.\n\n[pause=0.7]\n\nThis is useful for hierarchies and parent-child structures.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 19,
+      "audio": "module11_slide_19.mp3",
+      "captions": "module11_slide_19.vtt",
+      "text": "When reading recursion, identify the anchor first.\n\n[pause=0.7]\n\nThen identify the self-reference.\n\n[pause=0.7]\n\nThe join condition defines how one level connects to the next.\n\n[pause=0.7]\n\nAdding a depth or path column can make the traversal much easier to inspect and debug.\n\n[pause=0.8]\n\nDo not try to understand the whole recursive statement at once.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 20,
+      "audio": "module11_slide_20.mp3",
+      "captions": "module11_slide_20.vtt",
+      "text": "An organization hierarchy is a classic recursive example.\n\n[pause=0.8]\n\nWe start with the root employee whose manager ID is NULL.\n\n[pause=0.7]\n\nThen we find employees who report to that root.\n\n[pause=0.7]\n\nThen employees who report to those employees.\n\n[pause=0.7]\n\nDepth tells us the level, and a path string lets us see the route from the top of the hierarchy.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 21,
+      "audio": "module11_slide_21.mp3",
+      "captions": "module11_slide_21.vtt",
+      "text": "The anchor selects top-level employees with no manager.\n\n[pause=0.7]\n\nThe recursive term joins employees to the current organization result when an employee's manager ID matches a current employee ID.\n\n[pause=0.7]\n\nDepth increases by one.\n\n[pause=0.7]\n\nPath appends the employee name.\n\n[pause=0.7]\n\nRun the query and inspect how the hierarchy expands level by level.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 22,
+      "audio": "module11_slide_22.mp3",
+      "captions": "module11_slide_22.vtt",
+      "text": "A recursive query is easier to understand if you simulate it.\n\n[pause=0.8]\n\nIteration zero returns the anchor.\n\n[pause=0.7]\n\nThe next iteration finds direct reports.\n\n[pause=0.7]\n\nThe following iteration finds reports of those employees.\n\n[pause=0.7]\n\nWhen no new child rows match, recursion stops.\n\n[pause=0.7]\n\nThis mental model helps you debug the join relationship.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 23,
+      "audio": "module11_slide_23.mp3",
+      "captions": "module11_slide_23.vtt",
+      "text": "Recursive queries require extra care.\n\n[pause=0.7]\n\nA wrong join condition can produce too many rows.\n\n[pause=0.7]\n\nCycles in the source hierarchy can also create problematic traversal.\n\n[pause=0.7]\n\nTest the anchor by itself.\n\n[pause=0.7]\n\nInspect the recursive join.\n\n[pause=0.8]\n\nUse depth or path information while developing the query.\n\n[pause=0.8]\n\nStart with a small dataset so the behavior is visible.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 24,
+      "audio": "module11_slide_24.mp3",
+      "captions": "module11_slide_24.vtt",
+      "text": "Window functions are powerful because they preserve row detail.\n\n[pause=0.7]\n\nGROUP BY usually reduces multiple rows to one grouped row.\n\n[pause=0.7]\n\nA window function can calculate a group average, rank, running total, or previous value while still returning the individual row.\n\n[pause=0.8]\n\nThis is why windows are ideal when you need both detail and context in the same result.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 25,
+      "audio": "module11_slide_25.mp3",
+      "captions": "module11_slide_25.vtt",
+      "text": "A window expression has up to four important pieces.\n\n[pause=0.7]\n\nThe function tells us what is calculated.\n\n[pause=0.7]\n\nPARTITION BY defines independent groups.\n\n[pause=0.7]\n\nORDER BY defines sequence.\n\n[pause=0.7]\n\nThe frame determines which ordered rows participate in some window calculations.\n\n[pause=0.7]\n\nWhen a window query is confusing, identify these pieces separately.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 26,
+      "audio": "module11_slide_26.mp3",
+      "captions": "module11_slide_26.vtt",
+      "text": "This query uses two windows over the same employee rows.\n\n[pause=0.8]\n\nAVG salary with PARTITION BY department calculates the department average.\n\n[pause=0.7]\n\nROW_NUMBER with partition and order assigns a sequence within each department.\n\n[pause=0.7]\n\nNo GROUP BY is used.\n\n[pause=0.7]\n\nEvery employee row remains in the output, with additional context beside it.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 27,
+      "audio": "module11_slide_27.mp3",
+      "captions": "module11_slide_27.vtt",
+      "text": "PARTITION BY divides rows into independent window groups.\n\n[pause=0.7]\n\nWithout a partition, the window can operate over all rows.\n\n[pause=0.7]\n\nWith department partitioning, calculations restart for each department.\n\n[pause=0.7]\n\nWith patient partitioning, sequence calculations restart for each patient.\n\n[pause=0.7]\n\nPartition changes the calculation context, not the number of output rows by itself.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 28,
+      "audio": "module11_slide_28.mp3",
+      "captions": "module11_slide_28.vtt",
+      "text": "ORDER BY inside OVER is part of the analytical definition.\n\n[pause=0.7]\n\nFor ranking, it defines higher and lower positions.\n\n[pause=0.7]\n\nFor LAG and LEAD, it defines previous and next.\n\n[pause=0.7]\n\nFor running totals, it defines the sequence of accumulation.\n\n[pause=0.8]\n\nWhen ordering values can tie, add a stable tie-breaker when deterministic row sequence matters.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 29,
+      "audio": "module11_slide_29.mp3",
+      "captions": "module11_slide_29.vtt",
+      "text": "A frame describes which rows within an ordered partition contribute to the current calculation.\n\n[pause=0.7]\n\nFor a running total, the frame may start at the beginning and end at the current row.\n\n[pause=0.8]\n\nFor a three-row moving average, it may include two preceding rows and the current row.\n\n[pause=0.7]\n\nFor some value functions, the frame may need to extend to the end of the partition.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 30,
+      "audio": "module11_slide_30.mp3",
+      "captions": "module11_slide_30.vtt",
+      "text": "ROW_NUMBER, RANK, and DENSE_RANK look similar until ties occur.\n\n[pause=0.7]\n\nROW_NUMBER always assigns a unique sequence.\n\n[pause=0.7]\n\nRANK gives equal values the same rank and leaves gaps afterward.\n\n[pause=0.7]\n\nDENSE_RANK also shares ranks but does not leave gaps.\n\n[pause=0.7]\n\nChoose the function based on what ties should mean for the business question.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 31,
+      "audio": "module11_slide_31.mp3",
+      "captions": "module11_slide_31.vtt",
+      "text": "ROW_NUMBER assigns a unique sequence even when values tie.\n\n[pause=0.7]\n\nThis makes it useful for selecting exactly the top two or top three rows per group.\n\n[pause=0.7]\n\nBut if salaries tie and you only order by salary, the sequence among tied rows may not be deterministic.\n\n[pause=0.7]\n\nAdd a stable tie-breaker such as employee ID when the order matters.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 32,
+      "audio": "module11_slide_32.mp3",
+      "captions": "module11_slide_32.vtt",
+      "text": "RANK behaves like a competition ranking.\n\n[pause=0.7]\n\nIf two employees tie for second, both receive rank two.\n\n[pause=0.7]\n\nThe next rank is four.\n\n[pause=0.7]\n\nThis is useful when the numeric rank should reflect positions consumed by the tie.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 33,
+      "audio": "module11_slide_33.mp3",
+      "captions": "module11_slide_33.vtt",
+      "text": "DENSE_RANK also gives tied values the same rank.\n\n[pause=0.7]\n\nBut it does not leave gaps.\n\n[pause=0.7]\n\nIf two employees tie for second, the next distinct salary gets rank three.\n\n[pause=0.7]\n\nThis is often useful for grouping distinct ordered levels.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 34,
+      "audio": "module11_slide_34.mp3",
+      "captions": "module11_slide_34.vtt",
+      "text": "Run this query and focus on rows with the same salary.\n\n[pause=0.8]\n\nROW_NUMBER still gives them different sequence numbers.\n\n[pause=0.7]\n\nRANK gives them the same rank and leaves a gap.\n\n[pause=0.7]\n\nDENSE_RANK gives the same rank but no gap.\n\n[pause=0.7]\n\nThis side-by-side comparison makes the business differences visible.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 35,
+      "audio": "module11_slide_35.mp3",
+      "captions": "module11_slide_35.vtt",
+      "text": "Deterministic ordering matters when you use ROW_NUMBER.\n\n[pause=0.7]\n\nIf two employees have equal salary, salary alone does not define which comes first.\n\n[pause=0.7]\n\nAdding employee ID creates a stable order.\n\n[pause=0.7]\n\nBut be careful with RANK and DENSE_RANK.\n\n[pause=0.7]\n\nIf you include employee ID inside the ranking ORDER BY, the tied salary rows are no longer peers.\n\n[pause=0.7]\n\nChoose the ordering based on the meaning you want.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 36,
+      "audio": "module11_slide_36.mp3",
+      "captions": "module11_slide_36.vtt",
+      "text": "Partitioning makes ranking local to a group.\n\n[pause=0.7]\n\nIf we partition by department, each department gets its own rank sequence.\n\n[pause=0.7]\n\nAn employee can be rank one in Analytics even if someone in Engineering has a higher salary.\n\n[pause=0.7]\n\nThe comparison set is defined by the partition.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 37,
+      "audio": "module11_slide_37.mp3",
+      "captions": "module11_slide_37.vtt",
+      "text": "This query partitions employees by department and orders salary descending.\n\n[pause=0.8]\n\nRANK restarts at one for each department.\n\n[pause=0.7]\n\nRun the query and notice the boundaries between departments.\n\n[pause=0.8]\n\nThis is a common pattern for top earners, top products, or highest values within categories.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 38,
+      "audio": "module11_slide_38.mp3",
+      "captions": "module11_slide_38.vtt",
+      "text": "LAG is used when a question contains words such as previous, change, or time since.\n\n[pause=0.7]\n\nThe current row remains in the result.\n\n[pause=0.7]\n\nLAG retrieves a value from an earlier row in the defined order.\n\n[pause=0.7]\n\nPartitioning prevents one patient's sequence from mixing with another patient's sequence.\n\n[pause=0.7]\n\nThe order is part of the definition of previous.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 39,
+      "audio": "module11_slide_39.mp3",
+      "captions": "module11_slide_39.vtt",
+      "text": "This query sequences admissions within each patient.\n\n[pause=0.8]\n\nLAG retrieves the previous discharge time.\n\n[pause=0.7]\n\nThe outer query subtracts that previous discharge from the current admit time.\n\n[pause=0.8]\n\nThe result is the interval between encounters.\n\n[pause=0.7]\n\nThe first admission for each patient has no previous discharge, so it is excluded in the final stage.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 40,
+      "audio": "module11_slide_40.mp3",
+      "captions": "module11_slide_40.vtt",
+      "text": "LEAD is the forward-looking counterpart to LAG.\n\n[pause=0.7]\n\nIt retrieves a value from the next ordered row.\n\n[pause=0.7]\n\nThis is useful for time until next visit, next purchase, or next event.\n\n[pause=0.7]\n\nAgain, the partition and order define the sequence.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 41,
+      "audio": "module11_slide_41.mp3",
+      "captions": "module11_slide_41.vtt",
+      "text": "This query partitions website visits by user and orders them by visit time and visit ID.\n\n[pause=0.8]\n\nLEAD retrieves the next visit timestamp.\n\n[pause=0.7]\n\nSubtracting the current timestamp gives time to the next visit.\n\n[pause=0.7]\n\nThe last visit in each user sequence has no next row, so LEAD returns NULL.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 42,
+      "audio": "module11_slide_42.mp3",
+      "captions": "module11_slide_42.vtt",
+      "text": "Sequence analysis depends on order.\n\n[pause=0.7]\n\nA timestamp usually defines the main sequence.\n\n[pause=0.7]\n\nIf two events share the same timestamp, a stable event ID can break the tie.\n\n[pause=0.7]\n\nWithout a meaningful order, previous and next are undefined from an analytical perspective.\n\n[pause=0.7]\n\nAlways treat the ordering clause as part of the business logic.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 43,
+      "audio": "module11_slide_43.mp3",
+      "captions": "module11_slide_43.vtt",
+      "text": "A running total uses an ordered window frame.\n\n[pause=0.8]\n\nThe calculation starts at the beginning of the partition and ends at the current row.\n\n[pause=0.7]\n\nAs the current row moves forward, the frame grows.\n\n[pause=0.7]\n\nIf we partition by department, each department gets its own running total.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 44,
+      "audio": "module11_slide_44.mp3",
+      "captions": "module11_slide_44.vtt",
+      "text": "This query first creates daily revenue by department.\n\n[pause=0.8]\n\nThen a window SUM accumulates those daily values.\n\n[pause=0.7]\n\nThe frame is explicit: from unbounded preceding through the current row.\n\n[pause=0.7]\n\nRun it and watch the cumulative revenue increase within each department.\n\n[pause=0.8]\n\nThe partition restarts the running total for each department.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 45,
+      "audio": "module11_slide_45.mp3",
+      "captions": "module11_slide_45.vtt",
+      "text": "A moving average uses a sliding frame rather than an ever-growing frame.\n\n[pause=0.7]\n\nWith two preceding rows and the current row, the calculation uses up to three ordered rows.\n\n[pause=0.7]\n\nAt the beginning of the sequence, fewer than three rows may be available.\n\n[pause=0.7]\n\nThe frame moves forward with the current row.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 46,
+      "audio": "module11_slide_46.mp3",
+      "captions": "module11_slide_46.vtt",
+      "text": "The daily CTE produces one revenue value per date.\n\n[pause=0.7]\n\nThe window AVG orders those dates and uses a frame from two preceding rows through the current row.\n\n[pause=0.7]\n\nRun the query and compare the raw daily revenue with the smoothed moving average.\n\n[pause=0.8]\n\nRemember that this is a three-row window, not necessarily three calendar days if dates are missing.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 47,
+      "audio": "module11_slide_47.mp3",
+      "captions": "module11_slide_47.vtt",
+      "text": "The ROWS frame counts ordered rows.\n\n[pause=0.7]\n\nTwo preceding means up to two earlier rows.\n\n[pause=0.7]\n\nIt does not mean two days, two hours, or two months unless every time unit has exactly one row.\n\n[pause=0.7]\n\nThis distinction matters when the sequence has gaps.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 48,
+      "audio": "module11_slide_48.mp3",
+      "captions": "module11_slide_48.vtt",
+      "text": "This query writes the cumulative frame explicitly.\n\n[pause=0.8]\n\nIt starts at the first row of the ordered partition and ends at the current row.\n\n[pause=0.7]\n\nWriting the frame makes the intended behavior visible to the reader.\n\n[pause=0.7]\n\nThat is especially useful in teaching and in production queries where the frame meaning matters.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 49,
+      "audio": "module11_slide_49.mp3",
+      "captions": "module11_slide_49.vtt",
+      "text": "LAST_VALUE often surprises students.\n\n[pause=0.7]\n\nThe function does not automatically look to the final row of the partition.\n\n[pause=0.7]\n\nIt returns the last value in the current frame.\n\n[pause=0.7]\n\nWith the default ordered frame, that frame commonly ends at the current peer group.\n\n[pause=0.7]\n\nIf you want the final value across the entire partition, make the frame extend through unbounded following.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 50,
+      "audio": "module11_slide_50.mp3",
+      "captions": "module11_slide_50.vtt",
+      "text": "This query places two LAST_VALUE calculations side by side.\n\n[pause=0.8]\n\nThe first uses the default ordered frame.\n\n[pause=0.7]\n\nThe second explicitly extends from unbounded preceding to unbounded following.\n\n[pause=0.7]\n\nRun the query and compare the columns.\n\n[pause=0.8]\n\nThis example shows why frame boundaries are part of the meaning of a window function.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 51,
+      "audio": "module11_slide_51.mp3",
+      "captions": "module11_slide_51.vtt",
+      "text": "GROUP BY and PARTITION BY both organize rows into groups, but they affect output very differently.\n\n[pause=0.7]\n\nGROUP BY collapses rows to the grouping grain.\n\n[pause=0.7]\n\nPARTITION BY defines a window context while preserving the detail rows.\n\n[pause=0.7]\n\nChoose based on the output grain you need, not because window functions are newer or more advanced.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 52,
+      "audio": "module11_slide_52.mp3",
+      "captions": "module11_slide_52.vtt",
+      "text": "This query calculates average stay per patient using GROUP BY.\n\n[pause=0.8]\n\nThe output has one row per patient.\n\n[pause=0.7]\n\nIndividual admission rows are no longer present.\n\n[pause=0.7]\n\nThat is correct when the desired output grain is patient level.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 53,
+      "audio": "module11_slide_53.mp3",
+      "captions": "module11_slide_53.vtt",
+      "text": "This query keeps each completed admission.\n\n[pause=0.8]\n\nIt calculates stay days for the admission and also calculates the patient's average stay using a window.\n\n[pause=0.7]\n\nThe average is repeated beside each admission for that patient.\n\n[pause=0.7]\n\nThis is useful when you need to compare an individual stay with the patient's usual pattern.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 54,
+      "audio": "module11_slide_54.mp3",
+      "captions": "module11_slide_54.vtt",
+      "text": "This query counts the rows produced by the GROUP BY approach and the window approach.\n\n[pause=0.8]\n\nThe grouped result has one row per patient.\n\n[pause=0.7]\n\nThe window result has one row per admission.\n\n[pause=0.7]\n\nNeither is automatically better.\n\n[pause=0.7]\n\nThey answer different analytical output-grain questions.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 55,
+      "audio": "module11_slide_55.mp3",
+      "captions": "module11_slide_55.vtt",
+      "text": "Percent of total is a classic window pattern.\n\n[pause=0.7]\n\nEach sale row remains visible.\n\n[pause=0.7]\n\nThe denominator uses SUM revenue over all rows.\n\n[pause=0.7]\n\nDividing the current row revenue by that total produces the row's contribution percentage.\n\n[pause=0.7]\n\nA GROUP BY would not preserve each individual sale row in the same way.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 56,
+      "audio": "module11_slide_56.mp3",
+      "captions": "module11_slide_56.vtt",
+      "text": "This query calculates each sale's percent of all revenue.\n\n[pause=0.8]\n\nSUM revenue OVER empty parentheses means the window covers all returned rows.\n\n[pause=0.7]\n\nThere is no partition.\n\n[pause=0.7]\n\nEach sale remains in the output.\n\n[pause=0.7]\n\nRun the query and inspect the largest contributions.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 57,
+      "audio": "module11_slide_57.mp3",
+      "captions": "module11_slide_57.vtt",
+      "text": "Top N per group is a common CTE plus window pattern.\n\n[pause=0.7]\n\nFirst calculate a rank inside each group.\n\n[pause=0.7]\n\nThen put that ranked result in a CTE.\n\n[pause=0.7]\n\nFinally filter the rank in the outer query.\n\n[pause=0.8]\n\nThe separation is useful because window functions are computed before the outer filtering stage.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 58,
+      "audio": "module11_slide_58.mp3",
+      "captions": "module11_slide_58.vtt",
+      "text": "This query uses ROW_NUMBER within each department.\n\n[pause=0.8]\n\nSalary descending defines the main order.\n\n[pause=0.7]\n\nEmployee ID breaks exact salary ties deterministically.\n\n[pause=0.7]\n\nThe outer query filters row number less than or equal to two.\n\n[pause=0.8]\n\nThat returns at most two rows per department.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 59,
+      "audio": "module11_slide_59.mp3",
+      "captions": "module11_slide_59.vtt",
+      "text": "This version uses RANK instead of ROW_NUMBER.\n\n[pause=0.7]\n\nIf two employees share the second-highest salary, both can receive rank two and both can pass the rank less than or equal to two condition.\n\n[pause=0.7]\n\nThat means the output may contain more than two employees in a department.\n\n[pause=0.7]\n\nChoose this behavior when ties should be included.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 60,
+      "audio": "module11_slide_60.mp3",
+      "captions": "module11_slide_60.vtt",
+      "text": "CTEs and windows are most useful when combined into a pipeline.\n\n[pause=0.7]\n\nThe first CTE aggregates revenue to department-product grain.\n\n[pause=0.7]\n\nThe second stage ranks those product totals inside each department.\n\n[pause=0.7]\n\nThe final query filters to the top ranks.\n\n[pause=0.8]\n\nEach stage has a different job and a clear row meaning.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 61,
+      "audio": "module11_slide_61.mp3",
+      "captions": "module11_slide_61.vtt",
+      "text": "The product totals CTE creates one row per department and product.\n\n[pause=0.7]\n\nThe ranked CTE keeps the same grain but adds DENSE_RANK within each department.\n\n[pause=0.7]\n\nThe final SELECT filters to the top two rank groups.\n\n[pause=0.7]\n\nRun the query and trace the grain through all three stages.\n\n[pause=0.8]\n\nThis is a strong example of readable advanced SQL.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 62,
+      "audio": "module11_slide_62.mp3",
+      "captions": "module11_slide_62.vtt",
+      "text": "The applied project combines several concepts.\n\n[pause=0.8]\n\nWe sequence admissions for each patient.\n\n[pause=0.7]\n\nLAG retrieves the previous discharge.\n\n[pause=0.7]\n\nA second CTE calculates the gap.\n\n[pause=0.7]\n\nThe final query joins patient names and classifies whether the new admission occurred within thirty days.\n\n[pause=0.8]\n\nThis is a practical sequence-analysis pipeline.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 63,
+      "audio": "module11_slide_63.mp3",
+      "captions": "module11_slide_63.vtt",
+      "text": "The first CTE remains at admission grain and adds previous discharge.\n\n[pause=0.7]\n\nThe second CTE keeps only admissions with a previous encounter and calculates the gap.\n\n[pause=0.7]\n\nThe final query joins patient names and applies the thirty-day classification.\n\n[pause=0.8]\n\nRun it and read the query stage by stage.\n\n[pause=0.8]\n\nNotice that the patient join is delayed until the final result because it is descriptive rather than needed for sequence logic.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 64,
+      "audio": "module11_slide_64.mp3",
+      "captions": "module11_slide_64.vtt",
+      "text": "A strong advanced SQL solution includes reasoning.\n\n[pause=0.7]\n\nSequenced is still one row per admission.\n\n[pause=0.7]\n\nIntervals is one row per admission that has a previous encounter.\n\n[pause=0.7]\n\nThe final output keeps that repeat-admission grain while adding a name and classification.\n\n[pause=0.7]\n\nBeing able to explain these stages is more important than memorizing the exact query.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 65,
+      "audio": "module11_slide_65.mp3",
+      "captions": "module11_slide_65.vtt",
+      "text": "Use this checkpoint to connect business questions with SQL patterns.\n\n[pause=0.8]\n\nNamed stages suggest CTEs.\n\n[pause=0.7]\n\nHierarchies suggest recursion.\n\n[pause=0.7]\n\nGroup context beside detail suggests window functions.\n\n[pause=0.7]\n\nPrevious-event questions suggest LAG.\n\n[pause=0.7]\n\nTop N per group suggests ranking in one stage and filtering in another.\n\n[pause=0.7]\n\nThe pattern choice should follow the analytical question.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 66,
+      "audio": "module11_slide_66.mp3",
+      "captions": "module11_slide_66.vtt",
+      "text": "The GROUP BY versus PARTITION BY choice is fundamentally a grain decision.\n\n[pause=0.7]\n\nIf you want one row per patient, GROUP BY may be correct.\n\n[pause=0.7]\n\nIf you need every admission and the patient average beside it, a window is a better fit.\n\n[pause=0.7]\n\nAsk whether detail should be collapsed or preserved.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 67,
+      "audio": "module11_slide_67.mp3",
+      "captions": "module11_slide_67.vtt",
+      "text": "Ranking functions should be chosen from the tie rule.\n\n[pause=0.7]\n\nIf you need exactly two rows, ROW_NUMBER is appropriate.\n\n[pause=0.7]\n\nIf tied second-place employees should all be included, RANK fits better.\n\n[pause=0.7]\n\nIf you want compact rank levels without gaps, use DENSE_RANK.\n\n[pause=0.7]\n\nThe business meaning of ties determines the function.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 68,
+      "audio": "module11_slide_68.mp3",
+      "captions": "module11_slide_68.vtt",
+      "text": "Sequence analysis needs two things before LAG or LEAD can make sense.\n\n[pause=0.7]\n\nFirst, define whose sequence you are analyzing with PARTITION BY.\n\n[pause=0.7]\n\nSecond, define the event order.\n\n[pause=0.7]\n\nThen choose LAG for a previous value or LEAD for a next value.\n\n[pause=0.7]\n\nIf the order is ambiguous, the sequence result is ambiguous too.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 69,
+      "audio": "module11_slide_69.mp3",
+      "captions": "module11_slide_69.vtt",
+      "text": "The applied challenge returns the two longest completed stays per department.\n\n[pause=0.7]\n\nThe CTE calculates stay days and assigns ROW_NUMBER within each department.\n\n[pause=0.7]\n\nStay duration descending defines the main order.\n\n[pause=0.7]\n\nAdmission ID breaks exact duration ties.\n\n[pause=0.7]\n\nThe outer query keeps row numbers one and two.\n\n[pause=0.8]\n\nAfter running it, explain why admission-level detail is preserved.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 70,
+      "audio": "module11_slide_70.mp3",
+      "captions": "module11_slide_70.vtt",
+      "text": "These are the main habits from Module 11.\n\n[pause=0.7]\n\nUse CTEs to name logical stages.\n\n[pause=0.7]\n\nKeep row grain explicit.\n\n[pause=0.7]\n\nUse windows when you need context without losing detail.\n\n[pause=0.7]\n\nTreat ORDER BY as part of the analytical definition.\n\n[pause=0.7]\n\nWrite frame boundaries when they matter.\n\n[pause=0.7]\n\nAnd choose ranking functions based on the meaning of ties.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 71,
+      "audio": "module11_slide_71.mp3",
+      "captions": "module11_slide_71.vtt",
+      "text": "Use this guide when selecting advanced SQL tools.\n\n[pause=0.7]\n\nNamed stages suggest CTEs.\n\n[pause=0.7]\n\nHierarchies suggest recursive CTEs.\n\n[pause=0.7]\n\nDetail plus group context suggests windows.\n\n[pause=0.7]\n\nTop N requires a ranking rule.\n\n[pause=0.7]\n\nPrevious and next suggest LAG and LEAD.\n\n[pause=0.7]\n\nRunning and moving calculations require ordered windows and meaningful frames.\n\n[pause=0.8]\n\nAnd if you truly want one row per group, GROUP BY may still be the simplest correct choice.\n\n[pause=1.0]",
+      "pause_markers": 8
+    },
+    {
+      "slide": 72,
+      "audio": "module11_slide_72.mp3",
+      "captions": "module11_slide_72.vtt",
+      "text": "Module 12 moves from advanced one-statement analysis to reusable SQL interfaces.\n\n[pause=0.7]\n\nYou will work with views and modular query design so frequently used logic does not have to be rewritten in every analysis.\n\n[pause=0.8]\n\nThe CTE habits from this module will help because good views also depend on clear grain, clear naming, and understandable transformation logic.\n\n[pause=1.0]",
+      "pause_markers": 3
+    }
+  ]
+}

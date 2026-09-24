@@ -1,0 +1,447 @@
+{
+  "prefix": "module12",
+  "voice": "en-US-GuyNeural",
+  "rate": "-5%",
+  "volume": "+0%",
+  "pitch": "+0Hz",
+  "caption_words": 15,
+  "slide_count": 62,
+  "slide_markers_found": true,
+  "pause_marker_format": "[pause=seconds] or [pause=millisecondsms]",
+  "slides": [
+    {
+      "slide": 1,
+      "audio": "module12_slide_01.mp3",
+      "captions": "module12_slide_01.vtt",
+      "text": "Welcome to Module 12, Views and Modular Queries.\n\n[pause=0.7]\n\nThis module is about turning useful SQL logic into reusable database interfaces.\n\n[pause=0.7]\n\nWe will learn standard views, materialized views, updatable views, check options, dependency inspection, freshness policies, and modular query design.\n\n[pause=0.8]\n\nThe central idea is that a view is not just saved text. It is an interface with a row grain, a set of columns, and a meaning that downstream users may depend on.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 2,
+      "audio": "module12_slide_02.mp3",
+      "captions": "module12_slide_02.vtt",
+      "text": "Views solve several problems at once.\n\n[pause=0.7]\n\nThey let us centralize shared SQL logic.\n\n[pause=0.7]\n\nThey create a stable interface with deliberate columns and row meaning.\n\n[pause=0.7]\n\nThey can reduce accidental exposure by omitting unnecessary fields, although actual authorization still depends on database security controls.\n\n[pause=0.7]\n\nAnd materialized views can store reusable results when freshness does not need to be immediate.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 3,
+      "audio": "module12_slide_03.mp3",
+      "captions": "module12_slide_03.vtt",
+      "text": "By the end of this module, you should be able to create standard views, inspect their definitions and dependencies, explain when a view is updatable, and use a check option to control writes through a filtered view.\n\n[pause=0.8]\n\nYou should also understand materialized-view freshness and be able to decide whether logic belongs in a statement-level CTE, a reusable standard view, or a stored materialized result.\n\n[pause=1.0]",
+      "pause_markers": 2
+    },
+    {
+      "slide": 4,
+      "audio": "module12_slide_04.mp3",
+      "captions": "module12_slide_04.vtt",
+      "text": "We will start with modularity and standard views.\n\n[pause=0.7]\n\nThen we will inspect reusable objects and their dependencies.\n\n[pause=0.8]\n\nAfter that, we will explore controlled writes and access boundaries.\n\n[pause=0.7]\n\nMaterialized views come next, with a focus on freshness and refresh policy.\n\n[pause=0.8]\n\nFinally, we will combine views and CTEs into a small reusable analytics layer.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 5,
+      "audio": "module12_slide_05.mp3",
+      "captions": "module12_slide_05.vtt",
+      "text": "The database contains a few small source areas.\n\n[pause=0.7]\n\nPatient and admission tables support healthcare-style views.\n\n[pause=0.7]\n\nEmployee, department, and sales-order tables support a performance interface.\n\n[pause=0.7]\n\nCustomer transactions support recent-activity and retention examples.\n\n[pause=0.8]\n\nReusable objects are placed in an analytics schema so the source tables and analytical interfaces are clearly separated.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 6,
+      "audio": "module12_slide_06.mp3",
+      "captions": "module12_slide_06.vtt",
+      "text": "Modularity works best when each layer has one responsibility.\n\n[pause=0.7]\n\nBase tables store source facts.\n\n[pause=0.7]\n\nA shared view can own stable relational logic.\n\n[pause=0.7]\n\nA report-level CTE can own a temporary threshold, ranking rule, or sequence calculation.\n\n[pause=0.7]\n\nThe final query produces the consumer-specific result.\n\n[pause=0.8]\n\nThis separation makes each layer easier to test and change.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 7,
+      "audio": "module12_slide_07.mp3",
+      "captions": "module12_slide_07.vtt",
+      "text": "The three main choices in this module differ in lifetime and storage.\n\n[pause=0.7]\n\nA CTE exists for one statement.\n\n[pause=0.7]\n\nA standard view is a persistent database object, but it stores the query definition rather than a result snapshot.\n\n[pause=0.8]\n\nA materialized view is persistent and stores the query result.\n\n[pause=0.8]\n\nChoose among them based on reuse, freshness, and computational cost.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 8,
+      "audio": "module12_slide_08.mp3",
+      "captions": "module12_slide_08.vtt",
+      "text": "A standard view stores a query definition.\n\n[pause=0.8]\n\nIt does not normally store a separate snapshot of the result.\n\n[pause=0.7]\n\nWhen the view is queried, PostgreSQL uses the view definition to access current underlying data.\n\n[pause=0.7]\n\nFor consumers, the view behaves like a named relation with columns and rows.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 9,
+      "audio": "module12_slide_09.mp3",
+      "captions": "module12_slide_09.vtt",
+      "text": "Think of a view as a contract.\n\n[pause=0.7]\n\nThe object name matters.\n\n[pause=0.7]\n\nThe exposed columns and types matter.\n\n[pause=0.7]\n\nThe row grain matters.\n\n[pause=0.7]\n\nAnd consumers should understand how fresh the data is.\n\n[pause=0.7]\n\nIf you change a shared view in a way that breaks one of these expectations, downstream queries can fail or change meaning.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 10,
+      "audio": "module12_slide_10.mp3",
+      "captions": "module12_slide_10.vtt",
+      "text": "Run the schema exploration query first.\n\n[pause=0.8]\n\nLook at objects in the public and analytics schemas.\n\n[pause=0.7]\n\nThe public schema contains source tables.\n\n[pause=0.7]\n\nThe analytics schema contains reusable interfaces.\n\n[pause=0.7]\n\nThis separation is helpful because object location can communicate purpose.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 11,
+      "audio": "module12_slide_11.mp3",
+      "captions": "module12_slide_11.vtt",
+      "text": "This query reads the patient-admission summary view.\n\n[pause=0.8]\n\nConsumers do not need to repeat the join or stay-duration expression.\n\n[pause=0.7]\n\nThe view already defines that interface.\n\n[pause=0.7]\n\nRun it and identify the grain.\n\n[pause=0.8]\n\nOne row represents one admission with selected patient attributes and a derived stay duration.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 12,
+      "audio": "module12_slide_12.mp3",
+      "captions": "module12_slide_12.vtt",
+      "text": "Before creating a view, make four decisions.\n\n[pause=0.7]\n\nChoose a meaningful name.\n\n[pause=0.7]\n\nDefine the row grain.\n\n[pause=0.7]\n\nChoose the columns intentionally.\n\n[pause=0.7]\n\nThen write the SELECT that implements that interface.\n\n[pause=0.7]\n\nStarting with the contract makes the SQL easier to evaluate.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 13,
+      "audio": "module12_slide_13.mp3",
+      "captions": "module12_slide_13.vtt",
+      "text": "CREATE OR REPLACE VIEW lets you update a compatible view definition without first dropping the object.\n\n[pause=0.7]\n\nThis is useful when the interface should remain available under the same name.\n\n[pause=0.7]\n\nBut compatibility matters.\n\n[pause=0.7]\n\nChanging column names, meanings, types, or grain can still affect downstream users, even if the SQL command succeeds.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 14,
+      "audio": "module12_slide_14.mp3",
+      "captions": "module12_slide_14.vtt",
+      "text": "Once the patient-admission interface exists, later reports can start from it.\n\n[pause=0.7]\n\nThis query groups the reusable admission rows by department.\n\n[pause=0.8]\n\nThe report author does not need to repeat patient joins or stay-duration calculations.\n\n[pause=0.7]\n\nThat is the value of modular SQL: stable logic is centralized, and consumer queries become smaller.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 15,
+      "audio": "module12_slide_15.mp3",
+      "captions": "module12_slide_15.vtt",
+      "text": "This course uses vw as a prefix for standard views and mv for materialized views.\n\n[pause=0.7]\n\nPostgreSQL does not require that naming convention.\n\n[pause=0.7]\n\nThe goal is readability and discoverability.\n\n[pause=0.7]\n\nWhatever convention a team chooses, use it consistently and document the intended grain and meaning of important shared objects.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 16,
+      "audio": "module12_slide_16.mp3",
+      "captions": "module12_slide_16.vtt",
+      "text": "Shared database objects should not be mysterious.\n\n[pause=0.7]\n\nPostgreSQL's information schema can show view names and definitions.\n\n[pause=0.7]\n\nRun this query and inspect the SQL behind the analytics views.\n\n[pause=0.8]\n\nBeing able to inspect a view helps with debugging, documentation, and change review.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 17,
+      "audio": "module12_slide_17.mp3",
+      "captions": "module12_slide_17.vtt",
+      "text": "A shared view depends on other database objects.\n\n[pause=0.7]\n\nThis query uses information schema metadata to show which tables feed each view.\n\n[pause=0.8]\n\nDependency awareness matters because changing a base object or shared view can affect several downstream consumers.\n\n[pause=0.7]\n\nBefore making a breaking change, understand the dependency chain.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 18,
+      "audio": "module12_slide_18.mp3",
+      "captions": "module12_slide_18.vtt",
+      "text": "A view can sit in the middle of a dependency chain.\n\n[pause=0.7]\n\nBase tables feed the shared interface.\n\n[pause=0.7]\n\nA report-specific CTE reads the view.\n\n[pause=0.7]\n\nA report consumes the final result.\n\n[pause=0.7]\n\nIf the view grain or column meaning changes, every downstream layer may be affected.\n\n[pause=0.7]\n\nTreat important shared views as versioned contracts, not disposable snippets.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 19,
+      "audio": "module12_slide_19.mp3",
+      "captions": "module12_slide_19.vtt",
+      "text": "Change management goes beyond syntax.\n\n[pause=0.7]\n\nA CREATE OR REPLACE command may succeed, but a semantic change can still break analytics.\n\n[pause=0.7]\n\nConsumers may depend on a column name, data type, business definition, or row grain.\n\n[pause=0.7]\n\nReview those contract elements before changing a shared object.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 20,
+      "audio": "module12_slide_20.mp3",
+      "captions": "module12_slide_20.vtt",
+      "text": "Some simple PostgreSQL views are automatically updatable.\n\n[pause=0.7]\n\nA write through the view can flow to the underlying table.\n\n[pause=0.7]\n\nBut this is not true for every view.\n\n[pause=0.7]\n\nJoins, aggregates, grouping, and other features can make a view non-updatable.\n\n[pause=0.7]\n\nTreat writable views as a deliberate interface and test their behavior.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 21,
+      "audio": "module12_slide_21.mp3",
+      "captions": "module12_slide_21.vtt",
+      "text": "This example updates city through a simple active-patient view.\n\n[pause=0.8]\n\nRETURNING shows the changed row.\n\n[pause=0.7]\n\nThe transaction then rolls back, so the demonstration does not permanently modify the teaching database.\n\n[pause=0.7]\n\nThis is a good pattern when learning or testing write behavior.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 22,
+      "audio": "module12_slide_22.mp3",
+      "captions": "module12_slide_22.vtt",
+      "text": "A filtered view introduces an important write question.\n\n[pause=0.7]\n\nIf the view only shows active patients, what should happen when an update through the view sets active to false?\n\n[pause=0.7]\n\nWithout a check option, the row may simply disappear from the view after the update.\n\n[pause=0.7]\n\nWITH CHECK OPTION can enforce the view condition for writes performed through the view.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 23,
+      "audio": "module12_slide_23.mp3",
+      "captions": "module12_slide_23.vtt",
+      "text": "WITH CHECK OPTION enforces the view's filter for writes through the view.\n\n[pause=0.7]\n\nIf an update would make a row no longer satisfy the active equals true condition, PostgreSQL rejects the write.\n\n[pause=0.7]\n\nThis turns the filtered view into a more controlled write interface.\n\n[pause=0.7]\n\nIt does not replace general database constraints or permissions.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 24,
+      "audio": "module12_slide_24.mp3",
+      "captions": "module12_slide_24.vtt",
+      "text": "This example intentionally fails.\n\n[pause=0.8]\n\nThe active-patient view shows only active rows and includes a check option.\n\n[pause=0.7]\n\nThe update tries to set an active patient to inactive through that view.\n\n[pause=0.7]\n\nBecause the resulting row would no longer satisfy the view condition, PostgreSQL rejects the update.\n\n[pause=0.7]\n\nThis is expected behavior.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 25,
+      "audio": "module12_slide_25.mp3",
+      "captions": "module12_slide_25.vtt",
+      "text": "Do not assume every view is writable.\n\n[pause=0.7]\n\nA simple one-table view may support automatic updates.\n\n[pause=0.7]\n\nA join or aggregate view does not have the same direct row mapping.\n\n[pause=0.7]\n\nMaterialized views are stored query results, not ordinary write-through interfaces.\n\n[pause=0.8]\n\nAlways check the actual PostgreSQL behavior for the view definition you are designing.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 26,
+      "audio": "module12_slide_26.mp3",
+      "captions": "module12_slide_26.vtt",
+      "text": "A view can reduce accidental exposure by publishing only the columns required for an analytical task.\n\n[pause=0.7]\n\nFor example, an analytics interface may expose an age band and city instead of direct contact fields.\n\n[pause=0.8]\n\nBut hiding columns in a view definition is not the same as granting or denying access.\n\n[pause=0.7]\n\nActual authorization depends on PostgreSQL privileges and, where appropriate, row-level security or other controls.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 27,
+      "audio": "module12_slide_27.mp3",
+      "captions": "module12_slide_27.vtt",
+      "text": "This analytics view exposes subject ID, age band, city, and active status.\n\n[pause=0.7]\n\nIt omits name, email, and date of birth.\n\n[pause=0.7]\n\nThat creates a narrower analytical interface.\n\n[pause=0.7]\n\nRun it and compare the result with the source patient table.\n\n[pause=0.8]\n\nThe design reduces unnecessary fields, but access to objects must still be configured separately.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 28,
+      "audio": "module12_slide_28.mp3",
+      "captions": "module12_slide_28.vtt",
+      "text": "PostgreSQL supports a security invoker option for views.\n\n[pause=0.7]\n\nWith security invoker, permissions on underlying relations are checked using the invoking user's rights.\n\n[pause=0.7]\n\nThis can matter in a real multi-role security design.\n\n[pause=0.7]\n\nOur browser lab is useful for syntax and object behavior, but it does not reproduce a full production authorization environment.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 29,
+      "audio": "module12_slide_29.mp3",
+      "captions": "module12_slide_29.vtt",
+      "text": "This query recreates the patient analytics view with security invoker enabled.\n\n[pause=0.8]\n\nIt still exposes the same selected analytical columns.\n\n[pause=0.7]\n\nThe key difference is how PostgreSQL evaluates underlying access permissions.\n\n[pause=0.7]\n\nIn a production environment, you would test this with real roles and grants.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 30,
+      "audio": "module12_slide_30.mp3",
+      "captions": "module12_slide_30.vtt",
+      "text": "Views are useful security-adjacent interfaces, but they should not be described as secure or compliant simply because they hide columns.\n\n[pause=0.7]\n\nPermissions still matter.\n\n[pause=0.7]\n\nRow-level security may matter.\n\n[pause=0.7]\n\nApplication access paths matter.\n\n[pause=0.7]\n\nCompliance depends on a broader system of controls.\n\n[pause=0.7]\n\nKeep the claim proportional to what the view actually does.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 31,
+      "audio": "module12_slide_31.mp3",
+      "captions": "module12_slide_31.vtt",
+      "text": "A materialized view is fundamentally different from a standard view.\n\n[pause=0.7]\n\nThe materialized view stores query results.\n\n[pause=0.8]\n\nThat can make repeated reads of an expensive summary convenient.\n\n[pause=0.7]\n\nBut the stored result can become stale as base tables change.\n\n[pause=0.7]\n\nFreshness therefore becomes part of the object's contract.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 32,
+      "audio": "module12_slide_32.mp3",
+      "captions": "module12_slide_32.vtt",
+      "text": "Materialization is useful when an expensive result is read repeatedly and consumers can tolerate a known refresh lag.\n\n[pause=0.8]\n\nThe database object alone is not the whole design.\n\n[pause=0.7]\n\nYou also need a refresh schedule, freshness metadata, and a plan for refresh failures.\n\n[pause=0.8]\n\nWithout those, consumers may not know how current the snapshot is.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 33,
+      "audio": "module12_slide_33.mp3",
+      "captions": "module12_slide_33.vtt",
+      "text": "This query creates a diagnosis summary materialized view.\n\n[pause=0.8]\n\nThe result has one row per diagnosis.\n\n[pause=0.7]\n\nIt stores admission count, distinct patient count, average stay, and a refresh timestamp.\n\n[pause=0.8]\n\nThe refresh timestamp documents when the snapshot was generated.\n\n[pause=0.8]\n\nIt does not update every time someone reads the materialized view.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 34,
+      "audio": "module12_slide_34.mp3",
+      "captions": "module12_slide_34.vtt",
+      "text": "Materialized views still need a clear grain.\n\n[pause=0.7]\n\nIn this example, one row represents one diagnosis.\n\n[pause=0.8]\n\nThe measures summarize admissions for that diagnosis.\n\n[pause=0.7]\n\nThe refreshed-at value records when the stored result was produced.\n\n[pause=0.8]\n\nConsumers need both the grain and freshness information to interpret the data correctly.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 35,
+      "audio": "module12_slide_35.mp3",
+      "captions": "module12_slide_35.vtt",
+      "text": "Once the materialized view exists, consumers can query the stored summary directly.\n\n[pause=0.8]\n\nThe consuming query is simple because the aggregation has already been computed.\n\n[pause=0.8]\n\nBut remember that the result is only as fresh as the last successful refresh.\n\n[pause=1.0]",
+      "pause_markers": 3
+    },
+    {
+      "slide": 36,
+      "audio": "module12_slide_36.mp3",
+      "captions": "module12_slide_36.vtt",
+      "text": "Materialized-view freshness is easiest to understand as a timeline.\n\n[pause=0.7]\n\nThe snapshot is built.\n\n[pause=0.7]\n\nLater, a new base-table row arrives.\n\n[pause=0.7]\n\nThe standard base query can see it immediately, but the materialized view does not.\n\n[pause=0.8]\n\nAfter a refresh, the stored snapshot catches up.\n\n[pause=0.8]\n\nThat delay must be documented for users.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 37,
+      "audio": "module12_slide_37.mp3",
+      "captions": "module12_slide_37.vtt",
+      "text": "This example inserts another Influenza admission into the base table.\n\n[pause=0.8]\n\nThen it compares the live base-table count with the stored materialized-view count.\n\n[pause=0.8]\n\nThe base table changes immediately.\n\n[pause=0.7]\n\nThe snapshot remains unchanged because it has not been refreshed.\n\n[pause=0.8]\n\nThis demonstrates staleness directly.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 38,
+      "audio": "module12_slide_38.mp3",
+      "captions": "module12_slide_38.vtt",
+      "text": "REFRESH MATERIALIZED VIEW recomputes the stored result from the underlying query.\n\n[pause=0.8]\n\nRun this after creating the stale condition.\n\n[pause=0.8]\n\nThe Influenza count should now match the current base data.\n\n[pause=0.7]\n\nThe refreshed-at value should also be recomputed, documenting the new snapshot time.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 39,
+      "audio": "module12_slide_39.mp3",
+      "captions": "module12_slide_39.vtt",
+      "text": "Freshness policy is part of the data product.\n\n[pause=0.7]\n\nConsumers need to know how often the materialized view refreshes.\n\n[pause=0.8]\n\nThey need a way to see the last successful refresh.\n\n[pause=0.8]\n\nThe team should know what happens when refresh fails.\n\n[pause=0.8]\n\nAnd the expected maximum latency should be documented rather than assumed.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 40,
+      "audio": "module12_slide_40.mp3",
+      "captions": "module12_slide_40.vtt",
+      "text": "Because a materialized view stores rows, PostgreSQL can index those rows.\n\n[pause=0.7]\n\nThis example creates a unique index on diagnosis.\n\n[pause=0.8]\n\nIndexes may support faster reads and are also relevant to certain PostgreSQL concurrent refresh requirements.\n\n[pause=0.8]\n\nChoose indexes based on real query patterns and constraints, not simply because the object is materialized.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 41,
+      "audio": "module12_slide_41.mp3",
+      "captions": "module12_slide_41.vtt",
+      "text": "Production PostgreSQL supports REFRESH MATERIALIZED VIEW CONCURRENTLY under specific conditions.\n\n[pause=0.8]\n\nAn appropriate unique index is required.\n\n[pause=0.7]\n\nConcurrent refresh is an availability technique.\n\n[pause=0.8]\n\nIt does not remove the need for a refresh policy, freshness metadata, or monitoring.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 42,
+      "audio": "module12_slide_42.mp3",
+      "captions": "module12_slide_42.vtt",
+      "text": "A useful monitoring pattern is to compare the live result with the stored snapshot.\n\n[pause=0.8]\n\nThis query shows diagnosis counts from both sources.\n\n[pause=0.8]\n\nAfter a successful refresh, the values should agree for the same logic.\n\n[pause=0.8]\n\nIf they differ unexpectedly, investigate whether the snapshot is stale or the definitions are inconsistent.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 43,
+      "audio": "module12_slide_43.mp3",
+      "captions": "module12_slide_43.vtt",
+      "text": "This comparison helps choose the right object.\n\n[pause=0.7]\n\nA CTE is local to one statement.\n\n[pause=0.7]\n\nA standard view is shared and live.\n\n[pause=0.7]\n\nA materialized view is shared and stored.\n\n[pause=0.7]\n\nTemporary business thresholds usually belong close to the report.\n\n[pause=0.7]\n\nStable shared relational meaning often belongs in a standard view.\n\n[pause=0.7]\n\nExpensive reused summaries may justify materialization if the freshness tradeoff is acceptable.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 44,
+      "audio": "module12_slide_44.mp3",
+      "captions": "module12_slide_44.vtt",
+      "text": "A useful architecture rule is to promote stable meaning into persistent objects.\n\n[pause=0.7]\n\nIf many consumers agree on what a patient-admission row means, that can become a view.\n\n[pause=0.7]\n\nIf one report uses a temporary thirty-day threshold, keep that logic in the report.\n\n[pause=0.7]\n\nIf a summary is expensive and reused frequently, materialization may be appropriate.\n\n[pause=0.7]\n\nDo not turn every query into a database object.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 45,
+      "audio": "module12_slide_45.mp3",
+      "captions": "module12_slide_45.vtt",
+      "text": "This query combines Modules 11 and 12.\n\n[pause=0.8]\n\nThe view owns the stable patient-admission interface.\n\n[pause=0.7]\n\nThe CTEs own report-specific sequence and readmission logic.\n\n[pause=0.7]\n\nLAG calculates the previous discharge.\n\n[pause=0.7]\n\nThe final threshold checks whether the gap is within thirty days.\n\n[pause=0.7]\n\nThis separation keeps the stable data interface reusable while allowing reports to define their own analytical rules.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 46,
+      "audio": "module12_slide_46.mp3",
+      "captions": "module12_slide_46.vtt",
+      "text": "The project asks you to design a small analytics layer for three needs.\n\n[pause=0.8]\n\nEmployee performance is stable shared logic and fits a standard view.\n\n[pause=0.7]\n\nRecent customer activity can be a shared view, while the at-risk threshold remains in a CTE because it may vary by report.\n\n[pause=0.7]\n\nThe diagnosis dashboard uses a repeated summary and can use a materialized view when a refresh delay is acceptable.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 47,
+      "audio": "module12_slide_47.mp3",
+      "captions": "module12_slide_47.vtt",
+      "text": "This view joins employees to departments and sales orders.\n\n[pause=0.7]\n\nIt aggregates orders and sales amount.\n\n[pause=0.7]\n\nOne output row represents one employee.\n\n[pause=0.7]\n\nBecause this definition can support several operations reports, publishing it as a reusable view is reasonable.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 48,
+      "audio": "module12_slide_48.mp3",
+      "captions": "module12_slide_48.vtt",
+      "text": "This query consumes the employee performance interface.\n\n[pause=0.8]\n\nThe total-sales threshold remains outside the view.\n\n[pause=0.7]\n\nThat is useful because different reports may choose different thresholds.\n\n[pause=0.7]\n\nThe stable performance definition stays shared, while temporary business rules remain report-specific.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 49,
+      "audio": "module12_slide_49.mp3",
+      "captions": "module12_slide_49.vtt",
+      "text": "The recent-activity view publishes completed transactions from a defined six-month window.\n\n[pause=0.7]\n\nThat shared definition can support multiple retention analyses.\n\n[pause=0.7]\n\nIt creates a smaller, clearer interface than asking every report author to repeat the transaction-status logic.\n\n[pause=1.0]",
+      "pause_markers": 3
+    },
+    {
+      "slide": 50,
+      "audio": "module12_slide_50.mp3",
+      "captions": "module12_slide_50.vtt",
+      "text": "This retention query starts from the recent-activity view.\n\n[pause=0.8]\n\nA CTE finds the last transaction per customer.\n\n[pause=0.7]\n\nAnother CTE applies a sixty-day inactivity threshold.\n\n[pause=0.7]\n\nThat threshold is intentionally report-specific.\n\n[pause=0.7]\n\nIf another report wants ninety days, the shared activity view does not need to change.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 51,
+      "audio": "module12_slide_51.mp3",
+      "captions": "module12_slide_51.vtt",
+      "text": "The diagnosis dashboard is a good materialized-view example.\n\n[pause=0.8]\n\nIts grain and measures are stable.\n\n[pause=0.7]\n\nThe summary may be read frequently.\n\n[pause=0.7]\n\nAnd leadership can tolerate a documented refresh interval.\n\n[pause=0.8]\n\nThe materialized view becomes a small data product with both a schema contract and a freshness contract.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 52,
+      "audio": "module12_slide_52.mp3",
+      "captions": "module12_slide_52.vtt",
+      "text": "An analytics layer should be discoverable.\n\n[pause=0.7]\n\nThis query lists views and materialized views in the analytics schema.\n\n[pause=0.8]\n\nObject catalogs help teams understand what reusable interfaces already exist before creating duplicates.\n\n[pause=0.7]\n\nThey also support documentation and governance.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 53,
+      "audio": "module12_slide_53.mp3",
+      "captions": "module12_slide_53.vtt",
+      "text": "Before publishing a reusable object, review more than the SQL.\n\n[pause=0.7]\n\nState the grain.\n\n[pause=0.7]\n\nReview what the interface exposes.\n\n[pause=0.7]\n\nDocument freshness.\n\n[pause=0.7]\n\nInspect dependencies.\n\n[pause=0.8]\n\nAnd identify ownership of the business definition and operational process.\n\n[pause=0.7]\n\nThese questions turn a view from an ad hoc query into a maintainable interface.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 54,
+      "audio": "module12_slide_54.mp3",
+      "captions": "module12_slide_54.vtt",
+      "text": "Use this checkpoint to connect requirements with objects.\n\n[pause=0.7]\n\nTemporary stages suggest a CTE.\n\n[pause=0.7]\n\nShared live relational logic suggests a standard view.\n\n[pause=0.7]\n\nAn expensive summary with acceptable refresh delay suggests a materialized view.\n\n[pause=0.8]\n\nA controlled filtered one-table interface may use an updatable view and check option.\n\n[pause=0.7]\n\nThe object choice should follow the contract you need.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 55,
+      "audio": "module12_slide_55.mp3",
+      "captions": "module12_slide_55.vtt",
+      "text": "Freshness is one of the clearest differences among these objects.\n\n[pause=0.7]\n\nA later CTE statement uses current source data.\n\n[pause=0.7]\n\nA standard view reads through to the current underlying data.\n\n[pause=0.7]\n\nA materialized view stays at its last snapshot until refreshed.\n\n[pause=0.8]\n\nConsumers should never have to guess which freshness model they are using.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 56,
+      "audio": "module12_slide_56.mp3",
+      "captions": "module12_slide_56.vtt",
+      "text": "A limited view can reduce the columns and rows exposed through that interface.\n\n[pause=0.7]\n\nThat is useful.\n\n[pause=0.7]\n\nBut it does not by itself guarantee that users cannot access the base table.\n\n[pause=0.7]\n\nIt does not replace grants, row-level security, or broader compliance controls.\n\n[pause=0.7]\n\nUse precise language about what the view actually protects.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 57,
+      "audio": "module12_slide_57.mp3",
+      "captions": "module12_slide_57.vtt",
+      "text": "The assessment has two parts.\n\n[pause=0.8]\n\nFirst, create analytics dot vw employee department info with employee name, salary, and department name.\n\n[pause=0.7]\n\nSecond, use only that view to calculate the average salary for Sales.\n\n[pause=0.7]\n\nThe point is not only the syntax.\n\n[pause=0.7]\n\nYou should also state the grain and explain why the view is a reusable interface.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 58,
+      "audio": "module12_slide_58.mp3",
+      "captions": "module12_slide_58.vtt",
+      "text": "Before looking at a sample solution, explain your design.\n\n[pause=0.7]\n\nThe view should have one row per employee.\n\n[pause=0.7]\n\nIt should expose the columns required for employee-department analysis.\n\n[pause=0.7]\n\nThe consuming query should rely on that interface rather than rebuilding the join.\n\n[pause=0.8]\n\nThat is how you demonstrate modular design rather than only SQL syntax.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 59,
+      "audio": "module12_slide_59.mp3",
+      "captions": "module12_slide_59.vtt",
+      "text": "This sample creates the employee-department view by joining employees and departments.\n\n[pause=0.7]\n\nThen it queries only that view to calculate the Sales average salary.\n\n[pause=0.7]\n\nCompare it with your own approach.\n\n[pause=0.8]\n\nThe important points are the interface grain, exposed columns, and reuse of the published object.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 60,
+      "audio": "module12_slide_60.mp3",
+      "captions": "module12_slide_60.vtt",
+      "text": "These are the key habits from Module 12.\n\n[pause=0.7]\n\nTreat important views as contracts.\n\n[pause=0.7]\n\nSeparate stable reusable meaning from report-specific logic.\n\n[pause=0.7]\n\nUnderstand whether a view is writable.\n\n[pause=0.7]\n\nBe precise about the difference between limiting an interface and enforcing authorization.\n\n[pause=0.7]\n\nRemember that materialized views create a freshness obligation.\n\n[pause=0.7]\n\nAnd inspect dependencies before changing shared objects.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 61,
+      "audio": "module12_slide_61.mp3",
+      "captions": "module12_slide_61.vtt",
+      "text": "Use this decision guide when designing modular SQL.\n\n[pause=0.7]\n\nChoose a CTE for statement-local stages.\n\n[pause=0.7]\n\nChoose a standard view for stable shared live logic.\n\n[pause=0.7]\n\nUse a simple updatable view only when write behavior is intentional.\n\n[pause=0.7]\n\nUse views with proper privileges for controlled interfaces.\n\n[pause=0.7]\n\nChoose a materialized view when storing a reusable result is worth the freshness tradeoff.\n\n[pause=0.7]\n\nKeep highly changeable report thresholds outside stable shared objects.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 62,
+      "audio": "module12_slide_62.mp3",
+      "captions": "module12_slide_62.vtt",
+      "text": "Module 13 moves from PostgreSQL database objects into distributed analytical processing with Spark SQL.\n\n[pause=0.7]\n\nThe relational concepts remain familiar: tables, joins, filters, grouping, and reusable transformations.\n\n[pause=0.7]\n\nThe new challenge is scale and distributed execution.\n\n[pause=0.7]\n\nCarry forward the interface and grain habits from this module because they remain important when data processing moves to a distributed engine.\n\n[pause=1.0]",
+      "pause_markers": 4
+    }
+  ]
+}
