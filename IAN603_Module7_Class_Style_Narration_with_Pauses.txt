@@ -1,0 +1,1481 @@
+Slide 1: Start
+
+Welcome to Module 7, Subqueries in PostgreSQL.
+
+[pause=0.7]
+
+A subquery is a query used inside another query. The important part is not the parentheses. The important part is understanding what the inner query returns and what the outer query expects.
+
+[pause=0.8]
+
+We will build this gradually, starting with result shapes and then moving through scalar subqueries, membership, existence, ANY and ALL, correlated subqueries, and derived tables.
+
+[pause=0.7]
+
+Every SQL example can run directly in the browser. You can also copy the query into pgAdmin for more practice.
+
+[pause=1.0]
+
+Slide 2: Why subqueries matter
+
+Subqueries become useful when one part of the question depends on the result of another query.
+
+[pause=0.8]
+
+Sometimes the inner query produces one benchmark such as average age.
+
+[pause=0.8]
+
+Sometimes it produces a set of patient IDs.
+
+[pause=0.7]
+
+Sometimes we only need to know whether a matching related row exists.
+
+[pause=0.7]
+
+And sometimes the inner query depends on the current outer row.
+
+[pause=0.8]
+
+These are different contracts, and recognizing the contract is more useful than memorizing syntax.
+
+[pause=1.0]
+
+Slide 3: Prerequisite review
+
+Module 7 builds on earlier SQL ideas.
+
+[pause=0.7]
+
+You should already recognize basic SELECT queries, aggregate functions, simple joins, and NULL.
+
+[pause=0.7]
+
+Subqueries combine those familiar pieces in a new structure.
+
+[pause=0.7]
+
+If you can read a simple query on its own, the main new skill is understanding how the result of one query is used by another.
+
+[pause=1.0]
+
+Slide 4: Module roadmap
+
+We will start with the result shape of the inner query.
+
+[pause=0.8]
+
+Then we will learn scalar subqueries, followed by set-oriented patterns such as IN, EXISTS, ANY, and ALL.
+
+[pause=0.7]
+
+After that, we will study correlated subqueries, where the inner query depends on the current outer row.
+
+[pause=0.8]
+
+Finally, we will compare placements and rewrites.
+
+[pause=0.7]
+
+This order makes subqueries easier to understand because every new pattern answers a specific kind of question.
+
+[pause=1.0]
+
+Slide 5: Running database
+
+The module uses a small healthcare-style teaching database.
+
+[pause=0.7]
+
+Patients is the main entity. Admissions, lab results, and prescriptions connect back to patients.
+
+[pause=0.7]
+
+Admissions also connect to departments.
+
+[pause=0.7]
+
+The review queue contains one patient ID and one deliberate NULL. That NULL is important because we will use it to demonstrate the NOT IN trap.
+
+[pause=0.7]
+
+The database loads automatically in the browser.
+
+[pause=1.0]
+
+Slide 6: Relationship map
+
+Most examples in this module depend on the same relationship.
+
+[pause=0.8]
+
+A patient can have many admissions, many lab results, and many prescriptions.
+
+[pause=0.7]
+
+When you see a correlated condition such as a dot patient ID equals p dot patient ID, it is connecting a child row to the current patient row.
+
+[pause=0.7]
+
+Keeping the relationship map simple lets us focus on the subquery behavior rather than on a complicated schema.
+
+[pause=1.0]
+
+Slide 7: Explore the sample patients
+
+Before writing nested queries, inspect the underlying rows.
+
+[pause=0.7]
+
+Run this simple SELECT and look at the patient IDs and ages.
+
+[pause=0.8]
+
+Later, when the subquery returns a set of IDs or an average age, you will be able to connect the result back to real rows in the teaching dataset.
+
+[pause=0.8]
+
+This is also a good real-world habit. Understand the source tables before debugging a complex query.
+
+[pause=1.0]
+
+Slide 8: The main mental model
+
+The best mental model is to treat the inner query as a result producer.
+
+[pause=0.8]
+
+The inner query produces something.
+
+[pause=0.8]
+
+The outer query then uses that result.
+
+[pause=0.8]
+
+The result might be one value, a set of values, or rows that behave like an intermediate table.
+
+[pause=0.7]
+
+Before writing the SQL, ask what shape the outer query needs.
+
+[pause=0.8]
+
+That question prevents many common subquery errors.
+
+[pause=1.0]
+
+Slide 9: Three common result shapes
+
+Three ideas appear repeatedly.
+
+[pause=0.7]
+
+A scalar subquery behaves like one value.
+
+[pause=0.8]
+
+A set subquery returns zero or more values, usually from one column.
+
+[pause=0.8]
+
+A correlated subquery refers to the current outer row, so its result can change as the outer row changes.
+
+[pause=0.8]
+
+When you identify the shape and dependency, the SQL operator becomes easier to choose.
+
+[pause=1.0]
+
+Slide 10: Shape before syntax
+
+This table turns business questions into subquery contracts.
+
+[pause=0.8]
+
+One benchmark suggests a scalar.
+
+[pause=0.7]
+
+Membership in a returned list suggests IN.
+
+[pause=0.7]
+
+Existence of any matching row suggests EXISTS.
+
+[pause=0.7]
+
+At least one comparison suggests ANY, while every comparison suggests ALL.
+
+[pause=0.7]
+
+A per-row calculation often uses a correlated scalar.
+
+[pause=0.7]
+
+This translation from question to contract is the main skill of the module.
+
+[pause=1.0]
+
+Slide 11: Scalar subquery contract
+
+A scalar subquery has a strict result contract.
+
+[pause=0.8]
+
+It returns one column and at most one row.
+
+[pause=0.7]
+
+One row gives the scalar value.
+
+[pause=0.7]
+
+Zero rows become NULL.
+
+[pause=0.7]
+
+More than one row is an error because the surrounding expression expected one value.
+
+[pause=0.7]
+
+Understanding this contract is more important than remembering where the parentheses go.
+
+[pause=1.0]
+
+Slide 12: Scalar in WHERE
+
+The inner query calculates average age across all patients.
+
+[pause=0.8]
+
+That produces one number.
+
+[pause=0.7]
+
+The outer WHERE clause compares each patient age with that one benchmark.
+
+[pause=0.7]
+
+Read the condition as a sentence: keep the patient when age is greater than the average age returned by the inner query.
+
+[pause=0.8]
+
+Run the query and compare the returned ages with the full patient list.
+
+[pause=1.0]
+
+Slide 13: Read a scalar query step by step
+
+When a scalar query feels confusing, isolate the inner query mentally.
+
+[pause=0.8]
+
+Ask what it returns.
+
+[pause=0.7]
+
+Here it returns one average age.
+
+[pause=0.7]
+
+Now imagine replacing the parenthesized SELECT with that number.
+
+[pause=0.7]
+
+The outer query becomes an ordinary age comparison.
+
+[pause=0.8]
+
+This simple mental substitution works well for many scalar subqueries.
+
+[pause=1.0]
+
+Slide 14: Scalar in SELECT
+
+A scalar subquery can also appear in the SELECT list.
+
+[pause=0.8]
+
+Here, the inner query calculates one overall average age.
+
+[pause=0.8]
+
+Because it is not correlated, the same value appears beside every patient row.
+
+[pause=0.7]
+
+This is useful when you want to show a row value and a benchmark together.
+
+[pause=0.7]
+
+Run the query and notice that the average does not change from patient to patient.
+
+[pause=1.0]
+
+Slide 15: Scalar with zero rows
+
+A scalar subquery may return zero rows.
+
+[pause=0.8]
+
+When that happens, PostgreSQL turns the missing scalar into NULL.
+
+[pause=0.7]
+
+The requested test ID in this example does not exist.
+
+[pause=0.8]
+
+So the inner query returns no row, and the scalar result becomes NULL.
+
+[pause=0.8]
+
+Remember this when the scalar participates in a comparison, because comparisons involving NULL follow three-valued logic.
+
+[pause=1.0]
+
+Slide 16: Scalar with too many rows
+
+Now we deliberately violate the scalar contract.
+
+[pause=0.7]
+
+The inner query returns many patient IDs from admissions.
+
+[pause=0.8]
+
+The outer expression expects one value.
+
+[pause=0.7]
+
+PostgreSQL cannot choose one row for you, so it raises an error.
+
+[pause=0.7]
+
+Do not automatically add LIMIT one just to remove the error. Only do that if choosing an arbitrary single row actually matches the business meaning.
+
+[pause=1.0]
+
+Slide 17: Scalar checklist
+
+Before using a scalar subquery, ask three questions.
+
+[pause=0.8]
+
+Does it return one column?
+
+[pause=0.7]
+
+Can it ever return more than one row?
+
+[pause=0.7]
+
+And what should happen if it returns no row?
+
+[pause=0.7]
+
+This small checklist catches most scalar-subquery problems before you run the query.
+
+[pause=1.0]
+
+Slide 18: IN means membership
+
+IN is a membership operator.
+
+[pause=0.7]
+
+The inner query should return a one-column set.
+
+[pause=0.8]
+
+The outer value is compared with the values in that set.
+
+[pause=0.7]
+
+If it matches one of them, the membership test succeeds.
+
+[pause=0.7]
+
+Think of IN as asking, is this value in that returned list?
+
+[pause=1.0]
+
+Slide 19: IN example
+
+The inner query returns patient IDs from Cardiology admissions.
+
+[pause=0.8]
+
+The outer query keeps patients whose patient ID appears in that set.
+
+[pause=0.8]
+
+This is a natural use of IN because the business question is membership.
+
+[pause=0.7]
+
+Run the query and connect each returned patient with the Cardiology admissions table.
+
+[pause=1.0]
+
+Slide 20: IN is not a JOIN
+
+IN and JOIN may appear to answer similar questions, but they have different semantics.
+
+[pause=0.7]
+
+IN asks whether an outer value belongs to a set.
+
+[pause=0.7]
+
+A join returns matching row combinations.
+
+[pause=0.7]
+
+If one patient has multiple admissions, the join can repeat that patient.
+
+[pause=0.7]
+
+The IN query keeps the patient-level outer grain.
+
+[pause=0.8]
+
+Run both queries and compare the outputs carefully.
+
+[pause=1.0]
+
+Slide 21: NOT IN looks simple
+
+NOT IN looks like a simple anti-membership test.
+
+[pause=0.7]
+
+But if the inner set contains NULL, PostgreSQL cannot prove that an outer value differs from the unknown value.
+
+[pause=0.7]
+
+The condition can become UNKNOWN rather than TRUE.
+
+[pause=0.7]
+
+Because WHERE keeps only TRUE, rows you expected may disappear.
+
+[pause=0.7]
+
+This is one of the most important edge cases in this module.
+
+[pause=1.0]
+
+Slide 22: Three-valued logic
+
+SQL uses three-valued logic.
+
+[pause=0.7]
+
+A condition can be TRUE, FALSE, or UNKNOWN.
+
+[pause=0.7]
+
+Comparing a normal value with NULL gives UNKNOWN, not FALSE.
+
+[pause=0.7]
+
+And NOT UNKNOWN remains UNKNOWN.
+
+[pause=0.7]
+
+Because WHERE returns only rows whose condition is TRUE, UNKNOWN behaves like a filtered-out row.
+
+[pause=0.7]
+
+This explains the NOT IN behavior.
+
+[pause=1.0]
+
+Slide 23: NOT IN + NULL trap
+
+The review queue contains patient 1003 and a NULL.
+
+[pause=0.7]
+
+For another patient such as 1001, PostgreSQL knows 1001 is not equal to 1003.
+
+[pause=0.7]
+
+But it cannot know whether 1001 is different from the NULL value.
+
+[pause=0.7]
+
+That unknown comparison prevents the full NOT IN condition from becoming TRUE.
+
+[pause=0.7]
+
+Run the query and observe the result.
+
+[pause=1.0]
+
+Slide 24: Safer anti-match
+
+NOT EXISTS expresses the anti-match directly.
+
+[pause=0.7]
+
+For each patient, the inner query searches for a review-queue row with the same patient ID.
+
+[pause=0.8]
+
+If no matching row exists, the patient is kept.
+
+[pause=0.7]
+
+The unrelated NULL row does not create the same problem because it does not match the current patient ID.
+
+[pause=0.7]
+
+This is why NOT EXISTS is often the clearer starting point for anti-join questions.
+
+[pause=1.0]
+
+Slide 25: EXISTS means existence
+
+EXISTS asks only whether the inner query returns at least one row.
+
+[pause=0.8]
+
+The actual selected value inside the subquery usually does not matter.
+
+[pause=0.8]
+
+That is why SELECT one is common.
+
+[pause=0.7]
+
+The business meaning is simply: does any related row satisfy this condition?
+
+[pause=0.7]
+
+This makes EXISTS especially natural for relationship checks.
+
+[pause=1.0]
+
+Slide 26: EXISTS example
+
+For each patient, the inner query searches lab results for the same patient ID.
+
+[pause=0.8]
+
+It looks for any result outside the normal range.
+
+[pause=0.7]
+
+We do not need a count.
+
+[pause=0.7]
+
+We only need at least one abnormal row.
+
+[pause=0.7]
+
+That makes EXISTS a direct match for the question.
+
+[pause=0.7]
+
+Run the query and identify the patients that satisfy the condition.
+
+[pause=1.0]
+
+Slide 27: NOT EXISTS example
+
+NOT EXISTS asks whether no matching row can be found.
+
+[pause=0.7]
+
+For each patient, the inner query searches prescriptions.
+
+[pause=0.8]
+
+If there is no prescription with that patient ID, the patient is returned.
+
+[pause=0.7]
+
+This pattern appears everywhere: customers with no orders, students with no submissions, devices with no alerts, and patients with no prescription record.
+
+[pause=1.0]
+
+Slide 28: IN vs EXISTS
+
+IN and EXISTS can sometimes be rewritten into equivalent forms.
+
+[pause=0.7]
+
+But when writing the first version, choose the operator that expresses the business question clearly.
+
+[pause=0.7]
+
+Membership suggests IN.
+
+[pause=0.7]
+
+Existence suggests EXISTS.
+
+[pause=0.7]
+
+Absence of a related match suggests NOT EXISTS.
+
+[pause=0.7]
+
+Clear semantics make the query easier to explain, review, and debug.
+
+[pause=1.0]
+
+Slide 29: ANY, SOME, and ALL
+
+ANY and ALL compare one outer value with an entire set.
+
+[pause=0.7]
+
+ANY means at least one comparison must succeed.
+
+[pause=0.7]
+
+ALL means every comparison must succeed.
+
+[pause=0.7]
+
+PostgreSQL also supports SOME as a synonym for ANY.
+
+[pause=0.7]
+
+The difference sounds small, but it can produce very different result sets.
+
+[pause=1.0]
+
+Slide 30: ANY example
+
+Greater than ANY means the outer age must be greater than at least one age returned by the inner query.
+
+[pause=0.8]
+
+For a nonempty set without NULL complications, a helpful intuition is to compare with the minimum.
+
+[pause=0.7]
+
+If your age is greater than the smallest returned age, at least one comparison succeeds.
+
+[pause=0.7]
+
+Run the query and compare the result with that intuition.
+
+[pause=1.0]
+
+Slide 31: ALL example
+
+Greater than ALL is stricter.
+
+[pause=0.7]
+
+The outer age must be greater than every age returned by the inner query.
+
+[pause=0.8]
+
+A useful intuition is to compare with the maximum.
+
+[pause=0.7]
+
+To be greater than all returned ages, the outer value must exceed the largest one.
+
+[pause=0.7]
+
+Run the query and compare the row count with the ANY example.
+
+[pause=1.0]
+
+Slide 32: ANY vs ALL
+
+ANY and ALL can be summarized with a simple contrast.
+
+[pause=0.7]
+
+ANY needs at least one successful comparison.
+
+[pause=0.7]
+
+ALL needs every comparison to succeed.
+
+[pause=0.7]
+
+Equality with ANY behaves much like IN.
+
+[pause=0.7]
+
+These are useful intuitions, but always remember that NULL values and empty sets can affect the formal SQL logic.
+
+[pause=1.0]
+
+Slide 33: Empty set behavior
+
+Empty sets create an important edge case.
+
+[pause=0.7]
+
+ANY needs at least one successful comparison.
+
+[pause=0.7]
+
+If the set is empty, no comparison can succeed, so ANY is FALSE.
+
+[pause=0.7]
+
+ALL asks whether every comparison succeeds. With no values, there is no failing comparison, so ALL is TRUE.
+
+[pause=0.7]
+
+This can feel surprising, but it follows the logic of existential and universal conditions.
+
+[pause=1.0]
+
+Slide 34: Correlated subqueries
+
+A correlated subquery uses a value from the current outer row.
+
+[pause=0.8]
+
+For example, the outer query may define patients as p.
+
+[pause=0.8]
+
+Inside the subquery, a condition may compare a child patient ID with p patient ID.
+
+[pause=0.8]
+
+When the outer patient changes, the inner query's matching value changes too.
+
+[pause=0.8]
+
+This is why correlated subqueries are useful for per-row calculations.
+
+[pause=1.0]
+
+Slide 35: How to spot correlation
+
+To identify correlation, look for an alias that was defined outside the subquery but used inside it.
+
+[pause=0.8]
+
+If the inner query needs p patient ID from the outer patient row, it is correlated.
+
+[pause=0.8]
+
+A quick diagnostic is to ask whether the inner query can run meaningfully by itself unchanged.
+
+[pause=0.8]
+
+If it needs an outer value, the answer is no.
+
+[pause=1.0]
+
+Slide 36: Correlated benchmark
+
+This query uses correlation to calculate a test-specific benchmark.
+
+[pause=0.8]
+
+For a Glucose row, the inner query calculates the average Glucose result.
+
+[pause=0.8]
+
+For a Cholesterol row, it calculates the average Cholesterol result.
+
+[pause=0.7]
+
+The outer test name changes the inner query.
+
+[pause=0.8]
+
+This is a powerful pattern when one global benchmark would not be meaningful.
+
+[pause=1.0]
+
+Slide 37: Trace one correlated row
+
+A correlated query becomes easier if you trace one outer row at a time.
+
+[pause=0.8]
+
+Imagine the current row is a Glucose test.
+
+[pause=0.7]
+
+The inner query uses the outer test name to average only Glucose values.
+
+[pause=0.8]
+
+Then the current result is compared with that benchmark.
+
+[pause=0.7]
+
+When the outer row changes to another test, the inner benchmark changes as well.
+
+[pause=1.0]
+
+Slide 38: Correlated count in SELECT
+
+A correlated scalar subquery can appear in SELECT.
+
+[pause=0.8]
+
+For each patient, the inner query counts admissions for that patient ID.
+
+[pause=0.8]
+
+COUNT returns one scalar value, so the scalar contract is satisfied.
+
+[pause=0.7]
+
+The result keeps one row per patient while adding an admission count.
+
+[pause=0.7]
+
+This form is direct and easy to read for a simple per-row metric.
+
+[pause=1.0]
+
+Slide 39: Latest related row
+
+This pattern finds the latest admission for each patient.
+
+[pause=0.7]
+
+For the current patient, the inner query finds the maximum admission date.
+
+[pause=0.8]
+
+The outer admission row is kept when its date equals that patient-specific maximum.
+
+[pause=0.7]
+
+This pattern is useful for latest order, latest event, newest status, or most recent activity.
+
+[pause=0.7]
+
+If two rows share the same maximum date, both can be returned.
+
+[pause=1.0]
+
+Slide 40: Subquery placement
+
+Subqueries can appear in different clauses because each clause expects a different role.
+
+[pause=0.7]
+
+A subquery in WHERE contributes to filtering.
+
+[pause=0.8]
+
+A scalar subquery in SELECT becomes an output value.
+
+[pause=0.8]
+
+A subquery in FROM becomes an intermediate table.
+
+[pause=0.8]
+
+Choose the placement based on what you need the inner result to do.
+
+[pause=1.0]
+
+Slide 41: Subquery in WHERE
+
+WHERE is the most familiar location for subqueries.
+
+[pause=0.7]
+
+The inner result can become a benchmark, a membership set, an existence condition, or a set comparison.
+
+[pause=0.7]
+
+The final job is always Boolean: should the current outer row remain?
+
+[pause=0.7]
+
+That is why many subquery patterns appear naturally in WHERE.
+
+[pause=1.0]
+
+Slide 42: Subquery in SELECT
+
+A subquery in SELECT must behave like a scalar for each output row.
+
+[pause=0.8]
+
+If it is uncorrelated, the same value may repeat.
+
+[pause=0.7]
+
+If it is correlated, the value can change from row to row.
+
+[pause=0.7]
+
+This placement is useful when you want to enrich each row with one related summary value.
+
+[pause=1.0]
+
+Slide 43: Derived tables
+
+A subquery in FROM is called a derived table.
+
+[pause=0.8]
+
+The inner query produces rows and columns.
+
+[pause=0.8]
+
+The outer query treats those rows like an intermediate table for that statement.
+
+[pause=0.8]
+
+This is especially useful when you want to aggregate first and then join.
+
+[pause=0.7]
+
+Always ask what one row in the derived table represents.
+
+[pause=1.0]
+
+Slide 44: Derived table example
+
+The inner query groups admissions by patient ID.
+
+[pause=0.8]
+
+That creates one admission-count row per patient ID.
+
+[pause=0.7]
+
+The outer query left joins those counts to the patient table.
+
+[pause=0.8]
+
+COALESCE converts missing counts to zero for patients with no admissions.
+
+[pause=0.7]
+
+This pattern makes the intermediate grain very clear.
+
+[pause=1.0]
+
+Slide 45: Correlated vs pre-aggregated
+
+A correlated scalar and a pre-aggregated join can sometimes produce the same result.
+
+[pause=0.7]
+
+The correlated form may be simpler to read.
+
+[pause=0.7]
+
+The derived-table form may be convenient when several aggregated features are needed.
+
+[pause=0.7]
+
+Do not assume one form is always faster.
+
+[pause=0.7]
+
+PostgreSQL can transform queries during optimization.
+
+[pause=0.7]
+
+Use correct semantics first, then inspect the plan on representative data.
+
+[pause=1.0]
+
+Slide 46: Rewrite example
+
+This query rewrites the admission-count problem.
+
+[pause=0.8]
+
+The inner query groups admissions once by patient ID.
+
+[pause=0.8]
+
+The outer query joins those counts to patients.
+
+[pause=0.8]
+
+Run it and compare the result with the correlated scalar version.
+
+[pause=0.8]
+
+The business meaning and patient-level grain should remain the same.
+
+[pause=0.7]
+
+When rewriting, always verify that the result did not change.
+
+[pause=1.0]
+
+Slide 47: EXPLAIN
+
+EXPLAIN shows PostgreSQL's planned execution strategy.
+
+[pause=0.7]
+
+This is useful for learning how the database intends to access and combine rows.
+
+[pause=0.7]
+
+In this tiny browser dataset, use the plan only to learn structure.
+
+[pause=0.7]
+
+Real performance tuning requires representative data volume, indexes, statistics, and workload.
+
+[pause=0.7]
+
+Do not make production performance claims from a small teaching example.
+
+[pause=1.0]
+
+Slide 48: Performance principles
+
+Performance should come after correctness.
+
+[pause=0.7]
+
+A faster query that changes row grain or NULL behavior is not an improvement.
+
+[pause=0.8]
+
+Write the clearest correct query first.
+
+[pause=0.8]
+
+Then inspect the execution plan and consider rewrites or indexes.
+
+[pause=0.7]
+
+Whenever you rewrite a subquery, compare the result sets carefully.
+
+[pause=1.0]
+
+Slide 49: Pattern decision guide
+
+This table summarizes the practical choices.
+
+[pause=0.7]
+
+One benchmark suggests a scalar.
+
+[pause=0.7]
+
+Membership suggests IN.
+
+[pause=0.7]
+
+Existence suggests EXISTS.
+
+[pause=0.7]
+
+No matching row suggests NOT EXISTS.
+
+[pause=0.7]
+
+At least one and every comparison suggest ANY and ALL.
+
+[pause=0.7]
+
+A calculation that depends on the current row suggests correlation.
+
+[pause=0.7]
+
+And an aggregate-first workflow often suggests a derived table.
+
+[pause=1.0]
+
+Slide 50: Guided practice goal
+
+The guided practice combines several patterns.
+
+[pause=0.8]
+
+We want patients who satisfy four conditions.
+
+[pause=0.7]
+
+Instead of writing one long query immediately, test each condition separately.
+
+[pause=0.8]
+
+First the scalar age benchmark.
+
+[pause=0.7]
+
+Then the admission count.
+
+[pause=0.7]
+
+Then abnormal-lab existence.
+
+[pause=0.7]
+
+Then the medication count.
+
+[pause=0.7]
+
+Finally, combine the verified conditions with AND.
+
+[pause=1.0]
+
+Slide 51: Practice step 1
+
+Start with the average-age condition.
+
+[pause=0.7]
+
+This is the same scalar pattern from earlier.
+
+[pause=0.7]
+
+Run it and note which patients are above the overall average.
+
+[pause=0.8]
+
+These rows become candidates for the final combined query.
+
+[pause=0.8]
+
+Testing the condition separately makes later debugging much easier.
+
+[pause=1.0]
+
+Slide 52: Practice step 2
+
+Now calculate admission counts.
+
+[pause=0.7]
+
+The correlated scalar returns one count per patient.
+
+[pause=0.7]
+
+Look for counts greater than one.
+
+[pause=0.7]
+
+You could place the count directly in WHERE, but displaying it first lets you verify the numbers and understand the condition before combining it.
+
+[pause=1.0]
+
+Slide 53: Practice step 3
+
+The third condition asks whether at least one abnormal lab exists.
+
+[pause=0.7]
+
+Because we only need one qualifying related row, EXISTS is the natural contract.
+
+[pause=0.7]
+
+Run the query and identify the patients that satisfy this part of the practice problem.
+
+[pause=1.0]
+
+Slide 54: Practice step 4
+
+The fourth condition counts distinct medications for each patient.
+
+[pause=0.7]
+
+COUNT DISTINCT returns one scalar value for the current patient.
+
+[pause=0.7]
+
+Run the query and identify which patients have more than one distinct medication.
+
+[pause=0.8]
+
+Now all four pieces of the final practice query have been tested independently.
+
+[pause=1.0]
+
+Slide 55: Combine the practice conditions
+
+Now combine the four conditions.
+
+[pause=0.7]
+
+The first is an uncorrelated scalar average.
+
+[pause=0.7]
+
+The second is a correlated scalar count.
+
+[pause=0.7]
+
+The third is correlated EXISTS.
+
+[pause=0.7]
+
+The fourth is another correlated scalar count.
+
+[pause=0.7]
+
+Read the WHERE clause one condition at a time.
+
+[pause=0.7]
+
+Because each piece has already been tested, the complete query is easier to understand and trust.
+
+[pause=1.0]
+
+Slide 56: Project A overview
+
+Project A uses subqueries to build a patient-level feature table.
+
+[pause=0.8]
+
+Each patient receives an admission count, abnormal-lab count, and distinct-medication count.
+
+[pause=0.7]
+
+The query then combines those features into a simple teaching score.
+
+[pause=0.8]
+
+The score is not a clinical model.
+
+[pause=0.7]
+
+The SQL lesson is to create features at one clear grain and then calculate a derived value from them.
+
+[pause=1.0]
+
+Slide 57: Project A SQL
+
+The common table expression creates patient-level features.
+
+[pause=0.7]
+
+Inside it, correlated scalar subqueries calculate each patient's admission count, abnormal-lab count, and distinct-medication count.
+
+[pause=0.7]
+
+The outer SELECT then calculates the synthetic score.
+
+[pause=0.7]
+
+When reading a long query, identify the row grain and feature columns first.
+
+[pause=0.8]
+
+Only then interpret the final derived expression.
+
+[pause=1.0]
+
+Slide 58: Project B overview
+
+Project B changes the output grain from patient to department.
+
+[pause=0.8]
+
+The outer query groups admissions by department.
+
+[pause=0.8]
+
+It calculates total admissions, distinct patients, and average stay.
+
+[pause=0.7]
+
+A correlated subquery adds the count of open admissions for the current department.
+
+[pause=0.8]
+
+This shows that correlation can use a grouping value such as department, not only a patient ID.
+
+[pause=1.0]
+
+Slide 59: Project B SQL
+
+Run the department query and focus first on row grain.
+
+[pause=0.8]
+
+Each row represents one department.
+
+[pause=0.7]
+
+The outer aggregate functions summarize admission rows.
+
+[pause=0.7]
+
+The correlated scalar subquery uses the current department name to count open admissions only for that department.
+
+[pause=0.8]
+
+This is a useful pattern for dashboards and grouped summaries.
+
+[pause=1.0]
+
+Slide 60: Recognition checkpoint
+
+Use this checkpoint to test the contracts.
+
+[pause=0.8]
+
+A comparison such as age greater than parentheses requires one scalar value.
+
+[pause=0.7]
+
+IN expects a one-column set.
+
+[pause=0.7]
+
+EXISTS only needs to know whether any row exists.
+
+[pause=0.7]
+
+And a subquery is correlated when it references the current outer row.
+
+[pause=0.8]
+
+If you can identify these contracts, the syntax becomes much easier to reconstruct.
+
+[pause=1.0]
+
+Slide 61: NULL checkpoint
+
+The NULL checkpoint reviews one of the most practical lessons in the module.
+
+[pause=0.8]
+
+NOT IN can behave unexpectedly when NULL appears in the returned set.
+
+[pause=0.7]
+
+NOT EXISTS tests whether a matching row exists and avoids that classic issue.
+
+[pause=0.7]
+
+NOT IN is not always wrong.
+
+[pause=0.7]
+
+The important point is that you must understand the possible NULL values before relying on it.
+
+[pause=1.0]
+
+Slide 62: Applied challenge
+
+This challenge asks for patients whose admission count is above the average admission count among patients who have at least one admission.
+
+[pause=0.7]
+
+Break the task into stages.
+
+[pause=0.7]
+
+First create patient-level admission counts.
+
+[pause=0.7]
+
+Then calculate the average of those counts.
+
+[pause=0.7]
+
+Finally compare each patient's count with that average.
+
+[pause=0.7]
+
+Use the starter and test the query incrementally rather than writing everything at once.
+
+[pause=1.0]
+
+Slide 63: Module 7 takeaways
+
+These are the key contracts.
+
+[pause=0.7]
+
+Scalar means one value.
+
+[pause=0.7]
+
+IN means membership.
+
+[pause=0.7]
+
+EXISTS means existence.
+
+[pause=0.7]
+
+ANY and ALL compare one value with a set.
+
+[pause=0.7]
+
+Correlation means the inner query depends on the current outer row.
+
+[pause=0.8]
+
+A derived table means the inner query produces rows for the outer query to use.
+
+[pause=0.8]
+
+If you understand the meaning, you can rebuild the syntax when needed.
+
+[pause=1.0]
+
+Slide 64: Final decision guide
+
+Use this final guide when you are unsure.
+
+[pause=0.7]
+
+Ask what the outer query needs from the inner query.
+
+[pause=0.8]
+
+One value suggests a scalar.
+
+[pause=0.7]
+
+Membership suggests IN.
+
+[pause=0.7]
+
+A related-row question suggests EXISTS or NOT EXISTS.
+
+[pause=0.7]
+
+A comparison against a set suggests ANY or ALL.
+
+[pause=0.7]
+
+Intermediate rows suggest a derived table.
+
+[pause=0.7]
+
+Then ask whether the inner query depends on the current outer row. If yes, it is correlated.
+
+[pause=1.0]
+
+Slide 65: Next: Module 8
+
+Module 8 moves from query structure to value transformation.
+
+[pause=0.8]
+
+You will work with text functions, pattern matching, dates, timestamps, and date arithmetic.
+
+[pause=0.7]
+
+The subquery ideas from this module will continue to be useful because real queries often combine nested logic with transformations.
+
+[pause=0.8]
+
+Before moving on, make sure you can explain what the inner query returns and why the outer operator matches that result.
+
+[pause=1.0]
