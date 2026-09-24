@@ -33,7 +33,7 @@ button,select,input,textarea{font:inherit}
 @media(max-width:760px){body{overflow:auto}.app{height:auto;grid-template-rows:auto auto auto}.stage{overflow:visible}.bottombar{grid-template-columns:1fr;position:sticky;bottom:0;z-index:20}.audio-block,.bottom-nav{grid-column:1;grid-row:auto}.two-col,.cols-2,.cols-3,.cols-4,.cols-5,.branches,.children,.leak-grid,.case-grid{grid-template-columns:1fr}.flow{flex-wrap:wrap}.flow-arrow{display:none}#slidesHost{width:calc(100vw - 20px);height:auto;aspect-ratio:auto}.slide{position:relative;height:auto;min-height:720px}.viz-grid{grid-template-columns:1fr}.narration-controls{flex-wrap:wrap}}
 </style></head><body>
 <div class="app">
-<header class="topbar"><div class="brand"><div class="brand-mark">10</div><div>IAN 603<small>Module 10 · Reshaping Data in PostgreSQL</small></div></div><div class="top-actions"><span class="db-status" id="dbStatus">Loading PostgreSQL...</span><button class="control" id="themeBtn" type="button">Dark mode</button><button class="control" id="fullBtn" type="button">Full screen</button></div></header>
+<header class="topbar"><div class="brand"><div class="brand-mark">10</div><div>IAN 603<small>Module 10 · Reshaping Data in PostgreSQL</small></div></div><div class="top-actions"><span class="db-status" id="dbStatus">Loading PostgreSQL...</span><button class="control" id="themeBtn" type="button">Dark mode</button><button class="control" id="fullBtn" type="button">Full screen</button><button class="control" id="courseModulesBtn" type="button" aria-haspopup="dialog" aria-controls="courseModulesDrawer"><span class="cmn-btn-icon">☰</span><span class="cmn-btn-label">Course Modules</span></button></div></header>
 <main class="stage"><div id="slidesHost"><section class="slide active" data-title="Start"><div class="slide-inner"><div class="slide-kicker">IAN 603 · Module 10</div><div class="title-layout"><div><span class="module-pill">IAN 603 · Module 10</span><h1>Reshaping Data in PostgreSQL</h1><p class="lead">Move between long and wide forms without changing the meaning of the underlying facts.</p><div class="topic-pills"><span>Long vs wide</span><span>Pivot</span><span>FILTER</span><span>UNION ALL</span><span>LATERAL VALUES</span><span>Grain</span></div><div class="start-actions"><button class="control primary" id="startWithNarration" type="button">Start Narration</button><button class="control" type="button" onclick="goToSlide(1)">Start Slides</button></div></div><div class="title-visual"><div class="flow"><div class="flow-step"><span>1</span><b>Define grain</b></div><div class="flow-arrow">→</div><div class="flow-step"><span>2</span><b>Choose shape</b></div><div class="flow-arrow">→</div><div class="flow-step"><span>3</span><b>Reshape</b></div><div class="flow-arrow">→</div><div class="flow-step"><span>4</span><b>Validate</b></div><div class="flow-arrow">→</div><div class="flow-step"><span>5</span><b>Deliver</b></div></div></div></div><div class="slide-footer">IAN 603 · Module 10 · Slide 1</div></div></section><section class="slide" data-title="Reshaping changes structure"><div class="slide-inner"><div class="slide-kicker">Start here</div><h2>The same facts can be arranged in different shapes</h2><div class="cards cols-4"><article class="info-card"><span class="eyebrow">Long</span><h3>More rows, fewer measure columns</h3><p>A repeated category appears as values in rows.</p></article><article class="info-card"><span class="eyebrow">Wide</span><h3>Fewer rows, more columns</h3><p>Selected categories become separate columns.</p></article><article class="info-card"><span class="eyebrow">Same facts</span><h3>Structure changes</h3><p>The business meaning should remain understandable before and after reshaping.</p></article><article class="info-card"><span class="eyebrow">Risk</span><h3>Aggregation can remove detail</h3><p>A pivot may combine several source rows into one output cell.</p></article></div><div class="slide-footer">IAN 603 · Module 10 · Slide 2</div></div></section><section class="slide" data-title="Learning goals"><div class="slide-inner"><div class="slide-kicker">Start here</div><h2>What you should be able to do</h2><div class="cards cols-5"><article class="info-card"><h3>Recognize shape</h3><p>Distinguish long and wide data and state each row grain.</p></article><article class="info-card"><h3>Pivot</h3><p>Use CASE and PostgreSQL FILTER for category-specific aggregates.</p></article><article class="info-card"><h3>Unpivot</h3><p>Use UNION ALL and CROSS JOIN LATERAL with VALUES.</p></article><article class="info-card"><h3>Protect meaning</h3><p>Preserve NULL semantics and avoid row multiplication.</p></article><article class="info-card"><h3>Choose delivery</h3><p>Select long or wide output based on the next analytical task.</p></article></div><div class="slide-footer">IAN 603 · Module 10 · Slide 3</div></div></section><section class="slide" data-title="Module roadmap"><div class="slide-inner"><div class="slide-kicker">Start here</div><h2>Learn shape first, syntax second</h2><div class="flow"><div class="flow-step"><span>1</span><b>Long vs wide</b><small>See the structure.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>2</span><b>Pivot</b><small>Rows become columns.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>3</span><b>Unpivot</b><small>Columns become rows.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>4</span><b>Grain</b><small>Protect the fact level.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>5</span><b>Validate</b><small>Check totals and NULLs.</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>6</span><b>Deliver</b><small>Choose shape for the next task.</small></div></div><div class="slide-footer">IAN 603 · Module 10 · Slide 4</div></div></section><section class="slide" data-title="Teaching database"><div class="slide-inner"><div class="slide-kicker">Database</div><h2>Several small datasets support different reshape patterns</h2><div class="table-wrap "><table><thead><tr><th>Table</th><th>Shape / use</th></tr></thead><tbody><tr><td>admissions</td><td>long event rows for diagnosis pivots</td></tr><tr><td>sales</td><td>long transaction rows for revenue reshaping</td></tr><tr><td>monthly_sales</td><td>wide Jan/Feb/Mar revenue columns</td></tr><tr><td>survey_responses</td><td>long question-response rows</td></tr><tr><td>patient_metrics</td><td>wide metric columns</td></tr><tr><td>grades</td><td>long student-course-grade rows</td></tr></tbody></table></div><div class="slide-footer">IAN 603 · Module 10 · Slide 5</div></div></section><section class="slide" data-title="Long form"><div class="slide-inner"><div class="slide-kicker">Shape</div><h2>Long form stores repeated categories as row values</h2><div class="table-wrap "><table><thead><tr><th>product</th><th>sale_month</th><th>revenue</th></tr></thead><tbody><tr><td>Laptop</td><td>2025-01-01</td><td>1600</td></tr><tr><td>Laptop</td><td>2025-02-01</td><td>2400</td></tr><tr><td>Mouse</td><td>2025-01-01</td><td>100</td></tr><tr><td>Mouse</td><td>2025-02-01</td><td>150</td></tr></tbody></table></div><div class="callout"><strong>Grain</strong><span>One row represents one product-month value in this simplified example.</span></div><div class="slide-footer">IAN 603 · Module 10 · Slide 6</div></div></section><section class="slide" data-title="Wide form"><div class="slide-inner"><div class="slide-kicker">Shape</div><h2>Wide form turns selected category values into columns</h2><div class="table-wrap "><table><thead><tr><th>product</th><th>Jan</th><th>Feb</th></tr></thead><tbody><tr><td>Laptop</td><td>1600</td><td>2400</td></tr><tr><td>Mouse</td><td>100</td><td>150</td></tr></tbody></table></div><div class="callout"><strong>Grain</strong><span>One row represents one product, with month values spread across columns.</span></div><div class="slide-footer">IAN 603 · Module 10 · Slide 7</div></div></section><section class="slide" data-title="Same facts, different shape"><div class="slide-inner"><div class="slide-kicker">Shape</div><h2>Reshaping should preserve the analytical relationship</h2><div class="two-col"><div><div class="table-wrap "><table><thead><tr><th>product</th><th>month</th><th>revenue</th></tr></thead><tbody><tr><td>Laptop</td><td>Jan</td><td>1600</td></tr><tr><td>Laptop</td><td>Feb</td><td>2400</td></tr></tbody></table></div></div><div><div class="table-wrap "><table><thead><tr><th>product</th><th>Jan</th><th>Feb</th></tr></thead><tbody><tr><td>Laptop</td><td>1600</td><td>2400</td></tr></tbody></table></div></div><div class="callout"><strong>Ask first</strong><span>What does one row represent before and after the reshape?</span></div><div class="slide-footer">IAN 603 · Module 10 · Slide 8</div></div></section><section class="slide" data-title="What is grain?"><div class="slide-inner"><div class="slide-kicker">Grain</div><h2>Grain is the meaning of one row</h2><div class="cards cols-4"><article class="info-card"><h3>Transaction grain</h3><p>One row per sale transaction.</p></article><article class="info-card"><h3>Product-month grain</h3><p>One row per product per month.</p></article><article class="info-card"><h3>Product grain</h3><p>One row per product.</p></article><article class="info-card"><h3>Patient grain</h3><p>One row per patient.</p></article></div><div class="slide-footer">IAN 603 · Module 10 · Slide 9</div></div></section><section class="slide" data-title="State grain before SQL"><div class="slide-inner"><div class="slide-kicker">Grain</div><h2>Complete one sentence before writing a pivot</h2><div class="category-panel"><h3>One output row represents...</h3><p class="lead" style="margin:20px auto 0">a patient? a product? a product-month? a student? a department?</p></div><div class="callout"><strong>Then decide</strong><span>Which categories become columns, and what measure must fill each cell?</span></div><div class="slide-footer">IAN 603 · Module 10 · Slide 10</div></div></section><section class="slide" data-title="Prefer long form when"><div class="slide-inner"><div class="slide-kicker">Shape choice</div><h2>Long form is usually more flexible</h2><div class="cards cols-4"><article class="info-card"><h3>Categories evolve</h3><p>New values become new rows instead of new schema columns.</p></article><article class="info-card"><h3>Trend charts</h3><p>Month, category, and measure columns work naturally for plotting.</p></article><article class="info-card"><h3>Filtering / grouping</h3><p>Categories remain ordinary values that SQL can filter and group.</p></article><article class="info-card"><h3>Modeling</h3><p>Many tidy analytical workflows prefer repeated observations in rows.</p></article></div><div class="slide-footer">IAN 603 · Module 10 · Slide 11</div></div></section><section class="slide" data-title="Prefer wide form when"><div class="slide-inner"><div class="slide-kicker">Shape choice</div><h2>Wide form is useful for stable side-by-side comparison</h2><div class="cards cols-4"><article class="info-card"><h3>Fixed scorecard</h3><p>Users expect stable columns for side-by-side comparison.</p></article><article class="info-card"><h3>Matrix report</h3><p>Rows and columns have clear, stable business meaning.</p></article><article class="info-card"><h3>Downstream requirement</h3><p>Another system expects a fixed wide schema.</p></article><article class="info-card"><h3>Human scanning</h3><p>A small number of known categories is easier to compare horizontally.</p></article></div><div class="slide-footer">IAN 603 · Module 10 · Slide 12</div></div></section><section class="slide" data-title="Reshaping is not always only reshaping"><div class="slide-inner"><div class="slide-kicker">Shape choice</div><h2>Many pivots also aggregate</h2><div class="table-wrap "><table><thead><tr><th>Source situation</th><th>What happens in pivot</th></tr></thead><tbody><tr><td>exactly one row per output cell</td><td>reshape can preserve that value directly</td></tr><tr><td>multiple rows map to one cell</td><td>an aggregate must combine them</td></tr><tr><td>aggregation used</td><td>source detail may be lost</td></tr></tbody></table></div><div class="callout"><strong>Important</strong><span>Aggregation is a separate analytical decision from shape.</span></div><div class="slide-footer">IAN 603 · Module 10 · Slide 13</div></div></section><section class="slide" data-title="Inspect long admissions"><div class="slide-inner"><div class="slide-kicker">Pivot</div><h2>Start with the source rows</h2><div class="pg-cell"><div class="pg-head"><div><b>Inspect admissions</b><small>PostgreSQL · Query Tool</small></div><div class="pg-actions"><button class="pg-btn pg-run" type="button">Run</button><button class="pg-btn pg-reset" type="button">Reset</button><button class="pg-btn pg-copy" type="button">Copy</button></div></div><div class="pg-shell"><div class="pg-gutter"><div class="pg-gutter-lines"></div></div><pre class="pg-highlight"></pre><textarea class="pg-editor" spellcheck="false">SELECT hadm_id, subject_id, admit_time, diagnosis, department
 FROM admissions
 ORDER BY admit_time, hadm_id;</textarea></div><div class="pg-output">Run this and notice that diagnosis is stored as a row value.</div></div><div class="slide-footer">IAN 603 · Module 10 · Slide 14</div></div></section><section class="slide" data-title="Pivot mental model"><div class="slide-inner"><div class="slide-kicker">Pivot</div><h2>Rows become selected category columns</h2><div class="flow"><div class="flow-step"><span>1</span><b>Choose row grain</b><small>one month</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>2</span><b>Choose categories</b><small>Pneumonia, Fracture, Flu</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>3</span><b>Choose measure</b><small>admission count</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>4</span><b>Aggregate</b><small>count rows per category</small></div><div class="flow-arrow">→</div><div class="flow-step"><span>5</span><b>Output</b><small>one row per month</small></div></div><div class="slide-footer">IAN 603 · Module 10 · Slide 15</div></div></section><section class="slide" data-title="Conditional aggregation"><div class="slide-inner"><div class="slide-kicker">Pivot</div><h2>PostgreSQL can pivot with aggregates plus conditions</h2><div class="cards cols-3"><article class="info-card"><span class="eyebrow">Portable</span><h3>SUM(CASE ...)</h3><p>Works across many SQL systems.</p></article><article class="info-card"><span class="eyebrow">PostgreSQL</span><h3>Aggregate FILTER</h3><p>Often easier to read for category-specific aggregates.</p></article><article class="info-card"><span class="eyebrow">Shared idea</span><h3>One GROUP BY grain</h3><p>Each output row is defined by the grouped columns.</p></article></div><div class="slide-footer">IAN 603 · Module 10 · Slide 16</div></div></section><section class="slide" data-title="Pivot with CASE"><div class="slide-inner"><div class="slide-kicker">Pivot</div><h2>Use CASE inside SUM to count selected categories</h2><div class="pg-cell"><div class="pg-head"><div><b>Diagnosis pivot with CASE</b><small>PostgreSQL · Query Tool</small></div><div class="pg-actions"><button class="pg-btn pg-run" type="button">Run</button><button class="pg-btn pg-reset" type="button">Reset</button><button class="pg-btn pg-copy" type="button">Copy</button></div></div><div class="pg-shell"><div class="pg-gutter"><div class="pg-gutter-lines"></div></div><pre class="pg-highlight"></pre><textarea class="pg-editor" spellcheck="false">SELECT DATE_TRUNC('month', admit_time)::date AS admit_month,
@@ -221,4 +221,158 @@ document.getElementById('startNarration').onclick=playCurrentNarration;document.
 audio.onplay=()=>{document.getElementById('audioPlayer').classList.add('playing');document.getElementById('audioPlay').textContent='Pause'};audio.onpause=()=>{document.getElementById('audioPlayer').classList.remove('playing');document.getElementById('audioPlay').textContent='Play'};audio.ontimeupdate=()=>{const d=Number.isFinite(audio.duration)?audio.duration:0,t=audio.currentTime||0;document.getElementById('audioSeek').value=d?String((t/d)*100):'0';document.getElementById('audioTime').textContent=fmt(t)+' / '+fmt(d);if(state.ccEnabled!==false&&currentCues.length){let idx=-1;const timed=currentCues.some(c=>Number.isFinite(c.start)&&Number.isFinite(c.end));if(timed)idx=currentCues.findIndex(c=>t>=c.start&&t<c.end);else if(d)idx=Math.min(currentCues.length-1,Math.floor((t/d)*currentCues.length));if(idx!==activeCueIndex){activeCueIndex=idx;subtitleText.textContent=idx>=0?currentCues[idx].text:''}}};audio.onended=()=>{document.getElementById('audioPlayer').classList.remove('playing');document.getElementById('audioPlay').textContent='Play';document.getElementById('audioTitle').textContent='Slide '+(current+1)+' complete';subtitleText.textContent=''};audio.onerror=()=>document.getElementById('audioTitle').textContent='Audio not found for Slide '+(current+1);
 document.getElementById('transcriptBtn').onclick=()=>document.getElementById('transcriptPanel').classList.toggle('open');document.getElementById('transcriptClose').onclick=()=>document.getElementById('transcriptPanel').classList.remove('open');
 const hash=location.hash.match(/slide-(\d+)/);goToSlide(hash?Number(hash[1])-1:0);
-</script></body></html>
+</script><!-- COURSE_MODULE_NAV_START -->
+<style id="courseModuleNavStyles">
+#courseModulesBtn{display:inline-flex;align-items:center;gap:7px}
+#courseModulesBtn .cmn-btn-icon{font-size:14px;line-height:1}
+.cmn-backdrop{position:fixed;inset:0;background:rgba(10,18,27,.42);backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:.2s ease;z-index:1400}
+.cmn-backdrop.open{opacity:1;visibility:visible}
+.cmn-drawer{position:absolute;top:0;right:0;width:min(430px,92vw);height:100%;background:var(--surface,#fff);color:var(--text,#142033);border-left:1px solid var(--border,#d7e1eb);box-shadow:-24px 0 60px rgba(0,0,0,.2);transform:translateX(100%);transition:transform .24s ease;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto}
+.cmn-backdrop.open .cmn-drawer{transform:translateX(0)}
+.cmn-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:20px 20px 16px;border-bottom:1px solid var(--border,#d7e1eb)}
+.cmn-kicker{display:block;color:var(--primary,#185f99);font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.cmn-head h2{font-size:22px;line-height:1.1;margin:0!important;letter-spacing:-.02em}
+.cmn-head p{font-size:12px;color:var(--muted,#627189);margin:6px 0 0}
+.cmn-close{width:36px;height:36px;border:1px solid var(--border,#d7e1eb);border-radius:10px;background:var(--surface2,var(--surface-2,#f7f9fc));color:var(--text,#142033);font-size:20px;cursor:pointer}
+.cmn-home-row{padding:12px 20px;border-bottom:1px solid var(--border,#d7e1eb)}
+.cmn-home{display:flex;align-items:center;justify-content:space-between;gap:12px;text-decoration:none;border:1px solid var(--border,#d7e1eb);background:var(--primary-soft,#e5f1fb);border-radius:12px;padding:11px 13px;color:var(--text,#142033);font-size:13px;font-weight:900}
+.cmn-home small{display:block;color:var(--muted,#627189);font-size:10px;font-weight:700;margin-top:2px}
+.cmn-list{overflow:auto;padding:12px 12px 18px;display:grid;gap:7px;align-content:start}
+.cmn-module-link{display:grid;grid-template-columns:42px minmax(0,1fr) 18px;align-items:center;gap:10px;text-decoration:none;padding:9px 10px;border:1px solid transparent;border-radius:12px;color:var(--text,#142033);background:transparent}
+.cmn-module-link:hover{background:var(--surface2,var(--surface-2,#f7f9fc));border-color:var(--border,#d7e1eb)}
+.cmn-module-link.current{background:var(--primary-soft,#e5f1fb);border-color:color-mix(in srgb,var(--primary,#185f99) 45%,transparent)}
+.cmn-num{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--surface2,var(--surface-2,#f7f9fc));border:1px solid var(--border,#d7e1eb);color:var(--muted,#627189);font-size:11px;font-weight:900}
+.cmn-module-link.current .cmn-num{background:var(--primary,#185f99);border-color:var(--primary,#185f99);color:#fff}
+.cmn-link-copy{min-width:0}
+.cmn-link-copy b{display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmn-link-copy small{display:block;color:var(--muted,#627189);font-size:10px;margin-top:2px}
+.cmn-arrow{font-size:20px;color:var(--muted,#627189);text-align:center}
+.cmn-footer{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 20px 18px;border-top:1px solid var(--border,#d7e1eb);background:var(--surface,#fff)}
+.cmn-step{display:grid;grid-template-columns:auto 1fr;column-gap:7px;text-decoration:none;border:1px solid var(--border,#d7e1eb);background:var(--surface2,var(--surface-2,#f7f9fc));border-radius:11px;padding:9px 10px;color:var(--text,#142033)}
+.cmn-step>span{grid-row:1/3;align-self:center;color:var(--primary,#185f99);font-weight:900}
+.cmn-step small{font-size:9px;color:var(--muted,#627189);font-weight:800}
+.cmn-step b{font-size:11px}
+.cmn-step.disabled{opacity:.48}
+body.cmn-lock{overflow:hidden}
+@media(max-width:720px){
+  #courseModulesBtn .cmn-btn-label{display:none}
+  #courseModulesBtn{padding-left:10px;padding-right:10px}
+  .cmn-head{padding:16px 16px 13px}.cmn-home-row{padding:10px 16px}.cmn-footer{padding:10px 16px 14px}
+}
+</style>
+<div class="cmn-backdrop" id="courseModulesBackdrop" aria-hidden="true">
+  <aside class="cmn-drawer" id="courseModulesDrawer" role="dialog" aria-modal="true" aria-labelledby="courseModulesTitle">
+    <div class="cmn-head">
+      <div>
+        <span class="cmn-kicker">IAN 603 · Course Navigation</span>
+        <h2 id="courseModulesTitle">Course Modules</h2>
+        <p>Jump to another narrated module without returning to the course hub first.</p>
+      </div>
+      <button class="cmn-close" id="courseModulesClose" type="button" aria-label="Close course modules">×</button>
+    </div>
+    <div class="cmn-home-row">
+      <a class="cmn-home" href="s_index.html">
+        <span>Course Home<small>Overview, learning path, and all modules</small></span>
+        <span>⌂</span>
+      </a>
+    </div>
+    <nav class="cmn-list" aria-label="IAN 603 modules">
+    <a class="cmn-module-link" href="s_module1.html">
+      <span class="cmn-num">01</span>
+      <span class="cmn-link-copy"><b>Understanding Data in Informatics</b><small>Module 1</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module2.html">
+      <span class="cmn-num">02</span>
+      <span class="cmn-link-copy"><b>Designing Relational Databases</b><small>Module 2</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module3.html">
+      <span class="cmn-num">03</span>
+      <span class="cmn-link-copy"><b>PostgreSQL in Action</b><small>Module 3</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module4.html">
+      <span class="cmn-num">04</span>
+      <span class="cmn-link-copy"><b>Aggregating Data with PostgreSQL</b><small>Module 4</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module5.html">
+      <span class="cmn-num">05</span>
+      <span class="cmn-link-copy"><b>Reasoning with SQL Logic</b><small>Module 5</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module6.html">
+      <span class="cmn-num">06</span>
+      <span class="cmn-link-copy"><b>Joining Data in PostgreSQL</b><small>Module 6</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module7.html">
+      <span class="cmn-num">07</span>
+      <span class="cmn-link-copy"><b>Subqueries in PostgreSQL</b><small>Module 7</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module8.html">
+      <span class="cmn-num">08</span>
+      <span class="cmn-link-copy"><b>Strings and Dates in PostgreSQL</b><small>Module 8</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module9.html">
+      <span class="cmn-num">09</span>
+      <span class="cmn-link-copy"><b>Data Cleaning in PostgreSQL</b><small>Module 9</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link current" href="s_module10.html" aria-current="page">
+      <span class="cmn-num">10</span>
+      <span class="cmn-link-copy"><b>Reshaping Data in PostgreSQL</b><small>Module 10 · Current</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module11.html">
+      <span class="cmn-num">11</span>
+      <span class="cmn-link-copy"><b>Advanced SQL: CTEs & Window Functions</b><small>Module 11</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module12.html">
+      <span class="cmn-num">12</span>
+      <span class="cmn-link-copy"><b>Views & Modular Queries</b><small>Module 12</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    <a class="cmn-module-link" href="s_module13.html">
+      <span class="cmn-num">13</span>
+      <span class="cmn-link-copy"><b>Introduction to Spark SQL</b><small>Module 13</small></span>
+      <span class="cmn-arrow">›</span>
+    </a>
+    </nav>
+    <div class="cmn-footer"><a class="cmn-step" href="s_module9.html"><span>←</span><small>Previous</small><b>Module 9</b></a><a class="cmn-step" href="s_module11.html"><span>→</span><small>Next</small><b>Module 11</b></a></div>
+  </aside>
+</div>
+<script id="courseModuleNavScript">
+(()=>{
+  const btn=document.getElementById('courseModulesBtn');
+  const backdrop=document.getElementById('courseModulesBackdrop');
+  const drawer=document.getElementById('courseModulesDrawer');
+  const closeBtn=document.getElementById('courseModulesClose');
+  if(!btn||!backdrop||!drawer||!closeBtn)return;
+  let lastFocus=null;
+  function openNav(){
+    lastFocus=document.activeElement;
+    backdrop.classList.add('open');
+    backdrop.setAttribute('aria-hidden','false');
+    document.body.classList.add('cmn-lock');
+    requestAnimationFrame(()=>closeBtn.focus());
+  }
+  function closeNav(){
+    backdrop.classList.remove('open');
+    backdrop.setAttribute('aria-hidden','true');
+    document.body.classList.remove('cmn-lock');
+    if(lastFocus&&typeof lastFocus.focus==='function')lastFocus.focus();
+  }
+  btn.addEventListener('click',openNav);
+  closeBtn.addEventListener('click',closeNav);
+  backdrop.addEventListener('click',e=>{if(e.target===backdrop)closeNav()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&backdrop.classList.contains('open'))closeNav()});
+})();
+</script>
+<!-- COURSE_MODULE_NAV_END -->
+</body>
+</html>
