@@ -1,0 +1,314 @@
+{
+  "prefix": "module2",
+  "voice": "en-US-GuyNeural",
+  "rate": "-5%",
+  "volume": "+0%",
+  "pitch": "+0Hz",
+  "caption_words": 7,
+  "slide_count": 43,
+  "slide_markers_found": true,
+  "pause_marker_format": "[pause=seconds] or [pause=millisecondsms]",
+  "slides": [
+    {
+      "slide": 1,
+      "audio": "module2_slide_01.mp3",
+      "captions": "module2_slide_01.vtt",
+      "text": "Welcome to Module 2, Designing Relational Databases. In this module, we are going to focus on the structure that makes reliable SQL and analytics possible later.\n\n[pause=0.7]\n\nBefore we worry about writing long queries, we need to decide what each table represents, what one row means, how tables connect, and what rules the database should protect automatically.\n\n[pause=0.7]\n\nThe examples use a small outpatient clinic, but the design ideas apply to many domains such as retail, education, finance, and operations.\n\n[pause=0.8]\n\nYou will also see small PostgreSQL examples that run directly in the browser. When a code slide appears, run it here first, inspect the result, and if you want more practice, use Copy and paste the same SQL into the pgAdmin Query Tool.\n\n[pause=0.8]\n\nThe goal is not to memorize a complete schema. The goal is to understand the design decisions behind the schema.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 2,
+      "audio": "module2_slide_02.mp3",
+      "captions": "module2_slide_02.vtt",
+      "text": "Database design comes before trustworthy analysis.\n\n[pause=0.7]\n\nIf the structure is unclear, even a syntactically correct query can produce confusing or unreliable results. That is why we begin by deciding what we are modeling and what one row in each table should mean.\n\n[pause=0.8]\n\nA practical design process starts with scope. What real-world problem are we representing? Then we identify the main entities, connect them through relationships, and define rules that must always hold.\n\n[pause=0.7]\n\nNormalization helps us reduce unnecessary repetition, while constraints help prevent invalid data from entering the database.\n\n[pause=0.7]\n\nA useful final question is this: if a different application inserts data tomorrow, will the database itself still protect the important rules? Good design should not depend only on one user remembering what to do.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 3,
+      "audio": "module2_slide_03.mp3",
+      "captions": "module2_slide_03.vtt",
+      "text": "We will move from concepts to implementation gradually.\n\n[pause=0.7]\n\nFirst, we build the relational mental model. You will identify entities, attributes, row grain, keys, and relationships.\n\n[pause=0.7]\n\nThen we focus on protection. Constraints and normalization help keep the data consistent even when many users or applications interact with the database.\n\n[pause=0.7]\n\nAfter that, we connect the design to PostgreSQL. You will run completed examples before you are asked to change or write small pieces yourself.\n\n[pause=0.8]\n\nThe coding progression is intentional: run, change, complete, and then write.\n\n[pause=0.8]\n\nYou are not expected to memorize a long CREATE TABLE script. Instead, learn how to read the pieces and explain why each one exists.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 4,
+      "audio": "module2_slide_04.mp3",
+      "captions": "module2_slide_04.vtt",
+      "text": "There are four basic relational terms that are useful to translate into everyday language.\n\n[pause=0.7]\n\nA relation is essentially a table about one subject or event type. A tuple is one row in that table. An attribute is a column that describes each row. A domain describes the allowed type and rules for a value.\n\n[pause=0.7]\n\nFor example, the patient table is the relation. One patient is a tuple. Birth date is an attribute. The allowed type and constraints on birth date are part of its domain.\n\n[pause=0.8]\n\nOne important word is atomic. Atomic does not mean physically small. It means the database treats the field as one value.\n\n[pause=0.7]\n\nIf a column contains a comma-separated list of service codes and each service needs to be searched, joined, or validated separately, that list is not a good atomic design for the relational model.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 5,
+      "audio": "module2_slide_05.mp3",
+      "captions": "module2_slide_05.vtt",
+      "text": "Database design can be discussed at three levels.\n\n[pause=0.7]\n\nThe conceptual level is the business view. We identify major subjects and high-level relationships without worrying about PostgreSQL syntax.\n\n[pause=0.7]\n\nThe logical level turns that business view into a relational blueprint. We decide tables, attributes, primary keys, foreign keys, cardinality, optionality, and normalization.\n\n[pause=0.7]\n\nThe physical level is the actual database implementation. Here we choose PostgreSQL data types, indexes, storage decisions, and deployment details.\n\n[pause=0.7]\n\nKeeping these levels separate is helpful because business meaning should not depend on one technical implementation.\n\n[pause=0.7]\n\nFor example, the logical idea that an appointment belongs to a patient remains valid even if the physical indexing strategy changes later.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 6,
+      "audio": "module2_slide_06.mp3",
+      "captions": "module2_slide_06.vtt",
+      "text": "Our running case is a small outpatient clinic.\n\n[pause=0.8]\n\nThe clinic needs to track patients, providers, appointments, services, and the services delivered during each appointment.\n\n[pause=0.7]\n\nThink about which words describe independent things and which words describe relationships or rules. Patient, provider, appointment, and service sound like candidate entities. A rule such as every appointment must have a provider sounds more like a constraint.\n\n[pause=0.7]\n\nThe design also needs to prevent problems such as duplicate patient identifiers, negative prices, impossible appointment times, and service lists stored as comma-separated text.\n\n[pause=0.7]\n\nBefore looking at the schema, try a quick warm-up: which words in this scenario would you initially consider tables, and which would you consider business rules?\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 7,
+      "audio": "module2_slide_07.mp3",
+      "captions": "module2_slide_07.vtt",
+      "text": "A useful way to read requirements is to look for different kinds of language.\n\n[pause=0.7]\n\nNouns often suggest candidate entities. Descriptive facts often become attributes. Verbs often reveal relationships. Words such as must, may, only, and at least often reveal constraints or optionality.\n\n[pause=0.7]\n\nFor example, patient and provider are nouns. Birth date is a descriptive fact about a patient. A patient books an appointment describes a relationship. Every appointment must have one provider describes a required relationship.\n\n[pause=0.8]\n\nDo not start by typing CREATE TABLE.\n\n[pause=0.7]\n\nStart by writing the business meaning in plain language. Once the meaning is clear, translating it into a relational structure becomes much easier.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 8,
+      "audio": "module2_slide_08.mp3",
+      "captions": "module2_slide_08.vtt",
+      "text": "Row grain is one of the most important design habits in this course.\n\n[pause=0.7]\n\nGrain answers the question: what does one row represent?\n\n[pause=0.7]\n\nFor a patient table, one row may represent one patient. For appointment, one row may represent one scheduled encounter. For service, one row may represent one reusable service definition. For appointment service, one row may represent one service used during one appointment.\n\n[pause=0.7]\n\nProblems begin when one row tries to represent several different subjects at the same time.\n\n[pause=0.7]\n\nBefore choosing columns for any table, finish the sentence: one row equals one what?\n\n[pause=0.7]\n\nIf that sentence is hard to complete, the table design may be mixing several concepts and should be reconsidered before implementation.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 9,
+      "audio": "module2_slide_09.mp3",
+      "captions": "module2_slide_09.vtt",
+      "text": "Not every concept needs its own table.\n\n[pause=0.7]\n\nA concept often deserves a separate entity when it has its own identity, several descriptive facts, relationships to other concepts, or is reused many times.\n\n[pause=0.7]\n\nFor example, a service has a code, a name, a price, and may appear in many appointments. That makes service a strong candidate for its own table.\n\n[pause=0.8]\n\nA simple attribute usually just describes another entity. Birth date describes a patient. Appointment start time describes an appointment. Quantity describes one service line.\n\n[pause=0.7]\n\nWhen deciding, ask whether the concept needs to exist independently and be referenced by other records. If not, it may be better represented as a column rather than a separate table.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 10,
+      "audio": "module2_slide_10.mp3",
+      "captions": "module2_slide_10.vtt",
+      "text": "Data types should reflect meaning rather than only the way a value looks.\n\n[pause=0.7]\n\nA generated identifier can use an identity column. Exact monetary values are better represented with an exact numeric type. Whole-number quantities use integer types. General descriptive text can use text. Birth dates use date, while real-world moments such as appointment times often use timestamp with time zone.\n\n[pause=0.7]\n\nBoolean is appropriate for genuinely true-or-false states.\n\n[pause=0.7]\n\nThroughout this course, we also use common PostgreSQL style conventions: uppercase SQL keywords, lower snake case for table and column names, and identity columns rather than MySQL-style AUTO_INCREMENT.\n\n[pause=0.7]\n\nDo not choose a type only because a sample value fits. Choose the type that represents the meaning and the rules the database should enforce.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 11,
+      "audio": "module2_slide_11.mp3",
+      "captions": "module2_slide_11.vtt",
+      "text": "This is the first runnable PostgreSQL example in the module.\n\n[pause=0.8]\n\nDo not try to memorize it. Read it from top to bottom and identify the purpose of each statement.\n\n[pause=0.7]\n\nThe first statement removes an earlier practice table if it exists so the example is safe to run again. CREATE TABLE defines a small table. INSERT INTO adds one row. SELECT reads the rows back.\n\n[pause=0.8]\n\nBefore you click Run, predict the final output. You should expect one row with the patient ID and patient name that were inserted.\n\n[pause=0.8]\n\nRun the code directly in the browser and inspect the result. Then, if you want, copy it into pgAdmin's Query Tool and run the same three-step sequence there.\n\n[pause=0.8]\n\nThe goal is simply to connect CREATE, INSERT, and SELECT with what each one does.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 12,
+      "audio": "module2_slide_12.mp3",
+      "captions": "module2_slide_12.vtt",
+      "text": "Missing information is a design choice, not something we should leave accidental.\n\n[pause=0.7]\n\nNULL represents unknown, missing, or not-applicable information. It is not the same as zero, an empty string, or false.\n\n[pause=0.7]\n\nFor each column, ask whether missingness makes sense.\n\n[pause=0.7]\n\nA patient medical record number may be required, so it should not be nullable. Email may be optional. An appointment start time is required for a scheduled appointment. A cancellation time only makes sense when an appointment is cancelled, so it may be nullable.\n\n[pause=0.7]\n\nA data dictionary documents these decisions. It should describe the column meaning, type, nullability, units, keys, and important business rules.\n\n[pause=0.7]\n\nThis documentation helps future analysts interpret the database correctly.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 13,
+      "audio": "module2_slide_13.mp3",
+      "captions": "module2_slide_13.vtt",
+      "text": "Keys help us answer a basic question: which row are we talking about?\n\n[pause=0.7]\n\nA primary key is the official row identifier selected for a table. A natural key comes from the business domain, such as a medical record number or national provider identifier.\n\n[pause=0.7]\n\nA surrogate key is generated by the database and has no business meaning. An alternate key is another candidate identifier that still needs uniqueness even though it is not the primary key.\n\n[pause=0.7]\n\nA composite key uses several columns together. A foreign key references a key in another table.\n\n[pause=0.7]\n\nDo not think of all keys as interchangeable. They solve different problems: identity, business uniqueness, and relationships.\n\n[pause=0.7]\n\nAs we continue, pay attention to which key is being used for each purpose.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 14,
+      "audio": "module2_slide_14.mp3",
+      "captions": "module2_slide_14.vtt",
+      "text": "This example shows a very common design: a generated surrogate key plus a protected natural identifier.\n\n[pause=0.8]\n\nPostgreSQL generates patient ID automatically. That gives us a stable internal key that can be used in relationships.\n\n[pause=0.7]\n\nThe clinic's medical record number still has business meaning, so it receives a UNIQUE constraint. The surrogate key does not make the natural business identifier irrelevant.\n\n[pause=0.7]\n\nRun the example in the browser. Notice that the INSERT does not provide a patient ID because PostgreSQL generates it.\n\n[pause=0.8]\n\nThen inspect the returned row and the table structure.\n\n[pause=0.7]\n\nIf you copy this example into pgAdmin, focus on the two different roles: patient ID is the internal row identity, while MRN is protected business identity.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 15,
+      "audio": "module2_slide_15.mp3",
+      "captions": "module2_slide_15.vtt",
+      "text": "PRIMARY KEY and UNIQUE are related, but they are not the same thing.\n\n[pause=0.7]\n\nThe primary key is the table's official row identity and cannot be NULL. A table has one primary-key constraint, although that key may contain multiple columns.\n\n[pause=0.7]\n\nUNIQUE protects other candidate keys or business rules. A table can have several unique constraints.\n\n[pause=0.7]\n\nPostgreSQL also has specific behavior around NULL values in unique constraints, so do not assume a UNIQUE column behaves exactly like a primary key.\n\n[pause=0.7]\n\nIn the clinic example, patient ID is the primary key, while MRN remains unique because duplicate medical record numbers would still be a serious data-quality problem.\n\n[pause=0.8]\n\nA useful question is: if the system-generated ID is already unique, which business identifiers still need independent protection?\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 16,
+      "audio": "module2_slide_16.mp3",
+      "captions": "module2_slide_16.vtt",
+      "text": "Relationships describe how many rows can connect between entities.\n\n[pause=0.7]\n\nIn a one-to-one relationship, each side connects to at most one row on the other side.\n\n[pause=0.7]\n\nIn a one-to-many relationship, one parent can connect to many child rows. A patient can have many appointments, so the foreign key belongs on the appointment side.\n\n[pause=0.7]\n\nIn a many-to-many relationship, both sides can connect to many rows. Appointments can contain many services, and a service can appear in many appointments.\n\n[pause=0.7]\n\nRelational databases resolve that many-to-many relationship with a junction table.\n\n[pause=0.7]\n\nThe placement rule is worth remembering conceptually: in one-to-many, put the foreign key on the many side. In many-to-many, introduce an intersection or junction table.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 17,
+      "audio": "module2_slide_17.mp3",
+      "captions": "module2_slide_17.vtt",
+      "text": "This ERD shows the logical blueprint for the clinic.\n\n[pause=0.7]\n\nPatient and provider each connect to appointment. Appointment then connects to service through the appointment service junction table.\n\n[pause=0.7]\n\nRead each relationship separately rather than trying to understand the entire diagram at once.\n\n[pause=0.7]\n\nPatient to appointment is one-to-many. Provider to appointment is one-to-many. Appointment to service is many-to-many, so appointment service sits between them.\n\n[pause=0.7]\n\nNotice that appointment service also stores facts about the relationship, such as quantity and unit charge. Those values do not belong only to the appointment or only to the service. They belong to the specific service used in a specific appointment.\n\n[pause=0.7]\n\nThat is one reason junction tables are often real business entities rather than only technical connectors.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 18,
+      "audio": "module2_slide_18.mp3",
+      "captions": "module2_slide_18.vtt",
+      "text": "Now let's translate business rules into relational decisions.\n\n[pause=0.7]\n\nIf every appointment belongs to exactly one patient, appointment needs a non-null patient foreign key.\n\n[pause=0.7]\n\nA patient may exist before any appointment is scheduled, so the patient table does not require a child appointment row.\n\n[pause=0.7]\n\nThe same reasoning applies to provider.\n\n[pause=0.7]\n\nAn appointment may have zero or many service lines, so those optional child rows belong in appointment service.\n\n[pause=0.7]\n\nA service can appear in many appointments, which confirms that appointment and service form a many-to-many relationship.\n\n[pause=0.7]\n\nThe key habit is to read the business sentence first, then decide where the foreign key belongs and whether that relationship is required or optional.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 19,
+      "audio": "module2_slide_19.mp3",
+      "captions": "module2_slide_19.vtt",
+      "text": "Constraints turn important business rules into rules the database can enforce.\n\n[pause=0.7]\n\nNOT NULL says a value is required. DEFAULT supplies a value when one is omitted. UNIQUE protects candidate keys or other non-duplicate rules. CHECK evaluates a Boolean condition. PRIMARY KEY defines row identity. FOREIGN KEY protects relationships to parent rows.\n\n[pause=0.7]\n\nOne beginner detail is especially important: CHECK does not automatically make a column required.\n\n[pause=0.7]\n\nFor example, a check that quantity is greater than zero only evaluates the quantity when a value is present. If quantity must always be present, combine the check with NOT NULL.\n\n[pause=0.8]\n\nThe database should enforce important rules whenever possible instead of relying only on application code or user memory.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 20,
+      "audio": "module2_slide_20.mp3",
+      "captions": "module2_slide_20.vtt",
+      "text": "This runnable example demonstrates a business-rule constraint.\n\n[pause=0.8]\n\nFirst, run the completed version with a valid appointment time. PostgreSQL should accept it.\n\n[pause=0.8]\n\nThen change the ending time so that it is earlier than the starting time and run the example again.\n\n[pause=0.8]\n\nThe SQL syntax is still valid, but the requested row now violates the business rule enforced by the CHECK constraint.\n\n[pause=0.7]\n\nThat difference is important. Syntax answers whether the statement is written correctly. Constraints answer whether the requested data is allowed.\n\n[pause=0.7]\n\nRun both versions in the browser and read the error message on the invalid one.\n\n[pause=0.8]\n\nIn pgAdmin, you would see the same idea: a database-level constraint rejects bad data regardless of which application submitted it.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 21,
+      "audio": "module2_slide_21.mp3",
+      "captions": "module2_slide_21.vtt",
+      "text": "This slide asks you to strengthen a CHECK constraint.\n\n[pause=0.7]\n\nThe clinic does not allow negative standard prices, but the current threshold is deliberately too weak.\n\n[pause=0.7]\n\nRun the example first so you understand its current behavior. Then change the threshold from negative one hundred to zero and run it again.\n\n[pause=0.8]\n\nAfter the correction, the negative test value should be rejected.\n\n[pause=0.7]\n\nIn this exercise, rejection is success. It means PostgreSQL is enforcing the business rule.\n\n[pause=0.8]\n\nPay attention to the difference between fixing the data and fixing the rule. We are changing the schema constraint so future invalid values are also protected, not only correcting one row.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 22,
+      "audio": "module2_slide_22.mp3",
+      "captions": "module2_slide_22.vtt",
+      "text": "Foreign keys also need a decision about what happens when a parent row is deleted.\n\n[pause=0.7]\n\nRESTRICT or NO ACTION blocks the deletion while dependent child rows exist. This is often appropriate for master data such as patients, providers, or services that are referenced by historical activity.\n\n[pause=0.7]\n\nCASCADE automatically removes dependent child rows. That can be appropriate when the child has no meaning without the parent, such as appointment service lines when the appointment itself is deleted.\n\n[pause=0.7]\n\nSET NULL keeps the child but removes the reference, which only makes sense when the relationship is optional.\n\n[pause=0.7]\n\nDo not choose CASCADE simply because it is convenient. Choose the referential action based on the real meaning and retention requirements of the relationship.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 23,
+      "audio": "module2_slide_23.mp3",
+      "captions": "module2_slide_23.vtt",
+      "text": "Normalization helps reduce repeated facts and the anomalies they can create.\n\n[pause=0.7]\n\nAn update anomaly occurs when the same fact appears in many rows and the copies become inconsistent.\n\n[pause=0.7]\n\nAn insertion anomaly occurs when you cannot store one fact without inventing another unrelated fact.\n\n[pause=0.7]\n\nA deletion anomaly occurs when removing one record accidentally removes the only copy of some other important information.\n\n[pause=0.7]\n\nThe general goal is to store each fact in a place that matches what determines that fact.\n\n[pause=0.7]\n\nNormalization is not about splitting tables into as many pieces as possible. It is about making dependencies clearer so updates, inserts, and deletes do not accidentally damage unrelated information.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 24,
+      "audio": "module2_slide_24.mp3",
+      "captions": "module2_slide_24.vtt",
+      "text": "This example shows an unnormalized appointment record.\n\n[pause=0.8]\n\nThe row contains patient information, provider information, appointment time, a comma-separated list of service codes, and a matching list of charges.\n\n[pause=0.7]\n\nThat design creates several problems.\n\n[pause=0.7]\n\nA foreign key cannot easily validate each service code inside a comma-separated list. Joining to one service is difficult. The charges can become misaligned with the service codes. The row also mixes several different subjects.\n\n[pause=0.7]\n\nBefore normalizing, state the problem clearly: one row is trying to represent an appointment and several service occurrences at the same time.\n\n[pause=0.7]\n\nThe first normalization step will separate those repeated service values into individual rows.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 25,
+      "audio": "module2_slide_25.mp3",
+      "captions": "module2_slide_25.vtt",
+      "text": "First Normal Form removes repeating groups and requires each field to represent one value.\n\n[pause=0.7]\n\nInstead of storing several service codes in one cell, each appointment-service occurrence gets its own row.\n\n[pause=0.7]\n\nThat immediately makes each service easier to filter, validate, and connect to other tables.\n\n[pause=0.7]\n\nBut 1NF does not solve every design problem.\n\n[pause=0.7]\n\nIn the example, patient information, provider information, appointment information, and service information are still repeated across several rows.\n\n[pause=0.8]\n\nSo think of 1NF as the beginning of the normalization process. We have removed lists inside fields, but we still need to ask which columns depend on which parts of the key.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 26,
+      "audio": "module2_slide_26.mp3",
+      "captions": "module2_slide_26.vtt",
+      "text": "Second Normal Form becomes especially relevant when a table has a composite key.\n\n[pause=0.7]\n\nSuppose the row is identified by appointment ID and service code together.\n\n[pause=0.7]\n\nNow ask whether every non-key column depends on that whole combination.\n\n[pause=0.7]\n\nAppointment start time depends only on the appointment. Service name and standard price depend only on the service code. Quantity and the captured charge may depend on the combination of appointment and service.\n\n[pause=0.7]\n\nThe columns that depend on only part of the composite key should be moved to the table where that dependency belongs.\n\n[pause=0.7]\n\nThis leads toward separate appointment, service, and appointment-service tables.\n\n[pause=0.7]\n\nThe goal is to align each fact with the key that actually determines it.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 27,
+      "audio": "module2_slide_27.mp3",
+      "captions": "module2_slide_27.vtt",
+      "text": "Third Normal Form removes transitive dependencies.\n\n[pause=0.7]\n\nEven after separating appointment and service facts, we should not keep patient name and provider specialty inside every appointment row if those values are determined by patient or provider identifiers.\n\n[pause=0.7]\n\nThe appointment should store the foreign keys that identify the patient and provider.\n\n[pause=0.7]\n\nPatient details belong in patient. Provider details belong in provider.\n\n[pause=0.7]\n\nA common memory aid for 3NF is that non-key facts should describe the key and should not really depend on another non-key attribute.\n\n[pause=0.7]\n\nThe practical benefit is easier maintenance. If a provider's specialty changes, we update the provider record rather than many appointment rows.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 28,
+      "audio": "module2_slide_28.mp3",
+      "captions": "module2_slide_28.vtt",
+      "text": "This slide summarizes the normalization progression.\n\n[pause=0.7]\n\nFirst Normal Form removes repeating groups and list-like values so each field represents one value.\n\n[pause=0.7]\n\nSecond Normal Form handles partial dependencies when a composite key is involved. Facts that depend on only part of that key move elsewhere.\n\n[pause=0.7]\n\nThird Normal Form removes transitive dependencies so non-key facts are stored with the entity that actually determines them.\n\n[pause=0.7]\n\nA fast diagnostic is to ask how many rows must change when one fact changes.\n\n[pause=0.7]\n\nIf changing a patient's name requires updating many appointment-service rows, patient information is probably stored in the wrong place.\n\n[pause=0.7]\n\nIn a well-designed operational schema, one patient fact should usually be updated in one patient row.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 29,
+      "audio": "module2_slide_29.mp3",
+      "captions": "module2_slide_29.vtt",
+      "text": "Now we are ready to run the complete clinic schema.\n\n[pause=0.8]\n\nThis is an instructor-guided reference, not a script you need to memorize.\n\n[pause=0.7]\n\nBefore clicking Run, scan the script and count the CREATE TABLE statements. Then look for primary keys, unique business identifiers, foreign keys, and check constraints.\n\n[pause=0.8]\n\nRun the schema in the browser and confirm that PostgreSQL creates the tables successfully.\n\n[pause=0.8]\n\nThe order matters because parent tables need to exist before child tables can reference them.\n\n[pause=0.7]\n\nIf you copy the script into pgAdmin, use it as a reading exercise. Trace each foreign key back to its parent table.\n\n[pause=0.8]\n\nThe main goal is to see how the conceptual and logical design decisions become executable PostgreSQL.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 30,
+      "audio": "module2_slide_30.mp3",
+      "captions": "module2_slide_30.vtt",
+      "text": "This provided script loads sample records into the clinic schema.\n\n[pause=0.7]\n\nSome of the SQL uses lookup and join patterns that are taught in more detail later, so you do not need to write this loading script from memory.\n\n[pause=0.7]\n\nRun it in the browser and inspect the final result.\n\n[pause=0.8]\n\nFocus on what is happening conceptually: patients, providers, and services are inserted first. The appointment refers to existing patient and provider rows. Appointment-service rows then connect the appointment to services.\n\n[pause=0.7]\n\nThe insert order follows the relationships we designed.\n\n[pause=0.7]\n\nIf you use pgAdmin, run the schema first and then the loading script. Parent data must exist before child rows that reference it can be inserted.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 31,
+      "audio": "module2_slide_31.mp3",
+      "captions": "module2_slide_31.vtt",
+      "text": "Now we deliberately challenge the database rules.\n\n[pause=0.7]\n\nThe examples test duplicate natural keys, negative prices, orphan foreign-key references, and impossible time ranges.\n\n[pause=0.8]\n\nThese are useful tests because a good design should reject them.\n\n[pause=0.7]\n\nRun the provided invalid example and read the PostgreSQL error. Do not treat the rejection as a failed lesson.\n\n[pause=0.8]\n\nThen connect the error to the constraint responsible for it.\n\n[pause=0.7]\n\nA strong schema is not only one that accepts valid data. It is also one that reliably refuses invalid data.\n\n[pause=0.7]\n\nWhen designing your own tables, plan at least one invalid-data test for each important rule. That helps confirm the guardrail actually works.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 32,
+      "audio": "module2_slide_32.mp3",
+      "captions": "module2_slide_32.vtt",
+      "text": "Normalization separates facts into different tables so each fact has a clear home.\n\n[pause=0.7]\n\nLater, analytical queries reconnect those tables through keys.\n\n[pause=0.7]\n\nThis slide previews that idea with a provided join query. Joins are taught step by step in Module 6, so you are not expected to write this query yet.\n\n[pause=0.8]\n\nRun it and inspect the connected result.\n\n[pause=0.8]\n\nNotice how patient, provider, appointment, service, and service-line information can be combined without having stored all of those facts in one giant table.\n\n[pause=0.7]\n\nThat is a major benefit of relational design: store facts in well-structured places, then reconnect them when a question requires a broader view.\n\n[pause=0.7]\n\nFor now, focus on recognizing how keys make that reconnection possible.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 33,
+      "audio": "module2_slide_33.mp3",
+      "captions": "module2_slide_33.vtt",
+      "text": "Indexes are physical structures that help PostgreSQL find rows more efficiently.\n\n[pause=0.7]\n\nPrimary keys and UNIQUE constraints automatically receive supporting unique indexes.\n\n[pause=0.7]\n\nForeign-key columns on the child side are different. PostgreSQL does not automatically create every child-side index for you.\n\n[pause=0.7]\n\nWhether an index is useful depends on actual query patterns, joins, updates, deletes, and data volume.\n\n[pause=0.8]\n\nRun the provided example and inspect the indexes.\n\n[pause=0.8]\n\nAt this stage, you do not need to design a full indexing strategy. The important idea is that logical relationships and physical performance structures are related but not identical.\n\n[pause=0.7]\n\nFirst design correct keys and constraints. Then add indexes based on real access patterns and measured performance needs.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 34,
+      "audio": "module2_slide_34.mp3",
+      "captions": "module2_slide_34.vtt",
+      "text": "A normalized operational database and an analytical model solve different problems.\n\n[pause=0.7]\n\nOLTP systems focus on safe day-to-day transactions. They reduce duplicated facts, protect updates, and use keys and constraints to preserve integrity.\n\n[pause=0.7]\n\nAnalytical models focus on understandable, efficient reporting. Fact tables store measurable events, while dimensions provide descriptive context.\n\n[pause=0.7]\n\nThat means a star schema may intentionally repeat some descriptive values in ways an operational schema would avoid.\n\n[pause=0.7]\n\nThe important point is that dimensional modeling complements the normalized source. It does not excuse poor operational design.\n\n[pause=0.7]\n\nA trustworthy analytical model is easier to build when the source system has clear grain, reliable identifiers, controlled relationships, and well-enforced business rules.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 35,
+      "audio": "module2_slide_35.mp3",
+      "captions": "module2_slide_35.vtt",
+      "text": "In analytical modeling, the grain question remains essential.\n\n[pause=0.7]\n\nA fact table represents measurable events. Before adding columns, state exactly what one fact row means.\n\n[pause=0.7]\n\nA star schema connects the fact table directly to descriptive dimensions. This often makes analytical queries easier to understand.\n\n[pause=0.7]\n\nA snowflake design normalizes some dimensions into related sub-dimensions. That can reduce redundancy but increases the number of joins.\n\n[pause=0.7]\n\nNeither pattern removes the need to define grain.\n\n[pause=0.7]\n\nFor our clinic example, one possible fact grain is one appointment-service line. That sentence tells us what each fact row represents and which measures, keys, and dimensions can belong there.\n\n[pause=0.8]\n\nAlways define fact grain before designing an analytical table.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 36,
+      "audio": "module2_slide_36.mp3",
+      "captions": "module2_slide_36.vtt",
+      "text": "A schema is also a contract for future users.\n\n[pause=0.7]\n\nConsistent naming, named constraints, ERDs, and a data dictionary make the structure easier to understand.\n\n[pause=0.7]\n\nChange management matters because schemas evolve. Use versioned migrations, review important changes, and test how to roll them back.\n\n[pause=0.7]\n\nSecurity includes least privilege, separation of sensitive data, and access auditing.\n\n[pause=0.7]\n\nReliability includes backups, restore testing, quality monitoring, ownership, and lineage.\n\n[pause=0.7]\n\nFor analytics, document more than column names. Record table grain, source, owner, refresh behavior, and how the data moves from source systems into analytical outputs.\n\n[pause=0.7]\n\nGood governance helps people trust not only the database structure, but also the meaning and history of the data.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 37,
+      "audio": "module2_slide_37.mp3",
+      "captions": "module2_slide_37.vtt",
+      "text": "This slide asks you to diagnose a poorly designed everything table.\n\n[pause=0.7]\n\nStart with identity. There is no stable primary key, and names are not reliable identifiers.\n\n[pause=0.7]\n\nNext, look at row grain. Patient, provider, appointment, services, and charges are all mixed together.\n\n[pause=0.7]\n\nThen inspect types. Time and money are stored as text, making validation and calculation harder.\n\n[pause=0.7]\n\nThe services column also contains a list instead of one relational value.\n\n[pause=0.7]\n\nBefore revealing the repair direction, try to name at least three problems yourself.\n\n[pause=0.7]\n\nThe goal is not merely to split the table because normalization says so. Explain which fact belongs to which entity, which identifiers need protection, and which rules should become database constraints.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 38,
+      "audio": "module2_slide_38.mp3",
+      "captions": "module2_slide_38.vtt",
+      "text": "Now apply the same design process to a bookstore.\n\n[pause=0.7]\n\nStart by identifying candidate entities such as customer, book, author, order, and order item.\n\n[pause=0.7]\n\nThen define one-row grain for each table.\n\n[pause=0.7]\n\nThink about the relationships. One customer can place many orders. One order can contain many books. One book can have several authors, which suggests another many-to-many relationship.\n\n[pause=0.7]\n\nChoose stable primary keys and protect important natural identifiers such as email or ISBN when appropriate.\n\n[pause=0.7]\n\nBefore revealing the sample direction, create your own simple design first.\n\n[pause=0.7]\n\nThere can be more than one reasonable implementation, but every table should have a clear grain and every relationship should be explainable in plain language.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 39,
+      "audio": "module2_slide_39.mp3",
+      "captions": "module2_slide_39.vtt",
+      "text": "This practice turns bookstore business rules into constraints.\n\n[pause=0.7]\n\nCustomer email must be present and unique, so think about the combination of NOT NULL and UNIQUE.\n\n[pause=0.7]\n\nOrder-item quantity must be positive, which is a CHECK rule.\n\n[pause=0.7]\n\nUnit price cannot be negative, which is another CHECK.\n\n[pause=0.7]\n\nEvery order item must reference an existing order and book, so foreign keys are required.\n\n[pause=0.7]\n\nDeletion behavior depends on meaning. Order items may cascade when their order is deleted, while deleting a book that appears in historical orders may need to be restricted.\n\n[pause=0.7]\n\nTry naming the constraint type for each rule before opening the sample patterns. The important skill is translating business language into database-enforced rules.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 40,
+      "audio": "module2_slide_40.mp3",
+      "captions": "module2_slide_40.vtt",
+      "text": "Use this slide to test whether you can explain the design decisions rather than only recognize the syntax.\n\n[pause=0.7]\n\nWhy keep a natural identifier unique even when a surrogate primary key exists?\n\n[pause=0.7]\n\nWhy does a many-to-many relationship need a junction table?\n\n[pause=0.7]\n\nWhich business rules belong in CHECK, FOREIGN KEY, or UNIQUE constraints?\n\n[pause=0.7]\n\nWhat kind of dependency does Second Normal Form address? What does Third Normal Form remove?\n\n[pause=0.7]\n\nWhy might child line items cascade with a parent while master data is restricted?\n\n[pause=0.7]\n\nAnd why can a normalized operational source still feed a star schema?\n\n[pause=0.7]\n\nTry answering each in your own words. If you can explain the reason behind the design, the SQL implementation becomes much easier to remember and adapt.\n\n[pause=1.0]",
+      "pause_markers": 8
+    },
+    {
+      "slide": 41,
+      "audio": "module2_slide_41.mp3",
+      "captions": "module2_slide_41.vtt",
+      "text": "This is your first more independent table-writing exercise.\n\n[pause=0.8]\n\nDo not start from a blank screen mentally. Use the comments and earlier examples as a pattern.\n\n[pause=0.8]\n\nDecide what one row in your small table represents. Choose a primary key, identify which columns are required, and add a simple CHECK or other rule where it makes sense.\n\n[pause=0.7]\n\nThen insert one valid row and run a SELECT to inspect it.\n\n[pause=0.8]\n\nUse the browser editor and run your code in small steps if needed.\n\n[pause=0.8]\n\nIf PostgreSQL reports an error, read it carefully and fix one issue at a time.\n\n[pause=0.7]\n\nThe slide includes one possible answer, but try your own version first. The purpose is to practice translating a small design into executable PostgreSQL, not to reproduce one exact script.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 42,
+      "audio": "module2_slide_42.mp3",
+      "captions": "module2_slide_42.vtt",
+      "text": "The final activity combines the major ideas from Module 2.\n\n[pause=0.7]\n\nChoose a familiar two-table domain such as rooms and reservations, customers and orders, or courses and registrations.\n\n[pause=0.7]\n\nDefine the purpose and row grain of both tables before writing SQL.\n\n[pause=0.7]\n\nGive each table a primary key and connect them with one foreign key. Add required columns with NOT NULL and at least one CHECK constraint.\n\n[pause=0.7]\n\nInsert valid sample rows and confirm that they work.\n\n[pause=0.7]\n\nIf you are ready for more, add a protected natural key, a third table or junction table, a deletion rule, and an invalid-data test.\n\n[pause=0.7]\n\nWork incrementally: copy a small known pattern, rename it for your domain, change one piece at a time, and run after every change.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 43,
+      "audio": "module2_slide_43.mp3",
+      "captions": "module2_slide_43.vtt",
+      "text": "Let's summarize Module 2.\n\n[pause=0.7]\n\nA strong relational table has a clear subject and a clear row grain.\n\n[pause=0.7]\n\nKeys solve different problems. Primary and surrogate keys provide stable row identity, natural and alternate keys protect business identifiers, composite keys identify combinations, and foreign keys connect related tables.\n\n[pause=0.7]\n\nCardinality tells us where foreign keys belong and when a junction table is needed.\n\n[pause=0.7]\n\nConstraints turn important business rules into database-enforced guardrails.\n\n[pause=0.7]\n\nNormalization reduces repeated facts and update, insertion, and deletion anomalies.\n\n[pause=0.7]\n\nFinally, good operational design creates a more trustworthy source for analytical models.\n\n[pause=0.7]\n\nThe coding habit to carry forward is simple: run a correct example, change one part, complete one rule, and then write a small version yourself. Module 3 builds on this foundation with querying and controlled data changes.\n\n[pause=1.0]",
+      "pause_markers": 8
+    }
+  ]
+}
