@@ -1,0 +1,1431 @@
+Slide 1: Start
+
+Welcome to Module 9, Data Cleaning in PostgreSQL.
+
+[pause=0.7]
+
+This module brings together the ideas from earlier modules and turns them into a repeatable cleaning workflow.
+
+[pause=0.7]
+
+We will profile missing and invalid values, standardize representation, validate business rules, identify duplicate groups, quarantine questionable records, preview updates safely, and add constraints when the rules are known.
+
+[pause=0.7]
+
+The most important principle is simple: cleaning should make uncertainty visible, not hide it.
+
+[pause=1.0]
+
+Slide 2: Cleaning is decision making
+
+Cleaning is not a collection of random fixes.
+
+[pause=0.7]
+
+It is a sequence of evidence-based decisions.
+
+[pause=0.7]
+
+First, understand the source problems.
+
+[pause=0.7]
+
+Then apply only rules you can explain.
+
+[pause=0.7]
+
+Keep raw values when provenance matters.
+
+[pause=0.7]
+
+And when the correct value is unknown, do not invent one.
+
+[pause=0.7]
+
+A review flag is often more honest than an automatic replacement.
+
+[pause=1.0]
+
+Slide 3: Core principle
+
+Suppose a product price is negative.
+
+[pause=0.7]
+
+It may be tempting to use ABS and make it positive.
+
+[pause=0.7]
+
+But that silently invents a correction.
+
+[pause=0.7]
+
+The negative value is evidence that something went wrong.
+
+[pause=0.7]
+
+A safer workflow flags the value, preserves the source, and corrects it only when reliable evidence identifies the intended price.
+
+[pause=0.7]
+
+This principle applies to dates, phone numbers, emails, categories, and other fields.
+
+[pause=1.0]
+
+Slide 4: Learning goals
+
+By the end of this module, you should be able to build a cleaning workflow rather than a one-off fix.
+
+[pause=0.7]
+
+You should be able to profile quality problems, normalize representation, validate rules, identify duplicates, and use safer SQL patterns for changes.
+
+[pause=0.7]
+
+You should also be able to explain what your cleaning logic knows and what it does not know.
+
+[pause=1.0]
+
+Slide 5: Six-stage workflow
+
+This six-stage workflow organizes the module.
+
+[pause=0.7]
+
+Profile first.
+
+[pause=0.7]
+
+Preserve the source.
+
+[pause=0.7]
+
+Normalize representation where the rule is known.
+
+[pause=0.7]
+
+Validate values against documented rules.
+
+[pause=0.7]
+
+Resolve duplicates or questionable rows with explicit logic.
+
+[pause=0.7]
+
+Finally, move stable rules closer to data entry through constraints or monitoring.
+
+[pause=0.7]
+
+The order matters because prevention should come after you understand the data and the rules.
+
+[pause=1.0]
+
+Slide 6: Raw record to analytical representation
+
+This simple record illustrates representation cleaning.
+
+[pause=0.7]
+
+The name changes spacing and display case.
+
+[pause=0.7]
+
+The email is trimmed and lowercased.
+
+[pause=0.7]
+
+The phone keeps only digits.
+
+[pause=0.7]
+
+Each transformation is explainable.
+
+[pause=0.7]
+
+But the cleaned value should not erase the source evidence.
+
+[pause=0.7]
+
+In many analytical workflows, raw and cleaned layers are both valuable.
+
+[pause=1.0]
+
+Slide 7: Teaching database
+
+The teaching database intentionally contains imperfect data.
+
+[pause=0.7]
+
+Customers includes formatting differences, missing values, and duplicates.
+
+[pause=0.7]
+
+Products includes inconsistent categories and invalid numeric values.
+
+[pause=0.7]
+
+Messy customers is a staging table designed for the integrated cleaning project.
+
+[pause=0.8]
+
+The problems are deliberate so that we can practice detection and resolution instead of working with already-perfect data.
+
+[pause=1.0]
+
+Slide 8: Inspect source customers
+
+Start by inspecting the source rows.
+
+[pause=0.8]
+
+Look for visible and invisible formatting differences.
+
+[pause=0.7]
+
+Notice missing emails or phones, blank values, inconsistent punctuation, and possible duplicate people.
+
+[pause=0.7]
+
+The purpose of this first query is not to fix anything.
+
+[pause=0.8]
+
+It is to build evidence about the source before defining rules.
+
+[pause=1.0]
+
+Slide 9: Profile before changing
+
+A source review becomes more useful when we quantify the problems.
+
+[pause=0.7]
+
+How many values are missing?
+
+[pause=0.7]
+
+How many fail a validation rule?
+
+[pause=0.7]
+
+How many duplicate groups appear after normalization?
+
+[pause=0.7]
+
+Are unusual values rare but plausible, or clearly impossible?
+
+[pause=0.7]
+
+Profiling gives you a baseline and helps you measure whether a cleaning step actually improves the dataset.
+
+[pause=1.0]
+
+Slide 10: Missingness profile
+
+This query distinguishes NULL from blank text.
+
+[pause=0.8]
+
+COUNT column ignores NULL values but still counts empty strings.
+
+[pause=0.7]
+
+COUNT of NULLIF BTRIM column comma empty string excludes both NULL and blank-after-trimming values.
+
+[pause=0.7]
+
+Run the query and compare the non-null and non-blank counts.
+
+[pause=0.8]
+
+That difference is an important part of completeness profiling.
+
+[pause=1.0]
+
+Slide 11: NULL is not blank
+
+Missing data can appear in several forms.
+
+[pause=0.7]
+
+NULL is a database null.
+
+[pause=0.7]
+
+Blank text is still a string value.
+
+[pause=0.7]
+
+A sentinel such as all zeros is an ordinary value unless the business rule says it represents missingness.
+
+[pause=0.7]
+
+The word Unknown is also ordinary text unless its meaning is documented.
+
+[pause=0.7]
+
+Do not collapse these states automatically without understanding the source convention.
+
+[pause=1.0]
+
+Slide 12: NULL, blank, sentinel in practice
+
+This query labels different phone states.
+
+[pause=0.8]
+
+A true SQL NULL is labeled NULL.
+
+[pause=0.7]
+
+A trimmed empty string is labeled blank.
+
+[pause=0.7]
+
+All-zero or all-nine digit patterns are labeled sentinel for this teaching example.
+
+[pause=0.8]
+
+Everything else is treated as a candidate value.
+
+[pause=0.7]
+
+This classification step is useful before deciding whether any states should be normalized together.
+
+[pause=1.0]
+
+Slide 13: Normalize blanks to NULL
+
+Sometimes blank strings and NULL represent the same business state.
+
+[pause=0.7]
+
+If that rule is documented, NULLIF can convert a blank-after-trimming string into NULL.
+
+[pause=0.7]
+
+This can make later logic easier because one missing representation is easier to handle than several.
+
+[pause=0.7]
+
+But do this only when blank truly means missing for that field.
+
+[pause=1.0]
+
+Slide 14: COALESCE is a fallback
+
+COALESCE returns the first non-null expression.
+
+[pause=0.7]
+
+Here, we try cleaned email first, then cleaned phone, then a text label saying no contact method.
+
+[pause=0.7]
+
+This is a reporting or business-logic fallback.
+
+[pause=0.7]
+
+It does not repair the missing email or phone.
+
+[pause=0.7]
+
+The source still has the same missingness; we are simply choosing a value for the current output.
+
+[pause=1.0]
+
+Slide 15: Standardization vs correction
+
+Standardization and correction should not be treated as the same operation.
+
+[pause=0.7]
+
+Trimming an email or changing case preserves the intended value.
+
+[pause=0.7]
+
+Mapping tech to Electronics may be appropriate if the business taxonomy explicitly defines that equivalence.
+
+[pause=0.7]
+
+Changing a negative price to a positive price makes a much stronger claim about reality.
+
+[pause=0.7]
+
+That kind of correction needs evidence.
+
+[pause=1.0]
+
+Slide 16: Standardize names
+
+This query trims name boundaries, collapses repeated whitespace, and applies title-style capitalization.
+
+[pause=0.8]
+
+Run it and compare raw and cleaned names.
+
+[pause=0.8]
+
+The goal is to create a more consistent analytical representation.
+
+[pause=0.7]
+
+In production, name capitalization can be domain-sensitive, so treat INITCAP as a teaching convenience rather than a universal truth.
+
+[pause=1.0]
+
+Slide 17: Standardize emails
+
+Email standardization starts with a small set of explainable transformations.
+
+[pause=0.7]
+
+Trim boundary spaces.
+
+[pause=0.7]
+
+Convert empty strings to NULL if blank means missing.
+
+[pause=0.7]
+
+Lowercase the value for a consistent analytical representation.
+
+[pause=0.7]
+
+This does not validate the email.
+
+[pause=0.7]
+
+It only standardizes the representation before validation.
+
+[pause=1.0]
+
+Slide 18: Standardize phones
+
+This phone example performs two different tasks.
+
+[pause=0.8]
+
+First, it removes non-digit characters to create a digits-only candidate.
+
+[pause=0.7]
+
+Second, it checks whether the candidate has exactly ten digits.
+
+[pause=0.7]
+
+If it does not, the validated ten-digit output becomes NULL.
+
+[pause=0.7]
+
+Notice that formatting normalization does not automatically make a phone number valid.
+
+[pause=1.0]
+
+Slide 19: Category mapping
+
+Category standardization is more than text cleaning.
+
+[pause=0.7]
+
+If several labels should map to one canonical category, that mapping reflects business meaning.
+
+[pause=0.7]
+
+You need a documented rule.
+
+[pause=0.7]
+
+Do not merge categories simply because their names look similar.
+
+[pause=0.7]
+
+The transformation should reflect the intended taxonomy.
+
+[pause=1.0]
+
+Slide 20: Standardize categories
+
+This CASE expression maps several known labels to standard categories.
+
+[pause=0.7]
+
+Electronics, electronic, and tech map to Electronics.
+
+[pause=0.7]
+
+Other documented variants map to their canonical labels.
+
+[pause=0.7]
+
+For a small teaching example, CASE is readable.
+
+[pause=0.8]
+
+For a larger production taxonomy, a reference or mapping table is usually easier to maintain.
+
+[pause=1.0]
+
+Slide 21: Flag invalid values
+
+This query classifies product prices.
+
+[pause=0.8]
+
+Missing values are labeled missing.
+
+[pause=0.7]
+
+Zero or negative prices are flagged invalid and require review.
+
+[pause=0.7]
+
+Positive prices are valid candidates.
+
+[pause=0.7]
+
+Notice that the query does not change the values.
+
+[pause=0.8]
+
+Validation should often begin by identifying problems, not by overwriting them.
+
+[pause=1.0]
+
+Slide 22: Validation is rule-based
+
+Validation tests values against documented rules.
+
+[pause=0.7]
+
+A rule might describe a text pattern, a length, a domain, or a numeric range.
+
+[pause=0.7]
+
+Passing a rule means the value satisfies that rule.
+
+[pause=0.7]
+
+It does not necessarily prove the value is correct in the real world.
+
+[pause=0.7]
+
+Keep the distinction between validity and accuracy from Module 1.
+
+[pause=1.0]
+
+Slide 23: Validate email shape
+
+This query checks email shape.
+
+[pause=0.8]
+
+Missing values receive a missing status.
+
+[pause=0.7]
+
+Values matching the teaching-level regular expression are labeled valid shape.
+
+[pause=0.7]
+
+Other nonmissing values are flagged for review.
+
+[pause=0.7]
+
+The phrase valid shape is important because the regex does not prove the mailbox exists.
+
+[pause=1.0]
+
+Slide 24: Validate phone shape
+
+Phone validation first strips punctuation and other non-digit characters.
+
+[pause=0.7]
+
+Then it checks whether the resulting candidate has ten digits.
+
+[pause=0.7]
+
+Missing values are separated from invalid-shaped values.
+
+[pause=0.7]
+
+This is a good pattern: normalize representation first, then apply the validation rule.
+
+[pause=1.0]
+
+Slide 25: Validate products
+
+This query applies several product rules in priority order.
+
+[pause=0.8]
+
+It checks for a missing product name, missing price, invalid price, and negative stock.
+
+[pause=0.7]
+
+If none of those selected rules fail, the row passes the selected checks.
+
+[pause=0.7]
+
+A production system might store several issue codes instead of only the first one, but this CASE expression is a clear beginner-friendly start.
+
+[pause=1.0]
+
+Slide 26: Issue report
+
+Row-level validation is useful, but managers and analysts often need a summary.
+
+[pause=0.7]
+
+This query combines several issue detectors with UNION ALL.
+
+[pause=0.8]
+
+Then it groups by entity and issue type to count how many problems exist.
+
+[pause=0.7]
+
+This turns cleaning logic into a measurable quality report.
+
+[pause=1.0]
+
+Slide 27: Quality dimensions
+
+Data quality has multiple dimensions.
+
+[pause=0.7]
+
+Completeness is not the same as validity.
+
+[pause=0.7]
+
+Validity is not the same as uniqueness.
+
+[pause=0.7]
+
+Timeliness asks a different question again.
+
+[pause=0.7]
+
+Measure these dimensions separately whenever possible.
+
+[pause=0.7]
+
+A single score can be useful for triage, but it can hide which problem actually caused the low score.
+
+[pause=1.0]
+
+Slide 28: Illustrative quality score
+
+This query creates an illustrative score out of four component checks.
+
+[pause=0.8]
+
+Each contributes twenty-five points.
+
+[pause=0.7]
+
+That weighting is a policy choice for teaching.
+
+[pause=0.7]
+
+Another organization might value the dimensions differently.
+
+[pause=0.7]
+
+The important lesson is to keep the component checks visible and avoid treating a composite score as an objective truth.
+
+[pause=1.0]
+
+Slide 29: Quality-band summary
+
+This query converts numeric quality scores into broad bands and counts customers in each band.
+
+[pause=0.8]
+
+A summary like this can help prioritize review.
+
+[pause=0.7]
+
+But the band does not replace the underlying dimensions.
+
+[pause=0.7]
+
+If a row has a low score, you should still be able to explain whether the problem is missingness, invalid contact data, timeliness, or something else.
+
+[pause=1.0]
+
+Slide 30: Duplicate detection
+
+Deduplication has two separate problems.
+
+[pause=0.7]
+
+First, detect which rows appear to represent the same entity.
+
+[pause=0.7]
+
+Second, decide which row should survive or how the records should be merged.
+
+[pause=0.7]
+
+Do not jump directly from detection to deletion.
+
+[pause=0.7]
+
+The duplicate key and survivor rule both need to be explicit.
+
+[pause=1.0]
+
+Slide 31: Exact normalized duplicates
+
+This query creates normalized email and name keys.
+
+[pause=0.8]
+
+It groups rows by those normalized values.
+
+[pause=0.7]
+
+Groups with more than one row become duplicate candidates.
+
+[pause=0.7]
+
+ARRAY_AGG shows the source IDs in each group.
+
+[pause=0.7]
+
+This is detection only.
+
+[pause=0.7]
+
+It does not yet say which source row is better.
+
+[pause=1.0]
+
+Slide 32: Duplicate key is a rule
+
+Duplicate detection depends on the identity rule.
+
+[pause=0.7]
+
+Email alone may be useful but can fail when emails are shared or changed.
+
+[pause=0.7]
+
+Name plus email can be stronger but may miss rows with incomplete values.
+
+[pause=0.7]
+
+Phone can provide supporting evidence but is not perfect.
+
+[pause=0.7]
+
+For sensitive data, possible duplicates often need multiple signals and review.
+
+[pause=1.0]
+
+Slide 33: Survivor selection
+
+After detecting duplicates, define a survivor rule.
+
+[pause=0.7]
+
+A row with more useful fields might rank higher.
+
+[pause=0.7]
+
+A more recent record might be preferred when recency is meaningful.
+
+[pause=0.7]
+
+Some systems have a designated authoritative source.
+
+[pause=0.7]
+
+And ties should be broken deterministically.
+
+[pause=0.7]
+
+The important point is that survivor selection is a policy, not an automatic property of SQL.
+
+[pause=1.0]
+
+Slide 34: Rank duplicate survivors
+
+This query calculates a simple completeness score.
+
+[pause=0.8]
+
+Then ROW_NUMBER ranks rows inside each normalized duplicate group.
+
+[pause=0.7]
+
+The most complete row ranks first, with signup date and ID used as additional ordering.
+
+[pause=0.7]
+
+This does not mean the first row is always truly correct.
+
+[pause=0.7]
+
+It means the rule is explicit, reproducible, and reviewable.
+
+[pause=1.0]
+
+Slide 35: Possible duplicates
+
+This query creates pairs of customers that share the same normalized phone number.
+
+[pause=0.8]
+
+The condition a ID less than b ID avoids comparing a row with itself and avoids duplicate pair orderings.
+
+[pause=0.7]
+
+These are possible duplicates, not proven duplicates.
+
+[pause=0.7]
+
+A shared phone number may represent one person, a household, or reused contact information.
+
+[pause=0.7]
+
+Review may be necessary.
+
+[pause=1.0]
+
+Slide 36: Detection vs resolution
+
+Duplicate detection and duplicate resolution are different stages.
+
+[pause=0.7]
+
+Detection tries to find plausible candidate groups.
+
+[pause=0.7]
+
+Resolution decides what to do with them.
+
+[pause=0.7]
+
+That could mean choosing a survivor, merging complementary fields, quarantining the group, or sending it for human review.
+
+[pause=0.7]
+
+Separating the stages makes deduplication safer.
+
+[pause=1.0]
+
+Slide 37: Quarantine pattern
+
+Quarantine is a useful pattern when values are questionable but not safely correctable.
+
+[pause=0.7]
+
+The source remains intact.
+
+[pause=0.7]
+
+Issue flags identify what needs attention.
+
+[pause=0.7]
+
+A view or table exposes the review subset.
+
+[pause=0.7]
+
+After review, records can be corrected, approved, or excluded according to policy.
+
+[pause=0.7]
+
+This is often safer than automatic replacement.
+
+[pause=1.0]
+
+Slide 38: Create a quarantine view
+
+This example creates a view with quality flags.
+
+[pause=0.8]
+
+It marks missing names, invalid email shapes, and invalid phone shapes.
+
+[pause=0.7]
+
+The final SELECT returns only rows that need attention.
+
+[pause=0.7]
+
+Because the source customer table is unchanged, the view becomes a transparent review layer.
+
+[pause=0.7]
+
+This is a strong pattern for reproducible cleaning.
+
+[pause=1.0]
+
+Slide 39: Views as cleaning layers
+
+Views can help separate source data from analytical representation.
+
+[pause=0.7]
+
+The raw table preserves provenance.
+
+[pause=0.7]
+
+A clean view applies standardized transformations.
+
+[pause=0.7]
+
+A quality view exposes rows that need review.
+
+[pause=0.7]
+
+Downstream analysis can use the prepared layer without permanently overwriting the source.
+
+[pause=0.7]
+
+This also makes the cleaning logic visible in SQL.
+
+[pause=1.0]
+
+Slide 40: Clean preview view
+
+This query creates a clean preview view.
+
+[pause=0.8]
+
+Names, emails, phones, and addresses are transformed into candidate analytical fields.
+
+[pause=0.7]
+
+The original customer rows remain unchanged.
+
+[pause=0.7]
+
+This gives you a reusable prepared layer while keeping the source available for comparison and audit.
+
+[pause=1.0]
+
+Slide 41: Prevent known defects
+
+After you understand the data and reconcile legacy problems, stable rules can move closer to data entry.
+
+[pause=0.7]
+
+NOT NULL protects required values.
+
+[pause=0.7]
+
+CHECK can enforce a pattern or domain.
+
+[pause=0.7]
+
+UNIQUE can protect a field that truly must be unique.
+
+[pause=0.7]
+
+Foreign keys protect relationships.
+
+[pause=0.7]
+
+Constraints prevent known defects from reappearing, but they should reflect real business rules.
+
+[pause=1.0]
+
+Slide 42: Constraint demonstration
+
+This example creates a small table with several constraints.
+
+[pause=0.8]
+
+Email is required.
+
+[pause=0.7]
+
+The email must match a teaching-level shape check.
+
+[pause=0.7]
+
+Phone is either NULL or exactly ten digits.
+
+[pause=0.7]
+
+Email is also unique.
+
+[pause=0.7]
+
+Run the valid insert first.
+
+[pause=0.8]
+
+Then try changing a value to violate one rule and observe PostgreSQL reject it.
+
+[pause=1.0]
+
+Slide 43: When to add constraints
+
+Constraints are powerful, but timing matters.
+
+[pause=0.7]
+
+If you add a strict rule before understanding legacy data, valid historical exceptions may be blocked or the migration may fail.
+
+[pause=0.7]
+
+Profile first.
+
+[pause=0.7]
+
+Resolve existing violations.
+
+[pause=0.7]
+
+Confirm the business rule and its owner.
+
+[pause=0.7]
+
+Then add the constraint and monitor future data.
+
+[pause=1.0]
+
+Slide 44: Safe updates
+
+When a cleaning rule is strong enough to update data, use a controlled workflow.
+
+[pause=0.7]
+
+Preview with SELECT.
+
+[pause=0.7]
+
+Start a transaction.
+
+[pause=0.7]
+
+Run UPDATE with a narrow condition.
+
+[pause=0.8]
+
+Use RETURNING to inspect the changed rows.
+
+[pause=0.8]
+
+Then either commit the change or roll it back.
+
+[pause=0.7]
+
+This makes destructive cleaning much safer.
+
+[pause=1.0]
+
+Slide 45: UPDATE RETURNING
+
+This script begins a transaction.
+
+[pause=0.7]
+
+It lowercases and trims emails only when the stored value is actually different.
+
+[pause=0.7]
+
+RETURNING shows which rows changed.
+
+[pause=0.7]
+
+Then ROLLBACK discards the changes.
+
+[pause=0.7]
+
+This is a useful teaching pattern because you can inspect the effect without permanently modifying the source table.
+
+[pause=1.0]
+
+Slide 46: IS DISTINCT FROM
+
+IS DISTINCT FROM is useful in cleaning updates because it handles NULL explicitly.
+
+[pause=0.7]
+
+Ordinary equality follows three-valued logic.
+
+[pause=0.7]
+
+IS DISTINCT FROM tells you whether two values are meaningfully different, including cases where one is NULL.
+
+[pause=0.7]
+
+This can help avoid unnecessary updates and make conditions more predictable.
+
+[pause=1.0]
+
+Slide 47: Do not overwrite uncertainty
+
+Some cleaning shortcuts make a dataset look better while reducing its truthfulness.
+
+[pause=0.7]
+
+A bad date should not become today's date.
+
+[pause=0.7]
+
+A negative price should not become positive without evidence.
+
+[pause=0.7]
+
+A missing phone should remain missing unless a reliable source provides one.
+
+[pause=0.7]
+
+A possible duplicate should not be deleted just because its ID is larger.
+
+[pause=0.7]
+
+Cleaning should preserve uncertainty when the truth is unknown.
+
+[pause=1.0]
+
+Slide 48: Issue codes and lineage
+
+Production cleaning pipelines often need lineage fields.
+
+[pause=0.7]
+
+Source ID links the prepared row back to the raw record.
+
+[pause=0.7]
+
+A rule version identifies which logic was used.
+
+[pause=0.7]
+
+A timestamp records when cleaning occurred.
+
+[pause=0.7]
+
+Issue codes explain detected problems.
+
+[pause=0.7]
+
+Review status records the resolution state.
+
+[pause=0.7]
+
+These fields make the cleaning process reproducible and auditable.
+
+[pause=1.0]
+
+Slide 49: Integrated project overview
+
+The integrated project uses a staging table with messy customer data.
+
+[pause=0.8]
+
+You will normalize text, parse supported date formats, rank duplicate candidates, and label records that need review.
+
+[pause=0.7]
+
+The objective is a transparent candidate-clean output.
+
+[pause=0.7]
+
+Unsupported or ambiguous values should remain visible as uncertainty rather than being guessed.
+
+[pause=1.0]
+
+Slide 50: Project step 1
+
+Run the project query once so you can see the final columns.
+
+[pause=0.8]
+
+The query uses several common table expressions.
+
+[pause=0.8]
+
+The first stage normalizes name, email, and phone values.
+
+[pause=0.7]
+
+The second parses supported dates.
+
+[pause=0.7]
+
+The third ranks duplicates.
+
+[pause=0.7]
+
+The final SELECT creates clean output fields and a row status.
+
+[pause=0.7]
+
+We will unpack those stages separately.
+
+[pause=1.0]
+
+Slide 51: Project CTE 1
+
+The first CTE performs representation normalization.
+
+[pause=0.7]
+
+It does not yet claim that the values are valid.
+
+[pause=0.7]
+
+Names are cleaned for whitespace.
+
+[pause=0.7]
+
+Emails are trimmed and lowercased.
+
+[pause=0.7]
+
+Phone values become digit-only candidates.
+
+[pause=0.7]
+
+The raw signup date is carried forward unchanged.
+
+[pause=0.7]
+
+This separation makes the pipeline easier to reason about.
+
+[pause=1.0]
+
+Slide 52: Project CTE 2
+
+The second CTE parses dates.
+
+[pause=0.7]
+
+It recognizes two documented formats.
+
+[pause=0.7]
+
+If the raw text matches one of them, PostgreSQL creates a typed date.
+
+[pause=0.7]
+
+If the value does not match a supported format, the clean date becomes NULL.
+
+[pause=0.7]
+
+That preserves the distinction between known and unsupported input.
+
+[pause=1.0]
+
+Slide 53: Project CTE 3
+
+The third CTE ranks possible duplicates.
+
+[pause=0.7]
+
+Rows with the same normalized identity key are placed in the same partition.
+
+[pause=0.7]
+
+A simple completeness expression helps prefer the more useful record.
+
+[pause=0.7]
+
+ID provides a stable tie-breaker.
+
+[pause=0.7]
+
+Again, the rank is a reproducible policy, not proof that one record is universally correct.
+
+[pause=1.0]
+
+Slide 54: Project final output
+
+The final SELECT exposes the results of the pipeline.
+
+[pause=0.7]
+
+Phone candidates are only kept when they satisfy the ten-digit teaching rule.
+
+[pause=0.7]
+
+Unsupported dates remain NULL.
+
+[pause=0.7]
+
+Duplicate rank remains visible.
+
+[pause=0.7]
+
+The row status flags records that still contain important unresolved problems.
+
+[pause=0.7]
+
+This is what transparent cleaning looks like: useful output plus visible uncertainty.
+
+[pause=1.0]
+
+Slide 55: Project result interpretation
+
+The phrase candidate clean row is intentional.
+
+[pause=0.7]
+
+Passing selected checks does not mean every fact is verified.
+
+[pause=0.7]
+
+It means the row satisfies the rules we implemented for this exercise.
+
+[pause=0.7]
+
+Review rows still need attention.
+
+[pause=0.7]
+
+Duplicate ranking still requires policy or evidence.
+
+[pause=0.7]
+
+Use labels that accurately describe what your process knows.
+
+[pause=1.0]
+
+Slide 56: Assessment recognition
+
+Use this checkpoint to test whether you understand the reasoning, not only the SQL.
+
+[pause=0.8]
+
+Explain why NULL differs from blank text.
+
+[pause=0.7]
+
+Explain why an invalid value should be detected before it is corrected.
+
+[pause=0.7]
+
+Explain why duplicate detection and survivor selection are separate.
+
+[pause=0.7]
+
+Explain the limits of regex validation.
+
+[pause=0.7]
+
+And explain why a transaction makes cleaning updates safer.
+
+[pause=1.0]
+
+Slide 57: Assessment starter
+
+The applied assessment asks you to produce one row per customer with cleaned fields, a quality status, and a duplicate rank.
+
+[pause=0.7]
+
+Do not overwrite the customer source table.
+
+[pause=0.7]
+
+Build the solution in stages.
+
+[pause=0.7]
+
+Start with normalization.
+
+[pause=0.7]
+
+Add validation.
+
+[pause=0.7]
+
+Then add duplicate ranking.
+
+[pause=0.7]
+
+Finally create the row-level status.
+
+[pause=0.7]
+
+Run each stage as you build it so errors remain easy to locate.
+
+[pause=1.0]
+
+Slide 58: Module 9 takeaways
+
+These are the main habits from Module 9.
+
+[pause=0.7]
+
+Profile before cleaning.
+
+[pause=0.7]
+
+Preserve uncertainty rather than inventing corrections.
+
+[pause=0.7]
+
+Keep standardization, validation, duplicate handling, and correction conceptually separate.
+
+[pause=0.7]
+
+Use views, quarantine patterns, transactions, and lineage to make work safer and reproducible.
+
+[pause=0.7]
+
+Add constraints after the rules are stable.
+
+[pause=0.7]
+
+And keep quality dimensions visible instead of hiding everything behind one score.
+
+[pause=1.0]
+
+Slide 59: Cleaning decision guide
+
+Use this guide to decide what kind of action the evidence supports.
+
+[pause=0.7]
+
+A known formatting difference can be standardized.
+
+[pause=0.7]
+
+A documented blank-as-missing convention can be normalized.
+
+[pause=0.7]
+
+An invalid value with unknown truth should be flagged or quarantined.
+
+[pause=0.7]
+
+Possible duplicates need detection and resolution logic.
+
+[pause=0.7]
+
+A supported correction can be applied safely.
+
+[pause=0.7]
+
+And stable rules can become constraints for future prevention.
+
+[pause=1.0]
+
+Slide 60: Next: Module 10
+
+Module 10 moves from cleaning to reshaping.
+
+[pause=0.7]
+
+Once data is trustworthy enough for the task, we often need to change its structure for reporting, comparison, or modeling.
+
+[pause=0.7]
+
+You will work with analytical grain and wide versus long representations.
+
+[pause=0.7]
+
+The cleaning principles from Module 9 remain important because reshaping bad or ambiguous data does not fix its quality problems.
+
+[pause=1.0]
