@@ -1,0 +1,517 @@
+{
+  "prefix": "module8",
+  "voice": "en-US-GuyNeural",
+  "rate": "-5%",
+  "volume": "+0%",
+  "pitch": "+0Hz",
+  "caption_words": 15,
+  "slide_count": 72,
+  "slide_markers_found": true,
+  "pause_marker_format": "[pause=seconds] or [pause=millisecondsms]",
+  "slides": [
+    {
+      "slide": 1,
+      "audio": "module8_slide_01.mp3",
+      "captions": "module8_slide_01.vtt",
+      "text": "Welcome to Module 8, Strings and Dates in PostgreSQL.\n\n[pause=0.7]\n\nText and time values often look simple on the screen, but they carry important analytical meaning.\n\n[pause=0.7]\n\nIn this module, we will clean text carefully, parse structured pieces from strings, use regular expressions when simple functions are not enough, choose appropriate date and time types, calculate intervals, group events by time grain, and work with time zones.\n\n[pause=0.7]\n\nEvery SQL example can run directly in the browser, and you can copy the same query into pgAdmin for additional practice.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 2,
+      "audio": "module8_slide_02.mp3",
+      "captions": "module8_slide_02.vtt",
+      "text": "This module is about more than display formatting.\n\n[pause=0.7]\n\nA trailing space can create a different category. Inconsistent case can fragment groups. A date stored as text cannot safely participate in date arithmetic.\n\n[pause=0.7]\n\nTime values also have different meanings. A calendar date is different from a local clock timestamp, and both are different from an instant stored with time-zone meaning.\n\n[pause=0.7]\n\nThe goal is to prepare these values without accidentally changing what they mean.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 3,
+      "audio": "module8_slide_03.mp3",
+      "captions": "module8_slide_03.vtt",
+      "text": "By the end of the module, you should be able to normalize common text problems, choose the right temporal type, change time grain, calculate durations, and separate parsing from formatting.\n\n[pause=0.7]\n\nYou should also be able to explain why a transformation is appropriate.\n\n[pause=0.7]\n\nThe objective is not to memorize a long list of functions. It is to select the right function based on the meaning of the value and the analytical task.\n\n[pause=1.0]",
+      "pause_markers": 3
+    },
+    {
+      "slide": 4,
+      "audio": "module8_slide_04.mp3",
+      "captions": "module8_slide_04.vtt",
+      "text": "One correction is important before we start.\n\n[pause=0.7]\n\nPostgreSQL does not use DATEADD and DATEDIFF as native functions.\n\n[pause=0.7]\n\nInstead, PostgreSQL commonly uses date or timestamp subtraction, INTERVAL values, EXTRACT, DATE_TRUNC, AGE, TO_DATE, TO_TIMESTAMP, and TO_CHAR.\n\n[pause=0.8]\n\nThe underlying analytical ideas are portable, but the SQL syntax depends on the database system.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 5,
+      "audio": "module8_slide_05.mp3",
+      "captions": "module8_slide_05.vtt",
+      "text": "The module has two main halves.\n\n[pause=0.7]\n\nFirst, we work with text: inspect, normalize, parse, and validate.\n\n[pause=0.7]\n\nSecond, we work with time: choose the correct type, extract components, change analytical grain, calculate durations, and handle time zones.\n\n[pause=0.7]\n\nAt the end, we combine the ideas in practical preparation tasks and projects.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 6,
+      "audio": "module8_slide_06.mp3",
+      "captions": "module8_slide_06.vtt",
+      "text": "The teaching database combines healthcare-style and retail-style examples.\n\n[pause=0.8]\n\nPatients gives us messy contact text.\n\n[pause=0.7]\n\nAdmissions gives us timestamps for elapsed-time calculations.\n\n[pause=0.7]\n\nProducts helps with substring and replacement examples.\n\n[pause=0.8]\n\nOrders gives us timestamps and numeric measures for monthly summaries.\n\n[pause=0.7]\n\nStaging dates contains raw text dates in different formats so we can practice safe parsing.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 7,
+      "audio": "module8_slide_07.mp3",
+      "captions": "module8_slide_07.vtt",
+      "text": "The first step in text cleaning is inspection.\n\n[pause=0.7]\n\nRun this query and look closely at names, emails, and addresses.\n\n[pause=0.8]\n\nDo not decide on a cleaning rule before you understand the patterns that actually occur.\n\n[pause=0.7]\n\nSome values may have extra spaces, inconsistent capitalization, or abbreviations.\n\n[pause=0.7]\n\nThe cleaning rule should respond to observed problems, not blindly transform every string.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 8,
+      "audio": "module8_slide_08.mp3",
+      "captions": "module8_slide_08.vtt",
+      "text": "Text cleaning is a pipeline, not one magic function.\n\n[pause=0.7]\n\nFirst inspect the raw value.\n\n[pause=0.7]\n\nThen normalize only known formatting noise.\n\n[pause=0.7]\n\nIf the string contains meaningful structure, parse the pieces you need.\n\n[pause=0.7]\n\nValidation is a separate step that asks whether the cleaned value follows an expected rule.\n\n[pause=0.7]\n\nFinally, use the cleaned field for analysis or reporting.\n\n[pause=0.7]\n\nWhen traceability matters, preserve the raw source value as well.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 9,
+      "audio": "module8_slide_09.mp3",
+      "captions": "module8_slide_09.vtt",
+      "text": "A cleaned value should be explainable.\n\n[pause=0.7]\n\nIn these examples, we remove formatting noise and apply a documented abbreviation rule.\n\n[pause=0.8]\n\nWe are not inventing new information.\n\n[pause=0.7]\n\nKeeping raw and cleaned values side by side is useful during development because it makes every transformation visible.\n\n[pause=0.7]\n\nThat helps catch over-cleaning and makes the process easier to audit.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 10,
+      "audio": "module8_slide_10.mp3",
+      "captions": "module8_slide_10.vtt",
+      "text": "PostgreSQL provides several case functions.\n\n[pause=0.7]\n\nUPPER makes all letters uppercase.\n\n[pause=0.7]\n\nLOWER makes all letters lowercase and is commonly useful for normalization before comparison.\n\n[pause=0.7]\n\nINITCAP capitalizes words for display.\n\n[pause=0.7]\n\nBe careful with names because real capitalization can be more complex than a simple function.\n\n[pause=0.7]\n\nA cleaning rule should fit the domain rather than assuming one display convention is universally correct.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 11,
+      "audio": "module8_slide_11.mp3",
+      "captions": "module8_slide_11.vtt",
+      "text": "Run this example to compare several functions at once.\n\n[pause=0.8]\n\nUPPER and LOWER change letter case.\n\n[pause=0.7]\n\nBTRIM removes spaces from the beginning and end.\n\n[pause=0.7]\n\nINITCAP creates a display-style name after trimming.\n\n[pause=0.7]\n\nLENGTH shows why invisible spaces matter: raw and trimmed strings can have different lengths even when they look similar on screen.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 12,
+      "audio": "module8_slide_12.mp3",
+      "captions": "module8_slide_12.vtt",
+      "text": "BTRIM is excellent for boundary whitespace.\n\n[pause=0.7]\n\nIt removes spaces from the start and end of a string.\n\n[pause=0.7]\n\nBut it does not collapse repeated spaces inside the value.\n\n[pause=0.7]\n\nThat distinction is important.\n\n[pause=0.7]\n\nIf you need to normalize internal whitespace, you need a different function such as REGEXP_REPLACE with a repeated-whitespace pattern.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 13,
+      "audio": "module8_slide_13.mp3",
+      "captions": "module8_slide_13.vtt",
+      "text": "LENGTH is useful because text problems are not always visually obvious.\n\n[pause=0.7]\n\nBoundary spaces and repeated internal spaces increase the character count.\n\n[pause=0.7]\n\nComparing length before and after cleaning can help confirm that your transformation is doing what you expect.\n\n[pause=0.7]\n\nThink of LENGTH as a diagnostic function during data preparation.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 14,
+      "audio": "module8_slide_14.mp3",
+      "captions": "module8_slide_14.vtt",
+      "text": "Repeated internal whitespace requires a pattern-based solution.\n\n[pause=0.7]\n\nThe PostgreSQL regular-expression pattern bracket colon space colon bracket represents whitespace.\n\n[pause=0.7]\n\nThe plus means one or more occurrences.\n\n[pause=0.7]\n\nReplacing that run with one ordinary space turns values with inconsistent spacing into a more stable representation.\n\n[pause=0.8]\n\nWe usually trim boundaries first and then normalize the internal whitespace.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 15,
+      "audio": "module8_slide_15.mp3",
+      "captions": "module8_slide_15.vtt",
+      "text": "This query combines two cleaning steps.\n\n[pause=0.8]\n\nBTRIM removes boundary spaces.\n\n[pause=0.7]\n\nREGEXP_REPLACE then collapses repeated internal whitespace to one space.\n\n[pause=0.7]\n\nThe g flag means replace every matching occurrence, not just the first.\n\n[pause=0.7]\n\nRun the query and compare the raw and normalized names row by row.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 16,
+      "audio": "module8_slide_16.mp3",
+      "captions": "module8_slide_16.vtt",
+      "text": "Sometimes the goal is to build one readable field from several columns.\n\n[pause=0.7]\n\nCONCAT_WS means concatenate with separator.\n\n[pause=0.7]\n\nIt is especially useful when some components can be NULL because it avoids producing unnecessary separators for missing arguments.\n\n[pause=0.7]\n\nNULLIF can convert an empty string to NULL first.\n\n[pause=0.7]\n\nThat combination helps create clean display lines without confusing blanks.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 17,
+      "audio": "module8_slide_17.mp3",
+      "captions": "module8_slide_17.vtt",
+      "text": "This query creates one contact line.\n\n[pause=0.8]\n\nThe name is trimmed and has repeated whitespace normalized.\n\n[pause=0.7]\n\nThe email is trimmed, and NULLIF turns an empty string into NULL.\n\n[pause=0.7]\n\nThe address is trimmed.\n\n[pause=0.7]\n\nCONCAT_WS joins the available pieces with a vertical-bar separator and skips NULL arguments.\n\n[pause=0.7]\n\nRun the query and inspect how missing values affect the output.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 18,
+      "audio": "module8_slide_18.mp3",
+      "captions": "module8_slide_18.vtt",
+      "text": "Some strings contain meaningful internal structure.\n\n[pause=0.7]\n\nAn email address has a delimiter between the user portion and domain.\n\n[pause=0.7]\n\nIf the delimiter is reliable, SPLIT_PART can extract pieces based on structure.\n\n[pause=0.7]\n\nThis is usually easier to understand than using fixed character positions, which can break when string lengths vary.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 19,
+      "audio": "module8_slide_19.mp3",
+      "captions": "module8_slide_19.vtt",
+      "text": "This query first trims the email and converts it to lowercase.\n\n[pause=0.8]\n\nSPLIT_PART then returns the text before or after the at sign.\n\n[pause=0.7]\n\nPOSITION reports where the delimiter occurs.\n\n[pause=0.7]\n\nRun the query and compare the parsed user and domain values.\n\n[pause=0.8]\n\nAlso notice what happens for missing or malformed email values.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 20,
+      "audio": "module8_slide_20.mp3",
+      "captions": "module8_slide_20.vtt",
+      "text": "POSITION returns the location of one substring inside another.\n\n[pause=0.7]\n\nIt is useful when you need to know whether a delimiter exists or where it occurs.\n\n[pause=0.7]\n\nFor many parsing tasks, SPLIT_PART is clearer when the delimiter already defines meaningful parts.\n\n[pause=0.7]\n\nPOSITION is especially useful during inspection and validation.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 21,
+      "audio": "module8_slide_21.mp3",
+      "captions": "module8_slide_21.vtt",
+      "text": "SUBSTRING is useful when character position has a documented meaning.\n\n[pause=0.7]\n\nFor example, we may take the first three characters of a product name to build a teaching code.\n\n[pause=0.8]\n\nBut fixed positions can be fragile when string structures vary.\n\n[pause=0.7]\n\nUse position-based extraction only when the structure is stable enough to justify it.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 22,
+      "audio": "module8_slide_22.mp3",
+      "captions": "module8_slide_22.vtt",
+      "text": "This example builds a simple teaching product code.\n\n[pause=0.8]\n\nBTRIM cleans the product name.\n\n[pause=0.7]\n\nSUBSTRING takes the first three characters.\n\n[pause=0.7]\n\nUPPER standardizes the prefix.\n\n[pause=0.7]\n\nLPAD pads the numeric ID to three digits.\n\n[pause=0.7]\n\nThe double-pipe operator concatenates the pieces.\n\n[pause=0.7]\n\nThe important lesson is that each part of the code comes from a documented transformation.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 23,
+      "audio": "module8_slide_23.mp3",
+      "captions": "module8_slide_23.vtt",
+      "text": "REPLACE is useful for direct literal substitution.\n\n[pause=0.7]\n\nIf the source system consistently uses a known abbreviation and the business rule says to expand it, REPLACE can be clear and reproducible.\n\n[pause=0.7]\n\nBut it does not understand context.\n\n[pause=0.7]\n\nFor flexible patterns, use regular expressions or a lookup table rather than stacking many fragile replacements.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 24,
+      "audio": "module8_slide_24.mp3",
+      "captions": "module8_slide_24.vtt",
+      "text": "This example replaces the literal text KB with keyboard.\n\n[pause=0.8]\n\nRun the query and compare the raw description with the expanded version.\n\n[pause=0.8]\n\nThis is appropriate because the transformation rule is explicit and easy to audit.\n\n[pause=0.7]\n\nIn larger projects, repeated mapping rules may be better stored in reference tables rather than hard-coded into one long SQL expression.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 25,
+      "audio": "module8_slide_25.mp3",
+      "captions": "module8_slide_25.vtt",
+      "text": "Regular expressions are useful when simple literal functions are not enough.\n\n[pause=0.7]\n\nREGEXP_REPLACE can remove or standardize patterns.\n\n[pause=0.7]\n\nThe tilde operator checks whether a string matches a pattern.\n\n[pause=0.7]\n\nRegex is powerful, so keep the rule as simple and explainable as possible.\n\n[pause=0.7]\n\nA complicated expression that nobody can review is a data-quality risk of its own.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 26,
+      "audio": "module8_slide_26.mp3",
+      "captions": "module8_slide_26.vtt",
+      "text": "This example trims the email, removes characters outside a teaching-level allowed set, and converts the result to lowercase.\n\n[pause=0.8]\n\nRun it and compare original and cleaned values.\n\n[pause=0.8]\n\nNotice that cleaning a string does not prove the result is valid.\n\n[pause=0.7]\n\nTransformation and validation are separate steps.\n\n[pause=0.7]\n\nThat distinction is important in data preparation.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 27,
+      "audio": "module8_slide_27.mp3",
+      "captions": "module8_slide_27.vtt",
+      "text": "This query uses a regular expression to check the general shape of an email address.\n\n[pause=0.8]\n\nRows that match are labeled valid shape.\n\n[pause=0.7]\n\nOther rows are labeled review.\n\n[pause=0.7]\n\nThe phrase valid shape is deliberate.\n\n[pause=0.7]\n\nA regex can check structure, but it cannot prove that the mailbox exists or that every possible valid internet email syntax is covered.\n\n[pause=0.7]\n\nProduction validation rules should match the application requirements.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 28,
+      "audio": "module8_slide_28.mp3",
+      "captions": "module8_slide_28.vtt",
+      "text": "Cleaning, parsing, validation, and verification are different tasks.\n\n[pause=0.7]\n\nCleaning changes known formatting noise.\n\n[pause=0.7]\n\nParsing extracts meaningful components.\n\n[pause=0.7]\n\nValidation checks whether a value follows a rule.\n\n[pause=0.7]\n\nVerification asks whether the value corresponds to reality.\n\n[pause=0.7]\n\nKeeping these tasks separate makes a preparation pipeline easier to reason about and audit.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 29,
+      "audio": "module8_slide_29.mp3",
+      "captions": "module8_slide_29.vtt",
+      "text": "This table summarizes the text half of the module.\n\n[pause=0.7]\n\nUse the simplest function that matches the actual problem.\n\n[pause=0.7]\n\nDo not use regex when TRIM solves the issue.\n\n[pause=0.7]\n\nDo not use fixed positions when a reliable delimiter defines the structure.\n\n[pause=0.7]\n\nAnd do not treat cleaning as proof of validity.\n\n[pause=0.7]\n\nClear, small transformations are easier to maintain and explain.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 30,
+      "audio": "module8_slide_30.mp3",
+      "captions": "module8_slide_30.vtt",
+      "text": "Now we move from text to temporal data.\n\n[pause=0.7]\n\nThe first decision is the data type.\n\n[pause=0.7]\n\nDATE represents a calendar date.\n\n[pause=0.7]\n\nTIMESTAMP represents a date and clock time without time-zone interpretation.\n\n[pause=0.7]\n\nTIMESTAMPTZ represents an instant in time.\n\n[pause=0.7]\n\nINTERVAL represents a duration.\n\n[pause=0.7]\n\nChoosing the correct type is more important than choosing a formatting function.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 31,
+      "audio": "module8_slide_31.mp3",
+      "captions": "module8_slide_31.vtt",
+      "text": "DATE is appropriate when the calendar day matters but the time of day does not.\n\n[pause=0.7]\n\nExamples include birth date or a reporting date.\n\n[pause=0.8]\n\nA typed date can be sorted chronologically and used in date arithmetic.\n\n[pause=0.7]\n\nA text string that merely looks like a date does not provide the same analytical guarantees.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 32,
+      "audio": "module8_slide_32.mp3",
+      "captions": "module8_slide_32.vtt",
+      "text": "TIMESTAMP stores a date and local clock time.\n\n[pause=0.7]\n\nIt does not carry a time-zone interpretation.\n\n[pause=0.7]\n\nThat can be appropriate when the time zone is fixed or irrelevant.\n\n[pause=0.7]\n\nBut if records come from multiple regions or you need to compare global instants, a plain timestamp can become ambiguous.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 33,
+      "audio": "module8_slide_33.mp3",
+      "captions": "module8_slide_33.vtt",
+      "text": "TIMESTAMPTZ is PostgreSQL's timestamp with time zone type.\n\n[pause=0.7]\n\nConceptually, it represents an instant.\n\n[pause=0.7]\n\nPostgreSQL can display that instant in different time zones.\n\n[pause=0.7]\n\nThis is useful for events collected across locations.\n\n[pause=0.7]\n\nThe key distinction is between the stored instant and the clock representation shown to a user.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 34,
+      "audio": "module8_slide_34.mp3",
+      "captions": "module8_slide_34.vtt",
+      "text": "INTERVAL represents duration.\n\n[pause=0.7]\n\nYou can add an interval to a date or timestamp to create a future or past point.\n\n[pause=0.7]\n\nTimestamp subtraction also returns an interval.\n\n[pause=0.7]\n\nIntervals are central to PostgreSQL temporal arithmetic and replace many dialect-specific date-add patterns.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 35,
+      "audio": "module8_slide_35.mp3",
+      "captions": "module8_slide_35.vtt",
+      "text": "Choose the type based on meaning.\n\n[pause=0.7]\n\nIf only the calendar day matters, DATE may be enough.\n\n[pause=0.7]\n\nIf you need a local date and time without global time-zone meaning, TIMESTAMP may fit.\n\n[pause=0.7]\n\nIf the value represents an instant, use TIMESTAMPTZ.\n\n[pause=0.7]\n\nIf the value is duration, use INTERVAL.\n\n[pause=0.7]\n\nRemember that storage precision and analytical grain are separate decisions.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 36,
+      "audio": "module8_slide_36.mp3",
+      "captions": "module8_slide_36.vtt",
+      "text": "Here is the PostgreSQL-native approach to common temporal tasks.\n\n[pause=0.7]\n\nSubtract timestamps to obtain an interval.\n\n[pause=0.7]\n\nAdd INTERVAL values to shift time.\n\n[pause=0.7]\n\nUse EXTRACT to read components.\n\n[pause=0.7]\n\nUse DATE_TRUNC to change analytical grain.\n\n[pause=0.8]\n\nUse AGE when you want a symbolic calendar interval.\n\n[pause=0.7]\n\nThese patterns are clearer and more portable within PostgreSQL than borrowing function names from another SQL dialect.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 37,
+      "audio": "module8_slide_37.mp3",
+      "captions": "module8_slide_37.vtt",
+      "text": "EXTRACT reads one component from a date or timestamp.\n\n[pause=0.7]\n\nYou can extract year, month, day of week, hour, and many other fields.\n\n[pause=0.7]\n\nThe result is a component value, not a new grouped timestamp.\n\n[pause=0.7]\n\nThis distinction matters when comparing EXTRACT with DATE_TRUNC.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 38,
+      "audio": "module8_slide_38.mp3",
+      "captions": "module8_slide_38.vtt",
+      "text": "This query extracts several components from admission timestamps.\n\n[pause=0.8]\n\nYEAR and MONTH are straightforward.\n\n[pause=0.7]\n\nDOW gives PostgreSQL's numeric day-of-week representation.\n\n[pause=0.7]\n\nHOUR gives the clock-hour component.\n\n[pause=0.7]\n\nThese values are useful as analytical features, but they do not preserve the full timestamp or create a time bucket on their own.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 39,
+      "audio": "module8_slide_39.mp3",
+      "captions": "module8_slide_39.vtt",
+      "text": "Day-of-week values need documentation.\n\n[pause=0.7]\n\nIn PostgreSQL, EXTRACT DOW uses zero for Sunday and six for Saturday.\n\n[pause=0.7]\n\nOther tools may use different conventions.\n\n[pause=0.7]\n\nWhenever a numeric code represents a temporal category, document the mapping before using it in analysis or modeling.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 40,
+      "audio": "module8_slide_40.mp3",
+      "captions": "module8_slide_40.vtt",
+      "text": "DATE_TRUNC changes the analytical grain of a timestamp.\n\n[pause=0.8]\n\nA timestamp can be truncated to day, week, month, quarter, or other levels.\n\n[pause=0.8]\n\nThe returned value represents the start of that period.\n\n[pause=0.7]\n\nThis makes DATE_TRUNC especially useful for GROUP BY because all timestamps in the same period receive the same bucket value.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 41,
+      "audio": "module8_slide_41.mp3",
+      "captions": "module8_slide_41.vtt",
+      "text": "Run this query and compare several truncated versions of each order timestamp.\n\n[pause=0.8]\n\nThe original timestamp keeps the precise event time.\n\n[pause=0.7]\n\nThe day version maps it to the start of the day.\n\n[pause=0.7]\n\nThe month version maps it to the start of the month.\n\n[pause=0.7]\n\nThis is how a precise event can be analyzed at a coarser reporting grain without changing the stored source value.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 42,
+      "audio": "module8_slide_42.mp3",
+      "captions": "module8_slide_42.vtt",
+      "text": "EXTRACT and DATE_TRUNC solve different problems.\n\n[pause=0.8]\n\nEXTRACT month gives a number such as three.\n\n[pause=0.7]\n\nDATE_TRUNC month gives a full month bucket such as March first, twenty twenty-six at midnight.\n\n[pause=0.8]\n\nIf you group only by month number, March from multiple years can be combined accidentally.\n\n[pause=0.7]\n\nDATE_TRUNC often gives a safer full-period key for time-series aggregation.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 43,
+      "audio": "module8_slide_43.mp3",
+      "captions": "module8_slide_43.vtt",
+      "text": "This query truncates each order timestamp to month grain.\n\n[pause=0.8]\n\nIt then groups orders by that month bucket.\n\n[pause=0.7]\n\nCOUNT measures order volume, and SUM calculates monthly revenue.\n\n[pause=0.7]\n\nThe cast to date is mainly for a simpler displayed month label.\n\n[pause=0.7]\n\nThe important analytical decision is the month-level grain created by DATE_TRUNC.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 44,
+      "audio": "module8_slide_44.mp3",
+      "captions": "module8_slide_44.vtt",
+      "text": "This visual shows the effect of changing grain.\n\n[pause=0.7]\n\nThe source table has one row per order.\n\n[pause=0.7]\n\nAfter DATE_TRUNC and GROUP BY, the result has one row per month.\n\n[pause=0.8]\n\nThe chart is not just a different display. It represents a different analytical grain.\n\n[pause=0.7]\n\nAlways be clear about what one row means before and after aggregation.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 45,
+      "audio": "module8_slide_45.mp3",
+      "captions": "module8_slide_45.vtt",
+      "text": "PostgreSQL can subtract one timestamp from another.\n\n[pause=0.7]\n\nThe result is an INTERVAL representing elapsed time.\n\n[pause=0.7]\n\nThis is the direct way to answer questions such as length of stay or processing duration.\n\n[pause=0.7]\n\nIf you later need a numeric number of hours or days, that is a separate conversion step.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 46,
+      "audio": "module8_slide_46.mp3",
+      "captions": "module8_slide_46.vtt",
+      "text": "This query first subtracts admit time from discharge time.\n\n[pause=0.8]\n\nThat produces an interval.\n\n[pause=0.7]\n\nIt also converts the interval to seconds using EXTRACT EPOCH, divides by the number of seconds in a day, and rounds the result.\n\n[pause=0.7]\n\nThe interval is a typed duration.\n\n[pause=0.7]\n\nThe numeric day value is an analytical representation derived from that duration.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 47,
+      "audio": "module8_slide_47.mp3",
+      "captions": "module8_slide_47.vtt",
+      "text": "EXTRACT EPOCH returns the total number of seconds represented by an interval.\n\n[pause=0.7]\n\nFrom there, you can convert to hours or days.\n\n[pause=0.7]\n\nThe unit you choose should match the analysis.\n\n[pause=0.7]\n\nA numeric duration is often convenient for statistics or modeling, while the interval type can be more expressive for SQL temporal operations.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 48,
+      "audio": "module8_slide_48.mp3",
+      "captions": "module8_slide_48.vtt",
+      "text": "Intervals can also shift time.\n\n[pause=0.7]\n\nAdding fourteen days to a discharge timestamp creates a follow-up point two weeks later.\n\n[pause=0.7]\n\nAdding thirty days creates a longer window.\n\n[pause=0.7]\n\nThe interval makes the rule explicit and readable in PostgreSQL.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 49,
+      "audio": "module8_slide_49.mp3",
+      "captions": "module8_slide_49.vtt",
+      "text": "This query creates two follow-up timestamps.\n\n[pause=0.8]\n\nThe original discharge time remains visible.\n\n[pause=0.7]\n\nThen PostgreSQL adds fourteen-day and thirty-day intervals.\n\n[pause=0.7]\n\nKeeping the original and derived times side by side makes the transformation easy to audit and explain.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 50,
+      "audio": "module8_slide_50.mp3",
+      "captions": "module8_slide_50.vtt",
+      "text": "AGE and direct subtraction both compare two temporal values, but their emphasis differs.\n\n[pause=0.8]\n\nAGE expresses a symbolic calendar interval using years, months, and days.\n\n[pause=0.7]\n\nDirect subtraction gives the elapsed interval between two timestamps.\n\n[pause=0.7]\n\nFor hospital length of stay, direct subtraction is usually easier to interpret.\n\n[pause=0.7]\n\nFor calendar-style age differences, AGE may be more natural.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 51,
+      "audio": "module8_slide_51.mp3",
+      "captions": "module8_slide_51.vtt",
+      "text": "This query shows AGE and direct subtraction side by side.\n\n[pause=0.8]\n\nFor short hospital stays, the displayed results may look similar.\n\n[pause=0.7]\n\nThe conceptual difference becomes more important across months and years.\n\n[pause=0.7]\n\nAlways choose the function based on the meaning you want to communicate rather than because two examples happen to produce similar text.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 52,
+      "audio": "module8_slide_52.mp3",
+      "captions": "module8_slide_52.vtt",
+      "text": "Parsing and formatting move in opposite directions.\n\n[pause=0.7]\n\nParsing starts with text and creates a typed date or timestamp.\n\n[pause=0.7]\n\nThat typed value can be sorted, compared, grouped, and used in arithmetic.\n\n[pause=0.8]\n\nFormatting starts with a typed temporal value and creates text for human presentation.\n\n[pause=0.7]\n\nFor analytics, parse early and format late.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 53,
+      "audio": "module8_slide_53.mp3",
+      "captions": "module8_slide_53.vtt",
+      "text": "Sometimes a direct cast is sufficient.\n\n[pause=0.7]\n\nIf the text is already in a clear date format that PostgreSQL recognizes and you have validated the input, casting to date can be simple.\n\n[pause=0.7]\n\nWhen the format is different, TO_DATE lets you specify the pattern.\n\n[pause=0.7]\n\nFor mixed raw input, first identify the shape and then apply the appropriate parser.\n\n[pause=0.7]\n\nBlindly parsing unknown text can cause errors or incorrect interpretations.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 54,
+      "audio": "module8_slide_54.mp3",
+      "captions": "module8_slide_54.vtt",
+      "text": "A safe parsing workflow starts by cleaning boundary whitespace.\n\n[pause=0.7]\n\nThen identify the input shape.\n\n[pause=0.7]\n\nApply the parser that matches that shape.\n\n[pause=0.7]\n\nIf the value does not match an expected format, return NULL or flag it for review instead of guessing.\n\n[pause=0.7]\n\nParsing converts representation. It does not prove that the underlying business value is accurate.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 55,
+      "audio": "module8_slide_55.mp3",
+      "captions": "module8_slide_55.vtt",
+      "text": "This query uses CASE to handle several known date formats.\n\n[pause=0.8]\n\nBlank strings become NULL.\n\n[pause=0.7]\n\nISO-style text can be cast to date.\n\n[pause=0.7]\n\nSlash-formatted text uses TO_DATE with a month-day-year pattern.\n\n[pause=0.7]\n\nEight-digit text uses a year-month-day pattern.\n\n[pause=0.7]\n\nAnything else becomes NULL for review.\n\n[pause=0.7]\n\nThe important idea is explicit, controlled parsing rather than guessing.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 56,
+      "audio": "module8_slide_56.mp3",
+      "captions": "module8_slide_56.vtt",
+      "text": "TO_CHAR converts a typed date or timestamp into formatted text.\n\n[pause=0.7]\n\nThis is useful for reports, labels, exports, and human-facing displays.\n\n[pause=0.7]\n\nBut once you turn a timestamp into arbitrary text, temporal sorting and arithmetic become less direct.\n\n[pause=0.7]\n\nKeep the value typed through analytical processing and format it near the reporting boundary.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 57,
+      "audio": "module8_slide_57.mp3",
+      "captions": "module8_slide_57.vtt",
+      "text": "Run this query and compare the original admit timestamp with the formatted strings.\n\n[pause=0.8]\n\nThe first label is designed for human readability.\n\n[pause=0.7]\n\nThe second creates ISO-style date text.\n\n[pause=0.7]\n\nBoth outputs are text.\n\n[pause=0.7]\n\nThe original admit time remains the typed analytical value.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 58,
+      "audio": "module8_slide_58.mp3",
+      "captions": "module8_slide_58.vtt",
+      "text": "Typed timestamps are more useful for analysis than display strings.\n\n[pause=0.7]\n\nThey sort chronologically, support arithmetic, and retain temporal semantics.\n\n[pause=0.7]\n\nA formatted string is useful for a person but less flexible for computation.\n\n[pause=0.7]\n\nThat is why formatting generally belongs near the output boundary rather than early in the preparation pipeline.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 59,
+      "audio": "module8_slide_59.mp3",
+      "captions": "module8_slide_59.vtt",
+      "text": "Time zones are easier when you separate the instant from its display.\n\n[pause=0.7]\n\nA timestamptz represents an instant.\n\n[pause=0.7]\n\nThat instant can be displayed using Eastern time, UTC, or another zone.\n\n[pause=0.7]\n\nThe clock reading changes, but the underlying instant does not.\n\n[pause=0.7]\n\nThis distinction is essential for logs, orders, and events collected across locations.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 60,
+      "audio": "module8_slide_60.mp3",
+      "captions": "module8_slide_60.vtt",
+      "text": "A plain timestamp stores a local date and time without time-zone interpretation.\n\n[pause=0.7]\n\nA timestamptz represents an instant.\n\n[pause=0.7]\n\nIf data crosses regions, plain local timestamps can become ambiguous.\n\n[pause=0.7]\n\nWhen the same event must be understood consistently across systems, timestamptz is usually the safer model.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 61,
+      "audio": "module8_slide_61.mp3",
+      "captions": "module8_slide_61.vtt",
+      "text": "This query displays order timestamps using two time zones.\n\n[pause=0.8]\n\nAT TIME ZONE America slash New York gives an Eastern local clock representation.\n\n[pause=0.7]\n\nAT TIME ZONE UTC gives a UTC clock representation.\n\n[pause=0.7]\n\nRun the query and compare the displayed times.\n\n[pause=0.8]\n\nThe underlying event instant is the same; only the clock representation changes.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 62,
+      "audio": "module8_slide_62.mp3",
+      "captions": "module8_slide_62.vtt",
+      "text": "Now we combine the two halves of the module.\n\n[pause=0.7]\n\nA realistic preparation query often cleans text and transforms time in the same result.\n\n[pause=0.8]\n\nWe will normalize the patient name, extract an email domain, reduce the admission timestamp to month grain, and calculate length of stay.\n\n[pause=0.7]\n\nThe key is that each transformation has a clear purpose.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 63,
+      "audio": "module8_slide_63.mp3",
+      "captions": "module8_slide_63.vtt",
+      "text": "This query joins patients with admissions.\n\n[pause=0.8]\n\nThe name is trimmed, repeated whitespace is collapsed, and display case is applied.\n\n[pause=0.7]\n\nThe email domain is extracted from a normalized email.\n\n[pause=0.7]\n\nAdmission time is reduced to month grain.\n\n[pause=0.7]\n\nLength of stay is converted to numeric days.\n\n[pause=0.7]\n\nRead the query column by column rather than as one large block.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 64,
+      "audio": "module8_slide_64.mp3",
+      "captions": "module8_slide_64.vtt",
+      "text": "Project A creates a contact-data quality view.\n\n[pause=0.8]\n\nThe raw name remains visible beside the cleaned name.\n\n[pause=0.7]\n\nThe email is normalized and checked for a teaching-level valid shape.\n\n[pause=0.7]\n\nThe address uses a documented abbreviation replacement.\n\n[pause=0.7]\n\nThis design is audit-friendly because the transformation does not hide the original values.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 65,
+      "audio": "module8_slide_65.mp3",
+      "captions": "module8_slide_65.vtt",
+      "text": "Run the contact-data quality project.\n\n[pause=0.8]\n\nFocus on one output column at a time.\n\n[pause=0.7]\n\nCompare raw and clean names.\n\n[pause=0.8]\n\nCheck how email normalization affects the domain.\n\n[pause=0.7]\n\nLook at the email status field and address replacement.\n\n[pause=0.7]\n\nThe goal is to make data-quality decisions visible rather than silently modifying the source.\n\n[pause=1.0]",
+      "pause_markers": 6
+    },
+    {
+      "slide": 66,
+      "audio": "module8_slide_66.mp3",
+      "captions": "module8_slide_66.vtt",
+      "text": "Project B focuses on time grain.\n\n[pause=0.8]\n\nThe source table has one row per order event.\n\n[pause=0.7]\n\nWe truncate the timestamp to month, then group at that new grain.\n\n[pause=0.8]\n\nThe output contains monthly order count, distinct customers, revenue, and average order value.\n\n[pause=0.7]\n\nThis is the kind of feature table commonly used for dashboards or later modeling.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 67,
+      "audio": "module8_slide_67.mp3",
+      "captions": "module8_slide_67.vtt",
+      "text": "Run the monthly order project and verify the row meaning.\n\n[pause=0.8]\n\nEach row now represents one month, not one order.\n\n[pause=0.7]\n\nThe grouped measures summarize all order events in that month.\n\n[pause=0.7]\n\nThis is a good example of using temporal preparation to create an analysis-ready table at a new grain.\n\n[pause=1.0]",
+      "pause_markers": 4
+    },
+    {
+      "slide": 68,
+      "audio": "module8_slide_68.mp3",
+      "captions": "module8_slide_68.vtt",
+      "text": "Use this checkpoint to test function choice.\n\n[pause=0.8]\n\nBoundary spaces suggest trimming.\n\n[pause=0.7]\n\nA reliable delimiter suggests SPLIT_PART.\n\n[pause=0.7]\n\nA full month grouping key suggests DATE_TRUNC rather than only extracting the month number.\n\n[pause=0.8]\n\nTimestamp subtraction returns an interval.\n\n[pause=0.7]\n\nTO_CHAR is generally a presentation step.\n\n[pause=0.7]\n\nThe important skill is matching the function to the meaning of the task.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 69,
+      "audio": "module8_slide_69.mp3",
+      "captions": "module8_slide_69.vtt",
+      "text": "The applied challenge combines the module.\n\n[pause=0.7]\n\nReturn one row per admission.\n\n[pause=0.7]\n\nCreate a normalized patient name.\n\n[pause=0.7]\n\nExtract the email domain while preserving admissions for patients with missing email.\n\n[pause=0.7]\n\nCreate an admission month bucket.\n\n[pause=0.7]\n\nAdd a human-readable admission label.\n\n[pause=0.7]\n\nCalculate length of stay in hours.\n\n[pause=0.7]\n\nBuild and test one output column at a time instead of trying to finish the entire SELECT immediately.\n\n[pause=1.0]",
+      "pause_markers": 8
+    },
+    {
+      "slide": 70,
+      "audio": "module8_slide_70.mp3",
+      "captions": "module8_slide_70.vtt",
+      "text": "These are the main ideas to remember.\n\n[pause=0.7]\n\nNormalize text deliberately and keep validation separate from transformation.\n\n[pause=0.7]\n\nUse string structure when parsing.\n\n[pause=0.7]\n\nChoose temporal types based on meaning.\n\n[pause=0.7]\n\nRemember that EXTRACT reads a component while DATE_TRUNC creates a time bucket.\n\n[pause=0.8]\n\nUse PostgreSQL interval arithmetic for elapsed and shifted time.\n\n[pause=0.7]\n\nAnd keep dates and timestamps typed until you truly need display text.\n\n[pause=1.0]",
+      "pause_markers": 7
+    },
+    {
+      "slide": 71,
+      "audio": "module8_slide_71.mp3",
+      "captions": "module8_slide_71.vtt",
+      "text": "Use this final decision guide when you are unsure.\n\n[pause=0.7]\n\nStart from the problem, not from a favorite function.\n\n[pause=0.7]\n\nChoose the smallest operation that expresses the intended transformation.\n\n[pause=0.7]\n\nThat produces SQL that is easier to read, test, and maintain.\n\n[pause=0.7]\n\nModule 9 will build on these ideas by applying broader data-cleaning strategies across complete datasets.\n\n[pause=1.0]",
+      "pause_markers": 5
+    },
+    {
+      "slide": 72,
+      "audio": "module8_slide_72.mp3",
+      "captions": "module8_slide_72.vtt",
+      "text": "Module 9 expands from individual text and time transformations to broader data-cleaning workflows.\n\n[pause=0.7]\n\nYou will use SQL to identify missing values, standardize inconsistent data, validate rules, and address duplicate records.\n\n[pause=0.7]\n\nThe ideas from Module 8 remain important because many cleaning tasks depend on correct text normalization and temporal interpretation.\n\n[pause=0.7]\n\nBefore moving on, make sure you can explain what each transformation changes and what meaning it preserves.\n\n[pause=1.0]",
+      "pause_markers": 4
+    }
+  ]
+}
