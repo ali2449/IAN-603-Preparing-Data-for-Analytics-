@@ -1,0 +1,516 @@
+
+/* IAN 603 shared presentation shell
+   Adapted from the UI/UX pattern used by IAN 620 s_module6.html.
+   Loaded after each module's local styles so content-specific layouts remain intact. */
+
+body.ian603-shell{
+  --shell-bg:var(--bg,#e8eff6);
+  --shell-panel:var(--surface,var(--panel,#ffffff));
+  --shell-panel2:var(--surface-2,var(--surface2,var(--panel2,#f2f6fb)));
+  --shell-ink:var(--text,var(--ink,#0c1526));
+  --shell-muted:var(--muted,#5f6f87);
+  --shell-line:var(--border,var(--line,#d7e1ee));
+  --shell-line2:var(--line2,var(--border,#c9d7e6));
+  --shell-accent:var(--primary,var(--accent,#1f5f9f));
+  --shell-good:var(--good,#0f7a3d);
+  overflow:hidden!important;
+}
+body.ian603-shell .app{
+  height:100vh!important;
+  position:relative;
+  grid-template-rows:50px minmax(0,1fr) 148px!important;
+}
+body.ian603-shell.cc-off .app{
+  grid-template-rows:50px minmax(0,1fr) 108px!important;
+}
+
+/* ---------- Header ---------- */
+body.ian603-shell .topbar{
+  height:50px!important;
+  min-height:50px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  padding:0 14px!important;
+  background:color-mix(in srgb,var(--shell-panel) 96%,transparent)!important;
+  border-bottom:1px solid var(--shell-line)!important;
+  box-shadow:none!important;
+  backdrop-filter:blur(12px);
+  position:relative;
+  z-index:500;
+}
+body.ian603-shell .topbar>.shell-original-hidden{display:none!important}
+body.ian603-shell .shell-brand-mark{
+  width:31px;height:31px;flex:0 0 31px;
+  display:grid;place-items:center;
+  border-radius:9px;
+  background:var(--shell-accent);
+  color:#fff;
+  font-size:11px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:.02em;
+}
+body.ian603-shell .shell-title-wrap{
+  min-width:220px;
+  max-width:min(520px,38vw);
+  line-height:1.1;
+}
+body.ian603-shell .shell-module-title{
+  color:var(--shell-ink);
+  font-size:16px;
+  font-weight:900;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+body.ian603-shell .shell-course-title{
+  margin-top:2px;
+  color:var(--shell-muted);
+  font-size:11px;
+  font-weight:650;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+body.ian603-shell .shell-db-status{
+  color:var(--shell-muted)!important;
+  font-size:11px!important;
+  font-weight:750!important;
+  white-space:nowrap;
+}
+body.ian603-shell .shell-db-status.ready{color:var(--shell-good)!important}
+body.ian603-shell .shell-status{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-height:34px;
+  padding:6px 9px;
+  border:1px solid var(--shell-line);
+  border-radius:9px;
+  background:var(--shell-panel2);
+  color:var(--shell-muted);
+  font-size:11px;
+  font-weight:850;
+  white-space:nowrap;
+}
+body.ian603-shell .shell-status-sep{opacity:.55}
+body.ian603-shell .shell-status-pct{color:var(--shell-accent)}
+body.ian603-shell .shell-actions{
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-width:0;
+}
+body.ian603-shell .shell-actions .control,
+body.ian603-shell .shell-actions button{
+  min-height:34px!important;
+  padding:6px 10px!important;
+  border:1px solid var(--shell-line)!important;
+  border-radius:9px!important;
+  background:var(--shell-panel)!important;
+  color:var(--shell-ink)!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  box-shadow:none!important;
+  white-space:nowrap;
+  cursor:pointer;
+}
+body.ian603-shell .shell-actions button:hover{
+  border-color:var(--shell-accent)!important;
+  color:var(--shell-accent)!important;
+}
+body.ian603-shell .shell-actions .shell-run-action{
+  background:var(--shell-accent)!important;
+  border-color:var(--shell-accent)!important;
+  color:#fff!important;
+}
+body.ian603-shell .shell-actions .shell-run-action:hover{color:#fff!important;filter:brightness(.96)}
+body.ian603-shell .shell-progress-action{
+  background:var(--shell-panel2)!important;
+}
+body.ian603-shell .shell-settings-wrap{position:relative}
+body.ian603-shell .shell-settings-menu{
+  position:absolute;
+  top:calc(100% + 7px);
+  right:0;
+  z-index:1200;
+  width:188px;
+  display:none;
+  gap:3px;
+  padding:7px;
+  border:1px solid var(--shell-line);
+  border-radius:12px;
+  background:var(--shell-panel);
+  box-shadow:0 16px 40px rgba(15,23,42,.18);
+}
+body.ian603-shell .shell-settings-menu.open{display:grid}
+body.ian603-shell .shell-settings-menu .control,
+body.ian603-shell .shell-settings-menu button{
+  width:100%;
+  min-height:34px!important;
+  border:0!important;
+  background:transparent!important;
+  color:var(--shell-ink)!important;
+  text-align:left!important;
+  padding:8px 9px!important;
+  border-radius:8px!important;
+}
+body.ian603-shell .shell-settings-menu button:hover{
+  background:var(--shell-panel2)!important;
+  color:var(--shell-accent)!important;
+}
+body.ian603-shell .shell-legacy-status{
+  position:absolute!important;
+  width:1px!important;height:1px!important;
+  padding:0!important;margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
+
+/* ---------- Slide canvas ---------- */
+body.ian603-shell .stage{
+  min-height:0!important;
+  overflow:hidden!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:10px 0!important;
+  background:var(--shell-bg)!important;
+}
+body.ian603-shell #slidesHost{
+  --h:auto!important;
+  height:100%!important;
+  min-height:0!important;
+  width:min(1390px,calc(100vw - 220px))!important;
+  max-width:1390px!important;
+  aspect-ratio:auto!important;
+  flex:0 0 auto!important;
+  position:relative!important;
+  overflow:hidden!important;
+}
+body.ian603-shell .slide{
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:none!important;
+  border-radius:18px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  scrollbar-width:thin;
+}
+body.ian603-shell .slide-footer,
+body.ian603-shell .slide-num{
+  color:var(--shell-muted)!important;
+  opacity:.72;
+  font-size:10px!important;
+  font-weight:850!important;
+}
+body.ian603-shell .start-actions{display:none!important}
+
+/* ---------- Footer ---------- */
+body.ian603-shell .shell-bottom{
+  min-height:0!important;
+  height:148px!important;
+  display:grid!important;
+  grid-template-columns:minmax(560px,1fr) minmax(300px,380px)!important;
+  gap:18px!important;
+  align-items:center!important;
+  padding:7px 16px 9px!important;
+  border-top:1px solid var(--shell-line)!important;
+  background:var(--shell-panel)!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+  position:relative;
+  z-index:420;
+}
+body.ian603-shell.cc-off .shell-bottom{height:108px!important}
+body.ian603-shell .shell-bottom>.audio-block{
+  min-width:0!important;
+  display:grid!important;
+  gap:5px!important;
+  grid-template-columns:1fr!important;
+}
+body.ian603-shell .narration-controls{
+  display:flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  min-width:0!important;
+  margin:0!important;
+}
+body.ian603-shell .narration-btn,
+body.ian603-shell .narration-speed{
+  min-height:30px!important;
+  padding:5px 8px!important;
+  border:1px solid var(--shell-line)!important;
+  border-radius:7px!important;
+  background:var(--shell-panel)!important;
+  color:var(--shell-ink)!important;
+  font-size:10.5px!important;
+  font-weight:800!important;
+  box-shadow:none!important;
+  white-space:nowrap;
+}
+body.ian603-shell .narration-btn.primary{
+  background:var(--shell-accent)!important;
+  border-color:var(--shell-accent)!important;
+  color:#fff!important;
+}
+body.ian603-shell .shell-redundant-start{display:none!important}
+body.ian603-shell .subtitle-bar,
+body.ian603-shell .caption-strip{
+  min-height:38px!important;
+  height:38px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  margin:0!important;
+  padding:5px 14px!important;
+  border:1px solid #2f3a46!important;
+  border-radius:8px!important;
+  background:rgba(18,22,27,.96)!important;
+  color:#fff!important;
+  text-align:center!important;
+  font:600 14px/1.35 "Segoe UI",Arial,sans-serif!important;
+  letter-spacing:.005em;
+  overflow:hidden!important;
+}
+body.ian603-shell .subtitle-bar span,
+body.ian603-shell .caption-strip span{
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  max-width:1100px;
+}
+body.ian603-shell.cc-off .subtitle-bar,
+body.ian603-shell.cc-off .caption-strip{display:none!important}
+body.ian603-shell .audio-player{
+  min-height:36px!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(100px,180px) minmax(150px,1fr) auto!important;
+  align-items:center!important;
+  gap:7px!important;
+  padding:4px 7px!important;
+  border:1px solid var(--shell-line)!important;
+  border-radius:9px!important;
+  background:var(--shell-panel2)!important;
+}
+body.ian603-shell .audio-dot{display:none!important}
+body.ian603-shell .audio-play{
+  min-width:52px;
+  border:1px solid var(--shell-accent)!important;
+  background:var(--shell-accent)!important;
+  color:#fff!important;
+  border-radius:7px!important;
+  padding:5px 9px!important;
+  font-size:10.5px!important;
+  font-weight:850!important;
+  cursor:pointer;
+}
+body.ian603-shell .audio-title{
+  color:var(--shell-ink)!important;
+  font-size:10.5px!important;
+  font-weight:850!important;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+body.ian603-shell .audio-seek{width:100%!important;min-width:90px}
+body.ian603-shell .audio-time{
+  color:var(--shell-muted)!important;
+  font:10px ui-monospace,monospace!important;
+  white-space:nowrap;
+}
+body.ian603-shell .presentation-nav{
+  min-width:0;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) 42px;
+  gap:9px;
+  align-items:center;
+  padding-left:12px;
+  border-left:1px solid var(--shell-line);
+}
+body.ian603-shell .presentation-nav .footer-left,
+body.ian603-shell .presentation-nav .footer-right{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+body.ian603-shell .presentation-nav .nav-btn,
+body.ian603-shell .presentation-nav .nav-button{
+  width:40px!important;height:40px!important;min-height:40px!important;
+  padding:0!important;
+  display:grid!important;place-items:center!important;
+  border:1px solid var(--shell-line)!important;
+  border-radius:50%!important;
+  background:var(--shell-panel)!important;
+  color:var(--shell-ink)!important;
+  font-size:24px!important;
+  line-height:1!important;
+  font-weight:500!important;
+  cursor:pointer;
+}
+body.ian603-shell .presentation-nav .nav-btn:hover,
+body.ian603-shell .presentation-nav .nav-button:hover{
+  border-color:var(--shell-accent)!important;
+  color:var(--shell-accent)!important;
+}
+body.ian603-shell .presentation-nav .bottom-nav{
+  min-width:0;
+  display:grid!important;
+  gap:5px!important;
+}
+body.ian603-shell .presentation-nav #slideSelect{
+  width:100%!important;
+  max-width:none!important;
+  min-height:34px!important;
+  padding:5px 8px!important;
+  border:1px solid var(--shell-line)!important;
+  border-radius:7px!important;
+  background:var(--shell-panel)!important;
+  color:var(--shell-ink)!important;
+  font-size:12px!important;
+  font-weight:750!important;
+}
+body.ian603-shell .bottom-progress{display:flex!important;align-items:center!important;gap:7px!important}
+body.ian603-shell .progress-track{
+  height:6px!important;
+  background:var(--shell-line)!important;
+  border-radius:999px!important;
+  overflow:hidden!important;
+  flex:1!important;
+}
+body.ian603-shell .progress-track .progress-bar,
+body.ian603-shell #slideProgress{
+  height:100%!important;
+  background:var(--shell-accent)!important;
+}
+body.ian603-shell .slide-count{
+  min-width:46px!important;
+  color:var(--shell-muted)!important;
+  font-size:10px!important;
+  font-weight:850!important;
+  text-align:right!important;
+}
+body.ian603-shell .transcript-panel{
+  bottom:158px!important;
+  border-radius:16px!important;
+}
+body.ian603-shell.cc-off .transcript-panel{bottom:118px!important}
+
+/* ---------- Optional auto-hide ---------- */
+body.ian603-shell.shell-auto-hide:not(.cc-off) .app{
+  grid-template-rows:50px minmax(0,1fr) 52px!important;
+}
+body.ian603-shell.shell-auto-hide.cc-off .app{
+  grid-template-rows:50px minmax(0,1fr) 16px!important;
+}
+body.ian603-shell.shell-auto-hide .shell-bottom:not(:hover):not(:focus-within){
+  height:52px!important;
+  grid-template-columns:1fr!important;
+  gap:0!important;
+  padding:7px 14px!important;
+  overflow:hidden!important;
+}
+body.ian603-shell.shell-auto-hide:not(.cc-off) .shell-bottom:not(:hover):not(:focus-within) .narration-controls,
+body.ian603-shell.shell-auto-hide:not(.cc-off) .shell-bottom:not(:hover):not(:focus-within) .audio-player,
+body.ian603-shell.shell-auto-hide:not(.cc-off) .shell-bottom:not(:hover):not(:focus-within) .presentation-nav{
+  display:none!important;
+}
+body.ian603-shell.shell-auto-hide:not(.cc-off) .shell-bottom:not(:hover):not(:focus-within) .audio-block{
+  display:block!important;
+}
+body.ian603-shell.shell-auto-hide.cc-off .shell-bottom:not(:hover):not(:focus-within){
+  height:16px!important;
+  min-height:16px!important;
+  padding:0!important;
+  border-top:0!important;
+  background:transparent!important;
+}
+body.ian603-shell.shell-auto-hide.cc-off .shell-bottom:not(:hover):not(:focus-within)>*{display:none!important}
+body.ian603-shell.shell-auto-hide .shell-bottom:hover,
+body.ian603-shell.shell-auto-hide .shell-bottom:focus-within{
+  position:absolute!important;
+  left:0!important;right:0!important;bottom:0!important;
+  height:148px!important;
+  grid-template-columns:minmax(560px,1fr) minmax(300px,380px)!important;
+  gap:18px!important;
+  padding:7px 16px 9px!important;
+  background:var(--shell-panel)!important;
+  border-top:1px solid var(--shell-line)!important;
+  box-shadow:0 -18px 46px rgba(15,23,42,.16)!important;
+}
+body.ian603-shell.shell-auto-hide.cc-off .shell-bottom:hover,
+body.ian603-shell.shell-auto-hide.cc-off .shell-bottom:focus-within{height:108px!important}
+
+/* ---------- Responsive ---------- */
+@media(max-width:1380px) and (min-width:1000px){
+  body.ian603-shell #slidesHost{width:calc(100vw - 150px)!important}
+  body.ian603-shell .shell-title-wrap{max-width:330px}
+  body.ian603-shell .shell-bottom,
+  body.ian603-shell.shell-auto-hide .shell-bottom:hover,
+  body.ian603-shell.shell-auto-hide .shell-bottom:focus-within{
+    grid-template-columns:minmax(520px,1fr) minmax(270px,330px)!important;
+    gap:10px!important;
+  }
+}
+@media(max-width:1150px){
+  body.ian603-shell .shell-course-title{display:none}
+  body.ian603-shell .shell-title-wrap{min-width:110px;max-width:180px}
+  body.ian603-shell .shell-db-status{display:none!important}
+  body.ian603-shell #slidesHost{width:calc(100vw - 36px)!important}
+}
+@media(max-width:900px){
+  body.ian603-shell{overflow:auto!important}
+  body.ian603-shell .app,
+  body.ian603-shell.cc-off .app,
+  body.ian603-shell.shell-auto-hide .app,
+  body.ian603-shell.shell-auto-hide.cc-off .app{
+    height:auto!important;
+    min-height:100vh;
+    grid-template-rows:auto auto auto!important;
+  }
+  body.ian603-shell .topbar{
+    height:auto!important;
+    min-height:58px!important;
+    flex-wrap:wrap!important;
+    padding:8px 10px!important;
+  }
+  body.ian603-shell .shell-title-wrap{max-width:calc(100vw - 70px);flex:1}
+  body.ian603-shell .shell-status{display:none}
+  body.ian603-shell .shell-actions{width:100%;margin-left:0;justify-content:flex-end;flex-wrap:wrap}
+  body.ian603-shell .stage{height:auto!important;overflow:visible!important;padding:10px!important}
+  body.ian603-shell #slidesHost{width:100%!important;height:auto!important;overflow:visible!important}
+  body.ian603-shell .slide{
+    position:relative!important;
+    height:auto!important;
+    min-height:680px!important;
+  }
+  body.ian603-shell .shell-bottom,
+  body.ian603-shell.cc-off .shell-bottom,
+  body.ian603-shell.shell-auto-hide .shell-bottom,
+  body.ian603-shell.shell-auto-hide .shell-bottom:hover,
+  body.ian603-shell.shell-auto-hide .shell-bottom:focus-within{
+    position:sticky!important;
+    left:auto!important;right:auto!important;bottom:0!important;
+    height:auto!important;
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+    padding:8px 10px!important;
+    overflow:visible!important;
+  }
+  body.ian603-shell .presentation-nav{border-left:0;padding-left:0}
+  body.ian603-shell .narration-controls{flex-wrap:wrap!important}
+  body.ian603-shell .audio-player{grid-template-columns:auto 1fr auto!important}
+  body.ian603-shell .audio-title{grid-column:2}
+  body.ian603-shell .audio-seek{grid-column:1/-1}
+  body.ian603-shell .transcript-panel,
+  body.ian603-shell.cc-off .transcript-panel{
+    left:10px!important;right:10px!important;bottom:10px!important;width:auto!important;max-height:55vh!important;
+  }
+}
