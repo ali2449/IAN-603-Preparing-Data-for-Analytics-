@@ -1,52 +1,46 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.247
-This query demonstrates one of the safest patterns
-for analytical joins Each
+00:00:00.000 --> 00:00:03.917
+This query shows one of the safest patterns for analytical joins.
 
-00:00:06.274 --> 00:00:10.458
-common table expression summarizes one child table
-to one row per patient
+00:00:03.917 --> 00:00:10.357
+Instead of joining every detail row first, we summarize each child table before the join.
 
-00:00:11.382 --> 00:00:16.684
-Admission counts has one patient row Lab counts has
-one patient row
+00:00:10.357 --> 00:00:14.617
+The admission-count CTE produces one row per patient.
 
-00:00:17.605 --> 00:00:23.228
-Prescription counts has one patient row Only after
-those summaries
+00:00:14.617 --> 00:00:18.797
+The lab-count CTE also produces one row per patient.
 
-00:00:23.254 --> 00:00:28.188
-are created do we join them to patients Run the
-query and
+00:00:18.797 --> 00:00:21.957
+The prescription-count CTE does the same.
 
-00:00:28.215 --> 00:00:34.507
-inspect the patient IDs Each patient should appear
-exactly once Patients
+00:00:21.957 --> 00:00:27.077
+Only after those sources are at the same grain do we join them to the patient table.
 
-00:00:34.520 --> 00:00:37.994
-with no matching activity are preserved because the
-joins are LEFT JOINs
+00:00:27.077 --> 00:00:31.767
+Now the final result is easy to defend: one row per patient.
 
-00:00:38.257 --> 00:00:43.878
-and COALESCE converts missing counts to zero This
-structure makes the grain
+00:00:31.767 --> 00:00:39.127
+Patients with no activity remain because we use LEFT JOIN, and COALESCE converts missing counts to zero.
 
-00:00:43.904 --> 00:00:48.539
-easy to defend The final result is one row per
-patient because
+00:00:39.127 --> 00:00:42.387
+This pattern is very common in dashboards.
 
-00:00:48.565 --> 00:00:53.682
-every source being joined is already at patient
-grain The query is
+00:00:42.387 --> 00:00:49.062
+Suppose a customer dashboard needs total orders, total support tickets, and total returns.
 
-00:00:53.708 --> 00:00:57.261
-a little longer than directly joining all detail
-tables but it is
+00:00:49.062 --> 00:00:53.932
+A safe design is to summarize each activity table by customer first,
 
-00:00:57.274 --> 00:01:02.790
-much easier to validate In analytical SQL clarity
-and correctness are usually
+00:00:53.932 --> 00:00:57.157
+then join the summaries to the customer master.
 
-00:01:02.803 --> 00:01:05.013
-more valuable than saving a few lines
+00:00:57.157 --> 00:01:03.227
+The SQL is a little longer, but the result is much easier to validate and explain.
+
+00:01:03.227 --> 00:01:08.442
+In analytics, a slightly longer query that clearly protects the target grain is usually better than a shorter
+
+00:01:08.442 --> 00:01:12.240
+query that produces ambiguous counts.

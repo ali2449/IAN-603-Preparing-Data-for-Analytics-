@@ -1,37 +1,61 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:04.744
-Here is what we are going to learn in this module
-First
+00:00:00.000 --> 00:00:08.527
+By the end of this module, I want you to be comfortable doing more than writing a WHERE clause.
 
-00:00:04.937 --> 00:00:10.420
-we will combine conditions using AND OR and NOT Next
-we will
+00:00:08.527 --> 00:00:14.217
+You should be able to look at a written business rule and translate it into SQL while being able to explain
 
-00:00:10.446 --> 00:00:16.028
-discuss three-valued logic This is important because
-SQL conditions can evaluate to
+00:00:14.217 --> 00:00:17.312
+why the result is correct.
 
-00:00:16.041 --> 00:00:21.152
-TRUE FALSE or UNKNOWN Then we will work with missing
-values and
+00:00:17.312 --> 00:00:24.067
+You will practice combining Boolean conditions using AND, OR, and NOT.
 
-00:00:21.178 --> 00:00:25.806
-learn why null needs special treatment We will also
-use case expressions
+00:00:24.067 --> 00:00:29.232
+You will learn how SQL's three-valued logic works, meaning that expressions can evaluate to TRUE, FALSE,
 
-00:00:25.832 --> 00:00:31.723
-to convert business rules into categories and labels
-Finally we will combine
+00:00:29.232 --> 00:00:32.347
+or UNKNOWN.
 
-00:00:31.748 --> 00:00:36.634
-these ideas in realistic examples and exercises As
-you work through the
+00:00:32.347 --> 00:00:39.382
+You will see why NULL requires special treatment and why ordinary comparisons such as equals NULL do not work
 
-00:00:36.647 --> 00:00:41.840
-module focus on understanding what each condition
-means If you can explain
+00:00:39.382 --> 00:00:42.327
+the way beginners often expect.
 
-00:00:41.866 --> 00:00:45.874
-the logic clearly in plain language writing the SQL
-becomes much easier
+00:00:42.327 --> 00:00:44.682
+We will also use NULL-safe tools.
+
+00:00:44.682 --> 00:00:49.482
+IS NULL and IS NOT NULL let us test missingness directly.
+
+00:00:49.482 --> 00:00:55.267
+IS TRUE, IS FALSE, and IS UNKNOWN are useful for nullable Boolean fields.
+
+00:00:55.267 --> 00:01:02.472
+IS DISTINCT FROM gives us a definite comparison even when NULL is involved.
+
+00:01:02.472 --> 00:01:08.752
+COALESCE provides fallback values, and NULLIF helps normalize special values such as blank text or zero
+
+00:01:08.752 --> 00:01:15.287
+denominators. Another major objective is learning CASE expressions.
+
+00:01:15.287 --> 00:01:20.602
+CASE allows us to turn rules into labels such as High Risk, Standard, Needs Review, or No Charge.
+
+00:01:20.602 --> 00:01:22.962
+But CASE is order-sensitive.
+
+00:01:22.962 --> 00:01:30.772
+The first true branch wins, so broad conditions can accidentally hide more specific ones.
+
+00:01:30.772 --> 00:01:34.722
+Finally, I want you to validate your logic.
+
+00:01:34.722 --> 00:01:38.587
+Test NULL, zero, blank text, exact thresholds, and overlapping conditions.
+
+00:01:38.587 --> 00:01:46.106
+In a real project, those edge cases are often where the most expensive mistakes happen.

@@ -1,40 +1,52 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:03.877
-When AND OR and NOT appear together SQL follows an
-order of
+00:00:00.000 --> 00:00:04.742
+SQL has rules for deciding which logical operators are evaluated first.
 
-00:00:03.903 --> 00:00:09.601
-operations NOT is evaluated first then AND and then
-OR
+00:00:04.742 --> 00:00:11.797
+In PostgreSQL, NOT has higher precedence than AND, and AND has higher precedence than OR.
 
-00:00:10.517 --> 00:00:14.344
-This is similar to the idea of order of operations
-in mathematics
+00:00:11.797 --> 00:00:19.217
+That means an expression like A OR B AND C is interpreted as A OR the combination of B AND C.
 
-00:00:15.246 --> 00:00:18.365
-The problem is that a query can be technically
-correct but still
+00:00:19.217 --> 00:00:24.462
+SQL does not automatically read it the way a human might casually read the sentence.
 
-00:00:18.378 --> 00:00:22.618
-be difficult for another person to read That is why
-I recommend
+00:00:24.462 --> 00:00:32.062
+You could memorize that order, and it is useful to know it, but I do not recommend relying on memory when
 
-00:00:22.643 --> 00:00:25.955
-using parentheses whenever AND and OR are mixed in
-the same rule
+00:00:32.062 --> 00:00:34.392
+writing important logic. Parentheses are much safer.
 
-00:00:26.870 --> 00:00:32.051
-Parentheses are not only for the database They are
-also documentation for
+00:00:34.392 --> 00:00:41.372
+Suppose a scholarship rule says a student qualifies when the student has a GPA above 3.5 OR belongs to a
 
-00:00:32.076 --> 00:00:36.200
-you and for anyone else reading the query later If
-your business
+00:00:41.372 --> 00:00:47.027
+special program, AND the student has submitted the required form.
 
-00:00:36.226 --> 00:00:40.633
-rule says that two conditions belong together show
-that relationship explicitly with
+00:00:47.027 --> 00:00:54.147
+If we do not group the conditions, the form requirement may apply only to the special-program branch.
 
-00:00:40.646 --> 00:00:41.535
-parentheses
+00:00:54.147 --> 00:00:58.292
+Students with high GPA could qualify even without the form.
+
+00:00:58.292 --> 00:01:02.017
+That may be exactly what the policy intends, or it may be completely wrong.
+
+00:01:02.017 --> 00:01:04.382
+Parentheses make the decision explicit.
+
+00:01:04.382 --> 00:01:11.462
+They also help the next analyst who reads the query months later.
+
+00:01:11.462 --> 00:01:14.212
+Think of parentheses as documentation, not just syntax.
+
+00:01:14.212 --> 00:01:18.957
+My recommendation for this course is simple: whenever AND and OR appear in the same rule,
+
+00:01:18.957 --> 00:01:26.197
+group the conditions in a way that mirrors the plain-language requirement.
+
+00:01:26.197 --> 00:01:31.338
+You should not need to mentally calculate precedence just to understand a business rule.

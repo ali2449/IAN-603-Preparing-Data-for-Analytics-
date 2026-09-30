@@ -1,49 +1,52 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.817
-This slide gives the four main row-preservation
-patterns INNER JOIN keeps
+00:00:00.000 --> 00:00:04.047
+This slide summarizes the four main row-preservation patterns.
 
-00:00:05.843 --> 00:00:10.267
-only row combinations where the match condition is
-true If a patient
+00:00:04.047 --> 00:00:06.642
+INNER JOIN keeps only matches.
 
-00:00:10.293 --> 00:00:14.530
-has no admission that patient is absent from a
-patient-to-admission INNER JOIN
+00:00:06.642 --> 00:00:12.692
+If a patient has no admission, that patient will not appear in a patient-to-admission INNER JOIN.
 
-00:00:16.287 --> 00:00:20.763
-LEFT JOIN keeps every row from the left table When
-no right-side
+00:00:12.692 --> 00:00:17.932
+This is useful when the question is specifically about records that exist in both tables.
 
-00:00:20.776 --> 00:00:26.532
-match exists right-side columns become NULL RIGHT
-JOIN is the mirror
+00:00:17.932 --> 00:00:21.207
+LEFT JOIN keeps every row from the left table.
 
-00:00:26.558 --> 00:00:31.561
-image Every row from the right table is preserved
-and unmatched left-side
+00:00:21.207 --> 00:00:26.067
+If there is no matching row on the right, the right-side columns become NULL.
 
-00:00:31.587 --> 00:00:37.195
-columns become NULL FULL OUTER JOIN preserves
-unmatched rows from both
+00:00:26.067 --> 00:00:29.522
+RIGHT JOIN does the same thing in the opposite direction.
 
-00:00:37.221 --> 00:00:42.171
-sides This is especially useful when reconciling a
-master table with an
+00:00:29.522 --> 00:00:33.532
+FULL OUTER JOIN keeps unmatched rows from both sides.
 
-00:00:42.184 --> 00:00:48.735
-external staging source Do not memorize these as
-shapes only Read
+00:00:33.532 --> 00:00:38.452
+Try to connect each join type to a real question.
 
-00:00:48.761 --> 00:00:54.261
-them as population rules Ask what population must
-remain complete
+00:00:38.452 --> 00:00:42.172
+In education, INNER JOIN could show only students who submitted an assignment.
 
-00:00:55.169 --> 00:00:58.788
-If the answer is all patients put patients on the
-preserved side
+00:00:42.172 --> 00:00:46.637
+LEFT JOIN could show every student and their submission when one exists.
 
-00:00:59.709 --> 00:01:02.998
-That simple question often makes the join choice
-much easier
+00:00:46.637 --> 00:00:53.462
+FULL OUTER JOIN could compare two class rosters and reveal students who appear in only one system.
+
+00:00:53.462 --> 00:00:56.857
+Do not rely only on Venn-diagram-style pictures.
+
+00:00:56.857 --> 00:01:03.522
+Those pictures can help, but the stronger habit is to ask, what population must remain complete?
+
+00:01:03.522 --> 00:01:08.102
+If the answer is every patient, put patients on the preserved side.
+
+00:01:08.102 --> 00:01:11.837
+If the answer is every department, preserve departments.
+
+00:01:11.837 --> 00:01:18.160
+If the answer is records from both systems, even unmatched ones, think about FULL OUTER JOIN.

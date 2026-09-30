@@ -1,44 +1,58 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:03.993
-Most of the reasoning in this module transfers to
-other database systems
+00:00:00.000 --> 00:00:04.122
+The reasoning patterns in this module transfer well across database systems,
 
-00:00:05.722 --> 00:00:09.974
-AND OR NOT IS NULL coalesce null if and case are
-widely
+00:00:04.122 --> 00:00:08.857
+even when the exact syntax changes.
 
-00:00:10.000 --> 00:00:16.110
-supported concepts But some syntax varies across
-database systems For
+00:00:08.857 --> 00:00:12.802
+AND, OR, NOT, IS NULL, COALESCE, NULLIF, and CASE are widely supported.
 
-00:00:16.123 --> 00:00:21.702
-example PostgreSQL supports IS DISTINCT FROM Other
-database systems
+00:00:12.802 --> 00:00:17.392
+But some details are more platform-specific.
 
-00:00:21.728 --> 00:00:27.231
-may handle null-safe comparison differently
-PostgreSQL can subtract one date
+00:00:17.392 --> 00:00:22.557
+IS DISTINCT FROM is available in PostgreSQL and several modern systems,
 
-00:00:27.257 --> 00:00:31.767
-from another directly Another system may use a
-function such as date
+00:00:22.557 --> 00:00:25.907
+but not every platform handles NULL-safe comparison with the same syntax.
 
-00:00:31.793 --> 00:00:36.522
-diff So when you move from PostgreSQL to another
-database keep the
+00:00:25.907 --> 00:00:30.912
+Date arithmetic is another common difference.
 
-00:00:36.548 --> 00:00:40.362
-logical rule the same but check whether any syntax
-needs to change
+00:00:30.912 --> 00:00:34.657
+PostgreSQL can subtract dates directly in many cases.
 
-00:00:41.264 --> 00:00:45.233
-The best skill to carry between systems is not
-memorizing every command
+00:00:34.657 --> 00:00:39.962
+SQL Server and Microsoft Fabric often use functions such as DATEDIFF.
 
-00:00:46.135 --> 00:00:49.112
-It is being able to explain the rule clearly and
-then translate
+00:00:39.962 --> 00:00:46.107
+Other databases may use interval functions or date-difference functions with different argument order.
 
-00:00:49.138 --> 00:00:51.290
-that rule into the target SQL dialect
+00:00:46.107 --> 00:00:53.097
+The best way to move between SQL dialects is to preserve the rule before translating the syntax.
+
+00:00:53.097 --> 00:01:00.277
+For example: “I need the number of days between admission and discharge.” That is the logic.
+
+00:01:00.277 --> 00:01:03.642
+The PostgreSQL expression is one implementation.
+
+00:01:03.642 --> 00:01:09.402
+A different platform may use another function, but the analytical meaning stays the same.
+
+00:01:09.402 --> 00:01:13.992
+The same is true for NULL handling and CASE rules.
+
+00:01:13.992 --> 00:01:17.732
+First define the intended cohort and classifications.
+
+00:01:17.732 --> 00:01:21.012
+Then translate database-specific functions.
+
+00:01:21.012 --> 00:01:27.442
+If you learn SQL only as memorized syntax, moving to another platform feels difficult.
+
+00:01:27.442 --> 00:01:31.798
+If you learn the reasoning, the new syntax becomes a smaller problem.

@@ -1,48 +1,40 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.950
-This final coding exercise combines several concepts
-from the module You
+00:00:00.000 --> 00:00:05.727
+Coding Exercise 6 brings most of the module together in one priority rule.
 
-00:00:05.976 --> 00:00:10.035
-need to assign one of four outreach priorities Do
-not contact Urgent
+00:00:05.727 --> 00:00:09.987
+The highest-priority outcome is Do not contact.
 
-00:00:10.215 --> 00:00:16.029
-Routine or Review Start with the most restrictive
-rule If the patient
+00:00:09.987 --> 00:00:15.362
+That applies when the record is inactive or consent is explicitly false.
 
-00:00:16.055 --> 00:00:20.075
-is inactive or has explicitly refused contact the
-result should be Do
+00:00:15.362 --> 00:00:20.882
+Put that branch first because it should override the lower-priority outcomes.
 
-00:00:20.088 --> 00:00:25.655
-not contact Next comes the specific urgent condition
-active consented high
+00:00:20.882 --> 00:00:27.157
+Next comes Urgent. The patient must be active, consent must be explicitly true, severity must be High,
 
-00:00:25.681 --> 00:00:31.428
-severity and no usable email After that the broader
-active-and-consented group
+00:00:27.157 --> 00:00:31.762
+and there must be no usable email address.
 
-00:00:31.454 --> 00:00:37.251
-can become Routine Everything else becomes Review
-Because
+00:00:31.762 --> 00:00:39.342
+Then comes Routine for active patients with explicit consent who did not already qualify as Urgent.
 
-00:00:37.277 --> 00:00:42.879
-the conditions overlap branch order is very
-important Complete
+00:00:39.342 --> 00:00:41.657
+Everything else becomes Review. Branch order is essential.
 
-00:00:42.905 --> 00:00:47.068
-the case expression in the browser and select Run
-and Check You
+00:00:41.657 --> 00:00:49.627
+If Routine is placed before Urgent, every active consenting patient will match Routine before PostgreSQL ever
 
-00:00:47.094 --> 00:00:50.909
-can also copy the starter SQL into pgAdmin build it
-one branch
+00:00:49.627 --> 00:00:56.112
+reaches the Urgent branch. The email check must also be NULL-aware.
 
-00:00:50.922 --> 00:00:53.782
-at a time and test the output there before
-submitting it in
+00:00:56.112 --> 00:01:02.657
+A blank or whitespace-only email should count as unavailable, not as valid contact information.
 
-00:00:53.808 --> 00:00:54.414
-the browser
+00:01:02.657 --> 00:01:06.782
+When you finish, test one example from each category.
+
+00:01:06.782 --> 00:01:12.454
+That is how you validate a multi-branch decision rule instead of trusting the syntax alone.

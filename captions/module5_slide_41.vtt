@@ -1,44 +1,46 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.689
-For this practice we change the fixed reference date
-Instead of August
+00:00:00.000 --> 00:00:04.462
+This guided practice changes the reference date in the recent respiratory report.
 
-00:00:05.715 --> 00:00:11.387
-eleventh use August fifth twenty twenty-six Before
-running the query predict
+00:00:04.462 --> 00:00:07.747
+Originally, the report uses August 11, 2026.
 
-00:00:11.400 --> 00:00:15.549
-which admissions will move outside the thirty-day
-window This is a good
+00:00:07.747 --> 00:00:13.527
+Now move the reference date to August 5, 2026 and think about how the thirty-day window changes.
 
-00:00:15.575 --> 00:00:20.459
-exercise because it separates two different parts of
-the logic Changing the
+00:00:13.527 --> 00:00:16.727
+Before you run the query, identify admissions near the edges of the date window.
 
-00:00:20.485 --> 00:00:24.879
-reference date changes which records are included in
-the cohort It does
+00:00:16.727 --> 00:00:18.532
+Those are the records most likely to move in or out.
 
-00:00:24.905 --> 00:00:28.191
-not change the rule that uses diagnosis and age to
-assign the
+00:00:18.532 --> 00:00:25.172
+Notice that changing the reference date changes the cohort, but it does not change the age threshold used by
 
-00:00:28.204 --> 00:00:33.294
-risk category If you want copy the earlier date
-query into pgAdmin
+00:00:25.172 --> 00:00:28.372
+the CASE expression. The WHERE clause defines which rows are included.
 
-00:00:33.320 --> 00:00:37.173
-and change only the reference date You can also make
-the same
+00:00:28.372 --> 00:00:33.417
+The CASE expression classifies the rows that survive.
 
-00:00:37.199 --> 00:00:40.974
-change in the browser code Try to change one part of
-the
+00:00:33.417 --> 00:00:36.647
+This separation is useful in reporting systems.
 
-00:00:41.000 --> 00:00:45.072
-rule at a time That makes it much easier to
-understand why
+00:00:36.647 --> 00:00:36.952
+Imagine a weekly dashboard.
 
-00:00:45.098 --> 00:00:46.206
-the output changes
+00:00:36.952 --> 00:00:43.212
+The reporting window may move every week, while the definition of High Risk remains the same.
+
+00:00:43.212 --> 00:00:47.462
+Or the opposite may happen: the cohort stays fixed, but the classification policy changes.
+
+00:00:47.462 --> 00:00:52.482
+When debugging a changing result, ask which part changed: population definition, calculated measure,
+
+00:00:52.482 --> 00:00:57.047
+or classification rule? Run the revised query and compare the admissions with the original version.
+
+00:00:57.047 --> 00:01:02.084
+Focus on records near the date boundaries rather than scanning every row equally.

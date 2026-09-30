@@ -1,48 +1,49 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.706
-This practice is about explanation not only
-execution Run
+00:00:00.000 --> 00:00:05.172
+This practice is about explaining row multiplication, not just running the SQL.
 
-00:00:05.733 --> 00:00:10.088
-the multiplication query again and focus on one
-patient with multiple admissions
+00:00:05.172 --> 00:00:10.767
+Focus on one patient who has several admissions, lab results, and prescriptions.
 
-00:00:10.325 --> 00:00:16.082
-lab results and prescriptions Your task is to
-explain why joined rows
+00:00:10.767 --> 00:00:18.437
+If those three child tables are all joined by patient_id, each admission can combine with each lab test and
 
-00:00:16.108 --> 00:00:21.903
-is larger than each underlying event count A strong
-explanation would mention
+00:00:18.437 --> 00:00:20.022
+each prescription.
 
-00:00:21.916 --> 00:00:27.208
-combinations For one patient each admission can
-combine with each lab result
+00:00:20.022 --> 00:00:25.497
+That is why the number of joined rows can be much larger than the number of original events.
 
-00:00:27.235 --> 00:00:31.103
-and each prescription because all three detail
-tables are joined independently through
+00:00:25.497 --> 00:00:29.512
+A strong explanation should use the word combinations.
 
-00:00:31.129 --> 00:00:36.777
-patient ID After you understand the multiplication
-compare this
+00:00:29.512 --> 00:00:33.737
+The query is not creating new admissions or new lab tests.
 
-00:00:36.804 --> 00:00:42.399
-result with the pre-aggregation pattern from the
-earlier slide Do not try
+00:00:33.737 --> 00:00:39.017
+It is creating combinations of existing rows because several one-to-many relationships are being joined at the
 
-00:00:42.426 --> 00:00:47.626
-to memorize a rule such as always use DISTINCT
-Instead identify the
+00:00:39.017 --> 00:00:45.507
+same time. Compare this with the pre-aggregation strategy from the earlier slide.
 
-00:00:47.652 --> 00:00:53.257
-target grain and the cardinality of every
-relationship When several one-to-many tables
+00:00:45.507 --> 00:00:52.107
+When each child table is summarized to one row per patient first, the multiplication disappears.
 
-00:00:53.284 --> 00:00:56.573
-are joined to the same parent multiplication should
-be one of the
+00:00:52.107 --> 00:00:55.932
+Do not memorize a rule such as always use DISTINCT.
 
-00:00:56.586 --> 00:00:57.731
-first things you check
+00:00:55.932 --> 00:01:01.382
+Instead, identify the target grain and the cardinality of every relationship.
+
+00:01:01.382 --> 00:01:07.792
+That reasoning is transferable to other projects such as customer analytics, educational analytics, finance,
+
+00:01:07.792 --> 00:01:08.682
+and operations.
+
+00:01:08.682 --> 00:01:13.772
+Whenever several detail tables connect to the same parent, row multiplication should be one of the first
+
+00:01:13.772 --> 00:01:16.640
+things you check.

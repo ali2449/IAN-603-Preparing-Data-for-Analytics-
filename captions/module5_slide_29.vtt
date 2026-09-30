@@ -1,44 +1,64 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.661
-Let's collect several common mistakes in one place
-First mixing
+00:00:00.000 --> 00:00:05.377
+The most dangerous SQL logic errors are often the ones that do not produce an error message.
 
-00:00:05.674 --> 00:00:08.806
-OR and AND without parentheses can change the
-meaning of the rule
+00:00:05.377 --> 00:00:12.632
+PostgreSQL may run the query successfully, return rows, and make the output look completely reasonable.
 
-00:00:09.709 --> 00:00:13.189
-Second comparing a field to null with equals does
-not work as
+00:00:12.632 --> 00:00:14.972
+But the rule can still be wrong.
 
-00:00:13.214 --> 00:00:18.382
-a missing-value test Third NOT IN becomes dangerous
-when the list itself
+00:00:14.972 --> 00:00:20.097
+One common trap is mixing AND and OR without parentheses.
 
-00:00:18.395 --> 00:00:24.104
-contains null Fourth ordinary not-equal comparisons
-can silently exclude records
+00:00:20.097 --> 00:00:22.862
+Another is using equals NULL.
 
-00:00:24.129 --> 00:00:29.347
-where the value is null Finally putting a broad case
-condition before
+00:00:22.862 --> 00:00:29.132
+Another is forgetting that ordinary not-equal also becomes UNKNOWN when the field is NULL.
 
-00:00:29.373 --> 00:00:34.297
-a more specific condition can make the specific
-branch unreachable Notice that
+00:00:29.132 --> 00:00:34.052
+NOT IN can produce surprising results when the list contains NULL.
 
-00:00:34.323 --> 00:00:39.606
-most of these queries are syntactically valid
-PostgreSQL may run them without
+00:00:34.052 --> 00:00:40.012
+CASE branches can be ordered incorrectly so a broad condition hides a specific one.
 
-00:00:39.619 --> 00:00:43.975
-displaying an error That is why testing SQL is not
-only about
+00:00:40.012 --> 00:00:43.477
+Blank text can be mistaken for valid data.
 
-00:00:43.988 --> 00:00:47.982
-asking whether the query runs We also need to ask
-whether the
+00:00:43.477 --> 00:00:46.402
+A zero can be confused with missingness.
 
-00:00:47.995 --> 00:00:49.864
-result matches the intended rule
+00:00:46.402 --> 00:00:50.927
+This is why professional SQL work includes adversarial testing.
+
+00:00:50.927 --> 00:00:57.627
+Instead of testing only normal rows, intentionally test the records most likely to break the logic.
+
+00:00:57.627 --> 00:01:00.822
+Create or identify a row with NULL.
+
+00:01:00.822 --> 00:01:02.307
+One with zero. One with an empty string.
+
+00:01:02.307 --> 00:01:06.127
+One with only spaces. One exactly on the threshold.
+
+00:01:06.127 --> 00:01:08.512
+One that satisfies two CASE branches.
+
+00:01:08.512 --> 00:01:13.577
+One with explicit FALSE. This is similar to testing software.
+
+00:01:13.577 --> 00:01:18.712
+Happy-path data tells you the query works in the easiest situation.
+
+00:01:18.712 --> 00:01:24.052
+Edge cases tell you whether the rule is actually reliable.
+
+00:01:24.052 --> 00:01:27.157
+A query that “runs” is only the beginning.
+
+00:01:27.157 --> 00:01:31.960
+A query that has survived boundary testing is much closer to something you can trust.

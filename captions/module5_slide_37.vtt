@@ -1,44 +1,46 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.710
-Let's do a reasoning exercise before writing more
-SQL We have two
+00:00:00.000 --> 00:00:04.952
+For this guided practice, I want you to predict the result before you run the query.
 
-00:00:05.736 --> 00:00:10.029
-versions of a condition In Version A age greater
-than or equal
+00:00:04.952 --> 00:00:09.157
+We compare two versions of a mixed AND and OR rule.
 
-00:00:10.055 --> 00:00:15.454
-to sixty-five is connected by OR to a
-diagnosis-and-consent condition In Version
+00:00:09.157 --> 00:00:14.472
+In the unparenthesized version, AND binds more tightly than OR.
 
-00:00:15.480 --> 00:00:20.106
-B age or diagnosis is grouped inside parentheses and
-consent is required
+00:00:14.472 --> 00:00:19.297
+That means the consent requirement applies only to one branch of the logic.
 
-00:00:20.132 --> 00:00:25.093
-afterward Try to identify the patient who appears
-only when the parentheses
+00:00:19.297 --> 00:00:25.332
+In the parenthesized version, the age condition and the diagnosis condition are grouped together first,
 
-00:00:25.119 --> 00:00:29.191
-are omitted A useful strategy is to look for an
-older patient
+00:00:25.332 --> 00:00:28.647
+and then consent is required for the entire group.
 
-00:00:29.217 --> 00:00:34.114
-whose consent is false Ask yourself in Version A
-does the consent
+00:00:28.647 --> 00:00:34.297
+Look for the patient who satisfies the age condition but has false consent.
 
-00:00:34.140 --> 00:00:39.164
-condition apply to the age branch Then compare that
-with Version B
+00:00:34.297 --> 00:00:37.827
+That patient is the key to understanding the difference.
 
-00:00:40.068 --> 00:00:43.006
-You can test the related query in the browser from
-the earlier
+00:00:37.827 --> 00:00:43.462
+Do not stop at saying, “Version A returns one extra row.” Explain why.
 
-00:00:43.032 --> 00:00:48.579
-slide or copy it into pgAdmin and modify it yourself
-The
+00:00:43.462 --> 00:00:50.057
+A good explanation is: the age branch is evaluated independently of the consent test in Version A because the
 
-00:00:48.605 --> 00:00:51.182
-goal here is to explain why the results differ
+00:00:50.057 --> 00:00:53.512
+AND belongs to the diagnosis branch.
+
+00:00:53.512 --> 00:00:59.837
+In Version B, parentheses make consent apply to both age and diagnosis alternatives.
+
+00:00:59.837 --> 00:01:03.502
+This is exactly how I want you to reason in real work.
+
+00:01:03.502 --> 00:01:08.652
+When two queries produce different populations, identify the record that changes and trace that record through
+
+00:01:08.652 --> 00:01:15.521
+the Boolean expression. That is much more informative than staring at the whole result set.

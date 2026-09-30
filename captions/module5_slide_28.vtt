@@ -1,44 +1,55 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:04.915
-An ELSE branch in a case expression is optional If
-there is
+00:00:00.000 --> 00:00:06.367
+If a CASE expression has no ELSE and none of the WHEN conditions match, PostgreSQL returns NULL.
 
-00:00:04.941 --> 00:00:08.459
-no ELSE and none of the WHEN conditions match SQL
-returns null
+00:00:06.367 --> 00:00:09.487
+Sometimes that is exactly what you want.
 
-00:00:09.376 --> 00:00:13.422
-Sometimes that is exactly what we want But it should
-be a
+00:00:09.487 --> 00:00:13.122
+NULL might mean unclassified or not applicable.
 
-00:00:13.448 --> 00:00:19.363
-deliberate decision not an accident In this example
-only selected respiratory
+00:00:13.122 --> 00:00:15.817
+But other times it creates ambiguity.
 
-00:00:19.376 --> 00:00:24.878
-diagnoses receive the label Respiratory Other
-diagnoses receive null because
+00:00:15.817 --> 00:00:23.212
+In this example, certain respiratory diagnoses receive a label and everything else falls through to NULL.
 
-00:00:24.891 --> 00:00:29.740
-there is no ELSE branch Run the SQL in the browser
-and
+00:00:23.212 --> 00:00:27.837
+When you look at the output, ask whether that NULL is meaningful.
 
-00:00:29.765 --> 00:00:34.934
-inspect the diagnosis group column You can also copy
-it into pgAdmin
+00:00:27.837 --> 00:00:30.462
+Does it mean “not respiratory”?
 
-00:00:36.346 --> 00:00:40.535
-Then think about the purpose of the output Would
-null be meaningful
+00:00:30.462 --> 00:00:33.497
+Does it mean “unknown diagnosis”?
 
-00:00:40.561 --> 00:00:43.744
-here or would a label such as Other be easier for
-users
+00:00:33.497 --> 00:00:36.547
+Or does it mean we forgot to define a category?
 
-00:00:43.770 --> 00:00:47.919
-to understand The answer depends on the business
-rule and how the
+00:00:36.547 --> 00:00:40.457
+Imagine a dashboard where category is displayed to users.
 
-00:00:47.932 --> 00:00:49.156
-result will be used
+00:00:40.457 --> 00:00:46.372
+A blank value may look like missing data rather than an intentional “other” group.
+
+00:00:46.372 --> 00:00:50.592
+In that case, an ELSE 'Other' branch might be clearer.
+
+00:00:50.592 --> 00:00:57.782
+On the other hand, in a quality-control query, leaving unmatched values as NULL can be useful because it
+
+00:00:57.782 --> 00:01:00.637
+highlights records that need review.
+
+00:01:00.637 --> 00:01:06.207
+The important point is to decide rather than drift into the behavior accidentally.
+
+00:01:06.207 --> 00:01:09.817
+The same idea applies to missing input values.
+
+00:01:09.817 --> 00:01:17.732
+If a NULL bill should be labeled Needs Review, create an explicit WHEN bill_amount IS NULL branch.
+
+00:01:17.732 --> 00:01:22.379
+Do not rely on it falling through unless that is truly the intended meaning.

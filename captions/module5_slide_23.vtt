@@ -1,43 +1,61 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:02.563
-Now we move to one of the most useful tools in this
+00:00:00.000 --> 00:00:03.647
+CASE lets us create derived values based on rules.
 
-00:00:02.589 --> 00:00:08.357
-module the case expression Think of case as a
-sequence of questions
+00:00:03.647 --> 00:00:07.522
+You can think of it as a decision tree written inside SQL.
 
-00:00:09.273 --> 00:00:14.247
-SQL checks the first WHEN condition If it is TRUE
-SQL returns
+00:00:07.522 --> 00:00:11.857
+PostgreSQL evaluates the WHEN branches from top to bottom.
 
-00:00:14.260 --> 00:00:18.951
-the corresponding THEN value and stops If it is not
-true SQL
+00:00:11.857 --> 00:00:19.342
+As soon as one condition is true, CASE returns that branch's result and stops checking the later branches for
 
-00:00:18.977 --> 00:00:23.062
-moves to the next WHEN condition If none of the
-conditions match
+00:00:19.342 --> 00:00:22.197
+that row. That makes branch order part of the logic.
 
-00:00:23.255 --> 00:00:27.984
-SQL uses ELSE If there is no ELSE the result becomes
-null
+00:00:22.197 --> 00:00:24.997
+Suppose we are labeling support tickets.
 
-00:00:29.726 --> 00:00:34.637
-The most important phrase to remember is first match
-wins That means
+00:00:24.997 --> 00:00:29.417
+If the first branch says response time greater than one hour equals Delayed,
 
-00:00:34.663 --> 00:00:39.134
-the order of the branches matters Whenever you build
-a case expression
+00:00:29.417 --> 00:00:36.337
+and a later branch says response time greater than twenty-four hours equals Critical,
 
-00:00:39.418 --> 00:00:42.485
-read the conditions from top to bottom and ask
-whether an earlier
+00:00:36.337 --> 00:00:41.722
+the Critical branch will never run because every ticket above twenty-four hours already satisfies the broader
 
-00:00:42.511 --> 00:00:46.248
-condition could accidentally capture records that
-were supposed to reach a later
+00:00:41.722 --> 00:00:45.412
+one-hour condition.
 
-00:00:46.261 --> 00:00:46.815
-condition
+00:00:45.412 --> 00:00:51.292
+The safer order is usually specific before broad, or highest priority before lower priority.
+
+00:00:51.292 --> 00:00:51.692
+CASE can also include ELSE.
+
+00:00:51.692 --> 00:00:57.277
+ELSE gives a default result when no WHEN condition matches.
+
+00:00:57.277 --> 00:00:59.897
+If ELSE is omitted, PostgreSQL returns NULL.
+
+00:00:59.897 --> 00:01:07.012
+Before writing a CASE expression, I recommend listing the categories in plain language and checking for
+
+00:01:07.012 --> 00:01:10.832
+overlap. Ask: can one row satisfy more than one branch?
+
+00:01:10.832 --> 00:01:11.912
+If yes, which result should win?
+
+00:01:11.912 --> 00:01:19.397
+CASE is powerful because it allows business logic to become visible directly in a query.
+
+00:01:19.397 --> 00:01:25.922
+But that also means poorly ordered branches can encode the wrong policy while still producing valid-looking
+
+00:01:25.922 --> 00:01:26.301
+output.

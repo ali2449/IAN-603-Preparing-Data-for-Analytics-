@@ -1,44 +1,55 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.781
-Here we compare two different policies The first
-query uses ordinary
+00:00:00.000 --> 00:00:06.492
+This slide makes the difference between ordinary inequality and NULL-safe inequality very concrete.
 
-00:00:05.807 --> 00:00:10.744
-not equal to Paid If payment status is null that
-comparison becomes
+00:00:06.492 --> 00:00:10.982
+Suppose we want billing records whose payment status is not Paid.
 
-00:00:10.770 --> 00:00:15.409
-UNKNOWN so the row is filtered out The second query
-uses IS
+00:00:10.982 --> 00:00:18.672
+With ordinary not-equal, a known status such as Open compares cleanly with Paid and returns TRUE.
 
-00:00:15.435 --> 00:00:19.881
-DISTINCT FROM Paid Now a missing status is treated
-as different from
+00:00:18.672 --> 00:00:21.282
+But when payment status is NULL, the comparison is UNKNOWN.
 
-00:00:19.906 --> 00:00:24.133
-Paid and the record is included Run both queries in
-the browser
+00:00:21.282 --> 00:00:23.497
+That row is filtered out by WHERE.
 
-00:00:24.159 --> 00:00:28.579
-and compare the results You should see one important
-difference caused by
+00:00:23.497 --> 00:00:28.337
+With IS DISTINCT FROM, the question changes slightly.
 
-00:00:28.592 --> 00:00:33.218
-the null status You can also copy the queries into
-pgAdmin and
+00:00:28.337 --> 00:00:34.642
+We are asking whether the stored value is meaningfully different from Paid, including its missingness.
 
-00:00:33.244 --> 00:00:38.115
-run them separately Neither query is automatically
-the right query for every
+00:00:34.642 --> 00:00:38.792
+NULL is distinct from Paid, so the row remains.
 
-00:00:38.141 --> 00:00:43.347
-situation The correct choice depends on the question
-Do we mean a
+00:00:38.792 --> 00:00:40.377
+Neither behavior is always correct.
 
-00:00:43.373 --> 00:00:46.388
-status that is known and not Paid or do we mean
-anything
+00:00:40.377 --> 00:00:45.877
+The right one depends on what the business question means.
 
-00:00:46.414 --> 00:00:47.870
-that is not definitely Paid
+00:00:45.877 --> 00:00:52.762
+If the report should show only known statuses that are not Paid, ordinary inequality may be appropriate.
+
+00:00:52.762 --> 00:00:56.737
+If the report should show everything that is not definitely Paid,
+
+00:00:56.737 --> 00:01:02.277
+including missing statuses that need investigation, IS DISTINCT FROM is better.
+
+00:01:02.277 --> 00:01:07.262
+This distinction appears in compliance reviews, financial reconciliation, and data-quality dashboards.
+
+00:01:07.262 --> 00:01:14.012
+Missing information often needs attention rather than silent exclusion.
+
+00:01:14.012 --> 00:01:17.212
+Run both queries and compare the row counts.
+
+00:01:17.212 --> 00:01:20.037
+Then explain the difference in plain language.
+
+00:01:20.037 --> 00:01:26.522
+If you can explain the policy represented by each version, you understand the purpose of NULL-safe comparison.

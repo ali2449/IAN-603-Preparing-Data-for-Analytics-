@@ -1,44 +1,61 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.583
-There is another form called simple case Simple case
-is useful when
+00:00:00.000 --> 00:00:06.782
+Simple CASE is useful when one expression needs to be mapped to a set of exact values.
 
-00:00:05.608 --> 00:00:10.777
-we are comparing one expression against several
-exact values Here we start
+00:00:06.782 --> 00:00:13.717
+For example, payment status can be Paid, No Charge, Open, Pending Review, or something else.
 
-00:00:10.803 --> 00:00:16.370
-with payment status If the status is Paid return
-Closed If
+00:00:13.717 --> 00:00:20.247
+We can compare that one field against each expected value and return a corresponding action.
 
-00:00:16.383 --> 00:00:21.190
-it is No Charge also return Closed If it is Open
-return
+00:00:20.247 --> 00:00:23.447
+Paid and No Charge may map to Closed.
 
-00:00:21.216 --> 00:00:27.105
-Follow up If it is Pending Review return Investigate
-Otherwise
+00:00:23.447 --> 00:00:25.797
+Open may map to Follow up.
 
-00:00:27.298 --> 00:00:32.502
-return Status missing Run the query in the browser
-and compare the
+00:00:25.797 --> 00:00:28.647
+Pending Review may map to Investigate.
 
-00:00:32.515 --> 00:00:37.576
-payment status with the action column You can also
-copy the query
+00:00:28.647 --> 00:00:31.302
+Anything else can fall to ELSE.
 
-00:00:37.602 --> 00:00:42.501
-into pgAdmin Compare this syntax with the searched
-case from the previous
+00:00:31.302 --> 00:00:35.592
+This is similar to a lookup table written directly inside the query.
 
-00:00:42.526 --> 00:00:46.843
-slide Use simple case when you are matching one
-value against a
+00:00:35.592 --> 00:00:40.272
+Simple CASE is clean when the rule is truly based on exact values.
 
-00:00:46.869 --> 00:00:51.263
-list of exact options Use searched case when each
-branch needs its
+00:00:40.272 --> 00:00:47.507
+It is less suitable for conditions such as amount greater than five thousand, age above sixty-five,
 
-00:00:51.289 --> 00:00:52.346
-own full condition
+00:00:47.507 --> 00:00:51.162
+or status is missing AND severity is High.
+
+00:00:51.162 --> 00:00:54.802
+Those are better expressed with searched CASE.
+
+00:00:54.802 --> 00:00:59.592
+A practical example is converting coded values to readable labels.
+
+00:00:59.592 --> 00:01:04.787
+A university system might map A to Active, G to Graduated, and W to Withdrawn.
+
+00:01:04.787 --> 00:01:11.512
+A support system might map ticket codes to display categories.
+
+00:01:11.512 --> 00:01:14.992
+Notice what happens when payment status is NULL.
+
+00:01:14.992 --> 00:01:20.482
+NULL does not match the named values, so the ELSE branch becomes important.
+
+00:01:20.482 --> 00:01:23.202
+In this example, ELSE can label it Status missing.
+
+00:01:23.202 --> 00:01:29.537
+Choose simple CASE when you are mapping one field's exact values.
+
+00:01:29.537 --> 00:01:33.098
+Choose searched CASE when the rule itself contains conditions.

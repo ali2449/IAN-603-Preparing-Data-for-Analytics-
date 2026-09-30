@@ -1,48 +1,43 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.782
-FULL OUTER JOIN is especially helpful for
-reconciliation The patient
+00:00:00.000 --> 00:00:03.747
+FULL OUTER JOIN is especially useful for reconciliation.
 
-00:00:05.795 --> 00:00:10.479
-master contains official patient rows while the
-staging table represents imported data
+00:00:03.747 --> 00:00:12.072
+Reconciliation means comparing two sources and making sure we can see matches as well as records that exist in
 
-00:00:10.506 --> 00:00:14.785
-that may not be fully validated We want to see
-matches master
+00:00:12.072 --> 00:00:12.392
+only one source.
 
-00:00:14.811 --> 00:00:18.535
-records with no staging row and staging rows with no
-master record
+00:00:12.392 --> 00:00:18.982
+In our example, the patient master is the official table, while the staging table represents imported data.
 
-00:00:20.371 --> 00:00:25.044
-Run the query and inspect the match status column
-The CASE expression
+00:00:18.982 --> 00:00:23.877
+We want to see three possibilities: a patient that exists in both tables,
 
-00:00:25.071 --> 00:00:30.176
-helps interpret each result One branch identifies a
-staging record with no
+00:00:23.877 --> 00:00:30.182
+a patient that exists only in the official master, and a staging row that has no official patient.
 
-00:00:30.189 --> 00:00:34.360
-patient master another identifies a patient with no
-staging row and the
+00:00:30.182 --> 00:00:35.202
+This same idea appears in finance when comparing two transaction systems,
 
-00:00:34.386 --> 00:00:40.116
-final branch marks matched records This is a good
-data-quality pattern because
+00:00:35.202 --> 00:00:39.197
+in human resources when comparing payroll with employee records,
 
-00:00:40.129 --> 00:00:44.990
-it does not throw away evidence from either source
-When you use
+00:00:39.197 --> 00:00:43.982
+or in education when comparing enrollment systems with learning-platform accounts.
 
-00:00:45.016 --> 00:00:48.556
-FULL OUTER JOIN be deliberate about keys in the
-SELECT and ORDER
+00:00:43.982 --> 00:00:50.307
+The CASE expression in the query helps turn those situations into readable labels such as matched,
 
-00:00:48.582 --> 00:00:53.137
-BY clauses COALESCE is useful here because the
-patient ID may come
+00:00:50.307 --> 00:00:53.707
+missing from staging, or missing from master.
 
-00:00:53.164 --> 00:00:55.453
-from either side when one side is unmatched
+00:00:53.707 --> 00:01:00.502
+COALESCE can also help when the identifier may come from either table depending on which side is unmatched.
+
+00:01:00.502 --> 00:01:04.982
+FULL OUTER JOIN is powerful because it does not throw away evidence.
+
+00:01:04.982 --> 00:01:11.035
+When you are doing data-quality work, unmatched rows are often the rows that deserve the most attention.

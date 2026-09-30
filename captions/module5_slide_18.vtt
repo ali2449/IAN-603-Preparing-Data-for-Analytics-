@@ -1,44 +1,52 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.024
-Ordinary equality and inequality comparisons can
-produce UNKNOWN when null is involved
+00:00:00.000 --> 00:00:05.307
+IS DISTINCT FROM is one of PostgreSQL's most useful NULL-safe comparison tools.
 
-00:00:06.730 --> 00:00:12.414
-PostgreSQL provides a useful alternative called IS
-DISTINCT FROM You can think
+00:00:05.307 --> 00:00:10.667
+Ordinary equality and inequality can produce UNKNOWN when NULL is involved.
 
-00:00:12.427 --> 00:00:16.886
-of this as a null-safe comparison IS DISTINCT FROM
-tells us whether
+00:00:10.667 --> 00:00:15.337
+IS DISTINCT FROM always gives a definite true-or-false answer.
 
-00:00:16.912 --> 00:00:20.893
-two values are different even when one of them is
-null IS
+00:00:15.337 --> 00:00:19.242
+If two known values are equal, they are not distinct.
 
-00:00:20.919 --> 00:00:24.618
-NOT DISTINCT FROM tells us whether two values match
-including the case
+00:00:19.242 --> 00:00:22.862
+If two known values are different, they are distinct.
 
-00:00:24.631 --> 00:00:29.051
-where both are null The useful part is that these
-comparisons return
+00:00:22.862 --> 00:00:28.572
+If both values are NULL, PostgreSQL treats them as not distinct for this comparison.
 
-00:00:29.076 --> 00:00:34.883
-TRUE or FALSE rather than UNKNOWN The SQL example
-compares bill amount
+00:00:28.572 --> 00:00:32.862
+If one is NULL and the other is a known value, they are distinct.
 
-00:00:34.896 --> 00:00:38.686
-with amount paid Run it in the browser and inspect
-the two
+00:00:32.862 --> 00:00:38.092
+There is also IS NOT DISTINCT FROM, which behaves like NULL-safe equality.
 
-00:00:38.712 --> 00:00:44.232
-comparison columns You can also copy the query into
-pgAdmin and
+00:00:38.092 --> 00:00:44.742
+Suppose you are comparing yesterday's customer profile with today's profile to identify changes.
 
-00:00:44.258 --> 00:00:49.298
-experiment with the values This operator becomes
-very useful when the business
+00:00:44.742 --> 00:00:50.347
+If both phone numbers are NULL, you probably do not want to mark that as a change.
 
-00:00:49.324 --> 00:00:52.056
-rule needs missing values to be handled explicitly
+00:00:50.347 --> 00:00:56.037
+Ordinary comparisons make that awkward because NULL introduces UNKNOWN.
+
+00:00:56.037 --> 00:01:01.757
+IS DISTINCT FROM lets you say: tell me whether these two fields are meaningfully different,
+
+00:01:01.757 --> 00:01:07.097
+including their missingness. Another example is a payment status rule.
+
+00:01:07.097 --> 00:01:13.737
+If you want everything that is not definitely Paid, a missing status should count as different from Paid.
+
+00:01:13.737 --> 00:01:17.252
+IS DISTINCT FROM expresses that clearly.
+
+00:01:17.252 --> 00:01:23.422
+Use this tool when NULL is part of the comparison itself and you want a definite Boolean result instead of
+
+00:01:23.422 --> 00:01:24.547
+UNKNOWN.

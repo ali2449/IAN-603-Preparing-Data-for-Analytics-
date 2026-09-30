@@ -1,41 +1,43 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:06.400
-Exercise 5 combines filtering date arithmetic and
-case logic First
+00:00:00.000 --> 00:00:05.452
+Coding Exercise 5 combines filtering, calculation, and classification.
 
-00:00:06.567 --> 00:00:11.607
-calculate the number of days between admission date
-and discharge date Second
+00:00:05.452 --> 00:00:08.997
+First, keep only completed admissions.
 
-00:00:11.775 --> 00:00:17.471
-classify the stay as Short Medium or Long Third
-remove ongoing admissions
+00:00:08.997 --> 00:00:14.792
+A completed admission has a discharge date, so use an explicit missing-value test.
 
-00:00:17.484 --> 00:00:21.839
-where the discharge date is missing Use the five-day
-and ten-day boundaries
+00:00:14.792 --> 00:00:21.007
+Next, calculate length of stay by subtracting the admission date from the discharge date.
 
-00:00:21.865 --> 00:00:26.740
-shown earlier in the module You can write and test
-the query
+00:00:21.007 --> 00:00:23.797
+Then classify the result. Fewer than five days is Short.
 
-00:00:26.766 --> 00:00:31.879
-directly in the browser If you want to work in
-PostgreSQL click
+00:00:23.797 --> 00:00:26.287
+Five through ten days is Medium.
 
-00:00:31.905 --> 00:00:35.912
-Copy paste the starter query into pgAdmin complete
-it and run it
+00:00:26.287 --> 00:00:28.702
+More than ten days is Long.
 
-00:00:35.938 --> 00:00:40.373
-there When you are satisfied with the result place
-the final SQL
+00:00:28.702 --> 00:00:31.062
+Pay close attention to boundaries.
 
-00:00:40.398 --> 00:00:43.917
-back in the browser and use Run and Check Try to
-keep
+00:00:31.062 --> 00:00:36.357
+Exactly five days should be Medium.
 
-00:00:43.942 --> 00:00:47.898
-the steps separate in your mind calculate classify
-and filter
+00:00:36.357 --> 00:00:39.427
+Exactly ten days should also be Medium.
+
+00:00:39.427 --> 00:00:46.062
+If an ongoing admission appears in your output, review the WHERE clause before changing the CASE expression.
+
+00:00:46.062 --> 00:00:50.852
+The first issue would be population selection, not classification.
+
+00:00:50.852 --> 00:00:58.587
+This exercise reinforces a useful workflow: define the valid population first, calculate the measure second,
+
+00:00:58.587 --> 00:01:00.061
+and classify it third.

@@ -1,52 +1,46 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:04.497
-An anti-join pattern answers a very useful question
-which left-side rows have
+00:00:00.016 --> 00:00:07.297
+An anti-join pattern answers a practical question: which rows on the left have no related row on the right?
 
-00:00:04.511 --> 00:00:09.576
-no related record We begin with a LEFT JOIN because
-we want
+00:00:07.297 --> 00:00:11.897
+In this example, we want patients who do not have any lab results.
 
-00:00:09.589 --> 00:00:14.421
-to preserve every patient When a patient has no lab
-result columns
+00:00:11.897 --> 00:00:15.702
+We start with a LEFT JOIN so every patient is preserved.
 
-00:00:14.447 --> 00:00:18.723
-from lab results are NULL We then filter for a
-right-side key
+00:00:15.702 --> 00:00:21.002
+If a patient has no matching lab result, the lab-side columns become NULL.
 
-00:00:18.894 --> 00:00:24.527
-test ID being NULL Run the query and inspect the
-result
+00:00:21.002 --> 00:00:26.207
+Then we filter for a right-side key, such as test_id, being NULL.
 
-00:00:25.438 --> 00:00:28.885
-In this dataset the returned patient should be
-someone who has no
+00:00:26.207 --> 00:00:29.427
+The choice of column in the NULL test matters.
 
-00:00:28.912 --> 00:00:33.697
-lab result at all The choice of column in the NULL
-test
+00:00:29.427 --> 00:00:35.027
+A primary key is a good choice because a real matched row should always have that value.
 
-00:00:33.710 --> 00:00:37.845
-matters A primary key such as test ID is a good
-choice
+00:00:35.027 --> 00:00:42.257
+If you tested a column that could legitimately be NULL, you might incorrectly label a matched record as
 
-00:00:37.858 --> 00:00:41.437
-because a matched lab row cannot legitimately have a
-NULL primary key
+00:00:42.257 --> 00:00:45.797
+unmatched. This pattern is extremely useful in real projects.
 
-00:00:43.179 --> 00:00:46.679
-Read the logic in plain English keep all patients
-try to match
+00:00:45.797 --> 00:00:49.592
+An e-commerce company can find customers with no orders.
 
-00:00:46.705 --> 00:00:49.863
-lab rows then keep only the patients for whom no lab
-row
+00:00:49.592 --> 00:00:53.577
+A university can find students with no course registration.
 
-00:00:49.876 --> 00:00:55.391
-matched This same pattern can find customers with no
-orders students
+00:00:53.577 --> 00:00:57.342
+A hospital can find patients with no follow-up visit.
 
-00:00:55.417 --> 00:00:58.035
-with no submissions or products with no sales
+00:00:57.342 --> 00:01:00.817
+A warehouse can find products with no sales.
+
+00:01:00.817 --> 00:01:05.362
+Read the logic in plain English: keep all left-side records, attempt the match,
+
+00:01:05.362 --> 00:01:10.092
+and then keep only the records where no right-side row was found.

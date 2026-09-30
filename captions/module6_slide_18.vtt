@@ -1,46 +1,52 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:03.895
-A self join is not a special JOIN keyword It is a
+00:00:00.000 --> 00:00:02.992
+A self join is not a separate JOIN keyword.
 
-00:00:03.921 --> 00:00:07.908
-regular join where the same table is referenced
-twice with different aliases
+00:00:02.992 --> 00:00:08.612
+It is a regular join where the same table appears twice using different aliases.
 
-00:00:09.659 --> 00:00:12.698
-Here medical staff is called s one on one side and s
+00:00:08.612 --> 00:00:13.387
+The aliases allow the two copies of the table to play different roles.
 
-00:00:12.711 --> 00:00:16.464
-two on the other We match rows that belong to the
-same
+00:00:13.387 --> 00:00:18.357
+Here, medical staff is referenced as s1 and s2.
 
-00:00:16.490 --> 00:00:21.903
-department The second condition staff ID from s one
-is less than
+00:00:18.357 --> 00:00:22.037
+We match staff members who belong to the same department.
 
-00:00:21.929 --> 00:00:26.510
-staff ID from s two is very important Without it we
-could
+00:00:22.037 --> 00:00:27.167
+We also require the first staff ID to be less than the second staff ID.
 
-00:00:26.537 --> 00:00:29.945
-produce both Alice-Bob and Bob-Alice and we could
-even match a row
+00:00:27.167 --> 00:00:32.757
+That second rule prevents matching a person to themselves and prevents reverse duplicates such as Alice-Bob
 
-00:00:29.958 --> 00:00:36.376
-to itself Run the query and inspect the colleague
-pairs Notice
+00:00:32.757 --> 00:00:35.657
+and Bob-Alice.
 
-00:00:36.403 --> 00:00:41.706
-that each pair appears only once Self joins are
-useful when rows
+00:00:35.657 --> 00:00:42.447
+Self joins are very useful when rows in one table need to be compared with other rows from the same table.
 
-00:00:41.719 --> 00:00:44.442
-in one table need to be compared with other rows
-from that
+00:00:42.447 --> 00:00:48.722
+In an employee table, one row might represent an employee and another row the manager.
 
-00:00:44.469 --> 00:00:49.998
-same table Examples include employee-manager
-relationships repeated events
+00:00:48.722 --> 00:00:53.332
+In a sales table, you could compare purchases from the same customer.
 
-00:00:50.143 --> 00:00:52.800
-price comparisons and sequence analysis
+00:00:53.332 --> 00:00:58.907
+In a hospital, you can compare one admission with a later admission for the same patient.
+
+00:00:58.907 --> 00:01:01.767
+The important idea is role labeling.
+
+00:01:01.767 --> 00:01:06.442
+Before writing a self join, decide what each alias represents.
+
+00:01:06.442 --> 00:01:08.632
+Earlier event and later event.
+
+00:01:08.632 --> 00:01:12.672
+Employee and manager. First purchase and next purchase.
+
+00:01:12.672 --> 00:01:16.477
+Good alias roles make the logic much easier to understand.

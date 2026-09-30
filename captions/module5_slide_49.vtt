@@ -1,52 +1,58 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.635
-Let's finish by reviewing the main ideas from Module
-5 When AND
+00:00:00.000 --> 00:00:02.987
+Let us connect the major ideas from Module 5.
 
-00:00:05.661 --> 00:00:09.720
-and OR appear together use parentheses to make the
-intended grouping clear
+00:00:02.987 --> 00:00:07.117
+AND, OR, and NOT allow us to build compound rules.
 
-00:00:10.637 --> 00:00:16.449
-Remember that SQL uses three logical states TRUE
-FALSE and UNKNOWN Treat
+00:00:07.117 --> 00:00:12.602
+When AND and OR appear together, use parentheses so the grouping is obvious.
 
-00:00:16.462 --> 00:00:22.544
-null values explicitly Use IS NULL Boolean
-predicates and null-safe comparisons
+00:00:12.602 --> 00:00:17.937
+SQL uses three-valued logic: TRUE, FALSE, and UNKNOWN.
 
-00:00:22.557 --> 00:00:27.621
-when the business rule requires them For text
-normalize blank values before
+00:00:17.937 --> 00:00:19.942
+WHERE keeps only TRUE.
 
-00:00:27.647 --> 00:00:32.905
-using fallbacks With case expressions remember that
-the first true branch wins
+00:00:19.942 --> 00:00:26.237
+This is why NULL can cause rows to disappear even when a condition is not definitely false.
 
-00:00:33.085 --> 00:00:38.678
-so branch order matters And finally test edge cases
-Check null
+00:00:26.237 --> 00:00:30.867
+NULL is not the same as zero, false, or blank text.
 
-00:00:38.704 --> 00:00:44.425
-values blanks zero exact thresholds and overlapping
-conditions Throughout
+00:00:30.867 --> 00:00:33.467
+Use IS NULL for missingness.
 
-00:00:44.451 --> 00:00:47.596
-this module you were able to run SQL directly in the
-browser
+00:00:33.467 --> 00:00:40.812
+Use Boolean predicates such as IS TRUE, IS FALSE, and IS UNKNOWN when nullable Boolean fields carry distinct
 
-00:00:47.840 --> 00:00:51.565
-and you can also copy those same examples into
-pgAdmin for additional
+00:00:40.812 --> 00:00:47.292
+meanings. Use IS DISTINCT FROM when you need a definite comparison involving NULL.
 
-00:00:51.590 --> 00:00:56.565
-PostgreSQL practice The goal is not only to write
-SQL that runs
+00:00:47.292 --> 00:00:53.187
+NULLIF is useful for normalizing values such as blank text or zero denominators.
 
-00:00:57.480 --> 00:01:00.920
-The goal is to write SQL that accurately represents
-the rule you
+00:00:53.187 --> 00:00:57.672
+COALESCE is useful when a fallback is meaningful and documented.
 
-00:01:00.933 --> 00:01:01.513
-intended
+00:00:57.672 --> 00:01:04.057
+CASE lets us classify rows, but branch order matters because the first true branch wins.
+
+00:01:04.057 --> 00:01:07.487
+Most importantly, validate edge cases.
+
+00:01:07.487 --> 00:01:15.012
+Test NULL, zero, blank text, whitespace, exact thresholds, explicit FALSE, and overlapping rules.
+
+00:01:15.012 --> 00:01:21.562
+If you keep one habit from this module, make it this: write the rule in plain language before you write the
+
+00:01:21.562 --> 00:01:28.702
+SQL. Then make the SQL reflect that rule as clearly as possible.
+
+00:01:28.702 --> 00:01:32.232
+That habit will help you in analytics, reporting, data engineering,
+
+00:01:32.232 --> 00:01:38.166
+and any project where database logic is making decisions about real records.

@@ -1,48 +1,55 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:03.968
-This slide is very important because the two
-conditions look similar but
+00:00:00.000 --> 00:00:03.747
+This slide shows why parentheses are part of the meaning of a query.
 
-00:00:03.993 --> 00:00:08.824
-they do not mean the same thing In the first version
-SQL
+00:00:03.747 --> 00:00:07.597
+We have two versions of a rule.
 
-00:00:08.850 --> 00:00:13.349
-evaluates the AND portion before the OR portion This
-means the consent
+00:00:07.597 --> 00:00:14.297
+In the first version, because AND is evaluated before OR, the consent condition applies only to the Kidney
 
-00:00:13.362 --> 00:00:17.343
-requirement does not necessarily apply to every
-patient selected by the age
+00:00:14.297 --> 00:00:20.382
+Disease branch. That means anyone who satisfies the age condition can qualify even when consent is false.
 
-00:00:17.356 --> 00:00:22.614
-condition In the second version we put age or
-diagnosis inside parentheses
+00:00:20.382 --> 00:00:27.072
+In the second version, parentheses group the age condition and the Kidney Disease condition together.
 
-00:00:22.820 --> 00:00:28.094
-and then require consent for the entire group You
-have both versions
+00:00:27.072 --> 00:00:30.467
+Then the consent requirement is applied to the whole group.
 
-00:00:28.120 --> 00:00:34.197
-in the code cell Before you click Run make a
-prediction Which
+00:00:30.467 --> 00:00:37.492
+Now consent is required regardless of which alternative caused the patient to qualify.
 
-00:00:34.222 --> 00:00:37.728
-patient might appear in the first result but
-disappear in the second
+00:00:37.492 --> 00:00:44.982
+The patient Lisa Ray is a useful boundary example because she is older than sixty-five but has false consent.
 
-00:00:39.134 --> 00:00:43.156
-Then run the code in the browser and compare the
-outputs You
+00:00:44.982 --> 00:00:48.867
+In the unparenthesized rule, her age is enough to qualify.
 
-00:00:43.182 --> 00:00:46.571
-can also copy both queries into pgAdmin and run them
-one at
+00:00:48.867 --> 00:00:52.967
+In the parenthesized rule, she fails because consent is required for both alternatives.
 
-00:00:46.596 --> 00:00:50.630
-a time This is a good example of why parentheses are
-part
+00:00:52.967 --> 00:00:55.787
+This is not a tiny formatting difference.
 
-00:00:50.643 --> 00:00:53.001
-of the meaning of the rule not just formatting
+00:00:55.787 --> 00:00:58.797
+Imagine this were a real outreach campaign.
+
+00:00:58.797 --> 00:01:03.482
+The first query could include people who explicitly declined contact.
+
+00:01:03.482 --> 00:01:10.322
+That could create a privacy or compliance problem even though the SQL contains no syntax error.
+
+00:01:10.322 --> 00:01:16.832
+When you see a rule such as “A or B, but only when C is true,” write it as a grouped expression:
+
+00:01:16.832 --> 00:01:22.407
+the A-or-B portion belongs together, and then C applies to that whole decision.
+
+00:01:22.407 --> 00:01:25.737
+Run both versions and compare the output.
+
+00:01:25.737 --> 00:01:31.155
+Seeing one record move in or out makes the precedence rule much easier to remember.

@@ -1,45 +1,49 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:03.452
-Date-based rules can change every day if we always
-use the current
+00:00:00.000 --> 00:00:06.792
+Time-based logic can become difficult to teach and difficult to validate when it depends on the current date.
 
-00:00:03.478 --> 00:00:09.043
-system date For teaching and reproducible analysis
-sometimes we
+00:00:06.792 --> 00:00:14.332
+Imagine a query that asks for admissions from the last thirty days using today's system date.
 
-00:00:09.069 --> 00:00:13.375
-want a fixed reference date In this example the
-reference date is
+00:00:14.332 --> 00:00:20.462
+If you run it this week and a student runs it next month, the result changes.
 
-00:00:13.400 --> 00:00:18.645
-August eleventh twenty twenty-six We look at
-admissions in a thirty-day window
+00:00:20.462 --> 00:00:24.027
+That makes demonstrations, grading, and debugging harder.
 
-00:00:18.671 --> 00:00:24.447
-and create a respiratory risk category The query
-also joins admissions
+00:00:24.027 --> 00:00:29.387
+For this module, we use a fixed reference date: August 11, 2026.
 
-00:00:24.459 --> 00:00:28.417
-with patient information so we can use age in the
-rule Run
+00:00:29.387 --> 00:00:33.622
+The thirty-day window is calculated relative to that fixed point.
 
-00:00:28.443 --> 00:00:31.639
-the example here in the browser and inspect the
-admission dates and
+00:00:33.622 --> 00:00:42.462
+The query then keeps selected respiratory diagnoses and uses CASE to identify higher-risk cases when age is at
 
-00:00:31.665 --> 00:00:37.502
-category You can copy it into pgAdmin as well
-Because the reference
+00:00:42.462 --> 00:00:48.272
+least sixty. This idea of a fixed “as-of date” is very useful in real analytics too.
 
-00:00:37.528 --> 00:00:40.711
-date is fixed you and your classmates should get the
-same cohort
+00:00:48.272 --> 00:00:53.102
+Financial reports often say “as of December 31.” A monthly retention report may evaluate customers as of the
 
-00:00:40.737 --> 00:00:44.796
-even if you run the example on different days Later
-in a
+00:00:53.102 --> 00:00:56.142
+last day of the month.
 
-00:00:44.822 --> 00:00:48.069
-production system a dynamic date may be more
-appropriate
+00:00:56.142 --> 00:00:58.692
+A clinical study may use a fixed index date.
+
+00:00:58.692 --> 00:01:08.572
+Machine-learning training data often needs an explicit cutoff date to prevent future information from leaking
+
+00:01:08.572 --> 00:01:08.907
+backward.
+
+00:01:08.907 --> 00:01:15.607
+Reproducibility means someone can rerun the same logic later and get the same answer from the same data.
+
+00:01:15.607 --> 00:01:22.452
+So when time matters, distinguish between “right now” and “as of this defined reporting date.” Both are
+
+00:01:22.452 --> 00:01:25.759
+useful, but they solve different problems.

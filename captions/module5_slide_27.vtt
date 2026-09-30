@@ -1,41 +1,49 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.822
-When we create categories exact boundaries need to
-be intentional Here
+00:00:00.000 --> 00:00:04.392
+A good classification rule should make its boundaries easy to explain.
 
-00:00:05.848 --> 00:00:11.163
-our billing rule begins with missing values Then we
-handle amounts greater
+00:00:04.392 --> 00:00:09.317
+In the billing example, we first handle NULL as Unknown.
 
-00:00:11.188 --> 00:00:15.571
-than or equal to ten thousand Next we handle amounts
-greater than
+00:00:09.317 --> 00:00:13.052
+Then bills of ten thousand or more are High-Value.
 
-00:00:15.597 --> 00:00:20.662
-or equal to five thousand Everything else goes into
-the low-value category
+00:00:13.052 --> 00:00:17.552
+Bills of five thousand or more, but below ten thousand, are Standard.
 
-00:00:21.576 --> 00:00:25.030
-If we add a special zero category zero also needs to
-appear
+00:00:17.552 --> 00:00:20.482
+Remaining known values are Low-Value.
 
-00:00:25.043 --> 00:00:28.973
-before the broad final ELSE branch When you design a
-rule like
+00:00:20.482 --> 00:00:27.967
+Because we write the thresholds from high to low, we do not need to manually state an upper bound on the
 
-00:00:28.999 --> 00:00:34.760
-this test the exact boundary values Try zero five
-thousand ten thousand
+00:00:27.967 --> 00:00:35.047
+Standard branch. If the amount were ten thousand or more, it would already have matched High-Value.
 
-00:00:35.017 --> 00:00:39.115
-a value just below each threshold and a null value A
-query
+00:00:35.047 --> 00:00:39.877
+Boundary testing is essential. Ask what happens at exactly ten thousand.
 
-00:00:39.141 --> 00:00:42.479
-that works for ordinary records may still contain a
-logic error at
+00:00:39.877 --> 00:00:43.922
+It should be High-Value. What happens at exactly five thousand?
 
-00:00:42.504 --> 00:00:46.680
-the boundaries so boundary testing is an important
-part of validating SQL
+00:00:43.922 --> 00:00:48.432
+It should be Standard. What happens at four thousand nine hundred ninety-nine?
+
+00:00:48.432 --> 00:00:53.117
+Low-Value. Later, we add a No Charge category for exactly zero.
+
+00:00:53.117 --> 00:00:57.242
+That is a good example of domain knowledge changing the rule.
+
+00:00:57.242 --> 00:01:04.162
+Zero is technically less than five thousand, so without a special branch it would be labeled Low-Value.
+
+00:01:04.162 --> 00:01:09.417
+But in the business context, No Charge communicates a different meaning.
+
+00:01:09.417 --> 00:01:16.327
+Whenever you create tiers, write down the threshold values and test directly on those boundaries.
+
+00:01:16.327 --> 00:01:21.788
+Most classification bugs happen near edges, not in the obvious middle cases.

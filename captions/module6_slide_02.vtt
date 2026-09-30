@@ -1,57 +1,64 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:02.655
-By the end of this module you should be able to
-choose
+00:00:00.000 --> 00:00:05.542
+By the end of this module, you should be able to choose a join type based on the business question,
 
-00:00:02.682 --> 00:00:06.566
-a join type based on the question rather than by
-habit You
+00:00:05.542 --> 00:00:10.107
+not simply because one join looks familiar.
 
-00:00:06.592 --> 00:00:10.026
-should be able to explain what rows are preserved
-what rows require
+00:00:10.107 --> 00:00:16.822
+When someone says, show me only customers who placed an order, that suggests one type of join.
 
-00:00:10.053 --> 00:00:13.342
-a match and where NULL values can appear after an
-outer join
+00:00:16.822 --> 00:00:22.092
+When they say, show me every customer, including those with no orders, that suggests another.
 
-00:00:15.083 --> 00:00:20.493
-You will also practice writing explicit join
-conditions with table aliases When
+00:00:22.092 --> 00:00:29.452
+SQL becomes easier when you translate the wording of the question into a rule about which rows must remain.
 
-00:00:20.519 --> 00:00:23.901
-two tables contain a column with the same name
-aliases make it
+00:00:29.452 --> 00:00:34.382
+You will also practice using table aliases.
 
-00:00:23.914 --> 00:00:28.946
-clear which table the column comes from A major
-learning goal is
+00:00:34.382 --> 00:00:40.832
+When two or three tables contain columns with similar names, aliases keep the query readable.
 
-00:00:28.959 --> 00:00:33.870
-protecting the grain Grain means what one row in the
-result represents
+00:00:40.832 --> 00:00:45.072
+Instead of wondering which patient_id we mean, we can make the source explicit.
 
-00:00:34.777 --> 00:00:38.199
-A patient table may have one row per patient while
-an admissions
+00:00:45.072 --> 00:00:55.012
+You should also become comfortable reading a join from left to right and explaining each table's role in plain
 
-00:00:38.225 --> 00:00:42.475
-table may have several rows for the same patient
-When those tables
+00:00:55.012 --> 00:00:58.357
+language. A major goal is understanding grain.
 
-00:00:42.501 --> 00:00:48.262
-are joined repeated patient rows may be completely
-correct Finally
+00:00:58.357 --> 00:01:01.142
+Grain means what one row represents.
 
-00:00:48.498 --> 00:00:52.527
-you should be able to validate a join A query
-running without
+00:01:01.142 --> 00:01:06.477
+One row might represent one patient, one admission, one lab test, one order, or one department.
 
-00:00:52.554 --> 00:00:56.988
-an error does not prove that the result is
-analytically correct We
+00:01:06.477 --> 00:01:14.382
+If you expect one row per patient but your query returns ten rows for one patient, that may be a warning sign.
 
-00:00:57.001 --> 00:01:01.751
-will check counts distinct identifiers unmatched
-rows and a few known records
+00:01:14.382 --> 00:01:19.052
+On the other hand, if the result is supposed to be one row per admission,
+
+00:01:19.052 --> 00:01:23.672
+repeated patient names may be completely correct.
+
+00:01:23.672 --> 00:01:26.057
+Finally, you should be able to validate a join.
+
+00:01:26.057 --> 00:01:32.542
+We will compare row counts, distinct IDs, unmatched records, and known examples.
+
+00:01:32.542 --> 00:01:36.117
+In real projects, validation is not optional.
+
+00:01:36.117 --> 00:01:43.802
+A join that looks visually reasonable can still produce inflated counts or silently remove important records.
+
+00:01:43.802 --> 00:01:48.662
+By the end, I want you to be able to defend not only the SQL syntax,
+
+00:01:48.662 --> 00:01:54.783
+but also why the result represents the population and grain that the question actually requires.

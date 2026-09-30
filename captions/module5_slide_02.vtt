@@ -1,45 +1,61 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:03.349
-Before we start writing code I want to connect this
-module to
+00:00:00.000 --> 00:00:03.087
+Module 4 focused heavily on aggregation.
 
-00:00:03.375 --> 00:00:09.815
-what we already learned In Module 4 we summarized
-rows We
+00:00:03.087 --> 00:00:08.662
+We asked questions such as: how many admissions occurred, what is the average bill amount,
 
-00:00:09.841 --> 00:00:16.336
-counted records calculated averages grouped data and
-created analytical summaries Module
+00:00:08.662 --> 00:00:11.807
+or how many records belong to each category?
 
-00:00:16.362 --> 00:00:20.911
-5 is different Now we are asking SQL to make
-decisions about
+00:00:11.807 --> 00:00:18.272
+Module 5 asks a different kind of question: which rule applies to each row?
 
-00:00:20.924 --> 00:00:26.181
-individual values and records For example should
-this patient be included in
+00:00:18.272 --> 00:00:22.307
+Suppose a company is building a customer-retention campaign.
 
-00:00:26.207 --> 00:00:31.903
-a report Is this billing record considered high
-value Does this patient
+00:00:22.307 --> 00:00:28.512
+The business rule might say: include customers who are active, who have agreed to receive messages,
 
-00:00:31.929 --> 00:00:36.143
-have a usable contact method What should happen when
-a value is
+00:00:28.512 --> 00:00:33.832
+and who either have not purchased in ninety days or have recently submitted a complaint.
 
-00:00:36.168 --> 00:00:40.189
-missing A good habit is to first explain the rule in
-normal
+00:00:33.832 --> 00:00:36.942
+Notice how quickly the logic becomes layered.
 
-00:00:40.215 --> 00:00:46.452
-language Then break that rule into smaller
-conditions After that translate
+00:00:36.942 --> 00:00:41.897
+We have AND connecting required conditions, OR connecting alternatives,
 
-00:00:46.478 --> 00:00:51.143
-those conditions into SQL We will also test edge
-cases because a
+00:00:41.897 --> 00:00:47.192
+and possibly missing values for consent, purchase dates, or complaint status.
 
-00:00:51.168 --> 00:00:54.145
-query can run successfully and still give the wrong
-answer
+00:00:47.192 --> 00:00:49.677
+The same thing happens in healthcare.
+
+00:00:49.677 --> 00:00:56.052
+A patient may qualify for follow-up only when the patient is active, consent is explicitly true,
+
+00:00:56.052 --> 00:01:03.402
+the diagnosis belongs to a target group, and there is no usable email address.
+
+00:01:03.402 --> 00:01:06.577
+If consent is NULL, should that be treated as false?
+
+00:01:06.577 --> 00:01:11.737
+Maybe not. It may mean consent has never been recorded, which could require manual review.
+
+00:01:11.737 --> 00:01:17.282
+This is why SQL logic should start from the policy, not from the syntax.
+
+00:01:17.282 --> 00:01:25.097
+We will repeatedly use the same process: write the rule in plain English, identify fields that may be missing,
+
+00:01:25.097 --> 00:01:32.177
+group related conditions clearly, test boundary cases, and then compare the result with the original rule.
+
+00:01:32.177 --> 00:01:37.372
+A query can be perfectly valid SQL and still be analytically wrong.
+
+00:01:37.372 --> 00:01:42.294
+In this module, we are training ourselves to catch those quiet logic errors.

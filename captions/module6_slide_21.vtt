@@ -1,52 +1,49 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.821
-Cross joins make cardinality especially visible
-because the multiplication is direct Two
+00:00:00.000 --> 00:00:05.402
+Cross joins make cardinality very easy to see because the multiplication is direct.
 
-00:00:06.847 --> 00:00:11.574
-rows crossed with three rows create six result rows
-One hundred by
+00:00:05.402 --> 00:00:09.582
+Two rows crossed with three rows produce six result rows.
 
-00:00:11.600 --> 00:00:16.811
-one hundred creates ten thousand Ten thousand by ten
-thousand creates one
+00:00:09.582 --> 00:00:13.312
+One hundred crossed with one hundred produces ten thousand.
 
-00:00:16.837 --> 00:00:22.622
-hundred million This does not mean CROSS JOIN is bad
-It
+00:00:13.312 --> 00:00:17.802
+Ten thousand crossed with ten thousand produces one hundred million.
 
-00:00:22.635 --> 00:00:28.296
-means the result size should be intentional For
-example building every
+00:00:17.802 --> 00:00:25.197
+That same multiplication can happen in ordinary joins when several rows on each side share the same key.
 
-00:00:28.323 --> 00:00:31.507
-department and every appointment slot can be exactly
-what you need to
+00:00:25.197 --> 00:00:28.477
+The difference is that it may be less obvious.
 
-00:00:31.533 --> 00:00:37.141
-find missing schedule assignments But crossing two
-large transaction tables would usually
+00:00:28.477 --> 00:00:32.897
+Imagine a customer has three orders and four support tickets.
 
-00:00:37.154 --> 00:00:43.067
-be a serious mistake The same multiplication idea
-appears less obviously
+00:00:32.897 --> 00:00:38.317
+If you join both detail tables directly to the customer by customer_id,
 
-00:00:43.093 --> 00:00:46.317
-in ordinary joins when both sides can have several
-matches for the
+00:00:38.317 --> 00:00:42.457
+you can create twelve order-ticket combinations for that customer.
 
-00:00:46.330 --> 00:00:51.543
-same key That is why understanding cardinality is
-essential before we move
+00:00:42.457 --> 00:00:46.502
+Those twelve rows do not mean twelve new business events.
 
-00:00:51.557 --> 00:00:57.247
-into multi-table analytical joins Whenever a result
-suddenly contains
+00:00:46.502 --> 00:00:49.642
+They are combinations created by the join.
 
-00:00:57.273 --> 00:01:01.825
-far more rows than expected ask whether you have
-accidentally created combinations
+00:00:49.642 --> 00:00:56.432
+Whenever your result becomes much larger than expected, do not immediately assume the database is wrong.
 
-00:01:01.839 --> 00:01:03.576
-between multiple detail rows
+00:00:56.432 --> 00:00:59.567
+Ask whether the join created combinations.
+
+00:00:59.567 --> 00:01:03.467
+Check how many matches each key has on both sides.
+
+00:01:03.467 --> 00:01:09.542
+Cardinality is one of the most important concepts in analytical SQL because it explains many surprising row
+
+00:01:09.542 --> 00:01:10.720
+counts.

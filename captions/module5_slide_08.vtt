@@ -1,45 +1,64 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:04.892
-Now let's compare AND with OR OR means that a record
-can
+00:00:00.030 --> 00:00:05.522
+OR represents alternatives. A row remains when at least one condition is true.
 
-00:00:04.918 --> 00:00:10.152
-satisfy any one of several alternatives In this
-example we want patients
+00:00:05.522 --> 00:00:12.282
+In this slide, a patient qualifies when the diagnosis is Pneumonia, Flu, or Asthma.
 
-00:00:10.177 --> 00:00:15.796
-whose diagnosis is Pneumonia Flu or Asthma Because
-these are alternatives OR
+00:00:12.282 --> 00:00:15.822
+The patient does not need to have all three diagnoses.
 
-00:00:15.809 --> 00:00:21.034
-makes sense We have a runnable SQL example at the
-bottom of
+00:00:15.822 --> 00:00:18.557
+Any one of those values is enough.
 
-00:00:21.060 --> 00:00:24.670
-the slide Try running it in the browser and look at
-the
+00:00:18.557 --> 00:00:26.397
+If several OR conditions compare the same column with a set of values, IN can often make the rule easier to
 
-00:00:24.682 --> 00:00:29.283
-diagnosis column in the result Each returned row
-should match at least
+00:00:26.397 --> 00:00:32.142
+read. Instead of repeating diagnosis equals Pneumonia OR diagnosis equals Flu OR diagnosis equals Asthma,
 
-00:00:29.309 --> 00:00:34.751
-one of the three diagnoses If you are practicing
-with pgAdmin use
+00:00:32.142 --> 00:00:34.887
+we can say diagnosis IN this list.
 
-00:00:34.777 --> 00:00:38.877
-the Copy button and paste the query into the Query
-Tool Later
+00:00:34.887 --> 00:00:37.857
+Think about a customer-service project.
 
-00:00:39.044 --> 00:00:42.562
-when several alternatives all apply to the same
-column we can often
+00:00:37.857 --> 00:00:44.597
+A case may be considered urgent if the customer is a VIP, OR the complaint is about fraud,
 
-00:00:42.575 --> 00:00:46.789
-make the query shorter with an IN condition But
-first it is
+00:00:44.597 --> 00:00:50.502
+OR the issue has been open for more than forty-eight hours.
 
-00:00:46.815 --> 00:00:49.985
-useful to understand exactly what the OR statements
-are doing
+00:00:50.502 --> 00:00:53.752
+Different paths can lead to the same outcome.
+
+00:00:53.752 --> 00:00:56.627
+OR often broadens the result.
+
+00:00:56.627 --> 00:01:01.417
+If one condition returns ten rows and you add another OR condition,
+
+00:01:01.417 --> 00:01:08.492
+the combined result will normally contain the original rows plus any new rows that satisfy the second
+
+00:01:08.492 --> 00:01:12.772
+condition. The challenge begins when OR and AND are mixed.
+
+00:01:12.772 --> 00:01:14.137
+For example, active AND high risk OR senior.
+
+00:01:14.137 --> 00:01:19.472
+Does active apply to both groups or only to high risk?
+
+00:01:19.472 --> 00:01:24.392
+That depends on grouping and operator precedence.
+
+00:01:24.392 --> 00:01:24.712
+So OR by itself is simple.
+
+00:01:24.712 --> 00:01:31.227
+The important skill is recognizing which conditions are alternatives and making those alternatives visually
+
+00:01:31.227 --> 00:01:35.864
+clear when the rule becomes more complex.

@@ -1,53 +1,49 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.974
-COUNT star is not wrong It counts rows exactly as
-requested The
+00:00:00.016 --> 00:00:01.687
+COUNT star is not wrong.
 
-00:00:06.000 --> 00:00:09.026
-problem is that the joined row may not represent the
-event you
+00:00:01.687 --> 00:00:04.542
+It counts rows exactly as requested.
 
-00:00:09.053 --> 00:00:14.636
-think it represents After joining several
-one-to-many tables one
+00:00:04.542 --> 00:00:11.557
+The problem is that the rows after a complex join may not represent the event you think they represent.
 
-00:00:14.662 --> 00:00:18.202
-row can represent a combination of an admission a
-lab test and
+00:00:11.557 --> 00:00:18.332
+If one joined row represents a combination of one admission, one lab test, and one prescription,
 
-00:00:18.228 --> 00:00:22.757
-a prescription Counting those rows does not directly
-count any one of
+00:00:18.332 --> 00:00:21.027
+then COUNT star counts combinations.
 
-00:00:22.783 --> 00:00:28.443
-those event types COUNT DISTINCT on an event
-identifier can protect
+00:00:21.027 --> 00:00:26.262
+It does not directly count admissions, lab tests, or prescriptions.
 
-00:00:28.469 --> 00:00:34.183
-a simple count For example counting distinct
-admission IDs can recover admission
+00:00:26.262 --> 00:00:29.612
+COUNT DISTINCT can sometimes protect a measure.
 
-00:00:34.209 --> 00:00:40.095
-count even after other detail tables are joined
-However pre-aggregating
+00:00:29.612 --> 00:00:37.742
+For example, counting distinct admission IDs can recover the number of admissions even after other detail
 
-00:00:40.108 --> 00:00:43.108
-is often easier to reason about when the final grain
-is one
+00:00:37.742 --> 00:00:41.172
+tables are joined. But DISTINCT should not become a magic repair tool.
 
-00:00:43.135 --> 00:00:48.150
-row per patient You can summarize admissions to one
-patient row summarize
+00:00:41.172 --> 00:00:44.812
+You still need to understand why the multiplication happened.
 
-00:00:48.177 --> 00:00:53.439
-labs to one patient row and then join those
-summaries The safest
+00:00:44.812 --> 00:00:51.022
+Often the clearest solution is to pre-aggregate.
 
-00:00:53.465 --> 00:00:58.662
-approach is to name the measure explicitly
-admissions lab tests prescriptions patients
+00:00:51.022 --> 00:00:53.922
+Summarize admissions to one row per patient, summarize labs to one row per patient,
 
-00:00:58.820 --> 00:01:03.836
-or joined combinations Then choose the counting
-method that matches that meaning
+00:00:53.922 --> 00:00:59.267
+and summarize prescriptions to one row per patient.
+
+00:00:59.267 --> 00:01:05.887
+Then join those summaries. This is a useful real-world habit: name the measure explicitly.
+
+00:01:05.887 --> 00:01:12.087
+Are you counting patients, admissions, orders, products, sessions, or joined row combinations?
+
+00:01:12.087 --> 00:01:17.600
+Once the measure is clearly named, the right counting strategy becomes easier to choose.

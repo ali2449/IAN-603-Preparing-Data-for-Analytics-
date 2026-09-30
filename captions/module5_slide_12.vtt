@@ -1,36 +1,58 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:06.487
-SQL logic has three possible results TRUE FALSE and
-UNKNOWN TRUE
+00:00:00.000 --> 00:00:03.262
+SQL does not operate only with TRUE and FALSE.
 
-00:00:06.500 --> 00:00:11.875
-means the condition is satisfied FALSE means the
-condition is not satisfied
+00:00:03.262 --> 00:00:08.717
+When NULL is involved, SQL can produce a third state called UNKNOWN.
 
-00:00:12.777 --> 00:00:16.450
-UNKNOWN means SQL does not have enough information
-to determine whether the
+00:00:08.717 --> 00:00:13.647
+NULL is not a value such as zero, false, or an empty string.
 
-00:00:16.476 --> 00:00:21.282
-condition is true or false This usually happens
-because a null value
+00:00:13.647 --> 00:00:19.627
+It represents missing, unknown, or sometimes not-applicable information.
 
-00:00:21.295 --> 00:00:26.185
-is involved The most important rule on this slide is
-about the
+00:00:19.627 --> 00:00:26.342
+Because SQL does not know the underlying value, many ordinary comparisons cannot be evaluated as definitely
 
-00:00:26.211 --> 00:00:30.929
-WHERE clause A WHERE clause keeps only rows where
-the condition evaluates
+00:00:26.342 --> 00:00:29.352
+true or definitely false. Suppose a patient's age is NULL.
 
-00:00:30.942 --> 00:00:35.194
-to TRUE Rows that evaluate to FALSE are removed but
-rows that
+00:00:29.352 --> 00:00:37.372
+If we ask whether age is greater than sixty-five, SQL cannot say yes, because the value is missing.
 
-00:00:35.220 --> 00:00:40.942
-evaluate to UNKNOWN are also removed That behavior
-explains many surprising results
+00:00:37.372 --> 00:00:43.602
+But it also cannot say no, because the real age could be seventy.
 
-00:00:40.968 --> 00:00:42.875
-when we start working with missing data
+00:00:43.602 --> 00:00:45.552
+The result is UNKNOWN.
+
+00:00:45.552 --> 00:00:51.662
+The most important practical rule is that WHERE keeps only rows where the condition is TRUE.
+
+00:00:51.662 --> 00:00:55.682
+FALSE is removed, and UNKNOWN is also removed.
+
+00:00:55.682 --> 00:00:59.442
+This can make rows disappear in ways that surprise people.
+
+00:00:59.442 --> 00:01:07.572
+A customer with a missing subscription status may vanish from both “status equals Active” and “status not
+
+00:01:07.572 --> 00:01:10.697
+equal Active” queries, because neither comparison is definitely true.
+
+00:01:10.697 --> 00:01:16.987
+In a real data-quality workflow, UNKNOWN is often meaningful.
+
+00:01:16.987 --> 00:01:22.662
+Missing consent might mean “needs review.” Missing payment status might mean “investigate.” Missing diagnosis
+
+00:01:22.662 --> 00:01:30.162
+confirmation might mean “pending.” So do not think of UNKNOWN as an error.
+
+00:01:30.162 --> 00:01:34.882
+Think of it as SQL honestly saying: based on the information available,
+
+00:01:34.882 --> 00:01:37.288
+I cannot prove this condition either way.

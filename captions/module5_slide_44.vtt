@@ -1,47 +1,40 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.663
-Exercise 3 focuses on a boundary-safe case
-expression You need
+00:00:00.000 --> 00:00:05.777
+Coding Exercise 3 asks you to build a searched CASE with clear categories and boundaries.
 
-00:00:05.689 --> 00:00:12.253
-five outcomes missing exact zero High Value Standard
-and Low Value The
+00:00:05.777 --> 00:00:08.082
+Start with the exceptional states.
 
-00:00:12.279 --> 00:00:17.890
-order matters Start with null Then handle exact
+00:00:08.082 --> 00:00:11.072
+If bill amount is NULL, return Unknown.
 
-00:00:17.903 --> 00:00:23.452
-zero After that check the ten-thousand threshold
-Then
+00:00:11.072 --> 00:00:14.812
+If the amount is exactly zero, return No Charge.
 
-00:00:23.478 --> 00:00:29.462
-check the five-thousand threshold Finally use ELSE
-for the remaining known values
+00:00:14.812 --> 00:00:19.437
+Then apply the high-value threshold, followed by the standard threshold.
 
-00:00:31.273 --> 00:00:34.597
-Complete the case expression in the browser and use
-Run and Check
+00:00:19.437 --> 00:00:23.177
+Use ELSE for the remaining positive low-value bills.
 
-00:00:35.501 --> 00:00:39.032
-You can also copy the starter query into pgAdmin and
-test it
+00:00:23.177 --> 00:00:27.337
+The order matters because CASE stops at the first true branch.
 
-00:00:39.058 --> 00:00:43.555
-there I recommend testing a few values mentally
-before you run the
+00:00:27.337 --> 00:00:34.497
+After you run the query, inspect records that exercise different branches: a missing bill, a zero bill,
 
-00:00:43.568 --> 00:00:49.341
-query Ask yourself where should zero go Where should
-exactly five
+00:00:34.497 --> 00:00:37.462
+a high-value bill, and a standard bill.
 
-00:00:49.354 --> 00:00:54.857
-thousand go What about exactly ten thousand What
-about null
+00:00:37.462 --> 00:00:43.577
+If a zero bill shows as Low-Value, the zero branch is missing or positioned incorrectly.
 
-00:00:55.759 --> 00:00:59.290
-If those four cases are correct your boundaries are
-probably in good
+00:00:43.577 --> 00:00:48.777
+If a missing bill becomes Low-Value, you did not handle NULL explicitly.
 
-00:00:59.315 --> 00:00:59.715
-shape
+00:00:48.777 --> 00:00:55.252
+This is a good exercise in building a small decision tree and then testing one representative record from each
+
+00:00:55.252 --> 00:00:55.760
+branch.

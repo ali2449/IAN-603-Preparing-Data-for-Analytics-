@@ -1,54 +1,49 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.147
-Here is the workflow we will use throughout Module 6
-First define
+00:00:00.000 --> 00:00:03.937
+Here is the workflow I want you to use whenever you build a join.
 
-00:00:06.174 --> 00:00:11.755
-the grain Ask what one output row should mean One
-patient
+00:00:03.937 --> 00:00:12.487
+First, define the grain. Before writing SQL, say out loud what one row in the final result should represent.
 
-00:00:12.676 --> 00:00:19.907
-One admission One lab test One department Second
+00:00:12.487 --> 00:00:17.377
+Maybe it is one patient, one admission, one student registration, or one sales transaction.
 
-00:00:20.130 --> 00:00:25.186
-identify the two row sets you are combining Third
-define the matching
+00:00:17.377 --> 00:00:22.632
+If you cannot describe the target grain clearly, the query can become confusing very quickly.
 
-00:00:25.199 --> 00:00:29.475
-rule Most often that is a key such as patient ID but
+00:00:22.632 --> 00:00:25.737
+Second, identify the row sets you are combining.
 
-00:00:29.501 --> 00:00:35.120
-sometimes the relationship uses another identifier
-Fourth decide
+00:00:25.737 --> 00:00:29.302
+Third, decide the matching rule.
 
-00:00:35.147 --> 00:00:39.873
-which unmatched rows must remain If every patient
-must remain even when
+00:00:29.302 --> 00:00:32.782
+Usually the relationship is based on a key such as patient_id, customer_id, or course_id.
 
-00:00:39.899 --> 00:00:43.662
-that patient has no admission that immediately
-points toward a LEFT JOIN
+00:00:32.782 --> 00:00:40.157
+But do not assume that two columns with the same name automatically represent the correct relationship.
 
-00:00:43.689 --> 00:00:49.848
-with patients on the left Fifth predict cardinality
-Can
+00:00:40.157 --> 00:00:43.522
+Fourth, decide which unmatched rows must stay.
 
-00:00:49.874 --> 00:00:55.387
-one patient match several admissions Can one patient
-also match several labs
+00:00:43.522 --> 00:00:50.837
+Suppose a public health analyst wants a list of every patient, including people with no lab results.
 
-00:00:56.308 --> 00:01:02.344
-This prediction tells you whether rows may expand
-Finally validate
+00:00:50.837 --> 00:00:54.647
+That requirement tells you that the patient table must be preserved.
 
-00:01:03.254 --> 00:01:06.491
-Compare the actual result with the number and type
-of rows you
+00:00:54.647 --> 00:01:01.407
+If the question is only about patients who have lab results, then unmatched patients do not need to remain.
 
-00:01:06.518 --> 00:01:11.570
-expected This reasoning sequence is much safer than
-starting by typing JOIN
+00:01:01.407 --> 00:01:04.952
+Fifth, predict cardinality. Can one patient have many admissions?
 
-00:01:11.583 --> 00:01:13.531
-and hoping the result looks reasonable
+00:01:04.952 --> 00:01:08.077
+Can one admission have many lab tests?
+
+00:01:08.077 --> 00:01:13.572
+Finally, validate the output. Compare what you expected with what SQL actually returned.
+
+00:01:13.572 --> 00:01:20.240
+This workflow may feel slower at first, but it prevents many of the errors that are hardest to notice later.

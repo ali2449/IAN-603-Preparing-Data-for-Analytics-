@@ -1,45 +1,61 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:03.349
-This slide lets us see how UNKNOWN behaves when
-combined with TRUE
+00:00:00.028 --> 00:00:07.462
+Three-valued logic becomes easier when we reason through a few combinations instead of trying to memorize a
 
-00:00:03.362 --> 00:00:08.895
-and FALSE For example TRUE AND UNKNOWN becomes
-UNKNOWN because we
+00:00:07.462 --> 00:00:09.717
+large truth table. Take TRUE AND UNKNOWN.
 
-00:00:08.908 --> 00:00:12.479
-do not know whether the missing side would have been
-true FALSE
+00:00:09.717 --> 00:00:12.527
+The final result is UNKNOWN.
 
-00:00:12.505 --> 00:00:16.255
-AND UNKNOWN becomes FALSE because one false
-condition is already enough to
+00:00:12.527 --> 00:00:17.257
+We know one side is true, but the unknown side could still be false,
 
-00:00:16.281 --> 00:00:21.126
-make the entire AND expression false TRUE OR UNKNOWN
-becomes TRUE because
+00:00:17.257 --> 00:00:20.642
+so the whole expression cannot be guaranteed true.
 
-00:00:21.152 --> 00:00:26.344
-one true condition is enough At the bottom we have a
-runnable
+00:00:20.642 --> 00:00:23.062
+Now take FALSE AND UNKNOWN.
 
-00:00:26.370 --> 00:00:31.513
-example that creates combinations of TRUE FALSE and
-UNKNOWN Run it in
+00:00:23.062 --> 00:00:25.597
+That result is definitely FALSE.
 
-00:00:31.539 --> 00:00:36.236
-the browser and inspect the output table If you want
-to study
+00:00:25.597 --> 00:00:31.252
+Once one side of an AND condition is false, the whole expression cannot become true regardless of the missing
 
-00:00:36.262 --> 00:00:40.102
-the behavior more closely copy the query into
-pgAdmin and run it
+00:00:31.252 --> 00:00:37.452
+side. For OR, TRUE OR UNKNOWN is definitely TRUE because one true condition is enough.
 
-00:00:40.128 --> 00:00:45.941
-there You do not need to memorize every combination
-immediately Focus
+00:00:37.452 --> 00:00:45.492
+FALSE OR UNKNOWN remains UNKNOWN because the missing side could still turn the expression into true.
 
-00:00:45.967 --> 00:00:49.549
-on understanding why SQL sometimes cannot make a
-definite decision
+00:00:45.492 --> 00:00:46.872
+And NOT UNKNOWN remains UNKNOWN.
+
+00:00:46.872 --> 00:00:50.052
+Here is a practical way to think about it.
+
+00:00:50.052 --> 00:00:56.982
+Ask whether the known information is already enough to determine the outcome.
+
+00:00:56.982 --> 00:01:03.072
+If an online order is already marked fraudulent, then “fraudulent OR missing address verification” is still
+
+00:01:03.072 --> 00:01:08.002
+true. We do not need the second condition to know the answer.
+
+00:01:08.002 --> 00:01:12.817
+If a patient is definitely inactive, then “active AND unknown consent” is definitely false.
+
+00:01:12.817 --> 00:01:17.612
+The missing consent cannot rescue the rule.
+
+00:01:17.612 --> 00:01:23.702
+When you run the truth-table example, focus less on memorizing every cell and more on asking:
+
+00:01:23.702 --> 00:01:26.737
+is the known side enough to settle the decision?
+
+00:01:26.737 --> 00:01:30.563
+That reasoning scales better when conditions become more complex.

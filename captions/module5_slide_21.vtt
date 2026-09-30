@@ -1,41 +1,58 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:06.041
-Now we combine the previous two ideas First we clean
-each possible
+00:00:00.000 --> 00:00:06.437
+This slide combines two ideas: normalize messy text first, then apply fallback logic.
 
-00:00:06.067 --> 00:00:11.416
-contact value We trim extra spaces and convert blank
-values into null
+00:00:06.437 --> 00:00:11.197
+Suppose our contact priority is email first, then mobile phone, then home phone,
 
-00:00:12.818 --> 00:00:17.381
-Then we use coalesce to choose the first usable
-contact method The
+00:00:11.197 --> 00:00:12.482
+and finally No contact provided.
 
-00:00:17.407 --> 00:00:21.324
-priority in this example is email first then mobile
-phone then home
+00:00:12.482 --> 00:00:20.012
+If we feed raw fields directly into COALESCE, an email containing only spaces may be treated as available
 
-00:00:21.337 --> 00:00:26.981
-phone and finally the text No contact provided The
-SQL may look
+00:00:20.012 --> 00:00:22.067
+because it is technically not NULL.
 
-00:00:27.007 --> 00:00:32.735
-longer but the logic is actually very systematic Run
-the query
+00:00:22.067 --> 00:00:28.787
+That would block the fallback even though the email is unusable.
 
-00:00:32.760 --> 00:00:37.435
-in the browser and look at the preferred contact
-column Then try
+00:00:28.787 --> 00:00:32.107
+So each contact field is cleaned first.
 
-00:00:37.461 --> 00:00:42.102
-copying it into pgAdmin As you read the expression
-do not try
+00:00:32.107 --> 00:00:35.952
+We trim the text. Then NULLIF converts an empty cleaned value to NULL.
 
-00:00:42.128 --> 00:00:47.759
-to pronounce every parenthesis Think about the
-workflow clean email clean mobile
+00:00:35.952 --> 00:00:37.512
+Only after that do we use COALESCE.
 
-00:00:47.914 --> 00:00:51.496
-clean home and then choose the first value that is
-actually available
+00:00:37.512 --> 00:00:44.867
+This creates a very natural pipeline: standardize what “missing” means, then choose the first usable value.
+
+00:00:44.867 --> 00:00:50.232
+Run the query and inspect the edge cases.
+
+00:00:50.232 --> 00:00:54.492
+Some patients should fall back from email to mobile or home phone.
+
+00:00:54.492 --> 00:00:59.707
+A patient with no usable contact values should receive the final display label.
+
+00:00:59.707 --> 00:01:02.777
+You can use the same pattern in many projects.
+
+00:01:02.777 --> 00:01:07.437
+A shipping system may choose primary address, then secondary address.
+
+00:01:07.437 --> 00:01:12.042
+A customer profile may prefer work email, then personal email.
+
+00:01:12.042 --> 00:01:18.297
+A product catalog may prefer official description, then short description, then a placeholder.
+
+00:01:18.297 --> 00:01:22.197
+The order inside COALESCE is not merely technical.
+
+00:01:22.197 --> 00:01:27.241
+It represents business priority. That priority should be chosen intentionally.

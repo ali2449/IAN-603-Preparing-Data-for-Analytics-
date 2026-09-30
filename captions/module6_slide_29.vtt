@@ -1,48 +1,46 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.830
-For the first guided practice we want
-department-level performance The
+00:00:00.000 --> 00:00:04.142
+For this guided practice, the goal is department-level performance.
 
-00:00:05.843 --> 00:00:10.528
-requirement says every department must appear
-including departments with no admissions or
+00:00:04.142 --> 00:00:11.057
+The requirement says every department must appear, even departments with no admissions or no staff.
 
-00:00:10.541 --> 00:00:17.391
-no staff That tells us departments should be the
-preserved population The
+00:00:11.057 --> 00:00:15.652
+That tells us the departments table should be the preserved population.
 
-00:00:17.418 --> 00:00:22.631
-query LEFT JOINs admissions and medical staff to
-departments Because both joined
+00:00:15.652 --> 00:00:19.542
+We LEFT JOIN admissions and medical staff to departments.
 
-00:00:22.657 --> 00:00:26.618
-tables can have multiple rows per department the
-counts use DISTINCT event
+00:00:19.542 --> 00:00:26.157
+Because a department can have several admissions and several staff members, the detail rows can multiply.
 
-00:00:26.644 --> 00:00:33.325
-identifiers to avoid counting combinations as
-separate admissions or staff members Run
+00:00:26.157 --> 00:00:31.122
+That is why the counts use DISTINCT event identifiers.
 
-00:00:33.352 --> 00:00:37.788
-the query and look for the department with zero
-activity It should
+00:00:31.122 --> 00:00:35.367
+Run the query and look for the department with zero activity.
 
-00:00:37.815 --> 00:00:43.351
-still appear Also inspect average stay days and the
-specialization
+00:00:35.367 --> 00:00:40.557
+It should still appear. That is an important validation of the LEFT JOIN.
 
-00:00:43.364 --> 00:00:47.840
-list Notice that the result grain is one row per
-department because
+00:00:40.557 --> 00:00:44.992
+Then inspect a busy department and compare the counts with the underlying records.
 
-00:00:47.853 --> 00:00:53.080
-GROUP BY is at the department level Use this example
-to practice
+00:00:44.992 --> 00:00:49.787
+This style of query is common in management dashboards.
 
-00:00:53.106 --> 00:00:58.554
-reading a longer query by sections preserved table
-first relationship second relationship
+00:00:49.787 --> 00:00:54.812
+A company may want every region listed, even if a region had zero sales.
 
-00:00:58.672 --> 00:00:59.764
-group and measures
+00:00:54.812 --> 00:00:59.012
+A university may want every academic program listed, even if no students enrolled this term.
+
+00:00:59.012 --> 00:01:04.962
+The dashboard should not make zero-activity groups disappear.
+
+00:01:04.962 --> 00:01:10.417
+Read the query in sections: preserved table, first relationship, second relationship, grouping level,
+
+00:01:10.417 --> 00:01:17.062
+and measures. Breaking a long query into those logical pieces makes it much easier to understand.

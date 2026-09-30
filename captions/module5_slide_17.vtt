@@ -1,44 +1,55 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.822
-Boolean columns can also contain null Suppose
-consent to contact
+00:00:00.000 --> 00:00:07.717
+A Boolean column can have three meaningful states when NULL is allowed: true, false, and unknown.
 
-00:00:05.848 --> 00:00:10.617
-is a Boolean field TRUE can mean the person
-explicitly said yes
+00:00:07.717 --> 00:00:13.107
+Consider a consent field. TRUE may mean the person explicitly agreed.
 
-00:00:11.532 --> 00:00:16.081
-FALSE can mean the person explicitly said no But
-null may mean
+00:00:13.107 --> 00:00:16.392
+FALSE may mean the person explicitly declined.
 
-00:00:16.107 --> 00:00:20.540
-that the answer was never recorded Those three
-states can have different
+00:00:16.392 --> 00:00:20.197
+NULL may mean nobody has recorded a decision yet.
 
-00:00:20.566 --> 00:00:26.404
-business meanings PostgreSQL lets us test them
-explicitly using IS TRUE IS
+00:00:20.197 --> 00:00:27.697
+Those are three different business states, and treating NULL as if it were FALSE can destroy that distinction.
 
-00:00:26.429 --> 00:00:31.828
-FALSE and IS UNKNOWN Run the example in the browser
-and look
+00:00:27.697 --> 00:00:32.732
+PostgreSQL gives us predicates such as IS TRUE, IS FALSE, and IS UNKNOWN.
 
-00:00:31.854 --> 00:00:36.301
-at the three output columns They clearly show which
-state each record
+00:00:32.732 --> 00:00:36.767
+These make the intention very clear.
 
-00:00:36.314 --> 00:00:43.154
-belongs to You can copy the query into pgAdmin as
-well The
+00:00:36.767 --> 00:00:42.952
+Imagine an approval workflow. approved IS TRUE means approval was explicitly granted.
 
-00:00:43.167 --> 00:00:46.453
-main lesson is not to automatically treat FALSE and
-UNKNOWN as the
+00:00:42.952 --> 00:00:46.657
+approved IS FALSE means it was explicitly rejected.
 
-00:00:46.479 --> 00:00:50.836
-same thing In many applications no and we do not
-know should
+00:00:46.657 --> 00:00:51.177
+approved IS UNKNOWN means a decision has not been recorded.
 
-00:00:50.862 --> 00:00:52.112
-lead to different actions
+00:00:51.177 --> 00:00:56.682
+That is much more informative than simply saying approved or NOT approved.
+
+00:00:56.682 --> 00:01:01.197
+Run the example and inspect the patient whose consent is NULL.
+
+00:01:01.197 --> 00:01:07.812
+The explicit-yes flag should be false, the explicit-no flag should also be false,
+
+00:01:07.812 --> 00:01:10.757
+and the not-recorded flag should be true.
+
+00:01:10.757 --> 00:01:18.117
+This is particularly important in domains where the difference between “no” and “we do not know” matters,
+
+00:01:18.117 --> 00:01:24.822
+such as privacy consent, legal approval, eligibility review, identity verification, or clinical confirmation.
+
+00:01:24.822 --> 00:01:32.847
+When a Boolean column is nullable, do not automatically think of it as a two-state switch.
+
+00:01:32.847 --> 00:01:35.993
+Ask what the third state means in the real process.

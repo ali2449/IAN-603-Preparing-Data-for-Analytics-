@@ -1,56 +1,49 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:03.326
-A LEFT JOIN is often the most useful outer join in
-analytics
+00:00:00.000 --> 00:00:07.632
+A LEFT JOIN is one of the most useful patterns in analytics because it allows us to preserve a clearly defined
 
-00:00:03.353 --> 00:00:09.037
-because it lets us preserve a clearly defined
-population Here patients
+00:00:07.632 --> 00:00:10.527
+population. Here, patients is on the left.
 
-00:00:09.051 --> 00:00:12.948
-is on the left That means every patient should
-remain in the
+00:00:10.527 --> 00:00:15.742
+That means every patient should remain, whether or not an admission exists.
 
-00:00:12.974 --> 00:00:19.448
-output even if no admission exists Run the query
-Look
+00:00:15.742 --> 00:00:20.727
+Run the query and look for a patient whose admission_id is NULL.
 
-00:00:19.475 --> 00:00:23.777
-for a patient whose admission ID is missing That
-NULL does not
+00:00:20.727 --> 00:00:23.637
+That NULL does not mean SQL failed.
 
-00:00:23.790 --> 00:00:28.593
-mean the join failed It is the expected
-representation of an unmatched
+00:00:23.637 --> 00:00:26.622
+It means the patient had no matching admission.
 
-00:00:28.619 --> 00:00:34.192
-right-side row Now compare this result mentally with
-the INNER JOIN from
+00:00:26.622 --> 00:00:31.602
+In fact, that NULL may be exactly what the analyst wanted to find.
 
-00:00:34.205 --> 00:00:39.760
-the previous slide The ON condition is the same The
-difference is
+00:00:31.602 --> 00:00:35.067
+Now imagine a university retention project.
 
-00:00:39.773 --> 00:00:45.431
-preservation INNER JOIN removes unmatched patients
-LEFT JOIN
+00:00:35.067 --> 00:00:37.972
+One table contains every enrolled student.
 
-00:00:45.444 --> 00:00:51.326
-keeps them This distinction matters whenever your
-denominator is all customers
+00:00:37.972 --> 00:00:42.397
+Another contains advising appointments. If we use INNER JOIN, students with no appointment disappear.
 
-00:00:51.523 --> 00:00:56.697
-all students all patients or all products If you
-accidentally use INNER
+00:00:42.397 --> 00:00:49.012
+But those students may actually be the ones we most want to identify.
 
-00:00:56.723 --> 00:01:00.868
-JOIN entities with no activity may disappear and
-your analysis can become
+00:00:49.012 --> 00:00:54.942
+Using LEFT JOIN keeps the full student population and makes the missing appointment visible.
 
-00:01:00.895 --> 00:01:06.542
-biased You can copy the query into pgAdmin and
-verify the same
+00:00:54.942 --> 00:00:57.447
+This is why preservation matters.
 
-00:01:06.555 --> 00:01:07.397
-behavior there
+00:00:57.447 --> 00:01:02.647
+LEFT JOIN is often the right choice when the denominator is all patients, all students, all customers,
+
+00:01:02.647 --> 00:01:05.252
+or all products.
+
+00:01:05.252 --> 00:01:12.296
+If you use INNER JOIN by mistake, inactive entities disappear and your rates or averages may become biased.

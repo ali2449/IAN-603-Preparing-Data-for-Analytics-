@@ -1,42 +1,64 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.053
-Next we have NOT NOT is used when we want to exclude
+00:00:00.000 --> 00:00:02.117
+NOT negates a Boolean expression.
 
-00:00:05.079 --> 00:00:10.003
-a condition In this example we keep active patients
-but we exclude
+00:00:02.117 --> 00:00:05.737
+If an expression is TRUE, NOT makes it FALSE.
 
-00:00:10.029 --> 00:00:16.189
-two diagnoses Notice the parentheses around the
-diagnosis condition They
+00:00:05.737 --> 00:00:08.862
+If it is FALSE, NOT makes it TRUE.
 
-00:00:16.202 --> 00:00:19.230
-make it very clear which part of the logic we are
-reversing
+00:00:08.862 --> 00:00:14.332
+On this slide, we keep active records while excluding selected diagnoses.
 
-00:00:21.066 --> 00:00:25.049
-The query is available in the SQL box Run it here in
+00:00:14.332 --> 00:00:21.317
+We can think of it as: the patient must be active, and the diagnosis must not belong to this excluded group.
 
-00:00:25.075 --> 00:00:29.559
-the browser first Look at the results and confirm
-that the excluded
+00:00:21.317 --> 00:00:24.907
+Parentheses help make the target of NOT obvious.
 
-00:00:29.585 --> 00:00:35.226
-diagnoses do not appear You can also copy the query
-into pgAdmin
+00:00:24.907 --> 00:00:27.142
+We are not negating one value.
 
-00:00:35.251 --> 00:00:39.493
-and run it against the same practice tables One
-important point is
+00:00:27.142 --> 00:00:32.247
+We are negating the whole membership test.
 
-00:00:39.505 --> 00:00:43.951
-that NOT does not magically solve missing values If
-a condition is
+00:00:32.247 --> 00:00:35.802
+But there is an important SQL detail: NOT does not eliminate uncertainty.
 
-00:00:43.977 --> 00:00:48.346
-UNKNOWN because of null applying NOT still leaves it
-UNKNOWN We will
+00:00:35.802 --> 00:00:42.802
+If an expression is UNKNOWN because it involves NULL, then NOT UNKNOWN is still UNKNOWN.
 
-00:00:48.371 --> 00:00:50.407
-see why that matters in a few slides
+00:00:42.802 --> 00:00:49.947
+Imagine a retail table with a membership status that can be Gold, Silver, Basic, or NULL.
+
+00:00:49.947 --> 00:00:55.792
+If we ask for NOT Gold using an ordinary comparison, the NULL row does not automatically become “not Gold.”
+
+00:00:55.792 --> 00:01:03.372
+SQL does not know whether that missing value might actually have been Gold.
+
+00:01:03.372 --> 00:01:03.692
+The result can remain UNKNOWN.
+
+00:01:03.692 --> 00:01:08.697
+This matters because WHERE keeps only TRUE rows.
+
+00:01:08.697 --> 00:01:11.687
+So when you write NOT, ask two questions.
+
+00:01:11.687 --> 00:01:14.362
+First, what exact condition am I negating?
+
+00:01:14.362 --> 00:01:18.487
+Second, can any values involved be NULL?
+
+00:01:18.487 --> 00:01:23.572
+Sometimes a more explicit predicate such as IS DISTINCT FROM communicates the rule better than a negated
+
+00:01:23.572 --> 00:01:27.647
+ordinary comparison. We will see that later.
+
+00:01:27.647 --> 00:01:34.562
+The main idea is to avoid treating missing information as if it were known information.

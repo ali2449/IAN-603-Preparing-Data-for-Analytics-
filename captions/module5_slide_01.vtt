@@ -1,47 +1,73 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.727
-Welcome to Module 5 Reasoning with SQL Logic In the
-previous
+00:00:00.000 --> 00:00:04.137
+Welcome to Module 5, Reasoning with SQL Logic.
 
-00:00:05.752 --> 00:00:10.780
-module we focused on summarizing data In this module
-we are going
+00:00:04.137 --> 00:00:09.502
+In the earlier modules, we focused on retrieving data, changing data safely, and creating summaries.
 
-00:00:10.793 --> 00:00:14.968
-to focus on decision making In other words how can
-we tell
+00:00:09.502 --> 00:00:17.892
+Now we are moving into something that looks simple at first, but becomes very important in real projects:
 
-00:00:14.994 --> 00:00:19.246
-SQL exactly which records we want how different
-conditions should work together
+00:00:17.892 --> 00:00:22.727
+deciding which rows qualify and how each row should be interpreted.
 
-00:00:19.517 --> 00:00:23.486
-and what should happen when information is missing
-We will work with
+00:00:22.727 --> 00:00:24.937
+Think about a real system.
 
-00:00:23.512 --> 00:00:27.958
-AND OR and NOT We will also look at TRUE FALSE and
+00:00:24.937 --> 00:00:32.232
+A hospital may need to identify patients who are active, have given consent, have a high-risk diagnosis,
 
-00:00:27.983 --> 00:00:32.056
-UNKNOWN because SQL does not always work with only
-two logical states
+00:00:32.232 --> 00:00:35.282
+and do not have usable contact information.
 
-00:00:32.945 --> 00:00:36.489
-Later we will use tools such as coalesce null if and
-case
+00:00:35.282 --> 00:00:40.792
+A university may need to find students who are enrolled, have not completed a requirement,
 
-00:00:36.514 --> 00:00:41.038
-expressions to build more realistic business rules
-As you move through this
+00:00:40.792 --> 00:00:44.072
+and either have a low grade or a missing assignment.
 
-00:00:41.063 --> 00:00:45.844
-module do not just memorize the syntax Try to read
-each SQL
+00:00:44.072 --> 00:00:54.272
+A business may want customers who are active, have not purchased recently, and are eligible for a promotion.
 
-00:00:45.870 --> 00:00:50.767
-condition as a sentence Ask yourself what rule am I
-actually giving
+00:00:54.272 --> 00:00:55.927
+These are not just filtering problems.
 
-00:00:50.780 --> 00:00:51.721
-to the database
+00:00:55.927 --> 00:00:58.722
+They are decision rules.
+
+00:00:58.722 --> 00:01:04.827
+In this module, we will work with AND, OR, and NOT, but we will also go deeper into SQL's treatment of missing
+
+00:01:04.827 --> 00:01:10.387
+values. SQL does not always produce only true or false.
+
+00:01:10.387 --> 00:01:13.217
+When NULL is involved, a condition can become UNKNOWN.
+
+00:01:13.217 --> 00:01:18.007
+That one idea explains many SQL results that surprise beginners.
+
+00:01:18.007 --> 00:01:24.287
+We will also use tools such as IS NULL, IS DISTINCT FROM, COALESCE, NULLIF, and CASE.
+
+00:01:24.287 --> 00:01:28.752
+The goal is not to memorize a list of keywords.
+
+00:01:28.752 --> 00:01:32.747
+The goal is to develop a reasoning process.
+
+00:01:32.747 --> 00:01:34.612
+Before writing SQL, state the rule in plain language.
+
+00:01:34.612 --> 00:01:39.232
+Decide what missing data means.
+
+00:01:39.232 --> 00:01:40.822
+Then write the condition and test edge cases.
+
+00:01:40.822 --> 00:01:46.782
+If you can explain why every row was included, excluded, or classified,
+
+00:01:46.782 --> 00:01:52.999
+then your SQL is doing more than running correctly; it is representing the rule correctly.

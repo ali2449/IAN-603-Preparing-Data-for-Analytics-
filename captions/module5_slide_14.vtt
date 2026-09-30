@@ -1,44 +1,55 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.112
-Here we make the behavior of WHERE very clear We
-create three
+00:00:00.000 --> 00:00:06.322
+This slide focuses on one rule that explains many SQL surprises: WHERE keeps only TRUE.
 
-00:00:05.138 --> 00:00:08.914
-sample rows one with TRUE one with FALSE and one
-with UNKNOWN
+00:00:06.322 --> 00:00:10.082
+The example contains three Boolean states: true, false, and NULL.
 
-00:00:10.346 --> 00:00:15.479
-Then we use the Boolean field directly in the WHERE
-clause Before
+00:00:10.082 --> 00:00:15.737
+When we use the Boolean field directly in a WHERE clause, only the true row remains.
 
-00:00:15.505 --> 00:00:20.223
-running the example predict what will happen Only
-the TRUE row will
+00:00:15.737 --> 00:00:19.942
+The false row is excluded, which feels natural.
 
-00:00:20.236 --> 00:00:26.481
-remain FALSE is removed and UNKNOWN is also removed
-Click
+00:00:19.942 --> 00:00:24.107
+The NULL row is also excluded because NULL behaves as UNKNOWN.
 
-00:00:26.507 --> 00:00:31.146
-Run in the browser to confirm this You can copy the
-same
+00:00:24.107 --> 00:00:29.442
+SQL cannot prove that the condition is true.
 
-00:00:31.172 --> 00:00:36.251
-SQL into pgAdmin if you want to experiment For
-example you could
+00:00:29.442 --> 00:00:32.402
+Now think about a nullable consent field.
 
-00:00:36.277 --> 00:00:40.877
-change the values or add another row This small
-example is important
+00:00:32.402 --> 00:00:37.892
+If we write WHERE consent, only patients with explicit true consent remain.
 
-00:00:40.890 --> 00:00:44.550
-because later when null appears in a comparison the
-result may become
+00:00:37.892 --> 00:00:43.652
+Patients with false consent are removed, and patients with unknown consent are also removed.
 
-00:00:44.576 --> 00:00:47.952
-UNKNOWN and disappear from your query even though
-you did not explicitly
+00:00:43.652 --> 00:00:47.237
+That may be exactly what we want for a messaging campaign,
 
-00:00:47.978 --> 00:00:49.331
-ask SQL to remove it
+00:00:47.237 --> 00:00:51.432
+because we should not assume permission when consent has not been recorded.
+
+00:00:51.432 --> 00:00:59.722
+But imagine a data-quality report whose purpose is to find anyone who has not explicitly consented.
+
+00:00:59.722 --> 00:01:03.042
+In that case, false and NULL may both be important.
+
+00:01:03.042 --> 00:01:07.167
+A simple WHERE consent would not answer that question.
+
+00:01:07.167 --> 00:01:12.697
+The lesson is that WHERE has a very strict gate: only TRUE passes.
+
+00:01:12.697 --> 00:01:18.337
+Before filtering on a nullable condition, decide what you want to do with unknown values.
+
+00:01:18.337 --> 00:01:22.332
+Exclude them, include them, or label them separately.
+
+00:01:22.332 --> 00:01:27.009
+Make that policy explicit instead of letting SQL choose it accidentally.

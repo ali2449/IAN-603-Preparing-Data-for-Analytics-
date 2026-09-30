@@ -1,41 +1,46 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.622
-Now let's practice text normalization and fallback
-values The goal
+00:00:00.000 --> 00:00:04.737
+This guided practice applies our text-normalization pattern to preferred language.
 
-00:00:05.648 --> 00:00:10.495
-is to display a preferred language If the language
-contains useful text
+00:00:04.737 --> 00:00:07.652
+The goal is not to modify the stored data.
 
-00:00:10.611 --> 00:00:15.495
-keep it If it is null empty or only spaces display
-Language
+00:00:07.652 --> 00:00:13.797
+We only want to create a cleaner display value in the query output.
 
-00:00:15.521 --> 00:00:19.580
-not recorded The query first uses B trim and null if
-to
+00:00:13.797 --> 00:00:15.692
+Start with preferred_language. Trim surrounding spaces.
 
-00:00:19.593 --> 00:00:26.184
-normalize the text Then coalesce provides the final
-fallback Run
+00:00:15.692 --> 00:00:20.757
+Then use NULLIF so that an empty cleaned value becomes NULL.
 
-00:00:26.210 --> 00:00:30.127
-the example in the browser and compare preferred
-language with language display
+00:00:20.757 --> 00:00:26.617
+Finally, use COALESCE to replace a missing result with a readable label such as Language not recorded.
 
-00:00:31.646 --> 00:00:35.977
-You can also click Copy and run the query in pgAdmin
-Try
+00:00:26.617 --> 00:00:33.082
+This distinction between stored value and derived display value is important.
 
-00:00:35.990 --> 00:00:41.080
-to identify which records actually needed the
-fallback This pattern is useful
+00:00:33.082 --> 00:00:39.702
+In production systems, analysts often should not overwrite raw source data just to make a report prettier.
 
-00:00:41.106 --> 00:00:46.724
-far beyond this example Whenever user-entered text
-may contain blank or whitespace-only
+00:00:39.702 --> 00:00:45.847
+Instead, they create a cleaned representation in a query, view, transformation layer, or reporting model.
 
-00:00:46.737 --> 00:00:51.402
-values normalizing before applying business logic
-makes the result much more reliable
+00:00:45.847 --> 00:00:48.112
+That preserves traceability.
+
+00:00:48.112 --> 00:00:54.332
+We can still see what the original system stored, while users of the report get a consistent output.
+
+00:00:54.332 --> 00:00:59.852
+The same technique works for occupation, department name, address line, product category,
+
+00:00:59.852 --> 00:01:05.582
+or any text field where blank values should be presented more clearly.
+
+00:01:05.582 --> 00:01:11.252
+Run the query and confirm that the source value remains unchanged while the new display column contains the
+
+00:01:11.252 --> 00:01:12.762
+fallback label.

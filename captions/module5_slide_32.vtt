@@ -1,45 +1,67 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.804
-Now we start combining several ideas into a more
-realistic rule We
+00:00:00.000 --> 00:00:04.337
+Now we combine several ideas into a more realistic cohort rule.
 
-00:00:05.817 --> 00:00:10.366
-want active patients who explicitly consented to
-contact have either Diabetes or
+00:00:04.337 --> 00:00:06.412
+The patient must be active.
 
-00:00:10.392 --> 00:00:15.007
-Kidney Disease and do not have a usable email
-address Notice how
+00:00:06.412 --> 00:00:09.102
+Consent must be explicitly true.
 
-00:00:15.020 --> 00:00:20.806
-carefully the requirements are defined Active must
-be true Consent
+00:00:09.102 --> 00:00:13.282
+The diagnosis must be either Diabetes or Kidney Disease.
 
-00:00:20.832 --> 00:00:27.030
-must explicitly be true UNKNOWN consent is not
-treated as permission The
+00:00:13.282 --> 00:00:17.767
+Finally, the patient must have no usable email address.
 
-00:00:27.056 --> 00:00:32.924
-diagnosis must be one of the target diagnoses
-Finally we normalize
+00:00:17.767 --> 00:00:22.147
+Notice that each requirement represents a different kind of logic.
 
-00:00:32.950 --> 00:00:37.938
-the email before checking whether it is missing The
-full query is
+00:00:22.147 --> 00:00:25.147
+Active status is a Boolean requirement.
 
-00:00:37.964 --> 00:00:41.960
-available in the code cell Run it in the browser and
-examine
+00:00:25.147 --> 00:00:31.087
+Consent uses explicit truth because NULL consent should not be treated as permission.
 
-00:00:41.986 --> 00:00:46.904
-each returned record against the written rule You
-can also copy the
+00:00:31.087 --> 00:00:34.517
+Diagnosis uses membership in a target set.
 
-00:00:46.930 --> 00:00:51.674
-query into pgAdmin This is a good example of
-translating a real
+00:00:34.517 --> 00:00:43.142
+Email requires text normalization so NULL, empty text, and whitespace-only text all count as unusable.
 
-00:00:51.686 --> 00:00:55.179
-requirement into several small testable SQL
-conditions
+00:00:43.142 --> 00:00:48.352
+All of these are connected with AND because every requirement must be satisfied.
+
+00:00:48.352 --> 00:00:51.257
+This resembles a real outreach workflow.
+
+00:00:51.257 --> 00:00:58.642
+Imagine a care-management team trying to identify people who need a phone call because they have a target
+
+00:00:58.642 --> 00:01:03.802
+chronic condition but cannot be reached by email.
+
+00:01:03.802 --> 00:01:06.922
+The important part is that the query is explainable.
+
+00:01:06.922 --> 00:01:10.462
+We can read it as a checklist.
+
+00:01:10.462 --> 00:01:13.022
+Active? Yes. Explicit consent? Yes.
+
+00:01:13.022 --> 00:01:15.857
+Target diagnosis? Yes. Usable email absent?
+
+00:01:15.857 --> 00:01:18.432
+Yes. Then include the patient.
+
+00:01:18.432 --> 00:01:24.132
+If Susan has the target diagnosis but consent is unknown, she should not qualify.
+
+00:01:24.132 --> 00:01:30.382
+If Robert has Kidney Disease, explicit consent, and no email, he may qualify.
+
+00:01:30.382 --> 00:01:35.722
+A strong query lets you explain each inclusion and exclusion in business language.

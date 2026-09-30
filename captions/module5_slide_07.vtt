@@ -1,48 +1,61 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.577
-Now let's start with AND AND means every connected
-condition must be
+00:00:00.000 --> 00:00:03.442
+AND means every connected condition must be true.
 
-00:00:05.602 --> 00:00:10.385
-satisfied Here our rule says that the patient must
-be active the
+00:00:03.442 --> 00:00:10.012
+In the example on this slide, a record must be active, the patient's age must be at least forty,
 
-00:00:10.398 --> 00:00:13.439
-age must be greater than or equal to forty and the
-severity
+00:00:10.012 --> 00:00:12.227
+and the severity must be High.
 
-00:00:13.465 --> 00:00:18.040
-must be High Notice how each additional AND
-condition makes the result
+00:00:12.227 --> 00:00:17.247
+If any one of those conditions is false, that row does not qualify.
 
-00:00:18.052 --> 00:00:23.801
-more restrictive Below the explanation we have a SQL
-code cell
+00:00:17.247 --> 00:00:21.562
+When you run the query, do not just look at the rows that remain.
 
-00:00:24.704 --> 00:00:28.171
-You can click Run and execute this query directly in
-the browser
+00:00:21.562 --> 00:00:24.432
+Also think about the rows that disappeared.
 
-00:00:29.073 --> 00:00:32.372
-After it runs look at the result and check whether
-every returned
+00:00:24.432 --> 00:00:30.412
+Maybe one patient is active and older than forty but has Medium severity.
 
-00:00:32.398 --> 00:00:38.466
-row satisfies all three conditions You can also
-click Copy open pgAdmin
+00:00:30.412 --> 00:00:35.187
+That row fails because AND requires all three parts.
 
-00:00:38.685 --> 00:00:41.945
-paste the query into the Query Tool and run exactly
-the same
+00:00:35.187 --> 00:00:39.412
+A useful habit is to read the WHERE clause as a sentence.
 
-00:00:41.971 --> 00:00:46.070
-SQL there When reading the WHERE clause say it as a
-sentence
+00:00:39.412 --> 00:00:44.377
+Say: I want patients who are active AND are at least forty AND have High severity.
 
-00:00:46.276 --> 00:00:49.099
-keep records where the patient is active and age is
-at least
+00:00:44.377 --> 00:00:51.192
+If the sentence sounds like all conditions are required at the same time, AND is the natural connector.
 
-00:00:49.111 --> 00:00:50.838
-forty and severity is High
+00:00:51.192 --> 00:00:53.402
+This appears constantly in real projects.
+
+00:00:53.402 --> 00:01:02.317
+A university may select students who are currently enrolled AND have completed prerequisites AND have no
+
+00:01:02.317 --> 00:01:04.442
+registration hold.
+
+00:01:04.442 --> 00:01:09.922
+An e-commerce system may offer a promotion only to customers who are active AND belong to a certain region AND
+
+00:01:09.922 --> 00:01:12.157
+have a minimum purchase history.
+
+00:01:12.157 --> 00:01:19.772
+One important point: adding another AND condition usually narrows the result.
+
+00:01:19.772 --> 00:01:26.382
+If you add a fourth requirement and your result becomes larger, that is a signal to inspect the logic.
+
+00:01:26.382 --> 00:01:33.597
+Before running a complex AND rule, predict at least one record that should qualify and one that should not.
+
+00:01:33.597 --> 00:01:36.508
+That simple habit makes debugging much easier.

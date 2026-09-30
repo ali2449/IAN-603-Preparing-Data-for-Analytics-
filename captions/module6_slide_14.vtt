@@ -1,52 +1,52 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.052
-This is one of the most important slides in the
-module ON
+00:00:00.000 --> 00:00:02.992
+This is one of the most important ideas in the module.
 
-00:00:05.065 --> 00:00:10.333
-and WHERE are not interchangeable in an outer join
-The ON condition
+00:00:02.992 --> 00:00:07.452
+ON and WHERE are not interchangeable in an outer join.
 
-00:00:10.359 --> 00:00:14.770
-defines matching If we put a condition about lab
-test name inside
+00:00:07.452 --> 00:00:11.547
+The ON clause defines which rows are allowed to match.
 
-00:00:14.796 --> 00:00:18.283
-ON we are saying only glucose lab rows are eligible
-to match
+00:00:11.547 --> 00:00:15.302
+The WHERE clause filters the final joined result.
 
-00:00:18.309 --> 00:00:23.388
-each patient Patients without glucose results can
-still remain because the LEFT
+00:00:15.302 --> 00:00:21.042
+Suppose we LEFT JOIN patients to lab results and we only want Glucose tests.
 
-00:00:23.414 --> 00:00:29.657
-JOIN preserves them WHERE is evaluated on the joined
-result If
+00:00:21.042 --> 00:00:27.057
+If we place the Glucose condition inside ON, we are saying: every patient should remain,
 
-00:00:29.684 --> 00:00:33.855
-we filter where the right-side lab test name equals
-Glucose unmatched patients
+00:00:27.057 --> 00:00:30.072
+but only Glucose rows are allowed to match.
 
-00:00:33.881 --> 00:00:38.486
-have NULL on that right-side column NULL does not
-satisfy the equality
+00:00:30.072 --> 00:00:35.887
+Patients without Glucose results still stay in the output with NULL lab fields.
 
-00:00:38.513 --> 00:00:44.143
-condition so those patients are removed That means a
-LEFT JOIN followed
+00:00:35.887 --> 00:00:40.552
+If we move that same condition into WHERE, the meaning changes.
 
-00:00:44.169 --> 00:00:47.024
-by the wrong WHERE condition can behave like an
-INNER JOIN for
+00:00:40.552 --> 00:00:45.477
+After the LEFT JOIN, unmatched patients have NULL in the lab test name.
 
-00:00:47.037 --> 00:00:52.196
-that part of the logic A useful question is does
-this condition
+00:00:45.477 --> 00:00:52.327
+The condition test_name equals Glucose is not true for NULL, so those patients are removed.
 
-00:00:52.222 --> 00:00:55.788
-describe which right-side rows may match or does it
-describe which final
+00:00:52.327 --> 00:00:55.392
+This issue appears in many projects.
 
-00:00:55.801 --> 00:00:57.275
-result rows I want to keep
+00:00:55.392 --> 00:01:01.192
+Imagine every customer should appear, but only orders from 2026 should match.
+
+00:01:01.192 --> 00:01:07.067
+If the year condition is in ON, customers with no 2026 orders remain.
+
+00:01:07.067 --> 00:01:11.577
+If you put the year condition in WHERE, those customers disappear.
+
+00:01:11.577 --> 00:01:16.002
+The query still runs, which is why this bug can be dangerous.
+
+00:01:16.002 --> 00:01:20.480
+Always ask whether a condition controls matching or final filtering.

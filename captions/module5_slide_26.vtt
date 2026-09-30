@@ -1,41 +1,58 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.337
-This slide demonstrates one of the easiest case
-mistakes to make In
+00:00:00.000 --> 00:00:04.077
+CASE branch order becomes critical when conditions overlap.
 
-00:00:05.350 --> 00:00:08.468
-the first query we check whether age is at least
-eighteen before
+00:00:04.077 --> 00:00:12.037
+Suppose we want to label people as Senior when age is at least sixty-five and Adult when age is at least
 
-00:00:08.481 --> 00:00:13.754
-checking whether age is at least sixty-five A
-sixty-five-year-old also satisfies the
+00:00:12.037 --> 00:00:15.962
+eighteen. If we check age greater than or equal to eighteen first,
 
-00:00:13.766 --> 00:00:18.058
-first condition so SQL immediately labels that
-person Adult and never reaches
+00:00:15.962 --> 00:00:19.512
+a seventy-year-old patient matches that branch immediately.
 
-00:00:18.083 --> 00:00:23.921
-the Senior branch That makes the Senior branch
-unreachable In the corrected
+00:00:19.512 --> 00:00:22.067
+CASE stops and returns Adult.
 
-00:00:23.947 --> 00:00:28.058
-version we place the more specific condition first
-age at least sixty-five
+00:00:22.067 --> 00:00:24.797
+The Senior branch is never reached.
 
-00:00:28.225 --> 00:00:33.373
-followed by age at least eighteen Both versions are
-provided in the
+00:00:24.797 --> 00:00:31.392
+The correct order is to place the more specific or higher threshold first: check for Senior, then Adult.
 
-00:00:33.399 --> 00:00:38.645
-code cell Run them in the browser and compare the
-results You
+00:00:31.392 --> 00:00:35.752
+This same mistake appears in many real systems.
 
-00:00:38.671 --> 00:00:44.519
-can also copy them into pgAdmin Remember when
-conditions overlap
+00:00:35.752 --> 00:00:41.472
+A fraud score above ninety might be Critical, while a score above fifty is Review.
 
-00:00:44.777 --> 00:00:47.728
-put the more specific condition before the broader
-condition
+00:00:41.472 --> 00:00:46.387
+If the Review condition comes first, the Critical category disappears.
+
+00:00:46.387 --> 00:00:52.102
+A bill above ten thousand may be High-Value, while above five thousand is Standard.
+
+00:00:52.102 --> 00:00:54.582
+High-Value needs to come first.
+
+00:00:54.582 --> 00:00:59.387
+A useful test is to ask whether one condition logically contains another.
+
+00:00:59.387 --> 00:01:04.142
+Every value above ten thousand is also above five thousand.
+
+00:01:04.142 --> 00:01:07.462
+Every senior adult is also an adult.
+
+00:01:07.462 --> 00:01:13.062
+When one condition contains another, the narrower condition usually belongs first.
+
+00:01:13.062 --> 00:01:16.392
+Run both versions and compare older patients.
+
+00:01:16.392 --> 00:01:19.342
+You are not just learning CASE syntax here.
+
+00:01:19.342 --> 00:01:22.084
+You are learning how order can encode priority.

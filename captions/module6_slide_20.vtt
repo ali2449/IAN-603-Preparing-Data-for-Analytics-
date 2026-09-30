@@ -1,49 +1,49 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.256
-CROSS JOIN intentionally creates every possible pair
-between two row sets In
+00:00:00.000 --> 00:00:05.017
+CROSS JOIN creates every possible combination between two row sets.
 
-00:00:06.282 --> 00:00:11.614
-this example we combine selected departments with
-appointment slots If we have
+00:00:05.017 --> 00:00:10.707
+Unlike a normal join, there is no ON condition restricting the matches.
 
-00:00:11.640 --> 00:00:17.527
-two departments and three time slots we expect six
-combinations Run
+00:00:10.707 --> 00:00:14.962
+Suppose we have two departments and three appointment slots.
 
-00:00:17.553 --> 00:00:21.159
-the query and verify that each selected department
-appears once for each
+00:00:14.962 --> 00:00:21.062
+A CROSS JOIN creates six combinations: each department paired with each slot.
 
-00:00:21.185 --> 00:00:26.956
-slot CROSS JOIN is useful for generating scenario
-grids schedules
+00:00:21.062 --> 00:00:24.902
+In this case, that may be exactly what we want.
 
-00:00:27.087 --> 00:00:33.248
-calendars test cases or completeness frameworks But
-it must be used deliberately
+00:00:24.902 --> 00:00:29.722
+Cross joins are useful for building schedules, scenario grids, test cases, calendars,
 
-00:00:34.971 --> 00:00:40.236
-Unlike an ordinary join there is no ON condition
-restricting matches That
+00:00:29.722 --> 00:00:32.172
+and completeness frameworks.
 
-00:00:40.263 --> 00:00:45.827
-means result size can grow very quickly Before
-running a cross join
+00:00:32.172 --> 00:00:39.577
+For example, a retailer could create every store and every day of the month so they can later identify days
 
-00:00:45.853 --> 00:00:51.224
-on large tables estimate the number of combinations
-Multiply the left row
+00:00:39.577 --> 00:00:41.562
+with no sales.
 
-00:00:51.250 --> 00:00:55.277
-count by the right row count If one side has ten
-thousand
+00:00:41.562 --> 00:00:47.807
+A university could create every course and every expected assessment type to find missing assessments.
 
-00:00:55.303 --> 00:00:58.527
-rows and the other has ten thousand rows the result
-can reach
+00:00:47.807 --> 00:00:52.217
+But the growth can be dramatic.
 
-00:00:58.553 --> 00:01:01.711
-one hundred million combinations before any later
-filtering
+00:00:52.217 --> 00:00:57.297
+If one table has ten thousand rows and the other also has ten thousand,
+
+00:00:57.297 --> 00:01:00.927
+the result can have one hundred million combinations.
+
+00:01:00.927 --> 00:01:07.432
+Before running a cross join on large data, estimate the size by multiplying the row counts.
+
+00:01:07.432 --> 00:01:12.207
+Cross joins are not bad; accidental cross joins are bad.
+
+00:01:12.207 --> 00:01:14.903
+Use them when the combinations are intentional.

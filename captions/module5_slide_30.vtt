@@ -1,41 +1,49 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.283
-This is a classic SQL trap The query asks for
-records whose
+00:00:00.000 --> 00:00:04.492
+NOT IN can be surprisingly tricky when NULL appears inside the list.
 
-00:00:05.309 --> 00:00:09.395
-payment status is not in a list containing Paid and
-null At
+00:00:04.492 --> 00:00:10.392
+Conceptually, NOT IN asks whether the value is different from every item in the list.
 
-00:00:09.421 --> 00:00:13.700
-first that may look reasonable But a null inside the
-NOT IN
+00:00:10.392 --> 00:00:17.242
+If the list contains a NULL, SQL cannot prove that the value is different from that unknown item.
 
-00:00:13.725 --> 00:00:17.475
-list can cause comparisons that appear to be
-non-matches to become UNKNOWN
+00:00:17.242 --> 00:00:19.852
+The result can become UNKNOWN.
 
-00:00:18.390 --> 00:00:21.689
-The database cannot prove that a value is different
-from an unknown
+00:00:19.852 --> 00:00:26.402
+Because WHERE keeps only TRUE, rows that look like obvious non-matches may disappear.
 
-00:00:21.702 --> 00:00:27.361
-list element Run the example in the browser and
-observe the result
+00:00:26.402 --> 00:00:32.182
+For example, suppose we ask for payment statuses NOT IN Paid, Closed, and NULL.
 
-00:00:28.786 --> 00:00:33.400
-Then copy it into pgAdmin if you want to test
-variations For
+00:00:32.182 --> 00:00:33.822
+You may expect Open to qualify.
 
-00:00:33.413 --> 00:00:38.130
-example remove null from the list and compare the
-output The safer
+00:00:33.822 --> 00:00:43.402
+But the presence of NULL makes the logic uncertain because SQL cannot compare Open with an unknown value in a
 
-00:00:38.156 --> 00:00:40.875
-approach is normally to keep null out of the list
-and handle
+00:00:43.402 --> 00:00:44.587
+definite way.
 
-00:00:40.888 --> 00:00:43.761
-missing values explicitly according to the business
-rule
+00:00:44.587 --> 00:00:52.202
+The safe strategy is usually to keep NULL out of the IN or NOT IN list and handle missingness explicitly.
+
+00:00:52.202 --> 00:01:00.172
+If your rule is “status is not Paid, including missing status,” write a NULL-aware condition that says exactly
+
+00:01:00.172 --> 00:01:06.272
+that. If your rule is “status is known and is not Paid,” then require IS NOT NULL along with the inequality.
+
+00:01:06.272 --> 00:01:12.552
+This is another case where the business policy matters more than the keyword.
+
+00:01:12.552 --> 00:01:17.872
+Whenever you see NOT IN in production SQL, especially against a subquery,
+
+00:01:17.872 --> 00:01:21.002
+ask whether the compared values can contain NULL.
+
+00:01:21.002 --> 00:01:23.291
+If they can, test carefully.

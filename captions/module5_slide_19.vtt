@@ -1,39 +1,49 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.679
-Now let's introduce coalesce Coalesce returns the
-first value in
+00:00:00.000 --> 00:00:02.482
+COALESCE provides fallback logic.
 
-00:00:05.705 --> 00:00:09.637
-a list that is not null For example we might try an
+00:00:02.482 --> 00:00:09.292
+PostgreSQL evaluates the expressions from left to right and returns the first one that is not NULL.
 
-00:00:09.662 --> 00:00:15.023
-email address first If that is missing try the
-mobile phone If
+00:00:09.292 --> 00:00:12.552
+A common example is contact information.
 
-00:00:15.049 --> 00:00:19.546
-that is also missing try the home phone Finally we
-can return
+00:00:12.552 --> 00:00:19.167
+We may prefer email first, then mobile phone, then home phone, and finally a text label such as No contact
 
-00:00:19.572 --> 00:00:24.160
-a readable fallback This is a very useful function
-but we should
+00:00:19.167 --> 00:00:26.502
+provided. But there is an important detail: COALESCE only understands NULL.
 
-00:00:24.186 --> 00:00:29.095
-use it carefully A fallback should have a real
-meaning We do
+00:00:26.502 --> 00:00:31.897
+It does not know that an empty string or a few spaces are useless contact information.
 
-00:00:29.121 --> 00:00:32.137
-not want to replace missing data with a value that
-changes the
+00:00:31.897 --> 00:00:38.062
+If email contains a blank string, COALESCE may stop there and return that blank value instead of moving to the
 
-00:00:32.150 --> 00:00:36.583
-meaning of the information In a few slides we will
-combine coalesce
+00:00:38.062 --> 00:00:45.897
+mobile number. That is why COALESCE is often paired with normalization using BTRIM and NULLIF.
 
-00:00:36.608 --> 00:00:39.456
-with null if so that blank text is treated as
-missing before
+00:00:45.897 --> 00:00:50.387
+COALESCE also appears in numeric work, but you need to be careful with meaning.
 
-00:00:39.469 --> 00:00:41.711
-we choose the first usable contact method
+00:00:50.387 --> 00:00:57.647
+Replacing a missing amount with zero is not just a technical operation.
+
+00:00:57.647 --> 00:01:00.147
+It makes a business assumption that missing means none.
+
+00:01:00.147 --> 00:01:06.467
+For example, if amount_paid is NULL because no payment was made, zero may be reasonable.
+
+00:01:06.467 --> 00:01:12.357
+But if the amount is NULL because the payment system failed to load data,
+
+00:01:12.357 --> 00:01:15.277
+replacing it with zero could be misleading.
+
+00:01:15.277 --> 00:01:23.172
+So the rule is not “use COALESCE whenever you see NULL.” The rule is “use COALESCE when the fallback value has
+
+00:01:23.172 --> 00:01:24.699
+a clear, documented meaning.”

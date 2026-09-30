@@ -1,48 +1,52 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.440
-This is called a searched case expression Each WHEN
-contains a complete
+00:00:00.000 --> 00:00:06.297
+Searched CASE is the flexible form of CASE because every WHEN contains a complete Boolean condition.
 
-00:00:05.466 --> 00:00:10.635
-Boolean condition That makes searched case useful
-for ranges null checks and
+00:00:06.297 --> 00:00:13.747
+That makes it ideal for ranges, multiple-field rules, NULL checks, and complicated classifications.
 
-00:00:10.661 --> 00:00:16.692
-compound rules In this example we classify billing
-amounts Missing
+00:00:13.747 --> 00:00:17.502
+In the billing example, we handle NULL first.
 
-00:00:16.718 --> 00:00:21.743
-amounts become Unknown Amounts greater than or equal
-to ten thousand become
+00:00:17.502 --> 00:00:23.357
+That is important because a missing bill should not quietly fall into the Low-Value category.
 
-00:00:21.769 --> 00:00:26.653
-High Value Amounts greater than or equal to five
-thousand become Standard
+00:00:23.357 --> 00:00:27.877
+Then we check the highest threshold, followed by the next threshold,
 
-00:00:27.568 --> 00:00:32.783
-Everything else becomes Low Value We have the full
-SQL in the
+00:00:27.877 --> 00:00:31.442
+and finally use ELSE for the remaining known amounts.
 
-00:00:32.808 --> 00:00:37.294
-runnable code cell Click Run in the browser and
-compare the original
+00:00:31.442 --> 00:00:37.312
+Read the logic like a decision tree: if the bill is missing, label it Unknown.
 
-00:00:37.320 --> 00:00:42.008
-bill amount with the new billing tier You can also
-click Copy
+00:00:37.312 --> 00:00:42.797
+Otherwise, if it is at least the high-value threshold, label it High-Value.
 
-00:00:42.034 --> 00:00:46.790
-and run the same query in pgAdmin When reading this
-query focus
+00:00:42.797 --> 00:00:47.982
+Otherwise, if it is at least the standard threshold, label it Standard.
 
-00:00:46.816 --> 00:00:51.520
-on the decision order rather than the punctuation
-SQL is simply checking
+00:00:47.982 --> 00:00:49.237
+Otherwise, label it Low-Value.
 
-00:00:51.546 --> 00:00:54.252
-each rule from top to bottom and using the first
-rule that
+00:00:49.237 --> 00:00:56.272
+This same structure can classify students by risk level, customers by spending tier, patients by severity,
 
-00:00:54.265 --> 00:00:54.819
-matches
+00:00:56.272 --> 00:00:57.957
+or servers by CPU utilization.
+
+00:00:57.957 --> 00:01:02.672
+When ranges are involved, pay attention to exact boundaries.
+
+00:01:02.672 --> 00:01:10.257
+If High-Value starts at ten thousand, then exactly ten thousand belongs there.
+
+00:01:10.257 --> 00:01:15.847
+If Standard starts at five thousand, then exactly five thousand belongs in Standard.
+
+00:01:15.847 --> 00:01:20.202
+Run the query and inspect NULL, zero, and threshold values.
+
+00:01:20.202 --> 00:01:25.431
+Boundary testing is how we confirm that the written rule and the SQL rule are the same.

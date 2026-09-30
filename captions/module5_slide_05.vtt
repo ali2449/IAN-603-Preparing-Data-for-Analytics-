@@ -1,44 +1,67 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:06.251
-Throughout this module we will use a small synthetic
-healthcare-style dataset We
+00:00:00.000 --> 00:00:03.997
+For this module, we use a small synthetic healthcare database.
 
-00:00:06.277 --> 00:00:11.252
-have a patient information table with demographic
-and contact fields We have
+00:00:03.997 --> 00:00:12.187
+The data is intentionally simple enough to understand, but it contains the kinds of messy values that create
 
-00:00:11.265 --> 00:00:16.394
-a diagnostics table a patient billing table and an
-admissions table We
+00:00:12.187 --> 00:00:12.602
+real logic problems.
 
-00:00:16.420 --> 00:00:20.982
-also have a convenience view called patient case
-This view brings several
+00:00:12.602 --> 00:00:19.367
+The patient information table includes demographics, contact fields, activity status, consent,
 
-00:00:21.008 --> 00:00:24.822
-useful fields together so we can focus on SQL logic
-without spending
+00:00:19.367 --> 00:00:25.287
+and preferred language. The diagnostics table contains diagnosis, severity, and confirmation information.
 
-00:00:24.848 --> 00:00:28.984
-all of our time writing joins The data is synthetic
-so it
+00:00:25.287 --> 00:00:30.747
+Patient billing contains bill amounts, payments, and payment status.
 
-00:00:29.010 --> 00:00:32.786
-is safe to use for practice When we reach a slide
-with
+00:00:30.747 --> 00:00:35.532
+Admissions gives us admission and discharge dates.
 
-00:00:32.812 --> 00:00:36.678
-executable SQL you can run the code directly here in
-the browser
+00:00:35.532 --> 00:00:39.452
+There is also a convenience view called patient_case.
 
-00:00:37.580 --> 00:00:40.569
-You can also use the Copy button open the Query Tool
-in
+00:00:39.452 --> 00:00:44.927
+That view combines information from several source tables so we can focus on logic rather than spending the
 
-00:00:40.595 --> 00:00:45.917
-pgAdmin paste the query and run it in PostgreSQL
-there Using both
+00:00:44.927 --> 00:00:50.602
+whole module on joins. We will return to joins in the next module.
 
-00:00:45.943 --> 00:00:47.489
-approaches is good practice
+00:00:50.602 --> 00:00:53.887
+What makes this dataset useful is the edge cases.
+
+00:00:53.887 --> 00:00:57.812
+Some values are NULL. Some text values are empty.
+
+00:00:57.812 --> 00:01:02.772
+Some contain only spaces. One bill amount is exactly zero.
+
+00:01:02.772 --> 00:01:04.997
+One payment status is missing.
+
+00:01:04.997 --> 00:01:07.417
+One consent value is unknown.
+
+00:01:07.417 --> 00:01:09.647
+Those are not random annoyances.
+
+00:01:09.647 --> 00:01:14.207
+They are the records that help us understand whether our rule is actually robust.
+
+00:01:14.207 --> 00:01:21.952
+Imagine a production system where an email field contains a space because someone pressed the spacebar and
+
+00:01:21.952 --> 00:01:29.667
+saved the form. A simple IS NULL test would say that email exists, even though there is no usable address.
+
+00:01:29.667 --> 00:01:33.952
+Or imagine a zero-dollar bill that represents a waived charge.
+
+00:01:33.952 --> 00:01:36.722
+Treating it as missing would be incorrect.
+
+00:01:36.722 --> 00:01:43.712
+So as we work, think of this database as a controlled laboratory for learning how real-world data behaves.

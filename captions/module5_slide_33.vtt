@@ -1,44 +1,55 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.885
-This example creates two useful outputs at the same
-time First we
+00:00:00.000 --> 00:00:04.072
+This report combines two different kinds of reasoning in one result.
 
-00:00:05.911 --> 00:00:11.029
-create a preferred contact method We normalize blank
-values and use email
+00:00:04.072 --> 00:00:12.702
+For contact information, we normalize blank-looking text and then use COALESCE to choose the first usable
 
-00:00:11.196 --> 00:00:15.694
-mobile phone and home phone in that order Second we
-create a
+00:00:12.702 --> 00:00:15.042
+contact method. That is a fallback problem.
 
-00:00:15.719 --> 00:00:20.926
-billing category Notice that missing bill amounts
-become Needs review rather than
+00:00:15.042 --> 00:00:21.497
+For billing, we use CASE because we are classifying values into meaningful categories.
 
-00:00:20.951 --> 00:00:25.694
-being placed into the Low Value category An exact
-zero becomes No
+00:00:21.497 --> 00:00:24.652
+A missing bill is labeled Needs review rather than converted to zero.
 
-00:00:25.719 --> 00:00:32.468
-Charge Then we apply the High Value and Standard
-thresholds The
+00:00:24.652 --> 00:00:28.942
+An exact zero can be labeled No Charge.
 
-00:00:32.481 --> 00:00:36.787
-SQL is available below Run it in the browser and
-study the
+00:00:28.942 --> 00:00:32.642
+Then the higher billing tiers are applied using ordered thresholds.
 
-00:00:36.812 --> 00:00:42.084
-preferred contact and billing tier columns You can
-also use Copy and
+00:00:32.642 --> 00:00:40.257
+This is a good example of why NULL should not always be treated the same way across columns.
 
-00:00:42.110 --> 00:00:47.728
-run it in pgAdmin The important design idea is that
-presentation
+00:00:40.257 --> 00:00:45.692
+For contact information, falling back to another field may be perfectly reasonable.
 
-00:00:47.754 --> 00:00:52.408
-defaults should not hide data-quality problems A
-missing bill is not the
+00:00:45.692 --> 00:00:52.027
+If email is missing but mobile phone is present, we can still create a useful display value.
 
-00:00:52.420 --> 00:00:53.967
-same thing as a small bill
+00:00:52.027 --> 00:00:56.292
+For billing, a missing amount may indicate incomplete data.
+
+00:00:56.292 --> 00:01:01.092
+Replacing it with zero could falsely imply that the patient owes nothing.
+
+00:01:01.092 --> 00:01:04.297
+The same pattern appears in business analytics.
+
+00:01:04.297 --> 00:01:09.807
+A missing product description can fall back to a short title, but a missing product price should probably not
+
+00:01:09.807 --> 00:01:12.122
+become zero.
+
+00:01:12.122 --> 00:01:18.837
+A missing office phone can fall back to mobile, but missing salary should not become zero automatically.
+
+00:01:18.837 --> 00:01:22.882
+Use COALESCE when a fallback is semantically appropriate.
+
+00:01:22.882 --> 00:01:28.021
+Use CASE when missingness itself should produce a distinct decision or category.

@@ -1,40 +1,49 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:03.864
-Here we improve our billing case expression by
-adding a special category
+00:00:00.000 --> 00:00:05.542
+This practice improves the billing CASE by giving an exact zero its own business meaning.
 
-00:00:03.890 --> 00:00:10.089
-for an exact zero The order is important First
+00:00:05.542 --> 00:00:12.357
+Without a special branch, zero is simply less than five thousand, so it would fall into Low-Value.
 
-00:00:10.296 --> 00:00:14.898
-check for null Second check for zero and label it No
-Charge
+00:00:12.357 --> 00:00:19.992
+But in this dataset, a zero bill represents No Charge, which is meaningfully different from a small positive
 
-00:00:16.314 --> 00:00:21.560
-Then check the High Value threshold After that check
-the Standard threshold
+00:00:19.992 --> 00:00:23.482
+charge. The order should be deliberate.
 
-00:00:23.054 --> 00:00:28.561
-Finally use Low Value for the remaining known
-amounts The complete
+00:00:23.482 --> 00:00:25.087
+Handle NULL first as Unknown.
 
-00:00:28.587 --> 00:00:33.035
-query is available in the code cell Before running
-it predict what
+00:00:25.087 --> 00:00:28.227
+Then handle exactly zero as No Charge.
 
-00:00:33.060 --> 00:00:38.381
-will happen to zero five thousand ten thousand and
-null Then click
+00:00:28.227 --> 00:00:31.972
+After that, apply the high and standard thresholds.
 
-00:00:38.407 --> 00:00:42.906
-Run in the browser and verify your predictions You
-can also copy
+00:00:31.972 --> 00:00:35.532
+ELSE can represent the remaining positive low-value bills.
 
-00:00:42.932 --> 00:00:47.893
-the SQL into pgAdmin This is a good example of
-boundary testing
+00:00:35.532 --> 00:00:41.662
+This is a good example of why domain meaning matters more than pure mathematics.
 
-00:00:48.808 --> 00:00:52.726
-The exact values at the edges of categories deserve
-special attention
+00:00:41.662 --> 00:00:45.772
+A zero-dollar hotel bill may mean complimentary stay.
+
+00:00:45.772 --> 00:00:49.672
+A zero inventory count may mean out of stock.
+
+00:00:49.672 --> 00:00:51.912
+A zero test score may be a real observed score.
+
+00:00:51.912 --> 00:00:56.587
+A NULL test score may mean the student never took the exam.
+
+00:00:56.587 --> 00:01:03.042
+Technically, zero and NULL are both “not a positive amount,” but analytically they can mean very different
+
+00:01:03.042 --> 00:01:08.577
+things. Run the query and inspect the zero-bill record.
+
+00:01:08.577 --> 00:01:12.237
+Make sure it now receives No Charge rather than Low-Value.

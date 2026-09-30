@@ -1,40 +1,64 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:03.813
-Three operators are at the center of most SQL
-decision rules AND
+00:00:00.000 --> 00:00:05.797
+AND, OR, and NOT are the basic building blocks of SQL decision rules.
 
-00:00:04.019 --> 00:00:09.067
-OR and NOT AND means that all connected conditions
-need to be
+00:00:05.797 --> 00:00:10.152
+AND means that every connected condition must be satisfied.
 
-00:00:09.093 --> 00:00:13.154
-true OR means that at least one of the connected
-conditions needs
+00:00:10.152 --> 00:00:17.152
+If a customer must be active and have a balance above a threshold, both conditions need to be true.
 
-00:00:13.180 --> 00:00:18.657
-to be true NOT reverses a known logical condition A
-simple way
+00:00:17.152 --> 00:00:21.212
+OR means that at least one alternative can qualify.
 
-00:00:18.682 --> 00:00:22.046
-to remember this is that AND usually makes a result
-more restrictive
+00:00:21.212 --> 00:00:27.567
+A student might need support if the student has a low exam score or has missed multiple assignments.
 
-00:00:22.329 --> 00:00:26.904
-while OR usually makes it broader But there is one
-important detail
+00:00:27.567 --> 00:00:32.537
+Either condition is enough. NOT reverses a known condition.
 
-00:00:27.806 --> 00:00:32.819
-SQL has a third logical state called UNKNOWN This
-normally appears when
+00:00:32.537 --> 00:00:38.062
+For example, we may want records that are active but not already completed.
 
-00:00:32.845 --> 00:00:37.265
-null values are involved So as we work through these
-examples do
+00:00:38.062 --> 00:00:42.717
+That sounds straightforward, but SQL adds one more truth state: UNKNOWN.
 
-00:00:37.278 --> 00:00:42.020
-not assume every condition is simply true or false
-Sometimes SQL does
+00:00:42.717 --> 00:00:47.632
+This usually appears when a comparison involves NULL.
 
-00:00:42.033 --> 00:00:44.339
-not have enough information to make that decision
+00:00:47.632 --> 00:00:51.832
+It helps to think about these operators in terms of cohort size.
+
+00:00:51.832 --> 00:00:57.537
+AND usually makes a group smaller because each additional requirement removes rows.
+
+00:00:57.537 --> 00:01:02.747
+OR usually makes a group larger because more alternatives can qualify.
+
+00:01:02.747 --> 00:01:07.782
+NOT can exclude a group, but when the underlying expression is UNKNOWN,
+
+00:01:07.782 --> 00:01:10.752
+NOT does not magically turn it into TRUE.
+
+00:01:10.752 --> 00:01:17.482
+NOT UNKNOWN remains UNKNOWN. A useful real-world example is a loan-review rule.
+
+00:01:17.482 --> 00:01:22.442
+Suppose the rule requires income above a threshold and verified identity.
+
+00:01:22.442 --> 00:01:28.607
+If identity verification is missing, the system cannot honestly say the condition is true.
+
+00:01:28.607 --> 00:01:31.742
+It also may not be correct to say it is false.
+
+00:01:31.742 --> 00:01:35.452
+SQL represents that uncertainty as UNKNOWN.
+
+00:01:35.452 --> 00:01:40.197
+This is why Boolean logic in SQL is not only about syntax.
+
+00:01:40.197 --> 00:01:44.270
+It is about how certain or uncertain information affects decisions.

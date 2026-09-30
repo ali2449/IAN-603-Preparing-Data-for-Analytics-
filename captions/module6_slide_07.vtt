@@ -1,52 +1,52 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.083
-Now let's run an INNER JOIN The patients table is
-given the
+00:00:00.000 --> 00:00:02.202
+Now let us run an INNER JOIN.
 
-00:00:05.109 --> 00:00:10.243
-alias p and admissions is given the alias a The ON
-condition
+00:00:02.202 --> 00:00:08.362
+In this query, patients receives the alias p and admissions receives the alias a.
 
-00:00:10.270 --> 00:00:13.809
-says an admission matches a patient when their
-patient IDs are equal
+00:00:08.362 --> 00:00:14.982
+The ON condition says that a row from admissions matches a row from patients when the patient IDs are equal.
 
-00:00:15.643 --> 00:00:19.869
-Run the query in the browser Then look at the
-patient IDs
+00:00:14.982 --> 00:00:18.142
+Before running the query, make a prediction.
 
-00:00:19.895 --> 00:00:25.053
-and admission IDs Notice that a patient with
-multiple admissions appears more
+00:00:18.142 --> 00:00:23.312
+Which patients will appear? Patients with at least one admission should appear.
 
-00:00:25.066 --> 00:00:29.895
-than once That is expected because each result row
-represents a matching
+00:00:23.312 --> 00:00:26.317
+A patient with no admission should disappear.
 
-00:00:29.922 --> 00:00:35.815
-admission Also look for the patient who has no
-admission That
+00:00:26.317 --> 00:00:29.752
+Also think about patients with multiple admissions.
 
-00:00:35.828 --> 00:00:39.183
-patient should not appear because INNER JOIN
-requires a match on both
+00:00:29.752 --> 00:00:34.812
+If one patient has two admissions, that patient should appear on two result rows because each row represents
 
-00:00:39.209 --> 00:00:44.782
-sides If you are practicing in pgAdmin use Copy and
-paste the
+00:00:34.812 --> 00:00:42.497
+one matching admission. Run the query and inspect the patient IDs and admission IDs.
 
-00:00:44.808 --> 00:00:49.469
-query into the Query Tool Before running it predict
-roughly how many
+00:00:42.497 --> 00:00:45.747
+Try not to focus only on whether the query runs.
 
-00:00:49.495 --> 00:00:54.337
-rows you expect After running it compare the number
-of result rows
+00:00:45.747 --> 00:00:48.552
+Ask whether the number of rows makes sense.
 
-00:00:54.363 --> 00:00:58.258
-with the number of admissions in the database This
-is a good
+00:00:48.552 --> 00:00:54.432
+If admissions has eight valid admission records, and every admission belongs to a valid patient,
 
-00:00:58.285 --> 00:01:00.284
-first validation of the join grain
+00:00:54.432 --> 00:00:57.647
+the joined result should contain about eight rows.
+
+00:00:57.647 --> 00:01:00.852
+This same pattern appears in many industries.
+
+00:01:00.852 --> 00:01:06.752
+A retailer may join customers with orders to analyze only customers who purchased something.
+
+00:01:06.752 --> 00:01:13.162
+A learning platform may join students with completed assessments to analyze only students with activity.
+
+00:01:13.162 --> 00:01:16.604
+INNER JOIN is useful when a match is required by the question.

@@ -1,49 +1,46 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:03.616
-This self join uses admissions twice so we can
-compare an earlier
+00:00:00.000 --> 00:00:07.567
+This self join uses the admissions table twice so we can compare an earlier admission with a later admission
 
-00:00:03.642 --> 00:00:09.154
-encounter with a later encounter for the same
-patient The patient IDs
+00:00:07.567 --> 00:00:13.027
+for the same patient. The patient IDs must match, because we only want admissions for the same person.
 
-00:00:09.180 --> 00:00:13.748
-must match We also require the first admission ID to
-be lower
+00:00:13.027 --> 00:00:19.427
+We also create an order between the two rows so that one admission plays the role of earlier encounter and the
 
-00:00:13.775 --> 00:00:16.419
-than the second so the pair has a direction and we
-avoid
+00:00:19.427 --> 00:00:22.062
+other plays the role of later encounter.
 
-00:00:16.446 --> 00:00:22.155
-reverse duplicates After joining the two admission
-aliases we join
+00:00:22.062 --> 00:00:24.687
+That prevents reverse duplicates.
 
-00:00:22.168 --> 00:00:26.473
-patients to retrieve the patient name The WHERE
-clause keeps pairs where
+00:00:24.687 --> 00:00:31.127
+Then we use the dates to keep cases where the later admission occurred within a meaningful time window after
 
-00:00:26.487 --> 00:00:29.881
-the first admission has a discharge date and the
-later admission begins
+00:00:31.127 --> 00:00:36.057
+discharge. This type of logic is common in healthcare analytics when studying readmissions, follow-up visits,
 
-00:00:29.895 --> 00:00:35.346
-between one and ninety days afterward Run the query
-and inspect the
+00:00:36.057 --> 00:00:38.957
+or repeat procedures.
 
-00:00:35.359 --> 00:00:40.893
-days-between calculation This is a good example of
-why aliases
+00:00:38.957 --> 00:00:44.537
+The same approach could be used in retail to compare a customer's first purchase with a later purchase,
 
-00:00:40.919 --> 00:00:45.514
-are more than a formatting convenience The aliases
-give the two roles
+00:00:44.537 --> 00:00:49.047
+or in cybersecurity to compare repeated login events for the same account.
 
-00:00:45.527 --> 00:00:51.344
-clear meanings earlier admission and later admission
-When you build self joins
+00:00:49.047 --> 00:00:54.022
+Aliases are especially important here because both rows come from the same table.
 
-00:00:51.594 --> 00:00:54.686
-define those roles in plain language before writing
-the SQL
+00:00:54.022 --> 00:00:58.492
+Without clear role names, the query becomes very hard to read.
+
+00:00:58.492 --> 00:01:03.452
+When building a self join, always define the roles in plain language first:
+
+00:01:03.452 --> 00:01:05.987
+earlier admission and later admission.
+
+00:01:05.987 --> 00:01:08.248
+Then translate those roles into SQL.

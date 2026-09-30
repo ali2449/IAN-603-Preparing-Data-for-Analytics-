@@ -1,48 +1,49 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.875
-Now let's see the safer outer-join pattern The first
-ON condition matches
+00:00:00.000 --> 00:00:05.647
+Now we will look at the safer pattern when we want to preserve the left-side population.
 
-00:00:05.901 --> 00:00:10.522
-lab rows to patients by patient ID The second ON
-condition says
+00:00:05.647 --> 00:00:12.307
+The first condition in ON matches patients to lab results by patient_id.
 
-00:00:10.535 --> 00:00:15.632
-that only lab rows named Glucose are allowed to
-match Run the
+00:00:12.307 --> 00:00:18.042
+The second condition says that only Glucose rows are eligible to match.
 
-00:00:15.658 --> 00:00:20.542
-query and count the patient IDs Every patient should
-still appear because
+00:00:18.042 --> 00:00:21.507
+Run the query and check the patient IDs.
 
-00:00:20.569 --> 00:00:26.165
-the LEFT JOIN preserves the patient table Then
-inspect the lab columns
+00:00:21.507 --> 00:00:27.352
+Every patient should still appear because the LEFT JOIN preserves the patient table.
 
-00:00:27.089 --> 00:00:30.562
-Patients who have a glucose result show a test ID
-and value
+00:00:27.352 --> 00:00:29.982
+Then inspect the lab columns.
 
-00:00:31.484 --> 00:00:34.457
-Patients who do not have a glucose test remain in
-the result
+00:00:29.982 --> 00:00:33.952
+Patients with a Glucose test will show test information.
 
-00:00:34.747 --> 00:00:39.608
-but their lab fields are NULL This is the key idea
-the
+00:00:33.952 --> 00:00:39.242
+Patients without one will remain, but their lab fields will be NULL.
 
-00:00:39.635 --> 00:00:45.733
-filter changes matching not preservation Before you
-run the query predict
+00:00:39.242 --> 00:00:39.992
+This is a very useful real-world pattern.
 
-00:00:45.759 --> 00:00:50.999
-which patients will have non-null glucose values
-After it runs compare your
+00:00:39.992 --> 00:00:48.787
+Suppose a company wants every employee listed, along with their most recent safety training if the training
 
-00:00:51.012 --> 00:00:55.657
-prediction with the output If you use pgAdmin copy
-the query and
+00:00:48.787 --> 00:00:51.312
+was completed this year.
 
-00:00:55.670 --> 00:00:56.893
-test it there as well
+00:00:51.312 --> 00:00:59.007
+Or a university wants every student listed, along with a tutoring visit if the visit occurred this semester.
+
+00:00:59.007 --> 00:01:06.977
+The date or category restriction often belongs in the matching logic when the population must remain complete.
+
+00:01:06.977 --> 00:01:12.187
+Before you run the query, predict which rows should have non-null values.
+
+00:01:12.187 --> 00:01:14.977
+Then compare your prediction to the result.
+
+00:01:14.977 --> 00:01:18.640
+That habit turns SQL from trial-and-error into reasoning.

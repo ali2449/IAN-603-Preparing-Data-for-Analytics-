@@ -1,44 +1,61 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.737
-This slide gives us a simple workflow for building
-SQL logic Step
+00:00:00.000 --> 00:00:05.322
+This six-step workflow is the pattern I want you to reuse throughout the module.
 
-00:00:05.763 --> 00:00:09.708
-one is to define the rule in plain language Do not
-start
+00:00:05.322 --> 00:00:09.297
+First, state the rule in plain language.
 
-00:00:09.733 --> 00:00:14.301
-with SQL yet Step two is to inspect the fields
-involved and
+00:00:09.297 --> 00:00:15.877
+Before writing SQL, you should be able to explain the requirement to another person.
 
-00:00:14.327 --> 00:00:19.145
-ask whether any of them can contain null values Step
-three is
+00:00:15.877 --> 00:00:22.242
+For example: select active patients who have explicitly consented and who have either Diabetes or Kidney
 
-00:00:19.171 --> 00:00:26.220
-to group related conditions This is where
-parentheses become very important Step
+00:00:22.242 --> 00:00:26.602
+Disease. Second, identify which fields can be missing.
 
-00:00:26.246 --> 00:00:30.487
-four is to decide the order of your case conditions
-Remember that
+00:00:26.602 --> 00:00:30.982
+If consent can be NULL, decide whether NULL means no, unknown, or needs review.
 
-00:00:30.513 --> 00:00:35.725
-the first matching case branch wins Step five is to
-test unusual
+00:00:30.982 --> 00:00:36.562
+That decision should come from the business meaning, not from convenience.
 
-00:00:35.751 --> 00:00:43.063
-records including null values blank text zero values
-and exact boundaries Finally
+00:00:36.562 --> 00:00:39.337
+Third, group related conditions with parentheses.
 
-00:00:43.308 --> 00:00:48.038
-validate the result against the original rule The
-main idea is simple
+00:00:39.337 --> 00:00:45.772
+This is especially important when AND and OR appear together.
 
-00:00:48.335 --> 00:00:53.000
-reason first then write the SQL A clear rule usually
-leads to
+00:00:45.772 --> 00:00:51.907
+Parentheses make your intention visible and reduce the chance that operator precedence changes the meaning.
 
-00:00:53.013 --> 00:00:53.812
-clearer code
+00:00:51.907 --> 00:00:59.277
+Fourth, if you are using CASE, place the most specific or highest-priority branches first.
+
+00:00:59.277 --> 00:01:02.007
+Remember that CASE stops at the first true branch.
+
+00:01:02.007 --> 00:01:08.387
+Fifth, test edge cases. Try exact threshold values, such as exactly sixty-five years old.
+
+00:01:08.387 --> 00:01:13.957
+Test zero. Test NULL. Test empty text and text that contains only spaces.
+
+00:01:13.957 --> 00:01:17.557
+Test a row that satisfies more than one condition.
+
+00:01:17.557 --> 00:01:21.157
+Finally, compare the output with the written rule.
+
+00:01:21.157 --> 00:01:27.237
+Do not stop at “the query ran.” Ask whether every important row behaves as expected.
+
+00:01:27.237 --> 00:01:30.677
+You can use this workflow outside SQL too.
+
+00:01:30.677 --> 00:01:37.427
+It is essentially a small decision-modeling process: define the policy, identify uncertainty,
+
+00:01:37.427 --> 00:01:41.679
+encode the logic, test the boundaries, and validate the result.

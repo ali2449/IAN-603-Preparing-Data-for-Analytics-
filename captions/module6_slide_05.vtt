@@ -1,53 +1,55 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:04.274
-A useful way to understand joins is to separate
-matching from preservation
+00:00:00.000 --> 00:00:06.342
+A useful way to think about joins is to separate two ideas: matching and preservation.
 
-00:00:06.011 --> 00:00:09.366
-The ON condition decides whether a row from one
-table matches a
+00:00:06.342 --> 00:00:06.752
+The ON condition controls matching.
 
-00:00:09.392 --> 00:00:14.145
-row from another table For example an admission
-matches a patient when
+00:00:06.752 --> 00:00:13.742
+It tells SQL when one row from the first table should be connected with one row from the second table.
 
-00:00:14.171 --> 00:00:19.763
-the patient IDs are equal The join type answers a
-different question
+00:00:13.742 --> 00:00:17.712
+For example, an admission matches a patient when the patient IDs are equal.
 
-00:00:20.700 --> 00:00:24.529
-If no match exists should that unmatched row
-disappear or should it
+00:00:17.712 --> 00:00:21.672
+The join type controls preservation.
 
-00:00:24.542 --> 00:00:30.192
-remain with NULL values from the missing side This
-distinction helps explain
+00:00:21.672 --> 00:00:26.857
+It answers a different question: if a row has no match, should that row disappear,
 
-00:00:30.206 --> 00:00:33.863
-why the same ON condition can produce different
-outputs under INNER JOIN
+00:00:26.857 --> 00:00:30.417
+or should it remain with NULL values from the missing side?
 
-00:00:33.877 --> 00:00:39.551
-and LEFT JOIN Also remember that SQL joins combine
-rows not just
+00:00:30.417 --> 00:00:36.402
+This is why the same ON condition can produce different results under INNER JOIN and LEFT JOIN.
 
-00:00:39.578 --> 00:00:44.501
-unique IDs If one patient has two admissions there
-are two valid
+00:00:36.402 --> 00:00:40.832
+Imagine an online store. One table contains all customers and another contains orders.
 
-00:00:44.528 --> 00:00:50.028
-patient-admission combinations The patient
-information will appear on both result rows
+00:00:40.832 --> 00:00:46.032
+If we use INNER JOIN, customers without orders disappear.
 
-00:00:50.054 --> 00:00:55.370
-because the grain is now admission detail Before
-moving on try to
+00:00:46.032 --> 00:00:50.047
+If we use LEFT JOIN with customers on the left, every customer stays,
 
-00:00:55.383 --> 00:00:58.988
-explain a join in plain language compare these two
-row sets match
+00:00:50.047 --> 00:00:52.592
+and customers without orders have NULL values for order columns.
 
-00:00:59.002 --> 00:01:01.910
-them using this rule and preserve these unmatched
-rows
+00:00:52.592 --> 00:00:55.732
+The matching rule did not change.
+
+00:00:55.732 --> 00:01:01.617
+The preservation rule changed. Also remember that joins combine rows, not just unique IDs.
+
+00:01:01.617 --> 00:01:06.207
+If one customer has three orders, there are three valid customer-order combinations.
+
+00:01:06.207 --> 00:01:11.257
+Before you run a join, try to describe it in plain language: compare these two row sets,
+
+00:01:11.257 --> 00:01:16.672
+match them using this rule, and preserve these unmatched rows.
+
+00:01:16.672 --> 00:01:19.920
+If you can say that clearly, your SQL is usually much easier to design.

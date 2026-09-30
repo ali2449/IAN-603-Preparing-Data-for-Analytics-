@@ -1,44 +1,58 @@
 WEBVTT
 
-00:00:00.102 --> 00:00:05.015
-Missing text and blank text are not the same thing A
-null
+00:00:00.000 --> 00:00:04.122
+Missing text and blank text are not the same thing in PostgreSQL.
 
-00:00:05.041 --> 00:00:09.540
-value means the value is missing or unknown An empty
-string means
+00:00:04.122 --> 00:00:06.837
+NULL means no known value.
 
-00:00:09.566 --> 00:00:13.561
-we have text but its length is zero We can also have
+00:00:06.837 --> 00:00:11.417
+An empty string is a real text value containing zero characters.
 
-00:00:13.586 --> 00:00:19.476
-text containing only spaces In real datasets all
-three situations can appear
+00:00:11.417 --> 00:00:18.027
+A string made only of spaces is also a real value until those spaces are removed.
 
-00:00:20.390 --> 00:00:23.947
-A useful pattern is to first trim spaces using B
-trim and
+00:00:18.027 --> 00:00:24.232
+This matters when the business rule says something like “the patient has no usable email address.”
 
-00:00:23.960 --> 00:00:28.839
-then use null if to convert an empty result into
-null The
+00:00:24.232 --> 00:00:29.082
+If we test only email IS NULL, we will miss an empty string.
 
-00:00:28.865 --> 00:00:32.164
-query on this slide finds email addresses that are
-either missing or
+00:00:29.082 --> 00:00:32.912
+We will also miss a value that contains three spaces.
 
-00:00:32.190 --> 00:00:36.843
-effectively blank Run it directly in the browser and
-inspect the records
+00:00:32.912 --> 00:00:40.102
+From the user's perspective, all three may mean “no usable email,” but the database sees them differently.
 
-00:00:36.856 --> 00:00:41.328
-it finds You can also copy the SQL to pgAdmin and
-run
+00:00:40.102 --> 00:00:43.937
+A useful normalization pattern is to trim the text first.
 
-00:00:41.354 --> 00:00:45.722
-it there This kind of normalization is very useful
-before we start
+00:00:43.937 --> 00:00:47.477
+BTRIM removes leading and trailing whitespace.
 
-00:00:45.748 --> 00:00:48.880
-making decisions about whether a contact value is
-usable
+00:00:47.477 --> 00:00:51.462
+Then NULLIF compares that cleaned value with an empty string.
+
+00:00:51.462 --> 00:00:54.837
+If they are equal, NULLIF returns NULL.
+
+00:00:54.837 --> 00:01:00.772
+After that, IS NULL can treat missing, empty, and whitespace-only values consistently.
+
+00:01:00.772 --> 00:01:04.617
+This pattern appears outside healthcare all the time.
+
+00:01:04.617 --> 00:01:07.607
+Customer phone fields, product descriptions, survey comments, usernames,
+
+00:01:07.607 --> 00:01:14.907
+and address lines can all contain blank-looking values that are technically not NULL.
+
+00:01:14.907 --> 00:01:19.812
+The deeper lesson is to separate storage representation from business meaning.
+
+00:01:19.812 --> 00:01:27.037
+The database may store three different technical forms, while your analytical rule may want to treat them as
+
+00:01:27.037 --> 00:01:28.114
+one concept: “not usable.”

@@ -1,54 +1,43 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:03.761
-A join should be validated before its result is used
-for reporting
+00:00:00.000 --> 00:00:06.267
+A join should be validated before its result is used in reporting, analysis, or machine learning.
 
-00:00:03.774 --> 00:00:09.579
-or analysis Start with row counts How many rows
+00:00:06.267 --> 00:00:10.672
+Start with row counts. How many rows were in each input table, and how many are in the output?
 
-00:00:09.605 --> 00:00:12.540
-were in each input and how many rows are in the
-output
+00:00:10.672 --> 00:00:16.062
+A sudden increase or decrease may be expected, but you should be able to explain it.
 
-00:00:14.271 --> 00:00:18.629
-Then count distinct keys If the final grain should
-be one row
+00:00:16.062 --> 00:00:18.247
+Next, count distinct keys.
 
-00:00:18.642 --> 00:00:24.221
-per patient compare total rows with distinct patient
-IDs If those numbers
+00:00:18.247 --> 00:00:24.097
+If the final result should have one row per patient, compare COUNT star with COUNT DISTINCT patient_id.
 
-00:00:24.247 --> 00:00:30.232
-differ investigate why Inspect keys with unusually
-many matches
+00:00:24.097 --> 00:00:27.952
+If those numbers are different, investigate why.
 
-00:00:31.169 --> 00:00:35.025
-A patient with many admissions or labs is useful for
-understanding whether
+00:00:27.952 --> 00:00:29.832
+Inspect keys with unusually many matches.
 
-00:00:35.038 --> 00:00:40.657
-multiplication is expected Also spot-check at least
-two known cases
+00:00:29.832 --> 00:00:34.587
+A patient with five admissions or ten lab tests is useful for understanding the join behavior.
 
-00:00:40.920 --> 00:00:44.539
-one entity with multiple related rows and one entity
-with no related
+00:00:34.587 --> 00:00:40.767
+Also spot-check at least two known cases: one entity with multiple related records and one entity with no
 
-00:00:44.565 --> 00:00:50.437
-row Finally write the grain sentence For example
+00:00:40.767 --> 00:00:43.907
+related record. Finally, write the grain sentence.
 
-00:00:50.687 --> 00:00:55.950
-one row represents one patient with summarized
-activity counts If the query
+00:00:43.907 --> 00:00:49.302
+For example: one row represents one patient with summarized activity counts.
 
-00:00:55.976 --> 00:00:59.634
-output cannot be explained with a clear grain
-sentence the join logic
+00:00:49.302 --> 00:00:54.572
+If you cannot write a clear sentence describing one result row, the query may still be logically unclear.
 
-00:00:59.647 --> 00:01:04.755
-may still be ambiguous These checks are simple but
-they catch a
+00:00:54.572 --> 00:01:01.492
+This validation process is simple, but it catches a large share of real-world join problems before they reach
 
-00:01:04.781 --> 00:01:06.886
-large share of real-world join errors
+00:01:01.492 --> 00:01:04.025
+a dashboard, report, or executive decision.

@@ -1,53 +1,52 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.655
-This runnable example makes row multiplication
-visible We join
+00:00:00.000 --> 00:00:03.317
+This runnable example makes row multiplication visible.
 
-00:00:05.681 --> 00:00:11.395
-patients to admissions lab results and prescriptions
-all by patient ID Each
+00:00:03.317 --> 00:00:08.012
+We join patients to admissions, lab results, and prescriptions, all by patient_id.
 
-00:00:11.421 --> 00:00:17.202
-of those child tables can contain multiple rows for
-one patient Run
+00:00:08.012 --> 00:00:14.572
+Each child table can have multiple rows for the same patient.
 
-00:00:17.228 --> 00:00:20.676
-the query and focus on a patient with multiple
-records in several
+00:00:14.572 --> 00:00:19.442
+Focus on a patient who has several records in more than one child table.
 
-00:00:20.702 --> 00:00:24.862
-child tables The joined row count can be much larger
-than the
+00:00:19.442 --> 00:00:23.797
+The final joined row count can be much larger than the number of admissions, lab tests,
 
-00:00:24.889 --> 00:00:30.763
-individual event counts Notice the use of COUNT
-DISTINCT for admission ID
+00:00:23.797 --> 00:00:27.477
+or prescriptions that actually occurred.
 
-00:00:30.934 --> 00:00:36.147
-test ID and prescription ID Those distinct counts
-recover the number of
+00:00:27.477 --> 00:00:30.847
+COUNT star counts the joined combinations.
 
-00:00:36.160 --> 00:00:40.568
-original events while COUNT star counts the
-combinations created by the join
+00:00:30.847 --> 00:00:33.712
+That is why it can look surprisingly large.
 
-00:00:42.315 --> 00:00:45.946
-This is why COUNT star after a multi-child join can
-be misleading
+00:00:33.712 --> 00:00:40.322
+COUNT DISTINCT admission_id, COUNT DISTINCT test_id, and COUNT DISTINCT prescription_id are trying to recover
 
-00:00:46.883 --> 00:00:49.409
-It may be counting the shape of the join rather than
-the
+00:00:40.322 --> 00:00:44.402
+the number of original events from the multiplied result.
 
-00:00:49.436 --> 00:00:54.771
-business events you intended to measure The first
-question after seeing an
+00:00:44.402 --> 00:00:46.472
+In a real project, this can create serious reporting errors.
 
-00:00:54.797 --> 00:00:58.113
-unexpectedly large count should be what is the grain
-of the joined
+00:00:46.472 --> 00:00:52.962
+Imagine a hospital dashboard that reports the number of admissions after admissions are joined to several lab
 
-00:00:58.139 --> 00:01:01.337
-rows and which relationships are multiplying one
-another
+00:00:52.962 --> 00:00:59.247
+and medication tables. If COUNT star is used carelessly, admission volume can be exaggerated.
+
+00:00:59.247 --> 00:01:01.817
+The query is not broken.
+
+00:01:01.817 --> 00:01:07.252
+It is counting something different from what the analyst intended.
+
+00:01:07.252 --> 00:01:12.162
+Whenever a count looks too large, ask what one joined row represents.
+
+00:01:12.162 --> 00:01:15.145
+That question often reveals the problem immediately.

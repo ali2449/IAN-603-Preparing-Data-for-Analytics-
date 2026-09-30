@@ -1,45 +1,55 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:03.997
-For the third guided practice the business question
-is list all patients
+00:00:00.000 --> 00:00:06.767
+The business question here is: list all patients and show Glucose tests when they exist.
 
-00:00:04.024 --> 00:00:09.277
-and show glucose tests when they exist The words all
-patients are
+00:00:06.767 --> 00:00:11.537
+The words all patients are the most important part of the requirement.
 
-00:00:09.291 --> 00:00:16.063
-the key They tell us the patient population must
-remain complete Run
+00:00:11.537 --> 00:00:16.127
+They tell us that the patient population must remain complete.
 
-00:00:16.089 --> 00:00:20.816
-the query with the glucose condition inside ON
-Confirm that all patients
+00:00:16.127 --> 00:00:20.172
+Run the query with the Glucose condition inside ON.
 
-00:00:20.842 --> 00:00:25.869
-are present and that only glucose lab rows can match
-Then think
+00:00:20.172 --> 00:00:22.337
+You should see every patient.
 
-00:00:25.882 --> 00:00:30.753
-back to the WHERE-trap example Moving the same
-test-name condition into WHERE
+00:00:22.337 --> 00:00:25.907
+Patients with Glucose tests will have lab values.
 
-00:00:30.766 --> 00:00:34.872
-removes patients whose lab columns are NULL so the
-population becomes only
+00:00:25.907 --> 00:00:31.052
+Patients without a Glucose test will remain with NULL lab fields.
 
-00:00:34.885 --> 00:00:40.456
-patients with glucose tests Try to explain the
-difference without using the
+00:00:31.052 --> 00:00:34.897
+Now imagine moving the same condition into WHERE.
 
-00:00:40.482 --> 00:00:45.235
-words because SQL does it that way Instead use the
-concepts of
+00:00:34.897 --> 00:00:40.767
+The result becomes a different population: only patients with Glucose tests.
 
-00:00:45.248 --> 00:00:51.515
-matching and final filtering ON limits eligible
-matches WHERE
+00:00:40.767 --> 00:00:43.542
+This is not just a syntax difference.
 
-00:00:51.541 --> 00:00:56.159
-filters the joined rows after preservation has
-already created NULL-extended rows
+00:00:43.542 --> 00:00:46.492
+It changes the meaning of the analysis.
+
+00:00:46.492 --> 00:00:49.752
+The same idea appears in many projects.
+
+00:00:49.752 --> 00:00:56.112
+A retailer may want every product and its sales from a specific month when sales exist.
+
+00:00:56.112 --> 00:01:02.757
+A university may want every student and a tutoring visit from this semester when one exists.
+
+00:01:02.757 --> 00:01:08.767
+If the optional condition belongs to the matched data but the full population must remain,
+
+00:01:08.767 --> 00:01:11.467
+ON is often the correct place.
+
+00:01:11.467 --> 00:01:17.242
+Try to explain the difference using two ideas: ON limits eligible matches.
+
+00:01:17.242 --> 00:01:19.760
+WHERE filters the final joined rows.
