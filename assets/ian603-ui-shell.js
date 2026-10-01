@@ -259,12 +259,146 @@
     sync();
   }
 
+
+  /* IAN603_SQL_FOCUS_SHARED_START */
+  function setupSqlFocus(){
+    var activeBox=null;
+    var previousShellHeight='';
+
+    function editorShell(box){
+      return box.querySelector('.pgadmin-editor-shell,.pg-shell');
+    }
+    function editorTextarea(box){
+      return box.querySelector('textarea.sql-editor,textarea.pg-editor');
+    }
+    function actionBar(box){
+      return box.querySelector('.code-head .cell-actions,.pg-head .pg-actions,.sql-head .sql-actions');
+    }
+    function localButtonClass(box){
+      if(box.classList.contains('pg-cell')) return 'pg-btn';
+      if(box.classList.contains('sql-cell')) return 'sql-btn';
+      return 'cell-btn';
+    }
+    function syncEditor(box){
+      var ta=editorTextarea(box);
+      if(!ta) return;
+      ta.dispatchEvent(new Event('input',{bubbles:true}));
+      ta.dispatchEvent(new Event('scroll'));
+    }
+    function closeFocus(){
+      if(!activeBox) return;
+      var box=activeBox;
+      var shell=editorShell(box);
+      var btn=box.querySelector('.sql-focus-toggle');
+
+      box.classList.remove('ian603-sql-focus');
+      document.body.classList.remove('sql-focus-open');
+
+      if(shell){
+        shell.style.height=previousShellHeight;
+        requestAnimationFrame(function(){
+          var ta=editorTextarea(box);
+          if(ta && box.classList.contains('code-cell')){
+            shell.style.height=Math.max(190,ta.offsetHeight)+'px';
+          }
+          syncEditor(box);
+        });
+      }
+
+      if(btn){
+        btn.textContent='Expand';
+        btn.setAttribute('aria-label','Expand SQL editor');
+        btn.setAttribute('aria-pressed','false');
+        btn.title='Open a larger SQL workspace';
+      }
+
+      activeBox=null;
+      previousShellHeight='';
+    }
+    function openFocus(box){
+      if(activeBox && activeBox!==box) closeFocus();
+
+      var shell=editorShell(box);
+      var ta=editorTextarea(box);
+      var btn=box.querySelector('.sql-focus-toggle');
+
+      previousShellHeight=shell ? shell.style.height : '';
+      activeBox=box;
+      box.classList.add('ian603-sql-focus');
+      document.body.classList.add('sql-focus-open');
+
+      if(btn){
+        btn.textContent='Collapse';
+        btn.setAttribute('aria-label','Collapse SQL editor');
+        btn.setAttribute('aria-pressed','true');
+        btn.title='Return to the regular slide view';
+      }
+
+      requestAnimationFrame(function(){
+        if(ta){
+          try{ ta.focus({preventScroll:true}); }catch(e){ ta.focus(); }
+          syncEditor(box);
+        }
+      });
+    }
+    function enhanceBox(box){
+      if(box.dataset.ian603SqlFocus==='ready') return;
+      var ta=editorTextarea(box);
+      var actions=actionBar(box);
+      if(!ta || !actions) return;
+
+      box.dataset.ian603SqlFocus='ready';
+
+      // Respect a module-specific expand control if one already exists.
+      var existing=actions.querySelector('.sql-focus-toggle,.sql-expand');
+      if(existing){
+        existing.classList.add('sql-focus-toggle');
+        return;
+      }
+
+      var btn=el('button',localButtonClass(box)+' sql-focus-toggle','Expand');
+      btn.type='button';
+      btn.setAttribute('aria-label','Expand SQL editor');
+      btn.setAttribute('aria-pressed','false');
+      btn.title='Open a larger SQL workspace';
+      btn.addEventListener('click',function(){
+        if(box.classList.contains('ian603-sql-focus')) closeFocus();
+        else openFocus(box);
+      });
+      actions.appendChild(btn);
+    }
+
+    function scan(){
+      [].slice.call(document.querySelectorAll('.code-cell,.pg-cell,.sql-cell')).forEach(enhanceBox);
+    }
+
+    scan();
+
+    // Some modules generate SQL cells dynamically.
+    try{
+      new MutationObserver(function(mutations){
+        var needsScan=mutations.some(function(m){return m.addedNodes && m.addedNodes.length;});
+        if(needsScan) scan();
+      }).observe(document.body,{childList:true,subtree:true});
+    }catch(e){}
+
+    document.addEventListener('keydown',function(event){
+      if(event.key==='Escape' && activeBox){
+        event.preventDefault();
+        event.stopPropagation();
+        closeFocus();
+      }
+    },true);
+  }
+  /* IAN603_SQL_FOCUS_SHARED_END */
+
   function init(){
     if(document.body.classList.contains('ian603-shell')) return;
     document.body.classList.add('ian603-shell');
     setupHeader();
     setupFooter();
     setupSlideProgress();
+    setupSqlFocus();
   }
 
   if(document.readyState==='loading'){
