@@ -318,7 +318,111 @@ body.dark .mini-result th{
     font-size:12.5px;
   }
 }
-</style><!-- IAN603_UI_SHELL_START --><link rel="stylesheet" href="assets/ian603-ui-shell.css?v=20260929"><!-- IAN603_UI_SHELL_END --></head><body><div class="app"><header class="topbar"><div class="brand"><div class="brand-mark">6</div><div>IAN 603<small>Module 6 · Joining Data</small></div></div><span id="dbStatus" class="db-status">Loading PostgreSQL...</span><div class="top-actions"><button class="control" id="progressBtn" type="button">Progress <span id="progressPct">0%</span></button><button class="control" id="runSlideBtn" type="button">Run SQL</button><button class="control" id="themeBtn" type="button">Dark mode</button><button class="control" id="fullBtn" type="button">Full screen</button><button class="control" id="courseModulesBtn" type="button" aria-haspopup="dialog" aria-controls="courseModulesDrawer"><span class="cmn-btn-icon">☰</span><span class="cmn-btn-label">Course Modules</span></button></div></header><main class="stage"><div id="slidesHost"><section class="slide active" data-title="Big picture"><div class="hero"><div><div class="slide-kicker">IAN 603 · Module 6</div><h1>Joining Data in PostgreSQL</h1><p class="lead">Move from separate relational tables to defensible analytical datasets.</p><div class="badges"><span class="badge">INNER / LEFT / RIGHT / FULL</span><span class="badge">ON vs WHERE</span><span class="badge">Cardinality</span><span class="badge">Self &amp; Cross joins</span></div><div class="start-actions" style="margin-top:18px"><button class="control primary" id="startWithNarration" type="button">Start Narration</button></div></div><div class="hero-visual"><div class="query-stack"><div class="query-node"><b>1</b>Define what one output row means</div><div class="query-node"><b>2</b>Choose which rows must be preserved</div><div class="query-node"><b>3</b>Write the matching rule</div><div class="query-node"><b>4</b>Validate row counts and keys</div></div></div></div><div class="slide-num"></div></section><section class="slide" data-title="Learning objectives"><div class="grid-2"><div class="card primary-card"><h3>Choose the join</h3><p>Translate a business question into INNER, LEFT, RIGHT, or FULL OUTER JOIN.</p></div><div class="card"><h3>Control matching</h3><p>Use aliases, <code>ON</code>, and <code>USING</code> clearly.</p></div><div class="card"><h3>Protect the grain</h3><p>Recognize one-to-many and many-to-many multiplication.</p></div><div class="card good-card"><h3>Validate</h3><p>Check row counts, distinct keys, and known examples before trusting a result.</p></div></div><div class="slide-num"></div></section><section class="slide" data-title="Join decision workflow"><div class="process"><div class="step"><b>1</b>Define the grain</div><div class="step"><b>2</b>Name the two row sets</div><div class="step"><b>3</b>Define a match</div><div class="step"><b>4</b>Choose preserved rows</div><div class="step"><b>5</b>Predict cardinality</div><div class="step"><b>6</b>Validate output</div></div><div class="callout"><strong>Core habit:</strong> start from the business rule, not from a JOIN keyword.</div><div class="slide-num"></div></section><section class="slide" data-title="Practice schema"><div class="grid-3"><div class="card"><div class="label">patients</div><p>One row per patient.</p></div><div class="card"><div class="label">admissions</div><p>Many admissions can belong to one patient.</p></div><div class="card"><div class="label">lab_results</div><p>Many lab tests can belong to one patient.</p></div><div class="card"><div class="label">prescriptions</div><p>Many prescriptions can belong to one patient.</p></div><div class="card"><div class="label">medical_staff</div><p>Staff members belong to departments.</p></div><div class="card"><div class="label">departments</div><p>One row per department.</p></div></div><div class="callout"><strong>Important:</strong> the database intentionally includes patients without activity and a staging row without a patient master record.</div><div class="slide-num"></div></section><section class="slide" data-title="Join mental model"><div class="grid-3"><div class="card primary-card"><h3>Row sets</h3><p>Which two sources are being compared?</p></div><div class="card"><h3>Match</h3><p>What condition makes two rows related?</p></div><div class="card good-card"><h3>Preservation</h3><p>Which unmatched rows must remain?</p></div></div><div class="callout"><strong>Remember:</strong> the join type controls preservation; the <code>ON</code> expression controls matching.</div><div class="slide-num"></div></section><section class="slide" data-title="Row preservation map">
+</style><!-- IAN603_UI_SHELL_START --><link rel="stylesheet" href="assets/ian603-ui-shell.css?v=20260929"><!-- IAN603_UI_SHELL_END --></head><body><div class="app"><header class="topbar"><div class="brand"><div class="brand-mark">6</div><div>IAN 603<small>Module 6 · Joining Data</small></div></div><span id="dbStatus" class="db-status">Loading PostgreSQL...</span><div class="top-actions"><button class="control" id="progressBtn" type="button">Progress <span id="progressPct">0%</span></button><button class="control" id="runSlideBtn" type="button">Run SQL</button><button class="control" id="themeBtn" type="button">Dark mode</button><button class="control" id="fullBtn" type="button">Full screen</button><button class="control" id="courseModulesBtn" type="button" aria-haspopup="dialog" aria-controls="courseModulesDrawer"><span class="cmn-btn-icon">☰</span><span class="cmn-btn-label">Course Modules</span></button></div></header><main class="stage"><div id="slidesHost"><section class="slide active" data-title="Big picture"><div class="hero"><div><div class="slide-kicker">IAN 603 · Module 6</div><h1>Joining Data in PostgreSQL</h1><p class="lead">Move from separate relational tables to defensible analytical datasets.</p><div class="badges"><span class="badge">INNER / LEFT / RIGHT / FULL</span><span class="badge">ON vs WHERE</span><span class="badge">Cardinality</span><span class="badge">Self &amp; Cross joins</span></div><div class="start-actions" style="margin-top:18px"><button class="control primary" id="startWithNarration" type="button">Start Narration</button></div></div><div class="hero-visual"><div class="query-stack"><div class="query-node"><b>1</b>Define what one output row means</div><div class="query-node"><b>2</b>Choose which rows must be preserved</div><div class="query-node"><b>3</b>Write the matching rule</div><div class="query-node"><b>4</b>Validate row counts and keys</div></div></div></div><div class="slide-num"></div></section><section class="slide" data-title="Learning objectives"><div class="grid-2"><div class="card primary-card"><h3>Choose the join</h3><p>Translate a business question into INNER, LEFT, RIGHT, or FULL OUTER JOIN.</p></div><div class="card"><h3>Control matching</h3><p>Use aliases, <code>ON</code>, and <code>USING</code> clearly.</p></div><div class="card"><h3>Protect the grain</h3><p>Recognize one-to-many and many-to-many multiplication.</p></div><div class="card good-card"><h3>Validate</h3><p>Check row counts, distinct keys, and known examples before trusting a result.</p></div></div><div class="slide-num"></div></section><section class="slide" data-title="Join decision workflow"><div class="process"><div class="step"><b>1</b>Define the grain</div><div class="step"><b>2</b>Name the two row sets</div><div class="step"><b>3</b>Define a match</div><div class="step"><b>4</b>Choose preserved rows</div><div class="step"><b>5</b>Predict cardinality</div><div class="step"><b>6</b>Validate output</div></div><div class="callout"><strong>Core habit:</strong> start from the business rule, not from a JOIN keyword.</div><div class="slide-num"></div></section><section class="slide" data-title="Practice schema">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:10px">
+  <div>
+    <div class="slide-kicker">Relationships before JOINs</div>
+    <h2 style="margin-bottom:8px">Practice schema</h2>
+    <p class="lead" style="margin-bottom:0">A JOIN works because related tables share keys. Follow each relationship from a primary key to the matching foreign key.</p>
+  </div>
+  <span class="badge" style="white-space:nowrap">PK → FK</span>
+</div>
+
+<div id="practiceSchemaErd" style="border:1px solid var(--border);border-radius:16px;background:var(--surface2);padding:10px 12px;overflow:auto">
+<svg viewBox="0 0 1180 500" role="img" aria-label="Entity relationship diagram showing patients connected one-to-many to admissions, lab results, and prescriptions, and departments connected one-to-many to medical staff." style="display:block;width:100%;min-width:820px;height:auto">
+  <defs>
+    <marker id="erdArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="var(--primary)"></path>
+    </marker>
+    <filter id="erdShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity=".10"></feDropShadow>
+    </filter>
+  </defs>
+
+  <!-- Relationship paths -->
+  <path d="M300 128 H365 V80 H455" fill="none" stroke="var(--primary)" stroke-width="3" marker-end="url(#erdArrow)"></path>
+  <path d="M300 128 H365 V245 H455" fill="none" stroke="var(--primary)" stroke-width="3" marker-end="url(#erdArrow)"></path>
+  <path d="M300 128 H365 V410 H455" fill="none" stroke="var(--primary)" stroke-width="3" marker-end="url(#erdArrow)"></path>
+  <path d="M995 190 V285" fill="none" stroke="var(--primary)" stroke-width="3" marker-end="url(#erdArrow)"></path>
+
+  <!-- Relationship labels -->
+  <text x="310" y="112" fill="var(--primary)" font-size="16" font-weight="800">1</text>
+  <text x="425" y="68" fill="var(--primary)" font-size="16" font-weight="800">many</text>
+  <text x="425" y="233" fill="var(--primary)" font-size="16" font-weight="800">many</text>
+  <text x="425" y="398" fill="var(--primary)" font-size="16" font-weight="800">many</text>
+  <text x="1010" y="218" fill="var(--primary)" font-size="16" font-weight="800">1 → many</text>
+
+  <!-- patients -->
+  <g filter="url(#erdShadow)">
+    <rect x="35" y="55" width="265" height="150" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
+    <rect x="35" y="55" width="265" height="42" rx="14" fill="var(--soft)"></rect>
+    <rect x="35" y="83" width="265" height="14" fill="var(--soft)"></rect>
+    <text x="55" y="83" fill="var(--primary)" font-size="20" font-weight="900">patients</text>
+    <text x="55" y="122" fill="var(--text)" font-size="16" font-weight="800">PK  patient_id</text>
+    <text x="55" y="151" fill="var(--muted)" font-size="15">name</text>
+    <text x="55" y="181" fill="var(--muted)" font-size="14">One row per patient.</text>
+  </g>
+
+  <!-- admissions -->
+  <g filter="url(#erdShadow)">
+    <rect x="455" y="20" width="300" height="135" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
+    <rect x="455" y="20" width="300" height="42" rx="14" fill="var(--soft)"></rect>
+    <rect x="455" y="48" width="300" height="14" fill="var(--soft)"></rect>
+    <text x="475" y="48" fill="var(--primary)" font-size="20" font-weight="900">admissions</text>
+    <text x="475" y="86" fill="var(--text)" font-size="15" font-weight="800">PK  admission_id</text>
+    <text x="475" y="111" fill="var(--text)" font-size="15" font-weight="800">FK  patient_id</text>
+    <text x="475" y="138" fill="var(--muted)" font-size="14">Many admissions can belong to one patient.</text>
+  </g>
+
+  <!-- lab_results -->
+  <g filter="url(#erdShadow)">
+    <rect x="455" y="185" width="300" height="125" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
+    <rect x="455" y="185" width="300" height="42" rx="14" fill="var(--soft)"></rect>
+    <rect x="455" y="213" width="300" height="14" fill="var(--soft)"></rect>
+    <text x="475" y="213" fill="var(--primary)" font-size="20" font-weight="900">lab_results</text>
+    <text x="475" y="251" fill="var(--text)" font-size="15" font-weight="800">PK  test_id</text>
+    <text x="475" y="276" fill="var(--text)" font-size="15" font-weight="800">FK  patient_id</text>
+    <text x="475" y="298" fill="var(--muted)" font-size="14">Many lab tests can belong to one patient.</text>
+  </g>
+
+  <!-- prescriptions -->
+  <g filter="url(#erdShadow)">
+    <rect x="455" y="350" width="300" height="125" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
+    <rect x="455" y="350" width="300" height="42" rx="14" fill="var(--soft)"></rect>
+    <rect x="455" y="378" width="300" height="14" fill="var(--soft)"></rect>
+    <text x="475" y="378" fill="var(--primary)" font-size="20" font-weight="900">prescriptions</text>
+    <text x="475" y="416" fill="var(--text)" font-size="15" font-weight="800">PK  rx_id</text>
+    <text x="475" y="441" fill="var(--text)" font-size="15" font-weight="800">FK  patient_id</text>
+    <text x="475" y="463" fill="var(--muted)" font-size="14">Many prescriptions can belong to one patient.</text>
+  </g>
+
+  <!-- departments -->
+  <g filter="url(#erdShadow)">
+    <rect x="855" y="55" width="285" height="135" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
+    <rect x="855" y="55" width="285" height="42" rx="14" fill="var(--soft)"></rect>
+    <rect x="855" y="83" width="285" height="14" fill="var(--soft)"></rect>
+    <text x="875" y="83" fill="var(--primary)" font-size="20" font-weight="900">departments</text>
+    <text x="875" y="122" fill="var(--text)" font-size="15" font-weight="800">PK  department</text>
+    <text x="875" y="150" fill="var(--muted)" font-size="15">floor_no</text>
+    <text x="875" y="176" fill="var(--muted)" font-size="14">One row per department.</text>
+  </g>
+
+  <!-- medical_staff -->
+  <g filter="url(#erdShadow)">
+    <rect x="855" y="285" width="285" height="155" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
+    <rect x="855" y="285" width="285" height="42" rx="14" fill="var(--soft)"></rect>
+    <rect x="855" y="313" width="285" height="14" fill="var(--soft)"></rect>
+    <text x="875" y="313" fill="var(--primary)" font-size="20" font-weight="900">medical_staff</text>
+    <text x="875" y="352" fill="var(--text)" font-size="15" font-weight="800">PK  staff_id</text>
+    <text x="875" y="378" fill="var(--text)" font-size="15" font-weight="800">FK  department</text>
+    <text x="875" y="405" fill="var(--muted)" font-size="15">name · specialization</text>
+    <text x="875" y="428" fill="var(--muted)" font-size="14">Staff members belong to departments.</text>
+  </g>
+</svg>
+</div>
+
+<div class="callout" style="margin-top:10px"><strong>Important:</strong> the database intentionally includes patients without activity and a staging row without a patient master record. <span style="margin-left:8px"><strong>Read the ERD:</strong> <code>patients.patient_id</code> connects to the patient foreign key in the activity tables.</span></div>
+<div class="slide-num"></div></section><section class="slide" data-title="Join mental model"><div class="grid-3"><div class="card primary-card"><h3>Row sets</h3><p>Which two sources are being compared?</p></div><div class="card"><h3>Match</h3><p>What condition makes two rows related?</p></div><div class="card good-card"><h3>Preservation</h3><p>Which unmatched rows must remain?</p></div></div><div class="callout"><strong>Remember:</strong> the join type controls preservation; the <code>ON</code> expression controls matching.</div><div class="slide-num"></div></section><section class="slide" data-title="Row preservation map">
 <p class="lead">Use the same tiny row sets to see what each join preserves before we run the larger healthcare examples.</p>
 <div class="grid-2">
   <div class="join-mini"><span class="mini-label">Left table · patients</span><table class="tiny-table"><thead><tr><th>patient_id</th><th>name</th></tr></thead><tbody><tr><td>1</td><td>Ana</td></tr><tr><td>2</td><td>Ben</td></tr><tr><td>3</td><td>Cara</td></tr></tbody></table></div>
