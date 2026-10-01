@@ -1,49 +1,52 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.647
-Now we will look at the safer pattern when we want to preserve the left-side population.
+00:00:00.000 --> 00:00:04.762
+This slide applies the ON-versus-WHERE rule to a runnable PostgreSQL example.
 
-00:00:05.647 --> 00:00:12.307
-The first condition in ON matches patients to lab results by patient_id.
+00:00:04.762 --> 00:00:07.487
+The tiny input shows three patients.
 
-00:00:12.307 --> 00:00:18.042
-The second condition says that only Glucose rows are eligible to match.
+00:00:07.487 --> 00:00:11.022
+Ana has both a Glucose and a Cholesterol result.
 
-00:00:18.042 --> 00:00:21.507
-Run the query and check the patient IDs.
+00:00:11.022 --> 00:00:15.767
+Ben has only Cholesterol. Cara has no lab result.
 
-00:00:21.507 --> 00:00:27.352
-Every patient should still appear because the LEFT JOIN preserves the patient table.
+00:00:15.767 --> 00:00:20.302
+Our business question is not show patients who have Glucose tests.
 
-00:00:27.352 --> 00:00:29.982
-Then inspect the lab columns.
+00:00:20.302 --> 00:00:26.037
+The question is show every patient, and attach a Glucose result when one exists.
 
-00:00:29.982 --> 00:00:33.952
-Patients with a Glucose test will show test information.
+00:00:26.037 --> 00:00:29.837
+That wording tells us that every patient must remain.
 
-00:00:33.952 --> 00:00:39.242
-Patients without one will remain, but their lab fields will be NULL.
+00:00:29.837 --> 00:00:36.042
+The Glucose condition belongs inside ON because it defines which lab rows are allowed to match.
 
-00:00:39.242 --> 00:00:39.992
-This is a very useful real-world pattern.
+00:00:36.042 --> 00:00:38.492
+Ana gets her Glucose result.
 
-00:00:39.992 --> 00:00:48.787
-Suppose a company wants every employee listed, along with their most recent safety training if the training
+00:00:38.492 --> 00:00:44.642
+Ben remains but gets NULL lab values because his Cholesterol row is not eligible to match.
 
-00:00:48.787 --> 00:00:51.312
-was completed this year.
+00:00:44.642 --> 00:00:49.852
+Cara also remains with NULL lab values because there is no lab row at all.
 
-00:00:51.312 --> 00:00:59.007
-Or a university wants every student listed, along with a tutoring visit if the visit occurred this semester.
+00:00:49.852 --> 00:00:54.522
+Run the query and verify that the full patient population remains.
 
-00:00:59.007 --> 00:01:06.977
-The date or category restriction often belongs in the matching logic when the population must remain complete.
+00:00:54.522 --> 00:00:57.542
+This is a very useful pattern for reporting.
 
-00:01:06.977 --> 00:01:12.187
-Before you run the query, predict which rows should have non-null values.
+00:00:57.542 --> 00:01:01.297
+You may want every product with sales from a specific month,
 
-00:01:12.187 --> 00:01:14.977
-Then compare your prediction to the result.
+00:01:01.297 --> 00:01:04.852
+every student with a tutoring visit from a specific semester,
 
-00:01:14.977 --> 00:01:18.640
-That habit turns SQL from trial-and-error into reasoning.
+00:01:04.852 --> 00:01:09.217
+or every employee with a required certification when one exists.
+
+00:01:09.217 --> 00:01:16.407
+The mental sentence is: preserve every patient, and among lab records allow only Glucose rows to match.

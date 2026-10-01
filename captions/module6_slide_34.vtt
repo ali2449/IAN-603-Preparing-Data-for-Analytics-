@@ -1,46 +1,43 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.537
-Before the coding exercises, make sure you can explain the core ideas in your own words.
+00:00:00.000 --> 00:00:06.837
+Before starting the coding exercises, make sure you can explain the main concepts in your own words.
 
-00:00:05.537 --> 00:00:12.652
-First, why can a LEFT JOIN followed by a WHERE condition on the right table remove unmatched left rows?
+00:00:06.837 --> 00:00:13.897
+First, explain why a LEFT JOIN followed by a WHERE condition on the right table can remove unmatched
 
-00:00:12.652 --> 00:00:20.302
-Your explanation should mention that unmatched right-side values become NULL and that WHERE filters the final
+00:00:13.897 --> 00:00:14.352
+left rows.
 
-00:00:20.302 --> 00:00:24.667
-joined result. Second, can you choose a join type from the population rule?
+00:00:14.352 --> 00:00:22.017
+A strong explanation should mention that unmatched right-side values become NULL and WHERE filters the final
 
-00:00:24.667 --> 00:00:27.757
+00:00:22.017 --> 00:00:25.287
+result. Second, choose a join from a population rule.
+
+00:00:25.287 --> 00:00:28.122
 Only matched records suggests INNER JOIN.
 
-00:00:27.757 --> 00:00:32.992
-Every patient suggests preserving patients with LEFT JOIN when patients are on the left.
+00:00:28.122 --> 00:00:33.267
+Every patient suggests preserving patients with LEFT JOIN when patients is on the left.
 
-00:00:32.992 --> 00:00:37.747
+00:00:33.267 --> 00:00:37.647
 Reconciliation across both sources suggests FULL OUTER JOIN.
 
-00:00:37.747 --> 00:00:43.912
-Third, can you explain row multiplication without simply calling the extra rows duplicates?
+00:00:37.647 --> 00:00:43.492
+Third, explain row multiplication without simply calling the extra rows duplicates.
 
-00:00:43.912 --> 00:00:48.557
-Several child tables with multiple matches can create combinations.
+00:00:43.492 --> 00:00:50.372
+Several child tables can contain multiple matches, creating combinations of valid detail rows.
 
-00:00:48.557 --> 00:00:53.622
-The rows may be unique as combinations even though they inflate event counts.
+00:00:50.372 --> 00:00:53.192
+Those combinations can inflate counts.
 
-00:00:53.622 --> 00:00:58.422
-Finally, can you design a one-row-per-patient result safely?
+00:00:53.192 --> 00:01:00.212
+Finally, explain how to produce one row per patient safely when several child tables contain activity.
 
-00:00:58.422 --> 00:01:05.157
-A strong answer is to summarize each child table to patient grain before joining it to the patient master.
+00:01:00.212 --> 00:01:06.772
+One strong strategy is to summarize each child table to patient grain before joining the summaries.
 
-00:01:05.157 --> 00:01:10.517
-If you can explain these ideas clearly, the syntax becomes much easier.
-
-00:01:10.517 --> 00:01:12.887
-The goal is not memorization.
-
-00:01:12.887 --> 00:01:16.642
-The goal is reasoning about the data structure and the business question.
+00:01:06.772 --> 00:01:12.742
+If you can explain these ideas clearly, the syntax becomes easier to reconstruct when you need it.

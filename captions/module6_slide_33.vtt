@@ -1,40 +1,49 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.152
-This project combines join reasoning with a window-function idea.
+00:00:00.000 --> 00:00:03.707
+This slide is an optional preview of a later SQL topic.
 
-00:00:04.152 --> 00:00:10.487
-Inside the CTE, LEAD looks forward within each patient's admissions ordered by date.
+00:00:03.707 --> 00:00:09.322
+The function LEAD is a window function, and window functions are covered later in the course.
 
-00:00:10.487 --> 00:00:17.082
-That gives us information about the next admission, including the next department and the next admission date.
+00:00:09.322 --> 00:00:12.167
+You do not need to memorize LEAD here.
 
-00:00:17.082 --> 00:00:23.647
-The outer query then keeps cases where a next department exists and where the department changes.
+00:00:12.167 --> 00:00:18.232
+The reason this example appears in Module 6 is that the same grain reasoning still matters.
 
-00:00:23.647 --> 00:00:30.032
-Finally, it groups the transitions to summarize how often patients move from one department to another.
+00:00:18.232 --> 00:00:23.037
+Inside the common table expression, one row represents one admission,
 
-00:00:30.032 --> 00:00:35.857
-Even though the final logic is not a traditional join, the same grain thinking applies.
+00:00:23.037 --> 00:00:26.817
+along with information about the next admission for the same patient.
 
-00:00:35.857 --> 00:00:42.577
-Inside the CTE, one row represents one admission plus information about the following admission.
+00:00:26.817 --> 00:00:30.992
+LEAD looks forward within each patient's admissions ordered by date.
 
-00:00:42.577 --> 00:00:49.292
-After grouping, one row represents one transition pair, such as Emergency to Cardiology.
+00:00:30.992 --> 00:00:34.672
+It retrieves the next department and the next admission date.
 
-00:00:49.292 --> 00:00:52.657
-This type of analysis appears in many fields.
+00:00:34.672 --> 00:00:39.972
+The outer query keeps cases where a later admission exists and the department changes.
 
-00:00:52.657 --> 00:00:57.722
-In retail, you might study transitions from one product category to another.
+00:00:39.972 --> 00:00:42.182
+Then it groups those transitions.
 
-00:00:57.722 --> 00:01:03.022
-In education, you might study students moving from one course level to the next.
+00:00:42.182 --> 00:00:49.077
+In the current practice data, one example of a department change is a patient moving from Endocrinology to
 
-00:01:03.022 --> 00:01:06.937
-In operations, you might study workflow steps.
+00:00:49.077 --> 00:00:52.187
+Cardiology on a later admission.
 
-00:01:06.937 --> 00:01:11.718
-The key habit is to keep restating the grain after every major transformation.
+00:00:52.187 --> 00:00:57.567
+After grouping, one row represents one transition pattern, such as one department to another department.
+
+00:00:57.567 --> 00:01:02.662
+Again, the important point for this module is not the window-function syntax.
+
+00:01:02.662 --> 00:01:08.407
+The important point is to keep asking what one row represents after each transformation.
+
+00:01:08.407 --> 00:01:11.707
+We will study window functions in more detail later.

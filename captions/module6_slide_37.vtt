@@ -1,40 +1,37 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.572
+00:00:00.000 --> 00:00:03.642
 Coding Exercise 2 changes the population rule.
 
-00:00:03.572 --> 00:00:09.252
-This time, every patient must appear, even if the patient has no admission.
+00:00:03.642 --> 00:00:09.027
+This time, every patient must appear, even when the patient has no admission.
 
-00:00:09.252 --> 00:00:13.677
-The phrase every patient tells you which side must be preserved.
+00:00:09.027 --> 00:00:13.797
+The phrase every patient tells you which table must be preserved.
 
-00:00:13.677 --> 00:00:18.682
-Patients should be on the left side of the join, and admissions should be optional.
+00:00:13.797 --> 00:00:17.037
+Patients should be on the left side of a LEFT JOIN, while admissions is optional.
 
-00:00:18.682 --> 00:00:23.362
+00:00:17.037 --> 00:00:23.627
 Before running the query, predict what an unmatched patient should look like.
 
-00:00:23.362 --> 00:00:26.982
-The patient ID and patient name should still have values.
+00:00:23.627 --> 00:00:30.017
+The patient ID and name should still have values, while admission ID and diagnosis should be NULL.
 
-00:00:26.982 --> 00:00:32.292
-The admission ID and diagnosis should be NULL because no admission row matched.
+00:00:30.017 --> 00:00:35.217
+Also remember that LEFT JOIN does not automatically create one row per patient.
 
-00:00:32.292 --> 00:00:36.907
-After Run and Check, find that unmatched patient in the result.
+00:00:35.217 --> 00:00:39.607
+A patient with several admissions can still appear several times.
 
-00:00:36.907 --> 00:00:41.977
-Also notice that patients with multiple admissions still appear multiple times.
+00:00:39.607 --> 00:00:42.697
+Preservation and grain are different concepts.
 
-00:00:41.977 --> 00:00:48.062
-LEFT JOIN preserves the patient population, but it does not force one row per patient.
+00:00:42.697 --> 00:00:45.662
+Use Run and Check after you have written the join.
 
-00:00:48.062 --> 00:00:50.342
-This is a useful distinction.
+00:00:45.662 --> 00:00:51.102
+If the unmatched patient disappears, examine whether you accidentally used INNER JOIN or added a filter that
 
-00:00:50.342 --> 00:00:54.977
-Preservation and grain are related, but they are not the same thing.
-
-00:00:54.977 --> 00:01:01.309
-A LEFT JOIN can keep every patient and still return several rows for patients with several admissions.
+00:00:51.102 --> 00:00:54.359
+removes NULL admission rows.

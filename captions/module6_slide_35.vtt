@@ -1,43 +1,43 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.122
-This slide shows the main coding strategy behind the final exercises.
+00:00:00.000 --> 00:00:04.377
+This slide summarizes the strategy behind the more advanced coding exercises.
 
-00:00:04.122 --> 00:00:11.557
+00:00:04.377 --> 00:00:11.772
 The target is one row per patient with three measures: admission count, lab count, and prescription count.
 
-00:00:11.557 --> 00:00:14.982
+00:00:11.772 --> 00:00:15.077
 Patients with no activity must still remain.
 
-00:00:14.982 --> 00:00:20.207
-The safest solution is to aggregate each child table by patient_id first.
+00:00:15.077 --> 00:00:20.362
+The safest approach is to summarize each child table by patient ID first.
 
-00:00:20.207 --> 00:00:25.222
-After aggregation, each summary contains at most one row per patient.
+00:00:20.362 --> 00:00:25.917
+After aggregation, each child summary contains at most one row per patient.
 
-00:00:25.222 --> 00:00:28.357
-Then we LEFT JOIN those summaries to patients.
+00:00:25.917 --> 00:00:29.252
+Then we LEFT JOIN those summaries to the patient master.
 
-00:00:28.357 --> 00:00:33.857
-Because the patient table is preserved, patients with no activity stay in the result.
+00:00:29.252 --> 00:00:36.412
+Because patients is preserved, a patient with no admissions, labs, or prescriptions still appears.
 
-00:00:33.857 --> 00:00:37.077
-COALESCE turns missing counts into zero.
+00:00:36.412 --> 00:00:43.192
+COALESCE converts a missing count from NULL to zero, which is usually easier to interpret in a report.
 
-00:00:37.077 --> 00:00:40.572
-This approach is very common in production analytics.
+00:00:43.192 --> 00:00:45.347
+This is a common production pattern.
 
-00:00:40.572 --> 00:00:46.402
-Imagine a customer dashboard with order count, support-ticket count, and refund count.
+00:00:45.347 --> 00:00:51.232
+A customer dashboard may combine order count, support-ticket count, and refund count.
 
-00:00:46.402 --> 00:00:52.172
-Instead of joining raw order rows, raw ticket rows, and raw refund rows together,
+00:00:51.232 --> 00:00:57.582
+A student dashboard may combine registration count, advising visits, and submissions.
 
-00:00:52.172 --> 00:00:56.517
-summarize each activity first. Then combine the summaries.
+00:00:57.582 --> 00:01:02.172
+Pre-aggregating each activity source protects the target grain.
 
-00:00:56.517 --> 00:01:03.357
-Run the query and validate at least two patients: one with multiple activities and one with no activity.
+00:01:02.172 --> 00:01:06.977
+When you run the query, validate at least one patient with multiple activities and one patient with no
 
-00:01:03.357 --> 00:01:09.680
-If the final result is one row per patient and the counts match the source data, the grain is protected.
+00:01:06.977 --> 00:01:12.833
+activity. The output row count should equal the number of patients.

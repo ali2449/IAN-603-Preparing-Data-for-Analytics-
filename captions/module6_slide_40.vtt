@@ -1,43 +1,43 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.562
-Coding Exercise 5 is the most important cardinality exercise in the assignment.
+00:00:00.000 --> 00:00:04.647
+Coding Exercise 5 is the main cardinality exercise in the assignment.
 
-00:00:05.562 --> 00:00:09.152
+00:00:04.647 --> 00:00:07.372
 The required grain is one row per patient.
 
-00:00:09.152 --> 00:00:17.147
-You need admission count, lab count, and prescription count, and patients with no activity must still remain.
+00:00:07.372 --> 00:00:11.797
+You need an admission count, a lab count, and a prescription count,
 
-00:00:17.147 --> 00:00:22.122
-Do not directly join all three detail tables and then use COUNT star.
+00:00:11.797 --> 00:00:14.917
+and patients with zero activity must still remain.
 
-00:00:22.122 --> 00:00:26.057
-That creates combinations and can inflate the measures.
+00:00:14.917 --> 00:00:19.067
+Do not directly join all three detail tables and then count rows.
 
-00:00:26.057 --> 00:00:32.622
-Instead, summarize each child table by patient_id inside the common table expressions.
+00:00:19.067 --> 00:00:23.312
+That can create combinations and inflate the measures.
 
-00:00:32.622 --> 00:00:35.752
+00:00:23.312 --> 00:00:29.302
+Instead, summarize each child table by patient ID inside the provided common table expressions.
+
+00:00:29.302 --> 00:00:33.932
 Each summary should return one row per patient with one count.
 
-00:00:35.752 --> 00:00:39.752
-Then LEFT JOIN those summaries to the patient table.
+00:00:33.932 --> 00:00:37.142
+Then LEFT JOIN those summaries to patients.
 
-00:00:39.752 --> 00:00:46.332
-Use COALESCE or another missing-value fallback so a patient with no activity shows zero instead of NULL.
+00:00:37.142 --> 00:00:41.932
+Use COALESCE so that a patient with no related activity shows zero instead of NULL.
 
-00:00:46.332 --> 00:00:50.662
+00:00:41.932 --> 00:00:42.867
 After Run and Check, validate the result.
 
-00:00:50.662 --> 00:00:54.162
+00:00:42.867 --> 00:00:49.252
 The number of output rows should equal the number of patients.
 
-00:00:54.162 --> 00:00:58.822
-Check one patient with several activities and one patient with no activity.
+00:00:49.252 --> 00:00:53.347
+Check a patient with several activities and a patient with no activity.
 
-00:00:58.822 --> 00:01:06.842
-This exercise represents a pattern you will use often in dashboards and reporting systems where multiple
-
-00:01:06.842 --> 00:01:10.880
-measures must be combined safely at one target grain.
+00:00:53.347 --> 00:00:58.097
+This pattern is widely used when building dashboards and analytical feature tables.

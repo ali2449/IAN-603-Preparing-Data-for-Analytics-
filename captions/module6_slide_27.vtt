@@ -1,49 +1,46 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.017
-Now we combine several tables in one query.
+00:00:00.000 --> 00:00:05.517
+Real analytical queries often follow a relationship path across more than two tables.
 
-00:00:03.017 --> 00:00:08.847
-The first join moves from patients to admissions using patient_id.
+00:00:05.517 --> 00:00:11.462
+In this example, we begin with patients and join to admissions using patient ID.
 
-00:00:08.847 --> 00:00:15.692
-Because the result is at admission detail, using INNER JOIN is reasonable if we only care about admissions
+00:00:11.462 --> 00:00:16.587
+Then we join admissions to medical staff using the attending staff ID.
 
-00:00:15.692 --> 00:00:17.712
-that belong to valid patients.
+00:00:16.587 --> 00:00:19.922
+The final row contains patient information, admission information,
 
-00:00:17.712 --> 00:00:24.407
-The second join moves from each admission to the attending staff member using attending_staff_id.
+00:00:19.922 --> 00:00:21.452
+and information about the attending clinician.
 
-00:00:24.407 --> 00:00:30.167
-Here we use LEFT JOIN so the admission can remain even if the staff reference is missing.
+00:00:21.452 --> 00:00:27.927
+Notice that the second join uses a different key from the first join.
 
-00:00:30.167 --> 00:00:33.162
-Notice the path: patient to admission, then admission to staff.
+00:00:27.927 --> 00:00:32.047
+We are not connecting tables just because they contain a similar column.
 
-00:00:33.162 --> 00:00:41.187
-That path matters. We are not joining tables just because they have columns that look similar.
+00:00:32.047 --> 00:00:38.777
+We are following the documented relationship path: patient to admission, then admission to attending staff.
 
-00:00:41.187 --> 00:00:44.037
-We are following documented relationships.
+00:00:38.777 --> 00:00:45.237
+The staff join is a LEFT JOIN because we may want to keep the admission even if the
 
-00:00:44.037 --> 00:00:48.377
-This is exactly how larger real-world queries should be designed.
+00:00:45.237 --> 00:00:49.457
+staff reference is missing. If each attending staff ID points to at most one staff member,
 
-00:00:48.377 --> 00:00:52.882
-For example, in retail the path might be customer to order, then order to payment.
+00:00:49.457 --> 00:00:53.327
+adding the staff table should not increase the number of admission rows.
 
-00:00:52.882 --> 00:00:58.527
-In a university it might be student to registration, then registration to course.
+00:00:53.327 --> 00:00:56.257
+This same design appears in other domains.
 
-00:00:58.527 --> 00:01:02.752
-Write the relationship path before writing the SQL.
+00:00:56.257 --> 00:00:59.932
+Retail might follow customer to order to payment.
 
-00:01:02.752 --> 00:01:04.322
-Also keep checking the grain.
+00:00:59.932 --> 00:01:04.227
+Education might follow student to registration to course.
 
-00:01:04.322 --> 00:01:12.442
-Adding the staff table should not create more admission rows if each attending staff ID points to at most one
-
-00:01:12.442 --> 00:01:19.360
-staff member. If the row count increases unexpectedly, that is a signal to investigate the relationship.
+00:01:04.227 --> 00:01:10.591
+Writing the relationship path before writing the SQL makes complex joins easier to reason about.

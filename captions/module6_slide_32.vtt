@@ -1,43 +1,40 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.042
-This project combines joins with skills from earlier modules.
+00:00:00.000 --> 00:00:06.112
+This is an optional integration project that combines JOIN thinking with a technique from earlier SQL work.
 
-00:00:04.042 --> 00:00:11.197
-We first create a common event structure by stacking admissions, lab tests, and prescriptions with UNION ALL.
+00:00:06.112 --> 00:00:14.492
+The common table expression creates a patient timeline by stacking admissions, lab tests,
 
-00:00:11.197 --> 00:00:20.237
+00:00:14.492 --> 00:00:14.812
+and prescriptions with UNION ALL.
+
+00:00:14.812 --> 00:00:23.217
 Each source is transformed into the same basic shape: patient ID, event date, event type, and event details.
 
-00:00:20.237 --> 00:00:27.092
-Once the event stream is created, we join it to patients so every event can include the patient's name.
+00:00:23.217 --> 00:00:26.242
+At that stage, the grain is one event.
 
-00:00:27.092 --> 00:00:32.032
-This pattern is useful because we define the grain clearly before the join.
+00:00:26.242 --> 00:00:33.477
+Then we join the event stream to patients using patient ID so each event can include the patient's
 
-00:00:32.032 --> 00:00:35.637
-One row in the event CTE represents one event.
+00:00:33.477 --> 00:00:37.892
+name. The join enriches the event rows without changing the event grain.
 
-00:00:35.637 --> 00:00:44.172
-The join enriches each event with patient-level information without changing the event grain.
+00:00:37.892 --> 00:00:40.957
+This pattern is useful in many real projects.
 
-00:00:44.172 --> 00:00:48.427
-Real-world systems often use this idea to build timelines.
+00:00:40.957 --> 00:00:47.637
+A customer journey could combine orders, website visits, support calls, and returns.
 
-00:00:48.427 --> 00:00:53.322
-A customer journey might combine purchases, website visits, support calls, and returns.
+00:00:47.637 --> 00:00:54.417
+A student timeline could combine registrations, submissions, advising appointments, and logins.
 
-00:00:53.322 --> 00:01:00.922
-A student activity timeline might combine logins, assignment submissions, advising appointments,
+00:00:54.417 --> 00:00:58.647
+Run the query and follow one patient across several dates.
 
-00:01:00.922 --> 00:01:08.682
-and course registrations. A security timeline might combine login attempts, alerts, and account changes.
+00:00:58.647 --> 00:01:04.757
+The main Module 6 lesson is to notice how clearly defining the event grain before the join makes
 
-00:01:08.682 --> 00:01:12.147
-Run the query and inspect one patient across several dates.
-
-00:01:12.147 --> 00:01:14.842
-Try to follow the story created by the events.
-
-00:01:14.842 --> 00:01:22.880
-SQL becomes much more meaningful when you can connect the rows to a real analytical narrative.
+00:01:04.757 --> 00:01:08.454
+the final result easier to understand and validate.

@@ -1,52 +1,67 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.202
-Now let us run an INNER JOIN.
+00:00:00.000 --> 00:00:02.407
+Now let us focus on INNER JOIN.
 
-00:00:02.202 --> 00:00:08.362
-In this query, patients receives the alias p and admissions receives the alias a.
+00:00:02.407 --> 00:00:05.847
+Look first at the small tables at the top of the slide.
 
-00:00:08.362 --> 00:00:14.982
-The ON condition says that a row from admissions matches a row from patients when the patient IDs are equal.
+00:00:05.847 --> 00:00:13.427
+Ana has two matching admissions, Ben has no matching admission, and Cara has one matching admission.
 
-00:00:14.982 --> 00:00:18.142
-Before running the query, make a prediction.
+00:00:13.427 --> 00:00:20.157
+Admission 104 belongs to patient ID 4, which does not exist in the small patient table.
 
-00:00:18.142 --> 00:00:23.312
-Which patients will appear? Patients with at least one admission should appear.
+00:00:20.157 --> 00:00:24.082
+The INNER JOIN result contains only matching combinations.
 
-00:00:23.312 --> 00:00:26.317
-A patient with no admission should disappear.
+00:00:24.082 --> 00:00:27.627
+Ana appears twice because she has two admissions.
 
-00:00:26.317 --> 00:00:29.752
-Also think about patients with multiple admissions.
+00:00:27.627 --> 00:00:29.312
+Cara appears once.
 
-00:00:29.752 --> 00:00:34.812
-If one patient has two admissions, that patient should appear on two result rows because each row represents
+00:00:29.312 --> 00:00:35.352
+Ben disappears because there is no matching admission, and admission 104 disappears because there is no
 
-00:00:34.812 --> 00:00:42.497
-one matching admission. Run the query and inspect the patient IDs and admission IDs.
+00:00:35.352 --> 00:00:40.352
+matching patient. This is the main idea of INNER JOIN: both sides must participate in a match.
 
-00:00:42.497 --> 00:00:45.747
-Try not to focus only on whether the query runs.
+00:00:40.352 --> 00:00:43.337
+Now look at the runnable PostgreSQL query.
 
-00:00:45.747 --> 00:00:48.552
-Ask whether the number of rows makes sense.
+00:00:43.337 --> 00:00:48.542
+We give patients the alias p and admissions the alias a.
 
-00:00:48.552 --> 00:00:54.432
-If admissions has eight valid admission records, and every admission belongs to a valid patient,
+00:00:48.542 --> 00:00:54.202
+The ON condition says that an admission matches a patient when their patient IDs are equal.
 
-00:00:54.432 --> 00:00:57.647
-the joined result should contain about eight rows.
+00:00:54.202 --> 00:00:56.952
+The selected columns combine information from both tables.
 
-00:00:57.647 --> 00:01:00.852
-This same pattern appears in many industries.
+00:00:56.952 --> 00:01:03.657
+In the current Module 6 practice database, there are twelve admission records,
 
-00:01:00.852 --> 00:01:06.752
-A retailer may join customers with orders to analyze only customers who purchased something.
+00:01:03.657 --> 00:01:05.607
+and every admission references a valid patient.
 
-00:01:06.752 --> 00:01:13.162
-A learning platform may join students with completed assessments to analyze only students with activity.
+00:01:05.607 --> 00:01:09.672
+Therefore this INNER JOIN returns exactly twelve rows.
 
-00:01:13.162 --> 00:01:16.604
-INNER JOIN is useful when a match is required by the question.
+00:01:09.672 --> 00:01:13.322
+That does not mean there are twelve different patients.
+
+00:01:13.322 --> 00:01:16.152
+Some patients have more than one admission.
+
+00:01:16.152 --> 00:01:23.017
+The grain is one matching admission with patient information attached.
+
+00:01:23.017 --> 00:01:27.057
+When you run the query, do not only ask whether it executes.
+
+00:01:27.057 --> 00:01:29.597
+Compare the result with your prediction.
+
+00:01:29.597 --> 00:01:35.769
+Check repeated patient IDs and confirm that each repeated row represents a different admission.

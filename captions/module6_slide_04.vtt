@@ -1,73 +1,43 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.252
-The examples in this module use a small synthetic healthcare database.
+00:00:00.000 --> 00:00:04.967
+The practice database for this module is a small synthetic healthcare database.
 
-00:00:04.252 --> 00:00:07.537
-We have a patients table with one row per patient.
+00:00:04.967 --> 00:00:08.477
+The patients table contains one row per patient.
 
-00:00:07.537 --> 00:00:13.052
-Then we have child tables such as admissions, lab results, and prescriptions.
+00:00:08.477 --> 00:00:14.502
+Admissions, lab results, and prescriptions are child tables, which means a single patient can have several
 
-00:00:13.052 --> 00:00:18.927
-A single patient can have no admissions, one admission, or several admissions.
+00:00:14.502 --> 00:00:17.527
+related rows in each of those tables.
 
-00:00:18.927 --> 00:00:23.057
-The same idea applies to lab tests and prescriptions.
+00:00:17.527 --> 00:00:20.397
+We also have medical staff and departments.
 
-00:00:23.057 --> 00:00:29.242
-We also have departments and medical staff, and admissions can reference an attending staff member.
+00:00:20.397 --> 00:00:26.257
+Staff members belong to departments, and admissions can reference an attending staff member.
 
-00:00:29.242 --> 00:00:33.332
-This gives us several realistic paths for joining tables.
+00:00:26.257 --> 00:00:32.332
+These relationships let us practice both simple joins and multi-table join paths.
 
-00:00:33.332 --> 00:00:36.677
-The dataset intentionally includes edge cases.
+00:00:32.332 --> 00:00:36.087
+The database intentionally contains useful edge cases.
 
-00:00:36.677 --> 00:00:42.222
-For example, one patient may have no related activity, and the staging data may include an ID that does not
+00:00:36.087 --> 00:00:41.072
+There is a patient with no admission activity, a department with no activity,
 
-00:00:42.222 --> 00:00:45.847
-exist in the official patient table.
+00:00:41.072 --> 00:00:46.167
+and a staging record whose patient ID does not appear in the official patient master.
 
-00:00:45.847 --> 00:00:52.012
-Those are not random complications; they represent the kinds of imperfect relationships analysts regularly
+00:00:46.167 --> 00:00:52.277
+Those cases help us see the difference between INNER, LEFT, RIGHT, and FULL OUTER joins.
 
-00:00:52.012 --> 00:00:54.732
-encounter in operational data.
+00:00:52.277 --> 00:00:58.117
+As you work through the examples, remember that repeated values are not automatically errors.
 
-00:00:54.732 --> 00:01:00.947
-Those edge cases are important because they let us see what different join types actually preserve.
+00:00:58.117 --> 00:01:05.742
+If one patient has two admissions, the patient information may legitimately appear twice in an admission-level
 
-00:01:00.947 --> 00:01:06.612
-In a real project, unmatched records are often the records you care about most.
-
-00:01:06.612 --> 00:01:10.787
-A bank might want to find transactions with no matching customer.
-
-00:01:10.787 --> 00:01:15.147
-A university might want to find students with no registration record.
-
-00:01:15.147 --> 00:01:19.127
-A company might want to find products that have never been sold.
-
-00:01:19.127 --> 00:01:23.412
-As you read the queries, keep the relationships in mind.
-
-00:01:23.412 --> 00:01:30.377
-Joining patients to admissions changes the result from patient-level data to admission-level detail.
-
-00:01:30.377 --> 00:01:35.997
-If a patient has three admissions, that patient information may repeat three times.
-
-00:01:35.997 --> 00:01:39.772
-That repetition is not automatically a duplicate problem.
-
-00:01:39.772 --> 00:01:42.427
-It reflects the structure of the data.
-
-00:01:42.427 --> 00:01:48.522
-Later, when we build department metrics and patient summaries, you will see how the same source tables can be
-
-00:01:48.522 --> 00:01:53.272
-transformed to a different grain depending on the analytical question.
+00:01:05.742 --> 00:01:09.612
+result. The key question is always what one output row represents.

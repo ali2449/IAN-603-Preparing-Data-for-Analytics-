@@ -1,37 +1,37 @@
 WEBVTT
 
-00:00:00.016 --> 00:00:07.157
-PostgreSQL offers USING as a convenient alternative to ON when both tables share the same join-key name.
+00:00:00.000 --> 00:00:07.097
+USING is a shorter way to express an equality join when both tables use the same column name
 
-00:00:07.157 --> 00:00:12.742
-If patients and admissions both contain patient_id, then USING patient_id tells PostgreSQL to match those
+00:00:07.097 --> 00:00:12.522
+for the relationship. In this example, both patients and admissions contain a column named patient ID.
 
-00:00:12.742 --> 00:00:18.362
-columns and return one copy of the join key in the output.
+00:00:12.522 --> 00:00:17.007
+Instead of writing an ON condition that compares the two columns explicitly,
 
-00:00:18.362 --> 00:00:25.877
-The result relationship is the same as if we had written an ON condition that compared the two patient_id
+00:00:17.007 --> 00:00:20.157
+PostgreSQL lets us write USING patient ID.
 
-00:00:25.877 --> 00:00:31.047
-columns directly. USING can make simple joins shorter and cleaner, but ON is more flexible.
+00:00:20.157 --> 00:00:22.142
+The relationship is the same.
 
-00:00:31.047 --> 00:00:35.352
-Use ON when the key names are different, when you need multiple conditions,
+00:00:22.142 --> 00:00:26.607
+We are still matching patients and admissions when the patient IDs are equal.
 
-00:00:35.352 --> 00:00:39.882
-or when the relationship requires an expression.
+00:00:26.607 --> 00:00:32.737
+One convenience is that the join key appears once in the result rather than as two separate copies.
 
-00:00:39.882 --> 00:00:45.457
-For example, if one table uses customer_id and another uses client_id, USING cannot express that relationship.
+00:00:32.737 --> 00:00:38.492
+USING is helpful when the shared key name is clear and the relationship is a simple equality.
 
-00:00:45.457 --> 00:00:51.937
-If you need to match by both account_id and date, ON is clearer.
+00:00:38.492 --> 00:00:44.782
+It is not appropriate when the two tables use different column names, when multiple conditions are needed,
 
-00:00:51.937 --> 00:00:55.572
-The goal is not to use the shortest syntax possible.
+00:00:44.782 --> 00:00:47.392
+or when the relationship is more complex.
 
-00:00:55.572 --> 00:00:59.237
-The goal is to make the relationship obvious.
+00:00:47.392 --> 00:00:54.427
+Whether you write ON or USING, you should still be able to explain the relationship in plain language.
 
-00:00:59.237 --> 00:01:04.277
-Whatever style you choose, you should still be able to explain the match in one sentence.
+00:00:54.427 --> 00:00:57.486
+Shorter syntax should not replace understanding.

@@ -1,49 +1,52 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:07.632
-A LEFT JOIN is one of the most useful patterns in analytics because it allows us to preserve a clearly defined
+00:00:00.000 --> 00:00:06.342
+LEFT JOIN is one of the most useful join patterns in analytics because it lets us preserve a complete
 
-00:00:07.632 --> 00:00:10.527
-population. Here, patients is on the left.
+00:00:06.342 --> 00:00:09.992
+population. Look at the small tables.
 
-00:00:10.527 --> 00:00:15.742
-That means every patient should remain, whether or not an admission exists.
+00:00:09.992 --> 00:00:13.197
+Ana has two admissions, Cara has one, and Ben has none.
 
-00:00:15.742 --> 00:00:20.727
-Run the query and look for a patient whose admission_id is NULL.
+00:00:13.197 --> 00:00:18.622
+With a LEFT JOIN, the left table is patients, so every patient must remain.
 
-00:00:20.727 --> 00:00:23.637
-That NULL does not mean SQL failed.
+00:00:18.622 --> 00:00:22.772
+Ana appears twice because she has two matching admissions.
 
-00:00:23.637 --> 00:00:26.622
-It means the patient had no matching admission.
+00:00:22.772 --> 00:00:28.912
+Cara appears once. Ben also remains, but the admission column is NULL because no admission matched.
 
-00:00:26.622 --> 00:00:31.602
-In fact, that NULL may be exactly what the analyst wanted to find.
+00:00:28.912 --> 00:00:34.237
+Now connect that visual to the PostgreSQL query.
 
-00:00:31.602 --> 00:00:35.067
-Now imagine a university retention project.
+00:00:34.237 --> 00:00:36.872
+Patients appears before LEFT JOIN, so patients is the preserved side.
 
-00:00:35.067 --> 00:00:37.972
-One table contains every enrolled student.
+00:00:36.872 --> 00:00:43.042
+Admissions is optional. The ON condition still controls matching by patient ID.
 
-00:00:37.972 --> 00:00:42.397
-Another contains advising appointments. If we use INNER JOIN, students with no appointment disappear.
+00:00:43.042 --> 00:00:45.522
+This pattern is common in real projects.
 
-00:00:42.397 --> 00:00:49.012
-But those students may actually be the ones we most want to identify.
+00:00:45.522 --> 00:00:52.762
+A university may want every enrolled student and an advising appointment when one exists.
 
-00:00:49.012 --> 00:00:54.942
-Using LEFT JOIN keeps the full student population and makes the missing appointment visible.
+00:00:52.762 --> 00:00:59.862
+A business may want every customer and the customer's most recent order when available.
 
-00:00:54.942 --> 00:00:57.447
-This is why preservation matters.
+00:00:59.862 --> 00:01:04.842
+A hospital may want every patient and a follow-up visit when available.
 
-00:00:57.447 --> 00:01:02.647
-LEFT JOIN is often the right choice when the denominator is all patients, all students, all customers,
+00:01:04.842 --> 00:01:10.902
+If we used INNER JOIN in those situations, the people with no related activity would disappear.
 
-00:01:02.647 --> 00:01:05.252
-or all products.
+00:01:10.902 --> 00:01:15.102
+Run the query and find the patient with NULL admission values.
 
-00:01:05.252 --> 00:01:12.296
-If you use INNER JOIN by mistake, inactive entities disappear and your rates or averages may become biased.
+00:01:15.102 --> 00:01:18.247
+That NULL is meaningful information.
+
+00:01:18.247 --> 00:01:23.439
+It tells us that the patient was preserved even though no related admission was found.

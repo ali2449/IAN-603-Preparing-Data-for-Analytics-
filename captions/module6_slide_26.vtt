@@ -1,43 +1,49 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:06.267
-A join should be validated before its result is used in reporting, analysis, or machine learning.
+00:00:00.000 --> 00:00:02.942
+A join is not finished when the SQL runs.
 
-00:00:06.267 --> 00:00:10.672
-Start with row counts. How many rows were in each input table, and how many are in the output?
+00:00:02.942 --> 00:00:07.012
+We still need to validate the result.
 
-00:00:10.672 --> 00:00:16.062
-A sudden increase or decrease may be expected, but you should be able to explain it.
+00:00:07.012 --> 00:00:10.382
+Start with counts. Compare the number of rows before and after the join.
 
-00:00:16.062 --> 00:00:18.247
-Next, count distinct keys.
+00:00:10.382 --> 00:00:17.937
+If the target should contain one row per patient, compare COUNT star with COUNT DISTINCT patient ID.
 
-00:00:18.247 --> 00:00:24.097
-If the final result should have one row per patient, compare COUNT star with COUNT DISTINCT patient_id.
+00:00:17.937 --> 00:00:21.827
+If those numbers are very different, investigate why.
 
-00:00:24.097 --> 00:00:27.952
-If those numbers are different, investigate why.
+00:00:21.827 --> 00:00:24.147
+Next, inspect keys.
 
-00:00:27.952 --> 00:00:29.832
-Inspect keys with unusually many matches.
+00:00:24.147 --> 00:00:30.667
+Check whether primary keys repeat and whether that repetition is expected at the chosen grain.
 
-00:00:29.832 --> 00:00:34.587
-A patient with five admissions or ten lab tests is useful for understanding the join behavior.
+00:00:30.667 --> 00:00:35.927
+A patient ID repeating in an admission-level result may be correct.
 
-00:00:34.587 --> 00:00:40.767
-Also spot-check at least two known cases: one entity with multiple related records and one entity with no
+00:00:35.927 --> 00:00:42.772
+An admission ID repeating in a result that should contain one row per admission may indicate a problem.
 
-00:00:40.767 --> 00:00:43.907
-related record. Finally, write the grain sentence.
+00:00:42.772 --> 00:00:45.657
+Then spot-check known examples.
 
-00:00:43.907 --> 00:00:49.302
+00:00:45.657 --> 00:00:51.677
+Choose one entity with multiple related records and one entity with no related records.
+
+00:00:51.677 --> 00:00:56.292
+Those cases often reveal preservation and cardinality problems quickly.
+
+00:00:56.292 --> 00:00:59.042
+Finally, write a grain sentence.
+
+00:00:59.042 --> 00:01:05.027
 For example: one row represents one patient with summarized activity counts.
 
-00:00:49.302 --> 00:00:54.572
-If you cannot write a clear sentence describing one result row, the query may still be logically unclear.
+00:01:05.027 --> 00:01:11.057
+If you cannot clearly describe what one row means, the query may still be logically unclear even if
 
-00:00:54.572 --> 00:01:01.492
-This validation process is simple, but it catches a large share of real-world join problems before they reach
-
-00:01:01.492 --> 00:01:04.025
-a dashboard, report, or executive decision.
+00:01:11.057 --> 00:01:13.032
+the syntax is correct.

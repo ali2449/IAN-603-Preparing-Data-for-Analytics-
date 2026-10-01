@@ -1,49 +1,40 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.317
-Choosing a join becomes easier when you translate the question into a preservation rule.
+00:00:00.000 --> 00:00:03.682
+This slide turns the join types into business-language decisions.
 
-00:00:05.317 --> 00:00:13.442
-If the question is only about patients who have admissions, then requiring a match is appropriate,
+00:00:03.682 --> 00:00:08.512
+If the question is only about patients who have admissions, then a match is required,
 
-00:00:13.442 --> 00:00:18.527
-so INNER JOIN fits. If the question says every patient, whether or not an admission exists,
+00:00:08.512 --> 00:00:10.552
+so INNER JOIN is appropriate.
 
-00:00:18.527 --> 00:00:21.452
-then the patient population must be preserved.
+00:00:10.552 --> 00:00:15.272
+If the question says every patient, with admission information when available,
 
-00:00:21.452 --> 00:00:24.632
-Put patients on the left and use LEFT JOIN.
+00:00:15.272 --> 00:00:21.652
+then the patient population must be preserved, which points to LEFT JOIN when patients is on the left.
 
-00:00:24.632 --> 00:00:30.427
-If the question says every department, including departments with no staff or admissions,
+00:00:21.652 --> 00:00:29.577
+If the question says every department and staff when available, we can preserve departments with RIGHT JOIN if
 
-00:00:30.427 --> 00:00:36.467
-preserve departments. If you need to compare two sources and see unmatched records from both sides,
+00:00:29.577 --> 00:00:32.907
+departments is on the right, or we can reorder the tables and use LEFT JOIN.
 
-00:00:36.467 --> 00:00:39.332
+00:00:32.907 --> 00:00:39.242
+The result can be logically equivalent, but the reordered LEFT JOIN is often easier to read.
+
+00:00:39.242 --> 00:00:44.107
+If the goal is to compare two systems and show unmatched records from either side,
+
+00:00:44.107 --> 00:00:46.582
 FULL OUTER JOIN is a natural choice.
 
-00:00:39.332 --> 00:00:47.552
-Pay attention to words such as every, only matched, including those with none, and unmatched from both sides.
+00:00:46.582 --> 00:00:52.472
+Pay attention to words such as only matched, every, including those with none,
 
-00:00:47.552 --> 00:00:54.212
-Those phrases are clues. For example, a manager might ask, show me every product and its total sales,
+00:00:52.472 --> 00:00:54.807
+and unmatched from either source.
 
-00:00:54.212 --> 00:00:55.697
-including products with zero sales.
-
-00:00:55.697 --> 00:01:01.142
-That is not the same question as show me products that sold this month.
-
-00:01:01.142 --> 00:01:07.162
-The first one needs preservation of the product table.
-
-00:01:07.162 --> 00:01:09.652
-The second can require a match.
-
-00:01:09.652 --> 00:01:14.832
-SQL syntax becomes much easier when you learn to hear the preservation requirement inside the business
-
-00:01:14.832 --> 00:01:16.240
-language.
+00:00:54.807 --> 00:00:59.291
+Those phrases tell you more about the correct join than memorizing a diagram.

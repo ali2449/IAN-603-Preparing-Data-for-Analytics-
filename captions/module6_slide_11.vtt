@@ -1,43 +1,46 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.827
-RIGHT JOIN is valid PostgreSQL syntax and it preserves every row from the right table.
+00:00:00.000 --> 00:00:03.027
+RIGHT JOIN is the mirror image of LEFT JOIN.
 
-00:00:05.827 --> 00:00:11.297
-In this example, departments is on the right, so every department stays even if no medical staff member
+00:00:03.027 --> 00:00:08.642
+Instead of preserving every row from the left side, it preserves every row from the right side.
 
-00:00:11.297 --> 00:00:14.627
-belongs to it.
+00:00:08.642 --> 00:00:12.512
+In the tiny example, the admissions table is on the right.
 
-00:00:14.627 --> 00:00:19.807
-If a department has no staff, the department information still appears and the staff columns become NULL.
+00:00:12.512 --> 00:00:18.727
+Admission 104 belongs to patient ID 4, which has no matching patient row.
 
-00:00:19.807 --> 00:00:25.517
-That makes it easy to identify empty departments.
+00:00:18.727 --> 00:00:24.072
+Because the right side is preserved, admission 104 remains in the result and the patient columns become NULL.
 
-00:00:25.517 --> 00:00:31.607
-In practice, many analysts prefer LEFT JOIN because it reads more naturally from left to right.
+00:00:24.072 --> 00:00:28.322
+The runnable example uses a different real-world relationship.
 
-00:00:31.607 --> 00:00:35.872
-We could place departments first and then LEFT JOIN medical staff.
+00:00:28.322 --> 00:00:32.622
+We join medical staff to departments and preserve every department.
 
-00:00:35.872 --> 00:00:42.162
-The result would be easier for many people to read because the preserved population appears first.
+00:00:32.622 --> 00:00:40.282
+If a department has no staff member, the department still appears and the staff columns become NULL.
 
-00:00:42.162 --> 00:00:44.682
-This is an important style lesson.
+00:00:40.282 --> 00:00:46.587
+RIGHT JOIN is valid PostgreSQL syntax, but many teams prefer to rewrite it as a LEFT JOIN by swapping the
 
-00:00:44.682 --> 00:00:47.262
-SQL is not only for the computer.
+00:00:46.587 --> 00:00:48.242
+table order.
 
-00:00:47.262 --> 00:00:53.797
-It is also documentation for the next analyst, developer, or data engineer who reads your work.
+00:00:48.242 --> 00:00:52.047
+That often makes the preserved population easier to see because the table you want to keep appears first.
 
-00:00:53.797 --> 00:00:58.067
-The best join is often the one that makes the business meaning obvious.
+00:00:52.047 --> 00:00:58.042
+So the important lesson is not that RIGHT JOIN is bad.
 
-00:00:58.067 --> 00:01:04.002
-So rather than memorizing RIGHT JOIN as a special case, focus on the preservation rule:
+00:00:58.042 --> 00:01:00.887
+The lesson is to make preservation obvious.
 
-00:01:04.002 --> 00:01:06.033
-which table must remain complete?
+00:01:00.887 --> 00:01:06.572
+If your question says every department, structure the query so another reader can quickly see that departments
+
+00:01:06.572 --> 00:01:08.836
+are the population being preserved.

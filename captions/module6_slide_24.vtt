@@ -1,49 +1,40 @@
 WEBVTT
 
-00:00:00.016 --> 00:00:01.687
-COUNT star is not wrong.
+00:00:00.016 --> 00:00:05.802
+COUNT star answers a very specific question: how many rows are in the current result?
 
-00:00:01.687 --> 00:00:04.542
-It counts rows exactly as requested.
+00:00:05.802 --> 00:00:11.507
+After a multi-table join, that may not be the same question as how many admissions exist,
 
-00:00:04.542 --> 00:00:11.557
-The problem is that the rows after a complex join may not represent the event you think they represent.
+00:00:11.507 --> 00:00:15.922
+how many lab tests exist, or how many prescriptions exist.
 
-00:00:11.557 --> 00:00:18.332
-If one joined row represents a combination of one admission, one lab test, and one prescription,
+00:00:15.922 --> 00:00:20.592
+In our example, the raw join creates eight row combinations even though Alice has only two admissions,
 
-00:00:18.332 --> 00:00:21.027
-then COUNT star counts combinations.
+00:00:20.592 --> 00:00:24.222
+two labs, and two prescriptions.
 
-00:00:21.027 --> 00:00:26.262
-It does not directly count admissions, lab tests, or prescriptions.
+00:00:24.222 --> 00:00:27.432
+This is why COUNT star can be misleading after joins.
 
-00:00:26.262 --> 00:00:29.612
-COUNT DISTINCT can sometimes protect a measure.
+00:00:27.432 --> 00:00:32.272
+It counts the combinations produced by the join.
 
-00:00:29.612 --> 00:00:37.742
-For example, counting distinct admission IDs can recover the number of admissions even after other detail
+00:00:32.272 --> 00:00:35.982
+One safer approach is to count a distinct event identifier, such as COUNT DISTINCT admission ID.
 
-00:00:37.742 --> 00:00:41.172
-tables are joined. But DISTINCT should not become a magic repair tool.
+00:00:35.982 --> 00:00:43.872
+Another approach is to summarize each child table to the target grain before joining.
 
-00:00:41.172 --> 00:00:44.812
-You still need to understand why the multiplication happened.
+00:00:43.872 --> 00:00:47.577
+Which approach is better depends on the analytical question.
 
-00:00:44.812 --> 00:00:51.022
-Often the clearest solution is to pre-aggregate.
+00:00:47.577 --> 00:00:52.382
+Do not add DISTINCT automatically whenever a count looks too large.
 
-00:00:51.022 --> 00:00:53.922
-Summarize admissions to one row per patient, summarize labs to one row per patient,
+00:00:52.382 --> 00:00:55.367
+First define the event you are trying to count.
 
-00:00:53.922 --> 00:00:59.267
-and summarize prescriptions to one row per patient.
-
-00:00:59.267 --> 00:01:05.887
-Then join those summaries. This is a useful real-world habit: name the measure explicitly.
-
-00:01:05.887 --> 00:01:12.087
-Are you counting patients, admissions, orders, products, sessions, or joined row combinations?
-
-00:01:12.087 --> 00:01:17.600
-Once the measure is clearly named, the right counting strategy becomes easier to choose.
+00:00:55.367 --> 00:00:58.417
+Then choose a method that counts that event correctly.

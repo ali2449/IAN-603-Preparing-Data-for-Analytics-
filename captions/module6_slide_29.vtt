@@ -1,46 +1,43 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.142
-For this guided practice, the goal is department-level performance.
+00:00:00.000 --> 00:00:02.877
+This guided practice builds a department-level report.
 
-00:00:04.142 --> 00:00:11.057
-The requirement says every department must appear, even departments with no admissions or no staff.
+00:00:02.877 --> 00:00:08.287
+The requirement says every department must appear, including departments with zero activity.
 
-00:00:11.057 --> 00:00:15.652
-That tells us the departments table should be the preserved population.
+00:00:08.287 --> 00:00:13.832
+That tells us to start from departments and preserve that table.
 
-00:00:15.652 --> 00:00:19.542
-We LEFT JOIN admissions and medical staff to departments.
+00:00:13.832 --> 00:00:17.582
+Admissions and medical staff are optional related data, so we LEFT JOIN them.
 
-00:00:19.542 --> 00:00:26.157
-Because a department can have several admissions and several staff members, the detail rows can multiply.
+00:00:17.582 --> 00:00:22.032
+A department can have several admissions and several staff members.
 
-00:00:26.157 --> 00:00:31.122
-That is why the counts use DISTINCT event identifiers.
+00:00:22.032 --> 00:00:27.412
+Because both are one-to-many relationships, the joined detail rows can multiply.
 
-00:00:31.122 --> 00:00:35.367
-Run the query and look for the department with zero activity.
+00:00:27.412 --> 00:00:33.892
+That is why the query uses COUNT DISTINCT for admission IDs, patient IDs, and staff IDs.
 
-00:00:35.367 --> 00:00:40.557
-It should still appear. That is an important validation of the LEFT JOIN.
+00:00:33.892 --> 00:00:40.852
+The query also calculates average stay length and combines staff specializations into a readable list.
 
-00:00:40.557 --> 00:00:44.992
-Then inspect a busy department and compare the counts with the underlying records.
+00:00:40.852 --> 00:00:45.082
+After grouping, the final grain is one row per department.
 
-00:00:44.992 --> 00:00:49.787
-This style of query is common in management dashboards.
+00:00:45.082 --> 00:00:48.377
+Run the query and find the department with no activity.
 
-00:00:49.787 --> 00:00:54.812
-A company may want every region listed, even if a region had zero sales.
+00:00:48.377 --> 00:00:52.782
+It should still appear because departments is the preserved population.
 
-00:00:54.812 --> 00:00:59.012
-A university may want every academic program listed, even if no students enrolled this term.
+00:00:52.782 --> 00:00:57.712
+Then inspect a busy department and compare its counts with the underlying data.
 
-00:00:59.012 --> 00:01:04.962
-The dashboard should not make zero-activity groups disappear.
+00:00:57.712 --> 00:01:04.892
+This structure is common in management dashboards where every region, program, department,
 
-00:01:04.962 --> 00:01:10.417
-Read the query in sections: preserved table, first relationship, second relationship, grouping level,
-
-00:01:10.417 --> 00:01:17.062
-and measures. Breaking a long query into those logical pieces makes it much easier to understand.
+00:01:04.892 --> 00:01:07.992
+or product category must remain visible even when activity is zero.

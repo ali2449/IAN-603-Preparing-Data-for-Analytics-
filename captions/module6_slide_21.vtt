@@ -1,49 +1,46 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.402
-Cross joins make cardinality very easy to see because the multiplication is direct.
+00:00:00.000 --> 00:00:04.282
+This slide shows why we should estimate the size of a cross join before running it.
 
-00:00:05.402 --> 00:00:09.582
-Two rows crossed with three rows produce six result rows.
+00:00:04.282 --> 00:00:08.292
+Two rows crossed with three rows produce six combinations.
 
-00:00:09.582 --> 00:00:13.312
-One hundred crossed with one hundred produces ten thousand.
+00:00:08.292 --> 00:00:12.807
+One hundred crossed with one hundred produces ten thousand combinations.
 
-00:00:13.312 --> 00:00:17.802
-Ten thousand crossed with ten thousand produces one hundred million.
+00:00:12.807 --> 00:00:17.662
+Ten thousand crossed with ten thousand produces one hundred million combinations.
 
-00:00:17.802 --> 00:00:25.197
-That same multiplication can happen in ordinary joins when several rows on each side share the same key.
+00:00:17.662 --> 00:00:23.282
+The formula is simply N times M, where N is the number of rows on the left and
 
-00:00:25.197 --> 00:00:28.477
-The difference is that it may be less obvious.
+00:00:23.282 --> 00:00:26.012
+M is the number of rows on the right.
 
-00:00:28.477 --> 00:00:32.897
-Imagine a customer has three orders and four support tickets.
+00:00:26.012 --> 00:00:31.492
+The calculation is easy, but the growth can become very large very quickly.
 
-00:00:32.897 --> 00:00:38.317
-If you join both detail tables directly to the customer by customer_id,
+00:00:31.492 --> 00:00:33.957
+CROSS JOIN is not inherently bad.
 
-00:00:38.317 --> 00:00:42.457
-you can create twelve order-ticket combinations for that customer.
+00:00:33.957 --> 00:00:37.037
+It is useful when every combination is intentional.
 
-00:00:42.457 --> 00:00:46.502
-Those twelve rows do not mean twelve new business events.
+00:00:37.037 --> 00:00:42.862
+For example, you might generate every store and every month, every product and every region,
 
-00:00:46.502 --> 00:00:49.642
-They are combinations created by the join.
+00:00:42.862 --> 00:00:45.472
+or every department and every appointment slot.
 
-00:00:49.642 --> 00:00:56.432
-Whenever your result becomes much larger than expected, do not immediately assume the database is wrong.
+00:00:45.472 --> 00:00:49.962
+The danger appears when a normal join condition is accidentally omitted.
 
-00:00:56.432 --> 00:00:59.567
-Ask whether the join created combinations.
+00:00:49.962 --> 00:00:54.227
+If you expected a few thousand rows and suddenly get millions,
 
-00:00:59.567 --> 00:01:03.467
-Check how many matches each key has on both sides.
+00:00:54.227 --> 00:00:58.507
+one of the first things to check is whether a relationship condition is missing and the query has
 
-00:01:03.467 --> 00:01:09.542
-Cardinality is one of the most important concepts in analytical SQL because it explains many surprising row
-
-00:01:09.542 --> 00:01:10.720
-counts.
+00:00:58.507 --> 00:01:01.910
+effectively created a Cartesian product.

@@ -1,52 +1,46 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.047
-This slide summarizes the four main row-preservation patterns.
+00:00:00.000 --> 00:00:08.927
+Before we use the larger practice database, this slide gives us a very small example that we can reuse to
 
-00:00:04.047 --> 00:00:06.642
-INNER JOIN keeps only matches.
+00:00:08.927 --> 00:00:10.082
+understand all four major join types.
 
-00:00:06.642 --> 00:00:12.692
-If a patient has no admission, that patient will not appear in a patient-to-admission INNER JOIN.
+00:00:10.082 --> 00:00:17.837
+On the left, the patients table has Ana with ID 1, Ben with ID 2, and Cara with ID 3.
 
-00:00:12.692 --> 00:00:17.932
-This is useful when the question is specifically about records that exist in both tables.
+00:00:17.837 --> 00:00:25.037
+On the right, the admissions table contains two admissions for patient 1, one admission for patient 3,
 
-00:00:17.932 --> 00:00:21.207
-LEFT JOIN keeps every row from the left table.
+00:00:25.037 --> 00:00:27.427
+and one admission for patient 4.
 
-00:00:21.207 --> 00:00:26.067
-If there is no matching row on the right, the right-side columns become NULL.
+00:00:27.427 --> 00:00:31.502
+Patient 4 does not exist in our tiny patient table.
 
-00:00:26.067 --> 00:00:29.522
-RIGHT JOIN does the same thing in the opposite direction.
+00:00:31.502 --> 00:00:37.042
+This small mismatch is intentional because it lets us see what each join preserves.
 
-00:00:29.522 --> 00:00:33.532
-FULL OUTER JOIN keeps unmatched rows from both sides.
+00:00:37.042 --> 00:00:41.052
+With an INNER JOIN, we keep only matching combinations.
 
-00:00:33.532 --> 00:00:38.452
-Try to connect each join type to a real question.
+00:00:41.052 --> 00:00:50.207
+Ben disappears because patient 2 has no admission, and admission 104 disappears because patient 4 has no
 
-00:00:38.452 --> 00:00:42.172
-In education, INNER JOIN could show only students who submitted an assignment.
+00:00:50.207 --> 00:00:51.857
+patient row.
 
-00:00:42.172 --> 00:00:46.637
-LEFT JOIN could show every student and their submission when one exists.
+00:00:51.857 --> 00:00:58.187
+With a LEFT JOIN, every patient remains, so Ben stays and the admission columns for Ben become NULL.
 
-00:00:46.637 --> 00:00:53.462
-FULL OUTER JOIN could compare two class rosters and reveal students who appear in only one system.
+00:00:58.187 --> 00:01:06.577
+With a RIGHT JOIN, every admission remains, so admission 104 stays and its patient columns become NULL.
 
-00:00:53.462 --> 00:00:56.857
-Do not rely only on Venn-diagram-style pictures.
+00:01:06.577 --> 00:01:10.937
+With a FULL OUTER JOIN, both unmatched cases remain.
 
-00:00:56.857 --> 00:01:03.522
-Those pictures can help, but the stronger habit is to ask, what population must remain complete?
+00:01:10.937 --> 00:01:13.267
+Use this as your prediction habit.
 
-00:01:03.522 --> 00:01:08.102
-If the answer is every patient, put patients on the preserved side.
-
-00:01:08.102 --> 00:01:11.837
-If the answer is every department, preserve departments.
-
-00:01:11.837 --> 00:01:18.160
-If the answer is records from both systems, even unmatched ones, think about FULL OUTER JOIN.
+00:01:13.267 --> 00:01:20.146
+Before you run the SQL, ask which unmatched rows should survive and where NULL values should appear.

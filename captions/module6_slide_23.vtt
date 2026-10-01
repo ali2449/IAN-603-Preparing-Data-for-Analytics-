@@ -1,52 +1,58 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.317
-This runnable example makes row multiplication visible.
+00:00:00.000 --> 00:00:04.482
+This slide makes row multiplication concrete using Alice in the practice data.
 
-00:00:03.317 --> 00:00:08.012
-We join patients to admissions, lab results, and prescriptions, all by patient_id.
+00:00:04.482 --> 00:00:09.267
+Alice has two admissions, two lab tests, and two prescriptions.
 
-00:00:08.012 --> 00:00:14.572
-Each child table can have multiple rows for the same patient.
+00:00:09.267 --> 00:00:13.612
+These are six real source records across three child tables.
 
-00:00:14.572 --> 00:00:19.442
-Focus on a patient who has several records in more than one child table.
+00:00:13.612 --> 00:00:18.292
+But if we join all three child tables independently by patient ID,
 
-00:00:19.442 --> 00:00:23.797
-The final joined row count can be much larger than the number of admissions, lab tests,
+00:00:18.292 --> 00:00:22.677
+each admission can combine with each lab result and each prescription.
 
-00:00:23.797 --> 00:00:27.477
-or prescriptions that actually occurred.
+00:00:22.677 --> 00:00:27.707
+Two admissions times two labs times two prescriptions produces eight joined combinations.
 
-00:00:27.477 --> 00:00:30.847
-COUNT star counts the joined combinations.
+00:00:27.707 --> 00:00:35.382
+The table on the slide shows the eight possible admission-lab-prescription combinations.
 
-00:00:30.847 --> 00:00:33.712
-That is why it can look surprisingly large.
+00:00:35.382 --> 00:00:37.237
+The SQL underneath measures this effect.
 
-00:00:33.712 --> 00:00:40.322
-COUNT DISTINCT admission_id, COUNT DISTINCT test_id, and COUNT DISTINCT prescription_id are trying to recover
+00:00:37.237 --> 00:00:40.662
+COUNT star tells us how many joined combinations exist.
 
-00:00:40.322 --> 00:00:44.402
-the number of original events from the multiplied result.
+00:00:40.662 --> 00:00:46.672
+COUNT DISTINCT admission ID tells us how many unique admissions exist.
 
-00:00:44.402 --> 00:00:46.472
-In a real project, this can create serious reporting errors.
+00:00:46.672 --> 00:00:49.512
+The same idea is used for lab test IDs and prescription IDs.
 
-00:00:46.472 --> 00:00:52.962
-Imagine a hospital dashboard that reports the number of admissions after admissions are joined to several lab
+00:00:49.512 --> 00:00:54.452
+Run the query and compare joined rows with the distinct event counts.
 
-00:00:52.962 --> 00:00:59.247
-and medication tables. If COUNT star is used carelessly, admission volume can be exaggerated.
+00:00:54.452 --> 00:00:58.707
+This is an important debugging technique.
 
-00:00:59.247 --> 00:01:01.817
-The query is not broken.
+00:00:58.707 --> 00:01:01.542
+If joined rows are much larger than the number of real events,
 
-00:01:01.817 --> 00:01:07.252
-It is counting something different from what the analyst intended.
+00:01:01.542 --> 00:01:06.342
+the query may be combining several one-to-many relationships.
 
-00:01:07.252 --> 00:01:12.162
-Whenever a count looks too large, ask what one joined row represents.
+00:01:06.342 --> 00:01:12.952
+The rows are not necessarily duplicate rows in the technical sense.
 
-00:01:12.162 --> 00:01:15.145
-That question often reveals the problem immediately.
+00:01:12.952 --> 00:01:13.452
+They may be unique combinations.
+
+00:01:13.452 --> 00:01:20.862
+The analytical problem is that those combinations can inflate measures if we count them as if each row
+
+00:01:20.862 --> 00:01:22.364
+were a new event.

@@ -1,49 +1,43 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.017
+00:00:00.000 --> 00:00:04.287
 CROSS JOIN creates every possible combination between two row sets.
 
-00:00:05.017 --> 00:00:10.707
-Unlike a normal join, there is no ON condition restricting the matches.
+00:00:04.287 --> 00:00:08.922
+The visual example uses two departments and three appointment slots.
 
-00:00:10.707 --> 00:00:14.962
-Suppose we have two departments and three appointment slots.
+00:00:08.922 --> 00:00:11.957
+Two times three gives six combinations.
 
-00:00:14.962 --> 00:00:21.062
-A CROSS JOIN creates six combinations: each department paired with each slot.
+00:00:11.957 --> 00:00:18.792
+Cardiology is paired with all three time slots, and Internal Medicine is also paired with all three time
 
-00:00:21.062 --> 00:00:24.902
-In this case, that may be exactly what we want.
+00:00:18.792 --> 00:00:21.047
+slots.
 
-00:00:24.902 --> 00:00:29.722
-Cross joins are useful for building schedules, scenario grids, test cases, calendars,
+00:00:21.047 --> 00:00:25.617
+Unlike INNER or LEFT JOIN, CROSS JOIN does not use an ON condition to decide which rows match.
 
-00:00:29.722 --> 00:00:32.172
-and completeness frameworks.
+00:00:25.617 --> 00:00:29.302
+Every row on the left combines with every row on the right.
 
-00:00:32.172 --> 00:00:39.577
-For example, a retailer could create every store and every day of the month so they can later identify days
+00:00:29.302 --> 00:00:37.742
+The PostgreSQL example intentionally limits the department list to two departments so the result stays small
 
-00:00:39.577 --> 00:00:41.562
-with no sales.
+00:00:37.742 --> 00:00:39.182
+and easy to inspect.
 
-00:00:41.562 --> 00:00:47.807
-A university could create every course and every expected assessment type to find missing assessments.
+00:00:39.182 --> 00:00:44.687
+The appointment slots table has three rows, so the output contains six department-and-time combinations.
 
-00:00:47.807 --> 00:00:52.217
-But the growth can be dramatic.
+00:00:44.687 --> 00:00:51.572
+CROSS JOIN can be useful for generating schedules, scenario grids, complete date-product combinations,
 
-00:00:52.217 --> 00:00:57.297
-If one table has ten thousand rows and the other also has ten thousand,
+00:00:51.572 --> 00:00:56.737
+or test cases. But it can also create extremely large results.
 
-00:00:57.297 --> 00:01:00.927
-the result can have one hundred million combinations.
+00:00:56.737 --> 00:01:02.042
+Before using it, calculate the expected size as the number of left rows multiplied by the number of
 
-00:01:00.927 --> 00:01:07.432
-Before running a cross join on large data, estimate the size by multiplying the row counts.
-
-00:01:07.432 --> 00:01:12.207
-Cross joins are not bad; accidental cross joins are bad.
-
-00:01:12.207 --> 00:01:14.903
-Use them when the combinations are intentional.
+00:01:02.042 --> 00:01:03.886
+right rows.

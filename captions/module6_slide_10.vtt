@@ -1,46 +1,46 @@
 WEBVTT
 
-00:00:00.016 --> 00:00:07.297
-An anti-join pattern answers a practical question: which rows on the left have no related row on the right?
+00:00:00.014 --> 00:00:07.417
+An anti-join answers a very practical question: which rows on one side have no related row on the other side?
 
-00:00:07.297 --> 00:00:11.897
-In this example, we want patients who do not have any lab results.
+00:00:07.417 --> 00:00:12.247
+The small example shows three patients and only two patients with lab results.
 
-00:00:11.897 --> 00:00:15.702
-We start with a LEFT JOIN so every patient is preserved.
+00:00:12.247 --> 00:00:17.997
+We first use a LEFT JOIN because we want to preserve every patient.
 
-00:00:15.702 --> 00:00:21.002
-If a patient has no matching lab result, the lab-side columns become NULL.
+00:00:17.997 --> 00:00:22.447
+After that join, the patient with no lab result has NULL values on the lab side.
 
-00:00:21.002 --> 00:00:26.207
-Then we filter for a right-side key, such as test_id, being NULL.
+00:00:22.447 --> 00:00:27.452
+Then we use WHERE and check whether the lab test ID is NULL.
 
-00:00:26.207 --> 00:00:29.427
-The choice of column in the NULL test matters.
+00:00:27.452 --> 00:00:30.957
+That leaves only the patient with no matching lab row.
 
-00:00:29.427 --> 00:00:35.027
-A primary key is a good choice because a real matched row should always have that value.
+00:00:30.957 --> 00:00:34.457
+The choice of column for the NULL check matters.
 
-00:00:35.027 --> 00:00:42.257
-If you tested a column that could legitimately be NULL, you might incorrectly label a matched record as
+00:00:34.457 --> 00:00:39.817
+We should test a right-side key that cannot be NULL for a real matched row.
 
-00:00:42.257 --> 00:00:45.797
-unmatched. This pattern is extremely useful in real projects.
+00:00:39.817 --> 00:00:43.897
+A primary key such as test ID is a good choice.
 
-00:00:45.797 --> 00:00:49.592
-An e-commerce company can find customers with no orders.
+00:00:43.897 --> 00:00:51.777
+If we test a column that can legitimately contain NULL, we could mistakenly classify a matched record as
 
-00:00:49.592 --> 00:00:53.577
-A university can find students with no course registration.
+00:00:51.777 --> 00:00:54.902
+unmatched. This pattern is useful far beyond healthcare.
 
-00:00:53.577 --> 00:00:57.342
-A hospital can find patients with no follow-up visit.
+00:00:54.902 --> 00:01:01.067
+We can find customers with no orders, students with no submission, products with no sales,
 
-00:00:57.342 --> 00:01:00.817
-A warehouse can find products with no sales.
+00:01:01.067 --> 00:01:06.252
+employees with no required training, or patients with no follow-up activity.
 
-00:01:00.817 --> 00:01:05.362
-Read the logic in plain English: keep all left-side records, attempt the match,
+00:01:06.252 --> 00:01:10.072
+Read the logic as a sentence: preserve all patients, try to match lab results,
 
-00:01:05.362 --> 00:01:10.092
-and then keep only the records where no right-side row was found.
+00:01:10.072 --> 00:01:15.334
+then keep only the patients for whom no lab result was found.

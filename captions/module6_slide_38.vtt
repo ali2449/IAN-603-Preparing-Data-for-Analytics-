@@ -1,43 +1,34 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.792
-Coding Exercise 3 uses the anti-join pattern.
+00:00:00.000 --> 00:00:05.242
+Coding Exercise 3 asks you to return patients who do not have any lab results.
 
-00:00:03.792 --> 00:00:07.597
-You need to return patients who do not have any lab results.
+00:00:05.242 --> 00:00:09.507
+Start by preserving all patients with a LEFT JOIN to lab results.
 
-00:00:07.597 --> 00:00:10.892
-Start by preserving all patients with a LEFT JOIN.
+00:00:09.507 --> 00:00:14.477
+When a patient has no matching lab row, the lab-side columns become NULL.
 
-00:00:10.892 --> 00:00:13.482
-Then attempt to match lab rows.
+00:00:14.477 --> 00:00:19.062
+Then choose a right-side key that cannot be NULL in a real matched record.
 
-00:00:13.482 --> 00:00:18.917
-For patients with no lab result, the lab-side columns become NULL.
+00:00:19.062 --> 00:00:23.797
+The lab test ID is a good choice because it identifies the lab row.
 
-00:00:18.917 --> 00:00:24.072
-Now choose a right-side column that cannot be NULL for a real matched row.
+00:00:23.797 --> 00:00:26.372
+Keep only rows where that key is NULL.
 
-00:00:24.072 --> 00:00:29.017
-The lab test ID is a good choice because it is a primary identifier.
+00:00:26.372 --> 00:00:31.942
+Read your logic as a sentence: keep all patients, try to match a lab result,
 
-00:00:29.017 --> 00:00:31.712
-Filter for that key being NULL.
+00:00:31.942 --> 00:00:35.822
+and then keep only the patients for whom no lab row was found.
 
-00:00:31.712 --> 00:00:37.232
-Read your query as a sentence: keep all patients, try to match lab results,
+00:00:35.822 --> 00:00:37.997
+This is the anti-join pattern.
 
-00:00:37.232 --> 00:00:41.177
-then keep only the patients for whom no lab result was found.
+00:00:37.997 --> 00:00:43.967
+You can reuse the same reasoning to find customers with no orders, students with no submissions,
 
-00:00:41.177 --> 00:00:45.427
-This anti-join pattern is common in real data-quality work.
-
-00:00:45.427 --> 00:00:52.322
-Find customers with no purchases, employees with no required training, students with no submission,
-
-00:00:52.322 --> 00:00:57.207
-products with no inventory record, or patients with no follow-up visit.
-
-00:00:57.207 --> 00:01:00.613
-Once you understand the pattern, you will use it often.
+00:00:43.967 --> 00:00:47.938
+employees with no training record, or products with no sales.

@@ -1,55 +1,46 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.617
+00:00:00.000 --> 00:00:03.462
 Aliases and grain solve two different kinds of confusion.
 
-00:00:03.617 --> 00:00:06.787
+00:00:03.462 --> 00:00:06.417
 Aliases make the SQL easier to read.
 
-00:00:06.787 --> 00:00:09.272
-If both patients and admissions contain patient_id,
+00:00:06.417 --> 00:00:14.652
+If both patients and admissions contain a patient ID column, writing p dot patient ID and a dot patient ID
 
-00:00:09.272 --> 00:00:15.542
-writing p.patient_id and a.patient_id tells us exactly where the column comes from.
+00:00:14.652 --> 00:00:22.257
+makes the source explicit. As queries grow to three, four, or five tables, this becomes very important.
 
-00:00:15.542 --> 00:00:20.402
-As queries grow to three, four, or five tables, aliases become essential.
+00:00:22.257 --> 00:00:27.397
+Once you assign an alias to a table, use that alias consistently.
 
-00:00:20.402 --> 00:00:22.212
+00:00:27.397 --> 00:00:29.707
 Grain helps us interpret the result.
 
-00:00:22.212 --> 00:00:24.637
-Suppose Alice has two admissions.
+00:00:29.707 --> 00:00:32.312
+Suppose a patient has two admissions.
 
-00:00:24.637 --> 00:00:30.312
-Her patient information may appear twice after the join.
+00:00:32.312 --> 00:00:37.782
+After joining patients to admissions, the patient name may appear twice.
 
-00:00:30.312 --> 00:00:34.027
-That does not mean the data is duplicated incorrectly.
+00:00:37.782 --> 00:00:42.812
+That does not automatically mean the data was duplicated incorrectly.
 
-00:00:34.027 --> 00:00:39.282
-It means each result row represents one admission with patient information attached.
+00:00:42.812 --> 00:00:50.562
+If one result row represents one admission, then repeating the patient information is expected.
 
-00:00:39.282 --> 00:00:45.157
-This is a very important habit: when you see repeated values after a join, do not immediately add DISTINCT.
+00:00:50.562 --> 00:00:56.067
+A common beginner mistake is seeing repeated values and immediately adding DISTINCT.
 
-00:00:45.157 --> 00:00:50.212
-DISTINCT can hide a real modeling issue.
+00:00:56.067 --> 00:01:00.447
+That can hide a real modeling problem or remove valid events.
 
-00:00:50.212 --> 00:00:53.177
-First ask whether the repeated rows represent different valid events.
+00:01:00.447 --> 00:01:07.787
+Before using DISTINCT, ask what each row represents and whether those rows correspond to different real
 
-00:00:53.177 --> 00:00:59.127
-For example, if a customer places five orders, their name will appear on five order rows.
+00:01:07.787 --> 00:01:12.547
+events. A good habit is to write a short grain sentence before a complicated query.
 
-00:00:59.127 --> 00:01:06.782
-If you use DISTINCT carelessly, you may accidentally remove meaningful detail.
-
-00:01:06.782 --> 00:01:12.702
-A good practice is to write one sentence before the query: one row in this result represents one admission
-
-00:01:12.702 --> 00:01:17.392
-with patient information. That sentence becomes your validation target.
-
-00:01:17.392 --> 00:01:21.812
-If the output behaves differently, you know where to investigate.
+00:01:12.547 --> 00:01:20.409
+For this example, the sentence is: one output row represents one admission with patient information attached.

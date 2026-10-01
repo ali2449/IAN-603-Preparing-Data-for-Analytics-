@@ -1,55 +1,40 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:06.767
-The business question here is: list all patients and show Glucose tests when they exist.
+00:00:00.000 --> 00:00:05.002
+This practice asks you to predict the population before running the query.
 
-00:00:06.767 --> 00:00:11.537
-The words all patients are the most important part of the requirement.
+00:00:05.002 --> 00:00:08.682
+Choice A places the Glucose condition inside ON.
 
-00:00:11.537 --> 00:00:16.127
-They tell us that the patient population must remain complete.
+00:00:08.682 --> 00:00:13.852
+Because patients is on the left side of the LEFT JOIN, every patient remains.
 
-00:00:16.127 --> 00:00:20.172
-Run the query with the Glucose condition inside ON.
+00:00:13.852 --> 00:00:18.077
+The condition only controls which lab rows are eligible to match.
 
-00:00:20.172 --> 00:00:22.337
-You should see every patient.
+00:00:18.077 --> 00:00:21.567
+Choice B places the Glucose condition in WHERE.
 
-00:00:22.337 --> 00:00:25.907
-Patients with Glucose tests will have lab values.
+00:00:21.567 --> 00:00:29.822
+The LEFT JOIN may initially preserve every patient, but the final WHERE filter removes rows where the lab
 
-00:00:25.907 --> 00:00:31.052
-Patients without a Glucose test will remain with NULL lab fields.
+00:00:29.822 --> 00:00:34.037
+test is not Glucose, including the NULL lab values for patients with no Glucose match.
 
-00:00:31.052 --> 00:00:34.897
-Now imagine moving the same condition into WHERE.
+00:00:34.037 --> 00:00:37.052
+Before you press Run, state your prediction.
 
-00:00:34.897 --> 00:00:40.767
-The result becomes a different population: only patients with Glucose tests.
+00:00:37.052 --> 00:00:39.777
+Choice A should return every patient.
 
-00:00:40.767 --> 00:00:43.542
-This is not just a syntax difference.
+00:00:39.777 --> 00:00:45.257
+Some rows will contain Glucose information and some will contain NULL lab values.
 
-00:00:43.542 --> 00:00:46.492
-It changes the meaning of the analysis.
+00:00:45.257 --> 00:00:48.702
+Then run Choice A and verify the result.
 
-00:00:46.492 --> 00:00:49.752
-The same idea appears in many projects.
+00:00:48.702 --> 00:00:54.592
+The point of this exercise is to build a habit of predicting semantics before execution.
 
-00:00:49.752 --> 00:00:56.112
-A retailer may want every product and its sales from a specific month when sales exist.
-
-00:00:56.112 --> 00:01:02.757
-A university may want every student and a tutoring visit from this semester when one exists.
-
-00:01:02.757 --> 00:01:08.767
-If the optional condition belongs to the matched data but the full population must remain,
-
-00:01:08.767 --> 00:01:11.467
-ON is often the correct place.
-
-00:01:11.467 --> 00:01:17.242
-Try to explain the difference using two ideas: ON limits eligible matches.
-
-00:01:17.242 --> 00:01:19.760
-WHERE filters the final joined rows.
+00:00:54.592 --> 00:01:01.387
+SQL becomes much easier to debug when you already know what kind of population and grain you expect.

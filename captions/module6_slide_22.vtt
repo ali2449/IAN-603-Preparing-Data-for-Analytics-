@@ -1,46 +1,43 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.427
-Cardinality describes how many rows can match a key.
+00:00:00.000 --> 00:00:03.917
+Cardinality describes how many rows can match across a relationship.
 
-00:00:03.427 --> 00:00:09.362
-In a one-to-one relationship, each key matches at most one row on both sides.
+00:00:03.917 --> 00:00:09.457
+In a one-to-one relationship, each key matches at most one row on each side.
 
-00:00:09.362 --> 00:00:11.012
-Those joins are usually easy to reason about.
+00:00:09.457 --> 00:00:15.167
+In a one-to-many relationship, one parent row can match several child rows.
 
-00:00:11.012 --> 00:00:15.197
-In a one-to-many relationship, one patient may match several admissions.
+00:00:15.167 --> 00:00:21.707
+A patient-to-admissions relationship is one-to-many because one patient can have several admissions.
 
-00:00:15.197 --> 00:00:21.887
-The patient information repeats once for each admission, and that can be perfectly correct.
+00:00:21.707 --> 00:00:28.257
+The larger risk appears when several one-to-many child tables are joined independently to the same parent.
 
-00:00:21.887 --> 00:00:24.252
-The risk appears when we join several one-to-many child tables at the same time.
+00:00:28.257 --> 00:00:34.407
+Suppose one patient has two admissions, two lab results, and two prescriptions.
 
-00:00:24.252 --> 00:00:29.482
-Suppose one patient has two admissions, two lab tests, and two prescriptions.
+00:00:34.407 --> 00:00:38.732
+If we join all three detail tables directly by patient ID,
 
-00:00:29.482 --> 00:00:35.497
-If all three tables are joined independently by patient_id, we can create two times two times two, or eight,
+00:00:38.732 --> 00:00:44.072
+the database can produce two times two times two, or eight, combinations.
 
-00:00:35.497 --> 00:00:39.547
-combinations. This idea applies everywhere.
+00:00:44.072 --> 00:00:47.837
+Those eight rows do not represent eight new medical events.
 
-00:00:39.547 --> 00:00:44.592
-One customer can have many orders, many support tickets, and many website sessions.
+00:00:47.837 --> 00:00:50.927
+They represent combinations of existing events.
 
-00:00:44.592 --> 00:00:49.827
-One student can have many courses, many submissions, and many advising visits.
+00:00:50.927 --> 00:00:54.977
+This is a common source of inflated counts in analytical SQL.
 
-00:00:49.827 --> 00:00:56.207
-If you join all of those detail tables together without thinking about grain, counts can become inflated.
+00:00:54.977 --> 00:01:00.897
+Before joining, estimate whether each relationship is zero-to-one, one-to-one, or one-to-many.
 
-00:00:56.207 --> 00:00:59.792
-Before aggregating, predict the relationship type for each join.
+00:01:00.897 --> 00:01:06.972
+That prediction helps you recognize when the output row count is reasonable and when multiplication is
 
-00:00:59.792 --> 00:01:04.887
-If the final result should be one row per parent, consider summarizing each child table to the parent grain
-
-00:01:04.887 --> 00:01:06.590
-before joining.
+00:01:06.972 --> 00:01:09.003
+occurring.

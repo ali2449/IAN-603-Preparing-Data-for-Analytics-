@@ -1,46 +1,49 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.917
-This query shows one of the safest patterns for analytical joins.
+00:00:00.000 --> 00:00:04.412
+Pre-aggregation is one of the clearest ways to protect a higher-level grain.
 
-00:00:03.917 --> 00:00:10.357
-Instead of joining every detail row first, we summarize each child table before the join.
+00:00:04.412 --> 00:00:09.682
+Instead of joining raw admissions, raw lab results, and raw prescriptions to patients,
 
-00:00:10.357 --> 00:00:14.617
-The admission-count CTE produces one row per patient.
+00:00:09.682 --> 00:00:13.492
+we first summarize each child table by patient ID.
 
-00:00:14.617 --> 00:00:18.797
-The lab-count CTE also produces one row per patient.
+00:00:13.492 --> 00:00:17.592
+The admission summary produces at most one row per patient.
 
-00:00:18.797 --> 00:00:21.957
-The prescription-count CTE does the same.
+00:00:17.592 --> 00:00:21.397
+The lab summary produces at most one row per patient.
 
-00:00:21.957 --> 00:00:27.077
-Only after those sources are at the same grain do we join them to the patient table.
+00:00:21.397 --> 00:00:23.832
+The prescription summary does the same.
 
-00:00:27.077 --> 00:00:31.767
-Now the final result is easy to defend: one row per patient.
+00:00:23.832 --> 00:00:28.262
+Now the three child sources are already at patient grain.
 
-00:00:31.767 --> 00:00:39.127
-Patients with no activity remain because we use LEFT JOIN, and COALESCE converts missing counts to zero.
+00:00:28.262 --> 00:00:34.782
+When we join those summaries to the patients table, the two-times-two-times-two explosion cannot occur.
 
-00:00:39.127 --> 00:00:42.387
-This pattern is very common in dashboards.
+00:00:34.782 --> 00:00:39.292
+The query uses common table expressions to create the three summaries.
 
-00:00:42.387 --> 00:00:49.062
-Suppose a customer dashboard needs total orders, total support tickets, and total returns.
+00:00:39.292 --> 00:00:45.642
+Then it LEFT JOINs each summary to patients so patients with no activity are still preserved.
 
-00:00:49.062 --> 00:00:53.932
-A safe design is to summarize each activity table by customer first,
+00:00:45.642 --> 00:00:49.537
+COALESCE converts missing counts from NULL to zero.
 
-00:00:53.932 --> 00:00:57.157
-then join the summaries to the customer master.
+00:00:49.537 --> 00:00:53.082
+This pattern is common in dashboards and feature tables.
 
-00:00:57.157 --> 00:01:03.227
-The SQL is a little longer, but the result is much easier to validate and explain.
+00:00:53.082 --> 00:00:57.797
+A customer-level dashboard might summarize orders, support tickets,
 
-00:01:03.227 --> 00:01:08.442
-In analytics, a slightly longer query that clearly protects the target grain is usually better than a shorter
+00:00:57.797 --> 00:01:00.722
+and refunds separately before combining them.
 
-00:01:08.442 --> 00:01:12.240
-query that produces ambiguous counts.
+00:01:00.722 --> 00:01:07.602
+A student-level dataset might summarize registrations, submissions, and advising visits separately.
+
+00:01:07.602 --> 00:01:13.377
+The key idea is to make each source compatible with the target grain before combining the sources.

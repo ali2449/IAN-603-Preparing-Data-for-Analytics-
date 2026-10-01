@@ -1,49 +1,46 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.667
-A correct-looking join key can still be wrong if it does not match the level of the relationship.
+00:00:00.000 --> 00:00:05.427
+A join can use a technically valid key and still be wrong for the analytical grain.
 
-00:00:05.667 --> 00:00:09.332
-Suppose your target result is one row per admission.
+00:00:05.427 --> 00:00:09.397
+Suppose the target result should contain one row per admission.
 
-00:00:09.332 --> 00:00:13.272
-You already have patients joined to admissions correctly.
+00:00:09.397 --> 00:00:13.052
+We have already joined patients to admissions correctly.
 
-00:00:13.272 --> 00:00:17.912
-Now imagine adding lab results using patient_id only.
+00:00:13.052 --> 00:00:17.142
+Now imagine adding lab results using patient ID only.
 
-00:00:17.912 --> 00:00:26.202
-If one patient has multiple admissions and multiple lab tests, every admission can pair with every lab result
+00:00:17.142 --> 00:00:24.822
+If one patient has several admissions and several lab tests, each admission can pair with every lab result
 
-00:00:26.202 --> 00:00:29.272
+00:00:24.822 --> 00:00:28.332
 for that patient. The admission grain is no longer protected.
 
-00:00:29.272 --> 00:00:33.612
-The deeper question is: what does the lab record belong to?
+00:00:28.332 --> 00:00:34.787
+A lab test that actually belongs to one encounter may appear beside another admission for the same patient.
 
-00:00:33.612 --> 00:00:39.682
-Does it belong to the patient generally, to a specific admission, or to a specific encounter?
+00:00:34.787 --> 00:00:38.137
+The deeper question is what the lab record belongs to.
 
-00:00:39.682 --> 00:00:42.287
-The database design should tell you.
+00:00:38.137 --> 00:00:44.142
+Does it belong to the patient generally, to a particular admission, or to a specific encounter?
 
-00:00:42.287 --> 00:00:48.552
-If the true relationship uses encounter_id, joining only on patient_id is too broad.
+00:00:44.142 --> 00:00:46.592
+The database design should answer that.
 
-00:00:48.552 --> 00:00:51.327
+00:00:46.592 --> 00:00:52.562
+If the true relationship uses an encounter ID, joining only on patient ID is too broad.
+
+00:00:52.562 --> 00:00:55.132
 This mistake happens in many domains.
 
-00:00:51.327 --> 00:00:56.017
-A customer ID may appear in orders, payments, and support tickets,
+00:00:55.132 --> 00:00:59.792
+A customer ID may exist in orders, payments, and support tickets,
 
-00:00:56.017 --> 00:00:59.627
+00:00:59.792 --> 00:01:03.627
 but that does not mean every payment belongs to every order.
 
-00:00:59.627 --> 00:01:07.652
-A student ID may appear in registrations and grades, but the correct relationship may also require course_id
-
-00:01:07.652 --> 00:01:14.067
-and term. Before adding a table, restate the target grain and ask whether the new table is at the same level.
-
-00:01:14.067 --> 00:01:18.640
-If not, aggregate it, filter it, or use a more specific key.
+00:01:03.627 --> 00:01:08.618
+Always ask whether the key you are using matches the level of the relationship you need.

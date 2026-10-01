@@ -1,46 +1,40 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:07.567
-This self join uses the admissions table twice so we can compare an earlier admission with a later admission
+00:00:00.000 --> 00:00:04.552
+This self-join example compares admissions with other admissions for the same patient.
 
-00:00:07.567 --> 00:00:13.027
-for the same patient. The patient IDs must match, because we only want admissions for the same person.
+00:00:04.552 --> 00:00:07.527
+We give the admissions table two aliases.
 
-00:00:13.027 --> 00:00:19.427
-We also create an order between the two rows so that one admission plays the role of earlier encounter and the
+00:00:07.527 --> 00:00:13.667
+The first alias represents an earlier admission, and the second alias represents a later admission.
 
-00:00:19.427 --> 00:00:22.062
-other plays the role of later encounter.
+00:00:13.667 --> 00:00:18.477
+The patient IDs must match so both admissions belong to the same patient.
 
-00:00:22.062 --> 00:00:24.687
-That prevents reverse duplicates.
+00:00:18.477 --> 00:00:23.467
+We also require the first admission ID to be less than the second admission ID.
 
-00:00:24.687 --> 00:00:31.127
-Then we use the dates to keep cases where the later admission occurred within a meaningful time window after
+00:00:23.467 --> 00:00:30.022
+That gives the two copies different roles and helps avoid comparing the same pair in both directions.
 
-00:00:31.127 --> 00:00:36.057
-discharge. This type of logic is common in healthcare analytics when studying readmissions, follow-up visits,
+00:00:30.022 --> 00:00:35.767
+Then we calculate the number of days between the earlier discharge date and the later admission date.
 
-00:00:36.057 --> 00:00:38.957
-or repeat procedures.
+00:00:35.767 --> 00:00:40.707
+The WHERE clause keeps cases where that gap is between one and ninety days.
 
-00:00:38.957 --> 00:00:44.537
-The same approach could be used in retail to compare a customer's first purchase with a later purchase,
+00:00:40.707 --> 00:00:46.047
+This is a teaching example of how self joins can compare events within the same entity.
 
-00:00:44.537 --> 00:00:49.047
-or in cybersecurity to compare repeated login events for the same account.
+00:00:46.047 --> 00:00:52.922
+Similar logic can compare repeat purchases by one customer, repeated service calls for one machine,
 
-00:00:49.047 --> 00:00:54.022
-Aliases are especially important here because both rows come from the same table.
+00:00:52.922 --> 00:00:55.742
+or multiple registrations for one student.
 
-00:00:54.022 --> 00:00:58.492
-Without clear role names, the query becomes very hard to read.
+00:00:55.742 --> 00:00:58.477
+When you run the query, remember the grain.
 
-00:00:58.492 --> 00:01:03.452
-When building a self join, always define the roles in plain language first:
-
-00:01:03.452 --> 00:01:05.987
-earlier admission and later admission.
-
-00:01:05.987 --> 00:01:08.248
-Then translate those roles into SQL.
+00:00:58.477 --> 00:01:04.631
+One row now represents a pair of admissions for the same patient, not one individual admission.

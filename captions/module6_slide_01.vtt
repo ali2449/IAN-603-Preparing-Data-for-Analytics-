@@ -1,70 +1,61 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.472
+00:00:00.000 --> 00:00:03.957
 Welcome to Module 6, Joining Data in PostgreSQL.
 
-00:00:04.472 --> 00:00:10.102
+00:00:03.957 --> 00:00:09.022
 Up to this point, many of our examples have focused on one table at a time.
 
-00:00:10.102 --> 00:00:14.372
-That is useful for learning SQL, but real projects rarely stay inside one table.
+00:00:09.022 --> 00:00:17.542
+That is useful for learning SQL, but real analytical work usually requires information that is stored across
 
-00:00:14.372 --> 00:00:21.862
-A hospital may store patient demographics in one table, admissions in another, lab tests in another,
+00:00:17.542 --> 00:00:17.922
+several related tables.
 
-00:00:21.862 --> 00:00:23.612
+00:00:17.922 --> 00:00:24.187
+A healthcare system may store patients in one table, admissions in another, lab results in another,
+
+00:00:24.187 --> 00:00:26.857
 and staff information somewhere else.
 
-00:00:23.612 --> 00:00:29.072
-A university may separate students, courses, registrations, and grades.
+00:00:26.857 --> 00:00:32.597
+A university may separate students, registrations, courses, and grades.
 
-00:00:29.072 --> 00:00:35.372
+00:00:32.597 --> 00:00:38.017
 An online store may separate customers, orders, products, and payments.
 
-00:00:35.372 --> 00:00:38.237
-To answer useful questions, we often need to bring those pieces together.
+00:00:38.017 --> 00:00:43.307
+In this module, the important skill is not simply memorizing JOIN syntax.
 
-00:00:38.237 --> 00:00:43.377
-The important skill in this module is not just memorizing JOIN syntax.
-
-00:00:43.377 --> 00:00:48.507
+00:00:43.307 --> 00:00:46.687
 I want you to think about what the final rows mean.
 
-00:00:48.507 --> 00:00:54.277
-If one patient has three admissions, should that patient appear once or three times?
+00:00:46.687 --> 00:00:53.102
+If one patient has several admissions, should that patient appear once or several times?
 
-00:00:54.277 --> 00:00:59.757
-If a patient has no admissions, should the patient disappear or remain?
+00:00:53.102 --> 00:00:57.217
+If a patient has no admission, should that patient disappear,
 
-00:00:59.757 --> 00:01:02.367
-Those questions determine the join strategy.
+00:00:57.217 --> 00:01:00.787
+or should the patient remain with missing admission values?
 
-00:01:02.367 --> 00:01:09.327
-This same reasoning applies whether you are joining hospital data, customer data, student records,
+00:01:00.787 --> 00:01:04.097
+Those questions determine how we join the data.
 
-00:01:09.327 --> 00:01:10.567
-or financial transactions.
+00:01:04.097 --> 00:01:09.257
+As we work through the module, keep four questions in mind.
 
-00:01:10.567 --> 00:01:17.992
-We will work with INNER, LEFT, RIGHT, and FULL OUTER joins, but we will also go beyond the basic definitions.
+00:01:09.257 --> 00:01:12.887
+First, what should one output row represent?
 
-00:01:17.992 --> 00:01:21.522
-We will compare ON and WHERE, use self joins and cross joins,
+00:01:12.887 --> 00:01:16.837
+Second, which rows must be preserved even when no match exists?
 
-00:01:21.522 --> 00:01:29.502
-and spend time on cardinality because row multiplication can quietly create incorrect counts.
+00:01:16.837 --> 00:01:21.477
+Third, what rule tells us that two rows belong together?
 
-00:01:29.502 --> 00:01:34.172
-As you move through the module, try to predict the output before you run the SQL.
+00:01:21.477 --> 00:01:27.852
+And fourth, after the join runs, how can we validate that the result makes sense?
 
-00:01:34.172 --> 00:01:38.802
-Then run the query and compare your prediction with the result.
-
-00:01:38.802 --> 00:01:47.292
-That habit is extremely useful in real analytics work because a query can run successfully and still answer
-
-00:01:47.292 --> 00:01:54.657
-the wrong question. In a real project, a wrong join can change a dashboard, a report, or even a decision,
-
-00:01:54.657 --> 00:02:01.549
-so understanding the meaning of the rows is more important than simply getting a green execution message.
+00:01:27.852 --> 00:01:34.094
+If you build the habit of answering those four questions, JOINs become much easier to reason about.

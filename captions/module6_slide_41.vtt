@@ -1,43 +1,37 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.737
+00:00:00.000 --> 00:00:05.382
 The final coding exercise combines preservation, cardinality, and aggregation.
 
-00:00:05.737 --> 00:00:11.702
-The result must contain one row per department, including departments with zero activity.
+00:00:05.382 --> 00:00:11.637
+The final result must contain one row per department, including departments with zero activity.
 
-00:00:11.702 --> 00:00:15.842
-Start from departments because that is the population to preserve.
+00:00:11.637 --> 00:00:17.027
+That tells you to start from departments because departments is the population to preserve.
 
-00:00:15.842 --> 00:00:21.232
+00:00:17.027 --> 00:00:22.207
 LEFT JOIN admissions by department and LEFT JOIN medical staff by department.
 
-00:00:21.232 --> 00:00:28.012
+00:00:22.207 --> 00:00:29.467
 Because one department can have several admissions and several staff members, the combined rows can multiply.
 
-00:00:28.012 --> 00:00:32.032
-If you count rows directly, the measures may be inflated.
+00:00:29.467 --> 00:00:33.982
+If you count every joined row directly, the measures can be inflated.
 
-00:00:32.032 --> 00:00:35.937
-Use distinct identifiers when counting admissions and staff.
+00:00:33.982 --> 00:00:39.892
+Count distinct admission IDs for admission count and distinct staff IDs for staff count.
 
-00:00:35.937 --> 00:00:41.162
-Then GROUP BY department so the final grain is one department per row.
+00:00:39.892 --> 00:00:44.612
+Then GROUP BY department so the final grain is one row per department.
 
-00:00:41.162 --> 00:00:45.257
+00:00:44.612 --> 00:00:48.332
 After Run and Check, find the department with no activity.
 
-00:00:45.257 --> 00:00:47.857
+00:00:48.332 --> 00:00:50.997
 It should still appear with zero counts.
 
-00:00:47.857 --> 00:00:53.537
-Then inspect a busy department and make sure the counts reflect real admissions and real staff,
+00:00:50.997 --> 00:00:56.807
+Then inspect a busy department and make sure the values represent real admissions and real staff rather than
 
-00:00:53.537 --> 00:00:56.287
-not the multiplied join combinations.
-
-00:00:56.287 --> 00:01:02.322
-This is very similar to real management reporting where every region, team, program,
-
-00:01:02.322 --> 00:01:06.160
-or product category must appear even when activity is zero.
+00:00:56.807 --> 00:00:59.478
+multiplied join combinations.

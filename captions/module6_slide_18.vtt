@@ -1,52 +1,43 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.992
-A self join is not a separate JOIN keyword.
+00:00:00.000 --> 00:00:03.142
+A self join means joining a table to itself.
 
-00:00:02.992 --> 00:00:08.612
-It is a regular join where the same table appears twice using different aliases.
+00:00:03.142 --> 00:00:08.912
+We use two aliases so the same physical table can play two logical roles.
 
-00:00:08.612 --> 00:00:13.387
-The aliases allow the two copies of the table to play different roles.
+00:00:08.912 --> 00:00:10.962
+Look at the small staff table.
 
-00:00:13.387 --> 00:00:18.357
-Here, medical staff is referenced as s1 and s2.
+00:00:10.962 --> 00:00:15.757
+Ana and Ben are both in department A, while Cara is in department B.
 
-00:00:18.357 --> 00:00:22.037
-We match staff members who belong to the same department.
+00:00:15.757 --> 00:00:20.972
+We treat one copy of the table as s1 and another copy as s2.
 
-00:00:22.037 --> 00:00:27.167
-We also require the first staff ID to be less than the second staff ID.
+00:00:20.972 --> 00:00:23.962
+Then we match rows when the department is the same.
 
-00:00:27.167 --> 00:00:32.757
-That second rule prevents matching a person to themselves and prevents reverse duplicates such as Alice-Bob
+00:00:23.962 --> 00:00:28.957
+If we stopped there, we would get unwanted pairs such as Ana paired with herself,
 
-00:00:32.757 --> 00:00:35.657
-and Bob-Alice.
+00:00:28.957 --> 00:00:33.672
+Ben paired with himself, and the same colleague pair in both directions.
 
-00:00:35.657 --> 00:00:42.447
-Self joins are very useful when rows in one table need to be compared with other rows from the same table.
+00:00:33.672 --> 00:00:40.532
+The condition that the first staff ID must be less than the second staff ID solves both problems.
 
-00:00:42.447 --> 00:00:48.722
-In an employee table, one row might represent an employee and another row the manager.
+00:00:40.532 --> 00:00:45.977
+It prevents self-pairs and keeps only one direction for each pair.
 
-00:00:48.722 --> 00:00:53.332
-In a sales table, you could compare purchases from the same customer.
+00:00:45.977 --> 00:00:51.152
+In the result, department A produces one unique colleague pair: Ana and Ben.
 
-00:00:53.332 --> 00:00:58.907
-In a hospital, you can compare one admission with a later admission for the same patient.
+00:00:51.152 --> 00:00:57.522
+Self joins are useful whenever rows in one table must be compared with other rows from that same
 
-00:00:58.907 --> 00:01:01.767
-The important idea is role labeling.
+00:00:57.522 --> 00:01:03.662
+table. Examples include employee-manager relationships, comparing earlier and later events,
 
-00:01:01.767 --> 00:01:06.442
-Before writing a self join, decide what each alias represents.
-
-00:01:06.442 --> 00:01:08.632
-Earlier event and later event.
-
-00:01:08.632 --> 00:01:12.672
-Employee and manager. First purchase and next purchase.
-
-00:01:12.672 --> 00:01:16.477
-Good alias roles make the logic much easier to understand.
+00:01:03.662 --> 00:01:09.681
+matching products in the same category, or identifying pairs of staff members who share a department.

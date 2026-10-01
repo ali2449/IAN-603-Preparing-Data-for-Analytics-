@@ -1,43 +1,52 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.747
-FULL OUTER JOIN is especially useful for reconciliation.
+00:00:00.000 --> 00:00:04.222
+FULL OUTER JOIN preserves unmatched rows from both sides.
 
-00:00:03.747 --> 00:00:12.072
-Reconciliation means comparing two sources and making sure we can see matches as well as records that exist in
+00:00:04.222 --> 00:00:11.037
+It is especially useful when we are comparing two systems and want to see matches as well as
 
-00:00:12.072 --> 00:00:12.392
-only one source.
+00:00:11.037 --> 00:00:12.967
+differences. Look at the tiny tables.
 
-00:00:12.392 --> 00:00:18.982
-In our example, the patient master is the official table, while the staging table represents imported data.
+00:00:12.967 --> 00:00:20.002
+Ben has no admission, so the FULL OUTER result keeps Ben and fills the admission value with NULL.
 
-00:00:18.982 --> 00:00:23.877
-We want to see three possibilities: a patient that exists in both tables,
+00:00:20.002 --> 00:00:27.627
+Admission 104 has no matching patient, so that admission also remains and the patient name becomes NULL.
 
-00:00:23.877 --> 00:00:30.182
-a patient that exists only in the official master, and a staging row that has no official patient.
+00:00:27.627 --> 00:00:30.097
+Matched rows remain as usual.
 
-00:00:30.182 --> 00:00:35.202
-This same idea appears in finance when comparing two transaction systems,
+00:00:30.097 --> 00:00:36.037
+The PostgreSQL example uses a patient master table and an admissions staging table.
 
-00:00:35.202 --> 00:00:39.197
-in human resources when comparing payroll with employee records,
+00:00:36.037 --> 00:00:39.182
+This is a common data-quality situation.
 
-00:00:39.197 --> 00:00:43.982
-or in education when comparing enrollment systems with learning-platform accounts.
+00:00:39.182 --> 00:00:45.787
+The patient master represents the official source, while the staging table represents imported data.
 
-00:00:43.982 --> 00:00:50.307
-The CASE expression in the query helps turn those situations into readable labels such as matched,
+00:00:45.787 --> 00:00:50.677
+We want to see records that match, patient records with no staging row,
 
-00:00:50.307 --> 00:00:53.707
-missing from staging, or missing from master.
+00:00:50.677 --> 00:00:54.677
+and staging rows whose patient ID does not exist in the master.
 
-00:00:53.707 --> 00:01:00.502
-COALESCE can also help when the identifier may come from either table depending on which side is unmatched.
+00:00:54.677 --> 00:00:59.462
+The CASE expression translates those situations into readable labels.
 
-00:01:00.502 --> 00:01:04.982
-FULL OUTER JOIN is powerful because it does not throw away evidence.
+00:00:59.462 --> 00:01:05.437
+COALESCE helps us show one identifier even when the row exists on only one side.
 
-00:01:04.982 --> 00:01:11.035
-When you are doing data-quality work, unmatched rows are often the rows that deserve the most attention.
+00:01:05.437 --> 00:01:09.122
+Think of FULL OUTER JOIN as a reconciliation tool.
+
+00:01:09.122 --> 00:01:13.642
+Finance teams use similar logic to compare transaction systems.
+
+00:01:13.642 --> 00:01:18.177
+Human resources teams may compare employee and payroll records.
+
+00:01:18.177 --> 00:01:22.998
+Data engineers use it to compare source and target tables during migrations.
