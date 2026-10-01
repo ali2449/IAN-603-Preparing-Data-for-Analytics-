@@ -318,7 +318,46 @@ body.dark .mini-result th{
     font-size:12.5px;
   }
 }
-</style><!-- IAN603_UI_SHELL_START --><link rel="stylesheet" href="assets/ian603-ui-shell.css?v=20260929"><!-- IAN603_UI_SHELL_END --></head><body><div class="app"><header class="topbar"><div class="brand"><div class="brand-mark">6</div><div>IAN 603<small>Module 6 · Joining Data</small></div></div><span id="dbStatus" class="db-status">Loading PostgreSQL...</span><div class="top-actions"><button class="control" id="progressBtn" type="button">Progress <span id="progressPct">0%</span></button><button class="control" id="runSlideBtn" type="button">Run SQL</button><button class="control" id="themeBtn" type="button">Dark mode</button><button class="control" id="fullBtn" type="button">Full screen</button><button class="control" id="courseModulesBtn" type="button" aria-haspopup="dialog" aria-controls="courseModulesDrawer"><span class="cmn-btn-icon">☰</span><span class="cmn-btn-label">Course Modules</span></button></div></header><main class="stage"><div id="slidesHost"><section class="slide active" data-title="Big picture"><div class="hero"><div><div class="slide-kicker">IAN 603 · Module 6</div><h1>Joining Data in PostgreSQL</h1><p class="lead">Move from separate relational tables to defensible analytical datasets.</p><div class="badges"><span class="badge">INNER / LEFT / RIGHT / FULL</span><span class="badge">ON vs WHERE</span><span class="badge">Cardinality</span><span class="badge">Self &amp; Cross joins</span></div><div class="start-actions" style="margin-top:18px"><button class="control primary" id="startWithNarration" type="button">Start Narration</button></div></div><div class="hero-visual"><div class="query-stack"><div class="query-node"><b>1</b>Define what one output row means</div><div class="query-node"><b>2</b>Choose which rows must be preserved</div><div class="query-node"><b>3</b>Write the matching rule</div><div class="query-node"><b>4</b>Validate row counts and keys</div></div></div></div><div class="slide-num"></div></section><section class="slide" data-title="Learning objectives"><div class="grid-2"><div class="card primary-card"><h3>Choose the join</h3><p>Translate a business question into INNER, LEFT, RIGHT, or FULL OUTER JOIN.</p></div><div class="card"><h3>Control matching</h3><p>Use aliases, <code>ON</code>, and <code>USING</code> clearly.</p></div><div class="card"><h3>Protect the grain</h3><p>Recognize one-to-many and many-to-many multiplication.</p></div><div class="card good-card"><h3>Validate</h3><p>Check row counts, distinct keys, and known examples before trusting a result.</p></div></div><div class="slide-num"></div></section><section class="slide" data-title="Join decision workflow"><div class="process"><div class="step"><b>1</b>Define the grain</div><div class="step"><b>2</b>Name the two row sets</div><div class="step"><b>3</b>Define a match</div><div class="step"><b>4</b>Choose preserved rows</div><div class="step"><b>5</b>Predict cardinality</div><div class="step"><b>6</b>Validate output</div></div><div class="callout"><strong>Core habit:</strong> start from the business rule, not from a JOIN keyword.</div><div class="slide-num"></div></section><section class="slide" data-title="Practice schema">
+</style><!-- IAN603_UI_SHELL_START --><link rel="stylesheet" href="assets/ian603-ui-shell.css?v=20260929"><!-- IAN603_UI_SHELL_END --></head><body><div class="app"><header class="topbar"><div class="brand"><div class="brand-mark">6</div><div>IAN 603<small>Module 6 · Joining Data</small></div></div><span id="dbStatus" class="db-status">Loading PostgreSQL...</span><div class="top-actions"><button class="control" id="progressBtn" type="button">Progress <span id="progressPct">0%</span></button><button class="control" id="runSlideBtn" type="button">Run SQL</button><button class="control" id="themeBtn" type="button">Dark mode</button><button class="control" id="fullBtn" type="button">Full screen</button><button class="control" id="courseModulesBtn" type="button" aria-haspopup="dialog" aria-controls="courseModulesDrawer"><span class="cmn-btn-icon">☰</span><span class="cmn-btn-label">Course Modules</span></button></div></header><main class="stage"><div id="slidesHost"><section class="slide active" data-title="Big picture"><div class="hero"><div><div class="slide-kicker">IAN 603 · Module 6</div><h1>Joining Data in PostgreSQL</h1><p class="lead">Move from separate relational tables to defensible analytical datasets.</p><div class="badges"><span class="badge">INNER / LEFT / RIGHT / FULL</span><span class="badge">ON vs WHERE</span><span class="badge">Cardinality</span><span class="badge">Self &amp; Cross joins</span></div><div class="start-actions" style="margin-top:18px"><button class="control primary" id="startWithNarration" type="button">Start Narration</button></div></div><div class="hero-visual"><div class="query-stack"><div class="query-node"><b>1</b>Define what one output row means</div><div class="query-node"><b>2</b>Choose which rows must be preserved</div><div class="query-node"><b>3</b>Write the matching rule</div><div class="query-node"><b>4</b>Validate row counts and keys</div></div></div></div><div class="slide-num"></div></section><section class="slide" data-title="Learning objectives"><div class="grid-2"><div class="card primary-card"><h3>Choose the join</h3><p>Translate a business question into INNER, LEFT, RIGHT, or FULL OUTER JOIN.</p></div><div class="card"><h3>Control matching</h3><p>Use aliases, <code>ON</code>, and <code>USING</code> clearly.</p></div><div class="card"><h3>Protect the grain</h3><p>Recognize one-to-many and many-to-many multiplication.</p></div><div class="card good-card"><h3>Validate</h3><p>Check row counts, distinct keys, and known examples before trusting a result.</p></div></div><div class="slide-num"></div></section><section class="slide" data-title="Join decision workflow">
+<div class="slide-kicker">A practical checklist</div>
+<h2>Join decision workflow</h2>
+<p class="lead">Before writing SQL, translate the question into a simple sequence of decisions.</p>
+
+<div class="process" style="margin-top:18px">
+  <div class="step">
+    <b>1</b>
+    <strong>Define the grain</strong>
+    <span style="display:block;margin-top:5px;color:var(--muted);font-size:12px">One row per admission</span>
+  </div>
+  <div class="step">
+    <b>2</b>
+    <strong>Identify the tables</strong>
+    <span style="display:block;margin-top:5px;color:var(--muted);font-size:12px">patients + admissions</span>
+  </div>
+  <div class="step">
+    <b>3</b>
+    <strong>Define the match</strong>
+    <span style="display:block;margin-top:5px;color:var(--muted);font-size:12px">patient_id = patient_id</span>
+  </div>
+  <div class="step">
+    <b>4</b>
+    <strong>Choose preserved rows</strong>
+    <span style="display:block;margin-top:5px;color:var(--muted);font-size:12px">Keep every patient?</span>
+  </div>
+  <div class="step">
+    <b>5</b>
+    <strong>Predict cardinality</strong>
+    <span style="display:block;margin-top:5px;color:var(--muted);font-size:12px">1 patient → many admissions</span>
+  </div>
+  <div class="step">
+    <b>6</b>
+    <strong>Validate output</strong>
+    <span style="display:block;margin-top:5px;color:var(--muted);font-size:12px">Check rows + distinct IDs</span>
+  </div>
+</div>
+
+<div class="callout"><strong>Core habit:</strong> start from the business rule, not from a JOIN keyword.</div>
+<div class="slide-num"></div></section><section class="slide" data-title="Practice schema">
 <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:10px">
   <div>
     <div class="slide-kicker">Relationships before JOINs</div>
