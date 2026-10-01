@@ -1,20 +1,31 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.735
-COALESCE returns the first non-null expression Here
-we try cleaned
+00:00:00.000 --> 00:00:03.012
+COALESCE returns the first non-null expression.
 
-00:00:05.761 --> 00:00:11.990
-email first then cleaned phone then a text label
-saying no contact method This
+00:00:03.012 --> 00:00:09.837
+Here, we try cleaned email first, then cleaned phone, then a text label saying no contact method.
 
-00:00:12.016 --> 00:00:17.653
-is a reporting or business-logic fallback It does
-not repair the missing
+00:00:09.837 --> 00:00:13.252
+This is a reporting or business-logic fallback.
 
-00:00:17.679 --> 00:00:23.291
-email or phone The source still has the same
-missingness we are simply
+00:00:13.252 --> 00:00:16.272
+It does not repair the missing email or phone.
 
-00:00:23.304 --> 00:00:25.370
-choosing a value for the current output
+00:00:16.272 --> 00:00:22.342
+The source still has the same missingness; we are simply choosing a value for the current output.
+
+00:00:22.342 --> 00:00:27.372
+Missingness has several representations: NULL, blank text, whitespace,
+
+00:00:27.372 --> 00:00:31.082
+and sometimes sentinel codes such as Unknown or 999.
+
+00:00:31.082 --> 00:00:32.517
+Do not collapse them blindly.
+
+00:00:32.517 --> 00:00:37.987
+First decide whether they mean the same thing in the source system,
+
+00:00:37.987 --> 00:00:42.706
+then normalize deliberately and keep lineage when the original value may matter.

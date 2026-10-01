@@ -1,40 +1,52 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.274
-Now let's create a simple grouped summary The goal
-is one row
+00:00:00.000 --> 00:00:02.042
+Now let's create a simple grouped summary.
 
-00:00:05.300 --> 00:00:11.031
-per diagnosis with a count of admissions inside each
-diagnosis The
+00:00:02.042 --> 00:00:07.467
+The goal is one row per diagnosis, with a count of admissions inside each diagnosis.
 
-00:00:11.045 --> 00:00:15.426
-diagnosis column defines the groups and COUNT
-calculates a measure within each
+00:00:07.467 --> 00:00:13.067
+The diagnosis column defines the groups, and COUNT calculates a measure within each group.
 
-00:00:15.439 --> 00:00:21.378
-group Before running the query predict which
-diagnosis will have the largest
+00:00:13.067 --> 00:00:17.657
+Before running the query, predict which diagnosis will have the largest count.
 
-00:00:21.405 --> 00:00:27.664
-count Then run it in the browser and inspect the
-result Notice
+00:00:17.657 --> 00:00:21.012
+Then run it in the browser and inspect the result.
 
-00:00:27.690 --> 00:00:31.348
-that the original admission rows have been collapsed
-into a smaller summary
+00:00:21.012 --> 00:00:27.872
+Notice that the original admission rows have been collapsed into a smaller summary table.
 
-00:00:31.374 --> 00:00:36.495
-table We no longer see individual admission IDs
-because the output grain
+00:00:27.872 --> 00:00:33.587
+We no longer see individual admission IDs because the output grain is diagnosis.
 
-00:00:36.508 --> 00:00:42.037
-is diagnosis If you copy this query into pgAdmin try
+00:00:33.587 --> 00:00:38.382
+If you copy this query into pgAdmin, try adding ORDER BY admission count descending.
 
-00:00:42.051 --> 00:00:47.211
-adding ORDER BY admission count descending Sorting
-does not change the grouping
+00:00:38.382 --> 00:00:42.222
+Sorting does not change the grouping.
 
-00:00:48.145 --> 00:00:51.395
-It simply makes the largest groups easier to
-identify
+00:00:42.222 --> 00:00:44.617
+It simply makes the largest groups easier to identify.
+
+00:00:44.617 --> 00:00:50.247
+When reading the example, do not read punctuation one character at a time.
+
+00:00:50.247 --> 00:00:54.407
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:54.407 --> 00:00:57.012
+and the shape of the expected output.
+
+00:00:57.012 --> 00:01:02.692
+In a real setting such as a retail report comparing revenue across products and regions,
+
+00:01:02.692 --> 00:01:08.917
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:01:08.917 --> 00:01:11.182
+before discussing syntax.
+
+00:01:11.182 --> 00:01:17.366
+After running it, inspect a few records manually and check that the result matches that explanation.

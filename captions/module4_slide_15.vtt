@@ -1,44 +1,55 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.753
-A complete aggregation query has a natural logical
-flow First
+00:00:00.000 --> 00:00:03.242
+A complete aggregation query has a natural logical flow.
 
-00:00:05.925 --> 00:00:11.782
-FROM identifies the source WHERE filters individual
-rows GROUP
+00:00:03.242 --> 00:00:05.452
+First, FROM identifies the source.
 
-00:00:11.796 --> 00:00:16.032
-BY forms the groups HAVING removes groups that do
-not meet an
+00:00:05.452 --> 00:00:09.472
+WHERE filters individual rows. GROUP BY forms the groups.
 
-00:00:16.046 --> 00:00:20.993
-aggregate condition SELECT defines the values that
-appear in the result and
+00:00:09.472 --> 00:00:12.687
+HAVING removes groups that do not meet an aggregate condition.
 
-00:00:21.019 --> 00:00:26.437
-ORDER BY sorts the final rows The written SQL order
-is familiar
+00:00:12.687 --> 00:00:18.102
+SELECT defines the values that appear in the result, and ORDER BY sorts the final rows.
 
-00:00:26.635 --> 00:00:30.648
-but thinking about the logical stages helps explain
-why certain expressions are
+00:00:18.102 --> 00:00:26.257
+The written SQL order is familiar, but thinking about the logical stages helps explain why certain expressions
 
-00:00:30.674 --> 00:00:35.760
-valid in one clause and not another There is also a
-practical
+00:00:26.257 --> 00:00:29.082
+are valid in one clause and not another.
 
-00:00:35.786 --> 00:00:40.578
-efficiency lesson here If a condition can be applied
-to individual source
+00:00:29.082 --> 00:00:32.077
+There is also a practical efficiency lesson here.
 
-00:00:40.604 --> 00:00:44.039
-rows put it in WHERE so fewer rows reach the
-grouping stage
+00:00:32.077 --> 00:00:37.512
+If a condition can be applied to individual source rows, put it in WHERE so fewer rows reach the grouping
 
-00:00:45.767 --> 00:00:49.332
-Before running a long summary query read it as a
-pipeline source
+00:00:37.512 --> 00:00:38.887
+stage.
 
-00:00:49.359 --> 00:00:52.793
-rows row filter groups group filter output sort
+00:00:38.887 --> 00:00:44.142
+Before running a long summary query, read it as a pipeline: source rows, row filter, groups, group filter,
+
+00:00:44.142 --> 00:00:51.102
+output, sort. When reading the example, do not read punctuation one character at a time.
+
+00:00:51.102 --> 00:00:55.112
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:55.112 --> 00:00:57.652
+and the shape of the expected output.
+
+00:00:57.652 --> 00:01:02.882
+In a real setting such as a student-success report comparing course-level outcomes,
+
+00:01:02.882 --> 00:01:09.027
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:01:09.027 --> 00:01:11.282
+before discussing syntax.
+
+00:01:11.282 --> 00:01:17.328
+After running it, inspect a few records manually and check that the result matches that explanation.

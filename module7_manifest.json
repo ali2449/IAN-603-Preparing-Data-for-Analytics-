@@ -1,468 +1,1197 @@
 {
-  "prefix": "module7",
-  "voice": "en-US-GuyNeural",
-  "rate": "-5%",
-  "volume": "+0%",
-  "pitch": "+0Hz",
-  "caption_words": 15,
-  "slide_count": 65,
-  "slide_markers_found": true,
-  "pause_marker_format": "[pause=seconds] or [pause=millisecondsms]",
+  "module": "module7",
+  "filename_prefix": "module7",
+  "source_file": "IAN603_Module7_Narration_Detailed.txt",
+  "voice_consistency_version": 3,
+  "reference_audio": "/home/ali/breeze-tts/voice_reference/course_instructor_consistent_v4.wav",
+  "reference_text": "Welcome to the course. We will work through each concept carefully, connect the\nideas step by step, and use practical examples to make technical topics easier\nto understand. When we introduce a new method, focus first on the problem it\nsolves and why it is useful. For example, in machine learning, features are the\ninformation we give the model, while the target is what we want it to predict.\nNow consider a simple question: what changes when the data contains missing\nvalues? We will think through the reason and then look at the code. In Python,\nwe can inspect the data, run one small step at a time, and explain what the\nresult means. The goal is to understand the logic, not simply memorize syntax.",
+  "locked_narration_seed": true,
+  "narration_seed": 1234,
+  "long_narration": {
+    "automatic_chunking": true,
+    "max_text_tokens_per_call": 260,
+    "chunk_pause_seconds": 0.38,
+    "manual_break_marker": "[tts-break]",
+    "breeze_max_new_tokens": 1500,
+    "breeze_max_seq_len": 2048
+  },
+  "subtitle_method": "whole_slide_silence_alignment",
+  "caption_settings": {
+    "max_words": 21,
+    "max_chars": 110,
+    "minimum_silence_seconds": 0.2,
+    "boundary_search_window_seconds": 1.4
+  },
   "slides": [
     {
       "slide": 1,
-      "audio": "module7_slide_01.mp3",
-      "captions": "module7_slide_01.vtt",
-      "text": "Welcome to Module 7, Subqueries in PostgreSQL.\n\n[pause=0.7]\n\nA subquery is a query used inside another query. The important part is not the parentheses. The important part is understanding what the inner query returns and what the outer query expects.\n\n[pause=0.8]\n\nWe will build this gradually, starting with result shapes and then moving through scalar subqueries, membership, existence, ANY and ALL, correlated subqueries, and derived tables.\n\n[pause=0.7]\n\nEvery SQL example can run directly in the browser. You can also copy the query into pgAdmin for more practice.\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "Start",
+      "transcript": "Welcome to Module 7, Subqueries in PostgreSQL. A subquery is a query used inside another query. The important part is not the parentheses. The important part is understanding what the inner query returns and what the outer query expects. We will build this gradually, starting with result shapes and then moving through scalar subqueries, membership, existence, ANY and ALL, correlated subqueries, and derived tables. Every SQL example can run directly in the browser. You can also copy the query into pgAdmin for more practice. Keep a real project in mind as we work through this section—for example, a hospital identifying patients above a benchmark or with no follow-up. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
+      "seed": 1234,
+      "tts_text_tokens": 201,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        201
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_01.wav",
+      "audio": "audio/module7_slide_01.mp3",
+      "captions": "audio/module7_slide_01.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 2,
-      "audio": "module7_slide_02.mp3",
-      "captions": "module7_slide_02.vtt",
-      "text": "Subqueries become useful when one part of the question depends on the result of another query.\n\n[pause=0.8]\n\nSometimes the inner query produces one benchmark such as average age.\n\n[pause=0.8]\n\nSometimes it produces a set of patient IDs.\n\n[pause=0.7]\n\nSometimes we only need to know whether a matching related row exists.\n\n[pause=0.7]\n\nAnd sometimes the inner query depends on the current outer row.\n\n[pause=0.8]\n\nThese are different contracts, and recognizing the contract is more useful than memorizing syntax.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Why subqueries matter",
+      "transcript": "Subqueries become useful when one part of the question depends on the result of another query. Sometimes the inner query produces one benchmark such as average age. Sometimes it produces a set of patient IDs. Sometimes we only need to know whether a matching related row exists. And sometimes the inner query depends on the current outer row. These are different contracts, and recognizing the contract is more useful than memorizing syntax. Connect this idea to an e-commerce team finding customers who purchased a target product. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 163,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        163
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_02.wav",
+      "audio": "audio/module7_slide_02.mp3",
+      "captions": "audio/module7_slide_02.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 3,
-      "audio": "module7_slide_03.mp3",
-      "captions": "module7_slide_03.vtt",
-      "text": "Module 7 builds on earlier SQL ideas.\n\n[pause=0.7]\n\nYou should already recognize basic SELECT queries, aggregate functions, simple joins, and NULL.\n\n[pause=0.7]\n\nSubqueries combine those familiar pieces in a new structure.\n\n[pause=0.7]\n\nIf you can read a simple query on its own, the main new skill is understanding how the result of one query is used by another.\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "Prerequisite review",
+      "transcript": "Module 7 builds on earlier SQL ideas. You should already recognize basic SELECT queries, aggregate functions, simple joins, and NULL. Subqueries combine those familiar pieces in a new structure. If you can read a simple query on its own, the main new skill is understanding how the result of one query is used by another. Connect this idea to a compliance workflow checking whether related evidence exists. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 143,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        143
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_03.wav",
+      "audio": "audio/module7_slide_03.mp3",
+      "captions": "audio/module7_slide_03.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 4,
-      "audio": "module7_slide_04.mp3",
-      "captions": "module7_slide_04.vtt",
-      "text": "We will start with the result shape of the inner query.\n\n[pause=0.8]\n\nThen we will learn scalar subqueries, followed by set-oriented patterns such as IN, EXISTS, ANY, and ALL.\n\n[pause=0.7]\n\nAfter that, we will study correlated subqueries, where the inner query depends on the current outer row.\n\n[pause=0.8]\n\nFinally, we will compare placements and rewrites.\n\n[pause=0.7]\n\nThis order makes subqueries easier to understand because every new pattern answers a specific kind of question.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Module roadmap",
+      "transcript": "We will start with the result shape of the inner query. Then we will learn scalar subqueries, followed by set-oriented patterns such as IN, EXISTS, ANY, and ALL. After that, we will study correlated subqueries, where the inner query depends on the current outer row. Finally, we will compare placements and rewrites. This order makes subqueries easier to understand because every new pattern answers a specific kind of question. Keep a real project in mind as we work through this section—for example, a hospital identifying patients above a benchmark or with no follow-up. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
+      "seed": 1234,
+      "tts_text_tokens": 184,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        184
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_04.wav",
+      "audio": "audio/module7_slide_04.mp3",
+      "captions": "audio/module7_slide_04.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 5,
-      "audio": "module7_slide_05.mp3",
-      "captions": "module7_slide_05.vtt",
-      "text": "The module uses a small healthcare-style teaching database.\n\n[pause=0.7]\n\nPatients is the main entity. Admissions, lab results, and prescriptions connect back to patients.\n\n[pause=0.7]\n\nAdmissions also connect to departments.\n\n[pause=0.7]\n\nThe review queue contains one patient ID and one deliberate NULL. That NULL is important because we will use it to demonstrate the NOT IN trap.\n\n[pause=0.7]\n\nThe database loads automatically in the browser.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Running database",
+      "transcript": "The module uses a small healthcare-style teaching database. Patients is the main entity. Admissions, lab results, and prescriptions connect back to patients. Admissions also connect to departments. The review queue contains one patient ID and one deliberate NULL. That NULL is important because we will use it to demonstrate the NOT IN trap. The database loads automatically in the browser. Connect this idea to an e-commerce team finding customers who purchased a target product. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 153,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        153
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_05.wav",
+      "audio": "audio/module7_slide_05.mp3",
+      "captions": "audio/module7_slide_05.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 6,
-      "audio": "module7_slide_06.mp3",
-      "captions": "module7_slide_06.vtt",
-      "text": "Most examples in this module depend on the same relationship.\n\n[pause=0.8]\n\nA patient can have many admissions, many lab results, and many prescriptions.\n\n[pause=0.7]\n\nWhen you see a correlated condition such as a dot patient ID equals p dot patient ID, it is connecting a child row to the current patient row.\n\n[pause=0.7]\n\nKeeping the relationship map simple lets us focus on the subquery behavior rather than on a complicated schema.\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "Relationship map",
+      "transcript": "Most examples in this module depend on the same relationship. A patient can have many admissions, many lab results, and many prescriptions. When you see a correlated condition such as a dot patient ID equals p dot patient ID, it is connecting a child row to the current patient row. Keeping the relationship map simple lets us focus on the subquery behavior rather than on a complicated schema. Connect this idea to a compliance workflow checking whether related evidence exists. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 154,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        154
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_06.wav",
+      "audio": "audio/module7_slide_06.mp3",
+      "captions": "audio/module7_slide_06.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 7,
-      "audio": "module7_slide_07.mp3",
-      "captions": "module7_slide_07.vtt",
-      "text": "Before writing nested queries, inspect the underlying rows.\n\n[pause=0.7]\n\nRun this simple SELECT and look at the patient IDs and ages.\n\n[pause=0.8]\n\nLater, when the subquery returns a set of IDs or an average age, you will be able to connect the result back to real rows in the teaching dataset.\n\n[pause=0.8]\n\nThis is also a good real-world habit. Understand the source tables before debugging a complex query.\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "Explore the sample patients",
+      "transcript": "Before writing nested queries, inspect the underlying rows. Run this simple SELECT and look at the patient IDs and ages. Later, when the subquery returns a set of IDs or an average age, you will be able to connect the result back to real rows in the teaching dataset. This is also a good real-world habit. Understand the source tables before debugging a complex query. Connect this idea to a hospital identifying patients above a benchmark or with no follow-up. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 159,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        159
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_07.wav",
+      "audio": "audio/module7_slide_07.mp3",
+      "captions": "audio/module7_slide_07.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 8,
-      "audio": "module7_slide_08.mp3",
-      "captions": "module7_slide_08.vtt",
-      "text": "The best mental model is to treat the inner query as a result producer.\n\n[pause=0.8]\n\nThe inner query produces something.\n\n[pause=0.8]\n\nThe outer query then uses that result.\n\n[pause=0.8]\n\nThe result might be one value, a set of values, or rows that behave like an intermediate table.\n\n[pause=0.7]\n\nBefore writing the SQL, ask what shape the outer query needs.\n\n[pause=0.8]\n\nThat question prevents many common subquery errors.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "The main mental model",
+      "transcript": "The best mental model is to treat the inner query as a result producer. The inner query produces something. The outer query then uses that result. The result might be one value, a set of values, or rows that behave like an intermediate table. Before writing the SQL, ask what shape the outer query needs. That question prevents many common subquery errors. Connect this idea to an e-commerce team finding customers who purchased a target product. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 154,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        154
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_08.wav",
+      "audio": "audio/module7_slide_08.mp3",
+      "captions": "audio/module7_slide_08.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 9,
-      "audio": "module7_slide_09.mp3",
-      "captions": "module7_slide_09.vtt",
-      "text": "Three ideas appear repeatedly.\n\n[pause=0.7]\n\nA scalar subquery behaves like one value.\n\n[pause=0.8]\n\nA set subquery returns zero or more values, usually from one column.\n\n[pause=0.8]\n\nA correlated subquery refers to the current outer row, so its result can change as the outer row changes.\n\n[pause=0.8]\n\nWhen you identify the shape and dependency, the SQL operator becomes easier to choose.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Three common result shapes",
+      "transcript": "Three ideas appear repeatedly. A scalar subquery behaves like one value. A set subquery returns zero or more values, usually from one column. A correlated subquery refers to the current outer row, so its result can change as the outer row changes. When you identify the shape and dependency, the SQL operator becomes easier to choose. A subquery has a contract: it returns a shape. A scalar subquery must return at most one value where it is used. Before writing syntax, predict whether the inner query returns one value, one column with many rows, or a table. Shape mistakes are easier to prevent than to debug after the query becomes large.",
+      "seed": 1234,
+      "tts_text_tokens": 132,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        132
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_09.wav",
+      "audio": "audio/module7_slide_09.mp3",
+      "captions": "audio/module7_slide_09.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 10,
-      "audio": "module7_slide_10.mp3",
-      "captions": "module7_slide_10.vtt",
-      "text": "This table turns business questions into subquery contracts.\n\n[pause=0.8]\n\nOne benchmark suggests a scalar.\n\n[pause=0.7]\n\nMembership in a returned list suggests IN.\n\n[pause=0.7]\n\nExistence of any matching row suggests EXISTS.\n\n[pause=0.7]\n\nAt least one comparison suggests ANY, while every comparison suggests ALL.\n\n[pause=0.7]\n\nA per-row calculation often uses a correlated scalar.\n\n[pause=0.7]\n\nThis translation from question to contract is the main skill of the module.\n\n[pause=1.0]",
-      "pause_markers": 7
+      "title": "Shape before syntax",
+      "transcript": "This table turns business questions into subquery contracts. One benchmark suggests a scalar. Membership in a returned list suggests IN. Existence of any matching row suggests EXISTS. At least one comparison suggests ANY, while every comparison suggests ALL. A per-row calculation often uses a correlated scalar. This translation from question to contract is the main skill of the module. A subquery has a contract: it returns a shape. A scalar subquery must return at most one value where it is used. Before writing syntax, predict whether the inner query returns one value, one column with many rows, or a table. Shape mistakes are easier to prevent than to debug after the query becomes large.",
+      "seed": 1234,
+      "tts_text_tokens": 135,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        135
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_10.wav",
+      "audio": "audio/module7_slide_10.mp3",
+      "captions": "audio/module7_slide_10.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 11,
-      "audio": "module7_slide_11.mp3",
-      "captions": "module7_slide_11.vtt",
-      "text": "A scalar subquery has a strict result contract.\n\n[pause=0.8]\n\nIt returns one column and at most one row.\n\n[pause=0.7]\n\nOne row gives the scalar value.\n\n[pause=0.7]\n\nZero rows become NULL.\n\n[pause=0.7]\n\nMore than one row is an error because the surrounding expression expected one value.\n\n[pause=0.7]\n\nUnderstanding this contract is more important than remembering where the parentheses go.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Scalar subquery contract",
+      "transcript": "A scalar subquery has a strict result contract. It returns one column and at most one row. One row gives the scalar value. Zero rows become NULL. More than one row is an error because the surrounding expression expected one value. Understanding this contract is more important than remembering where the parentheses go. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as an e-commerce team finding customers who purchased a target product, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 161,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        161
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_11.wav",
+      "audio": "audio/module7_slide_11.mp3",
+      "captions": "audio/module7_slide_11.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 12,
-      "audio": "module7_slide_12.mp3",
-      "captions": "module7_slide_12.vtt",
-      "text": "The inner query calculates average age across all patients.\n\n[pause=0.8]\n\nThat produces one number.\n\n[pause=0.7]\n\nThe outer WHERE clause compares each patient age with that one benchmark.\n\n[pause=0.7]\n\nRead the condition as a sentence: keep the patient when age is greater than the average age returned by the inner query.\n\n[pause=0.8]\n\nRun the query and compare the returned ages with the full patient list.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Scalar in WHERE",
+      "transcript": "The inner query calculates average age across all patients. That produces one number. The outer WHERE clause compares each patient age with that one benchmark. Read the condition as a sentence: keep the patient when age is greater than the average age returned by the inner query. Run the query and compare the returned ages with the full patient list. A subquery has a contract: it returns a shape. A scalar subquery must return at most one value where it is used. Before writing syntax, predict whether the inner query returns one value, one column with many rows, or a table. Shape mistakes are easier to prevent than to debug after the query becomes large.",
+      "seed": 1234,
+      "tts_text_tokens": 131,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        131
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_12.wav",
+      "audio": "audio/module7_slide_12.mp3",
+      "captions": "audio/module7_slide_12.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 13,
-      "audio": "module7_slide_13.mp3",
-      "captions": "module7_slide_13.vtt",
-      "text": "When a scalar query feels confusing, isolate the inner query mentally.\n\n[pause=0.8]\n\nAsk what it returns.\n\n[pause=0.7]\n\nHere it returns one average age.\n\n[pause=0.7]\n\nNow imagine replacing the parenthesized SELECT with that number.\n\n[pause=0.7]\n\nThe outer query becomes an ordinary age comparison.\n\n[pause=0.8]\n\nThis simple mental substitution works well for many scalar subqueries.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Read a scalar query step by step",
+      "transcript": "When a scalar query feels confusing, isolate the inner query mentally. Ask what it returns. Here it returns one average age. Now imagine replacing the parenthesized SELECT with that number. The outer query becomes an ordinary age comparison. This simple mental substitution works well for many scalar subqueries. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a hospital identifying patients above a benchmark or with no follow-up, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 159,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        159
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_13.wav",
+      "audio": "audio/module7_slide_13.mp3",
+      "captions": "audio/module7_slide_13.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 14,
-      "audio": "module7_slide_14.mp3",
-      "captions": "module7_slide_14.vtt",
-      "text": "A scalar subquery can also appear in the SELECT list.\n\n[pause=0.8]\n\nHere, the inner query calculates one overall average age.\n\n[pause=0.8]\n\nBecause it is not correlated, the same value appears beside every patient row.\n\n[pause=0.7]\n\nThis is useful when you want to show a row value and a benchmark together.\n\n[pause=0.7]\n\nRun the query and notice that the average does not change from patient to patient.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Scalar in SELECT",
+      "transcript": "A scalar subquery can also appear in the SELECT list. Here, the inner query calculates one overall average age. Because it is not correlated, the same value appears beside every patient row. This is useful when you want to show a row value and a benchmark together. Run the query and notice that the average does not change from patient to patient. A subquery has a contract: it returns a shape. A scalar subquery must return at most one value where it is used. Before writing syntax, predict whether the inner query returns one value, one column with many rows, or a table. Shape mistakes are easier to prevent than to debug after the query becomes large.",
+      "seed": 1234,
+      "tts_text_tokens": 135,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        135
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_14.wav",
+      "audio": "audio/module7_slide_14.mp3",
+      "captions": "audio/module7_slide_14.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 15,
-      "audio": "module7_slide_15.mp3",
-      "captions": "module7_slide_15.vtt",
-      "text": "A scalar subquery may return zero rows.\n\n[pause=0.8]\n\nWhen that happens, PostgreSQL turns the missing scalar into NULL.\n\n[pause=0.7]\n\nThe requested test ID in this example does not exist.\n\n[pause=0.8]\n\nSo the inner query returns no row, and the scalar result becomes NULL.\n\n[pause=0.8]\n\nRemember this when the scalar participates in a comparison, because comparisons involving NULL follow three-valued logic.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Scalar with zero rows",
+      "transcript": "A scalar subquery may return zero rows. When that happens, PostgreSQL turns the missing scalar into NULL. The requested test ID in this example does not exist. So the inner query returns no row, and the scalar result becomes NULL. Remember this when the scalar participates in a comparison, because comparisons involving NULL follow three-valued logic. A subquery has a contract: it returns a shape. A scalar subquery must return at most one value where it is used. Before writing syntax, predict whether the inner query returns one value, one column with many rows, or a table. Shape mistakes are easier to prevent than to debug after the query becomes large.",
+      "seed": 1234,
+      "tts_text_tokens": 132,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        132
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_15.wav",
+      "audio": "audio/module7_slide_15.mp3",
+      "captions": "audio/module7_slide_15.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 16,
-      "audio": "module7_slide_16.mp3",
-      "captions": "module7_slide_16.vtt",
-      "text": "Now we deliberately violate the scalar contract.\n\n[pause=0.7]\n\nThe inner query returns many patient IDs from admissions.\n\n[pause=0.8]\n\nThe outer expression expects one value.\n\n[pause=0.7]\n\nPostgreSQL cannot choose one row for you, so it raises an error.\n\n[pause=0.7]\n\nDo not automatically add LIMIT one just to remove the error. Only do that if choosing an arbitrary single row actually matches the business meaning.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Scalar with too many rows",
+      "transcript": "Now we deliberately violate the scalar contract. The inner query returns many patient IDs from admissions. The outer expression expects one value. PostgreSQL cannot choose one row for you, so it raises an error. Do not automatically add LIMIT one just to remove the error. Only do that if choosing an arbitrary single row actually matches the business meaning. A subquery has a contract: it returns a shape. A scalar subquery must return at most one value where it is used. Before writing syntax, predict whether the inner query returns one value, one column with many rows, or a table. Shape mistakes are easier to prevent than to debug after the query becomes large.",
+      "seed": 1234,
+      "tts_text_tokens": 131,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        131
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_16.wav",
+      "audio": "audio/module7_slide_16.mp3",
+      "captions": "audio/module7_slide_16.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 17,
-      "audio": "module7_slide_17.mp3",
-      "captions": "module7_slide_17.vtt",
-      "text": "Before using a scalar subquery, ask three questions.\n\n[pause=0.8]\n\nDoes it return one column?\n\n[pause=0.7]\n\nCan it ever return more than one row?\n\n[pause=0.7]\n\nAnd what should happen if it returns no row?\n\n[pause=0.7]\n\nThis small checklist catches most scalar-subquery problems before you run the query.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Scalar checklist",
+      "transcript": "Before using a scalar subquery, ask three questions. Does it return one column? Can it ever return more than one row? And what should happen if it returns no row? This small checklist catches most scalar-subquery problems before you run the query. A subquery has a contract: it returns a shape. A scalar subquery must return at most one value where it is used. Before writing syntax, predict whether the inner query returns one value, one column with many rows, or a table. Shape mistakes are easier to prevent than to debug after the query becomes large.",
+      "seed": 1234,
+      "tts_text_tokens": 117,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        117
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_17.wav",
+      "audio": "audio/module7_slide_17.mp3",
+      "captions": "audio/module7_slide_17.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 18,
-      "audio": "module7_slide_18.mp3",
-      "captions": "module7_slide_18.vtt",
-      "text": "IN is a membership operator.\n\n[pause=0.7]\n\nThe inner query should return a one-column set.\n\n[pause=0.8]\n\nThe outer value is compared with the values in that set.\n\n[pause=0.7]\n\nIf it matches one of them, the membership test succeeds.\n\n[pause=0.7]\n\nThink of IN as asking, is this value in that returned list?\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "IN means membership",
+      "transcript": "IN is a membership operator. The inner query should return a one-column set. The outer value is compared with the values in that set. If it matches one of them, the membership test succeeds. Think of IN as asking, is this value in that returned list? IN answers a membership question: is this value present in the set returned by the subquery? Be especially careful with NOT IN when NULL can appear in that set, because three-valued logic can turn expected TRUE results into UNKNOWN. For anti-matching, NOT EXISTS is often easier to reason about.",
+      "seed": 1234,
+      "tts_text_tokens": 116,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        116
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_18.wav",
+      "audio": "audio/module7_slide_18.mp3",
+      "captions": "audio/module7_slide_18.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 19,
-      "audio": "module7_slide_19.mp3",
-      "captions": "module7_slide_19.vtt",
-      "text": "The inner query returns patient IDs from Cardiology admissions.\n\n[pause=0.8]\n\nThe outer query keeps patients whose patient ID appears in that set.\n\n[pause=0.8]\n\nThis is a natural use of IN because the business question is membership.\n\n[pause=0.7]\n\nRun the query and connect each returned patient with the Cardiology admissions table.\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "IN example",
+      "transcript": "The inner query returns patient IDs from Cardiology admissions. The outer query keeps patients whose patient ID appears in that set. This is a natural use of IN because the business question is membership. Run the query and connect each returned patient with the Cardiology admissions table. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a hospital identifying patients above a benchmark or with no follow-up, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 153,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        153
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_19.wav",
+      "audio": "audio/module7_slide_19.mp3",
+      "captions": "audio/module7_slide_19.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 20,
-      "audio": "module7_slide_20.mp3",
-      "captions": "module7_slide_20.vtt",
-      "text": "IN and JOIN may appear to answer similar questions, but they have different semantics.\n\n[pause=0.7]\n\nIN asks whether an outer value belongs to a set.\n\n[pause=0.7]\n\nA join returns matching row combinations.\n\n[pause=0.7]\n\nIf one patient has multiple admissions, the join can repeat that patient.\n\n[pause=0.7]\n\nThe IN query keeps the patient-level outer grain.\n\n[pause=0.8]\n\nRun both queries and compare the outputs carefully.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "IN is not a JOIN",
+      "transcript": "IN and JOIN may appear to answer similar questions, but they have different semantics. IN asks whether an outer value belongs to a set. A join returns matching row combinations. If one patient has multiple admissions, the join can repeat that patient. The IN query keeps the patient-level outer grain. Run both queries and compare the outputs carefully. Connect this idea to an e-commerce team finding customers who purchased a target product. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 150,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        150
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_20.wav",
+      "audio": "audio/module7_slide_20.mp3",
+      "captions": "audio/module7_slide_20.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 21,
-      "audio": "module7_slide_21.mp3",
-      "captions": "module7_slide_21.vtt",
-      "text": "NOT IN looks like a simple anti-membership test.\n\n[pause=0.7]\n\nBut if the inner set contains NULL, PostgreSQL cannot prove that an outer value differs from the unknown value.\n\n[pause=0.7]\n\nThe condition can become UNKNOWN rather than TRUE.\n\n[pause=0.7]\n\nBecause WHERE keeps only TRUE, rows you expected may disappear.\n\n[pause=0.7]\n\nThis is one of the most important edge cases in this module.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "NOT IN looks simple",
+      "transcript": "NOT IN looks like a simple anti-membership test. But if the inner set contains NULL, PostgreSQL cannot prove that an outer value differs from the unknown value. The condition can become UNKNOWN rather than TRUE. Because WHERE keeps only TRUE, rows you expected may disappear. This is one of the most important edge cases in this module. IN answers a membership question: is this value present in the set returned by the subquery? Be especially careful with NOT IN when NULL can appear in that set, because three-valued logic can turn expected TRUE results into UNKNOWN. For anti-matching, NOT EXISTS is often easier to reason about.",
+      "seed": 1234,
+      "tts_text_tokens": 128,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        128
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_21.wav",
+      "audio": "audio/module7_slide_21.mp3",
+      "captions": "audio/module7_slide_21.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 22,
-      "audio": "module7_slide_22.mp3",
-      "captions": "module7_slide_22.vtt",
-      "text": "SQL uses three-valued logic.\n\n[pause=0.7]\n\nA condition can be TRUE, FALSE, or UNKNOWN.\n\n[pause=0.7]\n\nComparing a normal value with NULL gives UNKNOWN, not FALSE.\n\n[pause=0.7]\n\nAnd NOT UNKNOWN remains UNKNOWN.\n\n[pause=0.7]\n\nBecause WHERE returns only rows whose condition is TRUE, UNKNOWN behaves like a filtered-out row.\n\n[pause=0.7]\n\nThis explains the NOT IN behavior.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Three-valued logic",
+      "transcript": "SQL uses three-valued logic. A condition can be TRUE, FALSE, or UNKNOWN. Comparing a normal value with NULL gives UNKNOWN, not FALSE. And NOT UNKNOWN remains UNKNOWN. Because WHERE returns only rows whose condition is TRUE, UNKNOWN behaves like a filtered-out row. This explains the NOT IN behavior. Connect this idea to a hospital identifying patients above a benchmark or with no follow-up. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 150,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        150
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_22.wav",
+      "audio": "audio/module7_slide_22.mp3",
+      "captions": "audio/module7_slide_22.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 23,
-      "audio": "module7_slide_23.mp3",
-      "captions": "module7_slide_23.vtt",
-      "text": "The review queue contains patient 1003 and a NULL.\n\n[pause=0.7]\n\nFor another patient such as 1001, PostgreSQL knows 1001 is not equal to 1003.\n\n[pause=0.7]\n\nBut it cannot know whether 1001 is different from the NULL value.\n\n[pause=0.7]\n\nThat unknown comparison prevents the full NOT IN condition from becoming TRUE.\n\n[pause=0.7]\n\nRun the query and observe the result.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "NOT IN + NULL trap",
+      "transcript": "The review queue contains patient 1003 and a NULL. For another patient such as 1001, PostgreSQL knows 1001 is not equal to 1003. But it cannot know whether 1001 is different from the NULL value. That unknown comparison prevents the full NOT IN condition from becoming TRUE. Run the query and observe the result. IN answers a membership question: is this value present in the set returned by the subquery? Be especially careful with NOT IN when NULL can appear in that set, because three-valued logic can turn expected TRUE results into UNKNOWN. For anti-matching, NOT EXISTS is often easier to reason about.",
+      "seed": 1234,
+      "tts_text_tokens": 141,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        141
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_23.wav",
+      "audio": "audio/module7_slide_23.mp3",
+      "captions": "audio/module7_slide_23.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 24,
-      "audio": "module7_slide_24.mp3",
-      "captions": "module7_slide_24.vtt",
-      "text": "NOT EXISTS expresses the anti-match directly.\n\n[pause=0.7]\n\nFor each patient, the inner query searches for a review-queue row with the same patient ID.\n\n[pause=0.8]\n\nIf no matching row exists, the patient is kept.\n\n[pause=0.7]\n\nThe unrelated NULL row does not create the same problem because it does not match the current patient ID.\n\n[pause=0.7]\n\nThis is why NOT EXISTS is often the clearer starting point for anti-join questions.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Safer anti-match",
+      "transcript": "NOT EXISTS expresses the anti-match directly. For each patient, the inner query searches for a review-queue row with the same patient ID. If no matching row exists, the patient is kept. The unrelated NULL row does not create the same problem because it does not match the current patient ID. This is why NOT EXISTS is often the clearer starting point for anti-join questions. EXISTS asks whether at least one related row satisfies the condition. The selected columns inside EXISTS usually do not matter; the existence of a row does. This maps naturally to questions such as patients with any follow-up, customers with any purchase, or orders with no shipment record.",
+      "seed": 1234,
+      "tts_text_tokens": 132,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        132
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_24.wav",
+      "audio": "audio/module7_slide_24.mp3",
+      "captions": "audio/module7_slide_24.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 25,
-      "audio": "module7_slide_25.mp3",
-      "captions": "module7_slide_25.vtt",
-      "text": "EXISTS asks only whether the inner query returns at least one row.\n\n[pause=0.8]\n\nThe actual selected value inside the subquery usually does not matter.\n\n[pause=0.8]\n\nThat is why SELECT one is common.\n\n[pause=0.7]\n\nThe business meaning is simply: does any related row satisfy this condition?\n\n[pause=0.7]\n\nThis makes EXISTS especially natural for relationship checks.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "EXISTS means existence",
+      "transcript": "EXISTS asks only whether the inner query returns at least one row. The actual selected value inside the subquery usually does not matter. That is why SELECT one is common. The business meaning is simply: does any related row satisfy this condition? This makes EXISTS especially natural for relationship checks. EXISTS asks whether at least one related row satisfies the condition. The selected columns inside EXISTS usually do not matter; the existence of a row does. This maps naturally to questions such as patients with any follow-up, customers with any purchase, or orders with no shipment record.",
+      "seed": 1234,
+      "tts_text_tokens": 113,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        113
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_25.wav",
+      "audio": "audio/module7_slide_25.mp3",
+      "captions": "audio/module7_slide_25.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 26,
-      "audio": "module7_slide_26.mp3",
-      "captions": "module7_slide_26.vtt",
-      "text": "For each patient, the inner query searches lab results for the same patient ID.\n\n[pause=0.8]\n\nIt looks for any result outside the normal range.\n\n[pause=0.7]\n\nWe do not need a count.\n\n[pause=0.7]\n\nWe only need at least one abnormal row.\n\n[pause=0.7]\n\nThat makes EXISTS a direct match for the question.\n\n[pause=0.7]\n\nRun the query and identify the patients that satisfy the condition.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "EXISTS example",
+      "transcript": "For each patient, the inner query searches lab results for the same patient ID. It looks for any result outside the normal range. We do not need a count. We only need at least one abnormal row. That makes EXISTS a direct match for the question. Run the query and identify the patients that satisfy the condition. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as an e-commerce team finding customers who purchased a target product, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 165,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        165
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_26.wav",
+      "audio": "audio/module7_slide_26.mp3",
+      "captions": "audio/module7_slide_26.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 27,
-      "audio": "module7_slide_27.mp3",
-      "captions": "module7_slide_27.vtt",
-      "text": "NOT EXISTS asks whether no matching row can be found.\n\n[pause=0.7]\n\nFor each patient, the inner query searches prescriptions.\n\n[pause=0.8]\n\nIf there is no prescription with that patient ID, the patient is returned.\n\n[pause=0.7]\n\nThis pattern appears everywhere: customers with no orders, students with no submissions, devices with no alerts, and patients with no prescription record.\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "NOT EXISTS example",
+      "transcript": "NOT EXISTS asks whether no matching row can be found. For each patient, the inner query searches prescriptions. If there is no prescription with that patient ID, the patient is returned. This pattern appears everywhere: customers with no orders, students with no submissions, devices with no alerts, and patients with no prescription record. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a compliance workflow checking whether related evidence exists, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 160,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        160
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_27.wav",
+      "audio": "audio/module7_slide_27.mp3",
+      "captions": "audio/module7_slide_27.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 28,
-      "audio": "module7_slide_28.mp3",
-      "captions": "module7_slide_28.vtt",
-      "text": "IN and EXISTS can sometimes be rewritten into equivalent forms.\n\n[pause=0.7]\n\nBut when writing the first version, choose the operator that expresses the business question clearly.\n\n[pause=0.7]\n\nMembership suggests IN.\n\n[pause=0.7]\n\nExistence suggests EXISTS.\n\n[pause=0.7]\n\nAbsence of a related match suggests NOT EXISTS.\n\n[pause=0.7]\n\nClear semantics make the query easier to explain, review, and debug.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "IN vs EXISTS",
+      "transcript": "IN and EXISTS can sometimes be rewritten into equivalent forms. But when writing the first version, choose the operator that expresses the business question clearly. Membership suggests IN. Existence suggests EXISTS. Absence of a related match suggests NOT EXISTS. Clear semantics make the query easier to explain, review, and debug. EXISTS asks whether at least one related row satisfies the condition. The selected columns inside EXISTS usually do not matter; the existence of a row does. This maps naturally to questions such as patients with any follow-up, customers with any purchase, or orders with no shipment record.",
+      "seed": 1234,
+      "tts_text_tokens": 114,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        114
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_28.wav",
+      "audio": "audio/module7_slide_28.mp3",
+      "captions": "audio/module7_slide_28.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 29,
-      "audio": "module7_slide_29.mp3",
-      "captions": "module7_slide_29.vtt",
-      "text": "ANY and ALL compare one outer value with an entire set.\n\n[pause=0.7]\n\nANY means at least one comparison must succeed.\n\n[pause=0.7]\n\nALL means every comparison must succeed.\n\n[pause=0.7]\n\nPostgreSQL also supports SOME as a synonym for ANY.\n\n[pause=0.7]\n\nThe difference sounds small, but it can produce very different result sets.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "ANY, SOME, and ALL",
+      "transcript": "ANY and ALL compare one outer value with an entire set. ANY means at least one comparison must succeed. ALL means every comparison must succeed. PostgreSQL also supports SOME as a synonym for ANY. The difference sounds small, but it can produce very different result sets. ANY and ALL compare one value with a set. ANY needs the comparison to succeed against at least one returned value; ALL requires it to succeed against every returned value. Empty sets and NULLs can affect the result, so test those cases explicitly when the set is data-driven.",
+      "seed": 1234,
+      "tts_text_tokens": 108,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        108
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_29.wav",
+      "audio": "audio/module7_slide_29.mp3",
+      "captions": "audio/module7_slide_29.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 30,
-      "audio": "module7_slide_30.mp3",
-      "captions": "module7_slide_30.vtt",
-      "text": "Greater than ANY means the outer age must be greater than at least one age returned by the inner query.\n\n[pause=0.8]\n\nFor a nonempty set without NULL complications, a helpful intuition is to compare with the minimum.\n\n[pause=0.7]\n\nIf your age is greater than the smallest returned age, at least one comparison succeeds.\n\n[pause=0.7]\n\nRun the query and compare the result with that intuition.\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "ANY example",
+      "transcript": "Greater than ANY means the outer age must be greater than at least one age returned by the inner query. For a nonempty set without NULL complications, a helpful intuition is to compare with the minimum. If your age is greater than the smallest returned age, at least one comparison succeeds. Run the query and compare the result with that intuition. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a compliance workflow checking whether related evidence exists, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 164,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        164
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_30.wav",
+      "audio": "audio/module7_slide_30.mp3",
+      "captions": "audio/module7_slide_30.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 31,
-      "audio": "module7_slide_31.mp3",
-      "captions": "module7_slide_31.vtt",
-      "text": "Greater than ALL is stricter.\n\n[pause=0.7]\n\nThe outer age must be greater than every age returned by the inner query.\n\n[pause=0.8]\n\nA useful intuition is to compare with the maximum.\n\n[pause=0.7]\n\nTo be greater than all returned ages, the outer value must exceed the largest one.\n\n[pause=0.7]\n\nRun the query and compare the row count with the ANY example.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "ALL example",
+      "transcript": "Greater than ALL is stricter. The outer age must be greater than every age returned by the inner query. A useful intuition is to compare with the maximum. To be greater than all returned ages, the outer value must exceed the largest one. Run the query and compare the row count with the ANY example. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a hospital identifying patients above a benchmark or with no follow-up, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 163,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        163
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_31.wav",
+      "audio": "audio/module7_slide_31.mp3",
+      "captions": "audio/module7_slide_31.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 32,
-      "audio": "module7_slide_32.mp3",
-      "captions": "module7_slide_32.vtt",
-      "text": "ANY and ALL can be summarized with a simple contrast.\n\n[pause=0.7]\n\nANY needs at least one successful comparison.\n\n[pause=0.7]\n\nALL needs every comparison to succeed.\n\n[pause=0.7]\n\nEquality with ANY behaves much like IN.\n\n[pause=0.7]\n\nThese are useful intuitions, but always remember that NULL values and empty sets can affect the formal SQL logic.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "ANY vs ALL",
+      "transcript": "ANY and ALL can be summarized with a simple contrast. ANY needs at least one successful comparison. ALL needs every comparison to succeed. Equality with ANY behaves much like IN. These are useful intuitions, but always remember that NULL values and empty sets can affect the formal SQL logic. ANY and ALL compare one value with a set. ANY needs the comparison to succeed against at least one returned value; ALL requires it to succeed against every returned value. Empty sets and NULLs can affect the result, so test those cases explicitly when the set is data-driven.",
+      "seed": 1234,
+      "tts_text_tokens": 112,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        112
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_32.wav",
+      "audio": "audio/module7_slide_32.mp3",
+      "captions": "audio/module7_slide_32.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 33,
-      "audio": "module7_slide_33.mp3",
-      "captions": "module7_slide_33.vtt",
-      "text": "Empty sets create an important edge case.\n\n[pause=0.7]\n\nANY needs at least one successful comparison.\n\n[pause=0.7]\n\nIf the set is empty, no comparison can succeed, so ANY is FALSE.\n\n[pause=0.7]\n\nALL asks whether every comparison succeeds. With no values, there is no failing comparison, so ALL is TRUE.\n\n[pause=0.7]\n\nThis can feel surprising, but it follows the logic of existential and universal conditions.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Empty set behavior",
+      "transcript": "Empty sets create an important edge case. ANY needs at least one successful comparison. If the set is empty, no comparison can succeed, so ANY is FALSE. ALL asks whether every comparison succeeds. With no values, there is no failing comparison, so ALL is TRUE. This can feel surprising, but it follows the logic of existential and universal conditions. Connect this idea to a compliance workflow checking whether related evidence exists. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 148,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        148
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_33.wav",
+      "audio": "audio/module7_slide_33.mp3",
+      "captions": "audio/module7_slide_33.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 34,
-      "audio": "module7_slide_34.mp3",
-      "captions": "module7_slide_34.vtt",
-      "text": "A correlated subquery uses a value from the current outer row.\n\n[pause=0.8]\n\nFor example, the outer query may define patients as p.\n\n[pause=0.8]\n\nInside the subquery, a condition may compare a child patient ID with p patient ID.\n\n[pause=0.8]\n\nWhen the outer patient changes, the inner query's matching value changes too.\n\n[pause=0.8]\n\nThis is why correlated subqueries are useful for per-row calculations.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Correlated subqueries",
+      "transcript": "A correlated subquery uses a value from the current outer row. For example, the outer query may define patients as p. Inside the subquery, a condition may compare a child patient ID with p patient ID. When the outer patient changes, the inner query's matching value changes too. This is why correlated subqueries are useful for per-row calculations. A correlated subquery refers to the current row of the outer query. Conceptually, the inner query is evaluated in relation to each outer row. That makes some business rules easy to express, but it can be expensive at scale. Compare a correlated formulation with a pre-aggregated join when performance matters.",
+      "seed": 1234,
+      "tts_text_tokens": 133,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        133
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_34.wav",
+      "audio": "audio/module7_slide_34.mp3",
+      "captions": "audio/module7_slide_34.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 35,
-      "audio": "module7_slide_35.mp3",
-      "captions": "module7_slide_35.vtt",
-      "text": "To identify correlation, look for an alias that was defined outside the subquery but used inside it.\n\n[pause=0.8]\n\nIf the inner query needs p patient ID from the outer patient row, it is correlated.\n\n[pause=0.8]\n\nA quick diagnostic is to ask whether the inner query can run meaningfully by itself unchanged.\n\n[pause=0.8]\n\nIf it needs an outer value, the answer is no.\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "How to spot correlation",
+      "transcript": "To identify correlation, look for an alias that was defined outside the subquery but used inside it. If the inner query needs p patient ID from the outer patient row, it is correlated. A quick diagnostic is to ask whether the inner query can run meaningfully by itself unchanged. If it needs an outer value, the answer is no. A correlated subquery refers to the current row of the outer query. Conceptually, the inner query is evaluated in relation to each outer row. That makes some business rules easy to express, but it can be expensive at scale. Compare a correlated formulation with a pre-aggregated join when performance matters.",
+      "seed": 1234,
+      "tts_text_tokens": 127,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        127
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_35.wav",
+      "audio": "audio/module7_slide_35.mp3",
+      "captions": "audio/module7_slide_35.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 36,
-      "audio": "module7_slide_36.mp3",
-      "captions": "module7_slide_36.vtt",
-      "text": "This query uses correlation to calculate a test-specific benchmark.\n\n[pause=0.8]\n\nFor a Glucose row, the inner query calculates the average Glucose result.\n\n[pause=0.8]\n\nFor a Cholesterol row, it calculates the average Cholesterol result.\n\n[pause=0.7]\n\nThe outer test name changes the inner query.\n\n[pause=0.8]\n\nThis is a powerful pattern when one global benchmark would not be meaningful.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Correlated benchmark",
+      "transcript": "This query uses correlation to calculate a test-specific benchmark. For a Glucose row, the inner query calculates the average Glucose result. For a Cholesterol row, it calculates the average Cholesterol result. The outer test name changes the inner query. This is a powerful pattern when one global benchmark would not be meaningful. A correlated subquery refers to the current row of the outer query. Conceptually, the inner query is evaluated in relation to each outer row. That makes some business rules easy to express, but it can be expensive at scale. Compare a correlated formulation with a pre-aggregated join when performance matters.",
+      "seed": 1234,
+      "tts_text_tokens": 121,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        121
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_36.wav",
+      "audio": "audio/module7_slide_36.mp3",
+      "captions": "audio/module7_slide_36.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 37,
-      "audio": "module7_slide_37.mp3",
-      "captions": "module7_slide_37.vtt",
-      "text": "A correlated query becomes easier if you trace one outer row at a time.\n\n[pause=0.8]\n\nImagine the current row is a Glucose test.\n\n[pause=0.7]\n\nThe inner query uses the outer test name to average only Glucose values.\n\n[pause=0.8]\n\nThen the current result is compared with that benchmark.\n\n[pause=0.7]\n\nWhen the outer row changes to another test, the inner benchmark changes as well.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Trace one correlated row",
+      "transcript": "A correlated query becomes easier if you trace one outer row at a time. Imagine the current row is a Glucose test. The inner query uses the outer test name to average only Glucose values. Then the current result is compared with that benchmark. When the outer row changes to another test, the inner benchmark changes as well. A correlated subquery refers to the current row of the outer query. Conceptually, the inner query is evaluated in relation to each outer row. That makes some business rules easy to express, but it can be expensive at scale. Compare a correlated formulation with a pre-aggregated join when performance matters.",
+      "seed": 1234,
+      "tts_text_tokens": 124,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        124
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_37.wav",
+      "audio": "audio/module7_slide_37.mp3",
+      "captions": "audio/module7_slide_37.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 38,
-      "audio": "module7_slide_38.mp3",
-      "captions": "module7_slide_38.vtt",
-      "text": "A correlated scalar subquery can appear in SELECT.\n\n[pause=0.8]\n\nFor each patient, the inner query counts admissions for that patient ID.\n\n[pause=0.8]\n\nCOUNT returns one scalar value, so the scalar contract is satisfied.\n\n[pause=0.7]\n\nThe result keeps one row per patient while adding an admission count.\n\n[pause=0.7]\n\nThis form is direct and easy to read for a simple per-row metric.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Correlated count in SELECT",
+      "transcript": "A correlated scalar subquery can appear in SELECT. For each patient, the inner query counts admissions for that patient ID. COUNT returns one scalar value, so the scalar contract is satisfied. The result keeps one row per patient while adding an admission count. This form is direct and easy to read for a simple per-row metric. IN answers a membership question: is this value present in the set returned by the subquery? Be especially careful with NOT IN when NULL can appear in that set, because three-valued logic can turn expected TRUE results into UNKNOWN. For anti-matching, NOT EXISTS is often easier to reason about.",
+      "seed": 1234,
+      "tts_text_tokens": 127,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        127
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_38.wav",
+      "audio": "audio/module7_slide_38.mp3",
+      "captions": "audio/module7_slide_38.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 39,
-      "audio": "module7_slide_39.mp3",
-      "captions": "module7_slide_39.vtt",
-      "text": "This pattern finds the latest admission for each patient.\n\n[pause=0.7]\n\nFor the current patient, the inner query finds the maximum admission date.\n\n[pause=0.8]\n\nThe outer admission row is kept when its date equals that patient-specific maximum.\n\n[pause=0.7]\n\nThis pattern is useful for latest order, latest event, newest status, or most recent activity.\n\n[pause=0.7]\n\nIf two rows share the same maximum date, both can be returned.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Latest related row",
+      "transcript": "This pattern finds the latest admission for each patient. For the current patient, the inner query finds the maximum admission date. The outer admission row is kept when its date equals that patient-specific maximum. This pattern is useful for latest order, latest event, newest status, or most recent activity. If two rows share the same maximum date, both can be returned. Connect this idea to a compliance workflow checking whether related evidence exists. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 151,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        151
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_39.wav",
+      "audio": "audio/module7_slide_39.mp3",
+      "captions": "audio/module7_slide_39.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 40,
-      "audio": "module7_slide_40.mp3",
-      "captions": "module7_slide_40.vtt",
-      "text": "Subqueries can appear in different clauses because each clause expects a different role.\n\n[pause=0.7]\n\nA subquery in WHERE contributes to filtering.\n\n[pause=0.8]\n\nA scalar subquery in SELECT becomes an output value.\n\n[pause=0.8]\n\nA subquery in FROM becomes an intermediate table.\n\n[pause=0.8]\n\nChoose the placement based on what you need the inner result to do.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Subquery placement",
+      "transcript": "Subqueries can appear in different clauses because each clause expects a different role. A subquery in WHERE contributes to filtering. A scalar subquery in SELECT becomes an output value. A subquery in FROM becomes an intermediate table. Choose the placement based on what you need the inner result to do. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a hospital identifying patients above a benchmark or with no follow-up, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 161,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        161
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_40.wav",
+      "audio": "audio/module7_slide_40.mp3",
+      "captions": "audio/module7_slide_40.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 41,
-      "audio": "module7_slide_41.mp3",
-      "captions": "module7_slide_41.vtt",
-      "text": "WHERE is the most familiar location for subqueries.\n\n[pause=0.7]\n\nThe inner result can become a benchmark, a membership set, an existence condition, or a set comparison.\n\n[pause=0.7]\n\nThe final job is always Boolean: should the current outer row remain?\n\n[pause=0.7]\n\nThat is why many subquery patterns appear naturally in WHERE.\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "Subquery in WHERE",
+      "transcript": "WHERE is the most familiar location for subqueries. The inner result can become a benchmark, a membership set, an existence condition, or a set comparison. The final job is always Boolean: should the current outer row remain? That is why many subquery patterns appear naturally in WHERE. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as an e-commerce team finding customers who purchased a target product, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 158,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        158
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_41.wav",
+      "audio": "audio/module7_slide_41.mp3",
+      "captions": "audio/module7_slide_41.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 42,
-      "audio": "module7_slide_42.mp3",
-      "captions": "module7_slide_42.vtt",
-      "text": "A subquery in SELECT must behave like a scalar for each output row.\n\n[pause=0.8]\n\nIf it is uncorrelated, the same value may repeat.\n\n[pause=0.7]\n\nIf it is correlated, the value can change from row to row.\n\n[pause=0.7]\n\nThis placement is useful when you want to enrich each row with one related summary value.\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "Subquery in SELECT",
+      "transcript": "A subquery in SELECT must behave like a scalar for each output row. If it is uncorrelated, the same value may repeat. If it is correlated, the value can change from row to row. This placement is useful when you want to enrich each row with one related summary value. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a compliance workflow checking whether related evidence exists, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 154,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        154
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_42.wav",
+      "audio": "audio/module7_slide_42.mp3",
+      "captions": "audio/module7_slide_42.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 43,
-      "audio": "module7_slide_43.mp3",
-      "captions": "module7_slide_43.vtt",
-      "text": "A subquery in FROM is called a derived table.\n\n[pause=0.8]\n\nThe inner query produces rows and columns.\n\n[pause=0.8]\n\nThe outer query treats those rows like an intermediate table for that statement.\n\n[pause=0.8]\n\nThis is especially useful when you want to aggregate first and then join.\n\n[pause=0.7]\n\nAlways ask what one row in the derived table represents.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Derived tables",
+      "transcript": "A subquery in FROM is called a derived table. The inner query produces rows and columns. The outer query treats those rows like an intermediate table for that statement. This is especially useful when you want to aggregate first and then join. Always ask what one row in the derived table represents. SQL can express the same logic in several forms. A good rewrite keeps the same grain and business meaning while changing how work is organized. Use EXPLAIN to inspect the plan rather than assuming one style is always faster. Performance reasoning should follow correctness, not replace it.",
+      "seed": 1234,
+      "tts_text_tokens": 111,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        111
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_43.wav",
+      "audio": "audio/module7_slide_43.mp3",
+      "captions": "audio/module7_slide_43.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 44,
-      "audio": "module7_slide_44.mp3",
-      "captions": "module7_slide_44.vtt",
-      "text": "The inner query groups admissions by patient ID.\n\n[pause=0.8]\n\nThat creates one admission-count row per patient ID.\n\n[pause=0.7]\n\nThe outer query left joins those counts to the patient table.\n\n[pause=0.8]\n\nCOALESCE converts missing counts to zero for patients with no admissions.\n\n[pause=0.7]\n\nThis pattern makes the intermediate grain very clear.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Derived table example",
+      "transcript": "The inner query groups admissions by patient ID. That creates one admission-count row per patient ID. The outer query left joins those counts to the patient table. COALESCE converts missing counts to zero for patients with no admissions. This pattern makes the intermediate grain very clear. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as an e-commerce team finding customers who purchased a target product, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 156,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        156
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_44.wav",
+      "audio": "audio/module7_slide_44.mp3",
+      "captions": "audio/module7_slide_44.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 45,
-      "audio": "module7_slide_45.mp3",
-      "captions": "module7_slide_45.vtt",
-      "text": "A correlated scalar and a pre-aggregated join can sometimes produce the same result.\n\n[pause=0.7]\n\nThe correlated form may be simpler to read.\n\n[pause=0.7]\n\nThe derived-table form may be convenient when several aggregated features are needed.\n\n[pause=0.7]\n\nDo not assume one form is always faster.\n\n[pause=0.7]\n\nPostgreSQL can transform queries during optimization.\n\n[pause=0.7]\n\nUse correct semantics first, then inspect the plan on representative data.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Correlated vs pre-aggregated",
+      "transcript": "A correlated scalar and a pre-aggregated join can sometimes produce the same result. The correlated form may be simpler to read. The derived-table form may be convenient when several aggregated features are needed. Do not assume one form is always faster. PostgreSQL can transform queries during optimization. Use correct semantics first, then inspect the plan on representative data. A correlated subquery refers to the current row of the outer query. Conceptually, the inner query is evaluated in relation to each outer row. That makes some business rules easy to express, but it can be expensive at scale. Compare a correlated formulation with a pre-aggregated join when performance matters.",
+      "seed": 1234,
+      "tts_text_tokens": 129,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        129
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_45.wav",
+      "audio": "audio/module7_slide_45.mp3",
+      "captions": "audio/module7_slide_45.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 46,
-      "audio": "module7_slide_46.mp3",
-      "captions": "module7_slide_46.vtt",
-      "text": "This query rewrites the admission-count problem.\n\n[pause=0.8]\n\nThe inner query groups admissions once by patient ID.\n\n[pause=0.8]\n\nThe outer query joins those counts to patients.\n\n[pause=0.8]\n\nRun it and compare the result with the correlated scalar version.\n\n[pause=0.8]\n\nThe business meaning and patient-level grain should remain the same.\n\n[pause=0.7]\n\nWhen rewriting, always verify that the result did not change.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Rewrite example",
+      "transcript": "This query rewrites the admission-count problem. The inner query groups admissions once by patient ID. The outer query joins those counts to patients. Run it and compare the result with the correlated scalar version. The business meaning and patient-level grain should remain the same. When rewriting, always verify that the result did not change. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a hospital identifying patients above a benchmark or with no follow-up, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 168,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        168
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_46.wav",
+      "audio": "audio/module7_slide_46.mp3",
+      "captions": "audio/module7_slide_46.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 47,
-      "audio": "module7_slide_47.mp3",
-      "captions": "module7_slide_47.vtt",
-      "text": "EXPLAIN shows PostgreSQL's planned execution strategy.\n\n[pause=0.7]\n\nThis is useful for learning how the database intends to access and combine rows.\n\n[pause=0.7]\n\nIn this tiny browser dataset, use the plan only to learn structure.\n\n[pause=0.7]\n\nReal performance tuning requires representative data volume, indexes, statistics, and workload.\n\n[pause=0.7]\n\nDo not make production performance claims from a small teaching example.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "EXPLAIN",
+      "transcript": "EXPLAIN shows PostgreSQL's planned execution strategy. This is useful for learning how the database intends to access and combine rows. In this tiny browser dataset, use the plan only to learn structure. Real performance tuning requires representative data volume, indexes, statistics, and workload. Do not make production performance claims from a small teaching example. SQL can express the same logic in several forms. A good rewrite keeps the same grain and business meaning while changing how work is organized. Use EXPLAIN to inspect the plan rather than assuming one style is always faster. Performance reasoning should follow correctness, not replace it.",
+      "seed": 1234,
+      "tts_text_tokens": 119,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        119
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_47.wav",
+      "audio": "audio/module7_slide_47.mp3",
+      "captions": "audio/module7_slide_47.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 48,
-      "audio": "module7_slide_48.mp3",
-      "captions": "module7_slide_48.vtt",
-      "text": "Performance should come after correctness.\n\n[pause=0.7]\n\nA faster query that changes row grain or NULL behavior is not an improvement.\n\n[pause=0.8]\n\nWrite the clearest correct query first.\n\n[pause=0.8]\n\nThen inspect the execution plan and consider rewrites or indexes.\n\n[pause=0.7]\n\nWhenever you rewrite a subquery, compare the result sets carefully.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Performance principles",
+      "transcript": "Performance should come after correctness. A faster query that changes row grain or NULL behavior is not an improvement. Write the clearest correct query first. Then inspect the execution plan and consider rewrites or indexes. Whenever you rewrite a subquery, compare the result sets carefully. SQL can express the same logic in several forms. A good rewrite keeps the same grain and business meaning while changing how work is organized. Use EXPLAIN to inspect the plan rather than assuming one style is always faster. Performance reasoning should follow correctness, not replace it.",
+      "seed": 1234,
+      "tts_text_tokens": 106,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        106
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_48.wav",
+      "audio": "audio/module7_slide_48.mp3",
+      "captions": "audio/module7_slide_48.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 49,
-      "audio": "module7_slide_49.mp3",
-      "captions": "module7_slide_49.vtt",
-      "text": "This table summarizes the practical choices.\n\n[pause=0.7]\n\nOne benchmark suggests a scalar.\n\n[pause=0.7]\n\nMembership suggests IN.\n\n[pause=0.7]\n\nExistence suggests EXISTS.\n\n[pause=0.7]\n\nNo matching row suggests NOT EXISTS.\n\n[pause=0.7]\n\nAt least one and every comparison suggest ANY and ALL.\n\n[pause=0.7]\n\nA calculation that depends on the current row suggests correlation.\n\n[pause=0.7]\n\nAnd an aggregate-first workflow often suggests a derived table.\n\n[pause=1.0]",
-      "pause_markers": 8
+      "title": "Pattern decision guide",
+      "transcript": "This table summarizes the practical choices. One benchmark suggests a scalar. Membership suggests IN. Existence suggests EXISTS. No matching row suggests NOT EXISTS. At least one and every comparison suggest ANY and ALL. A calculation that depends on the current row suggests correlation. And an aggregate-first workflow often suggests a derived table. Connect this idea to a hospital identifying patients above a benchmark or with no follow-up. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 145,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        145
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_49.wav",
+      "audio": "audio/module7_slide_49.mp3",
+      "captions": "audio/module7_slide_49.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 50,
-      "audio": "module7_slide_50.mp3",
-      "captions": "module7_slide_50.vtt",
-      "text": "The guided practice combines several patterns.\n\n[pause=0.8]\n\nWe want patients who satisfy four conditions.\n\n[pause=0.7]\n\nInstead of writing one long query immediately, test each condition separately.\n\n[pause=0.8]\n\nFirst the scalar age benchmark.\n\n[pause=0.7]\n\nThen the admission count.\n\n[pause=0.7]\n\nThen abnormal-lab existence.\n\n[pause=0.7]\n\nThen the medication count.\n\n[pause=0.7]\n\nFinally, combine the verified conditions with AND.\n\n[pause=1.0]",
-      "pause_markers": 8
+      "title": "Guided practice goal",
+      "transcript": "The guided practice combines several patterns. We want patients who satisfy four conditions. Instead of writing one long query immediately, test each condition separately. First the scalar age benchmark. Then the admission count. Then abnormal-lab existence. Then the medication count. Finally, combine the verified conditions with AND. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 158,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        158
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_50.wav",
+      "audio": "audio/module7_slide_50.mp3",
+      "captions": "audio/module7_slide_50.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 51,
-      "audio": "module7_slide_51.mp3",
-      "captions": "module7_slide_51.vtt",
-      "text": "Start with the average-age condition.\n\n[pause=0.7]\n\nThis is the same scalar pattern from earlier.\n\n[pause=0.7]\n\nRun it and note which patients are above the overall average.\n\n[pause=0.8]\n\nThese rows become candidates for the final combined query.\n\n[pause=0.8]\n\nTesting the condition separately makes later debugging much easier.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Practice step 1",
+      "transcript": "Start with the average-age condition. This is the same scalar pattern from earlier. Run it and note which patients are above the overall average. These rows become candidates for the final combined query. Testing the condition separately makes later debugging much easier. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 148,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        148
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_51.wav",
+      "audio": "audio/module7_slide_51.mp3",
+      "captions": "audio/module7_slide_51.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 52,
-      "audio": "module7_slide_52.mp3",
-      "captions": "module7_slide_52.vtt",
-      "text": "Now calculate admission counts.\n\n[pause=0.7]\n\nThe correlated scalar returns one count per patient.\n\n[pause=0.7]\n\nLook for counts greater than one.\n\n[pause=0.7]\n\nYou could place the count directly in WHERE, but displaying it first lets you verify the numbers and understand the condition before combining it.\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "Practice step 2",
+      "transcript": "Now calculate admission counts. The correlated scalar returns one count per patient. Look for counts greater than one. You could place the count directly in WHERE, but displaying it first lets you verify the numbers and understand the condition before combining it. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 146,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        146
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_52.wav",
+      "audio": "audio/module7_slide_52.mp3",
+      "captions": "audio/module7_slide_52.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 53,
-      "audio": "module7_slide_53.mp3",
-      "captions": "module7_slide_53.vtt",
-      "text": "The third condition asks whether at least one abnormal lab exists.\n\n[pause=0.7]\n\nBecause we only need one qualifying related row, EXISTS is the natural contract.\n\n[pause=0.7]\n\nRun the query and identify the patients that satisfy this part of the practice problem.\n\n[pause=1.0]",
-      "pause_markers": 3
+      "title": "Practice step 3",
+      "transcript": "The third condition asks whether at least one abnormal lab exists. Because we only need one qualifying related row, EXISTS is the natural contract. Run the query and identify the patients that satisfy this part of the practice problem. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 142,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        142
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_53.wav",
+      "audio": "audio/module7_slide_53.mp3",
+      "captions": "audio/module7_slide_53.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 54,
-      "audio": "module7_slide_54.mp3",
-      "captions": "module7_slide_54.vtt",
-      "text": "The fourth condition counts distinct medications for each patient.\n\n[pause=0.7]\n\nCOUNT DISTINCT returns one scalar value for the current patient.\n\n[pause=0.7]\n\nRun the query and identify which patients have more than one distinct medication.\n\n[pause=0.8]\n\nNow all four pieces of the final practice query have been tested independently.\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "Practice step 4",
+      "transcript": "The fourth condition counts distinct medications for each patient. COUNT DISTINCT returns one scalar value for the current patient. Run the query and identify which patients have more than one distinct medication. Now all four pieces of the final practice query have been tested independently. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 148,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        148
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_54.wav",
+      "audio": "audio/module7_slide_54.mp3",
+      "captions": "audio/module7_slide_54.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 55,
-      "audio": "module7_slide_55.mp3",
-      "captions": "module7_slide_55.vtt",
-      "text": "Now combine the four conditions.\n\n[pause=0.7]\n\nThe first is an uncorrelated scalar average.\n\n[pause=0.7]\n\nThe second is a correlated scalar count.\n\n[pause=0.7]\n\nThe third is correlated EXISTS.\n\n[pause=0.7]\n\nThe fourth is another correlated scalar count.\n\n[pause=0.7]\n\nRead the WHERE clause one condition at a time.\n\n[pause=0.7]\n\nBecause each piece has already been tested, the complete query is easier to understand and trust.\n\n[pause=1.0]",
-      "pause_markers": 7
+      "title": "Combine the practice conditions",
+      "transcript": "Now combine the four conditions. The first is an uncorrelated scalar average. The second is a correlated scalar count. The third is correlated EXISTS. The fourth is another correlated scalar count. Read the WHERE clause one condition at a time. Because each piece has already been tested, the complete query is easier to understand and trust. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 163,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        163
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_55.wav",
+      "audio": "audio/module7_slide_55.mp3",
+      "captions": "audio/module7_slide_55.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 56,
-      "audio": "module7_slide_56.mp3",
-      "captions": "module7_slide_56.vtt",
-      "text": "Project A uses subqueries to build a patient-level feature table.\n\n[pause=0.8]\n\nEach patient receives an admission count, abnormal-lab count, and distinct-medication count.\n\n[pause=0.7]\n\nThe query then combines those features into a simple teaching score.\n\n[pause=0.8]\n\nThe score is not a clinical model.\n\n[pause=0.7]\n\nThe SQL lesson is to create features at one clear grain and then calculate a derived value from them.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Project A overview",
+      "transcript": "Project A uses subqueries to build a patient-level feature table. Each patient receives an admission count, abnormal-lab count, and distinct-medication count. The query then combines those features into a simple teaching score. The score is not a clinical model. The SQL lesson is to create features at one clear grain and then calculate a derived value from them. Connect this idea to an e-commerce team finding customers who purchased a target product. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 155,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        155
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_56.wav",
+      "audio": "audio/module7_slide_56.mp3",
+      "captions": "audio/module7_slide_56.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 57,
-      "audio": "module7_slide_57.mp3",
-      "captions": "module7_slide_57.vtt",
-      "text": "The common table expression creates patient-level features.\n\n[pause=0.7]\n\nInside it, correlated scalar subqueries calculate each patient's admission count, abnormal-lab count, and distinct-medication count.\n\n[pause=0.7]\n\nThe outer SELECT then calculates the synthetic score.\n\n[pause=0.7]\n\nWhen reading a long query, identify the row grain and feature columns first.\n\n[pause=0.8]\n\nOnly then interpret the final derived expression.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Project A SQL",
+      "transcript": "The common table expression creates patient-level features. Inside it, correlated scalar subqueries calculate each patient's admission count, abnormal-lab count, and distinct-medication count. The outer SELECT then calculates the synthetic score. When reading a long query, identify the row grain and feature columns first. Only then interpret the final derived expression. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a compliance workflow checking whether related evidence exists, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 166,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        166
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_57.wav",
+      "audio": "audio/module7_slide_57.mp3",
+      "captions": "audio/module7_slide_57.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 58,
-      "audio": "module7_slide_58.mp3",
-      "captions": "module7_slide_58.vtt",
-      "text": "Project B changes the output grain from patient to department.\n\n[pause=0.8]\n\nThe outer query groups admissions by department.\n\n[pause=0.8]\n\nIt calculates total admissions, distinct patients, and average stay.\n\n[pause=0.7]\n\nA correlated subquery adds the count of open admissions for the current department.\n\n[pause=0.8]\n\nThis shows that correlation can use a grouping value such as department, not only a patient ID.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Project B overview",
+      "transcript": "Project B changes the output grain from patient to department. The outer query groups admissions by department. It calculates total admissions, distinct patients, and average stay. A correlated subquery adds the count of open admissions for the current department. This shows that correlation can use a grouping value such as department, not only a patient ID. Connect this idea to a hospital identifying patients above a benchmark or with no follow-up. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 148,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        148
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_58.wav",
+      "audio": "audio/module7_slide_58.mp3",
+      "captions": "audio/module7_slide_58.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 59,
-      "audio": "module7_slide_59.mp3",
-      "captions": "module7_slide_59.vtt",
-      "text": "Run the department query and focus first on row grain.\n\n[pause=0.8]\n\nEach row represents one department.\n\n[pause=0.7]\n\nThe outer aggregate functions summarize admission rows.\n\n[pause=0.7]\n\nThe correlated scalar subquery uses the current department name to count open admissions only for that department.\n\n[pause=0.8]\n\nThis is a useful pattern for dashboards and grouped summaries.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Project B SQL",
+      "transcript": "Run the department query and focus first on row grain. Each row represents one department. The outer aggregate functions summarize admission rows. The correlated scalar subquery uses the current department name to count open admissions only for that department. This is a useful pattern for dashboards and grouped summaries. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as an e-commerce team finding customers who purchased a target product, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 156,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        156
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_59.wav",
+      "audio": "audio/module7_slide_59.mp3",
+      "captions": "audio/module7_slide_59.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 60,
-      "audio": "module7_slide_60.mp3",
-      "captions": "module7_slide_60.vtt",
-      "text": "Use this checkpoint to test the contracts.\n\n[pause=0.8]\n\nA comparison such as age greater than parentheses requires one scalar value.\n\n[pause=0.7]\n\nIN expects a one-column set.\n\n[pause=0.7]\n\nEXISTS only needs to know whether any row exists.\n\n[pause=0.7]\n\nAnd a subquery is correlated when it references the current outer row.\n\n[pause=0.8]\n\nIf you can identify these contracts, the syntax becomes much easier to reconstruct.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Recognition checkpoint",
+      "transcript": "Use this checkpoint to test the contracts. A comparison such as age greater than parentheses requires one scalar value. IN expects a one-column set. EXISTS only needs to know whether any row exists. And a subquery is correlated when it references the current outer row. If you can identify these contracts, the syntax becomes much easier to reconstruct. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 167,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        167
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_60.wav",
+      "audio": "audio/module7_slide_60.mp3",
+      "captions": "audio/module7_slide_60.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 61,
-      "audio": "module7_slide_61.mp3",
-      "captions": "module7_slide_61.vtt",
-      "text": "The NULL checkpoint reviews one of the most practical lessons in the module.\n\n[pause=0.8]\n\nNOT IN can behave unexpectedly when NULL appears in the returned set.\n\n[pause=0.7]\n\nNOT EXISTS tests whether a matching row exists and avoids that classic issue.\n\n[pause=0.7]\n\nNOT IN is not always wrong.\n\n[pause=0.7]\n\nThe important point is that you must understand the possible NULL values before relying on it.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "NULL checkpoint",
+      "transcript": "The NULL checkpoint reviews one of the most practical lessons in the module. NOT IN can behave unexpectedly when NULL appears in the returned set. NOT EXISTS tests whether a matching row exists and avoids that classic issue. NOT IN is not always wrong. The important point is that you must understand the possible NULL values before relying on it. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 164,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        164
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_61.wav",
+      "audio": "audio/module7_slide_61.mp3",
+      "captions": "audio/module7_slide_61.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 62,
-      "audio": "module7_slide_62.mp3",
-      "captions": "module7_slide_62.vtt",
-      "text": "This challenge asks for patients whose admission count is above the average admission count among patients who have at least one admission.\n\n[pause=0.7]\n\nBreak the task into stages.\n\n[pause=0.7]\n\nFirst create patient-level admission counts.\n\n[pause=0.7]\n\nThen calculate the average of those counts.\n\n[pause=0.7]\n\nFinally compare each patient's count with that average.\n\n[pause=0.7]\n\nUse the starter and test the query incrementally rather than writing everything at once.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Applied challenge",
+      "transcript": "This challenge asks for patients whose admission count is above the average admission count among patients who have at least one admission. Break the task into stages. First create patient-level admission counts. Then calculate the average of those counts. Finally compare each patient's count with that average. Use the starter and test the query incrementally rather than writing everything at once. ANY and ALL compare one value with a set. ANY needs the comparison to succeed against at least one returned value; ALL requires it to succeed against every returned value. Empty sets and NULLs can affect the result, so test those cases explicitly when the set is data-driven.",
+      "seed": 1234,
+      "tts_text_tokens": 127,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        127
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_62.wav",
+      "audio": "audio/module7_slide_62.mp3",
+      "captions": "audio/module7_slide_62.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 63,
-      "audio": "module7_slide_63.mp3",
-      "captions": "module7_slide_63.vtt",
-      "text": "These are the key contracts.\n\n[pause=0.7]\n\nScalar means one value.\n\n[pause=0.7]\n\nIN means membership.\n\n[pause=0.7]\n\nEXISTS means existence.\n\n[pause=0.7]\n\nANY and ALL compare one value with a set.\n\n[pause=0.7]\n\nCorrelation means the inner query depends on the current outer row.\n\n[pause=0.8]\n\nA derived table means the inner query produces rows for the outer query to use.\n\n[pause=0.8]\n\nIf you understand the meaning, you can rebuild the syntax when needed.\n\n[pause=1.0]",
-      "pause_markers": 8
+      "title": "Module 7 takeaways",
+      "transcript": "These are the key contracts. Scalar means one value. IN means membership. EXISTS means existence. ANY and ALL compare one value with a set. Correlation means the inner query depends on the current outer row. A derived table means the inner query produces rows for the outer query to use. If you understand the meaning, you can rebuild the syntax when needed. Connect this idea to a compliance workflow checking whether related evidence exists. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 149,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        149
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_63.wav",
+      "audio": "audio/module7_slide_63.mp3",
+      "captions": "audio/module7_slide_63.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 64,
-      "audio": "module7_slide_64.mp3",
-      "captions": "module7_slide_64.vtt",
-      "text": "Use this final guide when you are unsure.\n\n[pause=0.7]\n\nAsk what the outer query needs from the inner query.\n\n[pause=0.8]\n\nOne value suggests a scalar.\n\n[pause=0.7]\n\nMembership suggests IN.\n\n[pause=0.7]\n\nA related-row question suggests EXISTS or NOT EXISTS.\n\n[pause=0.7]\n\nA comparison against a set suggests ANY or ALL.\n\n[pause=0.7]\n\nIntermediate rows suggest a derived table.\n\n[pause=0.7]\n\nThen ask whether the inner query depends on the current outer row. If yes, it is correlated.\n\n[pause=1.0]",
-      "pause_markers": 8
+      "title": "Final decision guide",
+      "transcript": "Use this final guide when you are unsure. Ask what the outer query needs from the inner query. One value suggests a scalar. Membership suggests IN. A related-row question suggests EXISTS or NOT EXISTS. A comparison against a set suggests ANY or ALL. Intermediate rows suggest a derived table. Then ask whether the inner query depends on the current outer row. If yes, it is correlated. Connect this idea to a hospital identifying patients above a benchmark or with no follow-up. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 161,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        161
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_64.wav",
+      "audio": "audio/module7_slide_64.mp3",
+      "captions": "audio/module7_slide_64.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 65,
-      "audio": "module7_slide_65.mp3",
-      "captions": "module7_slide_65.vtt",
-      "text": "Module 8 moves from query structure to value transformation.\n\n[pause=0.8]\n\nYou will work with text functions, pattern matching, dates, timestamps, and date arithmetic.\n\n[pause=0.7]\n\nThe subquery ideas from this module will continue to be useful because real queries often combine nested logic with transformations.\n\n[pause=0.8]\n\nBefore moving on, make sure you can explain what the inner query returns and why the outer operator matches that result.\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "Next: Module 8",
+      "transcript": "Module 8 moves from query structure to value transformation. You will work with text functions, pattern matching, dates, timestamps, and date arithmetic. The subquery ideas from this module will continue to be useful because real queries often combine nested logic with transformations. Before moving on, make sure you can explain what the inner query returns and why the outer operator matches that result. As you move forward, keep the reasoning habits from this module. The next topic will add new SQL tools, but it still depends on understanding grain, missing values, and the meaning of each transformation.",
+      "seed": 1234,
+      "tts_text_tokens": 114,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        114
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module7_slide_65.wav",
+      "audio": "audio/module7_slide_65.mp3",
+      "captions": "audio/module7_slide_65.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     }
   ]
 }

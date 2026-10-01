@@ -1,20 +1,31 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.751
-Partitions are central to Spark parallelism A
-dataset is divided
+00:00:00.000 --> 00:00:03.172
+Partitions are central to Spark parallelism.
 
-00:00:05.777 --> 00:00:11.346
-into pieces and tasks process those pieces Too few
-partitions
+00:00:03.172 --> 00:00:08.557
+A dataset is divided into pieces, and tasks process those pieces.
 
-00:00:11.373 --> 00:00:18.451
-can limit parallelism Too many small partitions can
-create overhead As
+00:00:08.557 --> 00:00:11.952
+Too few partitions can limit parallelism.
 
-00:00:18.478 --> 00:00:22.741
-a beginner you do not need to tune every partition
-setting but you should understand
+00:00:11.952 --> 00:00:15.497
+Too many small partitions can create overhead.
 
-00:00:22.767 --> 00:00:24.688
-why partitioning affects performance
+00:00:15.497 --> 00:00:19.462
+As a beginner, you do not need to tune every partition setting,
+
+00:00:19.462 --> 00:00:23.237
+but you should understand why partitioning affects performance.
+
+00:00:23.237 --> 00:00:29.432
+Partitions organize data so the engine can avoid reading files that cannot satisfy a filter.
+
+00:00:29.432 --> 00:00:34.782
+Good partition columns are commonly filtered and have manageable cardinality.
+
+00:00:34.782 --> 00:00:38.622
+Column pruning similarly avoids reading unused columns.
+
+00:00:38.622 --> 00:00:43.254
+Both optimizations reduce I/O before more expensive computation begins.

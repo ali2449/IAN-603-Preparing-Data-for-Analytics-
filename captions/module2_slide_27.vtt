@@ -1,40 +1,43 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.157
-Third Normal Form removes transitive dependencies
-Even after separating
+00:00:00.000 --> 00:00:02.812
+Third Normal Form removes transitive dependencies.
 
-00:00:06.183 --> 00:00:09.907
-appointment and service facts we should not keep
-patient name and provider
+00:00:02.812 --> 00:00:07.702
+Even after separating appointment and service facts, we should not keep patient name and provider specialty
 
-00:00:09.933 --> 00:00:14.025
-specialty inside every appointment row if those
-values are determined by patient
+00:00:07.702 --> 00:00:13.482
+inside every appointment row if those values are determined by patient or provider identifiers.
 
-00:00:14.051 --> 00:00:19.654
-or provider identifiers The appointment should store
-the foreign keys that
+00:00:13.482 --> 00:00:17.507
+The appointment should store the foreign keys that identify the patient and provider.
 
-00:00:19.680 --> 00:00:25.592
-identify the patient and provider Patient details
-belong in patient
+00:00:17.507 --> 00:00:19.622
+Patient details belong in patient.
 
-00:00:26.529 --> 00:00:32.876
-Provider details belong in provider A common memory
-aid for 3NF
+00:00:19.622 --> 00:00:21.897
+Provider details belong in provider.
 
-00:00:32.890 --> 00:00:35.903
-is that non-key facts should describe the key and
-should not really
+00:00:21.897 --> 00:00:26.027
+A common memory aid for 3NF is that non-key facts should describe the key and should not really depend on
 
-00:00:35.916 --> 00:00:41.420
-depend on another non-key attribute The practical
-benefit is easier
+00:00:26.027 --> 00:00:28.897
+another non-key attribute. The practical benefit is easier maintenance.
 
-00:00:41.433 --> 00:00:47.041
-maintenance If a provider's specialty changes we
-update the provider record rather
+00:00:28.897 --> 00:00:35.217
+If a provider's specialty changes, we update the provider record rather than many appointment rows.
 
-00:00:47.054 --> 00:00:48.528
-than many appointment rows
+00:00:35.217 --> 00:00:39.362
+Connect this idea to a university system separating students, courses, sections, and enrollments.
+
+00:00:39.362 --> 00:00:43.187
+Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+
+00:00:43.187 --> 00:00:47.767
+important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+
+00:00:47.767 --> 00:00:51.712
+A strong analyst can explain both the SQL operation and the assumption behind it.
+
+00:00:51.712 --> 00:00:57.120
+After the example, summarize the idea in one plain-language sentence before moving on.

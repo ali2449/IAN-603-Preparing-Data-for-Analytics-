@@ -1,20 +1,37 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.059
-This query first creates a wide product-level table
-with month totals Then
+00:00:00.000 --> 00:00:04.042
+This query first creates a wide product-level table with month totals.
 
-00:00:06.086 --> 00:00:11.627
-it unpivots the wide columns into product-month rows
-The result is
+00:00:04.042 --> 00:00:07.737
+Then it unpivots the wide columns into product-month rows.
 
-00:00:11.654 --> 00:00:17.249
-long again but it is not the original transaction
-table It is one
+00:00:07.737 --> 00:00:12.072
+The result is long again, but it is not the original transaction table.
 
-00:00:17.275 --> 00:00:23.127
-row per product-month total That is the key
-distinction between reshaping
+00:00:12.072 --> 00:00:14.697
+It is one row per product-month total.
 
-00:00:23.153 --> 00:00:24.509
-and recovering detail
+00:00:14.697 --> 00:00:18.897
+That is the key distinction between reshaping and recovering detail.
+
+00:00:18.897 --> 00:00:23.622
+When reading the example, do not read punctuation one character at a time.
+
+00:00:23.622 --> 00:00:27.722
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:27.722 --> 00:00:31.597
+and the shape of the expected output.
+
+00:00:31.597 --> 00:00:37.012
+In a real setting such as a machine-learning workflow converting wide measurements into tidy long data,
+
+00:00:37.012 --> 00:00:42.782
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:42.782 --> 00:00:44.227
+before discussing syntax.
+
+00:00:44.227 --> 00:00:49.920
+After running it, inspect a few records manually and check that the result matches that explanation.

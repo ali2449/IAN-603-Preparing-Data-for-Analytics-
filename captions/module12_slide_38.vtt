@@ -1,16 +1,22 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.917
-REFRESH MATERIALIZED VIEW recomputes the stored
-result from the underlying query Run
+00:00:00.000 --> 00:00:06.302
+REFRESH MATERIALIZED VIEW recomputes the stored result from the underlying query.
 
-00:00:06.944 --> 00:00:12.574
-this after creating the stale condition The
-Influenza count should now
+00:00:06.302 --> 00:00:08.832
+Run this after creating the stale condition.
 
-00:00:12.587 --> 00:00:18.483
-match the current base data The refreshed-at value
-should also be recomputed
+00:00:08.832 --> 00:00:14.582
+The Influenza count should now match the current base data.
 
-00:00:18.720 --> 00:00:20.720
-documenting the new snapshot time
+00:00:14.582 --> 00:00:21.002
+The refreshed-at value should also be recomputed, documenting the new snapshot time.
+
+00:00:21.002 --> 00:00:25.897
+A standard view stores a query definition, not a separate copy of the rows.
+
+00:00:25.897 --> 00:00:32.032
+Treat the selected columns, names, types, and grain as a contract with downstream users.
+
+00:00:32.032 --> 00:00:39.246
+Changing that contract can break dashboards or applications even if the underlying query still runs.

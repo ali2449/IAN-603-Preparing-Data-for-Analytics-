@@ -1,44 +1,55 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.834
-This example combines WHERE GROUP BY and HAVING in
-one query The
+00:00:00.000 --> 00:00:04.472
+This example combines WHERE, GROUP BY, and HAVING in one query.
 
-00:00:05.861 --> 00:00:10.705
-row-level rule keeps sales whose price is at least
-twenty-five dollars Those
+00:00:04.472 --> 00:00:09.257
+The row-level rule keeps sales whose price is at least twenty-five dollars.
 
-00:00:10.718 --> 00:00:16.258
-qualifying rows are then grouped by category We
-calculate total quantity and
+00:00:09.257 --> 00:00:12.942
+Those qualifying rows are then grouped by category.
 
-00:00:16.284 --> 00:00:21.692
-total revenue for each category Finally HAVING keeps
-only groups whose total
+00:00:12.942 --> 00:00:17.167
+We calculate total quantity and total revenue for each category.
 
-00:00:21.705 --> 00:00:27.225
-quantity is above the required threshold Before
-running it predict
+00:00:17.167 --> 00:00:21.467
+Finally, HAVING keeps only groups whose total quantity is above the required threshold.
 
-00:00:27.251 --> 00:00:32.017
-whether every category will remain Then run the
-query and compare the
+00:00:21.467 --> 00:00:26.752
+Before running it, predict whether every category will remain.
 
-00:00:32.030 --> 00:00:37.638
-result Look carefully at the difference between the
-price condition and the
+00:00:26.752 --> 00:00:30.582
+Then run the query and compare the result.
 
-00:00:37.651 --> 00:00:42.311
-quantity condition Price belongs to each source row
-so it is checked
+00:00:30.582 --> 00:00:34.952
+Look carefully at the difference between the price condition and the quantity condition.
 
-00:00:42.338 --> 00:00:47.311
-in WHERE Total quantity exists only after grouping
-so it is checked
+00:00:34.952 --> 00:00:38.852
+Price belongs to each source row, so it is checked in WHERE.
 
-00:00:47.325 --> 00:00:52.604
-in HAVING This is the full aggregation pattern you
-will use frequently
+00:00:38.852 --> 00:00:44.562
+Total quantity exists only after grouping, so it is checked in HAVING.
 
-00:00:52.630 --> 00:00:54.117
-in real analytical work
+00:00:44.562 --> 00:00:50.552
+This is the full aggregation pattern you will use frequently in real analytical work.
+
+00:00:50.552 --> 00:00:55.177
+When reading the example, do not read punctuation one character at a time.
+
+00:00:55.177 --> 00:01:01.117
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:01:01.117 --> 00:01:03.712
+and the shape of the expected output.
+
+00:01:03.712 --> 00:01:09.007
+In a real setting such as a dashboard summarizing admissions by department and month,
+
+00:01:09.007 --> 00:01:15.147
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:01:15.147 --> 00:01:17.272
+before discussing syntax.
+
+00:01:17.272 --> 00:01:23.016
+After running it, inspect a few records manually and check that the result matches that explanation.

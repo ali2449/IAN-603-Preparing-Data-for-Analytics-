@@ -1,20 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.190
-This query uses correlation to calculate a
-test-specific benchmark For
+00:00:00.000 --> 00:00:04.117
+This query uses correlation to calculate a test-specific benchmark.
 
-00:00:06.217 --> 00:00:12.403
-a Glucose row the inner query calculates the average
-Glucose result For
+00:00:04.117 --> 00:00:09.437
+For a Glucose row, the inner query calculates the average Glucose result.
 
-00:00:12.417 --> 00:00:18.208
-a Cholesterol row it calculates the average
-Cholesterol result The
+00:00:09.437 --> 00:00:15.577
+For a Cholesterol row, it calculates the average Cholesterol result.
 
-00:00:18.235 --> 00:00:23.861
-outer test name changes the inner query This is a
-powerful pattern
+00:00:15.577 --> 00:00:18.552
+The outer test name changes the inner query.
 
-00:00:23.887 --> 00:00:26.492
-when one global benchmark would not be meaningful
+00:00:18.552 --> 00:00:24.592
+This is a powerful pattern when one global benchmark would not be meaningful.
+
+00:00:24.592 --> 00:00:28.452
+A correlated subquery refers to the current row of the outer query.
+
+00:00:28.452 --> 00:00:32.602
+Conceptually, the inner query is evaluated in relation to each outer row.
+
+00:00:32.602 --> 00:00:38.767
+That makes some business rules easy to express, but it can be expensive at scale.
+
+00:00:38.767 --> 00:00:45.481
+Compare a correlated formulation with a pre-aggregated join when performance matters.

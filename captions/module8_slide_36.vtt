@@ -1,25 +1,43 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.232
-Here is the PostgreSQL-native approach to common
-temporal tasks Subtract
+00:00:00.000 --> 00:00:03.647
+Here is the PostgreSQL-native approach to common temporal tasks.
 
-00:00:06.258 --> 00:00:12.122
-timestamps to obtain an interval Add INTERVAL values
-to shift time
+00:00:03.647 --> 00:00:06.412
+Subtract timestamps to obtain an interval.
 
-00:00:13.867 --> 00:00:19.687
-Use EXTRACT to read components Use DATE_TRUNC to
-change
+00:00:06.412 --> 00:00:08.917
+Add INTERVAL values to shift time.
 
-00:00:19.700 --> 00:00:25.451
-analytical grain Use AGE when you want a symbolic
-calendar
+00:00:08.917 --> 00:00:11.092
+Use EXTRACT to read components.
 
-00:00:25.477 --> 00:00:31.135
-interval These patterns are clearer and more
-portable within PostgreSQL
+00:00:11.092 --> 00:00:15.857
+Use DATE_TRUNC to change analytical grain.
 
-00:00:31.162 --> 00:00:34.122
-than borrowing function names from another SQL
-dialect
+00:00:15.857 --> 00:00:18.457
+Use AGE when you want a symbolic calendar interval.
+
+00:00:18.457 --> 00:00:26.632
+These patterns are clearer and more portable within PostgreSQL than borrowing function names from another SQL
+
+00:00:26.632 --> 00:00:30.812
+dialect. When reading the example, do not read punctuation one character at a time.
+
+00:00:30.812 --> 00:00:35.972
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:35.972 --> 00:00:40.487
+and the shape of the expected output.
+
+00:00:40.487 --> 00:00:43.607
+In a real setting such as an operations team aligning timestamps across locations,
+
+00:00:43.607 --> 00:00:50.632
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:50.632 --> 00:00:54.252
+before discussing syntax.
+
+00:00:54.252 --> 00:01:00.080
+After running it, inspect a few records manually and check that the result matches that explanation.

@@ -1,16 +1,25 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.892
-Production PostgreSQL supports REFRESH MATERIALIZED
-VIEW CONCURRENTLY under specific conditions
+00:00:00.000 --> 00:00:06.287
+Production PostgreSQL supports REFRESH MATERIALIZED VIEW CONCURRENTLY under specific conditions.
 
-00:00:07.743 --> 00:00:13.355
-An appropriate unique index is required Concurrent
-refresh is an
+00:00:06.287 --> 00:00:09.277
+An appropriate unique index is required.
 
-00:00:13.381 --> 00:00:19.168
-availability technique It does not remove the need
-for a refresh policy
+00:00:09.277 --> 00:00:12.612
+Concurrent refresh is an availability technique.
 
-00:00:19.352 --> 00:00:21.378
-freshness metadata or monitoring
+00:00:12.612 --> 00:00:18.777
+It does not remove the need for a refresh policy, freshness metadata, or monitoring.
+
+00:00:18.777 --> 00:00:25.522
+A materialized view stores the query result physically, trading freshness for faster reads.
+
+00:00:25.522 --> 00:00:29.652
+That makes refresh policy part of the data contract.
+
+00:00:29.652 --> 00:00:35.167
+A dashboard should know whether the snapshot is five minutes old or one day old.
+
+00:00:35.167 --> 00:00:40.294
+Indexes can improve access, and concurrent refresh has additional requirements.

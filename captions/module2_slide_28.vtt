@@ -1,40 +1,40 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.900
-This slide summarizes the normalization progression
-First Normal Form
+00:00:00.137 --> 00:00:02.402
+This slide summarizes the normalization progression.
 
-00:00:05.914 --> 00:00:10.348
-removes repeating groups and list-like values so
-each field represents one value
+00:00:02.402 --> 00:00:07.852
+First Normal Form removes repeating groups and list-like values so each field represents one value.
 
-00:00:12.087 --> 00:00:16.652
-Second Normal Form handles partial dependencies when
-a composite key is involved
+00:00:07.852 --> 00:00:14.302
+Second Normal Form handles partial dependencies when a composite key is involved.
 
-00:00:17.576 --> 00:00:22.753
-Facts that depend on only part of that key move
-elsewhere Third
+00:00:14.302 --> 00:00:15.942
+Facts that depend on only part of that key move elsewhere.
 
-00:00:22.779 --> 00:00:26.950
-Normal Form removes transitive dependencies so
-non-key facts are stored with the
+00:00:15.942 --> 00:00:21.282
+Third Normal Form removes transitive dependencies so non-key facts are stored with the entity that actually
 
-00:00:26.976 --> 00:00:32.478
-entity that actually determines them A fast
-diagnostic is to ask how
+00:00:21.282 --> 00:00:27.512
+determines them. A fast diagnostic is to ask how many rows must change when one fact changes.
 
-00:00:32.491 --> 00:00:37.951
-many rows must change when one fact changes If
-changing a patient's
+00:00:27.512 --> 00:00:31.877
+If changing a patient's name requires updating many appointment-service rows,
 
-00:00:37.965 --> 00:00:43.083
-name requires updating many appointment-service rows
-patient information is probably stored in
+00:00:31.877 --> 00:00:35.652
+patient information is probably stored in the wrong place.
 
-00:00:43.109 --> 00:00:48.798
-the wrong place In a well-designed operational
-schema one patient fact
+00:00:35.652 --> 00:00:40.842
+In a well-designed operational schema, one patient fact should usually be updated in one patient row.
 
-00:00:48.812 --> 00:00:51.325
-should usually be updated in one patient row
+00:00:40.842 --> 00:00:44.102
+Normalization is easier to understand as anomaly prevention.
+
+00:00:44.102 --> 00:00:47.667
+Repeating facts in many rows makes updates inconsistent, inserts awkward, and deletes risky.
+
+00:00:47.667 --> 00:00:51.907
+Splitting data into well-defined entities reduces that repetition.
+
+00:00:51.907 --> 00:00:57.920
+The goal is not to create the maximum number of tables; it is to store each fact in a defensible place.

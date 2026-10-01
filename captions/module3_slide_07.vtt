@@ -1,76 +1,58 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.312
-Now we will run our first query Before clicking Run
-read the
+00:00:00.000 --> 00:00:02.377
+Now let's run the first SELECT example.
 
-00:00:04.338 --> 00:00:09.138
-statement from top to bottom The SELECT clause lists
-six columns patient
+00:00:02.377 --> 00:00:06.302
+Before you select Run, read the query from top to bottom.
 
-00:00:09.162 --> 00:00:14.700
-ID MRN full name age gender and active status That
-means those
+00:00:06.302 --> 00:00:12.347
+Notice which columns are requested, which table supplies the data, and how the output is sorted.
 
-00:00:14.725 --> 00:00:18.700
-six fields will appear in the result The FROM clause
-says that
+00:00:12.347 --> 00:00:15.917
+Run it directly in the browser and inspect the result table.
 
-00:00:18.725 --> 00:00:23.000
-the data comes from the patients table The final
-clause ORDER BY
+00:00:15.917 --> 00:00:18.782
+Look at the column names and the row order.
 
-00:00:23.025 --> 00:00:28.250
-patient ID sorts the result using the patient
-identifier Notice that there
+00:00:18.782 --> 00:00:24.017
+The query is not changing anything in the database.
 
-00:00:28.275 --> 00:00:32.912
-is no WHERE clause Because we did not add a filter
-PostgreSQL
+00:00:24.017 --> 00:00:27.477
+It is only creating a result from stored rows.
 
-00:00:32.938 --> 00:00:37.012
-can return all rows from the patients table We are
-controlling the
+00:00:27.477 --> 00:00:30.327
+Then make a connection between each clause and what you see.
 
-00:00:37.038 --> 00:00:40.362
-columns and the order but not removing any rows
-based on a
+00:00:30.327 --> 00:00:32.662
+SELECT controls what appears as columns.
 
-00:00:40.388 --> 00:00:45.675
-condition Click Run and look at the output Compare
-the column headings
+00:00:32.662 --> 00:00:36.102
+FROM identifies the source table.
 
-00:00:45.700 --> 00:00:49.888
-with the SELECT list Then look at the order of
-patient IDs
+00:00:36.102 --> 00:00:38.862
+ORDER BY changes the order in which the rows are displayed.
 
-00:00:50.775 --> 00:00:55.100
-The results should follow the ordering requested by
-the query This is
+00:00:38.862 --> 00:00:47.657
+If you want to practice in pgAdmin, copy the same query into the Query Tool and compare the result.
 
-00:00:55.125 --> 00:01:00.300
-a good moment to separate three ideas SELECT
-controls what columns appear
+00:00:47.657 --> 00:00:50.592
+When reading the example, do not read punctuation one character at a time.
 
-00:01:01.188 --> 00:01:07.512
-FROM identifies the source table ORDER BY controls
-the presentation order None
+00:00:50.592 --> 00:00:57.522
+Start with the purpose of the query, then identify the input rows, the operation being applied,
 
-00:01:07.538 --> 00:01:11.500
-of these clauses changes the stored patient data If
-you are new
+00:00:57.522 --> 00:01:00.002
+and the shape of the expected output.
 
-00:01:11.512 --> 00:01:14.925
-to SQL try reading the query aloud in plain language
-show these
+00:01:00.002 --> 00:01:04.522
+In a real setting such as an analyst exploring operational records before building a report,
 
-00:01:14.950 --> 00:01:18.088
-patient fields from the patients table and sort the
-rows by patient
+00:01:04.522 --> 00:01:13.267
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
 
-00:01:18.112 --> 00:01:23.100
-ID Translating SQL into a normal sentence is a very
-useful beginner
+00:01:13.267 --> 00:01:14.007
+before discussing syntax.
 
-00:01:23.112 --> 00:01:23.662
-technique
+00:01:14.007 --> 00:01:20.653
+After running it, inspect a few records manually and check that the result matches that explanation.

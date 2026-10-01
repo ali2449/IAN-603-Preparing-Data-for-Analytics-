@@ -1,44 +1,43 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.242
-GROUP BY defines the grain of a summary result With
-no GROUP
+00:00:00.000 --> 00:00:02.932
+GROUP BY defines the grain of a summary result.
 
-00:00:05.255 --> 00:00:09.823
-BY an aggregate can summarize the whole table into
-one row If
+00:00:02.932 --> 00:00:07.867
+With no GROUP BY, an aggregate can summarize the whole table into one row.
 
-00:00:09.850 --> 00:00:15.100
-we group by diagnosis the output becomes one row per
-diagnosis If
+00:00:07.867 --> 00:00:10.007
+If we group by diagnosis, the output becomes one row per diagnosis.
 
-00:00:15.126 --> 00:00:19.310
-we group by patient and diagnosis the result becomes
-more detailed one
+00:00:10.007 --> 00:00:15.357
+If we group by patient and diagnosis, the result becomes more detailed:
 
-00:00:19.336 --> 00:00:25.119
-row per patient-and-diagnosis combination This is
-why adding grouping columns
+00:00:15.357 --> 00:00:17.417
+one row per patient-and-diagnosis combination.
 
-00:00:25.145 --> 00:00:30.708
-usually increases the number of output rows A
-beginner-friendly rule
+00:00:17.417 --> 00:00:20.832
+This is why adding grouping columns usually increases the number of output rows.
 
-00:00:30.721 --> 00:00:34.590
-is that selected columns that are not inside
-aggregate functions generally need
+00:00:20.832 --> 00:00:27.532
+A beginner-friendly rule is that selected columns that are not inside aggregate functions generally need to
 
-00:00:34.603 --> 00:00:39.521
-to appear in GROUP BY But the deeper rule is about
-meaning
+00:00:27.532 --> 00:00:32.287
+appear in GROUP BY. But the deeper rule is about meaning.
 
-00:00:40.458 --> 00:00:44.814
-Every selected non-aggregate value should be
-well-defined for the group represented by
+00:00:32.287 --> 00:00:35.612
+Every selected non-aggregate value should be well-defined for the group represented by that output row.
 
-00:00:44.827 --> 00:00:50.541
-that output row Before writing GROUP BY finish the
-sentence one
+00:00:35.612 --> 00:00:42.272
+Before writing GROUP BY, finish the sentence: one row in my result represents one...
 
-00:00:50.567 --> 00:00:52.409
-row in my result represents one
+00:00:42.272 --> 00:00:43.597
+GROUP BY changes the grain of the result.
+
+00:00:43.597 --> 00:00:48.982
+If you group by department and month, one output row represents one department-month combination.
+
+00:00:48.982 --> 00:00:51.007
+State that sentence before adding measures.
+
+00:00:51.007 --> 00:00:57.600
+It becomes a quick check for whether every selected non-aggregate column belongs in the grouping.

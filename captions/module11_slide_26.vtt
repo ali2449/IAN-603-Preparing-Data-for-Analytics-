@@ -1,20 +1,37 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.852
-This query uses two windows over the same employee
-rows AVG
+00:00:00.000 --> 00:00:03.277
+This query uses two windows over the same employee rows.
 
-00:00:05.878 --> 00:00:12.707
-salary with PARTITION BY department calculates the
-department average ROW_NUMBER
+00:00:03.277 --> 00:00:07.957
+AVG salary with PARTITION BY department calculates the department average.
 
-00:00:12.734 --> 00:00:18.397
-with partition and order assigns a sequence within
-each department No
+00:00:07.957 --> 00:00:12.777
+ROW_NUMBER with partition and order assigns a sequence within each department.
 
-00:00:18.410 --> 00:00:24.139
-GROUP BY is used Every employee row remains in the
-output with
+00:00:12.777 --> 00:00:13.342
+No GROUP BY is used.
 
-00:00:24.165 --> 00:00:25.823
-additional context beside it
+00:00:13.342 --> 00:00:19.392
+Every employee row remains in the output, with additional context beside it.
+
+00:00:19.392 --> 00:00:23.907
+When reading the example, do not read punctuation one character at a time.
+
+00:00:23.907 --> 00:00:27.867
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:27.867 --> 00:00:32.007
+and the shape of the expected output.
+
+00:00:32.007 --> 00:00:37.212
+In a real setting such as a sales team calculating running revenue and top products by region,
+
+00:00:37.212 --> 00:00:42.842
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:42.842 --> 00:00:44.272
+before discussing syntax.
+
+00:00:44.272 --> 00:00:49.987
+After running it, inspect a few records manually and check that the result matches that explanation.

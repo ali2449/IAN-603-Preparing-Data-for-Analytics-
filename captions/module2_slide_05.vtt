@@ -1,44 +1,49 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.927
-Database design can be discussed at three levels The
-conceptual level
+00:00:00.000 --> 00:00:02.587
+Database design can be discussed at three levels.
 
-00:00:05.954 --> 00:00:11.377
-is the business view We identify major subjects and
-high-level relationships without
+00:00:02.587 --> 00:00:04.772
+The conceptual level is the business view.
 
-00:00:11.391 --> 00:00:16.919
-worrying about PostgreSQL syntax The logical level
-turns that
+00:00:04.772 --> 00:00:10.247
+We identify major subjects and high-level relationships without worrying about PostgreSQL syntax.
 
-00:00:16.945 --> 00:00:22.513
-business view into a relational blueprint We decide
-tables attributes primary
+00:00:10.247 --> 00:00:11.627
+The logical level turns that business view into a relational blueprint.
 
-00:00:22.540 --> 00:00:28.784
-keys foreign keys cardinality optionality and
-normalization The
+00:00:11.627 --> 00:00:17.832
+We decide tables, attributes, primary keys, foreign keys, cardinality, optionality, and normalization.
 
-00:00:28.798 --> 00:00:34.524
-physical level is the actual database implementation
-Here we choose PostgreSQL
+00:00:17.832 --> 00:00:19.792
+The physical level is the actual database implementation.
 
-00:00:34.550 --> 00:00:40.774
-data types indexes storage decisions and deployment
-details Keeping
+00:00:19.792 --> 00:00:24.182
+Here we choose PostgreSQL data types, indexes, storage decisions, and deployment details.
 
-00:00:40.801 --> 00:00:44.603
-these levels separate is helpful because business
-meaning should not depend on
+00:00:24.182 --> 00:00:27.257
+Keeping these levels separate is helpful because business meaning should not depend on one technical
 
-00:00:44.630 --> 00:00:50.234
-one technical implementation For example the logical
-idea that an
+00:00:27.257 --> 00:00:28.652
+implementation.
 
-00:00:50.260 --> 00:00:54.247
-appointment belongs to a patient remains valid even
-if the physical indexing
+00:00:28.652 --> 00:00:33.312
+For example, the logical idea that an appointment belongs to a patient remains valid even if the physical
 
-00:00:54.260 --> 00:00:55.707
-strategy changes later
+00:00:33.312 --> 00:00:35.352
+indexing strategy changes later.
+
+00:00:35.352 --> 00:00:39.652
+Connect this idea to an online store separating customers, orders, products, and order lines.
+
+00:00:39.652 --> 00:00:44.782
+Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+
+00:00:44.782 --> 00:00:48.402
+important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+
+00:00:48.402 --> 00:00:52.877
+A strong analyst can explain both the SQL operation and the assumption behind it.
+
+00:00:52.877 --> 00:00:56.400
+After the example, summarize the idea in one plain-language sentence before moving on.

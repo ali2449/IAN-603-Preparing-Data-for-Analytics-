@@ -1,17 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.636
-UNION ALL is a straightforward unpivot pattern Write
-one SELECT
+00:00:00.000 --> 00:00:03.277
+UNION ALL is a straightforward unpivot pattern.
 
-00:00:05.662 --> 00:00:12.869
-for each source column Give each SELECT the same
-output structure Then
+00:00:03.277 --> 00:00:06.382
+Write one SELECT for each source column.
 
-00:00:12.895 --> 00:00:18.577
-stack the rows with UNION ALL This is verbose but
-very beginner-friendly
+00:00:06.382 --> 00:00:09.307
+Give each SELECT the same output structure.
 
-00:00:18.603 --> 00:00:21.419
-because each source column is visible in its own
-SELECT
+00:00:09.307 --> 00:00:11.927
+Then stack the rows with UNION ALL.
+
+00:00:11.927 --> 00:00:18.087
+This is verbose but very beginner-friendly because each source column is visible in its own SELECT.
+
+00:00:18.087 --> 00:00:21.767
+Unpivoting turns repeated columns into row values.
+
+00:00:21.767 --> 00:00:27.872
+UNION ALL is explicit and portable; LATERAL VALUES can be more compact in PostgreSQL.
+
+00:00:27.872 --> 00:00:34.732
+The important design decision is which columns become identifiers and which column names become values.
+
+00:00:34.732 --> 00:00:37.840
+Keep data types compatible across the generated rows.

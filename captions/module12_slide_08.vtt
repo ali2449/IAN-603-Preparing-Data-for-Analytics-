@@ -1,17 +1,22 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.775
-A standard view stores a query definition It does
-not normally store
+00:00:00.000 --> 00:00:02.952
+A standard view stores a query definition.
 
-00:00:05.801 --> 00:00:11.639
-a separate snapshot of the result When the view is
-queried PostgreSQL
+00:00:02.952 --> 00:00:07.327
+It does not normally store a separate snapshot of the result.
 
-00:00:11.666 --> 00:00:17.691
-uses the view definition to access current
-underlying data For consumers
+00:00:07.327 --> 00:00:15.722
+When the view is queried, PostgreSQL uses the view definition to access current underlying data.
 
-00:00:17.915 --> 00:00:21.073
-the view behaves like a named relation with columns
-and rows
+00:00:15.722 --> 00:00:19.822
+For consumers, the view behaves like a named relation with columns and rows.
+
+00:00:19.822 --> 00:00:25.782
+A standard view stores a query definition, not a separate copy of the rows.
+
+00:00:25.782 --> 00:00:32.997
+Treat the selected columns, names, types, and grain as a contract with downstream users.
+
+00:00:32.997 --> 00:00:39.600
+Changing that contract can break dashboards or applications even if the underlying query still runs.

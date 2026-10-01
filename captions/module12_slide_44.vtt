@@ -1,20 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.546
-A useful architecture rule is to promote stable
-meaning into persistent objects If
+00:00:00.000 --> 00:00:04.647
+A useful architecture rule is to promote stable meaning into persistent objects.
 
-00:00:06.573 --> 00:00:13.028
-many consumers agree on what a patient-admission row
-means that can become a view If
+00:00:04.647 --> 00:00:09.767
+If many consumers agree on what a patient-admission row means, that can become a view.
 
-00:00:13.054 --> 00:00:19.558
-one report uses a temporary thirty-day threshold
-keep that logic in the report If
+00:00:09.767 --> 00:00:15.152
+If one report uses a temporary thirty-day threshold, keep that logic in the report.
 
-00:00:19.571 --> 00:00:26.340
-a summary is expensive and reused frequently
-materialization may be appropriate Do
+00:00:15.152 --> 00:00:20.207
+If a summary is expensive and reused frequently, materialization may be appropriate.
 
-00:00:26.354 --> 00:00:29.051
-not turn every query into a database object
+00:00:20.207 --> 00:00:23.527
+Do not turn every query into a database object.
+
+00:00:23.527 --> 00:00:26.957
+Choose the smallest reusable object that matches the need.
+
+00:00:26.957 --> 00:00:34.432
+A CTE is local to one query, a view centralizes live logic, and a materialized view persists a snapshot.
+
+00:00:34.432 --> 00:00:39.252
+Promote logic into shared objects when it is stable, reused, and worth governing as part of the analytical
+
+00:00:39.252 --> 00:00:41.200
+architecture.

@@ -1,17 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.786
-PostgreSQL does not require a special PIVOT keyword
-for the core patterns taught here You
+00:00:00.483 --> 00:00:06.122
+PostgreSQL does not require a special PIVOT keyword for the core patterns taught here.
 
-00:00:06.799 --> 00:00:12.606
-can use conditional aggregation One common form is
-SUM with CASE
+00:00:06.122 --> 00:00:09.327
+You can use conditional aggregation.
 
-00:00:14.347 --> 00:00:21.467
-PostgreSQL also supports FILTER on aggregate
-functions which can be very readable Both
+00:00:09.327 --> 00:00:11.812
+One common form is SUM with CASE.
 
-00:00:21.493 --> 00:00:27.414
-approaches use the same underlying idea one grouped
-output row with category-specific aggregate columns
+00:00:11.812 --> 00:00:17.907
+PostgreSQL also supports FILTER on aggregate functions, which can be very readable.
+
+00:00:17.907 --> 00:00:25.052
+Both approaches use the same underlying idea: one grouped output row with category-specific aggregate columns.
+
+00:00:25.052 --> 00:00:29.902
+A pivot converts category values into columns, usually through conditional aggregation in portable SQL.
+
+00:00:29.902 --> 00:00:36.132
+Each target column needs a clear aggregation rule.
+
+00:00:36.132 --> 00:00:41.132
+Before pivoting, check whether the source contains more than one value for the same row-key and category
+
+00:00:41.132 --> 00:00:42.706
+combination.

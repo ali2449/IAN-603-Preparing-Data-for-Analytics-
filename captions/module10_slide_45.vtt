@@ -1,20 +1,25 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.854
-The important question is whether the join preserves
-the measure's fact grain A
+00:00:00.000 --> 00:00:04.697
+The important question is whether the join preserves the measure's fact grain.
 
-00:00:05.867 --> 00:00:11.685
-many-to-one lookup often preserves the fact rows A
-broad join between
+00:00:04.697 --> 00:00:08.927
+A many-to-one lookup often preserves the fact rows.
 
-00:00:11.711 --> 00:00:17.493
-two fact-like tables can multiply them If rows are
-already duplicated
+00:00:08.927 --> 00:00:13.747
+A broad join between two fact-like tables can multiply them.
 
-00:00:17.506 --> 00:00:23.384
-before the pivot the pivot aggregates inflated facts
-Check row counts
+00:00:13.747 --> 00:00:20.172
+If rows are already duplicated before the pivot, the pivot aggregates inflated facts.
 
-00:00:23.410 --> 00:00:25.042
-and key relationships first
+00:00:20.172 --> 00:00:23.802
+Check row counts and key relationships first.
+
+00:00:23.802 --> 00:00:28.607
+Joining detail tables before reshaping can multiply rows.
+
+00:00:28.607 --> 00:00:34.082
+If the target is one row per patient or product, summarize each one-to-many source to the target grain before
+
+00:00:34.082 --> 00:00:42.160
+combining them. This keeps measures interpretable and prevents a pivot from hiding earlier join inflation.

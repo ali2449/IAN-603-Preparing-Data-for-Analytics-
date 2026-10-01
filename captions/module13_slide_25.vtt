@@ -1,17 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.812
-This query groups order rows by product The output
-grain changes
+00:00:00.000 --> 00:00:02.807
+This query groups order rows by product.
 
-00:00:05.839 --> 00:00:12.338
-from one order row to one product That grain change
-is important in PostgreSQL
+00:00:02.807 --> 00:00:07.007
+The output grain changes from one order row to one product.
 
-00:00:12.365 --> 00:00:18.139
-and in Spark In Spark GROUP BY can also create a
-shuffle because rows
+00:00:07.007 --> 00:00:11.452
+That grain change is important in PostgreSQL and in Spark.
 
-00:00:18.165 --> 00:00:21.349
-with the same product may need to be brought
-together across workers
+00:00:11.452 --> 00:00:19.312
+In Spark, GROUP BY can also create a shuffle because rows with the same product may need to be brought
+
+00:00:19.312 --> 00:00:25.132
+together across workers. Connect this idea to a lakehouse processing millions of web events across many files.
+
+00:00:25.132 --> 00:00:30.557
+Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+
+00:00:30.557 --> 00:00:38.112
+important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+
+00:00:38.112 --> 00:00:43.787
+A strong analyst can explain both the SQL operation and the assumption behind it.
+
+00:00:43.787 --> 00:00:49.200
+After the example, summarize the idea in one plain-language sentence before moving on.

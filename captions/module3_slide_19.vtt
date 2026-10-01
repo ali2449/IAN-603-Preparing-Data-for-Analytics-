@@ -1,71 +1,40 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.162
-INSERT adds a new row to a table In this example we
+00:00:00.000 --> 00:00:02.097
+INSERT adds new rows to a table.
 
-00:00:04.188 --> 00:00:09.350
-are adding one fictional patient The statement
-begins with INSERT INTO patients
+00:00:02.097 --> 00:00:06.137
+A good practice is to name the target columns explicitly.
 
-00:00:10.212 --> 00:00:14.500
-Inside parentheses we list the columns that we are
-providing MRN full
+00:00:06.137 --> 00:00:11.622
+That makes it clear which value belongs to which field and makes the statement more resilient if the table
 
-00:00:14.525 --> 00:00:19.075
-name age and gender Naming the columns is a good
-habit because
+00:00:11.622 --> 00:00:11.962
+structure later changes.
 
-00:00:19.100 --> 00:00:22.225
-it makes the statement clearer and less dependent on
-the physical order
+00:00:11.962 --> 00:00:17.542
+PostgreSQL RETURNING can immediately show the row that was stored, including a generated primary key.
 
-00:00:22.250 --> 00:00:26.612
-of columns in the table The VALUES section provides
-one value for
+00:00:17.542 --> 00:00:24.842
+Before running this example, look at the values and make sure the medical record number is unique and the age
 
-00:00:26.638 --> 00:00:32.200
-each listed column The order must match the column
-list Text values
+00:00:24.842 --> 00:00:29.697
+satisfies the table constraint. Then run it and inspect the returned row.
 
-00:00:32.225 --> 00:00:36.550
-are surrounded by single quotes The age is numeric
-so it does
+00:00:29.697 --> 00:00:34.267
+If you copy the statement into pgAdmin, compare the returned values with a SELECT for the same unique key.
 
-00:00:36.562 --> 00:00:41.900
-not need quotes After the values we use RETURNING
-This is a
+00:00:34.267 --> 00:00:39.312
+INSERT changes stored data, so verification is now part of the workflow, not an optional extra step.
 
-00:00:41.925 --> 00:00:47.038
-very useful PostgreSQL feature Instead of inserting
-the row and then wondering
+00:00:39.312 --> 00:00:43.372
+Writes deserve a slower workflow than reads.
 
-00:00:47.050 --> 00:00:50.712
-what happened RETURNING immediately shows selected
-fields from the row that was
+00:00:43.372 --> 00:00:47.397
+Before UPDATE or DELETE, run the intended WHERE condition as a SELECT and inspect the affected rows.
 
-00:00:50.738 --> 00:00:55.388
-stored It can also show generated values such as a
-patient ID
+00:00:47.397 --> 00:00:52.087
+In production, use transactions when appropriate so you can verify the change before committing.
 
-00:00:56.262 --> 00:01:00.638
-Run the statement and inspect the returned row Check
-that the MRN
-
-00:01:00.875 --> 00:01:05.400
-name age and gender match what you intended In a
-real workflow
-
-00:01:05.575 --> 00:01:08.612
-you may also run a separate SELECT afterward using
-the new row's
-
-00:01:08.638 --> 00:01:13.675
-stable identifier The main idea is simple add the
-row then verify
-
-00:01:13.700 --> 00:01:17.638
-it Do not treat an INSERT as complete until you have
-confirmed
-
-00:01:17.662 --> 00:01:18.500
-what was stored
+00:00:52.087 --> 00:00:57.840
+The absence of a syntax error does not mean the correct records were modified.

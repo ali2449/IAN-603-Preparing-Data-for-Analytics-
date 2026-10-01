@@ -1,24 +1,31 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.731
-A correlated scalar and a pre-aggregated join can
-sometimes produce the same result The
+00:00:00.000 --> 00:00:05.277
+A correlated scalar and a pre-aggregated join can sometimes produce the same result.
 
-00:00:06.758 --> 00:00:12.402
-correlated form may be simpler to read The
-derived-table form may be
+00:00:05.277 --> 00:00:08.277
+The correlated form may be simpler to read.
 
-00:00:12.428 --> 00:00:18.030
-convenient when several aggregated features are
-needed Do not assume one
+00:00:08.277 --> 00:00:13.407
+The derived-table form may be convenient when several aggregated features are needed.
 
-00:00:18.056 --> 00:00:23.873
-form is always faster PostgreSQL can transform
-queries during
+00:00:13.407 --> 00:00:16.557
+Do not assume one form is always faster.
 
-00:00:23.899 --> 00:00:29.500
-optimization Use correct semantics first then
-inspect the plan
+00:00:16.557 --> 00:00:20.242
+PostgreSQL can transform queries during optimization.
 
-00:00:29.526 --> 00:00:30.895
-on representative data
+00:00:20.242 --> 00:00:25.182
+Use correct semantics first, then inspect the plan on representative data.
+
+00:00:25.182 --> 00:00:29.347
+A correlated subquery refers to the current row of the outer query.
+
+00:00:29.347 --> 00:00:34.422
+Conceptually, the inner query is evaluated in relation to each outer row.
+
+00:00:34.422 --> 00:00:39.602
+That makes some business rules easy to express, but it can be expensive at scale.
+
+00:00:39.602 --> 00:00:44.560
+Compare a correlated formulation with a pre-aggregated join when performance matters.

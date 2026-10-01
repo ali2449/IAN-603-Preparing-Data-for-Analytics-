@@ -1,40 +1,49 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.137
-Now we are ready to run the complete clinic schema
-This is
+00:00:00.000 --> 00:00:02.947
+Now we are ready to run the complete clinic schema.
 
-00:00:05.164 --> 00:00:10.864
-an instructor-guided reference not a script you need
-to memorize Before
+00:00:02.947 --> 00:00:08.772
+This is an instructor-guided reference, not a script you need to memorize.
 
-00:00:10.877 --> 00:00:15.604
-clicking Run scan the script and count the CREATE
-TABLE statements Then
+00:00:08.772 --> 00:00:13.492
+Before clicking Run, scan the script and count the CREATE TABLE statements.
 
-00:00:15.630 --> 00:00:20.590
-look for primary keys unique business identifiers
-foreign keys and check constraints
+00:00:13.492 --> 00:00:17.807
+Then look for primary keys, unique business identifiers, foreign keys, and check constraints.
 
-00:00:22.419 --> 00:00:26.366
-Run the schema in the browser and confirm that
-PostgreSQL creates the
+00:00:17.807 --> 00:00:25.112
+Run the schema in the browser and confirm that PostgreSQL creates the tables successfully.
 
-00:00:26.379 --> 00:00:32.211
-tables successfully The order matters because parent
-tables need to exist
+00:00:25.112 --> 00:00:32.092
+The order matters because parent tables need to exist before child tables can reference them.
 
-00:00:32.224 --> 00:00:37.454
-before child tables can reference them If you copy
-the script into
+00:00:32.092 --> 00:00:35.107
+If you copy the script into pgAdmin, use it as a reading exercise.
 
-00:00:37.480 --> 00:00:42.640
-pgAdmin use it as a reading exercise Trace each
-foreign key back
+00:00:35.107 --> 00:00:38.662
+Trace each foreign key back to its parent table.
 
-00:00:42.667 --> 00:00:47.095
-to its parent table The main goal is to see how the
+00:00:38.662 --> 00:00:45.117
+The main goal is to see how the conceptual and logical design decisions become executable PostgreSQL.
 
-00:00:47.122 --> 00:00:51.635
-conceptual and logical design decisions become
-executable PostgreSQL
+00:00:45.117 --> 00:00:50.517
+When reading the example, do not read punctuation one character at a time.
+
+00:00:50.517 --> 00:00:55.587
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:55.587 --> 00:00:58.457
+and the shape of the expected output.
+
+00:00:58.457 --> 00:01:05.087
+In a real setting such as an online store separating customers, orders, products, and order lines,
+
+00:01:05.087 --> 00:01:11.862
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:01:11.862 --> 00:01:14.402
+before discussing syntax.
+
+00:01:14.402 --> 00:01:20.098
+After running it, inspect a few records manually and check that the result matches that explanation.

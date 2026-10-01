@@ -1,21 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:04.655
-A reshape is more reversible when each source value
-maps cleanly to one output cell
+00:00:00.000 --> 00:00:07.292
+A reshape is more reversible when each source value maps cleanly to one output cell and category labels are
 
-00:00:04.668 --> 00:00:10.346
-and category labels are preserved It becomes lossy
-when several rows are
+00:00:07.292 --> 00:00:11.612
+preserved. It becomes lossy when several rows are aggregated into one cell.
 
-00:00:10.359 --> 00:00:16.149
-aggregated into one cell Dropping NULL rows can also
-remove missingness
+00:00:11.612 --> 00:00:15.547
+Dropping NULL rows can also remove missingness information.
 
-00:00:16.175 --> 00:00:23.553
-information Collapsing categories can remove
-distinctions Always
+00:00:15.547 --> 00:00:18.627
+Collapsing categories can remove distinctions.
 
-00:00:23.580 --> 00:00:26.803
-identify which information survives the
-transformation
+00:00:18.627 --> 00:00:22.892
+Always identify which information survives the transformation.
+
+00:00:22.892 --> 00:00:30.942
+A reshape is reversible only when the transformation preserves enough information to reconstruct the source.
+
+00:00:30.942 --> 00:00:35.827
+Aggregation, duplicate collapsing, and dropped NULL cells can make the process lossy.
+
+00:00:35.827 --> 00:00:43.407
+Validate row counts, keys, totals, and category coverage before assuming a pivot-unpivot round trip preserves
+
+00:00:43.407 --> 00:00:44.400
+everything.

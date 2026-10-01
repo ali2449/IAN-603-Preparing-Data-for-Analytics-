@@ -1,24 +1,25 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.405
-A view can reduce accidental exposure by publishing
-only the columns required for an analytical
+00:00:00.000 --> 00:00:06.257
+A view can reduce accidental exposure by publishing only the columns required for an analytical task.
 
-00:00:05.432 --> 00:00:11.138
-task For example an analytics interface may expose
-an age band
+00:00:06.257 --> 00:00:12.757
+For example, an analytics interface may expose an age band and city instead of direct contact fields.
 
-00:00:11.164 --> 00:00:16.701
-and city instead of direct contact fields But hiding
-columns in a view
+00:00:12.757 --> 00:00:18.117
+But hiding columns in a view definition is not the same as granting or denying access.
 
-00:00:16.715 --> 00:00:22.256
-definition is not the same as granting or denying
-access Actual
+00:00:18.117 --> 00:00:22.882
+Actual authorization depends on PostgreSQL privileges and, where appropriate,
 
-00:00:22.282 --> 00:00:27.822
-authorization depends on PostgreSQL privileges and
-where appropriate row-level security or
+00:00:22.882 --> 00:00:25.512
+row-level security or other controls.
 
-00:00:27.835 --> 00:00:28.716
-other controls
+00:00:25.512 --> 00:00:30.292
+A standard view stores a query definition, not a separate copy of the rows.
+
+00:00:30.292 --> 00:00:36.492
+Treat the selected columns, names, types, and grain as a contract with downstream users.
+
+00:00:36.492 --> 00:00:42.566
+Changing that contract can break dashboards or applications even if the underlying query still runs.

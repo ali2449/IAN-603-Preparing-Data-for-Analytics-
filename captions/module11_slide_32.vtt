@@ -1,12 +1,25 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.970
-RANK behaves like a competition ranking If two
-employees tie for second
+00:00:00.000 --> 00:00:04.712
+RANK behaves like a competition ranking.
 
-00:00:06.194 --> 00:00:12.762
-both receive rank two The next rank is four This
+00:00:04.712 --> 00:00:07.892
+If two employees tie for second, both receive rank two.
 
-00:00:12.775 --> 00:00:16.854
-is useful when the numeric rank should reflect
-positions consumed by the tie
+00:00:07.892 --> 00:00:10.417
+The next rank is four.
+
+00:00:10.417 --> 00:00:19.352
+This is useful when the numeric rank should reflect positions consumed by the tie.
+
+00:00:19.352 --> 00:00:24.027
+Ranking functions differ mainly in how they handle ties.
+
+00:00:24.027 --> 00:00:30.052
+ROW_NUMBER forces a unique sequence, RANK leaves gaps after ties, and DENSE_RANK does not.
+
+00:00:30.052 --> 00:00:36.682
+Add deterministic tie-breakers when a unique order matters;
+
+00:00:36.682 --> 00:00:41.360
+otherwise two executions can choose different rows among tied values.

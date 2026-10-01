@@ -1,16 +1,22 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.722
-Both methods are useful UNION ALL is explicit and
-easy to read when
+00:00:00.000 --> 00:00:07.027
+Both methods are useful. UNION ALL is explicit and easy to read when there are only a few columns.
 
-00:00:05.748 --> 00:00:11.649
-there are only a few columns LATERAL VALUES is
-compact when many columns
+00:00:07.027 --> 00:00:12.497
+LATERAL VALUES is compact when many columns follow the same repeated structure.
 
-00:00:11.675 --> 00:00:17.204
-follow the same repeated structure The correct
-choice is the one that keeps the
+00:00:12.497 --> 00:00:17.452
+The correct choice is the one that keeps the transformation clear and maintainable.
 
-00:00:17.230 --> 00:00:19.362
-transformation clear and maintainable
+00:00:17.452 --> 00:00:21.357
+Unpivoting turns repeated columns into row values.
+
+00:00:21.357 --> 00:00:27.792
+UNION ALL is explicit and portable; LATERAL VALUES can be more compact in PostgreSQL.
+
+00:00:27.792 --> 00:00:34.132
+The important design decision is which columns become identifiers and which column names become values.
+
+00:00:34.132 --> 00:00:37.753
+Keep data types compatible across the generated rows.

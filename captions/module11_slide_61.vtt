@@ -1,20 +1,37 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.083
-The product totals CTE creates one row per
-department and product The
+00:00:00.000 --> 00:00:04.277
+The product totals CTE creates one row per department and product.
 
-00:00:06.110 --> 00:00:12.855
-ranked CTE keeps the same grain but adds DENSE_RANK
-within each department The
+00:00:04.277 --> 00:00:09.392
+The ranked CTE keeps the same grain but adds DENSE_RANK within each department.
 
-00:00:12.882 --> 00:00:18.631
-final SELECT filters to the top two rank groups Run
-the query and trace
+00:00:09.392 --> 00:00:12.857
+The final SELECT filters to the top two rank groups.
 
-00:00:18.658 --> 00:00:24.456
-the grain through all three stages This is a strong
-example of readable
+00:00:12.857 --> 00:00:16.547
+Run the query and trace the grain through all three stages.
 
-00:00:24.483 --> 00:00:25.509
-advanced SQL
+00:00:16.547 --> 00:00:20.847
+This is a strong example of readable advanced SQL.
+
+00:00:20.847 --> 00:00:24.027
+When reading the example, do not read punctuation one character at a time.
+
+00:00:24.027 --> 00:00:30.022
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:30.022 --> 00:00:33.647
+and the shape of the expected output.
+
+00:00:33.647 --> 00:00:37.862
+In a real setting such as a hospital ranking visits and identifying readmissions,
+
+00:00:37.862 --> 00:00:44.452
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:44.452 --> 00:00:46.917
+before discussing syntax.
+
+00:00:46.917 --> 00:00:52.320
+After running it, inspect a few records manually and check that the result matches that explanation.

@@ -1,17 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.458
-Materialization is useful when an expensive result
-is read repeatedly and consumers can tolerate a
+00:00:00.000 --> 00:00:08.172
+Materialization is useful when an expensive result is read repeatedly and consumers can tolerate a known
 
-00:00:05.471 --> 00:00:11.294
-known refresh lag The database object alone is not
-the whole design
+00:00:08.172 --> 00:00:11.887
+refresh lag. The database object alone is not the whole design.
 
-00:00:13.051 --> 00:00:20.248
-You also need a refresh schedule freshness metadata
-and a plan for refresh failures Without
+00:00:11.887 --> 00:00:17.927
+You also need a refresh schedule, freshness metadata, and a plan for refresh failures.
 
-00:00:20.274 --> 00:00:23.484
-those consumers may not know how current the
-snapshot is
+00:00:17.927 --> 00:00:22.667
+Without those, consumers may not know how current the snapshot is.
+
+00:00:22.667 --> 00:00:29.262
+Connect this idea to a data platform materializing expensive summaries for faster consumption.
+
+00:00:29.262 --> 00:00:34.622
+Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+
+00:00:34.622 --> 00:00:41.862
+important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+
+00:00:41.862 --> 00:00:47.712
+A strong analyst can explain both the SQL operation and the assumption behind it.
+
+00:00:47.712 --> 00:00:53.200
+After the example, summarize the idea in one plain-language sentence before moving on.

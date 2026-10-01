@@ -1,21 +1,37 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.711
-A safe parsing workflow starts by cleaning boundary
-whitespace Then
+00:00:00.317 --> 00:00:04.202
+A safe parsing workflow starts by cleaning boundary whitespace.
 
-00:00:05.737 --> 00:00:11.387
-identify the input shape Apply the parser that
-matches that shape
+00:00:04.202 --> 00:00:06.142
+Then identify the input shape.
 
-00:00:13.099 --> 00:00:17.217
-If the value does not match an expected format
-return NULL or flag it for
+00:00:06.142 --> 00:00:08.802
+Apply the parser that matches that shape.
 
-00:00:17.243 --> 00:00:23.428
-review instead of guessing Parsing converts
-representation It
+00:00:08.802 --> 00:00:15.172
+If the value does not match an expected format, return NULL or flag it for review instead of guessing.
 
-00:00:23.441 --> 00:00:26.810
-does not prove that the underlying business value is
-accurate
+00:00:15.172 --> 00:00:21.122
+Parsing converts representation. It does not prove that the underlying business value is accurate.
+
+00:00:21.122 --> 00:00:25.687
+When reading the example, do not read punctuation one character at a time.
+
+00:00:25.687 --> 00:00:31.572
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:31.572 --> 00:00:33.852
+and the shape of the expected output.
+
+00:00:33.852 --> 00:00:39.087
+In a real setting such as an operations team aligning timestamps across locations,
+
+00:00:39.087 --> 00:00:44.777
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:44.777 --> 00:00:47.017
+before discussing syntax.
+
+00:00:47.017 --> 00:00:53.120
+After running it, inspect a few records manually and check that the result matches that explanation.

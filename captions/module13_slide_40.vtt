@@ -1,20 +1,37 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.864
-This query uses CTEs and a window function The
-monthly sales
+00:00:00.000 --> 00:00:02.497
+This query uses CTEs and a window function.
 
-00:00:05.891 --> 00:00:10.827
-stage has one row per month and product The ranked
-stage keeps that grain and
+00:00:02.497 --> 00:00:05.492
+The monthly sales stage has one row per month and product.
 
-00:00:10.854 --> 00:00:16.458
-adds a rank within each month The final SELECT keeps
-the top two rank
+00:00:05.492 --> 00:00:09.037
+The ranked stage keeps that grain and adds a rank within each month.
 
-00:00:16.471 --> 00:00:22.214
-groups This is a good example of readable staged SQL
-that can transfer
+00:00:09.037 --> 00:00:11.842
+The final SELECT keeps the top two rank groups.
 
-00:00:22.240 --> 00:00:23.254
-to Spark SQL
+00:00:11.842 --> 00:00:15.867
+This is a good example of readable staged SQL that can transfer to Spark SQL.
+
+00:00:15.867 --> 00:00:19.617
+When reading the example, do not read punctuation one character at a time.
+
+00:00:19.617 --> 00:00:24.892
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:24.892 --> 00:00:26.917
+and the shape of the expected output.
+
+00:00:26.917 --> 00:00:31.657
+In a real setting such as a lakehouse processing millions of web events across many files,
+
+00:00:31.657 --> 00:00:37.082
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:37.082 --> 00:00:38.342
+before discussing syntax.
+
+00:00:38.342 --> 00:00:43.520
+After running it, inspect a few records manually and check that the result matches that explanation.

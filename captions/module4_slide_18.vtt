@@ -1,44 +1,52 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.879
-This example uses CASE inside an aggregate For each
-admission the
+00:00:00.000 --> 00:00:02.892
+This example uses CASE inside an aggregate.
 
-00:00:05.905 --> 00:00:11.118
-CASE expression asks whether the diagnosis matches a
-condition A matching row
+00:00:02.892 --> 00:00:08.152
+For each admission, the CASE expression asks whether the diagnosis matches a condition.
 
-00:00:11.145 --> 00:00:15.355
-contributes a value such as one and a non-matching
-row contributes zero
+00:00:08.152 --> 00:00:13.637
+A matching row contributes a value such as one, and a non-matching row contributes zero.
 
-00:00:16.289 --> 00:00:21.810
-SUM then adds those contributions inside each
-patient group Run the
+00:00:13.637 --> 00:00:17.392
+SUM then adds those contributions inside each patient group.
 
-00:00:21.837 --> 00:00:27.386
-query and inspect the separate pneumonia and
-fracture counts Before
+00:00:17.392 --> 00:00:21.457
+Run the query and inspect the separate pneumonia and fracture counts.
 
-00:00:27.413 --> 00:00:30.597
-running it choose one patient from the data and
-predict the two
+00:00:21.457 --> 00:00:26.132
+Before running it, choose one patient from the data and predict the two counts.
 
-00:00:30.623 --> 00:00:36.546
-counts Then compare your prediction with the result
-This
+00:00:26.132 --> 00:00:28.792
+Then compare your prediction with the result.
 
-00:00:36.573 --> 00:00:41.549
-pattern is flexible because CASE can handle more
-than simple equality You
+00:00:28.792 --> 00:00:33.272
+This pattern is flexible because CASE can handle more than simple equality.
 
-00:00:41.575 --> 00:00:46.207
-can build conditions based on ranges multiple
-columns or more complex business
+00:00:33.272 --> 00:00:39.212
+You can build conditions based on ranges, multiple columns, or more complex business rules.
 
-00:00:46.233 --> 00:00:51.675
-rules When using CASE for counting make sure the
-values you return
+00:00:39.212 --> 00:00:45.082
+When using CASE for counting, make sure the values you return are appropriate for the aggregate you apply.
 
-00:00:51.701 --> 00:00:53.885
-are appropriate for the aggregate you apply
+00:00:45.082 --> 00:00:51.827
+When reading the example, do not read punctuation one character at a time.
+
+00:00:51.827 --> 00:00:55.842
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:55.842 --> 00:00:58.382
+and the shape of the expected output.
+
+00:00:58.382 --> 00:01:03.617
+In a real setting such as a student-success report comparing course-level outcomes,
+
+00:01:03.617 --> 00:01:09.762
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:01:09.762 --> 00:01:12.017
+before discussing syntax.
+
+00:01:12.017 --> 00:01:18.060
+After running it, inspect a few records manually and check that the result matches that explanation.

@@ -1,52 +1,55 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.711
-Welcome to Module 2 Designing Relational Databases
-In this module we
+00:00:00.030 --> 00:00:03.572
+Welcome to Module 2, Designing Relational Databases.
 
-00:00:05.737 --> 00:00:09.079
-are going to focus on the structure that makes
-reliable SQL and
+00:00:03.572 --> 00:00:09.862
+In this module, we are going to focus on the structure that makes reliable SQL and analytics possible later.
 
-00:00:09.105 --> 00:00:14.807
-analytics possible later Before we worry about
-writing long queries we
+00:00:09.862 --> 00:00:16.577
+Before we worry about writing long queries, we need to decide what each table represents, what one row means,
 
-00:00:14.833 --> 00:00:18.426
-need to decide what each table represents what one
-row means how
+00:00:16.577 --> 00:00:21.042
+how tables connect, and what rules the database should protect automatically.
 
-00:00:18.452 --> 00:00:24.216
-tables connect and what rules the database should
-protect automatically The
+00:00:21.042 --> 00:00:27.922
+The examples use a small outpatient clinic, but the design ideas apply to many domains such as retail,
 
-00:00:24.242 --> 00:00:28.242
-examples use a small outpatient clinic but the
-design ideas apply to
+00:00:27.922 --> 00:00:29.982
+education, finance, and operations.
 
-00:00:28.255 --> 00:00:34.383
-many domains such as retail education finance and
-operations You
+00:00:29.982 --> 00:00:36.257
+You will also see small PostgreSQL examples that run directly in the browser.
 
-00:00:34.409 --> 00:00:38.764
-will also see small PostgreSQL examples that run
-directly in the browser
+00:00:36.257 --> 00:00:40.452
+When a code slide appears, run it here first, inspect the result, and if you want more practice,
 
-00:00:39.688 --> 00:00:43.109
-When a code slide appears run it here first inspect
-the result
+00:00:40.452 --> 00:00:44.532
+use Copy and paste the same SQL into the pgAdmin Query Tool.
 
-00:00:43.333 --> 00:00:46.280
-and if you want more practice use Copy and paste the
-same
+00:00:44.532 --> 00:00:47.267
+The goal is not to memorize a complete schema.
 
-00:00:46.307 --> 00:00:51.924
-SQL into the pgAdmin Query Tool The goal is not to
-memorize
+00:00:47.267 --> 00:00:54.102
+The goal is to understand the design decisions behind the schema.
 
-00:00:51.951 --> 00:00:56.796
-a complete schema The goal is to understand the
-design decisions behind
+00:00:54.102 --> 00:00:58.617
+Keep a real project in mind as we work through this section—for example, a clinic system separating patients,
 
-00:00:56.809 --> 00:00:57.427
-the schema
+00:00:58.617 --> 00:01:00.752
+encounters, clinicians, and billing.
+
+00:01:00.752 --> 00:01:09.777
+The technical feature matters because it changes what questions we can answer reliably and how easily another
+
+00:01:09.777 --> 00:01:11.412
+analyst can understand our work.
+
+00:01:11.412 --> 00:01:16.647
+As you listen, try to connect each SQL or data concept to a decision you might need to defend later:
+
+00:01:16.647 --> 00:01:21.577
+what the data means, what one row represents, what can be missing,
+
+00:01:21.577 --> 00:01:24.427
+and what assumptions the transformation introduces.

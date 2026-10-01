@@ -1,44 +1,46 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:04.589
-The analytical reasoning in this module transfers
-across SQL systems but some
+00:00:00.000 --> 00:00:05.527
+The analytical reasoning in this module transfers across SQL systems, but some syntax changes.
 
-00:00:04.616 --> 00:00:10.201
-syntax changes PostgreSQL can subtract timestamps
-directly
+00:00:05.527 --> 00:00:11.282
+PostgreSQL can subtract timestamps directly in ways that other databases may express with functions such as
 
-00:00:10.227 --> 00:00:13.937
-in ways that other databases may express with
-functions such as DATEDIFF
+00:00:11.282 --> 00:00:11.802
+DATEDIFF.
 
-00:00:15.687 --> 00:00:20.423
-PostgreSQL FILTER is concise for conditional
-aggregation while SUM with CASE is
+00:00:11.802 --> 00:00:17.062
+PostgreSQL FILTER is concise for conditional aggregation, while SUM with CASE is supported more broadly.
 
-00:00:20.437 --> 00:00:26.329
-supported more broadly ROLLUP CUBE GROUPING SETS and
-window functions
+00:00:17.062 --> 00:00:22.392
+ROLLUP, CUBE, GROUPING SETS, and window functions are widely available in modern databases,
 
-00:00:26.355 --> 00:00:30.895
-are widely available in modern databases but exact
-syntax and supported options
+00:00:22.392 --> 00:00:25.427
+but exact syntax and supported options can vary.
 
-00:00:30.921 --> 00:00:36.460
-can vary When moving a query between systems
-preserve the reasoning first
+00:00:25.427 --> 00:00:29.047
+When moving a query between systems, preserve the reasoning first: filter source rows, define the grain,
 
-00:00:36.605 --> 00:00:41.157
-filter source rows define the grain calculate
-measures filter groups and sort
+00:00:29.047 --> 00:00:31.662
+calculate measures, filter groups, and sort the report.
 
-00:00:41.184 --> 00:00:48.048
-the report Then adapt the engine-specific syntax
-That
+00:00:31.662 --> 00:00:34.877
+Then adapt the engine-specific syntax.
 
-00:00:48.061 --> 00:00:52.127
-approach is much safer than copying a PostgreSQL
-query and assuming every
+00:00:34.877 --> 00:00:40.462
+That approach is much safer than copying a PostgreSQL query and assuming every database interprets it exactly
 
-00:00:52.140 --> 00:00:54.640
-database interprets it exactly the same way
+00:00:40.462 --> 00:00:44.212
+the same way. Connect this idea to a retail report comparing revenue across products and regions.
+
+00:00:44.212 --> 00:00:49.572
+Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+
+00:00:49.572 --> 00:00:56.042
+important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+
+00:00:56.042 --> 00:00:59.572
+A strong analyst can explain both the SQL operation and the assumption behind it.
+
+00:00:59.572 --> 00:01:04.300
+After the example, summarize the idea in one plain-language sentence before moving on.

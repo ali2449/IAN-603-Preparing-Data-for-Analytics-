@@ -1,44 +1,46 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:04.300
-Missing information is a design choice not something
-we should leave accidental
+00:00:00.130 --> 00:00:04.237
+Missing information is a design choice, not something we should leave accidental.
 
-00:00:06.035 --> 00:00:11.564
-NULL represents unknown missing or not-applicable
-information It is not the
+00:00:04.237 --> 00:00:06.982
+NULL represents unknown, missing, or not-applicable information.
 
-00:00:11.577 --> 00:00:17.402
-same as zero an empty string or false For each
-column ask
+00:00:06.982 --> 00:00:09.022
+It is not the same as zero, an empty string, or false.
 
-00:00:17.428 --> 00:00:22.963
-whether missingness makes sense A patient medical
-record number may be
+00:00:09.022 --> 00:00:13.172
+For each column, ask whether missingness makes sense.
 
-00:00:22.976 --> 00:00:28.742
-required so it should not be nullable Email may be
-optional An
+00:00:13.172 --> 00:00:16.782
+A patient medical record number may be required, so it should not be nullable.
 
-00:00:28.768 --> 00:00:34.123
-appointment start time is required for a scheduled
-appointment A cancellation time
+00:00:16.782 --> 00:00:19.702
+Email may be optional. An appointment start time is required for a scheduled appointment.
 
-00:00:34.150 --> 00:00:37.229
-only makes sense when an appointment is cancelled so
-it may be
+00:00:19.702 --> 00:00:23.352
+A cancellation time only makes sense when an appointment is cancelled, so it may be nullable.
 
-00:00:37.255 --> 00:00:43.279
-nullable A data dictionary documents these decisions
-It
+00:00:23.352 --> 00:00:26.732
+A data dictionary documents these decisions.
 
-00:00:43.306 --> 00:00:48.463
-should describe the column meaning type nullability
-units keys and important business
+00:00:26.732 --> 00:00:31.782
+It should describe the column meaning, type, nullability, units, keys, and important business rules.
 
-00:00:48.490 --> 00:00:54.405
-rules This documentation helps future analysts
-interpret the database
+00:00:31.782 --> 00:00:34.562
+This documentation helps future analysts interpret the database correctly.
 
-00:00:54.418 --> 00:00:55.010
-correctly
+00:00:34.562 --> 00:00:39.172
+Connect this idea to a university system separating students, courses, sections, and enrollments.
+
+00:00:39.172 --> 00:00:41.372
+Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+
+00:00:41.372 --> 00:00:49.082
+important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+
+00:00:49.082 --> 00:00:51.602
+A strong analyst can explain both the SQL operation and the assumption behind it.
+
+00:00:51.602 --> 00:00:55.600
+After the example, summarize the idea in one plain-language sentence before moving on.

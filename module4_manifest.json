@@ -1,328 +1,862 @@
 {
-  "prefix": "module4",
-  "voice": "en-US-GuyNeural",
-  "rate": "-5%",
-  "volume": "+0%",
-  "pitch": "+0Hz",
-  "caption_words": 12,
-  "slide_count": 45,
-  "slide_markers_found": true,
-  "pause_marker_format": "[pause=seconds] or [pause=millisecondsms]",
+  "module": "module4",
+  "filename_prefix": "module4",
+  "source_file": "IAN603_Module4_Narration_Detailed.txt",
+  "voice_consistency_version": 3,
+  "reference_audio": "/home/ali/breeze-tts/voice_reference/course_instructor_consistent_v4.wav",
+  "reference_text": "Welcome to the course. We will work through each concept carefully, connect the\nideas step by step, and use practical examples to make technical topics easier\nto understand. When we introduce a new method, focus first on the problem it\nsolves and why it is useful. For example, in machine learning, features are the\ninformation we give the model, while the target is what we want it to predict.\nNow consider a simple question: what changes when the data contains missing\nvalues? We will think through the reason and then look at the code. In Python,\nwe can inspect the data, run one small step at a time, and explain what the\nresult means. The goal is to understand the logic, not simply memorize syntax.",
+  "locked_narration_seed": true,
+  "narration_seed": 1234,
+  "long_narration": {
+    "automatic_chunking": true,
+    "max_text_tokens_per_call": 260,
+    "chunk_pause_seconds": 0.38,
+    "manual_break_marker": "[tts-break]",
+    "breeze_max_new_tokens": 1500,
+    "breeze_max_seq_len": 2048
+  },
+  "subtitle_method": "whole_slide_silence_alignment",
+  "caption_settings": {
+    "max_words": 21,
+    "max_chars": 110,
+    "minimum_silence_seconds": 0.2,
+    "boundary_search_window_seconds": 1.4
+  },
   "slides": [
     {
       "slide": 1,
-      "audio": "module4_slide_01.mp3",
-      "captions": "module4_slide_01.vtt",
-      "text": "Welcome to Module 4, Aggregating Data with PostgreSQL. In the previous module, we worked mainly with individual rows. Here, we move from detail records to summaries that can answer analytical questions.\n\n[pause=0.7]\n\nThe important idea is that aggregation is not only about writing COUNT, SUM, or AVG. Before you calculate anything, decide what one result row should represent. That is the grain of the summary.\n\n[pause=0.7]\n\nThroughout this module, you can run the PostgreSQL examples directly in the browser. On code slides, you can also use Copy and paste the same query into the pgAdmin Query Tool for additional practice.\n\n[pause=0.8]\n\nWe will build from simple aggregate functions to GROUP BY, WHERE and HAVING, conditional aggregation, subtotals, and window functions. Keep asking the same question: what does one row in my result mean?\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "Start",
+      "transcript": "Welcome to Module 4, Aggregating Data with PostgreSQL. In the previous module, we worked mainly with individual rows. Here, we move from detail records to summaries that can answer analytical questions. The important idea is that aggregation is not only about writing COUNT, SUM, or AVG. Before you calculate anything, decide what one result row should represent. That is the grain of the summary. Throughout this module, you can run the PostgreSQL examples directly in the browser. On code slides, you can also use Copy and paste the same query into the pgAdmin Query Tool for additional practice. We will build from simple aggregate functions to GROUP BY, WHERE and HAVING, conditional aggregation, subtotals, and window functions. Keep asking the same question: what does one row in my result mean?\n\n[tts-break]\n\nKeep a real project in mind as we work through this section—for example, a dashboard summarizing admissions by department and month. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
+      "seed": 1234,
+      "tts_text_tokens": 252,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        159,
+        92
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_01.wav",
+      "audio": "audio/module4_slide_01.mp3",
+      "captions": "audio/module4_slide_01.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 2,
-      "audio": "module4_slide_02.mp3",
-      "captions": "module4_slide_02.vtt",
-      "text": "Module 3 focused on retrieving, filtering, and changing individual rows. Module 4 changes the perspective. Instead of asking which records should I return, we often ask questions such as how many, how much, what is the average, or which group is largest.\n\n[pause=0.7]\n\nA good aggregation starts with the business question. Then we define the output grain, choose the measures, apply row-level filters, apply group-level filters when needed, and finally validate the result.\n\n[pause=0.7]\n\nA simple way to think about it is detail, grain, measure, filter, and validate. If the final summary does not match the meaning of the question, even perfectly valid SQL can produce a misleading answer.\n\n[pause=1.0]",
-      "pause_markers": 3
+      "title": "Big picture",
+      "transcript": "Module 3 focused on retrieving, filtering, and changing individual rows. Module 4 changes the perspective. Instead of asking which records should I return, we often ask questions such as how many, how much, what is the average, or which group is largest. A good aggregation starts with the business question. Then we define the output grain, choose the measures, apply row-level filters, apply group-level filters when needed, and finally validate the result. A simple way to think about it is detail, grain, measure, filter, and validate. If the final summary does not match the meaning of the question, even perfectly valid SQL can produce a misleading answer.\n\n[tts-break]\n\nKeep a real project in mind as we work through this section—for example, a retail report comparing revenue across products and regions. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
+      "seed": 1234,
+      "tts_text_tokens": 229,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        135,
+        93
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_02.wav",
+      "audio": "audio/module4_slide_02.mp3",
+      "captions": "audio/module4_slide_02.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 3,
-      "audio": "module4_slide_03.mp3",
-      "captions": "module4_slide_03.vtt",
-      "text": "Here is the learning path for this module.\n\n[pause=0.7]\n\nWe begin with the core aggregate functions: COUNT, SUM, AVG, MIN, and MAX. Then we use GROUP BY to create one summary row for each category or combination of categories.\n\n[pause=0.7]\n\nAfter that, we separate WHERE from HAVING. WHERE decides which source rows are allowed into the aggregation. HAVING decides which completed groups stay in the final result.\n\n[pause=0.7]\n\nWe then extend the same ideas with conditional aggregation, PostgreSQL FILTER, ROLLUP, CUBE, GROUPING SETS, and window functions.\n\n[pause=0.7]\n\nThe practice pattern also becomes gradually more independent. First you run complete examples, then change them, then fill in missing pieces, and finally write short analytical queries yourself.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Learning path",
+      "transcript": "Here is the learning path for this module. We begin with the core aggregate functions: COUNT, SUM, AVG, MIN, and MAX. Then we use GROUP BY to create one summary row for each category or combination of categories. After that, we separate WHERE from HAVING. WHERE decides which source rows are allowed into the aggregation. HAVING decides which completed groups stay in the final result. We then extend the same ideas with conditional aggregation, PostgreSQL FILTER, ROLLUP, CUBE, GROUPING SETS, and window functions. The practice pattern also becomes gradually more independent. First you run complete examples, then change them, then fill in missing pieces, and finally write short analytical queries yourself. Connect this idea to a student-success report comparing course-level outcomes. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 218,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        218
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_03.wav",
+      "audio": "audio/module4_slide_03.mp3",
+      "captions": "audio/module4_slide_03.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 4,
-      "audio": "module4_slide_04.mp3",
-      "captions": "module4_slide_04.vtt",
-      "text": "The browser lab uses five small synthetic tables.\n\n[pause=0.7]\n\nThe admissions table gives us patient admissions, diagnoses, and admission and discharge times. The sales table gives us products, quantities, prices, categories, and dates. Employees is useful for salary and department examples. Product sales is intentionally small so that subtotals from ROLLUP, CUBE, and GROUPING SETS are easy to inspect. Grades gives us course, semester, grade, and enrollment examples.\n\n[pause=0.8]\n\nThese are teaching datasets, so you can experiment freely. The PostgreSQL database runs in the browser and can be reset.\n\n[pause=0.8]\n\nDo not paste real confidential or production data into the browser editor. The goal here is to learn the SQL pattern with safe practice data.\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "Practice schema",
+      "transcript": "The browser lab uses five small synthetic tables. The admissions table gives us patient admissions, diagnoses, and admission and discharge times. The sales table gives us products, quantities, prices, categories, and dates. Employees is useful for salary and department examples. Product sales is intentionally small so that subtotals from ROLLUP, CUBE, and GROUPING SETS are easy to inspect. Grades gives us course, semester, grade, and enrollment examples. These are teaching datasets, so you can experiment freely. The PostgreSQL database runs in the browser and can be reset. Do not paste real confidential or production data into the browser editor. The goal here is to learn the SQL pattern with safe practice data. For this activity, make a prediction before you run anything.\n\n[tts-break]\n\nState what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 240,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        152,
+        87
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_04.wav",
+      "audio": "audio/module4_slide_04.mp3",
+      "captions": "audio/module4_slide_04.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 5,
-      "audio": "module4_slide_05.mp3",
-      "captions": "module4_slide_05.vtt",
-      "text": "Before writing an aggregation query, use this five-step workflow.\n\n[pause=0.7]\n\nFirst, ask the decision question. What are we trying to learn from the data?\n\n[pause=0.7]\n\nSecond, set the grain. Decide what one output row should represent. One diagnosis? One category? One department?\n\n[pause=0.7]\n\nThird, choose the measures. That might be a count, a total, an average, a minimum, or a maximum.\n\n[pause=0.7]\n\nFourth, decide which rows qualify and which groups qualify. This is where WHERE and HAVING play different roles.\n\n[pause=0.7]\n\nFinally, validate the summary against the detail data.\n\n[pause=0.7]\n\nThe most important step is grain. If you cannot describe one result row in a short sentence, do not rush into GROUP BY yet. Clarify the intended summary first.\n\n[pause=1.0]",
-      "pause_markers": 7
+      "title": "Five-step workflow",
+      "transcript": "Before writing an aggregation query, use this five-step workflow. First, ask the decision question. What are we trying to learn from the data? Second, set the grain. Decide what one output row should represent. One diagnosis? One category? One department? Third, choose the measures. That might be a count, a total, an average, a minimum, or a maximum. Fourth, decide which rows qualify and which groups qualify. This is where WHERE and HAVING play different roles. Finally, validate the summary against the detail data. The most important step is grain. If you cannot describe one result row in a short sentence, do not rush into GROUP BY yet. Clarify the intended summary first. When reading the example, do not read punctuation one character at a time.\n\n[tts-break]\n\nStart with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a retail report comparing revenue across products and regions, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 242,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        158,
+        83
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_05.wav",
+      "audio": "audio/module4_slide_05.mp3",
+      "captions": "audio/module4_slide_05.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 6,
-      "audio": "module4_slide_06.mp3",
-      "captions": "module4_slide_06.vtt",
-      "text": "Aggregate functions turn many input rows into summary values.\n\n[pause=0.7]\n\nCOUNT answers how many. SUM adds numeric values. AVG calculates the mean. MIN finds the smallest value, and MAX finds the largest.\n\n[pause=0.7]\n\nIf you use an aggregate without GROUP BY, PostgreSQL normally returns one summary row for the entire input set. Once you add GROUP BY, the same aggregate is calculated separately inside each group.\n\n[pause=0.7]\n\nFor example, AVG salary without grouping gives one company-wide average. AVG salary grouped by department gives one average for each department.\n\n[pause=0.8]\n\nBefore choosing a function, name the measure in plain language. Are you counting records, counting known values, adding revenue, or averaging completed stays? That language helps you choose the correct expression.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Summary functions",
+      "transcript": "Aggregate functions turn many input rows into summary values. COUNT answers how many. SUM adds numeric values. AVG calculates the mean. MIN finds the smallest value, and MAX finds the largest. If you use an aggregate without GROUP BY, PostgreSQL normally returns one summary row for the entire input set. Once you add GROUP BY, the same aggregate is calculated separately inside each group. For example, AVG salary without grouping gives one company-wide average. AVG salary grouped by department gives one average for each department. Before choosing a function, name the measure in plain language. Are you counting records, counting known values, adding revenue, or averaging completed stays? That language helps you choose the correct expression. Always name the thing being counted or averaged. COUNT star counts rows, COUNT of a column ignores NULL in that column, and COUNT DISTINCT answers a different question again. In dashboards, a vague label such as Count can hide major analytical errors; use labels such as admissions, patients, or distinct orders.",
+      "seed": 1234,
+      "tts_text_tokens": 198,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        198
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_06.wav",
+      "audio": "audio/module4_slide_06.mp3",
+      "captions": "audio/module4_slide_06.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 7,
-      "audio": "module4_slide_07.mp3",
-      "captions": "module4_slide_07.vtt",
-      "text": "COUNT can answer different questions, so it is important to choose the right version.\n\n[pause=0.7]\n\nCOUNT star counts input rows. It does not care whether individual columns contain missing values.\n\n[pause=0.7]\n\nCOUNT of a specific column counts only rows where that expression is not NULL.\n\n[pause=0.7]\n\nCOUNT DISTINCT counts unique non-null values.\n\n[pause=0.7]\n\nNow run the example in the browser. Compare the three result columns. The total admission count should include every admission row. The completed-admission count should be smaller because ongoing admissions have no discharge time. The distinct patient count answers a different question again: how many unique patients appear.\n\n[pause=0.8]\n\nIf you are using pgAdmin, copy the query into the Query Tool and run the same comparison there. Look at the labels carefully and connect each number to the question it answers.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "COUNT meanings",
+      "transcript": "COUNT can answer different questions, so it is important to choose the right version. COUNT star counts input rows. It does not care whether individual columns contain missing values. COUNT of a specific column counts only rows where that expression is not NULL. COUNT DISTINCT counts unique non-null values. Now run the example in the browser. Compare the three result columns. The total admission count should include every admission row. The completed-admission count should be smaller because ongoing admissions have no discharge time. The distinct patient count answers a different question again: how many unique patients appear. If you are using pgAdmin, copy the query into the Query Tool and run the same comparison there. Look at the labels carefully and connect each number to the question it answers. Always name the thing being counted or averaged. COUNT star counts rows, COUNT of a column ignores NULL in that column, and COUNT DISTINCT answers a different question again. In dashboards, a vague label such as Count can hide major analytical errors; use labels such as admissions, patients, or distinct orders.",
+      "seed": 1234,
+      "tts_text_tokens": 209,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        209
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_07.wav",
+      "audio": "audio/module4_slide_07.mp3",
+      "captions": "audio/module4_slide_07.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 8,
-      "audio": "module4_slide_08.mp3",
-      "captions": "module4_slide_08.vtt",
-      "text": "The same table can support several aggregate measures in one query.\n\n[pause=0.7]\n\nThis example summarizes sales using functions such as SUM, AVG, MIN, and MAX. Before running it, make a prediction. The total quantity and total revenue answer different questions, while the minimum and maximum show the range of individual values.\n\n[pause=0.8]\n\nRun the query in the browser and inspect each result column. Notice that PostgreSQL can calculate all of these measures from the same set of source rows.\n\n[pause=0.8]\n\nThe important idea is not to add every aggregate function just because you can. Choose measures that support the analytical question. A decision-maker usually needs a small set of clearly named metrics rather than every possible summary.\n\n[pause=1.0]",
-      "pause_markers": 4
+      "title": "Aggregate example",
+      "transcript": "The same table can support several aggregate measures in one query. This example summarizes sales using functions such as SUM, AVG, MIN, and MAX. Before running it, make a prediction. The total quantity and total revenue answer different questions, while the minimum and maximum show the range of individual values. Run the query in the browser and inspect each result column. Notice that PostgreSQL can calculate all of these measures from the same set of source rows. The important idea is not to add every aggregate function just because you can. Choose measures that support the analytical question. A decision-maker usually needs a small set of clearly named metrics rather than every possible summary. When reading the example, do not read punctuation one character at a time.\n\n[tts-break]\n\nStart with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a retail report comparing revenue across products and regions, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 229,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        145,
+        83
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_08.wav",
+      "audio": "audio/module4_slide_08.mp3",
+      "captions": "audio/module4_slide_08.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 9,
-      "audio": "module4_slide_09.mp3",
-      "captions": "module4_slide_09.vtt",
-      "text": "NULL values require special attention in aggregation.\n\n[pause=0.7]\n\nIn the admissions table, an ongoing admission has no discharge time yet. That means we cannot calculate a completed length of stay for that row.\n\n[pause=0.7]\n\nAVG ignores NULL expressions rather than treating them as zero. That behavior is useful here because an unfinished stay is not a zero-day stay.\n\n[pause=0.7]\n\nRun the example and look at the completed length-of-stay calculation. Think about which admissions actually contribute to the average.\n\n[pause=0.8]\n\nWhenever you report an average, also think about the sample size. An average based on eight completed admissions means something different from an average based on all ten admission rows. Missing values can change which records are included in the measure.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "NULL and averages",
+      "transcript": "NULL values require special attention in aggregation. In the admissions table, an ongoing admission has no discharge time yet. That means we cannot calculate a completed length of stay for that row. AVG ignores NULL expressions rather than treating them as zero. That behavior is useful here because an unfinished stay is not a zero-day stay. Run the example and look at the completed length-of-stay calculation. Think about which admissions actually contribute to the average. Whenever you report an average, also think about the sample size. An average based on eight completed admissions means something different from an average based on all ten admission rows. Missing values can change which records are included in the measure. Always name the thing being counted or averaged. COUNT star counts rows, COUNT of a column ignores NULL in that column, and COUNT DISTINCT answers a different question again. In dashboards, a vague label such as Count can hide major analytical errors; use labels such as admissions, patients, or distinct orders.",
+      "seed": 1234,
+      "tts_text_tokens": 194,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        194
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_09.wav",
+      "audio": "audio/module4_slide_09.mp3",
+      "captions": "audio/module4_slide_09.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 10,
-      "audio": "module4_slide_10.mp3",
-      "captions": "module4_slide_10.vtt",
-      "text": "GROUP BY defines the grain of a summary result.\n\n[pause=0.7]\n\nWith no GROUP BY, an aggregate can summarize the whole table into one row. If we group by diagnosis, the output becomes one row per diagnosis. If we group by patient and diagnosis, the result becomes more detailed: one row per patient-and-diagnosis combination.\n\n[pause=0.7]\n\nThis is why adding grouping columns usually increases the number of output rows.\n\n[pause=0.7]\n\nA beginner-friendly rule is that selected columns that are not inside aggregate functions generally need to appear in GROUP BY.\n\n[pause=0.7]\n\nBut the deeper rule is about meaning. Every selected non-aggregate value should be well-defined for the group represented by that output row.\n\n[pause=0.7]\n\nBefore writing GROUP BY, finish the sentence: one row in my result represents one...\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "GROUP BY grain",
+      "transcript": "GROUP BY defines the grain of a summary result. With no GROUP BY, an aggregate can summarize the whole table into one row. If we group by diagnosis, the output becomes one row per diagnosis. If we group by patient and diagnosis, the result becomes more detailed: one row per patient-and-diagnosis combination. This is why adding grouping columns usually increases the number of output rows. A beginner-friendly rule is that selected columns that are not inside aggregate functions generally need to appear in GROUP BY. But the deeper rule is about meaning. Every selected non-aggregate value should be well-defined for the group represented by that output row. Before writing GROUP BY, finish the sentence: one row in my result represents one... GROUP BY changes the grain of the result. If you group by department and month, one output row represents one department-month combination. State that sentence before adding measures. It becomes a quick check for whether every selected non-aggregate column belongs in the grouping.",
+      "seed": 1234,
+      "tts_text_tokens": 198,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        198
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_10.wav",
+      "audio": "audio/module4_slide_10.mp3",
+      "captions": "audio/module4_slide_10.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 11,
-      "audio": "module4_slide_11.mp3",
-      "captions": "module4_slide_11.vtt",
-      "text": "Now let's create a simple grouped summary.\n\n[pause=0.7]\n\nThe goal is one row per diagnosis, with a count of admissions inside each diagnosis.\n\n[pause=0.7]\n\nThe diagnosis column defines the groups, and COUNT calculates a measure within each group.\n\n[pause=0.7]\n\nBefore running the query, predict which diagnosis will have the largest count. Then run it in the browser and inspect the result.\n\n[pause=0.8]\n\nNotice that the original admission rows have been collapsed into a smaller summary table. We no longer see individual admission IDs because the output grain is diagnosis.\n\n[pause=0.7]\n\nIf you copy this query into pgAdmin, try adding ORDER BY admission count descending. Sorting does not change the grouping. It simply makes the largest groups easier to identify.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "GROUP BY example",
+      "transcript": "Now let's create a simple grouped summary. The goal is one row per diagnosis, with a count of admissions inside each diagnosis. The diagnosis column defines the groups, and COUNT calculates a measure within each group. Before running the query, predict which diagnosis will have the largest count. Then run it in the browser and inspect the result. Notice that the original admission rows have been collapsed into a smaller summary table. We no longer see individual admission IDs because the output grain is diagnosis. If you copy this query into pgAdmin, try adding ORDER BY admission count descending. Sorting does not change the grouping. It simply makes the largest groups easier to identify. When reading the example, do not read punctuation one character at a time.\n\n[tts-break]\n\nStart with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a retail report comparing revenue across products and regions, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 230,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        146,
+        83
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_11.wav",
+      "audio": "audio/module4_slide_11.mp3",
+      "captions": "audio/module4_slide_11.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 12,
-      "audio": "module4_slide_12.mp3",
-      "captions": "module4_slide_12.vtt",
-      "text": "Adding more grouping columns makes the summary more detailed.\n\n[pause=0.7]\n\nHere we group by patient and diagnosis together. One output row now represents one patient-and-diagnosis combination.\n\n[pause=0.7]\n\nRun the example and compare it with the previous one-row-per-diagnosis query. You should see more rows because the grain is more specific.\n\n[pause=0.8]\n\nThis is an important design choice. If the question asks how many admissions each diagnosis has overall, patient ID does not belong in the grouping. If the question asks how many admissions each patient has for each diagnosis, then both columns are required.\n\n[pause=0.7]\n\nWhen a grouped query returns too many or too few rows, inspect the GROUP BY list first and restate the intended grain in plain language.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Multi-column grouping",
+      "transcript": "Adding more grouping columns makes the summary more detailed. Here we group by patient and diagnosis together. One output row now represents one patient-and-diagnosis combination. Run the example and compare it with the previous one-row-per-diagnosis query. You should see more rows because the grain is more specific. This is an important design choice. If the question asks how many admissions each diagnosis has overall, patient ID does not belong in the grouping. If the question asks how many admissions each patient has for each diagnosis, then both columns are required. When a grouped query returns too many or too few rows, inspect the GROUP BY list first and restate the intended grain in plain language. GROUP BY changes the grain of the result. If you group by department and month, one output row represents one department-month combination. State that sentence before adding measures. It becomes a quick check for whether every selected non-aggregate column belongs in the grouping.",
+      "seed": 1234,
+      "tts_text_tokens": 190,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        190
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_12.wav",
+      "audio": "audio/module4_slide_12.mp3",
+      "captions": "audio/module4_slide_12.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 13,
-      "audio": "module4_slide_13.mp3",
-      "captions": "module4_slide_13.vtt",
-      "text": "This example is intentionally incorrect, and the error is useful.\n\n[pause=0.8]\n\nThe query groups rows only by diagnosis but also tries to select subject ID directly. PostgreSQL asks an important question: which subject ID should represent the entire diagnosis group?\n\n[pause=0.7]\n\nThere is no single correct subject ID for a group that may contain several patients.\n\n[pause=0.7]\n\nRun this example and read the error message. PostgreSQL is protecting you from an ambiguous result.\n\n[pause=0.8]\n\nTo fix a grouped query, every selected expression needs a clear role. It should either define the group, such as diagnosis, or summarize the group, such as COUNT or AVG.\n\n[pause=0.7]\n\nDo not treat grouping errors as obstacles. They often reveal that the result grain has not been defined clearly enough.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Useful grouping error",
+      "transcript": "This example is intentionally incorrect, and the error is useful. The query groups rows only by diagnosis but also tries to select subject ID directly. PostgreSQL asks an important question: which subject ID should represent the entire diagnosis group? There is no single correct subject ID for a group that may contain several patients. Run this example and read the error message. PostgreSQL is protecting you from an ambiguous result. To fix a grouped query, every selected expression needs a clear role. It should either define the group, such as diagnosis, or summarize the group, such as COUNT or AVG. Do not treat grouping errors as obstacles.\n\n[tts-break]\n\nThey often reveal that the result grain has not been defined clearly enough. Connect this idea to a dashboard summarizing admissions by department and month. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 215,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        122,
+        92
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_13.wav",
+      "audio": "audio/module4_slide_13.mp3",
+      "captions": "audio/module4_slide_13.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 14,
-      "audio": "module4_slide_14.mp3",
-      "captions": "module4_slide_14.vtt",
-      "text": "WHERE and HAVING both filter, but they operate at different stages.\n\n[pause=0.7]\n\nWHERE filters individual source rows before grouping happens. For example, keeping only sales where price is at least twenty-five dollars removes rows before the category totals are calculated.\n\n[pause=0.8]\n\nHAVING filters completed groups after aggregation. For example, keeping categories whose total quantity is greater than ten requires the grouped total to exist first.\n\n[pause=0.8]\n\nA simple test is to ask whether the condition refers to an individual row or to a group measure.\n\n[pause=0.7]\n\nIf it is a row condition, think WHERE. If it is a condition on COUNT, SUM, AVG, or another grouped measure, think HAVING.\n\n[pause=0.7]\n\nKeeping these roles separate makes aggregation queries much easier to reason about.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "WHERE vs HAVING",
+      "transcript": "WHERE and HAVING both filter, but they operate at different stages. WHERE filters individual source rows before grouping happens. For example, keeping only sales where price is at least twenty-five dollars removes rows before the category totals are calculated. HAVING filters completed groups after aggregation. For example, keeping categories whose total quantity is greater than ten requires the grouped total to exist first. A simple test is to ask whether the condition refers to an individual row or to a group measure. If it is a row condition, think WHERE. If it is a condition on COUNT, SUM, AVG, or another grouped measure, think HAVING. Keeping these roles separate makes aggregation queries much easier to reason about. WHERE filters detail rows before aggregation; HAVING filters groups after aggregation. A practical way to choose is to ask whether the condition refers to an individual record or to a summary such as count, average, or total. Mixing those levels is a common source of confusion.",
+      "seed": 1234,
+      "tts_text_tokens": 188,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        188
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_14.wav",
+      "audio": "audio/module4_slide_14.mp3",
+      "captions": "audio/module4_slide_14.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 15,
-      "audio": "module4_slide_15.mp3",
-      "captions": "module4_slide_15.vtt",
-      "text": "A complete aggregation query has a natural logical flow.\n\n[pause=0.7]\n\nFirst, FROM identifies the source. WHERE filters individual rows. GROUP BY forms the groups. HAVING removes groups that do not meet an aggregate condition. SELECT defines the values that appear in the result, and ORDER BY sorts the final rows.\n\n[pause=0.7]\n\nThe written SQL order is familiar, but thinking about the logical stages helps explain why certain expressions are valid in one clause and not another.\n\n[pause=0.7]\n\nThere is also a practical efficiency lesson here. If a condition can be applied to individual source rows, put it in WHERE so fewer rows reach the grouping stage.\n\n[pause=0.7]\n\nBefore running a long summary query, read it as a pipeline: source rows, row filter, groups, group filter, output, sort.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Complete aggregation pattern",
+      "transcript": "A complete aggregation query has a natural logical flow. First, FROM identifies the source. WHERE filters individual rows. GROUP BY forms the groups. HAVING removes groups that do not meet an aggregate condition. SELECT defines the values that appear in the result, and ORDER BY sorts the final rows. The written SQL order is familiar, but thinking about the logical stages helps explain why certain expressions are valid in one clause and not another. There is also a practical efficiency lesson here. If a condition can be applied to individual source rows, put it in WHERE so fewer rows reach the grouping stage. Before running a long summary query, read it as a pipeline: source rows, row filter, groups, group filter, output, sort.\n\n[tts-break]\n\nWhen reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a student-success report comparing course-level outcomes, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 244,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        144,
+        99
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_15.wav",
+      "audio": "audio/module4_slide_15.mp3",
+      "captions": "audio/module4_slide_15.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 16,
-      "audio": "module4_slide_16.mp3",
-      "captions": "module4_slide_16.vtt",
-      "text": "This example combines WHERE, GROUP BY, and HAVING in one query.\n\n[pause=0.8]\n\nThe row-level rule keeps sales whose price is at least twenty-five dollars. Those qualifying rows are then grouped by category. We calculate total quantity and total revenue for each category. Finally, HAVING keeps only groups whose total quantity is above the required threshold.\n\n[pause=0.7]\n\nBefore running it, predict whether every category will remain. Then run the query and compare the result.\n\n[pause=0.8]\n\nLook carefully at the difference between the price condition and the quantity condition. Price belongs to each source row, so it is checked in WHERE. Total quantity exists only after grouping, so it is checked in HAVING.\n\n[pause=0.7]\n\nThis is the full aggregation pattern you will use frequently in real analytical work.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "WHERE HAVING example",
+      "transcript": "This example combines WHERE, GROUP BY, and HAVING in one query. The row-level rule keeps sales whose price is at least twenty-five dollars. Those qualifying rows are then grouped by category. We calculate total quantity and total revenue for each category. Finally, HAVING keeps only groups whose total quantity is above the required threshold. Before running it, predict whether every category will remain. Then run the query and compare the result. Look carefully at the difference between the price condition and the quantity condition. Price belongs to each source row, so it is checked in WHERE. Total quantity exists only after grouping, so it is checked in HAVING. This is the full aggregation pattern you will use frequently in real analytical work.\n\n[tts-break]\n\nWhen reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a dashboard summarizing admissions by department and month, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 241,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        143,
+        97
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_16.wav",
+      "audio": "audio/module4_slide_16.mp3",
+      "captions": "audio/module4_slide_16.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 17,
-      "audio": "module4_slide_17.mp3",
-      "captions": "module4_slide_17.vtt",
-      "text": "Conditional aggregation lets one grouped query calculate several related metrics from the same input rows.\n\n[pause=0.7]\n\nSuppose we want separate counts for pneumonia and fracture admissions for each patient. We could run separate queries, but conditional aggregation keeps the measures together in one result.\n\n[pause=0.8]\n\nThere are two common patterns in this module.\n\n[pause=0.7]\n\nCASE is widely portable and can convert a condition into a value that an aggregate can summarize.\n\n[pause=0.7]\n\nPostgreSQL FILTER attaches a condition directly to an aggregate and is often easier to read when each measure has its own condition.\n\n[pause=0.7]\n\nThe important idea is that the group stays the same while different subsets of rows contribute to different measures.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Conditional aggregation",
+      "transcript": "Conditional aggregation lets one grouped query calculate several related metrics from the same input rows. Suppose we want separate counts for pneumonia and fracture admissions for each patient. We could run separate queries, but conditional aggregation keeps the measures together in one result. There are two common patterns in this module. CASE is widely portable and can convert a condition into a value that an aggregate can summarize. PostgreSQL FILTER attaches a condition directly to an aggregate and is often easier to read when each measure has its own condition. The important idea is that the group stays the same while different subsets of rows contribute to different measures. Conditional aggregation lets one grouped query calculate several targeted measures. For example, a department row can show total admissions, emergency admissions, and elective admissions side by side. FILTER is concise in PostgreSQL; CASE is widely portable. Both require you to define the condition precisely.",
+      "seed": 1234,
+      "tts_text_tokens": 169,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        169
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_17.wav",
+      "audio": "audio/module4_slide_17.mp3",
+      "captions": "audio/module4_slide_17.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 18,
-      "audio": "module4_slide_18.mp3",
-      "captions": "module4_slide_18.vtt",
-      "text": "This example uses CASE inside an aggregate.\n\n[pause=0.8]\n\nFor each admission, the CASE expression asks whether the diagnosis matches a condition. A matching row contributes a value such as one, and a non-matching row contributes zero. SUM then adds those contributions inside each patient group.\n\n[pause=0.7]\n\nRun the query and inspect the separate pneumonia and fracture counts.\n\n[pause=0.8]\n\nBefore running it, choose one patient from the data and predict the two counts. Then compare your prediction with the result.\n\n[pause=0.8]\n\nThis pattern is flexible because CASE can handle more than simple equality. You can build conditions based on ranges, multiple columns, or more complex business rules.\n\n[pause=0.7]\n\nWhen using CASE for counting, make sure the values you return are appropriate for the aggregate you apply.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "CASE example",
+      "transcript": "This example uses CASE inside an aggregate. For each admission, the CASE expression asks whether the diagnosis matches a condition. A matching row contributes a value such as one, and a non-matching row contributes zero. SUM then adds those contributions inside each patient group. Run the query and inspect the separate pneumonia and fracture counts. Before running it, choose one patient from the data and predict the two counts. Then compare your prediction with the result. This pattern is flexible because CASE can handle more than simple equality. You can build conditions based on ranges, multiple columns, or more complex business rules. When using CASE for counting, make sure the values you return are appropriate for the aggregate you apply.\n\n[tts-break]\n\nWhen reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a student-success report comparing course-level outcomes, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 238,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        138,
+        99
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_18.wav",
+      "audio": "audio/module4_slide_18.mp3",
+      "captions": "audio/module4_slide_18.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 19,
-      "audio": "module4_slide_19.mp3",
-      "captions": "module4_slide_19.vtt",
-      "text": "PostgreSQL FILTER gives us another way to calculate conditional measures.\n\n[pause=0.7]\n\nInstead of placing a CASE expression inside COUNT, we write the aggregate and then specify which rows are allowed to contribute to that aggregate.\n\n[pause=0.7]\n\nRun the example and compare its output with the previous CASE version. The counts should express the same analytical idea.\n\n[pause=0.8]\n\nFILTER can be especially readable when a SELECT list contains several independent conditional counts or sums.\n\n[pause=0.7]\n\nIf you are practicing in pgAdmin, copy both versions and compare them side by side. The goal is not to decide that one is always better. The goal is to recognize both patterns and choose the one that is clear and appropriate for the SQL system you are using.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "FILTER example",
+      "transcript": "PostgreSQL FILTER gives us another way to calculate conditional measures. Instead of placing a CASE expression inside COUNT, we write the aggregate and then specify which rows are allowed to contribute to that aggregate. Run the example and compare its output with the previous CASE version. The counts should express the same analytical idea. FILTER can be especially readable when a SELECT list contains several independent conditional counts or sums. If you are practicing in pgAdmin, copy both versions and compare them side by side. The goal is not to decide that one is always better. The goal is to recognize both patterns and choose the one that is clear and appropriate for the SQL system you are using.\n\n[tts-break]\n\nWhen reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a dashboard summarizing admissions by department and month, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 229,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        131,
+        97
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_19.wav",
+      "audio": "audio/module4_slide_19.mp3",
+      "captions": "audio/module4_slide_19.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 20,
-      "audio": "module4_slide_20.mp3",
-      "captions": "module4_slide_20.vtt",
-      "text": "CASE and FILTER can express similar conditional aggregation logic.\n\n[pause=0.7]\n\nCASE is generally more portable because many SQL systems support conditional expressions inside aggregates.\n\n[pause=0.7]\n\nFILTER is concise and readable in PostgreSQL, especially when several measures each have their own condition.\n\n[pause=0.7]\n\nFor this course, you should understand both. If you know the query will run in PostgreSQL, FILTER can be a clean choice. If you expect the SQL to move between different platforms, SUM with CASE is often safer.\n\n[pause=0.8]\n\nWhichever style you choose, validate the measure using a small known example. Conditional metrics can look correct while using slightly different conditions, so checking a few rows manually is still important.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "CASE vs FILTER",
+      "transcript": "CASE and FILTER can express similar conditional aggregation logic. CASE is generally more portable because many SQL systems support conditional expressions inside aggregates. FILTER is concise and readable in PostgreSQL, especially when several measures each have their own condition. For this course, you should understand both. If you know the query will run in PostgreSQL, FILTER can be a clean choice. If you expect the SQL to move between different platforms, SUM with CASE is often safer. Whichever style you choose, validate the measure using a small known example. Conditional metrics can look correct while using slightly different conditions, so checking a few rows manually is still important. Conditional aggregation lets one grouped query calculate several targeted measures. For example, a department row can show total admissions, emergency admissions, and elective admissions side by side. FILTER is concise in PostgreSQL; CASE is widely portable. Both require you to define the condition precisely.",
+      "seed": 1234,
+      "tts_text_tokens": 175,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        175
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_20.wav",
+      "audio": "audio/module4_slide_20.mp3",
+      "captions": "audio/module4_slide_20.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 21,
-      "audio": "module4_slide_21.mp3",
-      "captions": "module4_slide_21.vtt",
-      "text": "So far, GROUP BY has produced one summary grain at a time. Advanced grouping features let one query produce several summary levels.\n\n[pause=0.7]\n\nGROUPING SETS lets you explicitly list the summary combinations you want.\n\n[pause=0.7]\n\nROLLUP is useful for hierarchical reports, such as category, then product, then a grand total.\n\n[pause=0.7]\n\nCUBE generates every grouping combination of the listed dimensions.\n\n[pause=0.7]\n\nThese features reduce the need to write several separate aggregation queries and combine them manually.\n\n[pause=0.7]\n\nThe tradeoff is that the output contains different grains in the same result. That means you must understand what each row represents and how subtotal placeholders are displayed.\n\n[pause=0.7]\n\nWe will use a small product-sales table so you can see those levels clearly.\n\n[pause=1.0]",
-      "pause_markers": 7
+      "title": "Advanced grouping",
+      "transcript": "So far, GROUP BY has produced one summary grain at a time. Advanced grouping features let one query produce several summary levels. GROUPING SETS lets you explicitly list the summary combinations you want. ROLLUP is useful for hierarchical reports, such as category, then product, then a grand total. CUBE generates every grouping combination of the listed dimensions. These features reduce the need to write several separate aggregation queries and combine them manually. The tradeoff is that the output contains different grains in the same result. That means you must understand what each row represents and how subtotal placeholders are displayed. We will use a small product-sales table so you can see those levels clearly. Connect this idea to a student-success report comparing course-level outcomes. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 214,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        214
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_21.wav",
+      "audio": "audio/module4_slide_21.mp3",
+      "captions": "audio/module4_slide_21.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 22,
-      "audio": "module4_slide_22.mp3",
-      "captions": "module4_slide_22.vtt",
-      "text": "This comparison is worth learning conceptually.\n\n[pause=0.7]\n\nGROUPING SETS produces only the grouping combinations you request.\n\n[pause=0.7]\n\nROLLUP of A and B produces detail at A and B, a subtotal at A, and a grand total. It follows a hierarchy.\n\n[pause=0.7]\n\nCUBE of A and B produces detail, subtotals by A, subtotals by B, and the grand total. It generates every combination.\n\n[pause=0.7]\n\nA simple way to choose is to ask what report levels you need.\n\n[pause=0.7]\n\nIf you need a hierarchy, ROLLUP is often a natural fit. If you need all cross-dimensional totals, consider CUBE. If you want only specific levels, GROUPING SETS gives you precise control.\n\n[pause=0.7]\n\nThe SQL syntax is different, but the same grain reasoning still applies to every row produced.\n\n[pause=1.0]",
-      "pause_markers": 7
+      "title": "Grouping comparison",
+      "transcript": "This comparison is worth learning conceptually. GROUPING SETS produces only the grouping combinations you request. ROLLUP of A and B produces detail at A and B, a subtotal at A, and a grand total. It follows a hierarchy. CUBE of A and B produces detail, subtotals by A, subtotals by B, and the grand total. It generates every combination. A simple way to choose is to ask what report levels you need. If you need a hierarchy, ROLLUP is often a natural fit. If you need all cross-dimensional totals, consider CUBE. If you want only specific levels, GROUPING SETS gives you precise control. The SQL syntax is different, but the same grain reasoning still applies to every row produced. Connect this idea to a dashboard summarizing admissions by department and month. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it.\n\n[tts-break]\n\nAfter the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 233,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        215,
+        17
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_22.wav",
+      "audio": "audio/module4_slide_22.mp3",
+      "captions": "audio/module4_slide_22.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 23,
-      "audio": "module4_slide_23.mp3",
-      "captions": "module4_slide_23.vtt",
-      "text": "ROLLUP creates hierarchical subtotals.\n\n[pause=0.7]\n\nIn this example, the hierarchy is category, then product, followed by a grand total.\n\n[pause=0.8]\n\nBefore running the query, predict the types of rows you expect: product-level detail within each category, a category subtotal, and one final total.\n\n[pause=0.8]\n\nRun the query and inspect where grouped columns become NULL. Those NULL values may indicate that the column has been rolled up to a higher summary level.\n\n[pause=0.8]\n\nDo not interpret every NULL in a subtotal report as missing source data. In advanced grouping output, NULL can be a structural placeholder.\n\n[pause=0.7]\n\nThis is why later we will use GROUPING to distinguish a subtotal placeholder from a real NULL value in the source.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "ROLLUP",
+      "transcript": "ROLLUP creates hierarchical subtotals. In this example, the hierarchy is category, then product, followed by a grand total. Before running the query, predict the types of rows you expect: product-level detail within each category, a category subtotal, and one final total. Run the query and inspect where grouped columns become NULL. Those NULL values may indicate that the column has been rolled up to a higher summary level. Do not interpret every NULL in a subtotal report as missing source data. In advanced grouping output, NULL can be a structural placeholder. This is why later we will use GROUPING to distinguish a subtotal placeholder from a real NULL value in the source. Advanced grouping produces several aggregation levels in one result. The challenge is interpretation: NULL may mean a subtotal placeholder rather than missing source data. Use GROUPING metadata or explicit labels so downstream users can distinguish detail groups, subtotals, and grand totals.",
+      "seed": 1234,
+      "tts_text_tokens": 188,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        188
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_23.wav",
+      "audio": "audio/module4_slide_23.mp3",
+      "captions": "audio/module4_slide_23.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 24,
-      "audio": "module4_slide_24.mp3",
-      "captions": "module4_slide_24.vtt",
-      "text": "CUBE expands the idea further by producing every grouping combination.\n\n[pause=0.7]\n\nWith category and product, that includes category-and-product detail, category totals, product totals across categories, and the grand total.\n\n[pause=0.7]\n\nRun the example and compare the number and type of rows with the ROLLUP result.\n\n[pause=0.8]\n\nThe key difference is that ROLLUP follows a hierarchy, while CUBE creates totals for every dimension combination.\n\n[pause=0.7]\n\nCUBE can be useful for exploratory summary tables, but the number of combinations grows quickly when you add more dimensions.\n\n[pause=0.7]\n\nBefore using CUBE in a larger dataset, think about how many grouping combinations you are requesting and whether each one supports a real analytical need.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "CUBE",
+      "transcript": "CUBE expands the idea further by producing every grouping combination. With category and product, that includes category-and-product detail, category totals, product totals across categories, and the grand total. Run the example and compare the number and type of rows with the ROLLUP result. The key difference is that ROLLUP follows a hierarchy, while CUBE creates totals for every dimension combination. CUBE can be useful for exploratory summary tables, but the number of combinations grows quickly when you add more dimensions. Before using CUBE in a larger dataset, think about how many grouping combinations you are requesting and whether each one supports a real analytical need. Advanced grouping produces several aggregation levels in one result. The challenge is interpretation: NULL may mean a subtotal placeholder rather than missing source data. Use GROUPING metadata or explicit labels so downstream users can distinguish detail groups, subtotals, and grand totals.",
+      "seed": 1234,
+      "tts_text_tokens": 179,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        179
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_24.wav",
+      "audio": "audio/module4_slide_24.mp3",
+      "captions": "audio/module4_slide_24.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 25,
-      "audio": "module4_slide_25.mp3",
-      "captions": "module4_slide_25.vtt",
-      "text": "GROUPING SETS gives you explicit control over which summary levels are returned.\n\n[pause=0.7]\n\nInstead of generating a fixed hierarchy or every possible combination, you list the groupings you actually need.\n\n[pause=0.7]\n\nRun this example and look at the report levels. Compare them with ROLLUP and CUBE.\n\n[pause=0.8]\n\nThis feature is useful when a report needs only selected totals, such as category totals and a grand total, but not every product subtotal.\n\n[pause=0.7]\n\nThe output still contains rows at different grains, so label or interpret those rows carefully.\n\n[pause=0.7]\n\nThink of GROUPING SETS as a way to ask PostgreSQL for several GROUP BY queries at once, while keeping the requested summary levels under your control.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "GROUPING SETS",
+      "transcript": "GROUPING SETS gives you explicit control over which summary levels are returned. Instead of generating a fixed hierarchy or every possible combination, you list the groupings you actually need. Run this example and look at the report levels. Compare them with ROLLUP and CUBE. This feature is useful when a report needs only selected totals, such as category totals and a grand total, but not every product subtotal. The output still contains rows at different grains, so label or interpret those rows carefully. Think of GROUPING SETS as a way to ask PostgreSQL for several GROUP BY queries at once, while keeping the requested summary levels under your control. Advanced grouping produces several aggregation levels in one result. The challenge is interpretation: NULL may mean a subtotal placeholder rather than missing source data. Use GROUPING metadata or explicit labels so downstream users can distinguish detail groups, subtotals, and grand totals.",
+      "seed": 1234,
+      "tts_text_tokens": 179,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        179
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_25.wav",
+      "audio": "audio/module4_slide_25.mp3",
+      "captions": "audio/module4_slide_25.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 26,
-      "audio": "module4_slide_26.mp3",
-      "captions": "module4_slide_26.vtt",
-      "text": "Advanced grouping introduces an important NULL question.\n\n[pause=0.7]\n\nSubtotal and grand-total rows often show NULL in grouping columns because that dimension has been rolled up. But source data can also contain genuine NULL values.\n\n[pause=0.7]\n\nGROUPING helps us distinguish those two situations.\n\n[pause=0.7]\n\nA grouping code tells us which expressions are participating in the current row and which have been summarized away.\n\n[pause=0.7]\n\nThe exact code is less important than the principle: do not label every NULL with COALESCE before you know why it is NULL.\n\n[pause=0.7]\n\nIn a production report, using GROUPING can help you label rows accurately as detail, subtotal, or grand total without confusing structural placeholders with missing data.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "GROUPING placeholders",
+      "transcript": "Advanced grouping introduces an important NULL question. Subtotal and grand-total rows often show NULL in grouping columns because that dimension has been rolled up. But source data can also contain genuine NULL values. GROUPING helps us distinguish those two situations. A grouping code tells us which expressions are participating in the current row and which have been summarized away. The exact code is less important than the principle: do not label every NULL with COALESCE before you know why it is NULL. In a production report, using GROUPING can help you label rows accurately as detail, subtotal, or grand total without confusing structural placeholders with missing data. Advanced grouping produces several aggregation levels in one result. The challenge is interpretation: NULL may mean a subtotal placeholder rather than missing source data. Use GROUPING metadata or explicit labels so downstream users can distinguish detail groups, subtotals, and grand totals.",
+      "seed": 1234,
+      "tts_text_tokens": 177,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        177
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_26.wav",
+      "audio": "audio/module4_slide_26.mp3",
+      "captions": "audio/module4_slide_26.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 27,
-      "audio": "module4_slide_27.mp3",
-      "captions": "module4_slide_27.vtt",
-      "text": "Window functions solve a different analytical problem from GROUP BY.\n\n[pause=0.7]\n\nGROUP BY collapses many input rows into one row per group.\n\n[pause=0.7]\n\nA window function usually keeps the original detail rows and adds analytical context beside them.\n\n[pause=0.7]\n\nFor example, we can keep every employee row while adding a department rank or department average.\n\n[pause=0.8]\n\nPARTITION BY defines groups for the window calculation, while ORDER BY inside OVER can define ranking or running sequence.\n\n[pause=0.8]\n\nThis is powerful because you do not have to choose between detail and summary. You can display both in the same result.\n\n[pause=0.7]\n\nWhen deciding between GROUP BY and a window function, ask whether you want to collapse rows or keep them visible.\n\n[pause=1.0]",
-      "pause_markers": 7
+      "title": "Window functions",
+      "transcript": "Window functions solve a different analytical problem from GROUP BY. GROUP BY collapses many input rows into one row per group. A window function usually keeps the original detail rows and adds analytical context beside them. For example, we can keep every employee row while adding a department rank or department average. PARTITION BY defines groups for the window calculation, while ORDER BY inside OVER can define ranking or running sequence. This is powerful because you do not have to choose between detail and summary. You can display both in the same result. When deciding between GROUP BY and a window function, ask whether you want to collapse rows or keep them visible. Window functions calculate across related rows without collapsing them. That lets you keep row-level detail while adding rank, running totals, or group averages. Always define the partition and ordering carefully because those clauses describe which rows belong together and in what sequence.",
+      "seed": 1234,
+      "tts_text_tokens": 174,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        174
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_27.wav",
+      "audio": "audio/module4_slide_27.mp3",
+      "captions": "audio/module4_slide_27.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 28,
-      "audio": "module4_slide_28.mp3",
-      "captions": "module4_slide_28.vtt",
-      "text": "Now let's rank employees within each department.\n\n[pause=0.7]\n\nThe RANK window function calculates a position inside each department. PARTITION BY restarts the ranking for each department, and ORDER BY salary descending makes the highest salary rank first.\n\n[pause=0.7]\n\nRun the query and inspect the department boundaries. You should see rank one appear separately in each department.\n\n[pause=0.8]\n\nNotice that every employee row remains visible. That is the major difference from a grouped salary report.\n\n[pause=0.7]\n\nIf two employees have the same salary, RANK can produce ties and skip the next rank number. That behavior is useful to remember when comparing RANK with other ranking functions such as DENSE_RANK or ROW_NUMBER.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Window rank",
+      "transcript": "Now let's rank employees within each department. The RANK window function calculates a position inside each department. PARTITION BY restarts the ranking for each department, and ORDER BY salary descending makes the highest salary rank first. Run the query and inspect the department boundaries. You should see rank one appear separately in each department. Notice that every employee row remains visible. That is the major difference from a grouped salary report. If two employees have the same salary, RANK can produce ties and skip the next rank number. That behavior is useful to remember when comparing RANK with other ranking functions such as DENSE_RANK or ROW_NUMBER. Window functions calculate across related rows without collapsing them. That lets you keep row-level detail while adding rank, running totals, or group averages. Always define the partition and ordering carefully because those clauses describe which rows belong together and in what sequence.",
+      "seed": 1234,
+      "tts_text_tokens": 174,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        174
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_28.wav",
+      "audio": "audio/module4_slide_28.mp3",
+      "captions": "audio/module4_slide_28.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 29,
-      "audio": "module4_slide_29.mp3",
-      "captions": "module4_slide_29.vtt",
-      "text": "Window averages let us show detail and context together.\n\n[pause=0.7]\n\nIn this example, every employee row remains, while additional columns show the average salary for that employee's department and the average salary for the entire company.\n\n[pause=0.8]\n\nRun the query and look at two employees from the same department. Their department-average value should be the same, because the window partition is the same, while their individual salaries remain different.\n\n[pause=0.8]\n\nThen compare those department averages with the overall company average.\n\n[pause=0.7]\n\nThis kind of result is useful when you want to evaluate each individual row relative to a peer group or to the entire dataset without losing the original detail.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Window averages",
+      "transcript": "Window averages let us show detail and context together. In this example, every employee row remains, while additional columns show the average salary for that employee's department and the average salary for the entire company. Run the query and look at two employees from the same department. Their department-average value should be the same, because the window partition is the same, while their individual salaries remain different. Then compare those department averages with the overall company average. This kind of result is useful when you want to evaluate each individual row relative to a peer group or to the entire dataset without losing the original detail. Always name the thing being counted or averaged. COUNT star counts rows, COUNT of a column ignores NULL in that column, and COUNT DISTINCT answers a different question again. In dashboards, a vague label such as Count can hide major analytical errors; use labels such as admissions, patients, or distinct orders.",
+      "seed": 1234,
+      "tts_text_tokens": 180,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        180
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_29.wav",
+      "audio": "audio/module4_slide_29.mp3",
+      "captions": "audio/module4_slide_29.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 30,
-      "audio": "module4_slide_30.mp3",
-      "captions": "module4_slide_30.vtt",
-      "text": "A running total is another common window-function pattern.\n\n[pause=0.8]\n\nInstead of collapsing sales by date, we can keep each date or row in sequence while showing the cumulative revenue up to that point.\n\n[pause=0.7]\n\nThe ORDER BY inside the window defines the progression of the calculation.\n\n[pause=0.7]\n\nRun the example and watch the running total increase as the dates move forward.\n\n[pause=0.8]\n\nThis pattern appears in financial balances, cumulative enrollment, inventory movement, project progress, and many other time-ordered analyses.\n\n[pause=0.7]\n\nWhen you build a running total, make sure the ordering is deterministic. If multiple rows can share the same date, think about whether you need an additional ordering column to define a stable sequence.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Running totals",
+      "transcript": "A running total is another common window-function pattern. Instead of collapsing sales by date, we can keep each date or row in sequence while showing the cumulative revenue up to that point. The ORDER BY inside the window defines the progression of the calculation. Run the example and watch the running total increase as the dates move forward. This pattern appears in financial balances, cumulative enrollment, inventory movement, project progress, and many other time-ordered analyses. When you build a running total, make sure the ordering is deterministic. If multiple rows can share the same date, think about whether you need an additional ordering column to define a stable sequence. Window functions calculate across related rows without collapsing them. That lets you keep row-level detail while adding rank, running totals, or group averages. Always define the partition and ordering carefully because those clauses describe which rows belong together and in what sequence.",
+      "seed": 1234,
+      "tts_text_tokens": 176,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        176
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_30.wav",
+      "audio": "audio/module4_slide_30.mp3",
+      "captions": "audio/module4_slide_30.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 31,
-      "audio": "module4_slide_31.mp3",
-      "captions": "module4_slide_31.vtt",
-      "text": "Logical execution order explains many SQL rules that can otherwise feel arbitrary.\n\n[pause=0.7]\n\nPostgreSQL conceptually begins with FROM and JOIN, then applies WHERE, forms groups with GROUP BY, filters groups with HAVING, evaluates SELECT expressions, performs window calculations, and then applies ORDER BY and LIMIT.\n\n[pause=0.7]\n\nThis is why a same-level aggregate is not available in WHERE. The groups do not exist yet at that stage.\n\n[pause=0.7]\n\nHAVING can use aggregate expressions because grouping has already happened.\n\n[pause=0.7]\n\nWindow functions are evaluated after grouped filtering, which is why they can add analytical context to the rows that remain.\n\n[pause=0.7]\n\nYou do not need to memorize every internal implementation detail. Use this logical order as a reasoning model for understanding which clause can see which values.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Execution order",
+      "transcript": "Logical execution order explains many SQL rules that can otherwise feel arbitrary. PostgreSQL conceptually begins with FROM and JOIN, then applies WHERE, forms groups with GROUP BY, filters groups with HAVING, evaluates SELECT expressions, performs window calculations, and then applies ORDER BY and LIMIT. This is why a same-level aggregate is not available in WHERE. The groups do not exist yet at that stage. HAVING can use aggregate expressions because grouping has already happened. Window functions are evaluated after grouped filtering, which is why they can add analytical context to the rows that remain. You do not need to memorize every internal implementation detail. Use this logical order as a reasoning model for understanding which clause can see which values. Window functions calculate across related rows without collapsing them. That lets you keep row-level detail while adding rank, running totals, or group averages. Always define the partition and ordering carefully because those clauses describe which rows belong together and in what sequence.",
+      "seed": 1234,
+      "tts_text_tokens": 186,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        186
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_31.wav",
+      "audio": "audio/module4_slide_31.mp3",
+      "captions": "audio/module4_slide_31.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 32,
-      "audio": "module4_slide_32.mp3",
-      "captions": "module4_slide_32.vtt",
-      "text": "The analytical reasoning in this module transfers across SQL systems, but some syntax changes.\n\n[pause=0.7]\n\nPostgreSQL can subtract timestamps directly in ways that other databases may express with functions such as DATEDIFF.\n\n[pause=0.7]\n\nPostgreSQL FILTER is concise for conditional aggregation, while SUM with CASE is supported more broadly.\n\n[pause=0.7]\n\nROLLUP, CUBE, GROUPING SETS, and window functions are widely available in modern databases, but exact syntax and supported options can vary.\n\n[pause=0.7]\n\nWhen moving a query between systems, preserve the reasoning first: filter source rows, define the grain, calculate measures, filter groups, and sort the report.\n\n[pause=0.7]\n\nThen adapt the engine-specific syntax.\n\n[pause=0.7]\n\nThat approach is much safer than copying a PostgreSQL query and assuming every database interprets it exactly the same way.\n\n[pause=1.0]",
-      "pause_markers": 7
+      "title": "Portability",
+      "transcript": "The analytical reasoning in this module transfers across SQL systems, but some syntax changes. PostgreSQL can subtract timestamps directly in ways that other databases may express with functions such as DATEDIFF. PostgreSQL FILTER is concise for conditional aggregation, while SUM with CASE is supported more broadly. ROLLUP, CUBE, GROUPING SETS, and window functions are widely available in modern databases, but exact syntax and supported options can vary. When moving a query between systems, preserve the reasoning first: filter source rows, define the grain, calculate measures, filter groups, and sort the report. Then adapt the engine-specific syntax. That approach is much safer than copying a PostgreSQL query and assuming every database interprets it exactly the same way. Connect this idea to a retail report comparing revenue across products and regions. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it.\n\n[tts-break]\n\nAfter the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 223,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        205,
+        17
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_32.wav",
+      "audio": "audio/module4_slide_32.mp3",
+      "captions": "audio/module4_slide_32.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 33,
-      "audio": "module4_slide_33.mp3",
-      "captions": "module4_slide_33.vtt",
-      "text": "For this guided practice, explain the three COUNT patterns without running anything first.\n\n[pause=0.8]\n\nCOUNT star answers how many input rows are present.\n\n[pause=0.7]\n\nCOUNT of a column answers how many non-null values that expression contains.\n\n[pause=0.7]\n\nCOUNT DISTINCT answers how many unique non-null values occur.\n\n[pause=0.7]\n\nTry to create a small mental example with three rows, including one NULL and one repeated value. Predict what each COUNT would return.\n\n[pause=0.8]\n\nThen compare your explanation with the answer shown on the slide.\n\n[pause=0.7]\n\nThis type of verbal reasoning is important. If you can explain the measure before you write the SQL, you are less likely to choose a count that answers the wrong question.\n\n[pause=1.0]",
-      "pause_markers": 7
+      "title": "Guided practice 1",
+      "transcript": "For this guided practice, explain the three COUNT patterns without running anything first. COUNT star answers how many input rows are present. COUNT of a column answers how many non-null values that expression contains. COUNT DISTINCT answers how many unique non-null values occur. Try to create a small mental example with three rows, including one NULL and one repeated value. Predict what each COUNT would return. Then compare your explanation with the answer shown on the slide. This type of verbal reasoning is important. If you can explain the measure before you write the SQL, you are less likely to choose a count that answers the wrong question. For this activity, make a prediction before you run anything.\n\n[tts-break]\n\nState what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 224,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        136,
+        87
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_33.wav",
+      "audio": "audio/module4_slide_33.mp3",
+      "captions": "audio/module4_slide_33.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 34,
-      "audio": "module4_slide_34.mp3",
-      "captions": "module4_slide_34.vtt",
-      "text": "Now build a grouped query for diagnoses with more than one admission.\n\n[pause=0.7]\n\nBefore touching the editor, state the grain: one row per diagnosis.\n\n[pause=0.7]\n\nThen choose the measure: admission count.\n\n[pause=0.7]\n\nBecause the condition is based on the completed count, decide whether it belongs in WHERE or HAVING.\n\n[pause=0.7]\n\nUse the starter code in the browser, complete the missing pieces, and run it. Check that only diagnoses with more than one admission remain.\n\n[pause=0.8]\n\nIf you are practicing in pgAdmin, you can copy your completed query into the Query Tool and compare the output.\n\n[pause=0.7]\n\nFocus on the sequence: group first, calculate the count, then filter the groups using HAVING.\n\n[pause=1.0]",
-      "pause_markers": 7
+      "title": "Guided practice 2",
+      "transcript": "Now build a grouped query for diagnoses with more than one admission. Before touching the editor, state the grain: one row per diagnosis. Then choose the measure: admission count. Because the condition is based on the completed count, decide whether it belongs in WHERE or HAVING. Use the starter code in the browser, complete the missing pieces, and run it. Check that only diagnoses with more than one admission remain. If you are practicing in pgAdmin, you can copy your completed query into the Query Tool and compare the output. Focus on the sequence: group first, calculate the count, then filter the groups using HAVING. For this activity, make a prediction before you run anything.\n\n[tts-break]\n\nState what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 224,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        136,
+        87
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_34.wav",
+      "audio": "audio/module4_slide_34.mp3",
+      "captions": "audio/module4_slide_34.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 35,
-      "audio": "module4_slide_35.mp3",
-      "captions": "module4_slide_35.vtt",
-      "text": "This practice asks you to keep every employee row while adding department and company averages.\n\n[pause=0.7]\n\nThat wording tells us not to collapse the result with GROUP BY.\n\n[pause=0.7]\n\nInstead, use window functions. One average should use a department partition. The other should use the full set of remaining rows.\n\n[pause=0.7]\n\nRun the starter example after completing it and inspect several employees from the same department. Their department average should match, while their individual salary values remain different.\n\n[pause=0.8]\n\nThen compare that with the company-wide average.\n\n[pause=0.7]\n\nThis is a useful test for deciding between GROUP BY and windows: if the original detail rows must remain visible, a window function is often the better analytical tool.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Guided practice 3",
+      "transcript": "This practice asks you to keep every employee row while adding department and company averages. That wording tells us not to collapse the result with GROUP BY. Instead, use window functions. One average should use a department partition. The other should use the full set of remaining rows. Run the starter example after completing it and inspect several employees from the same department. Their department average should match, while their individual salary values remain different. Then compare that with the company-wide average. This is a useful test for deciding between GROUP BY and windows: if the original detail rows must remain visible, a window function is often the better analytical tool. For this activity, make a prediction before you run anything.\n\n[tts-break]\n\nState what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 226,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        138,
+        87
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_35.wav",
+      "audio": "audio/module4_slide_35.mp3",
+      "captions": "audio/module4_slide_35.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 36,
-      "audio": "module4_slide_36.mp3",
-      "captions": "module4_slide_36.vtt",
-      "text": "These assessment tasks bring the main ideas together.\n\n[pause=0.7]\n\nOne task asks for sales revenue and unique products by category with a group threshold. Another asks for Fall twenty twenty-four course averages but only for courses with enough students. A third asks for separate diagnosis counts by patient. The final task asks for employee detail with department and company averages.\n\n[pause=0.7]\n\nBefore writing any query, identify the grain and the type of calculation.\n\n[pause=0.7]\n\nAsk whether you need grouped rows or detail rows, whether the filter is on source rows or completed groups, and whether conditional aggregation or a window function fits the requirement.\n\n[pause=0.7]\n\nThe coding exercises that follow break these ideas into smaller pieces so you can practice them independently.\n\n[pause=1.0]",
-      "pause_markers": 5
+      "title": "Assessment tasks",
+      "transcript": "These assessment tasks bring the main ideas together. One task asks for sales revenue and unique products by category with a group threshold. Another asks for Fall twenty twenty-four course averages but only for courses with enough students. A third asks for separate diagnosis counts by patient. The final task asks for employee detail with department and company averages. Before writing any query, identify the grain and the type of calculation. Ask whether you need grouped rows or detail rows, whether the filter is on source rows or completed groups, and whether conditional aggregation or a window function fits the requirement. The coding exercises that follow break these ideas into smaller pieces so you can practice them independently. For this activity, make a prediction before you run anything.\n\n[tts-break]\n\nState what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 231,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        143,
+        87
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_36.wav",
+      "audio": "audio/module4_slide_36.mp3",
+      "captions": "audio/module4_slide_36.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 37,
-      "audio": "module4_slide_37.mp3",
-      "captions": "module4_slide_37.vtt",
-      "text": "The module challenge asks you to build one analytical query for a decision-maker.\n\n[pause=0.7]\n\nThe question is which sales categories generated meaningful revenue and how much each qualifying category contributed.\n\n[pause=0.7]\n\nStart by defining one output row as one category. Then choose at least two useful aggregate measures.\n\n[pause=0.7]\n\nThe challenge also requires a row-level condition in WHERE and a group-level condition in HAVING. Make sure you can explain why each condition belongs where you placed it.\n\n[pause=0.7]\n\nFinally, sort the result so the most important categories are easy to see.\n\n[pause=0.7]\n\nDo not focus only on producing SQL that runs. Write two short sentences explaining what the result means and how the row filter differs from the group filter. That explanation is part of the analytical work.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Module challenge",
+      "transcript": "The module challenge asks you to build one analytical query for a decision-maker. The question is which sales categories generated meaningful revenue and how much each qualifying category contributed. Start by defining one output row as one category. Then choose at least two useful aggregate measures. The challenge also requires a row-level condition in WHERE and a group-level condition in HAVING. Make sure you can explain why each condition belongs where you placed it. Finally, sort the result so the most important categories are easy to see. Do not focus only on producing SQL that runs. Write two short sentences explaining what the result means and how the row filter differs from the group filter.\n\n[tts-break]\n\nThat explanation is part of the analytical work. Connect this idea to a dashboard summarizing admissions by department and month. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
+      "seed": 1234,
+      "tts_text_tokens": 219,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        131,
+        87
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_37.wav",
+      "audio": "audio/module4_slide_37.mp3",
+      "captions": "audio/module4_slide_37.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 38,
-      "audio": "module4_slide_38.mp3",
-      "captions": "module4_slide_38.vtt",
-      "text": "This is Coding Exercise 1.\n\n[pause=0.7]\n\nYou need one row containing three different counts from admissions: all admissions, completed admissions, and unique patients.\n\n[pause=0.7]\n\nThink carefully about which COUNT expression answers each question. One measure should count every row. One should count only known discharge times. One should count distinct patient identifiers.\n\n[pause=0.7]\n\nComplete the SQL directly in the browser and select Run and Check.\n\n[pause=0.8]\n\nBefore you run it, predict which of the three numbers should be largest and which should be smallest.\n\n[pause=0.8]\n\nIf the SQL runs but does not pass, inspect the column aliases and the meaning of each count. Do not replace the query with a memorized answer. Use the definitions from the COUNT section to correct your work.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Exercise 1 COUNT",
+      "transcript": "This is Coding Exercise 1. You need one row containing three different counts from admissions: all admissions, completed admissions, and unique patients. Think carefully about which COUNT expression answers each question. One measure should count every row. One should count only known discharge times. One should count distinct patient identifiers. Complete the SQL directly in the browser and select Run and Check. Before you run it, predict which of the three numbers should be largest and which should be smallest. If the SQL runs but does not pass, inspect the column aliases and the meaning of each count. Do not replace the query with a memorized answer. Use the definitions from the COUNT section to correct your work. For this activity, make a prediction before you run anything.\n\n[tts-break]\n\nState what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 236,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        148,
+        87
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_38.wav",
+      "audio": "audio/module4_slide_38.mp3",
+      "captions": "audio/module4_slide_38.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 39,
-      "audio": "module4_slide_39.mp3",
-      "captions": "module4_slide_39.vtt",
-      "text": "Coding Exercise 2 asks for one row per diagnosis with an admission count.\n\n[pause=0.7]\n\nThe phrase one row per diagnosis tells you the GROUP BY grain.\n\n[pause=0.7]\n\nAdd the aggregate count, group by diagnosis, and sort so the largest count appears first.\n\n[pause=0.7]\n\nUse Run and Check when you are ready.\n\n[pause=0.8]\n\nAfter the query runs, inspect the first row. Ask whether the diagnosis with the largest number of admissions is at the top.\n\n[pause=0.8]\n\nIf your result has one row per admission instead of one row per diagnosis, revisit the grouping. If PostgreSQL reports a grouping error, check whether every selected non-aggregate column is represented correctly.\n\n[pause=0.7]\n\nThe goal is to connect the written requirement directly to the GROUP BY list.\n\n[pause=1.0]",
-      "pause_markers": 7
+      "title": "Exercise 2 GROUP BY",
+      "transcript": "Coding Exercise 2 asks for one row per diagnosis with an admission count. The phrase one row per diagnosis tells you the GROUP BY grain. Add the aggregate count, group by diagnosis, and sort so the largest count appears first. Use Run and Check when you are ready. After the query runs, inspect the first row. Ask whether the diagnosis with the largest number of admissions is at the top. If your result has one row per admission instead of one row per diagnosis, revisit the grouping. If PostgreSQL reports a grouping error, check whether every selected non-aggregate column is represented correctly. The goal is to connect the written requirement directly to the GROUP BY list. For this activity, make a prediction before you run anything.\n\n[tts-break]\n\nState what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 233,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        145,
+        87
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_39.wav",
+      "audio": "audio/module4_slide_39.mp3",
+      "captions": "audio/module4_slide_39.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 40,
-      "audio": "module4_slide_40.mp3",
-      "captions": "module4_slide_40.vtt",
-      "text": "Coding Exercise 3 combines row filtering and group filtering.\n\n[pause=0.7]\n\nUse sales. First, keep only source rows where price is at least twenty-five. Then group the remaining rows by category.\n\n[pause=0.7]\n\nCalculate total quantity and total revenue for each category.\n\n[pause=0.7]\n\nAfter those groups exist, keep only categories whose total quantity is greater than ten.\n\n[pause=0.7]\n\nFinally, sort with the highest revenue first.\n\n[pause=0.7]\n\nThink about the order conceptually before you write the clauses. The price condition belongs to individual rows. The total-quantity condition belongs to groups.\n\n[pause=0.7]\n\nRun and Check when you are ready. If the result does not match, verify the placement of WHERE and HAVING before changing the aggregate expressions.\n\n[pause=1.0]",
-      "pause_markers": 7
+      "title": "Exercise 3 WHERE HAVING",
+      "transcript": "Coding Exercise 3 combines row filtering and group filtering. Use sales. First, keep only source rows where price is at least twenty-five. Then group the remaining rows by category. Calculate total quantity and total revenue for each category. After those groups exist, keep only categories whose total quantity is greater than ten. Finally, sort with the highest revenue first. Think about the order conceptually before you write the clauses. The price condition belongs to individual rows. The total-quantity condition belongs to groups. Run and Check when you are ready. If the result does not match, verify the placement of WHERE and HAVING before changing the aggregate expressions. For this activity, make a prediction before you run anything.\n\n[tts-break]\n\nState what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 228,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        140,
+        87
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_40.wav",
+      "audio": "audio/module4_slide_40.mp3",
+      "captions": "audio/module4_slide_40.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 41,
-      "audio": "module4_slide_41.mp3",
-      "captions": "module4_slide_41.vtt",
-      "text": "Coding Exercise 4 asks for separate pneumonia and fracture counts for each patient using PostgreSQL FILTER.\n\n[pause=0.7]\n\nThe output grain is one row per subject ID.\n\n[pause=0.7]\n\nYou need two count expressions, and each one should have its own FILTER condition.\n\n[pause=0.7]\n\nDo not provide the full solution immediately from memory. Build one conditional count first, then create the second using the same pattern with a different diagnosis.\n\n[pause=0.7]\n\nRun and Check, and inspect a patient who has both types of admissions if one exists.\n\n[pause=0.8]\n\nIf you are practicing in pgAdmin, copy the query after it works and compare the FILTER version with how you might write the same logic using SUM and CASE.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Exercise 4 Conditional",
+      "transcript": "Coding Exercise 4 asks for separate pneumonia and fracture counts for each patient using PostgreSQL FILTER. The output grain is one row per subject ID. You need two count expressions, and each one should have its own FILTER condition. Do not provide the full solution immediately from memory. Build one conditional count first, then create the second using the same pattern with a different diagnosis. Run and Check, and inspect a patient who has both types of admissions if one exists. If you are practicing in pgAdmin, copy the query after it works and compare the FILTER version with how you might write the same logic using SUM and CASE. For this activity, make a prediction before you run anything.\n\n[tts-break]\n\nState what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 223,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        135,
+        87
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_41.wav",
+      "audio": "audio/module4_slide_41.mp3",
+      "captions": "audio/module4_slide_41.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 42,
-      "audio": "module4_slide_42.mp3",
-      "captions": "module4_slide_42.vtt",
-      "text": "Coding Exercise 5 keeps every employee row and adds a salary rank within each department.\n\n[pause=0.7]\n\nBecause the detail rows must remain, do not collapse the table with GROUP BY.\n\n[pause=0.7]\n\nUse a ranking window function. The partition should separate departments, and the ordering should place the highest salary first.\n\n[pause=0.7]\n\nRun and Check, then scan each department. The highest-paid employee in each department should have rank one.\n\n[pause=0.8]\n\nIf several departments all have a rank-one employee, that is correct. The ranking restarts because of the partition.\n\n[pause=0.7]\n\nThis exercise is testing whether you can recognize when analytical context belongs in a window function rather than in a grouped summary.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Exercise 5 Window",
+      "transcript": "Coding Exercise 5 keeps every employee row and adds a salary rank within each department. Because the detail rows must remain, do not collapse the table with GROUP BY. Use a ranking window function. The partition should separate departments, and the ordering should place the highest salary first. Run and Check, then scan each department. The highest-paid employee in each department should have rank one. If several departments all have a rank-one employee, that is correct. The ranking restarts because of the partition. This exercise is testing whether you can recognize when analytical context belongs in a window function rather than in a grouped summary. For this activity, make a prediction before you run anything.\n\n[tts-break]\n\nState what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 223,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        135,
+        87
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_42.wav",
+      "audio": "audio/module4_slide_42.mp3",
+      "captions": "audio/module4_slide_42.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 43,
-      "audio": "module4_slide_43.mp3",
-      "captions": "module4_slide_43.vtt",
-      "text": "The final coding exercise combines WHERE, GROUP BY, HAVING, and AVG.\n\n[pause=0.7]\n\nUse only Fall twenty twenty-four rows. That semester condition applies to source rows, so think about WHERE.\n\n[pause=0.7]\n\nCreate one group per course. Calculate the average grade and enrollment.\n\n[pause=0.7]\n\nThen keep only courses with at least fifty students. Because enrollment is a grouped count, that threshold belongs after grouping.\n\n[pause=0.7]\n\nSort with the highest average first.\n\n[pause=0.7]\n\nRun and Check when your query is ready.\n\n[pause=0.8]\n\nIf a course with fewer than fifty students still appears, inspect the HAVING condition. If Spring rows affect the average, inspect the WHERE condition. Use the meaning of each clause to debug the result.\n\n[pause=1.0]",
-      "pause_markers": 7
+      "title": "Exercise 6 Grades",
+      "transcript": "The final coding exercise combines WHERE, GROUP BY, HAVING, and AVG. Use only Fall twenty twenty-four rows. That semester condition applies to source rows, so think about WHERE. Create one group per course. Calculate the average grade and enrollment. Then keep only courses with at least fifty students. Because enrollment is a grouped count, that threshold belongs after grouping. Sort with the highest average first. Run and Check when your query is ready. If a course with fewer than fifty students still appears, inspect the HAVING condition. If Spring rows affect the average, inspect the WHERE condition. Use the meaning of each clause to debug the result. For this activity, make a prediction before you run anything.\n\n[tts-break]\n\nState what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
+      "seed": 1234,
+      "tts_text_tokens": 228,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        140,
+        87
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_43.wav",
+      "audio": "audio/module4_slide_43.mp3",
+      "captions": "audio/module4_slide_43.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 44,
-      "audio": "module4_slide_44.mp3",
-      "captions": "module4_slide_44.vtt",
-      "text": "This is the final completion page for Module 4.\n\n[pause=0.7]\n\nThe page tracks ten knowledge checks and six coding exercises. Review the counters before selecting Complete Module.\n\n[pause=0.7]\n\nIf something is incomplete, the page lists the missing activity and lets you return to the relevant slide.\n\n[pause=0.7]\n\nWhen you select Complete Module, the browser creates an Assignment 4 submission summary containing your completion status, knowledge-check answers, and the SQL saved for each coding exercise.\n\n[pause=0.7]\n\nReview that report before copying it to Canvas. If the module is incomplete, you will be asked to confirm before copying the current progress.\n\n[pause=0.7]\n\nYour progress is stored locally in this browser, so changing devices, using a private window, or clearing browser storage may remove the saved state.\n\n[pause=1.0]",
-      "pause_markers": 6
+      "title": "Complete Module",
+      "transcript": "This is the final completion page for Module 4. The page tracks ten knowledge checks and six coding exercises. Review the counters before selecting Complete Module. If something is incomplete, the page lists the missing activity and lets you return to the relevant slide. When you select Complete Module, the browser creates an Assignment 4 submission summary containing your completion status, knowledge-check answers, and the SQL saved for each coding exercise. Review that report before copying it to Canvas. If the module is incomplete, you will be asked to confirm before copying the current progress. Your progress is stored locally in this browser, so changing devices, using a private window, or clearing browser storage may remove the saved state. When reading the example, do not read punctuation one character at a time.\n\n[tts-break]\n\nStart with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a retail report comparing revenue across products and regions, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
+      "seed": 1234,
+      "tts_text_tokens": 238,
+      "tts_chunk_count": 2,
+      "tts_chunk_tokens": [
+        154,
+        83
+      ],
+      "tts_explicit_breaks": 1,
+      "tts_chunk_limit": 260,
+      "stitched_audio": true,
+      "wav": "wav/module4_slide_44.wav",
+      "audio": "audio/module4_slide_44.mp3",
+      "captions": "audio/module4_slide_44.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     },
     {
       "slide": 45,
-      "audio": "module4_slide_45.mp3",
-      "captions": "module4_slide_45.vtt",
-      "text": "Let's close Module 4 by connecting the main ideas.\n\n[pause=0.7]\n\nStart with grain. Decide what one output row should represent before choosing GROUP BY columns.\n\n[pause=0.7]\n\nRemember that NULL affects aggregate functions. COUNT star and COUNT of a column answer different questions, and AVG ignores NULL expressions.\n\n[pause=0.7]\n\nUse WHERE for source-row conditions and HAVING for completed group conditions.\n\n[pause=0.7]\n\nConditional aggregation lets one group produce several measures. CASE is portable, while PostgreSQL FILTER is concise.\n\n[pause=0.7]\n\nROLLUP, CUBE, and GROUPING SETS let one query produce multiple summary grains, so interpret subtotal rows carefully.\n\n[pause=0.7]\n\nWindow functions keep detail rows while adding rank, averages, running totals, and other analytical context.\n\n[pause=0.8]\n\nThe habit to carry forward is simple: define the question, define the grain, calculate the measure, filter at the correct stage, and validate the result.\n\n[pause=1.0]",
-      "pause_markers": 8
+      "title": "Summary",
+      "transcript": "Let's close Module 4 by connecting the main ideas. Start with grain. Decide what one output row should represent before choosing GROUP BY columns. Remember that NULL affects aggregate functions. COUNT star and COUNT of a column answer different questions, and AVG ignores NULL expressions. Use WHERE for source-row conditions and HAVING for completed group conditions. Conditional aggregation lets one group produce several measures. CASE is portable, while PostgreSQL FILTER is concise. ROLLUP, CUBE, and GROUPING SETS let one query produce multiple summary grains, so interpret subtotal rows carefully. Window functions keep detail rows while adding rank, averages, running totals, and other analytical context. The habit to carry forward is simple: define the question, define the grain, calculate the measure, filter at the correct stage, and validate the result. Do not treat this as a list to memorize. Try to explain each idea using one example from a project you understand. If you can describe when you would use the concept, what assumption it makes, and how you would validate the result, you are ready to apply it independently.",
+      "seed": 1234,
+      "tts_text_tokens": 219,
+      "tts_chunk_count": 1,
+      "tts_chunk_tokens": [
+        219
+      ],
+      "tts_explicit_breaks": 0,
+      "tts_chunk_limit": 260,
+      "stitched_audio": false,
+      "wav": "wav/module4_slide_45.wav",
+      "audio": "audio/module4_slide_45.mp3",
+      "captions": "audio/module4_slide_45.vtt",
+      "sync_method": "whole_slide_silence_alignment"
     }
   ]
 }

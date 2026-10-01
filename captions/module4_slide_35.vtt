@@ -1,40 +1,49 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:03.774
-This practice asks you to keep every employee row
-while adding department
+00:00:00.000 --> 00:00:05.707
+This practice asks you to keep every employee row while adding department and company averages.
 
-00:00:03.800 --> 00:00:09.139
-and company averages That wording tells us not to
-collapse the result
+00:00:05.707 --> 00:00:09.792
+That wording tells us not to collapse the result with GROUP BY.
 
-00:00:09.165 --> 00:00:15.135
-with GROUP BY Instead use window functions One
+00:00:09.792 --> 00:00:15.212
+Instead, use window functions. One average should use a department partition.
 
-00:00:15.161 --> 00:00:19.648
-average should use a department partition The other
-should use the full
+00:00:15.212 --> 00:00:18.327
+The other should use the full set of remaining rows.
 
-00:00:19.674 --> 00:00:25.203
-set of remaining rows Run the starter example after
-completing it
+00:00:18.327 --> 00:00:24.577
+Run the starter example after completing it and inspect several employees from the same department.
 
-00:00:25.216 --> 00:00:30.350
-and inspect several employees from the same
-department Their department average should
+00:00:24.577 --> 00:00:30.137
+Their department average should match, while their individual salary values remain different.
 
-00:00:30.376 --> 00:00:35.989
-match while their individual salary values remain
-different Then
+00:00:30.137 --> 00:00:33.207
+Then compare that with the company-wide average.
 
-00:00:36.015 --> 00:00:41.343
-compare that with the company-wide average This is a
-useful test for
+00:00:33.207 --> 00:00:37.417
+This is a useful test for deciding between GROUP BY and windows:
 
-00:00:41.369 --> 00:00:45.264
-deciding between GROUP BY and windows if the
-original detail rows must
+00:00:37.417 --> 00:00:44.092
+if the original detail rows must remain visible, a window function is often the better analytical tool.
 
-00:00:45.277 --> 00:00:49.158
-remain visible a window function is often the better
-analytical tool
+00:00:44.092 --> 00:00:47.812
+For this activity, make a prediction before you run anything.
+
+00:00:47.812 --> 00:00:52.867
+State what one output row should represent, which records you expect to remain,
+
+00:00:52.867 --> 00:00:56.402
+and what edge case is most likely to expose a mistake.
+
+00:00:56.402 --> 00:01:00.757
+Then run the SQL and compare the result with that prediction.
+
+00:01:00.757 --> 00:01:07.837
+If it does not match, debug the logic in small pieces instead of changing several clauses at once.
+
+00:01:07.837 --> 00:01:14.207
+This is the same habit you would use in a real analytics project: validate the meaning of the result,
+
+00:01:14.207 --> 00:01:16.497
+not only whether the statement executes.

@@ -1,24 +1,31 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.618
-Now we deliberately violate the scalar contract The
-inner query
+00:00:00.000 --> 00:00:03.262
+Now we deliberately violate the scalar contract.
 
-00:00:05.644 --> 00:00:11.195
-returns many patient IDs from admissions The outer
-expression
+00:00:03.262 --> 00:00:07.267
+The inner query returns many patient IDs from admissions.
 
-00:00:11.222 --> 00:00:17.038
-expects one value PostgreSQL cannot choose one row
-for you so
+00:00:07.267 --> 00:00:10.097
+The outer expression expects one value.
 
-00:00:17.051 --> 00:00:22.656
-it raises an error Do not automatically add LIMIT
-one just to remove
+00:00:10.097 --> 00:00:14.652
+PostgreSQL cannot choose one row for you, so it raises an error.
 
-00:00:22.682 --> 00:00:28.356
-the error Only do that if choosing an arbitrary
-single row actually matches the business
+00:00:14.652 --> 00:00:18.707
+Do not automatically add LIMIT one just to remove the error.
 
-00:00:28.382 --> 00:00:28.763
-meaning
+00:00:18.707 --> 00:00:23.942
+Only do that if choosing an arbitrary single row actually matches the business meaning.
+
+00:00:23.942 --> 00:00:27.907
+A subquery has a contract: it returns a shape.
+
+00:00:27.907 --> 00:00:32.487
+A scalar subquery must return at most one value where it is used.
+
+00:00:32.487 --> 00:00:39.157
+Before writing syntax, predict whether the inner query returns one value, one column with many rows,
+
+00:00:39.157 --> 00:00:44.945
+or a table. Shape mistakes are easier to prevent than to debug after the query becomes large.

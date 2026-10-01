@@ -1,44 +1,46 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.918
-Aggregate functions turn many input rows into
-summary values COUNT
+00:00:00.000 --> 00:00:03.377
+Aggregate functions turn many input rows into summary values.
 
-00:00:05.945 --> 00:00:12.118
-answers how many SUM adds numeric values AVG
-calculates
+00:00:03.377 --> 00:00:06.972
+COUNT answers how many. SUM adds numeric values.
 
-00:00:12.132 --> 00:00:17.079
-the mean MIN finds the smallest value and MAX finds
-the largest
+00:00:06.972 --> 00:00:10.877
+AVG calculates the mean. MIN finds the smallest value, and MAX finds the largest.
 
-00:00:18.831 --> 00:00:23.225
-If you use an aggregate without GROUP BY PostgreSQL
-normally returns one
+00:00:10.877 --> 00:00:15.032
+If you use an aggregate without GROUP BY, PostgreSQL normally returns one summary row for the entire input
 
-00:00:23.252 --> 00:00:27.478
-summary row for the entire input set Once you add
-GROUP BY
+00:00:15.032 --> 00:00:20.677
+set. Once you add GROUP BY, the same aggregate is calculated separately inside each group.
 
-00:00:27.662 --> 00:00:33.531
-the same aggregate is calculated separately inside
-each group For example
+00:00:20.677 --> 00:00:24.002
+For example, AVG salary without grouping gives one company-wide average.
 
-00:00:33.741 --> 00:00:39.323
-AVG salary without grouping gives one company-wide
-average AVG salary
+00:00:24.002 --> 00:00:28.487
+AVG salary grouped by department gives one average for each department.
 
-00:00:39.349 --> 00:00:45.057
-grouped by department gives one average for each
-department Before choosing
+00:00:28.487 --> 00:00:33.057
+Before choosing a function, name the measure in plain language.
 
-00:00:45.083 --> 00:00:49.678
-a function name the measure in plain language Are
-you counting records
+00:00:33.057 --> 00:00:36.822
+Are you counting records, counting known values, adding revenue, or averaging completed stays?
 
-00:00:49.849 --> 00:00:55.599
-counting known values adding revenue or averaging
-completed stays That language
+00:00:36.822 --> 00:00:40.787
+That language helps you choose the correct expression.
 
-00:00:55.625 --> 00:00:57.678
-helps you choose the correct expression
+00:00:40.787 --> 00:00:42.757
+Always name the thing being counted or averaged.
+
+00:00:42.757 --> 00:00:48.322
+COUNT star counts rows, COUNT of a column ignores NULL in that column,
+
+00:00:48.322 --> 00:00:50.532
+and COUNT DISTINCT answers a different question again.
+
+00:00:50.532 --> 00:00:55.857
+In dashboards, a vague label such as Count can hide major analytical errors; use labels such as admissions,
+
+00:00:55.857 --> 00:00:57.600
+patients, or distinct orders.

@@ -1,43 +1,43 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.834
-This comparison is worth learning conceptually
-GROUPING SETS produces
+00:00:00.030 --> 00:00:02.517
+This comparison is worth learning conceptually.
 
-00:00:05.860 --> 00:00:11.433
-only the grouping combinations you request ROLLUP of
-A and B produces
+00:00:02.517 --> 00:00:06.407
+GROUPING SETS produces only the grouping combinations you request.
 
-00:00:11.459 --> 00:00:14.656
-detail at A and B a subtotal at A and a grand
+00:00:06.407 --> 00:00:12.252
+ROLLUP of A and B produces detail at A and B, a subtotal at A, and a grand total.
 
-00:00:14.670 --> 00:00:20.681
-total It follows a hierarchy CUBE of A and B
-produces
+00:00:12.252 --> 00:00:17.747
+It follows a hierarchy. CUBE of A and B produces detail, subtotals by A, subtotals by B, and the grand total.
 
-00:00:20.707 --> 00:00:25.947
-detail subtotals by A subtotals by B and the grand
-total It
+00:00:17.747 --> 00:00:22.592
+It generates every combination. A simple way to choose is to ask what report levels you need.
 
-00:00:25.973 --> 00:00:31.453
-generates every combination A simple way to choose
-is to ask what
+00:00:22.592 --> 00:00:26.082
+If you need a hierarchy, ROLLUP is often a natural fit.
 
-00:00:31.479 --> 00:00:36.869
-report levels you need If you need a hierarchy
-ROLLUP is often
+00:00:26.082 --> 00:00:29.732
+If you need all cross-dimensional totals, consider CUBE.
 
-00:00:36.895 --> 00:00:43.029
-a natural fit If you need all cross-dimensional
-totals consider CUBE If
+00:00:29.732 --> 00:00:33.152
+If you want only specific levels, GROUPING SETS gives you precise control.
 
-00:00:43.056 --> 00:00:49.062
-you want only specific levels GROUPING SETS gives
-you precise control The
+00:00:33.152 --> 00:00:39.842
+The SQL syntax is different, but the same grain reasoning still applies to every row produced.
 
-00:00:49.089 --> 00:00:53.036
-SQL syntax is different but the same grain reasoning
-still applies to
+00:00:39.842 --> 00:00:43.407
+Connect this idea to a dashboard summarizing admissions by department and month.
 
-00:00:53.049 --> 00:00:54.141
-every row produced
+00:00:43.407 --> 00:00:47.997
+Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+
+00:00:47.997 --> 00:00:53.037
+important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+
+00:00:53.037 --> 00:00:58.662
+A strong analyst can explain both the SQL operation and the assumption behind it.
+
+00:00:58.662 --> 00:01:03.397
+After the example, summarize the idea in one plain-language sentence before moving on.

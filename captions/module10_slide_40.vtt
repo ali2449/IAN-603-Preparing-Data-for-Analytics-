@@ -1,20 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:07.043
-The seeded sales table intentionally contains
-multiple Laptop transactions in January A
+00:00:00.000 --> 00:00:05.637
+The seeded sales table intentionally contains multiple Laptop transactions in January.
 
-00:00:07.070 --> 00:00:12.601
-product by month pivot has only one Laptop January
-cell That
+00:00:05.637 --> 00:00:10.107
+A product by month pivot has only one Laptop January cell.
 
-00:00:12.627 --> 00:00:18.374
-means the two transaction rows must be combined If
-the measure is revenue
+00:00:10.107 --> 00:00:13.952
+That means the two transaction rows must be combined.
 
-00:00:18.624 --> 00:00:24.467
-SUM is a reasonable choice But the transaction-level
-detail is no longer
+00:00:13.952 --> 00:00:17.977
+If the measure is revenue, SUM is a reasonable choice.
 
-00:00:24.480 --> 00:00:25.651
-present in that cell
+00:00:17.977 --> 00:00:22.412
+But the transaction-level detail is no longer present in that cell.
+
+00:00:22.412 --> 00:00:27.877
+Reshaping can change grain, so define it before and after the transformation.
+
+00:00:27.877 --> 00:00:34.072
+A source may have one row per patient-measurement, while a pivoted result has one row per patient.
+
+00:00:34.072 --> 00:00:39.752
+If multiple source rows map to the same target cell, you must decide how they are aggregated;
+
+00:00:39.752 --> 00:00:42.414
+otherwise information can be lost.

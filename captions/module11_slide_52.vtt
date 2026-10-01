@@ -1,16 +1,25 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.644
-This query calculates average stay per patient using
-GROUP BY The
+00:00:00.000 --> 00:00:05.487
+This query calculates average stay per patient using GROUP BY.
 
-00:00:05.671 --> 00:00:11.252
-output has one row per patient Individual admission
-rows are no
+00:00:05.487 --> 00:00:09.147
+The output has one row per patient.
 
-00:00:11.265 --> 00:00:16.824
-longer present That is correct when the desired
-output grain is patient
+00:00:09.147 --> 00:00:13.312
+Individual admission rows are no longer present.
 
-00:00:16.837 --> 00:00:17.219
-level
+00:00:13.312 --> 00:00:18.292
+That is correct when the desired output grain is patient level.
+
+00:00:18.292 --> 00:00:21.112
+GROUP BY collapses rows; PARTITION BY does not.
+
+00:00:21.112 --> 00:00:28.352
+That distinction lets you compute group totals, percentages, or rankings while preserving detail.
+
+00:00:28.352 --> 00:00:37.512
+For top-N-per-group problems, rank within each group first and then filter the ranked result in an outer
+
+00:00:37.512 --> 00:00:38.560
+query.
