@@ -1,28 +1,34 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.730
-Encoding changes how software represents a variable
-It does not
+00:00:00.000 --> 00:00:03.512
+Encoding changes how software represents a variable.
 
-00:00:05.757 --> 00:00:11.416
-change the underlying meaning Nominal variables
-often use one-hot
+00:00:03.512 --> 00:00:06.322
+It does not change the underlying meaning.
 
-00:00:11.429 --> 00:00:17.273
-indicators Ordinal variables may use ordered
-categorical dtypes or explicit ordinal
+00:00:06.322 --> 00:00:10.132
+Nominal variables often use one-hot indicators.
 
-00:00:17.300 --> 00:00:23.273
-codes Numeric variables can remain numeric and may
-be scaled for methods that need comparable
+00:00:10.132 --> 00:00:16.257
+Ordinal variables may use ordered categorical dtypes or explicit ordinal codes.
 
-00:00:23.300 --> 00:00:28.820
-feature scales Counts should remain conceptually
-counts even if a model
+00:00:16.257 --> 00:00:23.252
+Numeric variables can remain numeric and may be scaled for methods that need comparable feature scales.
 
-00:00:28.847 --> 00:00:34.737
-later transforms them The representation should
-support not redefine
+00:00:23.252 --> 00:00:31.102
+Counts should remain conceptually counts even if a model later transforms them.
 
-00:00:34.974 --> 00:00:35.750
-the concept
+00:00:31.102 --> 00:00:33.787
+The representation should support, not redefine, the concept.
+
+00:00:33.787 --> 00:00:39.472
+Preprocessing is not neutral: it tells software how to interpret the variable.
+
+00:00:39.472 --> 00:00:46.777
+One-hot encoding avoids inventing rank for nominal categories; ordinal coding preserves a known order;
+
+00:00:46.777 --> 00:00:52.137
+scaling changes numerical representation but not conceptual meaning.
+
+00:00:52.137 --> 00:00:59.788
+In predictive work, learned preprocessing should be fitted only on training data so evaluation remains honest.
