@@ -514,3 +514,148 @@ body.ian603-shell.shell-auto-hide.cc-off .shell-bottom:focus-within{height:108px
     left:10px!important;right:10px!important;bottom:10px!important;width:auto!important;max-height:55vh!important;
   }
 }
+
+
+/* IAN603_SQL_FOCUS_SHARED_START
+   Shared full-screen SQL workspace for code-cell, pg-cell, and sql-cell editors. */
+body.ian603-shell .sql-focus-toggle{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:5px!important;
+}
+body.ian603-shell .sql-focus-toggle::before{
+  content:"⛶";
+  font-size:13px;
+  line-height:1;
+}
+body.ian603-shell.sql-focus-open{
+  overflow:hidden!important;
+}
+body.ian603-shell .code-cell.ian603-sql-focus,
+body.ian603-shell .pg-cell.ian603-sql-focus,
+body.ian603-shell .sql-cell.ian603-sql-focus{
+  position:fixed!important;
+  inset:12px!important;
+  z-index:5000!important;
+  width:auto!important;
+  max-width:none!important;
+  height:auto!important;
+  max-height:none!important;
+  margin:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  border-radius:12px!important;
+  background:#1e1e1e!important;
+  box-shadow:0 0 0 100vmax rgba(8,14,22,.72),0 24px 70px rgba(0,0,0,.50)!important;
+}
+body.ian603-shell .ian603-sql-focus .code-head,
+body.ian603-shell .ian603-sql-focus .pg-head,
+body.ian603-shell .ian603-sql-focus .sql-head{
+  flex:0 0 auto!important;
+  min-height:54px!important;
+  padding:9px 12px 9px 16px!important;
+}
+body.ian603-shell .ian603-sql-focus .code-head b,
+body.ian603-shell .ian603-sql-focus .pg-head b,
+body.ian603-shell .ian603-sql-focus .sql-head b{
+  font-size:15px!important;
+}
+body.ian603-shell .ian603-sql-focus .code-head small,
+body.ian603-shell .ian603-sql-focus .pg-head small,
+body.ian603-shell .ian603-sql-focus .sql-head small{
+  font-size:11px!important;
+}
+body.ian603-shell .ian603-sql-focus .pgadmin-editor-shell,
+body.ian603-shell .ian603-sql-focus .pg-shell{
+  flex:1 1 auto!important;
+  height:auto!important;
+  min-height:250px!important;
+  max-height:none!important;
+}
+body.ian603-shell .ian603-sql-focus textarea.sql-editor,
+body.ian603-shell .ian603-sql-focus textarea.pg-editor{
+  min-height:0!important;
+  max-height:none!important;
+  height:100%!important;
+  resize:none!important;
+  font-size:15px!important;
+  line-height:23px!important;
+}
+body.ian603-shell .ian603-sql-focus .pgadmin-highlight,
+body.ian603-shell .ian603-sql-focus .pg-highlight{
+  min-height:0!important;
+  max-height:none!important;
+  height:100%!important;
+  font-size:15px!important;
+  line-height:23px!important;
+}
+body.ian603-shell .ian603-sql-focus .pgadmin-gutter-lines,
+body.ian603-shell .ian603-sql-focus .pg-gutter-lines{
+  font-size:14px!important;
+  line-height:23px!important;
+}
+body.ian603-shell .ian603-sql-focus .pgadmin-gutter-line,
+body.ian603-shell .ian603-sql-focus .pg-gutter-line{
+  height:23px!important;
+}
+body.ian603-shell .ian603-sql-focus .output.show,
+body.ian603-shell .ian603-sql-focus .pg-output,
+body.ian603-shell .ian603-sql-focus .sql-output{
+  flex:0 0 min(34vh,360px)!important;
+  max-height:min(34vh,360px)!important;
+  min-height:140px!important;
+  overflow:auto!important;
+  border-top:2px solid #8fa1b3!important;
+}
+body.ian603-shell .ian603-sql-focus .mini-result{
+  max-height:100%!important;
+  overflow:auto!important;
+}
+body.ian603-shell .ian603-sql-focus .mini-result table{
+  min-width:100%!important;
+  font-size:13px!important;
+}
+body.ian603-shell .ian603-sql-focus .mini-result th,
+body.ian603-shell .ian603-sql-focus .mini-result td{
+  padding:9px 11px!important;
+}
+body.ian603-shell .ian603-sql-focus .sql-focus-toggle::before{
+  content:"↙";
+}
+body.ian603-shell .ian603-sql-focus .sql-focus-toggle{
+  background:#f8fafc!important;
+  border-color:#f8fafc!important;
+  color:#1f2937!important;
+}
+@media(max-width:720px){
+  body.ian603-shell .code-cell.ian603-sql-focus,
+  body.ian603-shell .pg-cell.ian603-sql-focus,
+  body.ian603-shell .sql-cell.ian603-sql-focus{
+    inset:6px!important;
+    border-radius:8px!important;
+  }
+  body.ian603-shell .ian603-sql-focus .code-head,
+  body.ian603-shell .ian603-sql-focus .pg-head,
+  body.ian603-shell .ian603-sql-focus .sql-head{
+    align-items:flex-start!important;
+  }
+  body.ian603-shell .ian603-sql-focus .cell-actions,
+  body.ian603-shell .ian603-sql-focus .pg-actions,
+  body.ian603-shell .ian603-sql-focus .sql-actions{
+    justify-content:flex-end!important;
+    flex-wrap:wrap!important;
+  }
+  body.ian603-shell .ian603-sql-focus .pgadmin-editor-shell,
+  body.ian603-shell .ian603-sql-focus .pg-shell{
+    min-height:220px!important;
+  }
+  body.ian603-shell .ian603-sql-focus .output.show,
+  body.ian603-shell .ian603-sql-focus .pg-output,
+  body.ian603-shell .ian603-sql-focus .sql-output{
+    flex-basis:38vh!important;
+    max-height:38vh!important;
+    min-height:120px!important;
+  }
+}
+/* IAN603_SQL_FOCUS_SHARED_END */
