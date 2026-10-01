@@ -468,6 +468,11 @@ body.dark .mini-result th{
   <div class="card primary-card"><div class="label">FULL OUTER</div><p>Keep unmatched rows from both sides.</p></div>
 </div>
 <div class="callout"><strong>Prediction habit:</strong> before running a join, identify which unmatched rows must survive and where NULL values will appear.</div><div class="slide-num"></div></section><section class="slide" data-title="INNER JOIN">
+<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:7px">
+  <div class="slide-kicker" style="margin:0">Core JOIN types</div>
+  <h2 style="font-size:clamp(24px,2.25vw,34px);margin:0">INNER JOIN</h2>
+  <p style="margin:0;color:var(--muted);font-size:clamp(13px,1.05vw,16px)">Keep only rows that match in both tables.</p>
+</div>
 <div class="join-demo">
   <div class="join-mini"><span class="mini-label">patients</span><table class="tiny-table"><thead><tr><th>id</th><th>name</th></tr></thead><tbody><tr><td>1</td><td>Ana</td></tr><tr><td>2</td><td>Ben</td></tr><tr><td>3</td><td>Cara</td></tr></tbody></table></div>
   <div class="join-arrow">⋈</div>
@@ -481,6 +486,11 @@ INNER JOIN admissions AS a
   ON a.patient_id = p.patient_id
 ORDER BY p.patient_id, a.admit_date;</textarea><div class="output">Run this example to see the PostgreSQL result.</div></div>
 <div class="callout"><strong>Current practice DB:</strong> 12 admissions all match a patient, so this query returns exactly 12 rows. The grain is one matching admission, not one patient.</div><div class="slide-num"></div></section><section class="slide" data-title="Aliases and grain"><div class="grid-2"><div class="card"><h3>Why aliases?</h3><p><code>p.patient_id</code> and <code>a.patient_id</code> make the source explicit.</p></div><div class="card"><h3>Why grain?</h3><p>Repeated patient values can be correct when the result is one row per admission.</p></div></div><div class="callout"><strong>Rule:</strong> once a table receives an alias, use that alias consistently.</div><div class="slide-num"></div></section><section class="slide" data-title="LEFT JOIN">
+<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:7px">
+  <div class="slide-kicker" style="margin:0">Core JOIN types</div>
+  <h2 style="font-size:clamp(24px,2.25vw,34px);margin:0">LEFT JOIN</h2>
+  <p style="margin:0;color:var(--muted);font-size:clamp(13px,1.05vw,16px)">Keep every row from the left table.</p>
+</div>
 <div class="join-demo">
   <div class="join-mini"><span class="mini-label">patients</span><table class="tiny-table"><thead><tr><th>id</th><th>name</th></tr></thead><tbody><tr><td>1</td><td>Ana</td></tr><tr><td>2</td><td>Ben</td></tr><tr><td>3</td><td>Cara</td></tr></tbody></table></div>
   <div class="join-arrow">LEFT</div>
@@ -494,6 +504,11 @@ LEFT JOIN admissions AS a
   ON a.patient_id = p.patient_id
 ORDER BY p.patient_id, a.admission_id;</textarea><div class="output">Run this example to see the PostgreSQL result.</div></div>
 <div class="callout"><strong>Key idea:</strong> Ben survives because the left table is preserved. The missing right-side values become NULL.</div><div class="slide-num"></div></section><section class="slide" data-title="Anti-join">
+<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:7px">
+  <div class="slide-kicker" style="margin:0">JOIN patterns</div>
+  <h2 style="font-size:clamp(24px,2.25vw,34px);margin:0">Anti-join</h2>
+  <p style="margin:0;color:var(--muted);font-size:clamp(13px,1.05vw,16px)">Find rows on the preserved side that have no match.</p>
+</div>
 <p class="lead">An anti-join asks: which rows on the preserved side have <em>no</em> match?</p>
 <div class="join-demo">
   <div class="join-mini"><span class="mini-label">patients</span><table class="tiny-table"><thead><tr><th>id</th><th>name</th></tr></thead><tbody><tr><td>1</td><td>Ana</td></tr><tr><td>2</td><td>Ben</td></tr><tr><td>3</td><td>Cara</td></tr></tbody></table></div>
@@ -509,6 +524,11 @@ LEFT JOIN lab_results AS l
 WHERE l.test_id IS NULL
 ORDER BY p.patient_id;</textarea><div class="output">Run this example to see the PostgreSQL result.</div></div>
 <div class="callout"><strong>Pattern:</strong> preserve the parent first, then test a non-nullable right-side key for NULL.</div><div class="slide-num"></div></section><section class="slide" data-title="RIGHT JOIN">
+<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:7px">
+  <div class="slide-kicker" style="margin:0">Core JOIN types</div>
+  <h2 style="font-size:clamp(24px,2.25vw,34px);margin:0">RIGHT JOIN</h2>
+  <p style="margin:0;color:var(--muted);font-size:clamp(13px,1.05vw,16px)">Keep every row from the right table.</p>
+</div>
 <div class="join-demo">
   <div class="join-mini"><span class="mini-label">patients</span><table class="tiny-table"><thead><tr><th>id</th><th>name</th></tr></thead><tbody><tr><td>1</td><td>Ana</td></tr><tr><td>2</td><td>Ben</td></tr><tr><td>3</td><td>Cara</td></tr></tbody></table></div>
   <div class="join-arrow">RIGHT</div>
@@ -522,6 +542,11 @@ RIGHT JOIN departments AS d
   ON d.department = s.department
 ORDER BY d.department, s.name;</textarea><div class="output">Run this example to see the PostgreSQL result.</div></div>
 <div class="callout"><strong>Readable alternative:</strong> many teams would put <code>departments</code> first and write the equivalent LEFT JOIN.</div><div class="slide-num"></div></section><section class="slide" data-title="FULL OUTER JOIN">
+<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:7px">
+  <div class="slide-kicker" style="margin:0">Core JOIN types</div>
+  <h2 style="font-size:clamp(24px,2.25vw,34px);margin:0">FULL OUTER JOIN</h2>
+  <p style="margin:0;color:var(--muted);font-size:clamp(13px,1.05vw,16px)">Keep matched and unmatched rows from both tables.</p>
+</div>
 <div class="join-demo">
   <div class="join-mini"><span class="mini-label">patients</span><table class="tiny-table"><thead><tr><th>id</th><th>name</th></tr></thead><tbody><tr><td>1</td><td>Ana</td></tr><tr><td>2</td><td>Ben</td></tr><tr><td>3</td><td>Cara</td></tr></tbody></table></div>
   <div class="join-arrow">FULL</div>
