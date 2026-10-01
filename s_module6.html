@@ -357,18 +357,18 @@ body.dark .mini-result th{
 </div>
 
 <div class="callout"><strong>Core habit:</strong> start from the business rule, not from a JOIN keyword.</div>
-<div class="slide-num"></div></section><section class="slide" data-title="Practice schema">
-<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:10px">
+<div class="slide-num"></div></section><section class="slide" data-title="Practice schema" style="padding-top:28px;padding-bottom:24px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:6px">
   <div>
     <div class="slide-kicker">Relationships before JOINs</div>
-    <h2 style="margin-bottom:8px">Practice schema</h2>
-    <p class="lead" style="margin-bottom:0">A JOIN works because related tables share keys. Follow each relationship from a primary key to the matching foreign key.</p>
+    <h2 style="margin-bottom:6px">Practice schema</h2>
+    <p class="lead" style="margin-bottom:0;font-size:clamp(16px,1.55vw,21px)">A JOIN works because related tables share keys. Follow each relationship from a primary key to the matching foreign key.</p>
   </div>
   <span class="badge" style="white-space:nowrap">PK → FK</span>
 </div>
 
-<div id="practiceSchemaErd" style="border:1px solid var(--border);border-radius:16px;background:var(--surface2);padding:8px 10px;overflow:auto">
-<svg viewBox="0 0 1180 500" role="img" aria-label="Entity relationship diagram showing patients connected one-to-many to admissions, lab results, and prescriptions, and departments connected one-to-many to medical staff." style="display:block;width:min(100%,1000px);min-width:760px;height:auto;margin:0 auto">
+<div id="practiceSchemaErd" style="border:1px solid var(--border);border-radius:16px;background:var(--surface2);padding:6px 10px;overflow:auto;margin-top:8px">
+<svg viewBox="0 0 1180 410" role="img" aria-label="Entity relationship diagram showing patients connected one-to-many to admissions, lab results, and prescriptions, and departments connected one-to-many to medical staff." style="display:block;width:min(100%,1000px);min-width:760px;height:auto;margin:0 auto">
   <defs>
     <marker id="erdArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L0,6 L9,3 z" fill="var(--primary)"></path>
@@ -379,89 +379,83 @@ body.dark .mini-result th{
   </defs>
 
   <!-- Relationship paths -->
-  <path d="M300 128 H365 V80 H455" fill="none" stroke="var(--primary)" stroke-width="3" marker-end="url(#erdArrow)"></path>
-  <path d="M300 128 H365 V245 H455" fill="none" stroke="var(--primary)" stroke-width="3" marker-end="url(#erdArrow)"></path>
-  <path d="M300 128 H365 V410 H455" fill="none" stroke="var(--primary)" stroke-width="3" marker-end="url(#erdArrow)"></path>
-  <path d="M995 190 V285" fill="none" stroke="var(--primary)" stroke-width="3" marker-end="url(#erdArrow)"></path>
+  <path d="M300 205 H365 V70 H455" fill="none" stroke="var(--primary)" stroke-width="3" marker-end="url(#erdArrow)"></path>
+  <path d="M300 205 H365 V205 H455" fill="none" stroke="var(--primary)" stroke-width="3" marker-end="url(#erdArrow)"></path>
+  <path d="M300 205 H365 V340 H455" fill="none" stroke="var(--primary)" stroke-width="3" marker-end="url(#erdArrow)"></path>
+  <path d="M995 150 V255" fill="none" stroke="var(--primary)" stroke-width="3" marker-end="url(#erdArrow)"></path>
 
   <!-- Relationship labels -->
-  <text x="310" y="112" fill="var(--primary)" font-size="16" font-weight="800">1</text>
-  <text x="400" y="68" fill="var(--primary)" font-size="17" font-weight="800">many</text>
-  <text x="400" y="233" fill="var(--primary)" font-size="17" font-weight="800">many</text>
-  <text x="400" y="398" fill="var(--primary)" font-size="17" font-weight="800">many</text>
-  <text x="1010" y="218" fill="var(--primary)" font-size="17" font-weight="800">1 → many</text>
+  <text x="312" y="192" fill="var(--primary)" font-size="17" font-weight="800">1</text>
+  <text x="398" y="58" fill="var(--primary)" font-size="17" font-weight="800">many</text>
+  <text x="398" y="193" fill="var(--primary)" font-size="17" font-weight="800">many</text>
+  <text x="398" y="328" fill="var(--primary)" font-size="17" font-weight="800">many</text>
+  <text x="1010" y="202" fill="var(--primary)" font-size="17" font-weight="800">1 → many</text>
 
   <!-- patients -->
   <g filter="url(#erdShadow)">
-    <rect x="35" y="55" width="265" height="150" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
-    <rect x="35" y="55" width="265" height="42" rx="14" fill="var(--soft)"></rect>
-    <rect x="35" y="83" width="265" height="14" fill="var(--soft)"></rect>
-    <text x="55" y="83" fill="var(--primary)" font-size="20" font-weight="900">patients</text>
-    <text x="55" y="122" fill="var(--text)" font-size="16" font-weight="800">PK  patient_id</text>
-    <text x="55" y="151" fill="var(--muted)" font-size="15">name</text>
-    <text x="55" y="181" fill="var(--muted)" font-size="15">One row per patient.</text>
+    <rect x="35" y="145" width="265" height="120" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
+    <rect x="35" y="145" width="265" height="40" rx="14" fill="var(--soft)"></rect>
+    <rect x="35" y="171" width="265" height="14" fill="var(--soft)"></rect>
+    <text x="55" y="172" fill="var(--primary)" font-size="20" font-weight="900">patients</text>
+    <text x="55" y="211" fill="var(--text)" font-size="16" font-weight="800">PK  patient_id</text>
+    <text x="55" y="238" fill="var(--muted)" font-size="15">name</text>
   </g>
 
   <!-- admissions -->
   <g filter="url(#erdShadow)">
-    <rect x="455" y="20" width="300" height="135" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
-    <rect x="455" y="20" width="300" height="42" rx="14" fill="var(--soft)"></rect>
-    <rect x="455" y="48" width="300" height="14" fill="var(--soft)"></rect>
-    <text x="475" y="48" fill="var(--primary)" font-size="20" font-weight="900">admissions</text>
-    <text x="475" y="86" fill="var(--text)" font-size="16" font-weight="800">PK  admission_id</text>
-    <text x="475" y="111" fill="var(--text)" font-size="16" font-weight="800">FK  patient_id</text>
-    <text x="475" y="138" fill="var(--muted)" font-size="15">Many admissions can belong to one patient.</text>
+    <rect x="455" y="20" width="300" height="100" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
+    <rect x="455" y="20" width="300" height="38" rx="14" fill="var(--soft)"></rect>
+    <rect x="455" y="44" width="300" height="14" fill="var(--soft)"></rect>
+    <text x="475" y="47" fill="var(--primary)" font-size="20" font-weight="900">admissions</text>
+    <text x="475" y="78" fill="var(--text)" font-size="16" font-weight="800">PK  admission_id</text>
+    <text x="475" y="103" fill="var(--text)" font-size="16" font-weight="800">FK  patient_id</text>
   </g>
 
   <!-- lab_results -->
   <g filter="url(#erdShadow)">
-    <rect x="455" y="185" width="300" height="125" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
-    <rect x="455" y="185" width="300" height="42" rx="14" fill="var(--soft)"></rect>
-    <rect x="455" y="213" width="300" height="14" fill="var(--soft)"></rect>
-    <text x="475" y="213" fill="var(--primary)" font-size="20" font-weight="900">lab_results</text>
-    <text x="475" y="251" fill="var(--text)" font-size="16" font-weight="800">PK  test_id</text>
-    <text x="475" y="276" fill="var(--text)" font-size="16" font-weight="800">FK  patient_id</text>
-    <text x="475" y="298" fill="var(--muted)" font-size="15">Many lab tests can belong to one patient.</text>
+    <rect x="455" y="155" width="300" height="100" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
+    <rect x="455" y="155" width="300" height="38" rx="14" fill="var(--soft)"></rect>
+    <rect x="455" y="179" width="300" height="14" fill="var(--soft)"></rect>
+    <text x="475" y="182" fill="var(--primary)" font-size="20" font-weight="900">lab_results</text>
+    <text x="475" y="213" fill="var(--text)" font-size="16" font-weight="800">PK  test_id</text>
+    <text x="475" y="238" fill="var(--text)" font-size="16" font-weight="800">FK  patient_id</text>
   </g>
 
   <!-- prescriptions -->
   <g filter="url(#erdShadow)">
-    <rect x="455" y="350" width="300" height="125" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
-    <rect x="455" y="350" width="300" height="42" rx="14" fill="var(--soft)"></rect>
-    <rect x="455" y="378" width="300" height="14" fill="var(--soft)"></rect>
-    <text x="475" y="378" fill="var(--primary)" font-size="20" font-weight="900">prescriptions</text>
-    <text x="475" y="416" fill="var(--text)" font-size="16" font-weight="800">PK  rx_id</text>
-    <text x="475" y="441" fill="var(--text)" font-size="16" font-weight="800">FK  patient_id</text>
-    <text x="475" y="463" fill="var(--muted)" font-size="15">Many prescriptions can belong to one patient.</text>
+    <rect x="455" y="290" width="300" height="100" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
+    <rect x="455" y="290" width="300" height="38" rx="14" fill="var(--soft)"></rect>
+    <rect x="455" y="314" width="300" height="14" fill="var(--soft)"></rect>
+    <text x="475" y="317" fill="var(--primary)" font-size="20" font-weight="900">prescriptions</text>
+    <text x="475" y="348" fill="var(--text)" font-size="16" font-weight="800">PK  rx_id</text>
+    <text x="475" y="373" fill="var(--text)" font-size="16" font-weight="800">FK  patient_id</text>
   </g>
 
   <!-- departments -->
   <g filter="url(#erdShadow)">
-    <rect x="855" y="55" width="285" height="135" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
-    <rect x="855" y="55" width="285" height="42" rx="14" fill="var(--soft)"></rect>
-    <rect x="855" y="83" width="285" height="14" fill="var(--soft)"></rect>
-    <text x="875" y="83" fill="var(--primary)" font-size="20" font-weight="900">departments</text>
-    <text x="875" y="122" fill="var(--text)" font-size="16" font-weight="800">PK  department</text>
-    <text x="875" y="150" fill="var(--muted)" font-size="15">floor_no</text>
-    <text x="875" y="176" fill="var(--muted)" font-size="15">One row per department.</text>
+    <rect x="855" y="45" width="285" height="105" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
+    <rect x="855" y="45" width="285" height="38" rx="14" fill="var(--soft)"></rect>
+    <rect x="855" y="69" width="285" height="14" fill="var(--soft)"></rect>
+    <text x="875" y="72" fill="var(--primary)" font-size="20" font-weight="900">departments</text>
+    <text x="875" y="106" fill="var(--text)" font-size="16" font-weight="800">PK  department</text>
+    <text x="875" y="133" fill="var(--muted)" font-size="15">floor_no</text>
   </g>
 
   <!-- medical_staff -->
   <g filter="url(#erdShadow)">
-    <rect x="855" y="285" width="285" height="155" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
-    <rect x="855" y="285" width="285" height="42" rx="14" fill="var(--soft)"></rect>
-    <rect x="855" y="313" width="285" height="14" fill="var(--soft)"></rect>
-    <text x="875" y="313" fill="var(--primary)" font-size="20" font-weight="900">medical_staff</text>
-    <text x="875" y="352" fill="var(--text)" font-size="16" font-weight="800">PK  staff_id</text>
-    <text x="875" y="378" fill="var(--text)" font-size="16" font-weight="800">FK  department</text>
-    <text x="875" y="405" fill="var(--muted)" font-size="15">name · specialization</text>
-    <text x="875" y="428" fill="var(--muted)" font-size="15">Staff members belong to departments.</text>
+    <rect x="855" y="255" width="285" height="120" rx="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"></rect>
+    <rect x="855" y="255" width="285" height="38" rx="14" fill="var(--soft)"></rect>
+    <rect x="855" y="279" width="285" height="14" fill="var(--soft)"></rect>
+    <text x="875" y="282" fill="var(--primary)" font-size="20" font-weight="900">medical_staff</text>
+    <text x="875" y="318" fill="var(--text)" font-size="16" font-weight="800">PK  staff_id</text>
+    <text x="875" y="343" fill="var(--text)" font-size="16" font-weight="800">FK  department</text>
+    <text x="875" y="367" fill="var(--muted)" font-size="15">name · specialization</text>
   </g>
 </svg>
 </div>
 
-<div class="callout" style="margin-top:10px"><strong>Important:</strong> the database intentionally includes patients without activity and a staging row without a patient master record. <span style="margin-left:8px"><strong>Read the ERD:</strong> <code>patients.patient_id</code> connects to the patient foreign key in the activity tables.</span></div>
-<div class="slide-num"></div></section><section class="slide" data-title="Join mental model"><div class="grid-3"><div class="card primary-card"><h3>Row sets</h3><p>Which two sources are being compared?</p></div><div class="card"><h3>Match</h3><p>What condition makes two rows related?</p></div><div class="card good-card"><h3>Preservation</h3><p>Which unmatched rows must remain?</p></div></div><div class="callout"><strong>Remember:</strong> the join type controls preservation; the <code>ON</code> expression controls matching.</div><div class="slide-num"></div></section><section class="slide" data-title="Row preservation map">
+<div class="callout" style="margin-top:8px;padding:10px 13px"><strong>Important:</strong> the database intentionally includes patients without activity and a staging row without a patient master record. <span style="margin-left:8px"><strong>Read the ERD:</strong> <code>patients.patient_id</code> connects to the patient foreign key in the activity tables.</span></div>
+<div class="slide-num" style="margin-top:8px"></div></section><section class="slide" data-title="Join mental model"><div class="grid-3"><div class="card primary-card"><h3>Row sets</h3><p>Which two sources are being compared?</p></div><div class="card"><h3>Match</h3><p>What condition makes two rows related?</p></div><div class="card good-card"><h3>Preservation</h3><p>Which unmatched rows must remain?</p></div></div><div class="callout"><strong>Remember:</strong> the join type controls preservation; the <code>ON</code> expression controls matching.</div><div class="slide-num"></div></section><section class="slide" data-title="Row preservation map">
 <p class="lead">Use the same tiny row sets to see what each join preserves before we run the larger healthcare examples.</p>
 <div class="grid-2">
   <div class="join-mini"><span class="mini-label">Left table · patients</span><table class="tiny-table"><thead><tr><th>patient_id</th><th>name</th></tr></thead><tbody><tr><td>1</td><td>Ana</td></tr><tr><td>2</td><td>Ben</td></tr><tr><td>3</td><td>Cara</td></tr></tbody></table></div>
