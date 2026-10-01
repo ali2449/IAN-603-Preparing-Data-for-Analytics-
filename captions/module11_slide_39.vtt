@@ -1,37 +1,20 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.982
-This query sequences admissions within each patient.
+00:00:00.103 --> 00:00:05.777
+This query sequences admissions within each patient
+LAG retrieves
 
-00:00:02.982 --> 00:00:06.137
-LAG retrieves the previous discharge time.
+00:00:05.803 --> 00:00:11.878
+the previous discharge time The outer query
+subtracts that previous discharge
 
-00:00:06.137 --> 00:00:10.387
-The outer query subtracts that previous discharge from the current admit time.
+00:00:11.891 --> 00:00:17.757
+from the current admit time The result is the
+interval between encounters
 
-00:00:10.387 --> 00:00:13.102
-The result is the interval between encounters.
+00:00:19.495 --> 00:00:24.060
+The first admission for each patient has no previous
+discharge so it is excluded in
 
-00:00:13.102 --> 00:00:19.117
-The first admission for each patient has no previous discharge, so it is excluded in the final stage.
-
-00:00:19.117 --> 00:00:23.897
-When reading the example, do not read punctuation one character at a time.
-
-00:00:23.897 --> 00:00:29.802
-Start with the purpose of the query, then identify the input rows, the operation being applied,
-
-00:00:29.802 --> 00:00:32.017
-and the shape of the expected output.
-
-00:00:32.017 --> 00:00:37.362
-In a real setting such as an operations team comparing each event with the previous and next event,
-
-00:00:37.362 --> 00:00:42.967
-this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
-
-00:00:42.967 --> 00:00:45.002
-before discussing syntax.
-
-00:00:45.002 --> 00:00:50.480
-After running it, inspect a few records manually and check that the result matches that explanation.
+00:00:24.087 --> 00:00:25.100
+the final stage

@@ -1,46 +1,41 @@
 WEBVTT
 
-00:00:00.038 --> 00:00:04.292
-Foreign keys also need a decision about what happens when a parent row is deleted.
+00:00:00.103 --> 00:00:03.458
+Foreign keys also need a decision about what happens
+when a parent
 
-00:00:04.292 --> 00:00:08.767
-RESTRICT or NO ACTION blocks the deletion while dependent child rows exist.
+00:00:03.471 --> 00:00:09.175
+row is deleted RESTRICT or NO ACTION blocks the
+deletion while dependent
 
-00:00:08.767 --> 00:00:11.812
-This is often appropriate for master data such as patients, providers,
+00:00:09.188 --> 00:00:13.862
+child rows exist This is often appropriate for
+master data such as
 
-00:00:11.812 --> 00:00:15.342
-or services that are referenced by historical activity.
+00:00:13.888 --> 00:00:20.533
+patients providers or services that are referenced
+by historical activity CASCADE
 
-00:00:15.342 --> 00:00:18.722
-CASCADE automatically removes dependent child rows.
+00:00:20.559 --> 00:00:25.851
+automatically removes dependent child rows That can
+be appropriate when the child
 
-00:00:18.722 --> 00:00:22.117
-That can be appropriate when the child has no meaning without the parent,
+00:00:25.878 --> 00:00:29.562
+has no meaning without the parent such as
+appointment service lines when
 
-00:00:22.117 --> 00:00:25.632
-such as appointment service lines when the appointment itself is deleted.
+00:00:29.575 --> 00:00:35.010
+the appointment itself is deleted SET NULL keeps the
+child but removes
 
-00:00:25.632 --> 00:00:31.182
-SET NULL keeps the child but removes the reference, which only makes sense when the relationship is optional.
+00:00:35.036 --> 00:00:40.452
+the reference which only makes sense when the
+relationship is optional Do
 
-00:00:31.182 --> 00:00:34.627
-Do not choose CASCADE simply because it is convenient.
+00:00:40.466 --> 00:00:45.666
+not choose CASCADE simply because it is convenient
+Choose the referential action
 
-00:00:34.627 --> 00:00:39.552
-Choose the referential action based on the real meaning and retention requirements of the relationship.
-
-00:00:39.552 --> 00:00:44.727
-Connect this idea to a clinic system separating patients, encounters, clinicians, and billing.
-
-00:00:44.727 --> 00:00:48.907
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
-
-00:00:48.907 --> 00:00:54.652
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
-
-00:00:54.652 --> 00:00:59.467
-A strong analyst can explain both the SQL operation and the assumption behind it.
-
-00:00:59.467 --> 00:01:04.197
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:45.692 --> 00:00:49.403
+based on the real meaning and retention requirements
+of the relationship

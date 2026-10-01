@@ -1,46 +1,37 @@
 WEBVTT
 
-00:00:00.135 --> 00:00:02.767
-This example shows an unnormalized appointment record.
+00:00:00.103 --> 00:00:05.870
+This example shows an unnormalized appointment
+record The row contains
 
-00:00:02.767 --> 00:00:06.912
-The row contains patient information, provider information, appointment time,
+00:00:05.884 --> 00:00:11.620
+patient information provider information appointment
+time a comma-separated list of service codes
 
-00:00:06.912 --> 00:00:11.012
-a comma-separated list of service codes, and a matching list of charges.
+00:00:11.791 --> 00:00:17.306
+and a matching list of charges That design creates
+several problems
 
-00:00:11.012 --> 00:00:13.452
-That design creates several problems.
+00:00:19.031 --> 00:00:23.452
+A foreign key cannot easily validate each service
+code inside a comma-separated
 
-00:00:13.452 --> 00:00:18.017
-A foreign key cannot easily validate each service code inside a comma-separated list.
+00:00:23.478 --> 00:00:28.994
+list Joining to one service is difficult The charges
+can become
 
-00:00:18.017 --> 00:00:20.202
-Joining to one service is difficult.
+00:00:29.020 --> 00:00:34.507
+misaligned with the service codes The row also mixes
+several different subjects
 
-00:00:20.202 --> 00:00:23.127
-The charges can become misaligned with the service codes.
+00:00:36.219 --> 00:00:40.377
+Before normalizing state the problem clearly one row
+is trying to represent
 
-00:00:23.127 --> 00:00:25.957
-The row also mixes several different subjects.
+00:00:40.390 --> 00:00:45.695
+an appointment and several service occurrences at
+the same time The first
 
-00:00:25.957 --> 00:00:31.152
-Before normalizing, state the problem clearly: one row is trying to represent an appointment and several
-
-00:00:31.152 --> 00:00:33.742
-service occurrences at the same time.
-
-00:00:33.742 --> 00:00:39.057
-The first normalization step will separate those repeated service values into individual rows.
-
-00:00:39.057 --> 00:00:42.432
-Normalization is easier to understand as anomaly prevention.
-
-00:00:42.432 --> 00:00:46.907
-Repeating facts in many rows makes updates inconsistent, inserts awkward, and deletes risky.
-
-00:00:46.907 --> 00:00:51.757
-Splitting data into well-defined entities reduces that repetition.
-
-00:00:51.757 --> 00:00:56.960
-The goal is not to create the maximum number of tables; it is to store each fact in a defensible place.
+00:00:45.722 --> 00:00:50.735
+normalization step will separate those repeated
+service values into individual rows

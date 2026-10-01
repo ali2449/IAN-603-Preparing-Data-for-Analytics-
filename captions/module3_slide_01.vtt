@@ -1,52 +1,92 @@
 WEBVTT
 
-00:00:00.030 --> 00:00:03.457
-Welcome to Module 3, PostgreSQL in Action.
+00:00:00.100 --> 00:00:05.250
+Welcome to Module 3 PostgreSQL in Action In this
+module we are
 
-00:00:03.457 --> 00:00:08.197
-In Module 2, we focused on how a relational database is organized.
+00:00:05.262 --> 00:00:09.750
+moving from designing a database to actually using
+it In Module 2
 
-00:00:08.197 --> 00:00:15.047
-Now we start using that database by reading rows, filtering results, and making controlled changes.
+00:00:09.912 --> 00:00:13.675
+the main questions were about structure what tables
+should exist which columns
 
-00:00:15.047 --> 00:00:18.997
-The main goal is not to memorize a long list of SQL commands.
+00:00:13.700 --> 00:00:16.788
+belong in each table and how tables should relate to
+one another
 
-00:00:18.997 --> 00:00:23.857
-Instead, I want you to develop a safe working pattern: understand the question,
+00:00:17.675 --> 00:00:22.275
+Now our focus changes We will use SQL to ask
+questions retrieve
 
-00:00:23.857 --> 00:00:30.987
-write the smallest useful statement, run it, inspect the result, and verify any change before keeping it.
+00:00:22.300 --> 00:00:26.812
+useful rows and make controlled changes to stored
+data If SQL is
 
-00:00:30.987 --> 00:00:35.507
-Many slides include PostgreSQL code that runs directly in your browser.
+00:00:26.838 --> 00:00:31.138
+new to you do not worry about memorizing every
+command I want
 
-00:00:35.507 --> 00:00:43.532
-You can test the examples here first, then use Copy and paste the same SQL into the pgAdmin Query Tool for
+00:00:31.150 --> 00:00:35.938
+you to focus on a simple workflow First decide what
+information you
 
-00:00:43.532 --> 00:00:43.842
-more practice.
+00:00:35.950 --> 00:00:40.862
+need Second write the smallest SQL statement that
+can answer that question
 
-00:00:43.842 --> 00:00:49.742
-We will begin with SELECT and filtering, then move carefully into INSERT, UPDATE, DELETE, transactions,
+00:00:41.750 --> 00:00:47.138
+Third run the query Fourth inspect the rows changes
+or error messages
 
-00:00:49.742 --> 00:00:55.812
-and JSONB. Keep a real project in mind as we work through this section—for example,
+00:00:47.162 --> 00:00:52.300
+that PostgreSQL gives you Finally verify the result
+before you move on
 
-00:00:55.812 --> 00:01:01.287
-an analyst exploring operational records before building a report.
+00:00:53.188 --> 00:00:57.750
+Throughout this lesson you can run SQL directly in
+the browser We
 
-00:01:01.287 --> 00:01:06.462
-The technical feature matters because it changes what questions we can answer reliably and how easily another
+00:00:57.775 --> 00:01:02.612
+will begin with complete examples Then you will make
+small changes complete
 
-00:01:06.462 --> 00:01:10.042
-analyst can understand our work.
+00:01:02.638 --> 00:01:08.225
+partially written statements and finally write short
+queries yourself This gradual approach
 
-00:01:10.042 --> 00:01:16.817
-As you listen, try to connect each SQL or data concept to a decision you might need to defend later:
+00:01:08.238 --> 00:01:12.762
+is intentional SQL becomes much easier when you
+learn one pattern at
 
-00:01:16.817 --> 00:01:19.947
-what the data means, what one row represents, what can be missing,
+00:01:12.788 --> 00:01:17.325
+a time As you work remember that reading data and
+changing data
 
-00:01:19.947 --> 00:01:24.102
-and what assumptions the transformation introduces.
+00:01:17.350 --> 00:01:22.688
+are different responsibilities A SELECT statement
+normally reads data without changing the
+
+00:01:22.712 --> 00:01:27.538
+table Commands such as INSERT UPDATE and DELETE can
+change stored data
+
+00:01:27.800 --> 00:01:30.950
+so we will be more careful with them We will also
+use
+
+00:01:30.962 --> 00:01:36.362
+transactions keys constraints and RETURNING to make
+those changes safer Take your
+
+00:01:36.388 --> 00:01:40.788
+time with the examples Run them look at the result
+and ask
+
+00:01:40.812 --> 00:01:45.638
+yourself what each clause contributed That habit is
+more valuable than simply
+
+00:01:45.650 --> 00:01:46.988
+memorizing syntax

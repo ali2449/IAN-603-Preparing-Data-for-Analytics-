@@ -1,46 +1,44 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:06.207
-This example shows a very common design: a generated surrogate key plus a protected natural identifier.
+00:00:00.103 --> 00:00:04.458
+This example shows a very common design a generated
+surrogate key plus
 
-00:00:06.207 --> 00:00:09.387
-PostgreSQL generates patient ID automatically.
+00:00:04.471 --> 00:00:10.299
+a protected natural identifier PostgreSQL generates
+patient
 
-00:00:09.387 --> 00:00:12.407
-That gives us a stable internal key that can be used in relationships.
+00:00:10.326 --> 00:00:15.078
+ID automatically That gives us a stable internal key
+that can be
 
-00:00:12.407 --> 00:00:19.397
-The clinic's medical record number still has business meaning, so it receives a UNIQUE constraint.
+00:00:15.105 --> 00:00:20.895
+used in relationships The clinic's medical record
+number still has business
 
-00:00:19.397 --> 00:00:21.622
-The surrogate key does not make the natural business identifier irrelevant.
+00:00:20.921 --> 00:00:25.805
+meaning so it receives a UNIQUE constraint The
+surrogate key does not
 
-00:00:21.622 --> 00:00:25.907
-Run the example in the browser.
+00:00:25.819 --> 00:00:31.414
+make the natural business identifier irrelevant Run
+the example in
 
-00:00:25.907 --> 00:00:29.532
-Notice that the INSERT does not provide a patient ID because PostgreSQL generates it.
+00:00:31.441 --> 00:00:35.891
+the browser Notice that the INSERT does not provide
+a patient ID
 
-00:00:29.532 --> 00:00:32.447
-Then inspect the returned row and the table structure.
+00:00:35.904 --> 00:00:41.441
+because PostgreSQL generates it Then inspect the
+returned row
 
-00:00:32.447 --> 00:00:35.572
-If you copy this example into pgAdmin, focus on the two different roles:
+00:00:41.454 --> 00:00:47.495
+and the table structure If you copy this example
+into pgAdmin focus
 
-00:00:35.572 --> 00:00:40.277
-patient ID is the internal row identity, while MRN is protected business identity.
+00:00:47.521 --> 00:00:51.153
+on the two different roles patient ID is the
+internal row identity
 
-00:00:40.277 --> 00:00:42.782
-Keys are not merely technical identifiers.
-
-00:00:42.782 --> 00:00:48.522
-A primary key protects row identity, a unique constraint protects a business rule,
-
-00:00:48.522 --> 00:00:50.857
-and a foreign key protects a relationship.
-
-00:00:50.857 --> 00:00:53.267
-In production systems, surrogate keys are often convenient,
-
-00:00:53.267 --> 00:00:58.640
-but important natural identifiers may still need their own uniqueness rule.
+00:00:51.429 --> 00:00:53.784
+while MRN is protected business identity

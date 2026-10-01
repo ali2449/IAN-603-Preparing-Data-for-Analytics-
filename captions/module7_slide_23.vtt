@@ -1,28 +1,20 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.727
-The review queue contains patient 1003 and a NULL.
+00:00:00.103 --> 00:00:05.747
+The review queue contains patient 1003 and a NULL
+For another
 
-00:00:04.727 --> 00:00:08.102
-For another patient such as 1001, PostgreSQL knows 1001 is not equal to 1003.
+00:00:05.774 --> 00:00:11.681
+patient such as 1001 PostgreSQL knows 1001 is not
+equal to 1003
 
-00:00:08.102 --> 00:00:12.872
-But it cannot know whether 1001 is different from the NULL value.
+00:00:13.431 --> 00:00:19.071
+But it cannot know whether 1001 is different from
+the NULL value That
 
-00:00:12.872 --> 00:00:19.812
-That unknown comparison prevents the full NOT IN condition from becoming TRUE.
+00:00:19.098 --> 00:00:25.357
+unknown comparison prevents the full NOT IN
+condition from becoming TRUE Run
 
-00:00:19.812 --> 00:00:22.587
-Run the query and observe the result.
-
-00:00:22.587 --> 00:00:30.272
-IN answers a membership question: is this value present in the set returned by the subquery?
-
-00:00:30.272 --> 00:00:34.707
-Be especially careful with NOT IN when NULL can appear in that set,
-
-00:00:34.707 --> 00:00:39.197
-because three-valued logic can turn expected TRUE results into UNKNOWN.
-
-00:00:39.197 --> 00:00:43.440
-For anti-matching, NOT EXISTS is often easier to reason about.
+00:00:25.384 --> 00:00:27.292
+the query and observe the result

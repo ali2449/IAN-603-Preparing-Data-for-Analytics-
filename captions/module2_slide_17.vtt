@@ -1,49 +1,45 @@
 WEBVTT
 
-00:00:00.128 --> 00:00:02.962
-This ERD shows the logical blueprint for the clinic.
+00:00:00.103 --> 00:00:06.123
+This ERD shows the logical blueprint for the clinic
+Patient and provider
 
-00:00:02.962 --> 00:00:06.397
-Patient and provider each connect to appointment.
+00:00:06.150 --> 00:00:11.297
+each connect to appointment Appointment then
+connects to service through the appointment
 
-00:00:06.397 --> 00:00:09.137
-Appointment then connects to service through the appointment service junction table.
+00:00:11.323 --> 00:00:16.974
+service junction table Read each relationship
+separately rather than trying
 
-00:00:09.137 --> 00:00:14.162
-Read each relationship separately rather than trying to understand the entire diagram at once.
+00:00:16.987 --> 00:00:22.505
+to understand the entire diagram at once Patient to
+appointment is
 
-00:00:14.162 --> 00:00:16.082
-Patient to appointment is one-to-many.
+00:00:22.531 --> 00:00:28.034
+one-to-many Provider to appointment is one-to-many
+Appointment to
 
-00:00:16.082 --> 00:00:19.072
-Provider to appointment is one-to-many.
+00:00:28.060 --> 00:00:33.812
+service is many-to-many so appointment service sits
+between them Notice
 
-00:00:19.072 --> 00:00:23.712
-Appointment to service is many-to-many, so appointment service sits between them.
+00:00:33.839 --> 00:00:38.115
+that appointment service also stores facts about the
+relationship such as quantity
 
-00:00:23.712 --> 00:00:27.067
-Notice that appointment service also stores facts about the relationship, such as quantity and unit charge.
+00:00:38.141 --> 00:00:42.710
+and unit charge Those values do not belong only to
+the appointment
 
-00:00:27.067 --> 00:00:32.812
-Those values do not belong only to the appointment or only to the service.
+00:00:42.736 --> 00:00:47.236
+or only to the service They belong to the specific
+service used
 
-00:00:32.812 --> 00:00:36.322
-They belong to the specific service used in a specific appointment.
+00:00:47.249 --> 00:00:52.748
+in a specific appointment That is one reason
+junction tables are often
 
-00:00:36.322 --> 00:00:39.997
-That is one reason junction tables are often real business entities rather than only technical connectors.
-
-00:00:39.997 --> 00:00:44.992
-Ask which side can exist many times for one row on the other side.
-
-00:00:44.992 --> 00:00:47.767
-That determines where the foreign key normally belongs.
-
-00:00:47.767 --> 00:00:49.367
-In an order system, many order lines belong to one order,
-
-00:00:49.367 --> 00:00:52.547
-so the order-line table carries the order identifier.
-
-00:00:52.547 --> 00:00:56.960
-The same reasoning applies to encounters, enrollments, and transactions.
+00:00:52.762 --> 00:00:55.854
+real business entities rather than only technical
+connectors

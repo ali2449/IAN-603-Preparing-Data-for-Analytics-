@@ -1,52 +1,71 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.937
-The second guided practice moves into DML.
+00:00:00.100 --> 00:00:05.712
+This guided practice combines several data-changing
+steps into one small workflow First
 
-00:00:02.937 --> 00:00:07.057
-You will insert a new patient using a unique medical record number,
+00:00:05.912 --> 00:00:10.262
+insert a new patient with a unique MRN Use RETURNING
+so you
 
-00:00:07.057 --> 00:00:14.612
-use RETURNING to see what PostgreSQL stored, verify the row with a key-based SELECT, and then update the age.
+00:00:10.275 --> 00:00:15.425
+can immediately see the row that PostgreSQL stored
+Second run a SELECT
 
-00:00:14.612 --> 00:00:18.927
-Work through those steps in order rather than trying to write everything at once.
+00:00:15.450 --> 00:00:21.000
+using that MRN This is your verification step It
+confirms that
 
-00:00:18.927 --> 00:00:23.882
-After the insert, inspect the generated identifier and the values you supplied.
+00:00:21.025 --> 00:00:25.438
+you can retrieve the same row using a stable key
+Third update
 
-00:00:23.882 --> 00:00:28.137
-Then use the unique key to verify that you are looking at the intended row.
+00:00:25.462 --> 00:00:29.688
+the patient's age by one year Again use the MRN in
+the
 
-00:00:28.137 --> 00:00:31.447
-Before the update, preview that same row again.
+00:00:29.712 --> 00:00:33.850
+WHERE clause so the target is precise Add RETURNING
+so you can
 
-00:00:31.447 --> 00:00:34.032
-After the update, inspect RETURNING.
+00:00:33.875 --> 00:00:38.388
+inspect the changed row This practice is important
+because it reflects a
 
-00:00:34.032 --> 00:00:37.577
-The purpose is to make safe verification feel routine.
+00:00:38.400 --> 00:00:43.738
+more realistic workflow than an isolated SQL command
+Data work often follows
 
-00:00:37.577 --> 00:00:44.467
-When data changes, always know which row you expected to change and confirm that PostgreSQL changed that row.
+00:00:43.762 --> 00:00:48.638
+a sequence create or change something then verify it
+Use the comments
 
-00:00:44.467 --> 00:00:48.272
-For this activity, make a prediction before you run anything.
+00:00:48.662 --> 00:00:51.988
+in the editor as a guide You do not have to write
 
-00:00:48.272 --> 00:00:53.347
-State what one output row should represent, which records you expect to remain,
+00:00:52.000 --> 00:00:56.462
+everything from memory Look back at the INSERT and
+UPDATE examples if
 
-00:00:53.347 --> 00:00:56.877
-and what edge case is most likely to expose a mistake.
+00:00:56.475 --> 00:01:01.275
+needed After the statements run compare the original
+inserted age with the
 
-00:00:56.877 --> 00:01:01.232
-Then run the SQL and compare the result with that prediction.
+00:01:01.300 --> 00:01:05.938
+updated age The identifying MRN and name should
+remain the same while
 
-00:01:01.232 --> 00:01:08.317
-If it does not match, debug the logic in small pieces instead of changing several clauses at once.
+00:01:05.950 --> 00:01:11.475
+the age changes Also pay attention to errors If you
+accidentally
 
-00:01:08.317 --> 00:01:14.687
-This is the same habit you would use in a real analytics project: validate the meaning of the result,
+00:01:11.488 --> 00:01:15.600
+reuse an MRN that already exists a uniqueness
+constraint may reject the
 
-00:01:14.687 --> 00:01:16.966
-not only whether the statement executes.
+00:01:15.625 --> 00:01:20.412
+insert That is a good reminder that the database
+schema continues protecting
+
+00:01:20.438 --> 00:01:22.262
+the data while you practice DML

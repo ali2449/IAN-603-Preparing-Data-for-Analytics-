@@ -1,31 +1,20 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.872
-This query distinguishes NULL from blank text.
+00:00:00.103 --> 00:00:05.760
+This query distinguishes NULL from blank text COUNT
+column ignores
 
-00:00:02.872 --> 00:00:08.292
-COUNT column ignores NULL values but still counts empty strings.
+00:00:05.787 --> 00:00:11.463
+NULL values but still counts empty strings COUNT of
+NULLIF BTRIM column
 
-00:00:08.292 --> 00:00:16.542
-COUNT of NULLIF BTRIM column comma empty string excludes both NULL and blank-after-trimming values.
+00:00:11.489 --> 00:00:17.267
+comma empty string excludes both NULL and
+blank-after-trimming values Run
 
-00:00:16.542 --> 00:00:20.687
-Run the query and compare the non-null and non-blank counts.
+00:00:17.293 --> 00:00:22.837
+the query and compare the non-null and non-blank
+counts That difference
 
-00:00:20.687 --> 00:00:24.772
-That difference is an important part of completeness profiling.
-
-00:00:24.772 --> 00:00:28.277
-Missingness has several representations: NULL, blank text, whitespace,
-
-00:00:28.277 --> 00:00:33.312
-and sometimes sentinel codes such as Unknown or 999.
-
-00:00:33.312 --> 00:00:37.317
-Do not collapse them blindly.
-
-00:00:37.317 --> 00:00:42.192
-First decide whether they mean the same thing in the source system,
-
-00:00:42.192 --> 00:00:46.955
-then normalize deliberately and keep lineage when the original value may matter.
+00:00:22.850 --> 00:00:25.402
+is an important part of completeness profiling

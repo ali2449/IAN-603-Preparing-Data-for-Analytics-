@@ -1,55 +1,68 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.937
-Module 2 was mostly about structure: tables, keys, relationships, and constraints.
+00:00:00.100 --> 00:00:04.025
+This slide connects Module 2 with what we are doing
+now In
 
-00:00:05.937 --> 00:00:10.627
-Module 3 is where we begin interacting with the data inside that structure.
+00:00:04.050 --> 00:00:09.238
+Module 2 we designed the database We created tables
+chose data types
 
-00:00:10.627 --> 00:00:14.517
-When we only read data, a mistake may return the wrong rows.
+00:00:09.388 --> 00:00:14.212
+and defined relationships In Module 3 we start using
+that structure to
 
-00:00:14.517 --> 00:00:18.892
-When we start changing data, a mistake can also modify or remove rows.
+00:00:14.238 --> 00:00:18.375
+answer questions and manage rows A helpful habit is
+to think of
 
-00:00:18.892 --> 00:00:22.057
-That is why we will use a repeatable safety process.
+00:00:18.400 --> 00:00:24.100
+database work as a short sequence First define the
+question For
 
-00:00:22.057 --> 00:00:24.167
-First, define what you need.
+00:00:24.112 --> 00:00:26.975
+example maybe we need a list of active patients who
+are at
 
-00:00:24.167 --> 00:00:26.407
-Then preview the rows that match.
+00:00:26.988 --> 00:00:32.412
+least fifty years old Second preview the rows that
+match This is
 
-00:00:26.407 --> 00:00:28.937
-Use a stable identifier when possible.
+00:00:32.438 --> 00:00:37.838
+especially important before changing data Third
+protect the operation by using a
 
-00:00:28.937 --> 00:00:33.467
-Execute the smallest correct statement, and inspect what PostgreSQL returns.
+00:00:37.862 --> 00:00:43.000
+stable key and a clear WHERE condition Fourth
+execute the SQL statement
 
-00:00:33.467 --> 00:00:37.097
-For write operations, verification is especially important.
+00:00:43.875 --> 00:00:48.800
+Finally verify what happened That last step is easy
+to skip but
 
-00:00:37.097 --> 00:00:43.802
-If you are not sure what an UPDATE or DELETE will touch, run a SELECT with the same condition first.
+00:00:48.825 --> 00:00:53.488
+it is extremely important A query can run
+successfully and still produce
 
-00:00:43.802 --> 00:00:49.412
-Keep a real project in mind as we work through this section—for example,
+00:00:53.512 --> 00:00:57.700
+the wrong result if the condition was not what you
+intended SQL
 
-00:00:49.412 --> 00:00:51.217
-an application safely inserting or updating business records.
+00:00:57.725 --> 00:01:02.062
+does not know your business meaning It only follows
+the instructions you
 
-00:00:51.217 --> 00:01:00.107
-The technical feature matters because it changes what questions we can answer reliably and how easily another
+00:01:02.088 --> 00:01:06.225
+write So the core habit for this module is read the
+request
 
-00:01:00.107 --> 00:01:01.602
-analyst can understand our work.
+00:01:06.412 --> 00:01:10.488
+preview the target rows run the smallest correct
+statement inspect the result
 
-00:01:01.602 --> 00:01:07.237
-As you listen, try to connect each SQL or data concept to a decision you might need to defend later:
+00:01:10.675 --> 00:01:14.150
+and then keep or undo the change You will see this
+same
 
-00:01:07.237 --> 00:01:12.257
-what the data means, what one row represents, what can be missing,
-
-00:01:12.257 --> 00:01:15.100
-and what assumptions the transformation introduces.
+00:01:14.175 --> 00:01:16.275
+pattern repeated throughout the module

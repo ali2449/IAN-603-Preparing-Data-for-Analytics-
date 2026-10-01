@@ -1,49 +1,72 @@
 WEBVTT
 
-00:00:00.004 --> 00:00:03.272
-WHERE controls which source rows stay in the result.
+00:00:00.100 --> 00:00:04.250
+The WHERE clause decides which rows remain in the
+result This is
 
-00:00:03.272 --> 00:00:06.507
-Different questions need different kinds of conditions.
+00:00:04.275 --> 00:00:07.725
+one of the most important ideas in SQL because most
+real questions
 
-00:00:06.507 --> 00:00:10.942
-For direct comparisons, we can use equals, not equal, greater than, greater than or equal to, less than,
+00:00:07.750 --> 00:00:12.362
+apply some kind of condition For simple comparisons
+we can use equals
 
-00:00:10.942 --> 00:00:13.202
-or less than or equal to.
+00:00:12.525 --> 00:00:16.188
+not equal greater than greater than or equal less
+than and less
 
-00:00:13.202 --> 00:00:15.067
-BETWEEN is convenient for ranges.
+00:00:16.212 --> 00:00:20.638
+than or equal For example age greater than or equal
+to sixty-five
 
-00:00:15.067 --> 00:00:17.407
-IN is useful when a value may belong to a short list.
+00:00:20.662 --> 00:00:24.875
+keeps patients who are at least sixty-five BETWEEN
+is useful for a
 
-00:00:17.407 --> 00:00:20.637
-LIKE and PostgreSQL ILIKE support text patterns.
+00:00:24.888 --> 00:00:30.000
+range Age BETWEEN thirty AND sixty includes both
+endpoints so ages thirty
 
-00:00:20.637 --> 00:00:23.962
-Missing values need IS NULL or IS NOT NULL.
+00:00:30.025 --> 00:00:34.238
+and sixty are included IN checks whether a value
+belongs to a
 
-00:00:23.962 --> 00:00:27.312
-We can also combine conditions with AND, OR, and NOT.
+00:00:34.250 --> 00:00:40.175
+list For example a status can be either Admitted or
+Discharged Instead
 
-00:00:27.312 --> 00:00:29.722
-A useful habit is to read the condition naturally.
+00:00:40.188 --> 00:00:43.762
+of writing two separate equality conditions joined
+by OR IN can make
 
-00:00:29.722 --> 00:00:33.927
-Age greater than or equal to sixty-five means sixty-five is included.
+00:00:43.788 --> 00:00:47.775
+the query easier to read LIKE and ILIKE are used for
+text
 
-00:00:33.927 --> 00:00:38.252
-When conditions become longer, use parentheses to make the intended grouping obvious rather than depending on
+00:00:47.800 --> 00:00:53.725
+patterns In PostgreSQL ILIKE performs
+case-insensitive matching which means uppercase
 
-00:00:38.252 --> 00:00:43.082
-memory of operator precedence. Think of SELECT work as progressively shaping a question.
+00:00:53.750 --> 00:00:58.312
+and lowercase letters do not have to match exactly
+Missing values need
 
-00:00:43.082 --> 00:00:48.392
-First identify the rows and columns you need, then filter, derive expressions, sort, and limit for inspection.
+00:00:58.338 --> 00:01:02.700
+special treatment We use IS NULL or IS NOT NULL
+rather than
 
-00:00:48.392 --> 00:00:53.872
-A useful habit is to test each part on a small result before adding more complexity,
+00:01:02.725 --> 00:01:08.112
+ordinary equality Finally conditions can be combined
+with AND OR and NOT
 
-00:00:53.872 --> 00:00:56.800
-especially when a filter contains NULL-sensitive logic.
+00:01:09.000 --> 00:01:13.738
+AND requires all connected conditions to be true OR
+requires at least
+
+00:01:13.762 --> 00:01:19.288
+one When conditions become more complicated
+parentheses help make the intended logic
+
+00:01:19.312 --> 00:01:19.738
+clear

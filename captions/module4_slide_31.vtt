@@ -1,43 +1,44 @@
 WEBVTT
 
-00:00:00.148 --> 00:00:05.032
-Logical execution order explains many SQL rules that can otherwise feel arbitrary.
+00:00:00.103 --> 00:00:05.182
+Logical execution order explains many SQL rules that
+can otherwise feel arbitrary
 
-00:00:05.032 --> 00:00:09.457
-PostgreSQL conceptually begins with FROM and JOIN, then applies WHERE, forms groups with GROUP BY,
+00:00:06.923 --> 00:00:11.515
+PostgreSQL conceptually begins with FROM and JOIN
+then applies WHERE forms groups
 
-00:00:09.457 --> 00:00:14.927
-filters groups with HAVING, evaluates SELECT expressions, performs window calculations,
+00:00:11.528 --> 00:00:16.475
+with GROUP BY filters groups with HAVING evaluates
+SELECT expressions performs window
 
-00:00:14.927 --> 00:00:16.857
-and then applies ORDER BY and LIMIT.
+00:00:16.488 --> 00:00:21.686
+calculations and then applies ORDER BY and LIMIT
+This is why a
 
-00:00:16.857 --> 00:00:19.037
-This is why a same-level aggregate is not available in WHERE.
+00:00:21.699 --> 00:00:26.570
+same-level aggregate is not available in WHERE The
+groups do not exist
 
-00:00:19.037 --> 00:00:22.447
-The groups do not exist yet at that stage.
+00:00:26.596 --> 00:00:32.221
+yet at that stage HAVING can use aggregate
+expressions because grouping
 
-00:00:22.447 --> 00:00:27.002
-HAVING can use aggregate expressions because grouping has already happened.
+00:00:32.248 --> 00:00:38.121
+has already happened Window functions are evaluated
+after grouped filtering
 
-00:00:27.002 --> 00:00:31.992
-Window functions are evaluated after grouped filtering, which is why they can add analytical context to the
+00:00:38.411 --> 00:00:41.516
+which is why they can add analytical context to the
+rows that
 
-00:00:31.992 --> 00:00:35.992
-rows that remain. You do not need to memorize every internal implementation detail.
+00:00:41.529 --> 00:00:47.477
+remain You do not need to memorize every internal
+implementation detail
 
-00:00:35.992 --> 00:00:42.602
-Use this logical order as a reasoning model for understanding which clause can see which values.
+00:00:48.401 --> 00:00:52.414
+Use this logical order as a reasoning model for
+understanding which clause
 
-00:00:42.602 --> 00:00:45.712
-Window functions calculate across related rows without collapsing them.
-
-00:00:45.712 --> 00:00:51.547
-That lets you keep row-level detail while adding rank, running totals, or group averages.
-
-00:00:51.547 --> 00:00:56.777
-Always define the partition and ordering carefully because those clauses describe which rows belong together
-
-00:00:56.777 --> 00:00:58.560
-and in what sequence.
+00:00:52.440 --> 00:00:53.638
+can see which values

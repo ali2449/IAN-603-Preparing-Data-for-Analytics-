@@ -1,46 +1,68 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:06.452
-Coding Exercise 3 asks you to insert a specific new patient and verify the inserted row with RETURNING.
+00:00:00.100 --> 00:00:03.862
+Coding Exercise 3 asks you to insert a specific row
+and verify
 
-00:00:06.452 --> 00:00:11.062
-The task gives you the medical record number, name, age, and gender.
+00:00:03.888 --> 00:00:07.738
+it with RETURNING You need to add Maya Brooks with
+MRN one
 
-00:00:11.062 --> 00:00:16.067
-Start by naming the target columns, then make sure the values are in the same order.
+00:00:07.762 --> 00:00:12.988
+zero one two age thirty-one and gender Female The
+INSERT statement already
 
-00:00:16.067 --> 00:00:21.947
-Because the medical record number must be unique, the insert should identify the new row clearly.
+00:00:13.012 --> 00:00:17.638
+lists the target columns Your job is to complete the
+VALUES section
 
-00:00:21.947 --> 00:00:24.877
-Run and Check after you complete the statement.
+00:00:18.525 --> 00:00:21.462
+The four values must appear in the same order as the
+columns
 
-00:00:24.877 --> 00:00:29.102
-If PostgreSQL reports a constraint error, read the message carefully.
+00:00:21.688 --> 00:00:27.100
+MRN full name age and gender Remember that text
+values need single
 
-00:00:29.102 --> 00:00:35.847
-It may mean a required value is missing, a value violates a check, or the unique key already exists.
+00:00:27.125 --> 00:00:32.737
+quotes The numeric age does not need quotes After
+the VALUES section
 
-00:00:35.847 --> 00:00:41.817
-The goal is to practice a complete insert-and-verify pattern, not simply to make the error disappear.
+00:00:32.962 --> 00:00:36.800
+keep the RETURNING clause so PostgreSQL displays the
+row that was inserted
 
-00:00:41.817 --> 00:00:45.102
-For this activity, make a prediction before you run anything.
+00:00:37.688 --> 00:00:42.238
+Before running the statement count the columns and
+count the values There
 
-00:00:45.102 --> 00:00:50.147
-State what one output row should represent, which records you expect to remain,
+00:00:42.262 --> 00:00:45.688
+should be four of each Then read the row back from
+left
 
-00:00:50.147 --> 00:00:55.302
-and what edge case is most likely to expose a mistake.
+00:00:45.712 --> 00:00:48.650
+to right and make sure each value belongs to the
+correct column
 
-00:00:55.302 --> 00:00:58.037
-Then run the SQL and compare the result with that prediction.
+00:00:49.538 --> 00:00:53.900
+Click Run and Check If the statement succeeds look
+at the returned
 
-00:00:58.037 --> 00:01:05.117
-If it does not match, debug the logic in small pieces instead of changing several clauses at once.
+00:00:53.925 --> 00:00:58.725
+MRN name age and gender If you get a unique
+constraint error
 
-00:01:05.117 --> 00:01:11.487
-This is the same habit you would use in a real analytics project: validate the meaning of the result,
+00:00:58.900 --> 00:01:02.588
+check whether you already inserted the same MRN
+during an earlier attempt
 
-00:01:11.487 --> 00:01:13.777
-not only whether the statement executes.
+00:01:03.475 --> 00:01:08.638
+You can reset the exercise environment if
+appropriate The important habit here
+
+00:01:08.650 --> 00:01:14.250
+is not just INSERT It is insert and verify RETURNING
+gives you
+
+00:01:14.275 --> 00:01:16.250
+immediate evidence of what was stored

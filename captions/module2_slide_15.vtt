@@ -1,49 +1,45 @@
 WEBVTT
 
-00:00:00.064 --> 00:00:03.817
-PRIMARY KEY and UNIQUE are related, but they are not the same thing.
+00:00:00.103 --> 00:00:03.287
+PRIMARY KEY and UNIQUE are related but they are not
+the same
 
-00:00:03.817 --> 00:00:07.172
-The primary key is the table's official row identity and cannot be NULL.
+00:00:03.313 --> 00:00:08.882
+thing The primary key is the table's official row
+identity and cannot
 
-00:00:07.172 --> 00:00:12.162
-A table has one primary-key constraint, although that key may contain multiple columns.
+00:00:08.895 --> 00:00:13.740
+be NULL A table has one primary-key constraint
+although that key may
 
-00:00:12.162 --> 00:00:15.032
-UNIQUE protects other candidate keys or business rules.
+00:00:13.766 --> 00:00:19.651
+contain multiple columns UNIQUE protects other
+candidate keys or business
 
-00:00:15.032 --> 00:00:18.692
-A table can have several unique constraints.
+00:00:19.678 --> 00:00:26.387
+rules A table can have several unique constraints
+PostgreSQL
 
-00:00:18.692 --> 00:00:21.487
-PostgreSQL also has specific behavior around NULL values in unique constraints,
+00:00:26.413 --> 00:00:30.623
+also has specific behavior around NULL values in
+unique constraints so do
 
-00:00:21.487 --> 00:00:26.332
-so do not assume a UNIQUE column behaves exactly like a primary key.
+00:00:30.637 --> 00:00:36.026
+not assume a UNIQUE column behaves exactly like a
+primary key In
 
-00:00:26.332 --> 00:00:28.902
-In the clinic example, patient ID is the primary key,
+00:00:36.039 --> 00:00:40.434
+the clinic example patient ID is the primary key
+while MRN remains
 
-00:00:28.902 --> 00:00:34.612
-while MRN remains unique because duplicate medical record numbers would still be a serious data-quality
+00:00:40.460 --> 00:00:44.973
+unique because duplicate medical record numbers
+would still be a serious data-quality
 
-00:00:34.612 --> 00:00:36.527
-problem. A useful question is: if the system-generated ID is already unique,
+00:00:44.999 --> 00:00:50.599
+problem A useful question is if the system-generated
+ID is
 
-00:00:36.527 --> 00:00:41.197
-which business identifiers still need independent protection?
-
-00:00:41.197 --> 00:00:43.022
-Keys are not merely technical identifiers.
-
-00:00:43.022 --> 00:00:47.282
-A primary key protects row identity, a unique constraint protects a business rule,
-
-00:00:47.282 --> 00:00:49.492
-and a foreign key protects a relationship.
-
-00:00:49.492 --> 00:00:52.612
-In production systems, surrogate keys are often convenient,
-
-00:00:52.612 --> 00:00:57.351
-but important natural identifiers may still need their own uniqueness rule.
+00:00:50.625 --> 00:00:54.915
+already unique which business identifiers still need
+independent protection

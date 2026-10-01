@@ -1,46 +1,72 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.957
-SQL is written in one order, but it is useful to think about its logical processing in another order.
+00:00:00.100 --> 00:00:03.312
+SQL is written in one order but it helps to
+understand the
 
-00:00:05.957 --> 00:00:10.612
-For a simple query, PostgreSQL first identifies the source in FROM, then applies WHERE to filter rows.
+00:00:03.338 --> 00:00:07.325
+conceptual order in which the parts of a query are
+resolved A
 
-00:00:10.612 --> 00:00:12.827
-SELECT defines the result expressions.
+00:00:07.350 --> 00:00:11.875
+simplified mental model is FROM then WHERE then
+SELECT then DISTINCT then
 
-00:00:12.827 --> 00:00:15.392
-DISTINCT can remove repeated result rows.
+00:00:11.888 --> 00:00:17.425
+ORDER BY and finally LIMIT FROM comes first
+conceptually because PostgreSQL needs
 
-00:00:15.392 --> 00:00:20.127
-ORDER BY sorts the remaining result, and LIMIT keeps the requested number of rows.
+00:00:17.438 --> 00:00:21.062
+to know the source of the data WHERE then filters
+the source
 
-00:00:20.127 --> 00:00:22.897
-This mental model helps explain why filtering happens before sorting.
+00:00:21.088 --> 00:00:25.638
+rows SELECT determines the columns or expressions
+that will appear in the
 
-00:00:22.897 --> 00:00:29.402
-It also helps explain why an alias created in SELECT is not always available in earlier logical stages.
+00:00:25.650 --> 00:00:31.425
+result DISTINCT can remove repeated result rows
+ORDER BY sorts
 
-00:00:29.402 --> 00:00:33.667
-You do not need to memorize database-engine internals.
+00:00:31.450 --> 00:00:37.000
+the result LIMIT keeps only the requested number of
+rows Why should
 
-00:00:33.667 --> 00:00:34.122
-Use this as a reasoning model.
+00:00:37.025 --> 00:00:41.400
+a beginner care about this Because it explains some
+behavior that can
 
-00:00:34.122 --> 00:00:38.952
-When a query behaves differently from what you expected, ask which stage creates or removes the value you are
+00:00:41.425 --> 00:00:46.675
+otherwise feel confusing For example WHERE filters
+rows before the final sorting
 
-00:00:38.952 --> 00:00:46.147
-trying to use. Connect this idea to an analyst exploring operational records before building a report.
+00:00:46.700 --> 00:00:51.212
+happens It also explains why a column alias created
+in SELECT may
 
-00:00:46.147 --> 00:00:49.642
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+00:00:51.225 --> 00:00:54.462
+not always be available in an earlier logical part
+of the query
 
-00:00:49.642 --> 00:00:56.057
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+00:00:55.338 --> 00:00:59.950
+You do not need to memorize a full database
+execution engine Think
 
-00:00:56.057 --> 00:00:59.652
-A strong analyst can explain both the SQL operation and the assumption behind it.
+00:00:59.962 --> 00:01:03.950
+of this as a reasoning tool When a query behaves
+differently than
 
-00:00:59.652 --> 00:01:04.380
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:01:03.975 --> 00:01:08.875
+you expected ask what data exists at each conceptual
+stage For now
+
+00:01:09.075 --> 00:01:12.638
+remember the basic flow choose the source filter the
+rows build the
+
+00:01:12.650 --> 00:01:16.412
+result remove duplicates if needed sort it and then
+limit the number
+
+00:01:16.438 --> 00:01:17.000
+of rows

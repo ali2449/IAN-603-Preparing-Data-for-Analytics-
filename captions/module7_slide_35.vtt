@@ -1,25 +1,20 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:06.442
-To identify correlation, look for an alias that was defined outside the subquery but used inside it.
+00:00:00.103 --> 00:00:05.011
+To identify correlation look for an alias that was
+defined outside the subquery but used
 
-00:00:06.442 --> 00:00:12.012
-If the inner query needs p patient ID from the outer patient row, it is correlated.
+00:00:05.037 --> 00:00:10.784
+inside it If the inner query needs p patient ID from
+the outer patient
 
-00:00:12.012 --> 00:00:18.232
-A quick diagnostic is to ask whether the inner query can run meaningfully by itself unchanged.
+00:00:10.797 --> 00:00:16.484
+row it is correlated A quick diagnostic is to ask
+whether the inner
 
-00:00:18.232 --> 00:00:20.147
-If it needs an outer value, the answer is no.
+00:00:16.510 --> 00:00:22.022
+query can run meaningfully by itself unchanged If it
+needs an outer
 
-00:00:20.147 --> 00:00:26.002
-A correlated subquery refers to the current row of the outer query.
-
-00:00:26.002 --> 00:00:30.837
-Conceptually, the inner query is evaluated in relation to each outer row.
-
-00:00:30.837 --> 00:00:35.812
-That makes some business rules easy to express, but it can be expensive at scale.
-
-00:00:35.812 --> 00:00:40.358
-Compare a correlated formulation with a pre-aggregated join when performance matters.
+00:00:22.048 --> 00:00:23.641
+value the answer is no

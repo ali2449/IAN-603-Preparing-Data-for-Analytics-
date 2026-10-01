@@ -1,1215 +1,475 @@
 {
-  "module": "module1",
-  "filename_prefix": "module1",
-  "source_file": "IAN603_Module1_Narration_Detailed.txt",
-  "voice_consistency_version": 3,
-  "reference_audio": "/home/ali/breeze-tts/voice_reference/course_instructor_consistent_v4.wav",
-  "reference_text": "Welcome to the course. We will work through each concept carefully, connect the\nideas step by step, and use practical examples to make technical topics easier\nto understand. When we introduce a new method, focus first on the problem it\nsolves and why it is useful. For example, in machine learning, features are the\ninformation we give the model, while the target is what we want it to predict.\nNow consider a simple question: what changes when the data contains missing\nvalues? We will think through the reason and then look at the code. In Python,\nwe can inspect the data, run one small step at a time, and explain what the\nresult means. The goal is to understand the logic, not simply memorize syntax.",
-  "locked_narration_seed": true,
-  "narration_seed": 1234,
-  "long_narration": {
-    "automatic_chunking": true,
-    "max_text_tokens_per_call": 260,
-    "chunk_pause_seconds": 0.38,
-    "manual_break_marker": "[tts-break]",
-    "breeze_max_new_tokens": 1500,
-    "breeze_max_seq_len": 2048
-  },
-  "subtitle_method": "whole_slide_silence_alignment",
-  "caption_settings": {
-    "max_words": 21,
-    "max_chars": 110,
-    "minimum_silence_seconds": 0.2,
-    "boundary_search_window_seconds": 1.4
-  },
+  "prefix": "module1",
+  "voice": "en-US-GuyNeural",
+  "rate": "-5%",
+  "volume": "+0%",
+  "pitch": "+0Hz",
+  "caption_words": 15,
+  "slide_count": 66,
+  "slide_markers_found": true,
+  "pause_marker_format": "[pause=seconds] or [pause=millisecondsms]",
   "slides": [
     {
       "slide": 1,
-      "title": "Start",
-      "transcript": "Welcome to Module 1, Understanding Data in Informatics. This module is the foundation for the rest of IAN 603. Before we clean, transform, query, or model data, we need to understand what the data represents, how it is organized, and whether it is trustworthy enough for the task. We will use small examples and one running patient-encounter dataset so the ideas remain concrete. The goal is not to memorize vocabulary. The goal is to build a habit: understand the data first, then make technical decisions. Keep a real project in mind as we work through this section—for example, a hospital combining patient tables, device JSON, and clinical notes. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
-      "seed": 1234,
-      "tts_text_tokens": 203,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        203
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_01.wav",
-      "audio": "audio/module1_slide_01.mp3",
-      "captions": "audio/module1_slide_01.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_01.mp3",
+      "captions": "module1_slide_01.vtt",
+      "text": "Welcome to Module 1, Understanding Data in Informatics.\n\n[pause=0.7]\n\nThis module is the foundation for the rest of IAN 603. Before we clean, transform, query, or model data, we need to understand what the data represents, how it is organized, and whether it is trustworthy enough for the task.\n\n[pause=0.7]\n\nWe will use small examples and one running patient-encounter dataset so the ideas remain concrete.\n\n[pause=0.8]\n\nThe goal is not to memorize vocabulary. The goal is to build a habit: understand the data first, then make technical decisions.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 2,
-      "title": "What this module is really about",
-      "transcript": "This module is really about meaning. Two columns can both be stored as integers and still require completely different analytical treatment. A ZIP code uses digits but is a label. A satisfaction score may use one through five but represents ordered categories. A visit count is a true count. Celsius temperature is a measurement with equal differences but without a meaningful true zero. That is why we do not let the software dtype make the analytical decision for us. Keep a real project in mind as we work through this section—for example, an e-commerce team preparing customer, purchase, and web-event data. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
-      "seed": 1234,
-      "tts_text_tokens": 185,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        185
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_02.wav",
-      "audio": "audio/module1_slide_02.mp3",
-      "captions": "audio/module1_slide_02.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_02.mp3",
+      "captions": "module1_slide_02.vtt",
+      "text": "This module is really about meaning.\n\n[pause=0.7]\n\nTwo columns can both be stored as integers and still require completely different analytical treatment.\n\n[pause=0.7]\n\nA ZIP code uses digits but is a label. A satisfaction score may use one through five but represents ordered categories. A visit count is a true count. Celsius temperature is a measurement with equal differences but without a meaningful true zero.\n\n[pause=0.8]\n\nThat is why we do not let the software dtype make the analytical decision for us.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 3,
-      "title": "Learning map",
-      "transcript": "Here is the workflow we will follow. First, identify how the dataset is organized. Second, assess whether the values are trustworthy enough for the intended use. Third, classify variables by meaning. Fourth, use that meaning to choose summaries, charts, and preprocessing. Finally, implement those choices in Python or PostgreSQL. This order is important. Technical transformations should follow conceptual decisions, not replace them. Keep a real project in mind as we work through this section—for example, a university analyzing student records, surveys, and learning-platform activity. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
-      "seed": 1234,
-      "tts_text_tokens": 175,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        175
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_03.wav",
-      "audio": "audio/module1_slide_03.mp3",
-      "captions": "audio/module1_slide_03.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_03.mp3",
+      "captions": "module1_slide_03.vtt",
+      "text": "Here is the workflow we will follow.\n\n[pause=0.7]\n\nFirst, identify how the dataset is organized. Second, assess whether the values are trustworthy enough for the intended use.\n\n[pause=0.7]\n\nThird, classify variables by meaning. Fourth, use that meaning to choose summaries, charts, and preprocessing. Finally, implement those choices in Python or PostgreSQL.\n\n[pause=0.7]\n\nThis order is important. Technical transformations should follow conceptual decisions, not replace them.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 4,
-      "title": "Running case",
-      "transcript": "We will reuse these variables throughout the module. Patient ID is an identifier. Triage level is an ordered category. Temperature is a measurement. Emergency visits is a count. Device payload is nested JSON, and a clinical note is free text. Notice that the questions are different. Some questions are about dataset organization. Others are about measurement meaning. Others are about numeric behavior. Learning to identify which question you are answering is one of the most important skills in this module. Connect this idea to a hospital combining patient tables, device JSON, and clinical notes. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 175,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        175
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_04.wav",
-      "audio": "audio/module1_slide_04.mp3",
-      "captions": "audio/module1_slide_04.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_04.mp3",
+      "captions": "module1_slide_04.vtt",
+      "text": "We will reuse these variables throughout the module.\n\n[pause=0.7]\n\nPatient ID is an identifier. Triage level is an ordered category. Temperature is a measurement. Emergency visits is a count. Device payload is nested JSON, and a clinical note is free text.\n\n[pause=0.7]\n\nNotice that the questions are different.\n\n[pause=0.7]\n\nSome questions are about dataset organization. Others are about measurement meaning. Others are about numeric behavior.\n\n[pause=0.7]\n\nLearning to identify which question you are answering is one of the most important skills in this module.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 5,
-      "title": "Four different questions",
-      "transcript": "The phrase data type is often used too broadly. In this course, we separate four layers. Data organization describes the form of the dataset. Measurement scale describes the meaning of one variable. Numeric behavior asks whether a quantitative concept comes from counting or measuring. Technical representation describes how software stores the value. A single variable can have an answer at several layers, and those answers are not interchangeable. Connect this idea to an e-commerce team preparing customer, purchase, and web-event data. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 162,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        162
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_05.wav",
-      "audio": "audio/module1_slide_05.mp3",
-      "captions": "audio/module1_slide_05.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_05.mp3",
+      "captions": "module1_slide_05.vtt",
+      "text": "The phrase data type is often used too broadly.\n\n[pause=0.7]\n\nIn this course, we separate four layers.\n\n[pause=0.7]\n\nData organization describes the form of the dataset. Measurement scale describes the meaning of one variable. Numeric behavior asks whether a quantitative concept comes from counting or measuring. Technical representation describes how software stores the value.\n\n[pause=0.7]\n\nA single variable can have an answer at several layers, and those answers are not interchangeable.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 6,
-      "title": "Same storage, different meaning",
-      "transcript": "This table shows why storage alone is not enough. ZIP codes may look numeric, but arithmetic on them is meaningless. Satisfaction ratings use numbers but represent ordered categories. Emergency visits are true counts. Celsius temperature is a numeric measurement, but its zero point is arbitrary. When you see a numeric-looking column, first ask what the numbers mean in the real world. Only after that should you choose summaries, encodings, or models. Connect this idea to a university analyzing student records, surveys, and learning-platform activity. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 169,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        169
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_06.wav",
-      "audio": "audio/module1_slide_06.mp3",
-      "captions": "audio/module1_slide_06.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_06.mp3",
+      "captions": "module1_slide_06.vtt",
+      "text": "This table shows why storage alone is not enough.\n\n[pause=0.7]\n\nZIP codes may look numeric, but arithmetic on them is meaningless. Satisfaction ratings use numbers but represent ordered categories. Emergency visits are true counts. Celsius temperature is a numeric measurement, but its zero point is arbitrary.\n\n[pause=0.7]\n\nWhen you see a numeric-looking column, first ask what the numbers mean in the real world.\n\n[pause=0.7]\n\nOnly after that should you choose summaries, encodings, or models.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 7,
-      "title": "Data organization overview",
-      "transcript": "The first major question is how the dataset is organized. Structured data follows a predefined schema. Semi-structured data has named fields but allows flexibility and nesting. Unstructured data does not naturally arrive as rows and columns. These categories describe organization. A structured table can still have missing values, duplicate records, or poorly defined variables. Organization and quality are separate issues. Connect this idea to a hospital combining patient tables, device JSON, and clinical notes. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 154,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        154
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_07.wav",
-      "audio": "audio/module1_slide_07.mp3",
-      "captions": "audio/module1_slide_07.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_07.mp3",
+      "captions": "module1_slide_07.vtt",
+      "text": "The first major question is how the dataset is organized.\n\n[pause=0.7]\n\nStructured data follows a predefined schema. Semi-structured data has named fields but allows flexibility and nesting. Unstructured data does not naturally arrive as rows and columns.\n\n[pause=0.7]\n\nThese categories describe organization.\n\n[pause=0.7]\n\nA structured table can still have missing values, duplicate records, or poorly defined variables. Organization and quality are separate issues.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 8,
-      "title": "Structured data",
-      "transcript": "Structured data follows a stable arrangement. Relational databases are a classic example because each row follows a known set of columns and types. CSV and Parquet files can also contain structured data. The benefit is predictability. We can validate and query fields consistently. But structured does not mean correct. A structured table can still contain duplicates, missing values, inconsistent categories, or impossible measurements. A useful project question is: what preparation step is required before analysis can even begin? A relational table may be ready for profiling, JSON may need flattening, and free text may need NLP or another extraction step. The form of the data changes the engineering path, but it does not by itself tell us whether the data is high quality.",
-      "seed": 1234,
-      "tts_text_tokens": 142,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        142
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_08.wav",
-      "audio": "audio/module1_slide_08.mp3",
-      "captions": "audio/module1_slide_08.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_08.mp3",
+      "captions": "module1_slide_08.vtt",
+      "text": "Structured data follows a stable arrangement.\n\n[pause=0.7]\n\nRelational databases are a classic example because each row follows a known set of columns and types.\n\n[pause=0.8]\n\nCSV and Parquet files can also contain structured data.\n\n[pause=0.7]\n\nThe benefit is predictability. We can validate and query fields consistently.\n\n[pause=0.7]\n\nBut structured does not mean correct. A structured table can still contain duplicates, missing values, inconsistent categories, or impossible measurements.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 9,
-      "title": "Structured example",
-      "transcript": "This structured table is easy to scan because every row follows the same columns. But the columns do not all have the same analytical meaning. Patient ID and ZIP code are labels. Date of birth is temporal. Sex and blood type are categorical. This is a useful example of the distinction between dataset organization and variable meaning. The dataset is structured, but each variable still needs its own classification. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a university analyzing student records, surveys, and learning-platform activity, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 179,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        179
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_09.wav",
-      "audio": "audio/module1_slide_09.mp3",
-      "captions": "audio/module1_slide_09.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_09.mp3",
+      "captions": "module1_slide_09.vtt",
+      "text": "This structured table is easy to scan because every row follows the same columns.\n\n[pause=0.7]\n\nBut the columns do not all have the same analytical meaning.\n\n[pause=0.7]\n\nPatient ID and ZIP code are labels. Date of birth is temporal. Sex and blood type are categorical.\n\n[pause=0.8]\n\nThis is a useful example of the distinction between dataset organization and variable meaning.\n\n[pause=0.8]\n\nThe dataset is structured, but each variable still needs its own classification.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 10,
-      "title": "Semi-structured data",
-      "transcript": "Semi-structured data has some organization without requiring every record to look exactly the same. JSON is a common example. Fields have names, but values can be nested, and different records may contain different keys. That flexibility is useful for APIs, devices, logs, and fast-changing applications. The tradeoff is that analysts often need to flatten records, handle optional fields, and manage schema changes before analysis. A useful project question is: what preparation step is required before analysis can even begin? A relational table may be ready for profiling, JSON may need flattening, and free text may need NLP or another extraction step. The form of the data changes the engineering path, but it does not by itself tell us whether the data is high quality.",
-      "seed": 1234,
-      "tts_text_tokens": 147,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        147
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_10.wav",
-      "audio": "audio/module1_slide_10.mp3",
-      "captions": "audio/module1_slide_10.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_10.mp3",
+      "captions": "module1_slide_10.vtt",
+      "text": "Semi-structured data has some organization without requiring every record to look exactly the same.\n\n[pause=0.7]\n\nJSON is a common example.\n\n[pause=0.8]\n\nFields have names, but values can be nested, and different records may contain different keys.\n\n[pause=0.7]\n\nThat flexibility is useful for APIs, devices, logs, and fast-changing applications.\n\n[pause=0.7]\n\nThe tradeoff is that analysts often need to flatten records, handle optional fields, and manage schema changes before analysis.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 11,
-      "title": "Nested JSON example",
-      "transcript": "This JSON record is self-describing because the keys tell us what each value represents. But it is not a flat table. Heart rate is nested inside metrics, and latitude and longitude are nested inside location. A second record could add oxygen saturation or omit sleep hours. Before analysis, we often flatten the JSON into columns. But flattening is only a structural step. We still need to understand units, missingness, and the analytical meaning of the extracted fields. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as an e-commerce team preparing customer, purchase, and web-event data, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 196,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        196
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_11.wav",
-      "audio": "audio/module1_slide_11.mp3",
-      "captions": "audio/module1_slide_11.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_11.mp3",
+      "captions": "module1_slide_11.vtt",
+      "text": "This JSON record is self-describing because the keys tell us what each value represents.\n\n[pause=0.7]\n\nBut it is not a flat table. Heart rate is nested inside metrics, and latitude and longitude are nested inside location.\n\n[pause=0.7]\n\nA second record could add oxygen saturation or omit sleep hours.\n\n[pause=0.7]\n\nBefore analysis, we often flatten the JSON into columns.\n\n[pause=0.7]\n\nBut flattening is only a structural step. We still need to understand units, missingness, and the analytical meaning of the extracted fields.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 12,
-      "title": "Unstructured data",
-      "transcript": "Unstructured data does not naturally arrive as a table. A clinical note contains useful information, but the meaning is embedded in text. An image contains visual information. Audio contains signals over time. To analyze these sources, we usually need an extraction step such as NLP, computer vision, OCR, or speech processing. After extraction, some information may become structured features that can be analyzed alongside relational data. A useful project question is: what preparation step is required before analysis can even begin? A relational table may be ready for profiling, JSON may need flattening, and free text may need NLP or another extraction step. The form of the data changes the engineering path, but it does not by itself tell us whether the data is high quality.",
-      "seed": 1234,
-      "tts_text_tokens": 146,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        146
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_12.wav",
-      "audio": "audio/module1_slide_12.mp3",
-      "captions": "audio/module1_slide_12.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_12.mp3",
+      "captions": "module1_slide_12.vtt",
+      "text": "Unstructured data does not naturally arrive as a table.\n\n[pause=0.7]\n\nA clinical note contains useful information, but the meaning is embedded in text. An image contains visual information. Audio contains signals over time.\n\n[pause=0.7]\n\nTo analyze these sources, we usually need an extraction step such as NLP, computer vision, OCR, or speech processing.\n\n[pause=0.7]\n\nAfter extraction, some information may become structured features that can be analyzed alongside relational data.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 13,
-      "title": "Compare data forms",
-      "transcript": "This comparison focuses on the preparation problem. Structured data is already tabular, so we can usually begin with profiling and cleaning. Semi-structured data may need normalization or flattening. Unstructured data usually requires feature extraction or annotation before it can be analyzed using ordinary tabular methods. Real informatics projects often combine all three forms, so understanding the organization tells you what preparation work comes first. Connect this idea to a hospital combining patient tables, device JSON, and clinical notes. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 156,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        156
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_13.wav",
-      "audio": "audio/module1_slide_13.mp3",
-      "captions": "audio/module1_slide_13.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_13.mp3",
+      "captions": "module1_slide_13.vtt",
+      "text": "This comparison focuses on the preparation problem.\n\n[pause=0.7]\n\nStructured data is already tabular, so we can usually begin with profiling and cleaning.\n\n[pause=0.7]\n\nSemi-structured data may need normalization or flattening.\n\n[pause=0.7]\n\nUnstructured data usually requires feature extraction or annotation before it can be analyzed using ordinary tabular methods.\n\n[pause=0.7]\n\nReal informatics projects often combine all three forms, so understanding the organization tells you what preparation work comes first.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 14,
-      "title": "Volume, velocity, variety",
-      "transcript": "You may hear modern data described using the three Vs: volume, velocity, and variety. Volume is about scale. Velocity is about how quickly data arrives or must be processed. Variety is about the different forms of data. This module focuses mainly on variety. But in real systems, all three interact. A small JSON file and a streaming feed of millions of JSON events may use the same format but require very different engineering solutions. Connect this idea to an e-commerce team preparing customer, purchase, and web-event data. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 170,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        170
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_14.wav",
-      "audio": "audio/module1_slide_14.mp3",
-      "captions": "audio/module1_slide_14.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_14.mp3",
+      "captions": "module1_slide_14.vtt",
+      "text": "You may hear modern data described using the three Vs: volume, velocity, and variety.\n\n[pause=0.7]\n\nVolume is about scale. Velocity is about how quickly data arrives or must be processed. Variety is about the different forms of data.\n\n[pause=0.7]\n\nThis module focuses mainly on variety.\n\n[pause=0.7]\n\nBut in real systems, all three interact. A small JSON file and a streaming feed of millions of JSON events may use the same format but require very different engineering solutions.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 15,
-      "title": "Data quality overview",
-      "transcript": "Now we move from organization to quality. A dataset can be perfectly structured and still be unsuitable for analysis. Quality is contextual. Data that is acceptable for a monthly report may be too stale for a real-time dashboard. Quality is also evidence-based. An unusual value should be investigated before we automatically delete or replace it. We will use six dimensions and a five-step workflow to reason about quality. In practice, quality rules should be tied to a use case. A fifteen-minute delay may be acceptable for a monthly report but unacceptable for a real-time alert. Likewise, an unusual physiological value should often be flagged and investigated rather than automatically deleted. Good cleaning preserves evidence and documents uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 140,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        140
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_15.wav",
-      "audio": "audio/module1_slide_15.mp3",
-      "captions": "audio/module1_slide_15.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_15.mp3",
+      "captions": "module1_slide_15.vtt",
+      "text": "Now we move from organization to quality.\n\n[pause=0.7]\n\nA dataset can be perfectly structured and still be unsuitable for analysis.\n\n[pause=0.7]\n\nQuality is contextual. Data that is acceptable for a monthly report may be too stale for a real-time dashboard.\n\n[pause=0.7]\n\nQuality is also evidence-based. An unusual value should be investigated before we automatically delete or replace it.\n\n[pause=0.7]\n\nWe will use six dimensions and a five-step workflow to reason about quality.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 16,
-      "title": "Six quality dimensions",
-      "transcript": "These six dimensions give us a practical checklist. Accuracy asks whether a value reflects reality. Completeness asks whether required information is present. Consistency asks whether the same concept is represented compatibly. Timeliness asks whether the data is current enough. Uniqueness asks whether entities appear the intended number of times. Validity checks whether values follow documented rules. The dimensions can overlap, so treat them as a way to organize investigation rather than as perfectly separate boxes. In practice, quality rules should be tied to a use case. A fifteen-minute delay may be acceptable for a monthly report but unacceptable for a real-time alert. Likewise, an unusual physiological value should often be flagged and investigated rather than automatically deleted. Good cleaning preserves evidence and documents uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 147,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        147
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_16.wav",
-      "audio": "audio/module1_slide_16.mp3",
-      "captions": "audio/module1_slide_16.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_16.mp3",
+      "captions": "module1_slide_16.vtt",
+      "text": "These six dimensions give us a practical checklist.\n\n[pause=0.7]\n\nAccuracy asks whether a value reflects reality. Completeness asks whether required information is present. Consistency asks whether the same concept is represented compatibly.\n\n[pause=0.7]\n\nTimeliness asks whether the data is current enough. Uniqueness asks whether entities appear the intended number of times. Validity checks whether values follow documented rules.\n\n[pause=0.7]\n\nThe dimensions can overlap, so treat them as a way to organize investigation rather than as perfectly separate boxes.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 17,
-      "title": "Accuracy vs validity",
-      "transcript": "Validity and accuracy are related but different. Validity asks whether a value fits a documented rule. Accuracy asks whether the value reflects reality. A temperature can fall inside an allowed range and still be inaccurate because of a sensor problem or data-entry error. Validity is often easier to automate. Accuracy may require comparison with the source system, another measurement, or domain knowledge. This distinction prevents us from assuming that passing a validation rule proves the value is true. In practice, quality rules should be tied to a use case. A fifteen-minute delay may be acceptable for a monthly report but unacceptable for a real-time alert. Likewise, an unusual physiological value should often be flagged and investigated rather than automatically deleted. Good cleaning preserves evidence and documents uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 148,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        148
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_17.wav",
-      "audio": "audio/module1_slide_17.mp3",
-      "captions": "audio/module1_slide_17.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_17.mp3",
+      "captions": "module1_slide_17.vtt",
+      "text": "Validity and accuracy are related but different.\n\n[pause=0.7]\n\nValidity asks whether a value fits a documented rule.\n\n[pause=0.7]\n\nAccuracy asks whether the value reflects reality.\n\n[pause=0.7]\n\nA temperature can fall inside an allowed range and still be inaccurate because of a sensor problem or data-entry error.\n\n[pause=0.8]\n\nValidity is often easier to automate. Accuracy may require comparison with the source system, another measurement, or domain knowledge.\n\n[pause=0.7]\n\nThis distinction prevents us from assuming that passing a validation rule proves the value is true.\n\n[pause=1.0]",
+      "pause_markers": 6
     },
     {
       "slide": 18,
-      "title": "Completeness vs uniqueness",
-      "transcript": "Completeness and uniqueness are different problems. Completeness asks whether needed values are present. The seriousness depends on the field and the use case. Missing email may be acceptable while missing patient ID may be critical. Uniqueness asks whether one real-world entity appears more than intended. Exact duplicate rows are easy to detect. Duplicate entities under different identifiers are harder and may require entity-resolution methods. Always distinguish missing information from repeated identity. In practice, quality rules should be tied to a use case. A fifteen-minute delay may be acceptable for a monthly report but unacceptable for a real-time alert. Likewise, an unusual physiological value should often be flagged and investigated rather than automatically deleted. Good cleaning preserves evidence and documents uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 145,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        145
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_18.wav",
-      "audio": "audio/module1_slide_18.mp3",
-      "captions": "audio/module1_slide_18.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_18.mp3",
+      "captions": "module1_slide_18.vtt",
+      "text": "Completeness and uniqueness are different problems.\n\n[pause=0.7]\n\nCompleteness asks whether needed values are present. The seriousness depends on the field and the use case. Missing email may be acceptable while missing patient ID may be critical.\n\n[pause=0.8]\n\nUniqueness asks whether one real-world entity appears more than intended.\n\n[pause=0.7]\n\nExact duplicate rows are easy to detect. Duplicate entities under different identifiers are harder and may require entity-resolution methods.\n\n[pause=0.7]\n\nAlways distinguish missing information from repeated identity.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 19,
-      "title": "Consistency vs timeliness",
-      "transcript": "Consistency asks whether the same concept is represented the same way. Mixed date formats, category labels, and units can create serious interpretation problems. Timeliness is different. It asks whether the data is current enough for the decision. A fifteen-minute delay may be excellent for a monthly reporting process but unacceptable for an emergency monitoring system. Both dimensions require documentation: shared definitions for consistency and timestamps or refresh expectations for timeliness. In practice, quality rules should be tied to a use case. A fifteen-minute delay may be acceptable for a monthly report but unacceptable for a real-time alert. Likewise, an unusual physiological value should often be flagged and investigated rather than automatically deleted. Good cleaning preserves evidence and documents uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 141,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        141
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_19.wav",
-      "audio": "audio/module1_slide_19.mp3",
-      "captions": "audio/module1_slide_19.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_19.mp3",
+      "captions": "module1_slide_19.vtt",
+      "text": "Consistency asks whether the same concept is represented the same way.\n\n[pause=0.7]\n\nMixed date formats, category labels, and units can create serious interpretation problems.\n\n[pause=0.8]\n\nTimeliness is different. It asks whether the data is current enough for the decision.\n\n[pause=0.7]\n\nA fifteen-minute delay may be excellent for a monthly reporting process but unacceptable for an emergency monitoring system.\n\n[pause=0.7]\n\nBoth dimensions require documentation: shared definitions for consistency and timestamps or refresh expectations for timeliness.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 20,
-      "title": "Quality workflow",
-      "transcript": "A practical quality workflow has five steps. First, profile the data. Second, detect potential issues. Third, investigate the source and context. Only then decide whether to correct, retain, exclude, impute, or flag the value. Finally, document what happened. This sequence creates an audit trail and reduces the risk of silently changing legitimate unusual values. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as an e-commerce team preparing customer, purchase, and web-event data, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 174,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        174
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_20.wav",
-      "audio": "audio/module1_slide_20.mp3",
-      "captions": "audio/module1_slide_20.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_20.mp3",
+      "captions": "module1_slide_20.vtt",
+      "text": "A practical quality workflow has five steps.\n\n[pause=0.7]\n\nFirst, profile the data. Second, detect potential issues. Third, investigate the source and context.\n\n[pause=0.7]\n\nOnly then decide whether to correct, retain, exclude, impute, or flag the value.\n\n[pause=0.7]\n\nFinally, document what happened.\n\n[pause=0.7]\n\nThis sequence creates an audit trail and reduces the risk of silently changing legitimate unusual values.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 21,
-      "title": "Heart-rate quality scenario",
-      "transcript": "The heart-rate scenario shows why quality work requires judgment. Minus one is clearly incompatible with a normal heart-rate measurement. A blank value is a completeness problem. Two hundred is unusual, but it may be physiologically possible in some circumstances. That means we investigate rather than automatically delete it. Quality rules help us identify records that deserve attention. They do not replace domain reasoning. In practice, quality rules should be tied to a use case. A fifteen-minute delay may be acceptable for a monthly report but unacceptable for a real-time alert. Likewise, an unusual physiological value should often be flagged and investigated rather than automatically deleted. Good cleaning preserves evidence and documents uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 134,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        134
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_21.wav",
-      "audio": "audio/module1_slide_21.mp3",
-      "captions": "audio/module1_slide_21.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_21.mp3",
+      "captions": "module1_slide_21.vtt",
+      "text": "The heart-rate scenario shows why quality work requires judgment.\n\n[pause=0.7]\n\nMinus one is clearly incompatible with a normal heart-rate measurement. A blank value is a completeness problem.\n\n[pause=0.7]\n\nTwo hundred is unusual, but it may be physiologically possible in some circumstances.\n\n[pause=0.7]\n\nThat means we investigate rather than automatically delete it.\n\n[pause=0.7]\n\nQuality rules help us identify records that deserve attention. They do not replace domain reasoning.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 22,
-      "title": "Quality actions",
-      "transcript": "After identifying a quality problem, we still need a response. Sometimes we can correct a value. Sometimes we retain it. Sometimes we exclude it from one analysis without deleting it from the source. Sometimes we impute missing information. Often, a quality flag is the most transparent choice when uncertainty remains. The objective is not to make the dataset look perfect. It is to make limitations explicit and manageable. In practice, quality rules should be tied to a use case. A fifteen-minute delay may be acceptable for a monthly report but unacceptable for a real-time alert. Likewise, an unusual physiological value should often be flagged and investigated rather than automatically deleted. Good cleaning preserves evidence and documents uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 138,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        138
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_22.wav",
-      "audio": "audio/module1_slide_22.mp3",
-      "captions": "audio/module1_slide_22.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_22.mp3",
+      "captions": "module1_slide_22.vtt",
+      "text": "After identifying a quality problem, we still need a response.\n\n[pause=0.7]\n\nSometimes we can correct a value. Sometimes we retain it. Sometimes we exclude it from one analysis without deleting it from the source. Sometimes we impute missing information.\n\n[pause=0.7]\n\nOften, a quality flag is the most transparent choice when uncertainty remains.\n\n[pause=0.7]\n\nThe objective is not to make the dataset look perfect. It is to make limitations explicit and manageable.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 23,
-      "title": "Measurement scale overview",
-      "transcript": "Now we move from quality to variable meaning. Measurement scale tells us which comparisons and arithmetic operations are defensible. Nominal and ordinal are categorical scales. Interval and ratio are numeric scales. The key questions are whether order exists, whether differences have a consistent meaning, and whether zero represents the absence of the measured quantity. The easiest way to classify a variable is to ask what statements are meaningful in the real world. Can values only be different, can they be ordered, are differences meaningful, and does zero mean absence? Those questions are more reliable than looking at whether the software stores the column as an integer or floating-point number.",
-      "seed": 1234,
-      "tts_text_tokens": 125,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        125
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_23.wav",
-      "audio": "audio/module1_slide_23.mp3",
-      "captions": "audio/module1_slide_23.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_23.mp3",
+      "captions": "module1_slide_23.vtt",
+      "text": "Now we move from quality to variable meaning.\n\n[pause=0.7]\n\nMeasurement scale tells us which comparisons and arithmetic operations are defensible.\n\n[pause=0.7]\n\nNominal and ordinal are categorical scales. Interval and ratio are numeric scales.\n\n[pause=0.7]\n\nThe key questions are whether order exists, whether differences have a consistent meaning, and whether zero represents the absence of the measured quantity.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 24,
-      "title": "Categorical vs numeric",
-      "transcript": "The broadest split is categorical versus numeric. Categorical variables represent labels or ordered levels. Nominal and ordinal belong here. Numeric variables represent quantities. Interval and ratio belong here. Do not decide by looking only at the characters in the column. A ZIP code contains digits but is categorical. A satisfaction score uses numbers but usually represents ordered categories. Connect this idea to a university analyzing student records, surveys, and learning-platform activity. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 150,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        150
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_24.wav",
-      "audio": "audio/module1_slide_24.mp3",
-      "captions": "audio/module1_slide_24.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_24.mp3",
+      "captions": "module1_slide_24.vtt",
+      "text": "The broadest split is categorical versus numeric.\n\n[pause=0.7]\n\nCategorical variables represent labels or ordered levels. Nominal and ordinal belong here.\n\n[pause=0.8]\n\nNumeric variables represent quantities. Interval and ratio belong here.\n\n[pause=0.7]\n\nDo not decide by looking only at the characters in the column.\n\n[pause=0.7]\n\nA ZIP code contains digits but is categorical. A satisfaction score uses numbers but usually represents ordered categories.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 25,
-      "title": "Measurement decision tree",
-      "transcript": "This decision tree provides a simple reasoning process. First, ask whether the values are labels or quantities. If they are labels, ask whether a meaningful order exists. If they are quantities, ask whether the scale has a true zero. This framework works well for many common variables, but domain context still matters. When unsure, explain which comparisons or arithmetic statements would make real-world sense. The easiest way to classify a variable is to ask what statements are meaningful in the real world. Can values only be different, can they be ordered, are differences meaningful, and does zero mean absence? Those questions are more reliable than looking at whether the software stores the column as an integer or floating-point number.",
-      "seed": 1234,
-      "tts_text_tokens": 140,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        140
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_25.wav",
-      "audio": "audio/module1_slide_25.mp3",
-      "captions": "audio/module1_slide_25.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_25.mp3",
+      "captions": "module1_slide_25.vtt",
+      "text": "This decision tree provides a simple reasoning process.\n\n[pause=0.7]\n\nFirst, ask whether the values are labels or quantities.\n\n[pause=0.8]\n\nIf they are labels, ask whether a meaningful order exists. If they are quantities, ask whether the scale has a true zero.\n\n[pause=0.8]\n\nThis framework works well for many common variables, but domain context still matters.\n\n[pause=0.7]\n\nWhen unsure, explain which comparisons or arithmetic statements would make real-world sense.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 26,
-      "title": "Nominal scale",
-      "transcript": "Nominal variables distinguish categories without placing them in a meaningful order. Blood types are different, but one blood type is not greater than another. ZIP codes and patient IDs are common traps because they may contain digits. Counts and proportions are natural summaries, and bar charts are usually a good starting visualization. The important rule is not to invent numerical meaning for a label. The easiest way to classify a variable is to ask what statements are meaningful in the real world. Can values only be different, can they be ordered, are differences meaningful, and does zero mean absence? Those questions are more reliable than looking at whether the software stores the column as an integer or floating-point number.",
-      "seed": 1234,
-      "tts_text_tokens": 135,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        135
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_26.wav",
-      "audio": "audio/module1_slide_26.mp3",
-      "captions": "audio/module1_slide_26.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_26.mp3",
+      "captions": "module1_slide_26.vtt",
+      "text": "Nominal variables distinguish categories without placing them in a meaningful order.\n\n[pause=0.7]\n\nBlood types are different, but one blood type is not greater than another.\n\n[pause=0.7]\n\nZIP codes and patient IDs are common traps because they may contain digits.\n\n[pause=0.7]\n\nCounts and proportions are natural summaries, and bar charts are usually a good starting visualization.\n\n[pause=0.7]\n\nThe important rule is not to invent numerical meaning for a label.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 27,
-      "title": "Nominal visualization",
-      "transcript": "A bar chart is a natural display for a nominal variable. The bar lengths show counts, which are quantitative. The category labels themselves are not treated as measurements. We can reorder the categories by frequency or by a conventional order without implying that O minus A has any numerical meaning. This is a good example of matching a visualization to the measurement structure. The easiest way to classify a variable is to ask what statements are meaningful in the real world. Can values only be different, can they be ordered, are differences meaningful, and does zero mean absence? Those questions are more reliable than looking at whether the software stores the column as an integer or floating-point number.",
-      "seed": 1234,
-      "tts_text_tokens": 133,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        133
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_27.wav",
-      "audio": "audio/module1_slide_27.mp3",
-      "captions": "audio/module1_slide_27.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_27.mp3",
+      "captions": "module1_slide_27.vtt",
+      "text": "A bar chart is a natural display for a nominal variable.\n\n[pause=0.7]\n\nThe bar lengths show counts, which are quantitative.\n\n[pause=0.7]\n\nThe category labels themselves are not treated as measurements.\n\n[pause=0.8]\n\nWe can reorder the categories by frequency or by a conventional order without implying that O minus A has any numerical meaning.\n\n[pause=0.7]\n\nThis is a good example of matching a visualization to the measurement structure.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 28,
-      "title": "Ordinal scale",
-      "transcript": "Ordinal variables have a meaningful order. Emergent is more severe than urgent, and urgent is more severe than non-urgent. But the distance between those levels is not necessarily equal. That means numeric codes can preserve rank while still requiring caution. Medians, percentiles, and ordered displays often respect the structure better than treating the values as ordinary continuous numbers. The easiest way to classify a variable is to ask what statements are meaningful in the real world. Can values only be different, can they be ordered, are differences meaningful, and does zero mean absence? Those questions are more reliable than looking at whether the software stores the column as an integer or floating-point number.",
-      "seed": 1234,
-      "tts_text_tokens": 134,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        134
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_28.wav",
-      "audio": "audio/module1_slide_28.mp3",
-      "captions": "audio/module1_slide_28.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_28.mp3",
+      "captions": "module1_slide_28.vtt",
+      "text": "Ordinal variables have a meaningful order.\n\n[pause=0.7]\n\nEmergent is more severe than urgent, and urgent is more severe than non-urgent.\n\n[pause=0.7]\n\nBut the distance between those levels is not necessarily equal.\n\n[pause=0.7]\n\nThat means numeric codes can preserve rank while still requiring caution.\n\n[pause=0.7]\n\nMedians, percentiles, and ordered displays often respect the structure better than treating the values as ordinary continuous numbers.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 29,
-      "title": "Likert caution",
-      "transcript": "Likert-style responses illustrate ordinal data well. A five is higher than a four, but the psychological distance from one to two may not equal the distance from four to five. Means are commonly reported in practice, particularly for composite scales. But for a single coarse item, medians, distributions, and rank-based summaries may better respect the measurement assumptions. The important point is to recognize the assumption rather than use the mean automatically. Connect this idea to an e-commerce team preparing customer, purchase, and web-event data. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 172,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        172
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_29.wav",
-      "audio": "audio/module1_slide_29.mp3",
-      "captions": "audio/module1_slide_29.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_29.mp3",
+      "captions": "module1_slide_29.vtt",
+      "text": "Likert-style responses illustrate ordinal data well.\n\n[pause=0.7]\n\nA five is higher than a four, but the psychological distance from one to two may not equal the distance from four to five.\n\n[pause=0.7]\n\nMeans are commonly reported in practice, particularly for composite scales.\n\n[pause=0.7]\n\nBut for a single coarse item, medians, distributions, and rank-based summaries may better respect the measurement assumptions.\n\n[pause=0.7]\n\nThe important point is to recognize the assumption rather than use the mean automatically.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 30,
-      "title": "Interval scale",
-      "transcript": "Interval scales support meaningful differences. Celsius temperature is the classic example. A difference of five degrees has the same interpretation anywhere on the scale. But zero Celsius is not the absence of temperature. Because the zero point is arbitrary, ratio statements such as twenty degrees being twice ten degrees are not meaningful. The easiest way to classify a variable is to ask what statements are meaningful in the real world. Can values only be different, can they be ordered, are differences meaningful, and does zero mean absence? Those questions are more reliable than looking at whether the software stores the column as an integer or floating-point number.",
-      "seed": 1234,
-      "tts_text_tokens": 121,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        121
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_30.wav",
-      "audio": "audio/module1_slide_30.mp3",
-      "captions": "audio/module1_slide_30.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_30.mp3",
+      "captions": "module1_slide_30.vtt",
+      "text": "Interval scales support meaningful differences.\n\n[pause=0.7]\n\nCelsius temperature is the classic example.\n\n[pause=0.8]\n\nA difference of five degrees has the same interpretation anywhere on the scale.\n\n[pause=0.7]\n\nBut zero Celsius is not the absence of temperature.\n\n[pause=0.7]\n\nBecause the zero point is arbitrary, ratio statements such as twenty degrees being twice ten degrees are not meaningful.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 31,
-      "title": "Ratio scale",
-      "transcript": "Ratio scales have equal differences and a meaningful zero. Zero visits means no visits occurred. Zero elapsed seconds means no time elapsed. Because the zero point represents absence, ratio statements can be meaningful. Four visits can be twice two visits. Ratio variables support a wide range of arithmetic, although distribution, units, and context still affect which summaries are useful. The easiest way to classify a variable is to ask what statements are meaningful in the real world. Can values only be different, can they be ordered, are differences meaningful, and does zero mean absence? Those questions are more reliable than looking at whether the software stores the column as an integer or floating-point number.",
-      "seed": 1234,
-      "tts_text_tokens": 132,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        132
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_31.wav",
-      "audio": "audio/module1_slide_31.mp3",
-      "captions": "audio/module1_slide_31.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_31.mp3",
+      "captions": "module1_slide_31.vtt",
+      "text": "Ratio scales have equal differences and a meaningful zero.\n\n[pause=0.7]\n\nZero visits means no visits occurred. Zero elapsed seconds means no time elapsed.\n\n[pause=0.7]\n\nBecause the zero point represents absence, ratio statements can be meaningful.\n\n[pause=0.7]\n\nFour visits can be twice two visits.\n\n[pause=0.7]\n\nRatio variables support a wide range of arithmetic, although distribution, units, and context still affect which summaries are useful.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 32,
-      "title": "Interval vs ratio",
-      "transcript": "Interval and ratio variables can look similar because both are numeric and support meaningful differences. The major distinction is the zero point. Celsius zero is a reference point, not the absence of temperature. Zero visits means no visits occurred. That difference determines whether ratio statements are meaningful. When classifying a numeric variable, ask what zero means in the real-world measurement process. The easiest way to classify a variable is to ask what statements are meaningful in the real world. Can values only be different, can they be ordered, are differences meaningful, and does zero mean absence? Those questions are more reliable than looking at whether the software stores the column as an integer or floating-point number.",
-      "seed": 1234,
-      "tts_text_tokens": 134,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        134
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_32.wav",
-      "audio": "audio/module1_slide_32.mp3",
-      "captions": "audio/module1_slide_32.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_32.mp3",
+      "captions": "module1_slide_32.vtt",
+      "text": "Interval and ratio variables can look similar because both are numeric and support meaningful differences.\n\n[pause=0.7]\n\nThe major distinction is the zero point.\n\n[pause=0.7]\n\nCelsius zero is a reference point, not the absence of temperature.\n\n[pause=0.7]\n\nZero visits means no visits occurred.\n\n[pause=0.7]\n\nThat difference determines whether ratio statements are meaningful.\n\n[pause=0.7]\n\nWhen classifying a numeric variable, ask what zero means in the real-world measurement process.\n\n[pause=1.0]",
+      "pause_markers": 6
     },
     {
       "slide": 33,
-      "title": "Discrete vs continuous",
-      "transcript": "Numeric variables can also be classified by how the values are generated. Discrete variables usually come from counting events or units. Continuous variables come from measurement and conceptually can take values along a range. Do not confuse the stored precision with the concept. A device may report a continuous physiological measurement as a whole number because that is how the instrument records it. The easiest way to classify a variable is to ask what statements are meaningful in the real world. Can values only be different, can they be ordered, are differences meaningful, and does zero mean absence? Those questions are more reliable than looking at whether the software stores the column as an integer or floating-point number.",
-      "seed": 1234,
-      "tts_text_tokens": 131,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        131
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_33.wav",
-      "audio": "audio/module1_slide_33.mp3",
-      "captions": "audio/module1_slide_33.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_33.mp3",
+      "captions": "module1_slide_33.vtt",
+      "text": "Numeric variables can also be classified by how the values are generated.\n\n[pause=0.7]\n\nDiscrete variables usually come from counting events or units.\n\n[pause=0.7]\n\nContinuous variables come from measurement and conceptually can take values along a range.\n\n[pause=0.7]\n\nDo not confuse the stored precision with the concept.\n\n[pause=0.7]\n\nA device may report a continuous physiological measurement as a whole number because that is how the instrument records it.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 34,
-      "title": "When integer storage misleads",
-      "transcript": "This slide shows four columns that could all be stored as integers. Heart rate is a measurement recorded to whole units. Emergency visits is a count. Patient ID is a label. Satisfaction is ordinal. The same technical dtype supports four different analytical meanings. This is why the correct question is not, what dtype does pandas show? The correct question is, how was this value generated and what comparisons make sense? Connect this idea to a hospital combining patient tables, device JSON, and clinical notes. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 162,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        162
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_34.wav",
-      "audio": "audio/module1_slide_34.mp3",
-      "captions": "audio/module1_slide_34.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_34.mp3",
+      "captions": "module1_slide_34.vtt",
+      "text": "This slide shows four columns that could all be stored as integers.\n\n[pause=0.7]\n\nHeart rate is a measurement recorded to whole units. Emergency visits is a count. Patient ID is a label. Satisfaction is ordinal.\n\n[pause=0.8]\n\nThe same technical dtype supports four different analytical meanings.\n\n[pause=0.7]\n\nThis is why the correct question is not, what dtype does pandas show?\n\n[pause=0.7]\n\nThe correct question is, how was this value generated and what comparisons make sense?\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 35,
-      "title": "Common classification traps",
-      "transcript": "These are common classification traps. The visual appearance of a value can tempt us to classify too quickly. ZIP codes and patient IDs are labels. Satisfaction is ordered but not necessarily equally spaced. Heart rate may be stored as an integer while representing a measurement. ER visits is a count. Celsius temperature is interval rather than ratio. When in doubt, describe the variable in a sentence and ask what operations make real-world sense. Connect this idea to an e-commerce team preparing customer, purchase, and web-event data. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 169,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        169
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_35.wav",
-      "audio": "audio/module1_slide_35.mp3",
-      "captions": "audio/module1_slide_35.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_35.mp3",
+      "captions": "module1_slide_35.vtt",
+      "text": "These are common classification traps.\n\n[pause=0.7]\n\nThe visual appearance of a value can tempt us to classify too quickly.\n\n[pause=0.7]\n\nZIP codes and patient IDs are labels. Satisfaction is ordered but not necessarily equally spaced. Heart rate may be stored as an integer while representing a measurement. ER visits is a count. Celsius temperature is interval rather than ratio.\n\n[pause=0.8]\n\nWhen in doubt, describe the variable in a sentence and ask what operations make real-world sense.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 36,
-      "title": "From type to decision",
-      "transcript": "Classification should lead to an analytical decision. Once you understand the variable, choose summaries that respect the scale, visualizations that show the intended comparison, and encodings that do not introduce false structure. Then validate the transformed result. This is not a rigid cookbook. Distribution, study design, and analytical goals still matter, but measurement meaning gives us a defensible starting point. Connect this idea to a university analyzing student records, surveys, and learning-platform activity. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 156,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        156
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_36.wav",
-      "audio": "audio/module1_slide_36.mp3",
-      "captions": "audio/module1_slide_36.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_36.mp3",
+      "captions": "module1_slide_36.vtt",
+      "text": "Classification should lead to an analytical decision.\n\n[pause=0.7]\n\nOnce you understand the variable, choose summaries that respect the scale, visualizations that show the intended comparison, and encodings that do not introduce false structure.\n\n[pause=0.7]\n\nThen validate the transformed result.\n\n[pause=0.7]\n\nThis is not a rigid cookbook.\n\n[pause=0.7]\n\nDistribution, study design, and analytical goals still matter, but measurement meaning gives us a defensible starting point.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 37,
-      "title": "Summary choices",
-      "transcript": "Choosing a summary is a conceptual decision. Counts and proportions fit nominal categories naturally. Ordinal variables often support medians and percentiles. Numeric variables may use means and standard deviations when the mean is meaningful and the distribution is appropriate. Skewed numeric data often benefits from median and interquartile range. Do not apply the same summary mechanically to every column in a dataframe. Connect this idea to a hospital combining patient tables, device JSON, and clinical notes. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 157,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        157
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_37.wav",
-      "audio": "audio/module1_slide_37.mp3",
-      "captions": "audio/module1_slide_37.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_37.mp3",
+      "captions": "module1_slide_37.vtt",
+      "text": "Choosing a summary is a conceptual decision.\n\n[pause=0.7]\n\nCounts and proportions fit nominal categories naturally.\n\n[pause=0.7]\n\nOrdinal variables often support medians and percentiles.\n\n[pause=0.7]\n\nNumeric variables may use means and standard deviations when the mean is meaningful and the distribution is appropriate.\n\n[pause=0.7]\n\nSkewed numeric data often benefits from median and interquartile range.\n\n[pause=0.7]\n\nDo not apply the same summary mechanically to every column in a dataframe.\n\n[pause=1.0]",
+      "pause_markers": 6
     },
     {
       "slide": 38,
-      "title": "Visualization choices",
-      "transcript": "Visualization should respect the variable structure. Bar charts work well for nominal categories. Ordered bars preserve the order of ordinal categories. Histograms show the distribution of continuous numeric variables. Scatterplots show relationships between two numeric variables. A chart should make the intended comparison easier without adding structure that the data does not contain. For example, connecting unordered categories with a line can accidentally imply continuity. Connect this idea to an e-commerce team preparing customer, purchase, and web-event data. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 160,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        160
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_38.wav",
-      "audio": "audio/module1_slide_38.mp3",
-      "captions": "audio/module1_slide_38.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_38.mp3",
+      "captions": "module1_slide_38.vtt",
+      "text": "Visualization should respect the variable structure.\n\n[pause=0.7]\n\nBar charts work well for nominal categories. Ordered bars preserve the order of ordinal categories.\n\n[pause=0.7]\n\nHistograms show the distribution of continuous numeric variables. Scatterplots show relationships between two numeric variables.\n\n[pause=0.7]\n\nA chart should make the intended comparison easier without adding structure that the data does not contain.\n\n[pause=0.7]\n\nFor example, connecting unordered categories with a line can accidentally imply continuity.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 39,
-      "title": "Encoding choices overview",
-      "transcript": "Encoding changes how software represents a variable. It does not change the underlying meaning. Nominal variables often use one-hot indicators. Ordinal variables may use ordered categorical dtypes or explicit ordinal codes. Numeric variables can remain numeric and may be scaled for methods that need comparable feature scales. Counts should remain conceptually counts even if a model later transforms them. The representation should support, not redefine, the concept. Preprocessing is not neutral: it tells software how to interpret the variable. One-hot encoding avoids inventing rank for nominal categories; ordinal coding preserves a known order; scaling changes numerical representation but not conceptual meaning. In predictive work, learned preprocessing should be fitted only on training data so evaluation remains honest.",
-      "seed": 1234,
-      "tts_text_tokens": 140,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        140
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_39.wav",
-      "audio": "audio/module1_slide_39.mp3",
-      "captions": "audio/module1_slide_39.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_39.mp3",
+      "captions": "module1_slide_39.vtt",
+      "text": "Encoding changes how software represents a variable.\n\n[pause=0.7]\n\nIt does not change the underlying meaning.\n\n[pause=0.7]\n\nNominal variables often use one-hot indicators. Ordinal variables may use ordered categorical dtypes or explicit ordinal codes. Numeric variables can remain numeric and may be scaled for methods that need comparable feature scales.\n\n[pause=0.7]\n\nCounts should remain conceptually counts even if a model later transforms them.\n\n[pause=0.7]\n\nThe representation should support, not redefine, the concept.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 40,
-      "title": "Membership tier example",
-      "transcript": "Membership tier is an ordered category, but it can be represented in more than one way. An ordinal code preserves the rank from Bronze through Platinum. A one-hot representation avoids expressing the category as a single numeric distance. Neither changes the underlying business meaning. The better representation depends on how the analytical method will interpret the values. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a hospital combining patient tables, device JSON, and clinical notes, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 166,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        166
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_40.wav",
-      "audio": "audio/module1_slide_40.mp3",
-      "captions": "audio/module1_slide_40.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_40.mp3",
+      "captions": "module1_slide_40.vtt",
+      "text": "Membership tier is an ordered category, but it can be represented in more than one way.\n\n[pause=0.7]\n\nAn ordinal code preserves the rank from Bronze through Platinum.\n\n[pause=0.7]\n\nA one-hot representation avoids expressing the category as a single numeric distance.\n\n[pause=0.7]\n\nNeither changes the underlying business meaning.\n\n[pause=0.7]\n\nThe better representation depends on how the analytical method will interpret the values.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 41,
-      "title": "One-hot encoding",
-      "transcript": "One-hot encoding creates separate indicator columns. With Bronze as the reference category, the generated columns represent Silver, Gold, and Platinum. Bronze is represented by all zeros. This is useful when we do not want a model to treat categories as points on one numeric line. The tradeoff is dimensionality. Variables with many categories can create many columns. Preprocessing is not neutral: it tells software how to interpret the variable. One-hot encoding avoids inventing rank for nominal categories; ordinal coding preserves a known order; scaling changes numerical representation but not conceptual meaning. In predictive work, learned preprocessing should be fitted only on training data so evaluation remains honest.",
-      "seed": 1234,
-      "tts_text_tokens": 128,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        128
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_41.wav",
-      "audio": "audio/module1_slide_41.mp3",
-      "captions": "audio/module1_slide_41.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_41.mp3",
+      "captions": "module1_slide_41.vtt",
+      "text": "One-hot encoding creates separate indicator columns.\n\n[pause=0.7]\n\nWith Bronze as the reference category, the generated columns represent Silver, Gold, and Platinum. Bronze is represented by all zeros.\n\n[pause=0.7]\n\nThis is useful when we do not want a model to treat categories as points on one numeric line.\n\n[pause=0.7]\n\nThe tradeoff is dimensionality. Variables with many categories can create many columns.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 42,
-      "title": "Ordinal encoding",
-      "transcript": "Ordinal encoding maps ordered categories to ordered numbers. The representation is compact and preserves rank. But some analytical methods may interpret the gaps between codes as equal. That is an additional assumption, not something guaranteed by the original category labels. Whenever you use ordinal codes, document the intended order and understand how the downstream model uses numeric distance. The easiest way to classify a variable is to ask what statements are meaningful in the real world. Can values only be different, can they be ordered, are differences meaningful, and does zero mean absence? Those questions are more reliable than looking at whether the software stores the column as an integer or floating-point number.",
-      "seed": 1234,
-      "tts_text_tokens": 128,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        128
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_42.wav",
-      "audio": "audio/module1_slide_42.mp3",
-      "captions": "audio/module1_slide_42.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_42.mp3",
+      "captions": "module1_slide_42.vtt",
+      "text": "Ordinal encoding maps ordered categories to ordered numbers.\n\n[pause=0.7]\n\nThe representation is compact and preserves rank.\n\n[pause=0.7]\n\nBut some analytical methods may interpret the gaps between codes as equal.\n\n[pause=0.7]\n\nThat is an additional assumption, not something guaranteed by the original category labels.\n\n[pause=0.8]\n\nWhenever you use ordinal codes, document the intended order and understand how the downstream model uses numeric distance.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 43,
-      "title": "Data leakage",
-      "transcript": "One important preprocessing idea is data leakage. If we fit a scaler or learned encoder using the entire dataset before evaluation, information from validation or test data can influence the transformation. A safer workflow fits learned preprocessing on the training data and applies the fitted transformation to validation or test data. Module 1 is not a machine-learning module, but this habit is worth establishing now because preprocessing can affect the honesty of later evaluation. Preprocessing is not neutral: it tells software how to interpret the variable. One-hot encoding avoids inventing rank for nominal categories; ordinal coding preserves a known order; scaling changes numerical representation but not conceptual meaning. In predictive work, learned preprocessing should be fitted only on training data so evaluation remains honest.",
-      "seed": 1234,
-      "tts_text_tokens": 143,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        143
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_43.wav",
-      "audio": "audio/module1_slide_43.mp3",
-      "captions": "audio/module1_slide_43.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_43.mp3",
+      "captions": "module1_slide_43.vtt",
+      "text": "One important preprocessing idea is data leakage.\n\n[pause=0.7]\n\nIf we fit a scaler or learned encoder using the entire dataset before evaluation, information from validation or test data can influence the transformation.\n\n[pause=0.7]\n\nA safer workflow fits learned preprocessing on the training data and applies the fitted transformation to validation or test data.\n\n[pause=0.7]\n\nModule 1 is not a machine-learning module, but this habit is worth establishing now because preprocessing can affect the honesty of later evaluation.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 44,
-      "title": "Python lab roadmap",
-      "transcript": "Now we move into the guided Python lab. The code is intentionally short. We will create a small dataframe, inspect it, assign meaningful dtypes, encode categories, scale selected numeric features, flatten JSON, and add basic quality checks. The most important rule is simple: inspect and understand first, transform second. Keep a real project in mind as we work through this section—for example, an e-commerce team preparing customer, purchase, and web-event data. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
-      "seed": 1234,
-      "tts_text_tokens": 161,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        161
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_44.wav",
-      "audio": "audio/module1_slide_44.mp3",
-      "captions": "audio/module1_slide_44.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_44.mp3",
+      "captions": "module1_slide_44.vtt",
+      "text": "Now we move into the guided Python lab.\n\n[pause=0.8]\n\nThe code is intentionally short.\n\n[pause=0.7]\n\nWe will create a small dataframe, inspect it, assign meaningful dtypes, encode categories, scale selected numeric features, flatten JSON, and add basic quality checks.\n\n[pause=0.7]\n\nThe most important rule is simple: inspect and understand first, transform second.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 45,
-      "title": "Create the dataframe",
-      "transcript": "The first lab step creates a small dataframe. Read the variable names before focusing on the code syntax. Patient ID is an identifier. Triage level and membership tier are ordered categories. Temperature is an interval measurement. ER visits is a ratio count. Run this in Jupyter, Colab, or VS Code. We are deliberately using a tiny dataset so you can inspect the values manually while learning the concepts. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a university analyzing student records, surveys, and learning-platform activity, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 182,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        182
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_45.wav",
-      "audio": "audio/module1_slide_45.mp3",
-      "captions": "audio/module1_slide_45.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_45.mp3",
+      "captions": "module1_slide_45.vtt",
+      "text": "The first lab step creates a small dataframe.\n\n[pause=0.8]\n\nRead the variable names before focusing on the code syntax.\n\n[pause=0.7]\n\nPatient ID is an identifier. Triage level and membership tier are ordered categories. Temperature is an interval measurement. ER visits is a ratio count.\n\n[pause=0.7]\n\nRun this in Jupyter, Colab, or VS Code.\n\n[pause=0.8]\n\nWe are deliberately using a tiny dataset so you can inspect the values manually while learning the concepts.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 46,
-      "title": "Inspect before transforming",
-      "transcript": "Before changing dtypes or encoding categories, inspect the dataframe. Head shows sample rows. Info reports current technical dtypes and non-null counts. Missingness counts reveal completeness issues. Unique-value counts can help identify categories or suspicious identifiers. These commands provide evidence. They do not decide the analytical meaning for us. We combine the software output with our understanding of what each variable represents. Connect this idea to a hospital combining patient tables, device JSON, and clinical notes. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 159,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        159
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_46.wav",
-      "audio": "audio/module1_slide_46.mp3",
-      "captions": "audio/module1_slide_46.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_46.mp3",
+      "captions": "module1_slide_46.vtt",
+      "text": "Before changing dtypes or encoding categories, inspect the dataframe.\n\n[pause=0.7]\n\nHead shows sample rows. Info reports current technical dtypes and non-null counts. Missingness counts reveal completeness issues. Unique-value counts can help identify categories or suspicious identifiers.\n\n[pause=0.7]\n\nThese commands provide evidence.\n\n[pause=0.7]\n\nThey do not decide the analytical meaning for us.\n\n[pause=0.7]\n\nWe combine the software output with our understanding of what each variable represents.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 47,
-      "title": "Assign meaningful pandas dtypes",
-      "transcript": "Now we align the pandas dtypes more closely with the concepts. Sex becomes a categorical variable. Triage level and membership tier use ordered categorical dtypes with the intended order written explicitly. Patient ID becomes a string because it identifies a record rather than measuring an amount. The dtype is now more informative, but it still does not replace documentation about the meaning of each variable. Preprocessing is not neutral: it tells software how to interpret the variable. One-hot encoding avoids inventing rank for nominal categories; ordinal coding preserves a known order; scaling changes numerical representation but not conceptual meaning. In predictive work, learned preprocessing should be fitted only on training data so evaluation remains honest.",
-      "seed": 1234,
-      "tts_text_tokens": 134,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        134
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_47.wav",
-      "audio": "audio/module1_slide_47.mp3",
-      "captions": "audio/module1_slide_47.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_47.mp3",
+      "captions": "module1_slide_47.vtt",
+      "text": "Now we align the pandas dtypes more closely with the concepts.\n\n[pause=0.7]\n\nSex becomes a categorical variable. Triage level and membership tier use ordered categorical dtypes with the intended order written explicitly.\n\n[pause=0.7]\n\nPatient ID becomes a string because it identifies a record rather than measuring an amount.\n\n[pause=0.7]\n\nThe dtype is now more informative, but it still does not replace documentation about the meaning of each variable.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 48,
-      "title": "One-hot encode a nominal variable",
-      "transcript": "This code one-hot encodes the nominal variable sex. The goal is to represent categories without assigning them a single numerical rank. With drop first, one category becomes the reference. Handle unknown provides a defined behavior if a later dataset contains a category not seen during fitting. The key idea is that the encoding follows from the nominal meaning of the variable. The easiest way to classify a variable is to ask what statements are meaningful in the real world. Can values only be different, can they be ordered, are differences meaningful, and does zero mean absence? Those questions are more reliable than looking at whether the software stores the column as an integer or floating-point number.",
-      "seed": 1234,
-      "tts_text_tokens": 132,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        132
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_48.wav",
-      "audio": "audio/module1_slide_48.mp3",
-      "captions": "audio/module1_slide_48.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_48.mp3",
+      "captions": "module1_slide_48.vtt",
+      "text": "This code one-hot encodes the nominal variable sex.\n\n[pause=0.7]\n\nThe goal is to represent categories without assigning them a single numerical rank.\n\n[pause=0.7]\n\nWith drop first, one category becomes the reference.\n\n[pause=0.7]\n\nHandle unknown provides a defined behavior if a later dataset contains a category not seen during fitting.\n\n[pause=0.7]\n\nThe key idea is that the encoding follows from the nominal meaning of the variable.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 49,
-      "title": "Ordinal encode an ordered variable",
-      "transcript": "Membership tier has a documented business order, so an ordinal encoder can preserve that rank. The category list is written explicitly. That matters because software should not guess the intended order from alphabetical sorting. The resulting codes are compact and ordered. But remember the earlier caution: some models may treat the numeric gaps as equal, so the representation must fit the method and interpretation. The easiest way to classify a variable is to ask what statements are meaningful in the real world. Can values only be different, can they be ordered, are differences meaningful, and does zero mean absence? Those questions are more reliable than looking at whether the software stores the column as an integer or floating-point number.",
-      "seed": 1234,
-      "tts_text_tokens": 135,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        135
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_49.wav",
-      "audio": "audio/module1_slide_49.mp3",
-      "captions": "audio/module1_slide_49.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_49.mp3",
+      "captions": "module1_slide_49.vtt",
+      "text": "Membership tier has a documented business order, so an ordinal encoder can preserve that rank.\n\n[pause=0.7]\n\nThe category list is written explicitly.\n\n[pause=0.7]\n\nThat matters because software should not guess the intended order from alphabetical sorting.\n\n[pause=0.7]\n\nThe resulting codes are compact and ordered.\n\n[pause=0.7]\n\nBut remember the earlier caution: some models may treat the numeric gaps as equal, so the representation must fit the method and interpretation.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 50,
-      "title": "Scale selected numeric features",
-      "transcript": "Standardization changes the numerical representation used by software. It does not change the conceptual measurement scale. Temperature remains an interval measurement. Emergency visits remains a count. In a real predictive workflow, fit the scaler on training data only and then apply the fitted scaler to validation and test data. That preserves the train-test boundary and avoids leakage. Preprocessing is not neutral: it tells software how to interpret the variable. One-hot encoding avoids inventing rank for nominal categories; ordinal coding preserves a known order; scaling changes numerical representation but not conceptual meaning. In predictive work, learned preprocessing should be fitted only on training data so evaluation remains honest.",
-      "seed": 1234,
-      "tts_text_tokens": 127,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        127
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_50.wav",
-      "audio": "audio/module1_slide_50.mp3",
-      "captions": "audio/module1_slide_50.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_50.mp3",
+      "captions": "module1_slide_50.vtt",
+      "text": "Standardization changes the numerical representation used by software.\n\n[pause=0.7]\n\nIt does not change the conceptual measurement scale.\n\n[pause=0.7]\n\nTemperature remains an interval measurement. Emergency visits remains a count.\n\n[pause=0.7]\n\nIn a real predictive workflow, fit the scaler on training data only and then apply the fitted scaler to validation and test data.\n\n[pause=0.7]\n\nThat preserves the train-test boundary and avoids leakage.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 51,
-      "title": "Flatten semi-structured JSON",
-      "transcript": "Pandas json normalize can flatten nested JSON into columns. Nested keys such as metrics heart rate and metrics steps become analytical fields. Notice what happens when a key exists in only one record. The other record receives a missing value. Flattening solves the structural problem, but it creates new quality questions about missingness, units, and field meaning. Technical normalization is only the beginning of analytical understanding. A useful project question is: what preparation step is required before analysis can even begin? A relational table may be ready for profiling, JSON may need flattening, and free text may need NLP or another extraction step. The form of the data changes the engineering path, but it does not by itself tell us whether the data is high quality.",
-      "seed": 1234,
-      "tts_text_tokens": 145,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        145
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_51.wav",
-      "audio": "audio/module1_slide_51.mp3",
-      "captions": "audio/module1_slide_51.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_51.mp3",
+      "captions": "module1_slide_51.vtt",
+      "text": "Pandas json normalize can flatten nested JSON into columns.\n\n[pause=0.7]\n\nNested keys such as metrics heart rate and metrics steps become analytical fields.\n\n[pause=0.7]\n\nNotice what happens when a key exists in only one record. The other record receives a missing value.\n\n[pause=0.7]\n\nFlattening solves the structural problem, but it creates new quality questions about missingness, units, and field meaning.\n\n[pause=0.7]\n\nTechnical normalization is only the beginning of analytical understanding.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 52,
-      "title": "Add basic quality checks",
-      "transcript": "The final Python step translates some quality rules into code. We inspect missingness, verify identifier uniqueness, test simple validity rules, and review category frequencies. Assertions are useful for teaching because they make a rule explicit. Production pipelines usually need richer logging and exception handling, but the principle is the same. Quality rules should be documented and checked consistently. In practice, quality rules should be tied to a use case. A fifteen-minute delay may be acceptable for a monthly report but unacceptable for a real-time alert. Likewise, an unusual physiological value should often be flagged and investigated rather than automatically deleted. Good cleaning preserves evidence and documents uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 128,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        128
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_52.wav",
-      "audio": "audio/module1_slide_52.mp3",
-      "captions": "audio/module1_slide_52.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_52.mp3",
+      "captions": "module1_slide_52.vtt",
+      "text": "The final Python step translates some quality rules into code.\n\n[pause=0.7]\n\nWe inspect missingness, verify identifier uniqueness, test simple validity rules, and review category frequencies.\n\n[pause=0.7]\n\nAssertions are useful for teaching because they make a rule explicit.\n\n[pause=0.7]\n\nProduction pipelines usually need richer logging and exception handling, but the principle is the same.\n\n[pause=0.7]\n\nQuality rules should be documented and checked consistently.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 53,
-      "title": "Python lab takeaway",
-      "transcript": "The Python lab follows one consistent logic. Define the meaning first. Assess quality second. Then choose a dtype, encoding, or scaling method. Finally, perform the analysis. The temptation is to let pandas or scikit-learn decide what a variable means. Instead, use software to implement a conceptual decision you can explain. Connect this idea to an e-commerce team preparing customer, purchase, and web-event data. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 149,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        149
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_53.wav",
-      "audio": "audio/module1_slide_53.mp3",
-      "captions": "audio/module1_slide_53.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_53.mp3",
+      "captions": "module1_slide_53.vtt",
+      "text": "The Python lab follows one consistent logic.\n\n[pause=0.8]\n\nDefine the meaning first. Assess quality second. Then choose a dtype, encoding, or scaling method.\n\n[pause=0.7]\n\nFinally, perform the analysis.\n\n[pause=0.7]\n\nThe temptation is to let pandas or scikit-learn decide what a variable means.\n\n[pause=0.7]\n\nInstead, use software to implement a conceptual decision you can explain.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 54,
-      "title": "Database storage preview",
-      "transcript": "Now we connect the concepts to database storage. Analytical meaning and storage type are related, but they are not identical. A nominal identifier can use text, UUID, or an integer key. A count often uses an integer type. Currency often needs exact numeric arithmetic. The design goal is to choose types and constraints that preserve meaning and prevent invalid data where possible. Module 2 develops this much more deeply. Connect this idea to a university analyzing student records, surveys, and learning-platform activity. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 163,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        163
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_54.wav",
-      "audio": "audio/module1_slide_54.mp3",
-      "captions": "audio/module1_slide_54.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_54.mp3",
+      "captions": "module1_slide_54.vtt",
+      "text": "Now we connect the concepts to database storage.\n\n[pause=0.7]\n\nAnalytical meaning and storage type are related, but they are not identical.\n\n[pause=0.7]\n\nA nominal identifier can use text, UUID, or an integer key. A count often uses an integer type. Currency often needs exact numeric arithmetic.\n\n[pause=0.7]\n\nThe design goal is to choose types and constraints that preserve meaning and prevent invalid data where possible.\n\n[pause=0.7]\n\nModule 2 develops this much more deeply.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 55,
-      "title": "PostgreSQL storage choices",
-      "transcript": "Storage type is an engineering decision. Identifiers can use text, UUID, or integer keys depending on the system. Counts use integer types. Currency often uses exact NUMERIC storage. Dates and event times should use temporal types. The important idea is that the database representation should support the meaning and quality rules of the data. A technically valid storage type is not enough if it encourages incorrect interpretation. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a hospital combining patient tables, device JSON, and clinical notes, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 179,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        179
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_55.wav",
-      "audio": "audio/module1_slide_55.mp3",
-      "captions": "audio/module1_slide_55.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_55.mp3",
+      "captions": "module1_slide_55.vtt",
+      "text": "Storage type is an engineering decision.\n\n[pause=0.7]\n\nIdentifiers can use text, UUID, or integer keys depending on the system.\n\n[pause=0.7]\n\nCounts use integer types. Currency often uses exact NUMERIC storage. Dates and event times should use temporal types.\n\n[pause=0.7]\n\nThe important idea is that the database representation should support the meaning and quality rules of the data.\n\n[pause=0.7]\n\nA technically valid storage type is not enough if it encourages incorrect interpretation.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 56,
-      "title": "PostgreSQL constraint example",
-      "transcript": "This PostgreSQL preview shows how storage and validation can work together. The table requires patient ID and encounter date. Triage level must belong to an approved list. Temperature uses a teaching range. Emergency visits and total charge cannot be negative. Run the valid example first. Then change emergency visits to negative one or use an unapproved triage label. PostgreSQL should reject the invalid row. That is an example of moving a documented validity rule into the database itself. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as an e-commerce team preparing customer, purchase, and web-event data, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 193,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        193
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_56.wav",
-      "audio": "audio/module1_slide_56.mp3",
-      "captions": "audio/module1_slide_56.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_56.mp3",
+      "captions": "module1_slide_56.vtt",
+      "text": "This PostgreSQL preview shows how storage and validation can work together.\n\n[pause=0.7]\n\nThe table requires patient ID and encounter date. Triage level must belong to an approved list. Temperature uses a teaching range. Emergency visits and total charge cannot be negative.\n\n[pause=0.7]\n\nRun the valid example first.\n\n[pause=0.8]\n\nThen change emergency visits to negative one or use an unapproved triage label.\n\n[pause=0.8]\n\nPostgreSQL should reject the invalid row. That is an example of moving a documented validity rule into the database itself.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 57,
-      "title": "Healthcare applied case",
-      "transcript": "In the healthcare case, classify each variable before choosing the analysis. Diagnosis code is a category. Pain score has order. Celsius temperature is interval. Age has a meaningful zero. Comorbidity count is created by counting. Length of stay measures elapsed time. Also choose an appropriate visualization for pain score and length of stay. Finally, decide how diagnosis code should be represented without inventing a numerical order. Connect this idea to a university analyzing student records, surveys, and learning-platform activity. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 161,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        161
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_57.wav",
-      "audio": "audio/module1_slide_57.mp3",
-      "captions": "audio/module1_slide_57.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_57.mp3",
+      "captions": "module1_slide_57.vtt",
+      "text": "In the healthcare case, classify each variable before choosing the analysis.\n\n[pause=0.8]\n\nDiagnosis code is a category. Pain score has order. Celsius temperature is interval. Age has a meaningful zero. Comorbidity count is created by counting. Length of stay measures elapsed time.\n\n[pause=0.7]\n\nAlso choose an appropriate visualization for pain score and length of stay.\n\n[pause=0.7]\n\nFinally, decide how diagnosis code should be represented without inventing a numerical order.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 58,
-      "title": "Healthcare case reasoning",
-      "transcript": "Here is one defensible direction for the healthcare case. Diagnosis code is nominal. Pain score is ordinal. Celsius temperature is interval. Age is ratio. Comorbidity count is a discrete ratio count. Length of stay is measured time and is usually treated as ratio. Ordered bars work well for pain score. A histogram or box plot can reveal skew and outliers in length of stay. Diagnosis codes should generally be represented categorically rather than as arbitrary numbers. Connect this idea to a hospital combining patient tables, device JSON, and clinical notes. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 170,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        170
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_58.wav",
-      "audio": "audio/module1_slide_58.mp3",
-      "captions": "audio/module1_slide_58.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_58.mp3",
+      "captions": "module1_slide_58.vtt",
+      "text": "Here is one defensible direction for the healthcare case.\n\n[pause=0.8]\n\nDiagnosis code is nominal. Pain score is ordinal. Celsius temperature is interval. Age is ratio. Comorbidity count is a discrete ratio count. Length of stay is measured time and is usually treated as ratio.\n\n[pause=0.7]\n\nOrdered bars work well for pain score. A histogram or box plot can reveal skew and outliers in length of stay.\n\n[pause=0.7]\n\nDiagnosis codes should generally be represented categorically rather than as arbitrary numbers.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 59,
-      "title": "E-commerce applied case",
-      "transcript": "Now apply the same reasoning to e-commerce data. Device type is nominal. Membership tier is ordinal when the business defines a real rank. Session duration is a ratio measurement. Purchases are a ratio count. Weekday is interesting because it is often treated as a nominal or cyclical category rather than a simple ordinal variable. Revenue is a ratio-scale monetary amount, but its database storage should use exact arithmetic and document currency. Connect this idea to an e-commerce team preparing customer, purchase, and web-event data. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 169,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        169
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_59.wav",
-      "audio": "audio/module1_slide_59.mp3",
-      "captions": "audio/module1_slide_59.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_59.mp3",
+      "captions": "module1_slide_59.vtt",
+      "text": "Now apply the same reasoning to e-commerce data.\n\n[pause=0.7]\n\nDevice type is nominal. Membership tier is ordinal when the business defines a real rank. Session duration is a ratio measurement. Purchases are a ratio count.\n\n[pause=0.7]\n\nWeekday is interesting because it is often treated as a nominal or cyclical category rather than a simple ordinal variable.\n\n[pause=0.7]\n\nRevenue is a ratio-scale monetary amount, but its database storage should use exact arithmetic and document currency.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 60,
-      "title": "E-commerce case reasoning",
-      "transcript": "Here is one defensible e-commerce analysis direction. Device type is nominal and works naturally with one-hot encoding. Membership tier is ordinal when the business defines a real ranking. Session duration is a ratio measurement. Purchase count is a discrete ratio count. Weekday often behaves as a cyclical category because Sunday connects back to Monday. Revenue should use an exact numeric storage type, with currency documented separately. Connect this idea to a university analyzing student records, surveys, and learning-platform activity. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 163,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        163
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_60.wav",
-      "audio": "audio/module1_slide_60.mp3",
-      "captions": "audio/module1_slide_60.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_60.mp3",
+      "captions": "module1_slide_60.vtt",
+      "text": "Here is one defensible e-commerce analysis direction.\n\n[pause=0.7]\n\nDevice type is nominal and works naturally with one-hot encoding.\n\n[pause=0.7]\n\nMembership tier is ordinal when the business defines a real ranking.\n\n[pause=0.7]\n\nSession duration is a ratio measurement. Purchase count is a discrete ratio count.\n\n[pause=0.7]\n\nWeekday often behaves as a cyclical category because Sunday connects back to Monday.\n\n[pause=0.7]\n\nRevenue should use an exact numeric storage type, with currency documented separately.\n\n[pause=1.0]",
+      "pause_markers": 6
     },
     {
       "slide": 61,
-      "title": "Checkpoint: recognition",
-      "transcript": "Checkpoint 1 focuses on recognition. Classify each variable as nominal, ordinal, interval, or ratio. For numeric variables, also decide whether the concept is counted or measured. Try to answer before opening the sample classifications. If you are unsure, return to the questions: label or quantity, ordered or unordered, true zero or not, counted or measured. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
-      "seed": 1234,
-      "tts_text_tokens": 170,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        170
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_61.wav",
-      "audio": "audio/module1_slide_61.mp3",
-      "captions": "audio/module1_slide_61.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_61.mp3",
+      "captions": "module1_slide_61.vtt",
+      "text": "Checkpoint 1 focuses on recognition.\n\n[pause=0.8]\n\nClassify each variable as nominal, ordinal, interval, or ratio.\n\n[pause=0.7]\n\nFor numeric variables, also decide whether the concept is counted or measured.\n\n[pause=0.7]\n\nTry to answer before opening the sample classifications.\n\n[pause=0.8]\n\nIf you are unsure, return to the questions: label or quantity, ordered or unordered, true zero or not, counted or measured.\n\n[pause=1.0]",
+      "pause_markers": 5
     },
     {
       "slide": 62,
-      "title": "Checkpoint: justification",
-      "transcript": "Checkpoint 2 asks for justification. This is more important than memorizing the label. Explain why ZIP code is nominal even when stored as an integer. Explain why Celsius supports meaningful differences but not meaningful ratios. Explain why arbitrary integer codes can mislead a model when categories are unordered. If you can explain the reason in ordinary language, you understand the concept well enough to apply it elsewhere. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
-      "seed": 1234,
-      "tts_text_tokens": 175,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        175
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_62.wav",
-      "audio": "audio/module1_slide_62.mp3",
-      "captions": "audio/module1_slide_62.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_62.mp3",
+      "captions": "module1_slide_62.vtt",
+      "text": "Checkpoint 2 asks for justification.\n\n[pause=0.8]\n\nThis is more important than memorizing the label.\n\n[pause=0.8]\n\nExplain why ZIP code is nominal even when stored as an integer.\n\n[pause=0.7]\n\nExplain why Celsius supports meaningful differences but not meaningful ratios.\n\n[pause=0.7]\n\nExplain why arbitrary integer codes can mislead a model when categories are unordered.\n\n[pause=0.7]\n\nIf you can explain the reason in ordinary language, you understand the concept well enough to apply it elsewhere.\n\n[pause=1.0]",
+      "pause_markers": 6
     },
     {
       "slide": 63,
-      "title": "Checkpoint: application",
-      "transcript": "Checkpoint 3 asks you to connect the ideas. Begin with data quality. What could be missing, duplicated, invalid, or implausible? Then classify the variables. Next, choose a summary and visualization that match the measurement meaning. Finally, recommend a technical representation or storage choice. There can be more than one reasonable answer. The important requirement is that the choices are consistent and justified. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
-      "seed": 1234,
-      "tts_text_tokens": 176,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        176
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_63.wav",
-      "audio": "audio/module1_slide_63.mp3",
-      "captions": "audio/module1_slide_63.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_63.mp3",
+      "captions": "module1_slide_63.vtt",
+      "text": "Checkpoint 3 asks you to connect the ideas.\n\n[pause=0.8]\n\nBegin with data quality. What could be missing, duplicated, invalid, or implausible?\n\n[pause=0.7]\n\nThen classify the variables.\n\n[pause=0.7]\n\nNext, choose a summary and visualization that match the measurement meaning.\n\n[pause=0.7]\n\nFinally, recommend a technical representation or storage choice.\n\n[pause=0.7]\n\nThere can be more than one reasonable answer. The important requirement is that the choices are consistent and justified.\n\n[pause=1.0]",
+      "pause_markers": 6
     },
     {
       "slide": 64,
-      "title": "Five key takeaways",
-      "transcript": "Let's reduce the module to five ideas. First, separate dataset organization from variable meaning and technical storage. Second, assess quality before trusting the analysis. Third, use measurement scale to decide which comparisons and summaries make sense. Fourth, remember that a dtype does not define analytical meaning. Fifth, make preprocessing choices deliberately and document why they are appropriate. Do not treat this as a list to memorize. Try to explain each idea using one example from a project you understand. If you can describe when you would use the concept, what assumption it makes, and how you would validate the result, you are ready to apply it independently.",
-      "seed": 1234,
-      "tts_text_tokens": 126,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        126
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_64.wav",
-      "audio": "audio/module1_slide_64.mp3",
-      "captions": "audio/module1_slide_64.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_64.mp3",
+      "captions": "module1_slide_64.vtt",
+      "text": "Let's reduce the module to five ideas.\n\n[pause=0.7]\n\nFirst, separate dataset organization from variable meaning and technical storage.\n\n[pause=0.7]\n\nSecond, assess quality before trusting the analysis.\n\n[pause=0.7]\n\nThird, use measurement scale to decide which comparisons and summaries make sense.\n\n[pause=0.7]\n\nFourth, remember that a dtype does not define analytical meaning.\n\n[pause=0.7]\n\nFifth, make preprocessing choices deliberately and document why they are appropriate.\n\n[pause=1.0]",
+      "pause_markers": 6
     },
     {
       "slide": 65,
-      "title": "Quick glossary",
-      "transcript": "This glossary gives you a compact review. Do not memorize every sentence exactly. The important skill is being able to distinguish the terms when you encounter a new dataset. If you can explain structured versus semi-structured, nominal versus ordinal, interval versus ratio, and discrete versus continuous, you have the conceptual foundation for the next module. Do not treat this as a list to memorize. Try to explain each idea using one example from a project you understand. If you can describe when you would use the concept, what assumption it makes, and how you would validate the result, you are ready to apply it independently.",
-      "seed": 1234,
-      "tts_text_tokens": 121,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        121
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_65.wav",
-      "audio": "audio/module1_slide_65.mp3",
-      "captions": "audio/module1_slide_65.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_65.mp3",
+      "captions": "module1_slide_65.vtt",
+      "text": "This glossary gives you a compact review.\n\n[pause=0.7]\n\nDo not memorize every sentence exactly.\n\n[pause=0.7]\n\nThe important skill is being able to distinguish the terms when you encounter a new dataset.\n\n[pause=0.7]\n\nIf you can explain structured versus semi-structured, nominal versus ordinal, interval versus ratio, and discrete versus continuous, you have the conceptual foundation for the next module.\n\n[pause=1.0]",
+      "pause_markers": 4
     },
     {
       "slide": 66,
-      "title": "Next: Module 2",
-      "transcript": "Module 2 builds directly on this foundation. Now that we can talk about data meaning and quality, we will design relational structures that preserve that meaning. You will define row grain, identify entities and attributes, choose keys, connect tables through relationships, and use constraints to protect important rules. The same habit continues: define the concept first, then choose the technical representation that supports it. As you move forward, keep the reasoning habits from this module. The next topic will add new SQL tools, but it still depends on understanding grain, missing values, and the meaning of each transformation.",
-      "seed": 1234,
-      "tts_text_tokens": 116,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        116
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
-      "wav": "wav/module1_slide_66.wav",
-      "audio": "audio/module1_slide_66.mp3",
-      "captions": "audio/module1_slide_66.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "audio": "module1_slide_66.mp3",
+      "captions": "module1_slide_66.vtt",
+      "text": "Module 2 builds directly on this foundation.\n\n[pause=0.7]\n\nNow that we can talk about data meaning and quality, we will design relational structures that preserve that meaning.\n\n[pause=0.7]\n\nYou will define row grain, identify entities and attributes, choose keys, connect tables through relationships, and use constraints to protect important rules.\n\n[pause=0.7]\n\nThe same habit continues: define the concept first, then choose the technical representation that supports it.\n\n[pause=1.0]",
+      "pause_markers": 4
     }
   ]
 }

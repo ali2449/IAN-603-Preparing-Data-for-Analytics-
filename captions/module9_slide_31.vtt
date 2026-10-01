@@ -1,25 +1,17 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.287
-This query creates normalized email and name keys.
+00:00:00.103 --> 00:00:05.821
+This query creates normalized email and name keys It
+groups rows
 
-00:00:03.287 --> 00:00:06.327
-It groups rows by those normalized values.
+00:00:05.847 --> 00:00:11.632
+by those normalized values Groups with more than one
+row become duplicate
 
-00:00:06.327 --> 00:00:13.052
-Groups with more than one row become duplicate candidates.
+00:00:11.658 --> 00:00:17.495
+candidates ARRAY_AGG shows the source IDs in each
+group
 
-00:00:13.052 --> 00:00:14.972
-ARRAY_AGG shows the source IDs in each group.
-
-00:00:14.972 --> 00:00:21.637
-This is detection only. It does not yet say which source row is better.
-
-00:00:21.637 --> 00:00:27.402
-Standardization should make equivalent values comparable without inventing facts.
-
-00:00:27.402 --> 00:00:33.367
-Lowercasing an email or normalizing a known category map is different from guessing what an ambiguous value
-
-00:00:33.367 --> 00:00:41.426
-was supposed to mean. Good cleaning reduces representation noise while preserving uncertainty.
+00:00:19.251 --> 00:00:25.015
+This is detection only It does not yet say which
+source row is better

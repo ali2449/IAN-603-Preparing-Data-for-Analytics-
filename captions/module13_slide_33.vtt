@@ -1,28 +1,17 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.382
-Spark has several join strategies.
+00:00:00.103 --> 00:00:05.821
+Spark has several join strategies If one side is
+small Spark
 
-00:00:02.382 --> 00:00:06.557
-If one side is small, Spark may broadcast it to workers.
+00:00:05.848 --> 00:00:10.863
+may broadcast it to workers If both sides are large
+the data may need to
 
-00:00:06.557 --> 00:00:11.402
-If both sides are large, the data may need to be shuffled by join key.
+00:00:10.877 --> 00:00:16.740
+be shuffled by join key A practical habit is to
+filter rows and select
 
-00:00:11.402 --> 00:00:16.937
-A practical habit is to filter rows and select needed columns before a large join,
-
-00:00:16.937 --> 00:00:20.217
-as long as doing so preserves the correct logic.
-
-00:00:20.217 --> 00:00:25.567
-A shuffle moves data across executors so related keys end up together.
-
-00:00:25.567 --> 00:00:31.467
-GROUP BY, large joins, and global ORDER BY can trigger expensive shuffles.
-
-00:00:31.467 --> 00:00:38.007
-In distributed systems, moving data is often more costly than evaluating the SQL expression itself,
-
-00:00:38.007 --> 00:00:39.749
-so plan around data movement.
+00:00:16.753 --> 00:00:21.385
+needed columns before a large join as long as doing
+so preserves the correct logic

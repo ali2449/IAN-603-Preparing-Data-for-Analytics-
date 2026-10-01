@@ -1,49 +1,43 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.062
-PostgreSQL FILTER gives us another way to calculate conditional measures.
+00:00:00.103 --> 00:00:06.589
+PostgreSQL FILTER gives us another way to calculate
+conditional measures Instead
 
-00:00:05.062 --> 00:00:10.327
-Instead of placing a CASE expression inside COUNT, we write the aggregate and then specify which rows are
+00:00:06.602 --> 00:00:10.220
+of placing a CASE expression inside COUNT we write
+the aggregate and
 
-00:00:10.327 --> 00:00:14.027
-allowed to contribute to that aggregate.
+00:00:10.247 --> 00:00:15.749
+then specify which rows are allowed to contribute to
+that aggregate Run
 
-00:00:14.027 --> 00:00:19.167
-Run the example and compare its output with the previous CASE version.
+00:00:15.776 --> 00:00:20.383
+the example and compare its output with the previous
+CASE version The
 
-00:00:19.167 --> 00:00:21.752
-The counts should express the same analytical idea.
+00:00:20.410 --> 00:00:26.327
+counts should express the same analytical idea
+FILTER can be especially
 
-00:00:21.752 --> 00:00:28.442
-FILTER can be especially readable when a SELECT list contains several independent conditional counts or sums.
+00:00:26.353 --> 00:00:30.722
+readable when a SELECT list contains several
+independent conditional counts or sums
 
-00:00:28.442 --> 00:00:34.467
-If you are practicing in pgAdmin, copy both versions and compare them side by side.
+00:00:32.475 --> 00:00:36.422
+If you are practicing in pgAdmin copy both versions
+and compare them
 
-00:00:34.467 --> 00:00:37.197
-The goal is not to decide that one is always better.
+00:00:36.448 --> 00:00:40.201
+side by side The goal is not to decide that one is
 
-00:00:37.197 --> 00:00:45.377
-The goal is to recognize both patterns and choose the one that is clear and appropriate for the SQL system you
+00:00:40.227 --> 00:00:44.517
+always better The goal is to recognize both patterns
+and choose the
 
-00:00:45.377 --> 00:00:50.002
-are using. When reading the example, do not read punctuation one character at a time.
+00:00:44.530 --> 00:00:47.438
+one that is clear and appropriate for the SQL system
+you are
 
-00:00:50.002 --> 00:00:55.942
-Start with the purpose of the query, then identify the input rows, the operation being applied,
-
-00:00:55.942 --> 00:00:58.542
-and the shape of the expected output.
-
-00:00:58.542 --> 00:01:03.837
-In a real setting such as a dashboard summarizing admissions by department and month,
-
-00:01:03.837 --> 00:01:09.977
-this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
-
-00:01:09.977 --> 00:01:12.097
-before discussing syntax.
-
-00:01:12.097 --> 00:01:17.841
-After running it, inspect a few records manually and check that the result matches that explanation.
+00:00:47.464 --> 00:00:47.872
+using

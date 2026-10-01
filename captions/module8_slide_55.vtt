@@ -1,34 +1,21 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.692
-This query uses CASE to handle several known date formats.
+00:00:00.103 --> 00:00:06.034
+This query uses CASE to handle several known date
+formats Blank strings
 
-00:00:03.692 --> 00:00:09.242
-Blank strings become NULL. ISO-style text can be cast to date.
+00:00:06.060 --> 00:00:13.703
+become NULL ISO-style text can be cast to date
+Slash-formatted
 
-00:00:09.242 --> 00:00:12.167
-Slash-formatted text uses TO_DATE with a month-day-year pattern.
+00:00:13.729 --> 00:00:19.256
+text uses TO_DATE with a month-day-year pattern
+Eight-digit
 
-00:00:12.167 --> 00:00:14.177
-Eight-digit text uses a year-month-day pattern.
+00:00:19.282 --> 00:00:25.254
+text uses a year-month-day pattern Anything else
+becomes NULL for review
 
-00:00:14.177 --> 00:00:17.537
-Anything else becomes NULL for review.
-
-00:00:17.537 --> 00:00:21.682
-The important idea is explicit, controlled parsing rather than guessing.
-
-00:00:21.682 --> 00:00:26.302
-Choose temporal types based on meaning.
-
-00:00:26.302 --> 00:00:27.847
-DATE is for calendar dates without time of day.
-
-00:00:27.847 --> 00:00:33.782
-TIMESTAMP stores a date and time without a time-zone interpretation.
-
-00:00:33.782 --> 00:00:38.767
-TIMESTAMPTZ represents an instant in time and is usually safer for events that cross regions or
-
-00:00:38.767 --> 00:00:41.600
-daylight-saving changes.
+00:00:26.986 --> 00:00:31.012
+The important idea is explicit controlled parsing
+rather than guessing

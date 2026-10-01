@@ -1,37 +1,20 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.982
-This query first creates daily revenue by department.
+00:00:00.103 --> 00:00:05.850
+This query first creates daily revenue by department
+Then a window
 
-00:00:02.982 --> 00:00:06.322
-Then a window SUM accumulates those daily values.
+00:00:05.877 --> 00:00:11.469
+SUM accumulates those daily values The frame is
+explicit from
 
-00:00:06.322 --> 00:00:10.947
-The frame is explicit: from unbounded preceding through the current row.
+00:00:11.495 --> 00:00:17.338
+unbounded preceding through the current row Run it
+and watch the cumulative
 
-00:00:10.947 --> 00:00:15.297
-Run it and watch the cumulative revenue increase within each department.
+00:00:17.364 --> 00:00:22.867
+revenue increase within each department The
+partition restarts the
 
-00:00:15.297 --> 00:00:19.132
-The partition restarts the running total for each department.
-
-00:00:19.132 --> 00:00:23.872
-When reading the example, do not read punctuation one character at a time.
-
-00:00:23.872 --> 00:00:29.587
-Start with the purpose of the query, then identify the input rows, the operation being applied,
-
-00:00:29.587 --> 00:00:31.687
-and the shape of the expected output.
-
-00:00:31.687 --> 00:00:37.097
-In a real setting such as a sales team calculating running revenue and top products by region,
-
-00:00:37.097 --> 00:00:43.142
-this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
-
-00:00:43.142 --> 00:00:44.612
-before discussing syntax.
-
-00:00:44.612 --> 00:00:50.400
-After running it, inspect a few records manually and check that the result matches that explanation.
+00:00:22.893 --> 00:00:24.775
+running total for each department

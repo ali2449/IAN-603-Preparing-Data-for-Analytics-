@@ -1,43 +1,72 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.742
-ACID is a common way to describe important transaction properties.
+00:00:00.100 --> 00:00:04.388
+ACID is a common way to describe important
+properties of database transactions
 
-00:00:03.742 --> 00:00:07.957
-Atomicity means a related group of changes is treated as one unit.
+00:00:05.275 --> 00:00:08.388
+You do not need to memorize a textbook definition
+but you should
 
-00:00:07.957 --> 00:00:10.557
-Either the intended transaction succeeds or its work can be undone.
+00:00:08.412 --> 00:00:13.612
+understand the general idea behind each letter
+Atomicity means the related work
 
-00:00:10.557 --> 00:00:14.312
-Consistency means database rules and constraints should still hold when a valid transaction finishes.
+00:00:13.625 --> 00:00:18.375
+is treated as one unit If the transaction cannot
+complete correctly the
 
-00:00:14.312 --> 00:00:21.362
-Isolation deals with concurrent work so transactions do not incorrectly interfere with each other's
+00:00:18.400 --> 00:00:21.488
+changes can be undone together instead of leaving
+only part of the
 
-00:00:21.362 --> 00:00:25.692
-intermediate states. Durability means that once a transaction is committed in a durable database system,
+00:00:21.512 --> 00:00:26.138
+work completed Consistency means the database rules
+should still hold when the
 
-00:00:25.692 --> 00:00:28.502
-the committed result is intended to persist even after failures.
+00:00:26.150 --> 00:00:31.738
+transaction finishes Constraints valid relationships
+and other rules should not be broken
 
-00:00:28.502 --> 00:00:32.922
-For this beginner module, the practical takeaway is not to memorize definitions word for word.
+00:00:31.762 --> 00:00:37.800
+by a completed transaction Isolation is about
+concurrent work Databases
 
-00:00:32.922 --> 00:00:39.842
-Understand why transactions are useful: they give us a controlled boundary around related changes and a clear
+00:00:37.825 --> 00:00:42.975
+often serve many users or applications at the same
+time Isolation controls
 
-00:00:39.842 --> 00:00:42.497
-choice between keeping them and undoing them.
+00:00:43.000 --> 00:00:47.212
+how transactions interact so that intermediate
+states do not create incorrect results
 
-00:00:42.497 --> 00:00:45.552
-Transactions let several statements behave as one logical unit.
+00:00:47.238 --> 00:00:51.875
+for other work Durability means that once a
+transaction is committed the
 
-00:00:45.552 --> 00:00:48.552
-That matters when partial success would leave the database inconsistent—for example,
+00:00:51.888 --> 00:00:55.500
+database is expected to preserve that committed
+change even if the system
 
-00:00:48.552 --> 00:00:52.592
-creating an order header without its order lines or moving money out of one account without recording the
+00:00:55.525 --> 00:00:59.962
+later restarts or encounters a failure A simple way
+to remember the
 
-00:00:52.592 --> 00:00:57.600
-corresponding destination. COMMIT confirms the unit; ROLLBACK abandons it.
+00:00:59.988 --> 00:01:05.225
+purpose of ACID is reliability Transactions are not
+only about writing BEGIN
+
+00:01:05.238 --> 00:01:09.825
+and COMMIT They are a mechanism for keeping database
+changes controlled and
+
+00:01:09.850 --> 00:01:15.488
+dependable In this introductory course focus
+especially on atomicity and the practical
+
+00:01:15.512 --> 00:01:20.600
+difference between COMMIT and ROLLBACK The deeper
+details of isolation levels can
+
+00:01:20.625 --> 00:01:21.288
+come later
