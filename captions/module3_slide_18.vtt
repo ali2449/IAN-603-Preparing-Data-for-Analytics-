@@ -1,72 +1,43 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.062
-We are now moving from reading data to changing data
-This is
+00:00:00.000 --> 00:00:06.342
+Now we move from reading data to changing stored rows, so our safety habits become more important.
 
-00:00:04.075 --> 00:00:09.088
-where safe habits become especially important A
-SELECT statement normally builds a
+00:00:06.342 --> 00:00:11.467
+Before an UPDATE or DELETE, preview the target rows with SELECT.
 
-00:00:09.112 --> 00:00:14.475
-result without modifying the stored rows INSERT
-UPDATE and DELETE are different
+00:00:11.467 --> 00:00:15.722
+Use the same WHERE condition you intend to use in the write statement.
 
-00:00:14.488 --> 00:00:18.800
-because they can change the database Before running
-one of those statements
+00:00:15.722 --> 00:00:21.602
+Whenever possible, identify rows with a stable primary key or unique key rather than a name or other
 
-00:00:19.000 --> 00:00:25.025
-use a controlled process First preview the target
-rows with SELECT If
+00:00:21.602 --> 00:00:25.072
+value that may repeat.
 
-00:00:25.038 --> 00:00:28.450
-you plan to update a patient identified by an MRN
-first run
+00:00:25.072 --> 00:00:32.597
+A transaction can provide another layer of protection because you can inspect a change before deciding whether
 
-00:00:28.475 --> 00:00:32.525
-a SELECT using that same MRN in the WHERE clause
-Confirm that
+00:00:32.597 --> 00:00:33.132
+to keep it.
 
-00:00:32.550 --> 00:00:36.725
-the row you expected is the row that appears Second
-use a
+00:00:33.132 --> 00:00:41.007
+RETURNING is also very useful in PostgreSQL because it immediately shows the rows that were inserted, updated,
 
-00:00:36.750 --> 00:00:42.700
-stable identifier A name may be repeated misspelled
-or changed A
+00:00:41.007 --> 00:00:41.312
+or deleted.
 
-00:00:42.712 --> 00:00:47.588
-primary key or a unique MRN is usually safer Third
-use a
+00:00:41.312 --> 00:00:49.372
+The most important warning is simple: an UPDATE or DELETE without an appropriate WHERE clause can affect every
 
-00:00:47.612 --> 00:00:52.262
-transaction when appropriate A transaction can let
-you test a change and
+00:00:49.372 --> 00:00:52.792
+row in the table. Writes deserve a slower workflow than reads.
 
-00:00:52.275 --> 00:00:56.575
-then roll it back instead of keeping it Fourth use
-RETURNING when
+00:00:52.792 --> 00:01:00.052
+Before UPDATE or DELETE, run the intended WHERE condition as a SELECT and inspect the affected rows.
 
-00:00:56.588 --> 00:01:01.712
-PostgreSQL supports the pattern RETURNING shows the
-rows affected by the write
+00:01:00.052 --> 00:01:06.782
+In production, use transactions when appropriate so you can verify the change before committing.
 
-00:01:01.738 --> 00:01:07.475
-operation Finally verify the result Do not assume
-that success
-
-00:01:07.500 --> 00:01:12.175
-means correctness The most important warning on this
-slide is about WHERE
-
-00:01:13.062 --> 00:01:16.175
-An UPDATE or DELETE without a WHERE clause can
-affect every row
-
-00:01:16.200 --> 00:01:20.388
-in a table That is why previewing and verifying
-should become normal
-
-00:01:20.400 --> 00:01:22.562
-habits not optional extra steps
+00:01:06.782 --> 00:01:11.600
+The absence of a syntax error does not mean the correct records were modified.

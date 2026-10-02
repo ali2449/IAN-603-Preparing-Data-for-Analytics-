@@ -1,41 +1,43 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.640
-Relationships describe how many rows can connect
-between entities In
+00:00:00.000 --> 00:00:04.502
+Relationships describe how many rows can connect between entities.
 
-00:00:05.667 --> 00:00:09.364
-a one-to-one relationship each side connects to at
-most one row on
+00:00:04.502 --> 00:00:10.732
+In a one-to-one relationship, each side connects to at most one row on the other side.
 
-00:00:09.391 --> 00:00:14.960
-the other side In a one-to-many relationship one
-parent can connect
+00:00:10.732 --> 00:00:16.417
+In a one-to-many relationship, one parent can connect to many child rows.
 
-00:00:14.987 --> 00:00:19.463
-to many child rows A patient can have many
-appointments so the
+00:00:16.417 --> 00:00:22.217
+A patient can have many appointments, so the foreign key belongs on the appointment side.
 
-00:00:19.476 --> 00:00:25.177
-foreign key belongs on the appointment side In a
-many-to-many relationship
+00:00:22.217 --> 00:00:27.597
+In a many-to-many relationship, both sides can connect to many rows.
 
-00:00:25.440 --> 00:00:30.706
-both sides can connect to many rows Appointments can
-contain many services
+00:00:27.597 --> 00:00:33.402
+Appointments can contain many services, and a service can appear in many appointments.
 
-00:00:30.917 --> 00:00:36.629
-and a service can appear in many appointments
-Relational databases resolve
+00:00:33.402 --> 00:00:38.807
+Relational databases resolve that many-to-many relationship with a junction table.
 
-00:00:36.655 --> 00:00:42.286
-that many-to-many relationship with a junction table
-The placement rule is
+00:00:38.807 --> 00:00:46.382
+The placement rule is worth remembering conceptually: in one-to-many, put the foreign key on the many side.
 
-00:00:42.313 --> 00:00:46.497
-worth remembering conceptually in one-to-many put
-the foreign key on the many
+00:00:46.382 --> 00:00:51.162
+In many-to-many, introduce an intersection or junction table.
 
-00:00:46.523 --> 00:00:51.578
-side In many-to-many introduce an intersection or
-junction table
+00:00:51.162 --> 00:00:55.872
+Ask which side can exist many times for one row on the other side.
+
+00:00:55.872 --> 00:00:59.722
+That determines where the foreign key normally belongs.
+
+00:00:59.722 --> 00:01:04.002
+In an order system, many order lines belong to one order,
+
+00:01:04.002 --> 00:01:07.472
+so the order-line table carries the order identifier.
+
+00:01:07.472 --> 00:01:12.400
+The same reasoning applies to encounters, enrollments, and transactions.

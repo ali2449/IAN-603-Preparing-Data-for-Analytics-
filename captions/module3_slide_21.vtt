@@ -1,72 +1,49 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:05.212
-UPDATE changes values in rows that already exist
-Because it modifies stored
+00:00:00.000 --> 00:00:03.557
+UPDATE changes values in rows that already exist.
 
-00:00:05.238 --> 00:00:08.688
-data we want to target the correct row as carefully
-as possible
+00:00:03.557 --> 00:00:07.637
+The safest pattern is to preview the intended target first.
 
-00:00:09.562 --> 00:00:13.638
-The example begins with a SELECT It looks for the
-patient whose
+00:00:07.637 --> 00:00:12.717
+In this example, the SELECT and UPDATE use the same key-based condition.
 
-00:00:13.662 --> 00:00:18.675
-MRN is MRN one zero zero three This preview step
-confirms which
+00:00:12.717 --> 00:00:15.252
+Run the cell and watch the sequence.
 
-00:00:18.700 --> 00:00:23.325
-row matches before anything is changed Then the
-UPDATE statement targets the
+00:00:15.252 --> 00:00:18.277
+First identify the row. Then change it.
 
-00:00:23.338 --> 00:00:29.212
-same patients table SET age equals thirty-five
-describes the new value The
+00:00:18.277 --> 00:00:21.212
+Finally inspect what PostgreSQL returns.
 
-00:00:29.238 --> 00:00:34.050
-WHERE clause uses the same MRN condition that we
-just previewed Finally
+00:00:21.212 --> 00:00:27.577
+A unique medical record number is safer than a patient name because names can repeat or change.
 
-00:00:34.262 --> 00:00:39.675
-RETURNING shows the patient ID MRN name and updated
-age Notice the
+00:00:27.577 --> 00:00:31.292
+When writing UPDATE, treat WHERE as a safety boundary.
 
-00:00:39.700 --> 00:00:44.050
-pattern preview with SELECT then update using the
-same stable predicate then
+00:00:31.292 --> 00:00:36.102
+Before you execute, ask how many rows you expect the condition to match.
 
-00:00:44.062 --> 00:00:48.412
-inspect with RETURNING Why do we prefer an MRN or
-primary key
+00:00:36.102 --> 00:00:40.227
+If the answer is one row, but your preview SELECT returns several,
 
-00:00:48.438 --> 00:00:52.425
-instead of a name Names are not always unique and
-names can
+00:00:40.227 --> 00:00:43.542
+stop and fix the predicate before running the update.
 
-00:00:52.450 --> 00:00:57.550
-change Stable identifiers make it less likely that
-we update multiple people
+00:00:43.542 --> 00:00:49.482
+This preview-then-update pattern is one of the most useful habits in practical SQL work.
 
-00:00:57.562 --> 00:01:02.288
-accidentally Run the example and compare the preview
-row with the returned
+00:00:49.482 --> 00:00:52.797
+Writes deserve a slower workflow than reads.
 
-00:01:02.312 --> 00:01:06.800
-updated row The identifying values should stay the
-same while the age
+00:00:52.797 --> 00:00:59.207
+Before UPDATE or DELETE, run the intended WHERE condition as a SELECT and inspect the affected rows.
 
-00:01:06.812 --> 00:01:11.262
-changes Whenever you write an UPDATE ask two
-questions before running it
+00:00:59.207 --> 00:01:05.487
+In production, use transactions when appropriate so you can verify the change before committing.
 
-00:01:11.550 --> 00:01:14.475
-which rows can match this WHERE condition and how
-many rows do
-
-00:01:14.500 --> 00:01:18.300
-I expect to change If the answer is unclear go back
-to
-
-00:01:18.312 --> 00:01:19.738
-SELECT and preview first
+00:01:05.487 --> 00:01:10.280
+The absence of a syntax error does not mean the correct records were modified.

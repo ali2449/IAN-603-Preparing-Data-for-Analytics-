@@ -1,72 +1,46 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:03.688
-For the examples in this module we use a small
-synthetic healthcare
+00:00:00.000 --> 00:00:04.422
+Our running example is a small synthetic healthcare operations database.
 
-00:00:03.712 --> 00:00:09.838
-operations database The data is fictional and
-designed only for practice There
+00:00:04.422 --> 00:00:11.227
+The patients table contains a medical record number, name, age, gender, and active status.
 
-00:00:09.862 --> 00:00:14.425
-are four main tables The patients table contains
-information such as a
+00:00:11.227 --> 00:00:14.092
+Doctors contains a name and specialty.
 
-00:00:14.438 --> 00:00:18.650
-medical record number a patient name age gender and
-whether the patient
+00:00:14.092 --> 00:00:19.062
+Admissions connects patients and doctors with diagnosis and admission information.
 
-00:00:18.662 --> 00:00:24.375
-is active The doctors table stores doctor
-information including names and specialties
+00:00:19.062 --> 00:00:24.472
+Clinical notes stores some semi-structured information using PostgreSQL JSONB.
 
-00:00:25.262 --> 00:00:29.362
-The admissions table connects patients and doctors
-with information such as diagnosis
+00:00:24.472 --> 00:00:32.372
+The data is intentionally small so you can inspect the entire result and understand why a query returns
 
-00:00:29.525 --> 00:00:35.438
-admission date discharge date and status The
-clinical_notes table stores patient-linked
+00:00:32.372 --> 00:00:37.197
+particular rows. For teaching simplicity, the patients table stores age directly.
 
-00:00:35.450 --> 00:00:38.338
-notes in JSONB format which gives us a chance to
-work with
+00:00:37.197 --> 00:00:43.262
+In a real system, age is often calculated from a birth date for a particular reference date.
 
-00:00:38.362 --> 00:00:44.450
-semi-structured data later in the module These
-tables are intentionally small A
+00:00:43.262 --> 00:00:48.287
+As you work through the module, use these tables to practice the SQL idea rather than focusing on
 
-00:00:44.462 --> 00:00:47.812
-small dataset makes it easier to compare your SQL
-statement with the
+00:00:48.287 --> 00:00:51.507
+the healthcare domain itself.
 
-00:00:47.825 --> 00:00:52.125
-result and understand why a row was included or
-excluded You may
+00:00:51.507 --> 00:00:57.357
+Connect this idea to an analyst exploring operational records before building a report.
 
-00:00:52.150 --> 00:00:57.012
-notice that the patients table stores age directly
-Real systems often store
+00:00:57.357 --> 00:01:02.907
+Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
 
-00:00:57.025 --> 00:01:00.438
-a date of birth instead because age changes over
-time and depends
+00:01:02.907 --> 00:01:10.412
+important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
 
-00:01:00.462 --> 00:01:03.925
-on the reference date We keep age as a column here
-only
+00:01:10.412 --> 00:01:15.447
+A strong analyst can explain both the SQL operation and the assumption behind it.
 
-00:01:03.950 --> 00:01:08.488
-to make our first SQL examples easier to read The
-important idea
-
-00:01:08.500 --> 00:01:11.538
-is that the same SQL patterns you learn with this
-small database
-
-00:01:11.562 --> 00:01:15.588
-can be applied to many other domains such as retail
-education finance
-
-00:01:15.762 --> 00:01:17.025
-or business operations
+00:01:15.447 --> 00:01:21.120
+After the example, summarize the idea in one plain-language sentence before moving on.

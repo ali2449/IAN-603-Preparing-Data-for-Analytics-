@@ -1,65 +1,52 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:04.900
-Coding Exercise 4 practices a safe UPDATE using a
-stable key Your
+00:00:00.000 --> 00:00:05.417
+Coding Exercise 4 asks you to update one existing patient by a stable key.
 
-00:00:04.925 --> 00:00:08.262
-task is to update the patient with MRN one zero zero
-six
+00:00:05.417 --> 00:00:09.397
+The medical record number identifies the intended patient.
 
-00:00:08.288 --> 00:00:12.525
-so the age becomes twenty-eight Then use RETURNING
-to show the MRN
+00:00:09.397 --> 00:00:12.232
+The new age is given in the task.
 
-00:00:12.738 --> 00:00:18.012
-name and age The starter code already has UPDATE
-patients SET WHERE
+00:00:12.232 --> 00:00:17.952
+Before writing the UPDATE, imagine the preview SELECT you would run in a real workflow.
 
-00:00:18.175 --> 00:00:22.238
-and RETURNING You need to complete the SET
-expression and the WHERE
+00:00:17.952 --> 00:00:22.112
+It should return exactly one row for that medical record number.
 
-00:00:22.250 --> 00:00:28.312
-condition SET describes what value changes Write age
-equals twenty-eight
+00:00:22.112 --> 00:00:28.032
+Then complete the SET and WHERE parts and use RETURNING to inspect the changed row.
 
-00:00:29.188 --> 00:00:33.950
-WHERE describes which row can change Use MRN equals
-the quoted value
+00:00:28.032 --> 00:00:30.037
+Run and Check.
 
-00:00:33.962 --> 00:00:38.812
-MRN one zero zero six Before running the update
-pause and ask
+00:00:30.037 --> 00:00:35.622
+If more than one row could be affected by your condition, the condition is not safe enough.
 
-00:00:38.838 --> 00:00:42.700
-how many rows you expect to affect The answer should
-be one
+00:00:35.622 --> 00:00:38.422
+If PostgreSQL updates no rows, verify the key value.
 
-00:00:42.712 --> 00:00:46.775
-because the MRN is a stable unique identifier in
-this practice database
+00:00:38.422 --> 00:00:46.752
+This exercise is about targeting the correct record as much as it is about the UPDATE syntax.
 
-00:00:47.650 --> 00:00:51.762
-Click Run and Check and inspect the returned row The
-MRN and
+00:00:46.752 --> 00:00:50.912
+For this activity, make a prediction before you run anything.
 
-00:00:51.788 --> 00:00:54.838
-name should identify the same patient and the age
-should now be
+00:00:50.912 --> 00:00:55.977
+State what one output row should represent, which records you expect to remain,
 
-00:00:54.850 --> 00:01:01.112
-twenty-eight This exercise is short but the safety
-idea is important Never
+00:00:55.977 --> 00:00:59.537
+and what edge case is most likely to expose a mistake.
 
-00:01:01.138 --> 00:01:04.963
-think of UPDATE as only SET a new value A safe
-UPDATE
+00:00:59.537 --> 00:01:03.677
+Then run the SQL and compare the result with that prediction.
 
-00:01:04.988 --> 00:01:09.850
-also requires a precise target In real database work
-the WHERE clause
+00:01:03.677 --> 00:01:10.737
+If it does not match, debug the logic in small pieces instead of changing several clauses at once.
 
-00:01:09.862 --> 00:01:12.475
-is often the most important part of an UPDATE
-statement
+00:01:10.737 --> 00:01:14.907
+This is the same habit you would use in a real analytics project:
+
+00:01:14.907 --> 00:01:19.615
+validate the meaning of the result, not only whether the statement executes.

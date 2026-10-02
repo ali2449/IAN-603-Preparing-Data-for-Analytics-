@@ -1,67 +1,49 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:03.888
-Before moving into the assignment exercises use this
-slide as a quick
+00:00:00.000 --> 00:00:06.777
+Before moving to the assignment exercises, use this self-check to explain the ideas without running code.
 
-00:00:03.900 --> 00:00:09.312
-self-check Try to answer each question without
-running code first Why is
+00:00:06.777 --> 00:00:11.542
+Why are explicit SELECT columns often better than selecting everything?
 
-00:00:09.338 --> 00:00:13.962
-an explicit column list usually better than SELECT
-star Because it makes
+00:00:11.542 --> 00:00:16.072
+Why does a missing value require IS NULL rather than equals NULL?
 
-00:00:13.988 --> 00:00:17.550
-the intended output clear and avoids returning data
-you do not need
+00:00:16.072 --> 00:00:22.822
+Why should LIMIT usually be paired with ORDER BY when we care about top, latest, or oldest rows?
 
-00:00:18.425 --> 00:00:23.550
-What is wrong with discharge_date equals NULL NULL
-is not tested with
+00:00:22.822 --> 00:00:26.137
+What should you run before a new UPDATE or DELETE?
 
-00:00:23.575 --> 00:00:29.125
-ordinary equality Use discharge_date IS NULL Why
+00:00:26.137 --> 00:00:29.647
+And what is the difference between COMMIT and ROLLBACK?
 
-00:00:29.150 --> 00:00:32.025
-should LIMIT usually be paired with ORDER BY when
-the result has
+00:00:29.647 --> 00:00:34.977
+Try answering each question in your own words before revealing the sample answers.
 
-00:00:32.050 --> 00:00:36.112
-a meaning such as newest or oldest Because LIMIT
-alone does not
+00:00:34.977 --> 00:00:40.042
+If you can explain these ideas clearly, you are ready for the coding exercises.
 
-00:00:36.138 --> 00:00:40.062
-guarantee which rows come first What should you do
-before a new
+00:00:40.042 --> 00:00:45.717
+The goal is understanding the reasoning behind the SQL, not memorizing one exact query.
 
-00:00:40.075 --> 00:00:44.050
-UPDATE or DELETE Run a SELECT with the same WHERE
-condition and
+00:00:45.717 --> 00:00:49.757
+For this activity, make a prediction before you run anything.
 
-00:00:44.075 --> 00:00:48.725
-inspect the target rows What is the difference
-between COMMIT and ROLLBACK
+00:00:49.757 --> 00:00:54.827
+State what one output row should represent, which records you expect to remain,
 
-00:00:49.588 --> 00:00:55.100
-COMMIT keeps the transaction's changes ROLLBACK
-discards them If
+00:00:54.827 --> 00:00:58.387
+and what edge case is most likely to expose a mistake.
 
-00:00:55.125 --> 00:00:57.912
-you can explain these answers in your own words that
-is more
+00:00:58.387 --> 00:01:02.527
+Then run the SQL and compare the result with that prediction.
 
-00:00:57.925 --> 00:01:02.450
-important than memorizing the exact wording on the
-slide If one question
+00:01:02.527 --> 00:01:09.587
+If it does not match, debug the logic in small pieces instead of changing several clauses at once.
 
-00:01:02.475 --> 00:01:05.600
-is still unclear go back to the related example and
-run it
+00:01:09.587 --> 00:01:13.757
+This is the same habit you would use in a real analytics project:
 
-00:01:05.612 --> 00:01:10.175
-again SQL concepts become much easier when you
-connect the rule with
-
-00:01:10.200 --> 00:01:11.225
-a visible result
+00:01:13.757 --> 00:01:18.465
+validate the meaning of the result, not only whether the statement executes.

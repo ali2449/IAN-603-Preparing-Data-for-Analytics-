@@ -1,43 +1,46 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.895
-This slide asks you to diagnose a poorly designed
-everything table Start
+00:00:00.000 --> 00:00:04.097
+This slide asks you to diagnose a poorly designed everything table.
 
-00:00:05.921 --> 00:00:10.648
-with identity There is no stable primary key and
-names are not
+00:00:04.097 --> 00:00:10.947
+Start with identity. There is no stable primary key, and names are not reliable identifiers.
 
-00:00:10.661 --> 00:00:17.049
-reliable identifiers Next look at row grain Patient
+00:00:10.947 --> 00:00:13.357
+Next, look at row grain.
 
-00:00:17.181 --> 00:00:23.287
-provider appointment services and charges are all
-mixed together Then
+00:00:13.357 --> 00:00:18.992
+Patient, provider, appointment, services, and charges are all mixed together.
 
-00:00:23.300 --> 00:00:28.592
-inspect types Time and money are stored as text
-making validation and
+00:00:18.992 --> 00:00:23.637
+Then inspect types. Time and money are stored as text, making validation and calculation harder.
 
-00:00:28.619 --> 00:00:34.208
-calculation harder The services column also contains
-a list instead
+00:00:23.637 --> 00:00:29.462
+The services column also contains a list instead of one relational value.
 
-00:00:34.221 --> 00:00:39.730
-of one relational value Before revealing the repair
-direction try
+00:00:29.462 --> 00:00:37.067
+Before revealing the repair direction, try to name at least three problems yourself.
 
-00:00:39.756 --> 00:00:44.772
-to name at least three problems yourself The goal is
-not merely
+00:00:37.067 --> 00:00:41.572
+The goal is not merely to split the table because normalization says so.
 
-00:00:44.798 --> 00:00:49.906
-to split the table because normalization says so
-Explain which fact belongs
+00:00:41.572 --> 00:00:46.757
+Explain which fact belongs to which entity, which identifiers need protection,
 
-00:00:49.919 --> 00:00:53.932
-to which entity which identifiers need protection
-and which rules should become
+00:00:46.757 --> 00:00:49.852
+and which rules should become database constraints.
 
-00:00:53.945 --> 00:00:55.156
-database constraints
+00:00:49.852 --> 00:00:56.167
+Connect this idea to a clinic system separating patients, encounters, clinicians, and billing.
+
+00:00:56.167 --> 00:01:01.702
+Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+
+00:01:01.702 --> 00:01:09.097
+important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+
+00:01:09.097 --> 00:01:14.852
+A strong analyst can explain both the SQL operation and the assumption behind it.
+
+00:01:14.852 --> 00:01:20.560
+After the example, summarize the idea in one plain-language sentence before moving on.

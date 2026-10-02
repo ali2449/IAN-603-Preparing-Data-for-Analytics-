@@ -1,72 +1,43 @@
 WEBVTT
 
-00:00:00.100 --> 00:00:03.400
-Sometimes an error message is evidence that the
-database is doing its
+00:00:00.000 --> 00:00:03.517
+This example intentionally triggers a foreign-key error.
 
-00:00:03.412 --> 00:00:08.438
-job correctly In this example patient MRN one zero
-zero four is
+00:00:03.517 --> 00:00:07.462
+The patient we are trying to delete has a related admission.
 
-00:00:08.450 --> 00:00:12.962
-connected to an admission record The relationship is
-protected by a foreign
+00:00:07.462 --> 00:00:14.097
+The database relationship uses a restrictive delete rule, so PostgreSQL refuses to remove the patient and
 
-00:00:12.988 --> 00:00:17.825
-key that uses ON DELETE RESTRICT That rule means
-PostgreSQL should not
+00:00:14.097 --> 00:00:17.042
+leave the admission pointing to a missing record.
 
-00:00:17.838 --> 00:00:21.088
-allow us to delete the patient while a related
-admission still depends
+00:00:17.042 --> 00:00:23.017
+Run the example and read the error message rather than treating it as a failure of the lesson.
 
-00:00:21.112 --> 00:00:25.825
-on that patient record When you run the DELETE
-statement PostgreSQL is
+00:00:23.017 --> 00:00:28.027
+The database is enforcing a relationship rule that was designed in Module 2.
 
-00:00:25.850 --> 00:00:29.912
-expected to reject it This is not simply bad luck or
-bad
+00:00:28.027 --> 00:00:33.882
+This is an important change in perspective: not every error means your database is broken.
 
-00:00:29.938 --> 00:00:35.725
-SQL The database is protecting referential integrity
-If the patient
+00:00:33.882 --> 00:00:39.492
+A constraint error can be evidence that the database is successfully protecting data integrity.
 
-00:00:35.750 --> 00:00:39.575
-disappeared while the admission still pointed to
-that patient ID the admission
+00:00:39.492 --> 00:00:46.537
+When you see this kind of error, ask which relationship or constraint is being protected before trying to
 
-00:00:39.588 --> 00:00:43.362
-would reference a row that no longer exists This
-kind of rule
+00:00:46.537 --> 00:00:49.922
+bypass it. Constraints move important rules closer to the data.
 
-00:00:43.388 --> 00:00:47.138
-is one reason we define keys and relationships when
-designing a database
+00:00:49.922 --> 00:00:57.932
+NOT NULL, CHECK, UNIQUE, and foreign keys can stop invalid states before they spread into reports or
 
-00:00:48.012 --> 00:00:53.462
-Application code can make mistakes A database
-constraint provides another layer of
+00:00:57.932 --> 00:00:58.322
+applications.
 
-00:00:53.488 --> 00:00:59.300
-protection Run the example and read the error
-message Try to identify
+00:00:58.322 --> 00:01:03.617
+Application validation is useful, but database constraints provide a second line of defense shared by every
 
-00:00:59.325 --> 00:01:03.538
-the foreign key or related table mentioned in the
-message A useful
-
-00:01:03.562 --> 00:01:07.538
-habit is to interpret database errors instead of
-immediately trying to bypass
-
-00:01:07.562 --> 00:01:13.050
-them Ask what rule was violated and why that rule
-exists Constraint
-
-00:01:13.075 --> 00:01:18.175
-errors can reveal important information about
-uniqueness required values valid ranges and
-
-00:01:18.188 --> 00:01:19.788
-relationships between tables
+00:01:03.617 --> 00:01:05.040
+client.

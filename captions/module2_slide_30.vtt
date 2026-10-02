@@ -1,41 +1,46 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.868
-This provided script loads sample records into the
-clinic schema Some
+00:00:00.000 --> 00:00:03.827
+This provided script loads sample records into the clinic schema.
 
-00:00:05.881 --> 00:00:08.763
-of the SQL uses lookup and join patterns that are
-taught in
+00:00:03.827 --> 00:00:08.812
+Some of the SQL uses lookup and join patterns that are taught in more detail later,
 
-00:00:08.789 --> 00:00:11.815
-more detail later so you do not need to write this
-loading
+00:00:08.812 --> 00:00:15.662
+so you do not need to write this loading script from memory.
 
-00:00:11.829 --> 00:00:16.854
-script from memory Run it in the browser and inspect
-the final
+00:00:15.662 --> 00:00:18.387
+Run it in the browser and inspect the final result.
 
-00:00:16.867 --> 00:00:22.852
-result Focus on what is happening conceptually
-patients providers
+00:00:18.387 --> 00:00:23.102
+Focus on what is happening conceptually: patients, providers, and services are inserted first.
 
-00:00:23.036 --> 00:00:28.341
-and services are inserted first The appointment
-refers to existing patient and
+00:00:23.102 --> 00:00:28.612
+The appointment refers to existing patient and provider rows.
 
-00:00:28.355 --> 00:00:33.868
-provider rows Appointment-service rows then connect
-the appointment to services
+00:00:28.612 --> 00:00:33.752
+Appointment-service rows then connect the appointment to services.
 
-00:00:35.619 --> 00:00:41.729
-The insert order follows the relationships we
-designed If you use pgAdmin
+00:00:33.752 --> 00:00:36.967
+The insert order follows the relationships we designed.
 
-00:00:41.966 --> 00:00:46.245
-run the schema first and then the loading script
-Parent data must
+00:00:36.967 --> 00:00:41.892
+If you use pgAdmin, run the schema first and then the loading script.
 
-00:00:46.271 --> 00:00:49.495
-exist before child rows that reference it can be
-inserted
+00:00:41.892 --> 00:00:47.582
+Parent data must exist before child rows that reference it can be inserted.
+
+00:00:47.582 --> 00:00:52.327
+Connect this idea to a university system separating students, courses, sections, and enrollments.
+
+00:00:52.327 --> 00:00:57.897
+Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+
+00:00:57.897 --> 00:01:05.852
+important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+
+00:01:05.852 --> 00:01:11.437
+A strong analyst can explain both the SQL operation and the assumption behind it.
+
+00:01:11.437 --> 00:01:17.234
+After the example, summarize the idea in one plain-language sentence before moving on.

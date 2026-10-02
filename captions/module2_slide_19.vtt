@@ -1,41 +1,49 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.302
-Constraints turn important business rules into rules
-the database can enforce NOT
+00:00:00.000 --> 00:00:04.842
+Constraints turn important business rules into rules the database can enforce.
 
-00:00:06.329 --> 00:00:11.016
-NULL says a value is required DEFAULT supplies a
-value when one
+00:00:04.842 --> 00:00:07.722
+NOT NULL says a value is required.
 
-00:00:11.042 --> 00:00:17.345
-is omitted UNIQUE protects candidate keys or other
-non-duplicate rules CHECK
+00:00:07.722 --> 00:00:11.192
+DEFAULT supplies a value when one is omitted.
 
-00:00:17.358 --> 00:00:23.779
-evaluates a Boolean condition PRIMARY KEY defines
-row identity FOREIGN
+00:00:11.192 --> 00:00:15.532
+UNIQUE protects candidate keys or other non-duplicate rules.
 
-00:00:23.792 --> 00:00:29.377
-KEY protects relationships to parent rows One
-beginner detail
+00:00:15.532 --> 00:00:18.452
+CHECK evaluates a Boolean condition.
 
-00:00:29.390 --> 00:00:35.570
-is especially important CHECK does not automatically
-make a column required For
+00:00:18.452 --> 00:00:21.272
+PRIMARY KEY defines row identity.
 
-00:00:35.583 --> 00:00:39.597
-example a check that quantity is greater than zero
-only evaluates the
+00:00:21.272 --> 00:00:24.787
+FOREIGN KEY protects relationships to parent rows.
 
-00:00:39.623 --> 00:00:44.310
-quantity when a value is present If quantity must
-always be present
+00:00:24.787 --> 00:00:31.472
+One beginner detail is especially important: CHECK does not automatically make a column required.
 
-00:00:44.560 --> 00:00:50.254
-combine the check with NOT NULL The database should
-enforce important rules
+00:00:31.472 --> 00:00:38.577
+For example, a check that quantity is greater than zero only evaluates the quantity when a value is
 
-00:00:50.281 --> 00:00:54.557
-whenever possible instead of relying only on
-application code or user memory
+00:00:38.577 --> 00:00:43.217
+present. If quantity must always be present, combine the check with NOT NULL.
+
+00:00:43.217 --> 00:00:50.917
+The database should enforce important rules whenever possible instead of relying only on application code or
+
+00:00:50.917 --> 00:00:57.112
+user memory. Connect this idea to a clinic system separating patients, encounters, clinicians, and billing.
+
+00:00:57.112 --> 00:01:02.607
+Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+
+00:01:02.607 --> 00:01:09.972
+important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+
+00:01:09.972 --> 00:01:15.452
+A strong analyst can explain both the SQL operation and the assumption behind it.
+
+00:01:15.452 --> 00:01:21.120
+After the example, summarize the idea in one plain-language sentence before moving on.

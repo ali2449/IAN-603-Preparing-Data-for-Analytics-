@@ -1,41 +1,46 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:07.089
-Indexes are physical structures that help PostgreSQL
-find rows more efficiently Primary
+00:00:00.000 --> 00:00:04.927
+Indexes are physical structures that help PostgreSQL find rows more efficiently.
 
-00:00:07.115 --> 00:00:13.752
-keys and UNIQUE constraints automatically receive
-supporting unique indexes Foreign-key
+00:00:04.927 --> 00:00:10.587
+Primary keys and UNIQUE constraints automatically receive supporting unique indexes.
 
-00:00:13.766 --> 00:00:19.360
-columns on the child side are different PostgreSQL
-does not automatically create
+00:00:10.587 --> 00:00:14.302
+Foreign-key columns on the child side are different.
 
-00:00:19.374 --> 00:00:24.755
-every child-side index for you Whether an index is
-useful depends on
+00:00:14.302 --> 00:00:17.082
+PostgreSQL does not automatically create every child-side index for you.
 
-00:00:24.781 --> 00:00:31.110
-actual query patterns joins updates deletes and data
-volume Run
+00:00:17.082 --> 00:00:23.897
+Whether an index is useful depends on actual query patterns, joins, updates, deletes, and data volume.
 
-00:00:31.137 --> 00:00:36.678
-the provided example and inspect the indexes At this
-stage
+00:00:23.897 --> 00:00:26.747
+Run the provided example and inspect the indexes.
 
-00:00:36.901 --> 00:00:41.404
-you do not need to design a full indexing strategy
-The important
+00:00:26.747 --> 00:00:31.802
+At this stage, you do not need to design a full indexing strategy.
 
-00:00:41.430 --> 00:00:46.114
-idea is that logical relationships and physical
-performance structures are related but
+00:00:31.802 --> 00:00:36.517
+The important idea is that logical relationships and physical performance structures are related but not
 
-00:00:46.128 --> 00:00:52.477
-not identical First design correct keys and
-constraints Then
+00:00:36.517 --> 00:00:41.557
+identical. First design correct keys and constraints.
 
-00:00:52.503 --> 00:00:56.411
-add indexes based on real access patterns and
-measured performance needs
+00:00:41.557 --> 00:00:44.082
+Then add indexes based on real access patterns and measured performance needs.
+
+00:00:44.082 --> 00:00:46.992
+Keys are not merely technical identifiers.
+
+00:00:46.992 --> 00:00:52.342
+A primary key protects row identity, a unique constraint protects a business rule,
+
+00:00:52.342 --> 00:00:55.702
+and a foreign key protects a relationship.
+
+00:00:55.702 --> 00:00:58.562
+In production systems, surrogate keys are often convenient,
+
+00:00:58.562 --> 00:01:03.458
+but important natural identifiers may still need their own uniqueness rule.

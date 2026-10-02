@@ -1,40 +1,43 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:04.353
-Second Normal Form becomes especially relevant when
-a table has a composite
+00:00:00.000 --> 00:00:04.997
+Second Normal Form becomes especially relevant when a table has a composite key.
 
-00:00:04.379 --> 00:00:10.070
-key Suppose the row is identified by appointment ID
-and service code
+00:00:04.997 --> 00:00:09.977
+Suppose the row is identified by appointment ID and service code together.
 
-00:00:10.096 --> 00:00:16.046
-together Now ask whether every non-key column
-depends on that whole combination
+00:00:09.977 --> 00:00:15.052
+Now ask whether every non-key column depends on that whole combination.
 
-00:00:17.803 --> 00:00:23.121
-Appointment start time depends only on the
-appointment Service name and standard
+00:00:15.052 --> 00:00:18.552
+Appointment start time depends only on the appointment.
 
-00:00:23.147 --> 00:00:27.858
-price depend only on the service code Quantity and
-the captured charge
+00:00:18.552 --> 00:00:22.727
+Service name and standard price depend only on the service code.
 
-00:00:27.884 --> 00:00:33.293
-may depend on the combination of appointment and
-service The columns that
+00:00:22.727 --> 00:00:28.402
+Quantity and the captured charge may depend on the combination of appointment and service.
 
-00:00:33.306 --> 00:00:36.174
-depend on only part of the composite key should be
-moved to
+00:00:28.402 --> 00:00:35.232
+The columns that depend on only part of the composite key should be moved to the table where
 
-00:00:36.201 --> 00:00:42.033
-the table where that dependency belongs This leads
-toward separate appointment
+00:00:35.232 --> 00:00:40.822
+that dependency belongs. This leads toward separate appointment, service, and appointment-service tables.
 
-00:00:42.217 --> 00:00:47.794
-service and appointment-service tables The goal is
-to align each fact
+00:00:40.822 --> 00:00:47.897
+The goal is to align each fact with the key that actually determines it.
 
-00:00:47.807 --> 00:00:49.820
-with the key that actually determines it
+00:00:47.897 --> 00:00:52.732
+Connect this idea to an online store separating customers, orders, products, and order lines.
+
+00:00:52.732 --> 00:00:58.312
+Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+
+00:00:58.312 --> 00:01:05.827
+important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+
+00:01:05.827 --> 00:01:10.887
+A strong analyst can explain both the SQL operation and the assumption behind it.
+
+00:01:10.887 --> 00:01:16.560
+After the example, summarize the idea in one plain-language sentence before moving on.

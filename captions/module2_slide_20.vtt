@@ -1,44 +1,55 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.860
-This runnable example demonstrates a business-rule
-constraint First
+00:00:00.000 --> 00:00:03.867
+This runnable example demonstrates a business-rule constraint.
 
-00:00:06.057 --> 00:00:11.625
-run the completed version with a valid appointment
-time PostgreSQL should accept
+00:00:03.867 --> 00:00:08.347
+First, run the completed version with a valid appointment time.
 
-00:00:11.639 --> 00:00:16.310
-it Then change the ending time so that it is earlier
-than
+00:00:08.347 --> 00:00:10.512
+PostgreSQL should accept it.
 
-00:00:16.337 --> 00:00:21.665
-the starting time and run the example again The SQL
-syntax is
+00:00:10.512 --> 00:00:17.037
+Then change the ending time so that it is earlier than the starting time and run the example
 
-00:00:21.691 --> 00:00:25.823
-still valid but the requested row now violates the
-business rule enforced
+00:00:17.037 --> 00:00:17.522
+again.
 
-00:00:25.849 --> 00:00:32.015
-by the CHECK constraint That difference is important
-Syntax
+00:00:17.522 --> 00:00:24.992
+The SQL syntax is still valid, but the requested row now violates the business rule enforced by the
 
-00:00:32.042 --> 00:00:37.528
-answers whether the statement is written correctly
-Constraints answer whether the requested
+00:00:24.992 --> 00:00:27.167
+CHECK constraint. That difference is important.
 
-00:00:37.555 --> 00:00:42.613
-data is allowed Run both versions in the browser and
-read the
+00:00:27.167 --> 00:00:33.012
+Syntax answers whether the statement is written correctly.
 
-00:00:42.626 --> 00:00:47.936
-error message on the invalid one In pgAdmin you
-would see the
+00:00:33.012 --> 00:00:37.372
+Constraints answer whether the requested data is allowed.
 
-00:00:47.949 --> 00:00:53.028
-same idea a database-level constraint rejects bad
-data regardless of which application
+00:00:37.372 --> 00:00:41.902
+Run both versions in the browser and read the error message on the invalid one.
 
-00:00:53.054 --> 00:00:53.725
-submitted it
+00:00:41.902 --> 00:00:50.332
+In pgAdmin, you would see the same idea: a database-level constraint rejects bad data regardless of which
+
+00:00:50.332 --> 00:00:55.942
+application submitted it. When reading the example, do not read punctuation one character at a time.
+
+00:00:55.942 --> 00:01:02.282
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:01:02.282 --> 00:01:04.787
+and the shape of the expected output.
+
+00:01:04.787 --> 00:01:11.157
+In a real setting such as an online store separating customers, orders, products, and order lines,
+
+00:01:11.157 --> 00:01:18.912
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:01:18.912 --> 00:01:21.237
+before discussing syntax.
+
+00:01:21.237 --> 00:01:27.912
+After running it, inspect a few records manually and check that the result matches that explanation.

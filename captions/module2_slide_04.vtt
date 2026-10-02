@@ -1,47 +1,55 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:03.813
-There are four basic relational terms that are
-useful to translate into
+00:00:00.000 --> 00:00:05.412
+There are four basic relational terms that are useful to translate into everyday language.
 
-00:00:03.826 --> 00:00:09.560
-everyday language A relation is essentially a table
-about one subject
+00:00:05.412 --> 00:00:10.212
+A relation is essentially a table about one subject or event type.
 
-00:00:09.587 --> 00:00:14.471
-or event type A tuple is one row in that table An
+00:00:10.212 --> 00:00:13.247
+A tuple is one row in that table.
 
-00:00:14.497 --> 00:00:19.247
-attribute is a column that describes each row A
-domain describes the
+00:00:13.247 --> 00:00:16.892
+An attribute is a column that describes each row.
 
-00:00:19.273 --> 00:00:24.733
-allowed type and rules for a value For example the
-patient table
+00:00:16.892 --> 00:00:21.312
+A domain describes the allowed type and rules for a value.
 
-00:00:24.760 --> 00:00:29.933
-is the relation One patient is a tuple Birth date is
-an
+00:00:21.312 --> 00:00:25.042
+For example, the patient table is the relation.
 
-00:00:29.960 --> 00:00:34.328
-attribute The allowed type and constraints on birth
-date are part of
+00:00:25.042 --> 00:00:27.052
+One patient is a tuple.
 
-00:00:34.354 --> 00:00:40.282
-its domain One important word is atomic Atomic
+00:00:27.052 --> 00:00:29.172
+Birth date is an attribute.
 
-00:00:40.308 --> 00:00:45.150
-does not mean physically small It means the database
-treats the field
+00:00:29.172 --> 00:00:33.627
+The allowed type and constraints on birth date are part of its domain.
 
-00:00:45.176 --> 00:00:50.679
-as one value If a column contains a comma-separated
-list of service
+00:00:33.627 --> 00:00:36.282
+One important word is atomic.
 
-00:00:50.705 --> 00:00:54.692
-codes and each service needs to be searched joined
-or validated separately
+00:00:36.282 --> 00:00:38.917
+Atomic does not mean physically small.
 
-00:00:54.863 --> 00:00:57.995
-that list is not a good atomic design for the
-relational model
+00:00:38.917 --> 00:00:42.322
+It means the database treats the field as one value.
+
+00:00:42.322 --> 00:00:48.942
+If a column contains a comma-separated list of service codes and each service needs to be searched, joined,
+
+00:00:48.942 --> 00:00:54.832
+or validated separately, that list is not a good atomic design for the relational model.
+
+00:00:54.832 --> 00:01:00.672
+Before drawing tables, write one sentence that defines what one row represents.
+
+00:01:00.672 --> 00:01:04.197
+That grain statement prevents many later problems.
+
+00:01:04.197 --> 00:01:10.817
+If one row represents a patient, repeated encounters do not belong as extra columns in the same row;
+
+00:01:10.817 --> 00:01:13.896
+they are a different entity with a one-to-many relationship.
