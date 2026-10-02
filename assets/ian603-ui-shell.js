@@ -235,16 +235,17 @@
     var statusPct=document.getElementById('shellStatusPct');
 
     function activeIndex(){
+      var select=document.getElementById('slideSelect');
+      if(select && select.selectedIndex>=0) return select.selectedIndex;
       var idx=slides.findIndex(function(slide){return slide.classList.contains('active');});
       if(idx>=0) return idx;
-      var select=document.getElementById('slideSelect');
-      if(select && select.selectedIndex>=0) return Math.min(select.selectedIndex,slides.length-1);
       return 0;
     }
 
     function sync(){
       var idx=activeIndex();
-      var total=slides.length||1;
+      var select=document.getElementById('slideSelect');
+      var total=(select && select.options && select.options.length) || slides.length || 1;
       var num=idx+1;
       var pct=Math.max(1,Math.round((num/total)*100));
       if(statusText) statusText.textContent='Slide '+num+'/'+total;
@@ -272,7 +273,10 @@
     });
 
     var select=document.getElementById('slideSelect');
-    if(select) select.addEventListener('change',function(){setTimeout(sync,0);});
+    if(select){
+      select.addEventListener('change',function(){setTimeout(sync,0);});
+      try{ new MutationObserver(sync).observe(select,{childList:true}); }catch(e){}
+    }
     var prev=document.getElementById('prevBtn');
     var next=document.getElementById('nextBtn');
     if(prev) prev.addEventListener('click',function(){setTimeout(sync,0);});
@@ -379,7 +383,16 @@
       if(box.dataset.ian603SqlFocus==='ready') return;
       var ta=editorTextarea(box);
       var actions=actionBar(box);
-      if(!ta || !actions) return;
+      if(!ta) return;
+
+      if(!actions){
+        var head=box.querySelector('.code-head,.pg-head,.sql-head');
+        if(head){
+          actions=el('div',box.classList.contains('sql-cell')?'sql-actions':(box.classList.contains('pg-cell')?'pg-actions':'cell-actions'));
+          head.appendChild(actions);
+        }
+      }
+      if(!actions) return;
 
       box.dataset.ian603SqlFocus='ready';
 
