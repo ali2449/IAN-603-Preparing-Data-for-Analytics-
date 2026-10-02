@@ -65,11 +65,31 @@
     if(progressBtn){
       progressBtn.classList.add('shell-progress-action');
       actions.appendChild(progressBtn);
+    }else{
+      progressBtn=el('span','control shell-progress-action shell-generic-progress','Progress 0%');
+      progressBtn.id='shellGenericProgress';
+      actions.appendChild(progressBtn);
     }
 
     var runBtn=document.getElementById('runSlideBtn');
     if(runBtn){
       runBtn.classList.add('shell-run-action');
+      runBtn.textContent='Run SQL';
+      actions.appendChild(runBtn);
+    }else{
+      runBtn=el('button','control shell-run-action','Run SQL');
+      runBtn.type='button';
+      runBtn.id='shellRunBtn';
+      runBtn.disabled=true;
+      runBtn.addEventListener('click',function(){
+        var slide=document.querySelector('.slide.active');
+        if(!slide) return;
+        var target=[].slice.call(slide.querySelectorAll('button')).find(function(btn){
+          var label=(btn.textContent||'').replace(/\\s+/g,' ').trim();
+          return btn!==runBtn && !btn.disabled && /^(Run|Run SQL|Run & Check)$/i.test(label);
+        });
+        if(target) target.click();
+      });
       actions.appendChild(runBtn);
     }
 
@@ -229,6 +249,20 @@
       var pct=Math.max(1,Math.round((num/total)*100));
       if(statusText) statusText.textContent='Slide '+num+'/'+total;
       if(statusPct) statusPct.textContent=pct+'%';
+
+      var genericProgress=document.getElementById('shellGenericProgress');
+      if(genericProgress) genericProgress.textContent='Progress '+pct+'%';
+
+      var shellRun=document.getElementById('shellRunBtn');
+      if(shellRun){
+        var active=slides[idx];
+        var target=active ? [].slice.call(active.querySelectorAll('button')).find(function(btn){
+          var label=(btn.textContent||'').replace(/\\s+/g,' ').trim();
+          return !btn.disabled && /^(Run|Run SQL|Run & Check)$/i.test(label);
+        }) : null;
+        shellRun.disabled=!target;
+        shellRun.textContent=target && /Check/i.test(target.textContent||'') ? 'Run & Check' : 'Run SQL';
+      }
     }
 
     slides.forEach(function(slide){
