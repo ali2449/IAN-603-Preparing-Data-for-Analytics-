@@ -1,21 +1,40 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.708
-This query rewrites the admission-count problem The
-inner query groups
+00:00:00.000 --> 00:00:02.872
+This query rewrites the admission-count problem.
 
-00:00:05.722 --> 00:00:11.417
-admissions once by patient ID The outer query joins
-those counts
+00:00:02.872 --> 00:00:06.712
+The inner query groups admissions once by patient ID.
 
-00:00:11.443 --> 00:00:17.049
-to patients Run it and compare the result with the
-correlated scalar
+00:00:06.712 --> 00:00:10.522
+The outer query joins those counts to patients.
 
-00:00:17.075 --> 00:00:22.753
-version The business meaning and patient-level grain
-should remain the same
+00:00:10.522 --> 00:00:14.667
+Run it and compare the result with the correlated scalar version.
 
-00:00:24.499 --> 00:00:28.012
-When rewriting always verify that the result did not
-change
+00:00:14.667 --> 00:00:18.902
+The business meaning and patient-level grain should remain the same.
+
+00:00:18.902 --> 00:00:23.502
+When rewriting, always verify that the result did not change.
+
+00:00:23.502 --> 00:00:28.362
+When reading the example, do not read punctuation one character at a time.
+
+00:00:28.362 --> 00:00:32.587
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:32.587 --> 00:00:36.782
+and the shape of the expected output.
+
+00:00:36.782 --> 00:00:42.762
+In a real setting such as a hospital identifying patients above a benchmark or with no follow-up,
+
+00:00:42.762 --> 00:00:48.767
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:48.767 --> 00:00:50.882
+before discussing syntax.
+
+00:00:50.882 --> 00:00:56.960
+After running it, inspect a few records manually and check that the result matches that explanation.

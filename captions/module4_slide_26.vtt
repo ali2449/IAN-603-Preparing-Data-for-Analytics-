@@ -1,40 +1,43 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.674
-Advanced grouping introduces an important NULL
-question Subtotal
+00:00:00.000 --> 00:00:03.782
+Advanced grouping introduces an important NULL question.
 
-00:00:05.687 --> 00:00:09.647
-and grand-total rows often show NULL in grouping
-columns because that dimension
+00:00:03.782 --> 00:00:11.227
+Subtotal and grand-total rows often show NULL in grouping columns because that dimension has been rolled up.
 
-00:00:09.674 --> 00:00:14.005
-has been rolled up But source data can also contain
-genuine NULL
+00:00:11.227 --> 00:00:15.597
+But source data can also contain genuine NULL values.
 
-00:00:14.032 --> 00:00:21.163
-values GROUPING helps us distinguish those two
-situations A
+00:00:15.597 --> 00:00:19.422
+GROUPING helps us distinguish those two situations.
 
-00:00:21.177 --> 00:00:25.005
-grouping code tells us which expressions are
-participating in the current row
+00:00:19.422 --> 00:00:26.247
+A grouping code tells us which expressions are participating in the current row and which have been summarized
 
-00:00:25.019 --> 00:00:30.195
-and which have been summarized away The exact code
-is less important
+00:00:26.247 --> 00:00:26.592
+away.
 
-00:00:30.221 --> 00:00:33.721
-than the principle do not label every NULL with
-COALESCE before you
+00:00:26.592 --> 00:00:34.587
+The exact code is less important than the principle: do not label every NULL with COALESCE before you
 
-00:00:33.747 --> 00:00:38.790
-know why it is NULL In a production report using
-GROUPING can
+00:00:34.587 --> 00:00:36.557
+know why it is NULL.
 
-00:00:38.817 --> 00:00:43.133
-help you label rows accurately as detail subtotal or
-grand total without
+00:00:36.557 --> 00:00:41.312
+In a production report, using GROUPING can help you label rows accurately as detail, subtotal,
 
-00:00:43.159 --> 00:00:45.896
-confusing structural placeholders with missing data
+00:00:41.312 --> 00:00:46.422
+or grand total without confusing structural placeholders with missing data.
+
+00:00:46.422 --> 00:00:51.157
+Advanced grouping produces several aggregation levels in one result.
+
+00:00:51.157 --> 00:00:57.967
+The challenge is interpretation: NULL may mean a subtotal placeholder rather than missing source data.
+
+00:00:57.967 --> 00:01:05.092
+Use GROUPING metadata or explicit labels so downstream users can distinguish detail groups, subtotals,
+
+00:01:05.092 --> 00:01:06.223
+and grand totals.

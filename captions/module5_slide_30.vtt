@@ -9,10 +9,10 @@ Conceptually, NOT IN asks whether the value is different from every item in the 
 00:00:10.392 --> 00:00:17.242
 If the list contains a NULL, SQL cannot prove that the value is different from that unknown item.
 
-00:00:17.242 --> 00:00:19.852
+00:00:17.242 --> 00:00:19.857
 The result can become UNKNOWN.
 
-00:00:19.852 --> 00:00:26.402
+00:00:19.857 --> 00:00:26.402
 Because WHERE keeps only TRUE, rows that look like obvious non-matches may disappear.
 
 00:00:26.402 --> 00:00:32.182
@@ -21,23 +21,29 @@ For example, suppose we ask for payment statuses NOT IN Paid, Closed, and NULL.
 00:00:32.182 --> 00:00:33.822
 You may expect Open to qualify.
 
-00:00:33.822 --> 00:00:43.402
-But the presence of NULL makes the logic uncertain because SQL cannot compare Open with an unknown value in a
+00:00:33.822 --> 00:00:41.192
+But the presence of NULL makes the logic uncertain because SQL cannot compare Open with an unknown value
 
-00:00:43.402 --> 00:00:44.587
-definite way.
+00:00:41.192 --> 00:00:44.587
+in a definite way.
 
-00:00:44.587 --> 00:00:52.202
-The safe strategy is usually to keep NULL out of the IN or NOT IN list and handle missingness explicitly.
+00:00:44.587 --> 00:00:49.657
+The safe strategy is usually to keep NULL out of the IN or NOT IN list and handle
+
+00:00:49.657 --> 00:00:52.202
+missingness explicitly.
 
 00:00:52.202 --> 00:01:00.172
 If your rule is “status is not Paid, including missing status,” write a NULL-aware condition that says exactly
 
-00:01:00.172 --> 00:01:06.272
-that. If your rule is “status is known and is not Paid,” then require IS NOT NULL along with the inequality.
+00:01:00.172 --> 00:01:00.507
+that.
 
-00:01:06.272 --> 00:01:12.552
-This is another case where the business policy matters more than the keyword.
+00:01:00.507 --> 00:01:05.192
+If your rule is “status is known and is not Paid,” then require IS NOT NULL along with
+
+00:01:05.192 --> 00:01:12.552
+the inequality. This is another case where the business policy matters more than the keyword.
 
 00:01:12.552 --> 00:01:17.872
 Whenever you see NOT IN in production SQL, especially against a subquery,

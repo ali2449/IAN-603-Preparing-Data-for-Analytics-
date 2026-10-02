@@ -1,40 +1,40 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.884
-Now let's rank employees within each department The
-RANK window function
+00:00:00.000 --> 00:00:02.847
+Now let's rank employees within each department.
 
-00:00:05.910 --> 00:00:11.558
-calculates a position inside each department
-PARTITION BY restarts the ranking for
+00:00:02.847 --> 00:00:07.437
+The RANK window function calculates a position inside each department.
 
-00:00:11.584 --> 00:00:15.702
-each department and ORDER BY salary descending makes
-the highest salary rank
+00:00:07.437 --> 00:00:15.782
+PARTITION BY restarts the ranking for each department, and ORDER BY salary descending makes the highest salary
 
-00:00:15.729 --> 00:00:21.998
-first Run the query and inspect the department
-boundaries You
+00:00:15.782 --> 00:00:19.052
+rank first. Run the query and inspect the department boundaries.
 
-00:00:22.024 --> 00:00:27.563
-should see rank one appear separately in each
-department Notice that
+00:00:19.052 --> 00:00:22.682
+You should see rank one appear separately in each department.
 
-00:00:27.576 --> 00:00:32.302
-every employee row remains visible That is the major
-difference from a
+00:00:22.682 --> 00:00:26.027
+Notice that every employee row remains visible.
 
-00:00:32.315 --> 00:00:38.032
-grouped salary report If two employees have the same
-salary RANK
+00:00:26.027 --> 00:00:29.402
+That is the major difference from a grouped salary report.
 
-00:00:38.058 --> 00:00:42.377
-can produce ties and skip the next rank number That
-behavior is
+00:00:29.402 --> 00:00:35.552
+If two employees have the same salary, RANK can produce ties and skip the next rank number.
 
-00:00:42.403 --> 00:00:46.140
-useful to remember when comparing RANK with other
-ranking functions such as
+00:00:35.552 --> 00:00:42.777
+That behavior is useful to remember when comparing RANK with other ranking functions such as DENSE_RANK or
 
-00:00:46.153 --> 00:00:48.521
-DENSE_RANK or ROW_NUMBER
+00:00:42.777 --> 00:00:47.612
+ROW_NUMBER. Window functions calculate across related rows without collapsing them.
+
+00:00:47.612 --> 00:00:53.717
+That lets you keep row-level detail while adding rank, running totals, or group averages.
+
+00:00:53.717 --> 00:01:00.432
+Always define the partition and ordering carefully because those clauses describe which rows belong together
+
+00:01:00.432 --> 00:01:01.614
+and in what sequence.

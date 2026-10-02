@@ -1,19 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.708
-BTRIM is excellent for boundary whitespace It
-removes spaces from
+00:00:00.000 --> 00:00:03.262
+BTRIM is excellent for boundary whitespace.
 
-00:00:05.734 --> 00:00:11.317
-the start and end of a string But it does not
-collapse repeated spaces
+00:00:03.262 --> 00:00:06.797
+It removes spaces from the start and end of a string.
 
-00:00:11.344 --> 00:00:17.834
-inside the value That distinction is important If
+00:00:06.797 --> 00:00:11.252
+But it does not collapse repeated spaces inside the value.
 
-00:00:17.860 --> 00:00:23.531
-you need to normalize internal whitespace you need a
-different function such as REGEXP_REPLACE with
+00:00:11.252 --> 00:00:13.567
+That distinction is important.
 
-00:00:23.557 --> 00:00:25.136
-a repeated-whitespace pattern
+00:00:13.567 --> 00:00:22.747
+If you need to normalize internal whitespace, you need a different function such as REGEXP_REPLACE with a
+
+00:00:22.747 --> 00:00:27.502
+repeated-whitespace pattern. Text cleaning should separate normalization from interpretation.
+
+00:00:27.502 --> 00:00:33.817
+Trimming spaces or standardizing case is usually safe when the rule is documented;
+
+00:00:33.817 --> 00:00:40.047
+correcting a person's name or guessing an email address is a much stronger intervention.
+
+00:00:40.047 --> 00:00:43.979
+Preserve the original value when auditability matters.

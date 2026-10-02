@@ -1,20 +1,37 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.707
-The inner query groups admissions by patient ID That
-creates one
+00:00:00.000 --> 00:00:03.157
+The inner query groups admissions by patient ID.
 
-00:00:05.733 --> 00:00:11.275
-admission-count row per patient ID The outer query
-left joins those
+00:00:03.157 --> 00:00:07.162
+That creates one admission-count row per patient ID.
 
-00:00:11.288 --> 00:00:16.924
-counts to the patient table COALESCE converts
-missing counts to zero for
+00:00:07.162 --> 00:00:11.707
+The outer query left joins those counts to the patient table.
 
-00:00:16.950 --> 00:00:22.767
-patients with no admissions This pattern makes the
-intermediate grain very
+00:00:11.707 --> 00:00:16.627
+COALESCE converts missing counts to zero for patients with no admissions.
 
-00:00:22.794 --> 00:00:23.280
-clear
+00:00:16.627 --> 00:00:20.277
+This pattern makes the intermediate grain very clear.
+
+00:00:20.277 --> 00:00:25.567
+When reading the example, do not read punctuation one character at a time.
+
+00:00:25.567 --> 00:00:29.957
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:29.957 --> 00:00:34.237
+and the shape of the expected output.
+
+00:00:34.237 --> 00:00:40.057
+In a real setting such as an e-commerce team finding customers who purchased a target product,
+
+00:00:40.057 --> 00:00:44.992
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:44.992 --> 00:00:47.742
+before discussing syntax.
+
+00:00:47.742 --> 00:00:54.080
+After running it, inspect a few records manually and check that the result matches that explanation.

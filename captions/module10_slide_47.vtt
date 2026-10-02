@@ -1,17 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.240
-The CTE first creates one row per product category
-and month The
+00:00:00.000 --> 00:00:04.557
+The CTE first creates one row per product, category, and month.
 
-00:00:06.267 --> 00:00:11.861
-outer query then groups by category and creates
-month columns So
+00:00:04.557 --> 00:00:08.892
+The outer query then groups by category and creates month columns.
 
-00:00:11.887 --> 00:00:19.405
-there are two grain changes Run the query and state
-both of them Being
+00:00:08.892 --> 00:00:11.172
+So there are two grain changes.
 
-00:00:19.431 --> 00:00:24.786
-explicit about intermediate grain is one of the best
-protections against accidental double counting
+00:00:11.172 --> 00:00:13.757
+Run the query and state both of them.
+
+00:00:13.757 --> 00:00:20.537
+Being explicit about intermediate grain is one of the best protections against accidental double counting.
+
+00:00:20.537 --> 00:00:25.237
+Joining detail tables before reshaping can multiply rows.
+
+00:00:25.237 --> 00:00:30.602
+If the target is one row per patient or product, summarize each one-to-many source to the target grain
+
+00:00:30.602 --> 00:00:33.232
+before combining them.
+
+00:00:33.232 --> 00:00:38.669
+This keeps measures interpretable and prevents a pivot from hiding earlier join inflation.

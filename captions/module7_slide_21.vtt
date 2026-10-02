@@ -1,20 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.743
-NOT IN looks like a simple anti-membership test But
-if the inner set
+00:00:00.000 --> 00:00:03.642
+NOT IN looks like a simple anti-membership test.
 
-00:00:05.769 --> 00:00:13.023
-contains NULL PostgreSQL cannot prove that an outer
-value differs from the unknown value The
+00:00:03.642 --> 00:00:11.152
+But if the inner set contains NULL, PostgreSQL cannot prove that an outer value differs from the unknown
 
-00:00:13.050 --> 00:00:18.737
-condition can become UNKNOWN rather than TRUE
-Because WHERE keeps only TRUE
+00:00:11.152 --> 00:00:14.837
+value. The condition can become UNKNOWN rather than TRUE.
 
-00:00:18.974 --> 00:00:24.536
-rows you expected may disappear This is one of the
-most important edge
+00:00:14.837 --> 00:00:20.012
+Because WHERE keeps only TRUE, rows you expected may disappear.
 
-00:00:24.549 --> 00:00:25.957
-cases in this module
+00:00:20.012 --> 00:00:23.937
+This is one of the most important edge cases in this module.
+
+00:00:23.937 --> 00:00:30.682
+IN answers a membership question: is this value present in the set returned by the subquery?
+
+00:00:30.682 --> 00:00:35.892
+Be especially careful with NOT IN when NULL can appear in that set,
+
+00:00:35.892 --> 00:00:40.792
+because three-valued logic can turn expected TRUE results into UNKNOWN.
+
+00:00:40.792 --> 00:00:45.715
+For anti-matching, NOT EXISTS is often easier to reason about.

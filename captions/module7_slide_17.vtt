@@ -1,15 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.062
-Before using a scalar subquery ask three questions
-Does it return
+00:00:00.000 --> 00:00:03.832
+Before using a scalar subquery, ask three questions.
 
-00:00:06.076 --> 00:00:12.521
-one column Can it ever return more than one row And
+00:00:03.832 --> 00:00:05.812
+Does it return one column?
 
-00:00:12.547 --> 00:00:18.129
-what should happen if it returns no row This small
-checklist catches most
+00:00:05.812 --> 00:00:08.227
+Can it ever return more than one row?
 
-00:00:18.155 --> 00:00:20.932
-scalar-subquery problems before you run the query
+00:00:08.227 --> 00:00:11.147
+And what should happen if it returns no row?
+
+00:00:11.147 --> 00:00:16.582
+This small checklist catches most scalar-subquery problems before you run the query.
+
+00:00:16.582 --> 00:00:20.522
+A subquery has a contract: it returns a shape.
+
+00:00:20.522 --> 00:00:25.342
+A scalar subquery must return at most one value where it is used.
+
+00:00:25.342 --> 00:00:32.317
+Before writing syntax, predict whether the inner query returns one value, one column with many rows,
+
+00:00:32.317 --> 00:00:38.393
+or a table. Shape mistakes are easier to prevent than to debug after the query becomes large.

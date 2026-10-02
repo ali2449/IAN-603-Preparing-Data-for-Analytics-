@@ -36,10 +36,10 @@ The same thing happens in healthcare.
 00:00:49.677 --> 00:00:56.052
 A patient may qualify for follow-up only when the patient is active, consent is explicitly true,
 
-00:00:56.052 --> 00:01:03.402
+00:00:56.052 --> 00:01:01.367
 the diagnosis belongs to a target group, and there is no usable email address.
 
-00:01:03.402 --> 00:01:06.577
+00:01:01.367 --> 00:01:06.577
 If consent is NULL, should that be treated as false?
 
 00:01:06.577 --> 00:01:11.737
@@ -48,11 +48,14 @@ Maybe not. It may mean consent has never been recorded, which could require manu
 00:01:11.737 --> 00:01:17.282
 This is why SQL logic should start from the policy, not from the syntax.
 
-00:01:17.282 --> 00:01:25.097
-We will repeatedly use the same process: write the rule in plain English, identify fields that may be missing,
+00:01:17.282 --> 00:01:22.517
+We will repeatedly use the same process: write the rule in plain English,
 
-00:01:25.097 --> 00:01:32.177
-group related conditions clearly, test boundary cases, and then compare the result with the original rule.
+00:01:22.517 --> 00:01:27.477
+identify fields that may be missing, group related conditions clearly, test boundary cases,
+
+00:01:27.477 --> 00:01:32.177
+and then compare the result with the original rule.
 
 00:01:32.177 --> 00:01:37.372
 A query can be perfectly valid SQL and still be analytically wrong.

@@ -1,41 +1,46 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.882
-NULL values require special attention in aggregation
-In the admissions
+00:00:00.000 --> 00:00:03.742
+NULL values require special attention in aggregation.
 
-00:00:05.908 --> 00:00:10.687
-table an ongoing admission has no discharge time yet
-That means we
+00:00:03.742 --> 00:00:08.982
+In the admissions table, an ongoing admission has no discharge time yet.
 
-00:00:10.713 --> 00:00:16.571
-cannot calculate a completed length of stay for that
-row AVG ignores
+00:00:08.982 --> 00:00:13.532
+That means we cannot calculate a completed length of stay for that row.
 
-00:00:16.598 --> 00:00:21.482
-NULL expressions rather than treating them as zero
-That behavior is useful
+00:00:13.532 --> 00:00:18.832
+AVG ignores NULL expressions rather than treating them as zero.
 
-00:00:21.508 --> 00:00:26.517
-here because an unfinished stay is not a zero-day
-stay Run the
+00:00:18.832 --> 00:00:24.732
+That behavior is useful here because an unfinished stay is not a zero-day stay.
 
-00:00:26.543 --> 00:00:32.217
-example and look at the completed length-of-stay
-calculation Think about which admissions
+00:00:24.732 --> 00:00:29.122
+Run the example and look at the completed length-of-stay calculation.
 
-00:00:32.230 --> 00:00:38.073
-actually contribute to the average Whenever you
-report an average also
+00:00:29.122 --> 00:00:33.117
+Think about which admissions actually contribute to the average.
 
-00:00:38.099 --> 00:00:42.957
-think about the sample size An average based on
-eight completed admissions
+00:00:33.117 --> 00:00:37.852
+Whenever you report an average, also think about the sample size.
 
-00:00:42.984 --> 00:00:46.536
-means something different from an average based on
-all ten admission rows
+00:00:37.852 --> 00:00:45.042
+An average based on eight completed admissions means something different from an average based on all ten
 
-00:00:47.457 --> 00:00:50.984
-Missing values can change which records are included
-in the measure
+00:00:45.042 --> 00:00:49.262
+admission rows. Missing values can change which records are included in the measure.
+
+00:00:49.262 --> 00:00:52.797
+Always name the thing being counted or averaged.
+
+00:00:52.797 --> 00:00:57.997
+COUNT star counts rows, COUNT of a column ignores NULL in that column,
+
+00:00:57.997 --> 00:01:02.992
+and COUNT DISTINCT answers a different question again.
+
+00:01:02.992 --> 00:01:09.447
+In dashboards, a vague label such as Count can hide major analytical errors; use labels such as admissions,
+
+00:01:09.447 --> 00:01:11.600
+patients, or distinct orders.

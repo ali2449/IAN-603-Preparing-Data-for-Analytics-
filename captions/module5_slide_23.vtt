@@ -10,10 +10,10 @@ You can think of it as a decision tree written inside SQL.
 PostgreSQL evaluates the WHEN branches from top to bottom.
 
 00:00:11.857 --> 00:00:19.342
-As soon as one condition is true, CASE returns that branch's result and stops checking the later branches for
+As soon as one condition is true, CASE returns that branch's result and stops checking the later branches
 
 00:00:19.342 --> 00:00:22.197
-that row. That makes branch order part of the logic.
+for that row. That makes branch order part of the logic.
 
 00:00:22.197 --> 00:00:24.997
 Suppose we are labeling support tickets.
@@ -33,13 +33,13 @@ one-hour condition.
 00:00:45.412 --> 00:00:51.292
 The safer order is usually specific before broad, or highest priority before lower priority.
 
-00:00:51.292 --> 00:00:51.692
+00:00:51.292 --> 00:00:51.642
 CASE can also include ELSE.
 
-00:00:51.692 --> 00:00:57.277
+00:00:51.642 --> 00:00:57.272
 ELSE gives a default result when no WHEN condition matches.
 
-00:00:57.277 --> 00:00:59.897
+00:00:57.272 --> 00:00:59.897
 If ELSE is omitted, PostgreSQL returns NULL.
 
 00:00:59.897 --> 00:01:07.012
@@ -48,14 +48,14 @@ Before writing a CASE expression, I recommend listing the categories in plain la
 00:01:07.012 --> 00:01:10.832
 overlap. Ask: can one row satisfy more than one branch?
 
-00:01:10.832 --> 00:01:11.912
+00:01:10.832 --> 00:01:11.907
 If yes, which result should win?
 
-00:01:11.912 --> 00:01:19.397
+00:01:11.907 --> 00:01:19.392
 CASE is powerful because it allows business logic to become visible directly in a query.
 
-00:01:19.397 --> 00:01:25.922
+00:01:19.392 --> 00:01:25.922
 But that also means poorly ordered branches can encode the wrong policy while still producing valid-looking
 
-00:01:25.922 --> 00:01:26.301
+00:01:25.922 --> 00:01:26.297
 output.

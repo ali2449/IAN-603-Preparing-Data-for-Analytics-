@@ -1,20 +1,40 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.951
-This query creates one contact line The name is
-trimmed and has repeated
+00:00:00.000 --> 00:00:02.677
+This query creates one contact line.
 
-00:00:05.978 --> 00:00:11.563
-whitespace normalized The email is trimmed and
-NULLIF turns an empty
+00:00:02.677 --> 00:00:06.817
+The name is trimmed and has repeated whitespace normalized.
 
-00:00:11.589 --> 00:00:19.124
-string into NULL The address is trimmed CONCAT_WS
+00:00:06.817 --> 00:00:11.367
+The email is trimmed, and NULLIF turns an empty string into NULL.
 
-00:00:19.150 --> 00:00:25.711
-joins the available pieces with a vertical-bar
-separator and skips NULL arguments Run
+00:00:11.367 --> 00:00:13.422
+The address is trimmed.
 
-00:00:25.737 --> 00:00:28.843
-the query and inspect how missing values affect the
-output
+00:00:13.422 --> 00:00:18.507
+CONCAT_WS joins the available pieces with a vertical-bar separator and skips NULL arguments.
+
+00:00:18.507 --> 00:00:25.282
+Run the query and inspect how missing values affect the output.
+
+00:00:25.282 --> 00:00:30.322
+When reading the example, do not read punctuation one character at a time.
+
+00:00:30.322 --> 00:00:34.907
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:34.907 --> 00:00:36.767
+and the shape of the expected output.
+
+00:00:36.767 --> 00:00:43.257
+In a real setting such as a hospital calculating length of stay and follow-up dates,
+
+00:00:43.257 --> 00:00:50.827
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:50.827 --> 00:00:53.012
+before discussing syntax.
+
+00:00:53.012 --> 00:00:59.047
+After running it, inspect a few records manually and check that the result matches that explanation.

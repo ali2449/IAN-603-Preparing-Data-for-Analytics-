@@ -1,21 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.864
-NOT EXISTS expresses the anti-match directly For
-each patient the
+00:00:00.000 --> 00:00:03.747
+NOT EXISTS expresses the anti-match directly.
 
-00:00:05.890 --> 00:00:11.616
-inner query searches for a review-queue row with the
-same patient ID If
+00:00:03.747 --> 00:00:10.102
+For each patient, the inner query searches for a review-queue row with the same patient ID.
 
-00:00:11.642 --> 00:00:17.368
-no matching row exists the patient is kept The
-unrelated NULL row
+00:00:10.102 --> 00:00:14.107
+If no matching row exists, the patient is kept.
 
-00:00:17.381 --> 00:00:21.697
-does not create the same problem because it does not
-match the current patient ID
+00:00:14.107 --> 00:00:21.662
+The unrelated NULL row does not create the same problem because it does not match the current patient
 
-00:00:23.451 --> 00:00:27.964
-This is why NOT EXISTS is often the clearer starting
-point for anti-join questions
+00:00:21.662 --> 00:00:27.757
+ID. This is why NOT EXISTS is often the clearer starting point for anti-join questions.
+
+00:00:27.757 --> 00:00:32.787
+EXISTS asks whether at least one related row satisfies the condition.
+
+00:00:32.787 --> 00:00:39.437
+The selected columns inside EXISTS usually do not matter; the existence of a row does.
+
+00:00:39.437 --> 00:00:45.882
+This maps naturally to questions such as patients with any follow-up, customers with any purchase,
+
+00:00:45.882 --> 00:00:48.040
+or orders with no shipment record.

@@ -1,20 +1,37 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.689
-A scalar subquery has a strict result contract It
-returns
+00:00:00.000 --> 00:00:03.437
+A scalar subquery has a strict result contract.
 
-00:00:05.715 --> 00:00:11.357
-one column and at most one row One row gives the
-scalar value
+00:00:03.437 --> 00:00:07.012
+It returns one column and at most one row.
 
-00:00:13.103 --> 00:00:19.070
-Zero rows become NULL More than one row is an error
-because the surrounding
+00:00:07.012 --> 00:00:09.692
+One row gives the scalar value.
 
-00:00:19.096 --> 00:00:24.611
-expression expected one value Understanding this
-contract is more
+00:00:09.692 --> 00:00:17.627
+Zero rows become NULL. More than one row is an error because the surrounding expression expected one value.
 
-00:00:24.624 --> 00:00:27.282
-important than remembering where the parentheses go
+00:00:17.627 --> 00:00:23.032
+Understanding this contract is more important than remembering where the parentheses go.
+
+00:00:23.032 --> 00:00:28.197
+When reading the example, do not read punctuation one character at a time.
+
+00:00:28.197 --> 00:00:32.412
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:32.412 --> 00:00:36.642
+and the shape of the expected output.
+
+00:00:36.642 --> 00:00:43.057
+In a real setting such as an e-commerce team finding customers who purchased a target product,
+
+00:00:43.057 --> 00:00:49.222
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:49.222 --> 00:00:51.452
+before discussing syntax.
+
+00:00:51.452 --> 00:00:57.733
+After running it, inspect a few records manually and check that the result matches that explanation.

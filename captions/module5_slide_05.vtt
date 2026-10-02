@@ -6,10 +6,10 @@ For this module, we use a small synthetic healthcare database.
 00:00:03.997 --> 00:00:12.187
 The data is intentionally simple enough to understand, but it contains the kinds of messy values that create
 
-00:00:12.187 --> 00:00:12.602
+00:00:12.187 --> 00:00:12.612
 real logic problems.
 
-00:00:12.602 --> 00:00:19.367
+00:00:12.612 --> 00:00:19.367
 The patient information table includes demographics, contact fields, activity status, consent,
 
 00:00:19.367 --> 00:00:25.287
@@ -21,10 +21,10 @@ Patient billing contains bill amounts, payments, and payment status.
 00:00:30.747 --> 00:00:35.532
 Admissions gives us admission and discharge dates.
 
-00:00:35.532 --> 00:00:39.452
+00:00:35.532 --> 00:00:38.152
 There is also a convenience view called patient_case.
 
-00:00:39.452 --> 00:00:44.927
+00:00:38.152 --> 00:00:44.927
 That view combines information from several source tables so we can focus on logic rather than spending the
 
 00:00:44.927 --> 00:00:50.602
@@ -36,26 +36,29 @@ What makes this dataset useful is the edge cases.
 00:00:53.887 --> 00:00:57.812
 Some values are NULL. Some text values are empty.
 
-00:00:57.812 --> 00:01:02.772
+00:00:57.812 --> 00:01:00.087
 Some contain only spaces. One bill amount is exactly zero.
 
-00:01:02.772 --> 00:01:04.997
+00:01:00.087 --> 00:01:02.772
 One payment status is missing.
 
-00:01:04.997 --> 00:01:07.417
+00:01:02.772 --> 00:01:04.997
 One consent value is unknown.
 
-00:01:07.417 --> 00:01:09.647
+00:01:04.997 --> 00:01:07.417
 Those are not random annoyances.
 
-00:01:09.647 --> 00:01:14.207
+00:01:07.417 --> 00:01:14.207
 They are the records that help us understand whether our rule is actually robust.
 
 00:01:14.207 --> 00:01:21.952
 Imagine a production system where an email field contains a space because someone pressed the spacebar and
 
-00:01:21.952 --> 00:01:29.667
-saved the form. A simple IS NULL test would say that email exists, even though there is no usable address.
+00:01:21.952 --> 00:01:22.452
+saved the form.
+
+00:01:22.452 --> 00:01:29.667
+A simple IS NULL test would say that email exists, even though there is no usable address.
 
 00:01:29.667 --> 00:01:33.952
 Or imagine a zero-dollar bill that represents a waived charge.

@@ -1,17 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.693
-This query groups the sales source by product and
-month COUNT tells us
+00:00:00.000 --> 00:00:03.127
+This query groups the sales source by product and month.
 
-00:00:05.719 --> 00:00:11.431
-how many transaction rows exist in each
-product-month group SUM shows
+00:00:03.127 --> 00:00:07.847
+COUNT tells us how many transaction rows exist in each product-month group.
 
-00:00:11.457 --> 00:00:17.015
-the total revenue that would fill a pivot cell Look
-for groups where source
+00:00:07.847 --> 00:00:11.577
+SUM shows the total revenue that would fill a pivot cell.
 
-00:00:17.041 --> 00:00:23.226
-rows is greater than one Those groups prove that the
-pivot requires aggregation
+00:00:11.577 --> 00:00:15.182
+Look for groups where source rows is greater than one.
+
+00:00:15.182 --> 00:00:18.837
+Those groups prove that the pivot requires aggregation.
+
+00:00:18.837 --> 00:00:24.212
+Reshaping can change grain, so define it before and after the transformation.
+
+00:00:24.212 --> 00:00:30.752
+A source may have one row per patient-measurement, while a pivoted result has one row per patient.
+
+00:00:30.752 --> 00:00:36.707
+If multiple source rows map to the same target cell, you must decide how they are aggregated;
+
+00:00:36.707 --> 00:00:38.983
+otherwise information can be lost.

@@ -6,20 +6,23 @@ A good classification rule should make its boundaries easy to explain.
 00:00:04.392 --> 00:00:09.317
 In the billing example, we first handle NULL as Unknown.
 
-00:00:09.317 --> 00:00:13.052
+00:00:09.317 --> 00:00:13.047
 Then bills of ten thousand or more are High-Value.
 
-00:00:13.052 --> 00:00:17.552
+00:00:13.047 --> 00:00:17.552
 Bills of five thousand or more, but below ten thousand, are Standard.
 
 00:00:17.552 --> 00:00:20.482
 Remaining known values are Low-Value.
 
-00:00:20.482 --> 00:00:27.967
-Because we write the thresholds from high to low, we do not need to manually state an upper bound on the
+00:00:20.482 --> 00:00:26.732
+Because we write the thresholds from high to low, we do not need to manually state an upper
+
+00:00:26.732 --> 00:00:27.967
+bound on the Standard branch.
 
 00:00:27.967 --> 00:00:35.047
-Standard branch. If the amount were ten thousand or more, it would already have matched High-Value.
+If the amount were ten thousand or more, it would already have matched High-Value.
 
 00:00:35.047 --> 00:00:39.877
 Boundary testing is essential. Ask what happens at exactly ten thousand.
@@ -27,10 +30,10 @@ Boundary testing is essential. Ask what happens at exactly ten thousand.
 00:00:39.877 --> 00:00:43.922
 It should be High-Value. What happens at exactly five thousand?
 
-00:00:43.922 --> 00:00:48.432
+00:00:43.922 --> 00:00:49.467
 It should be Standard. What happens at four thousand nine hundred ninety-nine?
 
-00:00:48.432 --> 00:00:53.117
+00:00:49.467 --> 00:00:53.117
 Low-Value. Later, we add a No Charge category for exactly zero.
 
 00:00:53.117 --> 00:00:57.242

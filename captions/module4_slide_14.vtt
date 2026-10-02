@@ -1,44 +1,43 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.656
-WHERE and HAVING both filter but they operate at
-different stages WHERE
+00:00:00.000 --> 00:00:04.412
+WHERE and HAVING both filter, but they operate at different stages.
 
-00:00:05.682 --> 00:00:11.317
-filters individual source rows before grouping
-happens For example keeping only
+00:00:04.412 --> 00:00:08.687
+WHERE filters individual source rows before grouping happens.
 
-00:00:11.343 --> 00:00:15.066
-sales where price is at least twenty-five dollars
-removes rows before the
+00:00:08.687 --> 00:00:17.487
+For example, keeping only sales where price is at least twenty-five dollars removes rows before the category
 
-00:00:15.093 --> 00:00:20.979
-category totals are calculated HAVING filters
-completed groups after
+00:00:17.487 --> 00:00:21.332
+totals are calculated. HAVING filters completed groups after aggregation.
 
-00:00:21.006 --> 00:00:26.758
-aggregation For example keeping categories whose
-total quantity is greater than ten
+00:00:21.332 --> 00:00:29.572
+For example, keeping categories whose total quantity is greater than ten requires the grouped total to exist
 
-00:00:26.785 --> 00:00:32.112
-requires the grouped total to exist first A simple
-test is to
+00:00:29.572 --> 00:00:29.942
+first.
 
-00:00:32.125 --> 00:00:35.480
-ask whether the condition refers to an individual
-row or to a
+00:00:29.942 --> 00:00:36.022
+A simple test is to ask whether the condition refers to an individual row or to a group
 
-00:00:35.494 --> 00:00:41.179
-group measure If it is a row condition think WHERE
-If
+00:00:36.022 --> 00:00:39.052
+measure. If it is a row condition, think WHERE.
 
-00:00:41.192 --> 00:00:45.284
-it is a condition on COUNT SUM AVG or another
-grouped measure
+00:00:39.052 --> 00:00:44.482
+If it is a condition on COUNT, SUM, AVG, or another grouped measure, think HAVING.
 
-00:00:45.442 --> 00:00:51.000
-think HAVING Keeping these roles separate makes
-aggregation queries much
+00:00:44.482 --> 00:00:51.022
+Keeping these roles separate makes aggregation queries much easier to reason about.
 
-00:00:51.026 --> 00:00:52.302
-easier to reason about
+00:00:51.022 --> 00:00:57.457
+WHERE filters detail rows before aggregation; HAVING filters groups after aggregation.
+
+00:00:57.457 --> 00:01:02.772
+A practical way to choose is to ask whether the condition refers to an individual record or to
+
+00:01:02.772 --> 00:01:07.147
+a summary such as count, average, or total.
+
+00:01:07.147 --> 00:01:10.391
+Mixing those levels is a common source of confusion.

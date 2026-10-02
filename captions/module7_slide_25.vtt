@@ -1,20 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.052
-EXISTS asks only whether the inner query returns at
-least one row The
+00:00:00.000 --> 00:00:04.792
+EXISTS asks only whether the inner query returns at least one row.
 
-00:00:06.079 --> 00:00:12.129
-actual selected value inside the subquery usually
-does not matter That
+00:00:04.792 --> 00:00:09.692
+The actual selected value inside the subquery usually does not matter.
 
-00:00:12.155 --> 00:00:17.726
-is why SELECT one is common The business meaning is
-simply does any
+00:00:09.692 --> 00:00:13.067
+That is why SELECT one is common.
 
-00:00:17.752 --> 00:00:23.682
-related row satisfy this condition This makes EXISTS
-especially natural
+00:00:13.067 --> 00:00:18.642
+The business meaning is simply: does any related row satisfy this condition?
 
-00:00:23.708 --> 00:00:25.063
-for relationship checks
+00:00:18.642 --> 00:00:23.427
+This makes EXISTS especially natural for relationship checks.
+
+00:00:23.427 --> 00:00:29.077
+EXISTS asks whether at least one related row satisfies the condition.
+
+00:00:29.077 --> 00:00:35.817
+The selected columns inside EXISTS usually do not matter; the existence of a row does.
+
+00:00:35.817 --> 00:00:42.627
+This maps naturally to questions such as patients with any follow-up, customers with any purchase,
+
+00:00:42.627 --> 00:00:44.720
+or orders with no shipment record.

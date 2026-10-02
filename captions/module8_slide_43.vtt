@@ -1,17 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.855
-This query truncates each order timestamp to month
-grain It then groups
+00:00:00.000 --> 00:00:03.767
+This query truncates each order timestamp to month grain.
 
-00:00:05.881 --> 00:00:12.000
-orders by that month bucket COUNT measures order
-volume and SUM calculates
+00:00:03.767 --> 00:00:06.582
+It then groups orders by that month bucket.
 
-00:00:12.013 --> 00:00:17.974
-monthly revenue The cast to date is mainly for a
-simpler displayed month label
+00:00:06.582 --> 00:00:11.287
+COUNT measures order volume, and SUM calculates monthly revenue.
 
-00:00:19.731 --> 00:00:24.810
-The important analytical decision is the month-level
-grain created by DATE_TRUNC
+00:00:11.287 --> 00:00:15.642
+The cast to date is mainly for a simpler displayed month label.
+
+00:00:15.642 --> 00:00:20.837
+The important analytical decision is the month-level grain created by DATE_TRUNC.
+
+00:00:20.837 --> 00:00:28.642
+EXTRACT returns a component such as month number or year; DATE_TRUNC returns a timestamp aligned to a time
+
+00:00:28.642 --> 00:00:30.477
+boundary such as the start of the month.
+
+00:00:30.477 --> 00:00:39.257
+For grouping over multiple years, truncating to month is often safer than grouping by month number alone
+
+00:00:39.257 --> 00:00:43.258
+because January 2025 and January 2026 should not be merged accidentally.

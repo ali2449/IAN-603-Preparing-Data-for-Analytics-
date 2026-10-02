@@ -1,40 +1,46 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.881
-Adding more grouping columns makes the summary more
-detailed Here we group
+00:00:00.000 --> 00:00:03.802
+Adding more grouping columns makes the summary more detailed.
 
-00:00:05.894 --> 00:00:12.213
-by patient and diagnosis together One output row now
-represents one patient-and-diagnosis
+00:00:03.802 --> 00:00:07.412
+Here we group by patient and diagnosis together.
 
-00:00:12.226 --> 00:00:18.584
-combination Run the example and compare it with the
-previous one-row-per-diagnosis
+00:00:07.412 --> 00:00:12.937
+One output row now represents one patient-and-diagnosis combination.
 
-00:00:18.611 --> 00:00:23.245
-query You should see more rows because the grain is
-more specific
+00:00:12.937 --> 00:00:18.217
+Run the example and compare it with the previous one-row-per-diagnosis query.
 
-00:00:25.079 --> 00:00:29.515
-This is an important design choice If the question
-asks how many
+00:00:18.217 --> 00:00:22.317
+You should see more rows because the grain is more specific.
 
-00:00:29.542 --> 00:00:33.818
-admissions each diagnosis has overall patient ID
-does not belong in the
+00:00:22.317 --> 00:00:24.857
+This is an important design choice.
 
-00:00:33.831 --> 00:00:38.384
-grouping If the question asks how many admissions
-each patient has for
+00:00:24.857 --> 00:00:29.632
+If the question asks how many admissions each diagnosis has overall,
 
-00:00:38.410 --> 00:00:44.381
-each diagnosis then both columns are required When a
-grouped query returns
+00:00:29.632 --> 00:00:32.677
+patient ID does not belong in the grouping.
 
-00:00:44.395 --> 00:00:47.552
-too many or too few rows inspect the GROUP BY list
-first
+00:00:32.677 --> 00:00:39.992
+If the question asks how many admissions each patient has for each diagnosis, then both columns are required.
 
-00:00:47.579 --> 00:00:49.934
-and restate the intended grain in plain language
+00:00:39.992 --> 00:00:42.762
+When a grouped query returns too many or too few rows,
+
+00:00:42.762 --> 00:00:49.492
+inspect the GROUP BY list first and restate the intended grain in plain language.
+
+00:00:49.492 --> 00:00:52.617
+GROUP BY changes the grain of the result.
+
+00:00:52.617 --> 00:00:57.972
+If you group by department and month, one output row represents one department-month combination.
+
+00:00:57.972 --> 00:01:02.062
+State that sentence before adding measures.
+
+00:01:02.062 --> 00:01:07.275
+It becomes a quick check for whether every selected non-aggregate column belongs in the grouping.

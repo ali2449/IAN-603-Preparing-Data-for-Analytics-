@@ -1,20 +1,37 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.747
-This query first trims the email and converts it to
-lowercase SPLIT_PART
+00:00:00.000 --> 00:00:03.672
+This query first trims the email and converts it to lowercase.
 
-00:00:06.774 --> 00:00:12.458
-then returns the text before or after the at sign
-POSITION reports
+00:00:03.672 --> 00:00:08.252
+SPLIT_PART then returns the text before or after the at sign.
 
-00:00:12.471 --> 00:00:18.076
-where the delimiter occurs Run the query and compare
-the parsed user
+00:00:08.252 --> 00:00:11.507
+POSITION reports where the delimiter occurs.
 
-00:00:18.089 --> 00:00:23.684
-and domain values Also notice what happens for
-missing or malformed
+00:00:11.507 --> 00:00:15.742
+Run the query and compare the parsed user and domain values.
 
-00:00:23.710 --> 00:00:24.644
-email values
+00:00:15.742 --> 00:00:20.532
+Also notice what happens for missing or malformed email values.
+
+00:00:20.532 --> 00:00:25.402
+When reading the example, do not read punctuation one character at a time.
+
+00:00:25.402 --> 00:00:31.567
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:31.567 --> 00:00:34.017
+and the shape of the expected output.
+
+00:00:34.017 --> 00:00:39.112
+In a real setting such as a CRM standardizing names, emails, and phone numbers,
+
+00:00:39.112 --> 00:00:46.392
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:46.392 --> 00:00:48.757
+before discussing syntax.
+
+00:00:48.757 --> 00:00:55.163
+After running it, inspect a few records manually and check that the result matches that explanation.

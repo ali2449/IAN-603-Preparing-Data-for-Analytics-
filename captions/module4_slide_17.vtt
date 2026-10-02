@@ -1,40 +1,40 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:04.800
-Conditional aggregation lets one grouped query
-calculate several related metrics from the
+00:00:00.000 --> 00:00:06.377
+Conditional aggregation lets one grouped query calculate several related metrics from the same input rows.
 
-00:00:04.813 --> 00:00:10.706
-same input rows Suppose we want separate counts for
-pneumonia and fracture
+00:00:06.377 --> 00:00:11.502
+Suppose we want separate counts for pneumonia and fracture admissions for each patient.
 
-00:00:10.732 --> 00:00:16.393
-admissions for each patient We could run separate
-queries but conditional aggregation
+00:00:11.502 --> 00:00:17.872
+We could run separate queries, but conditional aggregation keeps the measures together in one result.
 
-00:00:16.419 --> 00:00:21.991
-keeps the measures together in one result There are
-two common patterns
+00:00:17.872 --> 00:00:22.767
+There are two common patterns in this module.
 
-00:00:22.017 --> 00:00:27.405
-in this module CASE is widely portable and can
-convert a condition
+00:00:22.767 --> 00:00:27.282
+CASE is widely portable and can convert a condition into a value that an aggregate can summarize.
 
-00:00:27.418 --> 00:00:33.001
-into a value that an aggregate can summarize
-PostgreSQL FILTER
+00:00:27.282 --> 00:00:35.517
+PostgreSQL FILTER attaches a condition directly to an aggregate and is often easier to read when each measure
 
-00:00:33.027 --> 00:00:36.527
-attaches a condition directly to an aggregate and is
-often easier to
+00:00:35.517 --> 00:00:36.012
+has its own condition.
 
-00:00:36.553 --> 00:00:41.754
-read when each measure has its own condition The
-important idea is
+00:00:36.012 --> 00:00:42.632
+The important idea is that the group stays the same while different subsets of rows contribute to different
 
-00:00:41.768 --> 00:00:45.268
-that the group stays the same while different
-subsets of rows contribute
+00:00:42.632 --> 00:00:49.407
+measures. Conditional aggregation lets one grouped query calculate several targeted measures.
 
-00:00:45.294 --> 00:00:46.307
-to different measures
+00:00:49.407 --> 00:00:53.697
+For example, a department row can show total admissions, emergency admissions,
+
+00:00:53.697 --> 00:00:56.457
+and elective admissions side by side.
+
+00:00:56.457 --> 00:01:01.157
+FILTER is concise in PostgreSQL; CASE is widely portable.
+
+00:01:01.157 --> 00:01:04.277
+Both require you to define the condition precisely.

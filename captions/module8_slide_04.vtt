@@ -1,20 +1,37 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.834
-One correction is important before we start
-PostgreSQL does not
+00:00:00.000 --> 00:00:02.577
+One correction is important before we start.
 
-00:00:05.861 --> 00:00:11.571
-use DATEADD and DATEDIFF as native functions Instead
-PostgreSQL
+00:00:02.577 --> 00:00:07.957
+PostgreSQL does not use DATEADD and DATEDIFF as native functions.
 
-00:00:11.598 --> 00:00:17.558
-commonly uses date or timestamp subtraction INTERVAL
-values EXTRACT DATE_TRUNC AGE
+00:00:07.957 --> 00:00:15.077
+Instead, PostgreSQL commonly uses date or timestamp subtraction, INTERVAL values, EXTRACT, DATE_TRUNC, AGE,
 
-00:00:17.729 --> 00:00:23.868
-TO_DATE TO_TIMESTAMP and TO_CHAR The
+00:00:15.077 --> 00:00:17.737
+TO_DATE, TO_TIMESTAMP, and TO_CHAR.
 
-00:00:23.895 --> 00:00:29.487
-underlying analytical ideas are portable but the SQL
-syntax depends on the database system
+00:00:17.737 --> 00:00:23.822
+The underlying analytical ideas are portable, but the SQL syntax depends on the database system.
+
+00:00:23.822 --> 00:00:27.862
+When reading the example, do not read punctuation one character at a time.
+
+00:00:27.862 --> 00:00:34.987
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:34.987 --> 00:00:39.257
+and the shape of the expected output.
+
+00:00:39.257 --> 00:00:43.862
+In a real setting such as a CRM standardizing names, emails, and phone numbers,
+
+00:00:43.862 --> 00:00:51.517
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:51.517 --> 00:00:53.822
+before discussing syntax.
+
+00:00:53.822 --> 00:01:00.000
+After running it, inspect a few records manually and check that the result matches that explanation.

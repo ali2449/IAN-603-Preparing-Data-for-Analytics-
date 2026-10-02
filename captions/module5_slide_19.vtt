@@ -1,33 +1,36 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.482
+00:00:00.000 --> 00:00:02.477
 COALESCE provides fallback logic.
 
-00:00:02.482 --> 00:00:09.292
+00:00:02.477 --> 00:00:09.292
 PostgreSQL evaluates the expressions from left to right and returns the first one that is not NULL.
 
 00:00:09.292 --> 00:00:12.552
 A common example is contact information.
 
-00:00:12.552 --> 00:00:19.167
-We may prefer email first, then mobile phone, then home phone, and finally a text label such as No contact
+00:00:12.552 --> 00:00:16.892
+We may prefer email first, then mobile phone, then home phone,
 
-00:00:19.167 --> 00:00:26.502
-provided. But there is an important detail: COALESCE only understands NULL.
+00:00:16.892 --> 00:00:21.347
+and finally a text label such as No contact provided.
 
-00:00:26.502 --> 00:00:31.897
+00:00:21.347 --> 00:00:26.507
+But there is an important detail: COALESCE only understands NULL.
+
+00:00:26.507 --> 00:00:31.897
 It does not know that an empty string or a few spaces are useless contact information.
 
 00:00:31.897 --> 00:00:38.062
-If email contains a blank string, COALESCE may stop there and return that blank value instead of moving to the
+If email contains a blank string, COALESCE may stop there and return that blank value instead of moving
 
-00:00:38.062 --> 00:00:45.897
-mobile number. That is why COALESCE is often paired with normalization using BTRIM and NULLIF.
+00:00:38.062 --> 00:00:45.892
+to the mobile number. That is why COALESCE is often paired with normalization using BTRIM and NULLIF.
 
-00:00:45.897 --> 00:00:50.387
+00:00:45.892 --> 00:00:52.702
 COALESCE also appears in numeric work, but you need to be careful with meaning.
 
-00:00:50.387 --> 00:00:57.647
+00:00:52.702 --> 00:00:57.647
 Replacing a missing amount with zero is not just a technical operation.
 
 00:00:57.647 --> 00:01:00.147
@@ -42,8 +45,8 @@ But if the amount is NULL because the payment system failed to load data,
 00:01:12.357 --> 00:01:15.277
 replacing it with zero could be misleading.
 
-00:01:15.277 --> 00:01:23.172
-So the rule is not “use COALESCE whenever you see NULL.” The rule is “use COALESCE when the fallback value has
+00:01:15.277 --> 00:01:20.627
+So the rule is not “use COALESCE whenever you see NULL.” The rule is “use COALESCE when the
 
-00:01:23.172 --> 00:01:24.699
-a clear, documented meaning.”
+00:01:20.627 --> 00:01:24.699
+fallback value has a clear, documented meaning.”

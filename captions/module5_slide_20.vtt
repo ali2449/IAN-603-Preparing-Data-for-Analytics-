@@ -10,10 +10,10 @@ It compares two expressions. If they are equal, it returns NULL.
 Otherwise, it returns the first expression.
 
 00:00:11.742 --> 00:00:18.197
-For text cleaning, a useful pattern is to trim a field and then compare it with an empty string.
+For text cleaning, a useful pattern is to trim a field and then compare it with an empty
 
 00:00:18.197 --> 00:00:22.737
-If the cleaned text is empty, NULLIF converts it to NULL.
+string. If the cleaned text is empty, NULLIF converts it to NULL.
 
 00:00:22.737 --> 00:00:27.462
 This allows us to treat empty and whitespace-only text as missing.
@@ -21,13 +21,13 @@ This allows us to treat empty and whitespace-only text as missing.
 00:00:27.462 --> 00:00:34.602
 For example, a preferred-language field might contain three spaces because a user clicked into the field and
 
-00:00:34.602 --> 00:00:40.662
+00:00:34.602 --> 00:00:38.597
 saved without typing anything. After trimming, that becomes an empty string.
 
-00:00:40.662 --> 00:00:45.147
+00:00:38.597 --> 00:00:42.937
 NULLIF can turn it into NULL so later logic becomes simpler.
 
-00:00:45.147 --> 00:00:50.677
+00:00:42.937 --> 00:00:50.677
 NULLIF is also useful when a particular numeric value should be treated specially.
 
 00:00:50.677 --> 00:00:54.237
@@ -42,10 +42,10 @@ What I like about NULLIF is that it makes the rule visible.
 00:01:05.072 --> 00:01:10.292
 We are saying: if this value equals a particular sentinel or invalid value,
 
-00:01:10.292 --> 00:01:13.037
+00:01:10.292 --> 00:01:13.042
 treat it as missing for this calculation.
 
-00:01:13.037 --> 00:01:15.887
+00:01:13.042 --> 00:01:15.887
 It is not a universal cleaning function.
 
 00:01:15.887 --> 00:01:20.158

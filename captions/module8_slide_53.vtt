@@ -1,24 +1,31 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.622
-Sometimes a direct cast is sufficient If the text is
-already in
+00:00:00.000 --> 00:00:02.812
+Sometimes a direct cast is sufficient.
 
-00:00:05.649 --> 00:00:10.846
-a clear date format that PostgreSQL recognizes and
-you have validated the input casting to
+00:00:02.812 --> 00:00:09.717
+If the text is already in a clear date format that PostgreSQL recognizes and you have validated the
 
-00:00:10.859 --> 00:00:16.548
-date can be simple When the format is different
-TO_DATE lets
+00:00:09.717 --> 00:00:12.162
+input, casting to date can be simple.
 
-00:00:16.575 --> 00:00:22.396
-you specify the pattern For mixed raw input first
-identify the shape
+00:00:12.162 --> 00:00:17.262
+When the format is different, TO_DATE lets you specify the pattern.
 
-00:00:22.409 --> 00:00:27.942
-and then apply the appropriate parser Blindly
-parsing unknown text can
+00:00:17.262 --> 00:00:23.827
+For mixed raw input, first identify the shape and then apply the appropriate parser.
 
-00:00:27.968 --> 00:00:30.455
-cause errors or incorrect interpretations
+00:00:23.827 --> 00:00:29.422
+Blindly parsing unknown text can cause errors or incorrect interpretations.
+
+00:00:29.422 --> 00:00:36.872
+Parsing converts text into a typed value; formatting converts a typed value into presentation text.
+
+00:00:36.872 --> 00:00:43.702
+Perform analytical work on typed dates and timestamps, then format near the presentation layer.
+
+00:00:43.702 --> 00:00:50.502
+If parsing can fail, validate the incoming pattern first instead of letting one malformed value stop an entire
+
+00:00:50.502 --> 00:00:51.742
+load.

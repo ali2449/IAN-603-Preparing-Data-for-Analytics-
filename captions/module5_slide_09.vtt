@@ -12,8 +12,11 @@ If it is FALSE, NOT makes it TRUE.
 00:00:08.862 --> 00:00:14.332
 On this slide, we keep active records while excluding selected diagnoses.
 
-00:00:14.332 --> 00:00:21.317
-We can think of it as: the patient must be active, and the diagnosis must not belong to this excluded group.
+00:00:14.332 --> 00:00:17.682
+We can think of it as: the patient must be active,
+
+00:00:17.682 --> 00:00:21.317
+and the diagnosis must not belong to this excluded group.
 
 00:00:21.317 --> 00:00:24.907
 Parentheses help make the target of NOT obvious.
@@ -27,38 +30,38 @@ We are negating the whole membership test.
 00:00:32.247 --> 00:00:35.802
 But there is an important SQL detail: NOT does not eliminate uncertainty.
 
-00:00:35.802 --> 00:00:42.802
+00:00:35.802 --> 00:00:44.232
 If an expression is UNKNOWN because it involves NULL, then NOT UNKNOWN is still UNKNOWN.
 
-00:00:42.802 --> 00:00:49.947
+00:00:44.232 --> 00:00:49.947
 Imagine a retail table with a membership status that can be Gold, Silver, Basic, or NULL.
 
-00:00:49.947 --> 00:00:55.792
-If we ask for NOT Gold using an ordinary comparison, the NULL row does not automatically become “not Gold.”
+00:00:49.947 --> 00:00:55.797
+If we ask for NOT Gold using an ordinary comparison, the NULL row does not automatically become “not
 
-00:00:55.792 --> 00:01:03.372
-SQL does not know whether that missing value might actually have been Gold.
+00:00:55.797 --> 00:01:03.377
+Gold.” SQL does not know whether that missing value might actually have been Gold.
 
-00:01:03.372 --> 00:01:03.692
+00:01:03.377 --> 00:01:04.472
 The result can remain UNKNOWN.
 
-00:01:03.692 --> 00:01:08.697
+00:01:04.472 --> 00:01:08.697
 This matters because WHERE keeps only TRUE rows.
 
-00:01:08.697 --> 00:01:11.687
+00:01:08.697 --> 00:01:11.692
 So when you write NOT, ask two questions.
 
-00:01:11.687 --> 00:01:14.362
+00:01:11.692 --> 00:01:14.367
 First, what exact condition am I negating?
 
-00:01:14.362 --> 00:01:18.487
+00:01:14.367 --> 00:01:18.492
 Second, can any values involved be NULL?
 
-00:01:18.487 --> 00:01:23.572
+00:01:18.492 --> 00:01:23.572
 Sometimes a more explicit predicate such as IS DISTINCT FROM communicates the rule better than a negated
 
-00:01:23.572 --> 00:01:27.647
+00:01:23.572 --> 00:01:27.652
 ordinary comparison. We will see that later.
 
-00:01:27.647 --> 00:01:34.562
+00:01:27.652 --> 00:01:34.568
 The main idea is to avoid treating missing information as if it were known information.

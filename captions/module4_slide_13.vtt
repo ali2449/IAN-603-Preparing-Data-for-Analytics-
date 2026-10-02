@@ -1,44 +1,46 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.111
-This example is intentionally incorrect and the
-error is useful The
+00:00:00.000 --> 00:00:04.272
+This example is intentionally incorrect, and the error is useful.
 
-00:00:06.138 --> 00:00:10.098
-query groups rows only by diagnosis but also tries
-to select subject
+00:00:04.272 --> 00:00:11.117
+The query groups rows only by diagnosis but also tries to select subject ID directly.
 
-00:00:10.125 --> 00:00:15.811
-ID directly PostgreSQL asks an important question
-which subject ID
+00:00:11.117 --> 00:00:18.327
+PostgreSQL asks an important question: which subject ID should represent the entire diagnosis group?
 
-00:00:15.838 --> 00:00:21.348
-should represent the entire diagnosis group There is
-no single correct
+00:00:18.327 --> 00:00:23.777
+There is no single correct subject ID for a group that may contain several patients.
 
-00:00:21.361 --> 00:00:26.842
-subject ID for a group that may contain several
-patients Run this
+00:00:23.777 --> 00:00:26.877
+Run this example and read the error message.
 
-00:00:26.868 --> 00:00:32.161
-example and read the error message PostgreSQL is
-protecting you from an
+00:00:26.877 --> 00:00:30.437
+PostgreSQL is protecting you from an ambiguous result.
 
-00:00:32.187 --> 00:00:38.107
-ambiguous result To fix a grouped query every
-selected expression
+00:00:30.437 --> 00:00:35.377
+To fix a grouped query, every selected expression needs a clear role.
 
-00:00:38.133 --> 00:00:41.952
-needs a clear role It should either define the group
-such as
+00:00:35.377 --> 00:00:42.452
+It should either define the group, such as diagnosis, or summarize the group, such as COUNT or AVG.
 
-00:00:41.965 --> 00:00:47.496
-diagnosis or summarize the group such as COUNT or
-AVG Do
+00:00:42.452 --> 00:00:45.437
+Do not treat grouping errors as obstacles.
 
-00:00:47.522 --> 00:00:52.406
-not treat grouping errors as obstacles They often
-reveal that the result
+00:00:45.437 --> 00:00:49.727
+They often reveal that the result grain has not been defined clearly enough.
 
-00:00:52.432 --> 00:00:54.696
-grain has not been defined clearly enough
+00:00:49.727 --> 00:00:54.737
+Connect this idea to a dashboard summarizing admissions by department and month.
+
+00:00:54.737 --> 00:01:00.042
+Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+
+00:01:00.042 --> 00:01:07.497
+important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+
+00:01:07.497 --> 00:01:13.582
+A strong analyst can explain both the SQL operation and the assumption behind it.
+
+00:01:13.582 --> 00:01:19.337
+After the example, summarize the idea in one plain-language sentence before moving on.

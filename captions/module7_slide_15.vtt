@@ -1,21 +1,31 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.702
-A scalar subquery may return zero rows When that
-happens PostgreSQL
+00:00:00.000 --> 00:00:03.197
+A scalar subquery may return zero rows.
 
-00:00:06.728 --> 00:00:12.604
-turns the missing scalar into NULL The requested
-test ID in this example
+00:00:03.197 --> 00:00:07.657
+When that happens, PostgreSQL turns the missing scalar into NULL.
 
-00:00:12.630 --> 00:00:18.509
-does not exist So the inner query returns no row and
-the scalar
+00:00:07.657 --> 00:00:11.667
+The requested test ID in this example does not exist.
 
-00:00:18.522 --> 00:00:24.097
-result becomes NULL Remember this when the scalar
-participates in a
+00:00:11.667 --> 00:00:16.837
+So the inner query returns no row, and the scalar result becomes NULL.
 
-00:00:24.124 --> 00:00:28.492
-comparison because comparisons involving NULL follow
-three-valued logic
+00:00:16.837 --> 00:00:20.502
+Remember this when the scalar participates in a comparison,
+
+00:00:20.502 --> 00:00:24.932
+because comparisons involving NULL follow three-valued logic.
+
+00:00:24.932 --> 00:00:28.997
+A subquery has a contract: it returns a shape.
+
+00:00:28.997 --> 00:00:33.827
+A scalar subquery must return at most one value where it is used.
+
+00:00:33.827 --> 00:00:40.537
+Before writing syntax, predict whether the inner query returns one value, one column with many rows,
+
+00:00:40.537 --> 00:00:46.834
+or a table. Shape mistakes are easier to prevent than to debug after the query becomes large.

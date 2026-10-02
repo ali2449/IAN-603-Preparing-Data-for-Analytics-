@@ -1,19 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.302
-Survey data often arrives in long form with one row
-per respondent-question If
+00:00:00.000 --> 00:00:05.442
+Survey data often arrives in long form with one row per respondent-question.
 
-00:00:06.328 --> 00:00:10.473
-there is at most one score for each respondent and
-question MAX can be used
+00:00:05.442 --> 00:00:09.307
+If there is at most one score for each respondent and question,
 
-00:00:10.499 --> 00:00:16.242
-as a convenient aggregate to place that value into
-the correct column The output
+00:00:09.307 --> 00:00:15.012
+MAX can be used as a convenient aggregate to place that value into the correct column.
 
-00:00:16.268 --> 00:00:22.148
-grain becomes one respondent The Q1 Q2 and Q3
+00:00:15.012 --> 00:00:19.067
+The output grain becomes one respondent.
 
-00:00:22.174 --> 00:00:23.740
-categories become columns
+00:00:19.067 --> 00:00:23.082
+The Q1, Q2, and Q3 categories become columns.
+
+00:00:23.082 --> 00:00:30.457
+A pivot converts category values into columns, usually through conditional aggregation in portable SQL.
+
+00:00:30.457 --> 00:00:34.057
+Each target column needs a clear aggregation rule.
+
+00:00:34.057 --> 00:00:40.212
+Before pivoting, check whether the source contains more than one value for the same row-key and category
+
+00:00:40.212 --> 00:00:41.038
+combination.

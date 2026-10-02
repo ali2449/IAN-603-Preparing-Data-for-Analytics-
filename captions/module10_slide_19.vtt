@@ -1,20 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.058
-PostgreSQL FILTER attaches a condition directly to
-an aggregate COUNT
+00:00:00.016 --> 00:00:04.822
+PostgreSQL FILTER attaches a condition directly to an aggregate.
 
-00:00:06.071 --> 00:00:11.943
-star FILTER where diagnosis equals Pneumonia counts
-only matching rows The
+00:00:04.822 --> 00:00:10.397
+COUNT star FILTER where diagnosis equals Pneumonia counts only matching rows.
 
-00:00:11.970 --> 00:00:18.683
-query is often easier to scan because the aggregate
-and its condition appear together Run
+00:00:10.397 --> 00:00:17.382
+The query is often easier to scan because the aggregate and its condition appear together.
 
-00:00:18.709 --> 00:00:24.300
-it and compare the result with the CASE version The
-output should express the
+00:00:17.382 --> 00:00:20.252
+Run it and compare the result with the CASE version.
 
-00:00:24.313 --> 00:00:25.484
-same business meaning
+00:00:20.252 --> 00:00:26.247
+The output should express the same business meaning.
+
+00:00:26.247 --> 00:00:33.787
+A pivot converts category values into columns, usually through conditional aggregation in portable SQL.
+
+00:00:33.787 --> 00:00:35.762
+Each target column needs a clear aggregation rule.
+
+00:00:35.762 --> 00:00:43.972
+Before pivoting, check whether the source contains more than one value for the same row-key and category
+
+00:00:43.972 --> 00:00:45.360
+combination.

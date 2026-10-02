@@ -1,16 +1,25 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.823
-Pre-aggregation can help control grain First
-summarize the fact table
+00:00:00.000 --> 00:00:02.762
+Pre-aggregation can help control grain.
 
-00:00:05.849 --> 00:00:11.375
-to the level you actually need Then perform later
-joins or pivots from
+00:00:02.762 --> 00:00:06.852
+First summarize the fact table to the level you actually need.
 
-00:00:11.389 --> 00:00:17.422
-that stable grain This separates fact aggregation
-from presentation reshaping
+00:00:06.852 --> 00:00:10.787
+Then perform later joins or pivots from that stable grain.
 
-00:00:17.436 --> 00:00:19.686
-and can make the query easier to verify
+00:00:10.787 --> 00:00:17.672
+This separates fact aggregation from presentation reshaping and can make the query easier to verify.
+
+00:00:17.672 --> 00:00:22.167
+Joining detail tables before reshaping can multiply rows.
+
+00:00:22.167 --> 00:00:27.432
+If the target is one row per patient or product, summarize each one-to-many source to the target grain
+
+00:00:27.432 --> 00:00:29.957
+before combining them.
+
+00:00:29.957 --> 00:00:35.384
+This keeps measures interpretable and prevents a pivot from hiding earlier join inflation.
