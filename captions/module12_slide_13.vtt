@@ -1,19 +1,34 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:04.984
-CREATE OR REPLACE VIEW lets you update a compatible
-view definition without first dropping the
+00:00:00.000 --> 00:00:06.377
+CREATE OR REPLACE VIEW lets you update a compatible view definition without first dropping the object.
 
-00:00:04.997 --> 00:00:10.570
-object This is useful when the interface should
-remain available under the
+00:00:06.377 --> 00:00:12.722
+This is useful when the interface should remain available under the same name.
 
-00:00:10.583 --> 00:00:16.976
-same name But compatibility matters Changing
+00:00:12.722 --> 00:00:18.827
+But compatibility matters. Changing column names, meanings, types, or grain can still affect downstream users,
 
-00:00:17.002 --> 00:00:22.291
-column names meanings types or grain can still
-affect downstream users even if the SQL
+00:00:18.827 --> 00:00:21.352
+even if the SQL command succeeds.
 
-00:00:22.318 --> 00:00:23.344
-command succeeds
+00:00:21.352 --> 00:00:25.957
+When reading the example, do not read punctuation one character at a time.
+
+00:00:25.957 --> 00:00:32.102
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:32.102 --> 00:00:34.627
+and the shape of the expected output.
+
+00:00:34.627 --> 00:00:41.107
+In a real setting such as an analytics team exposing a stable reporting view to dashboard users,
+
+00:00:41.107 --> 00:00:47.042
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:47.042 --> 00:00:49.232
+before discussing syntax.
+
+00:00:49.232 --> 00:00:55.331
+After running it, inspect a few records manually and check that the result matches that explanation.

@@ -1,16 +1,34 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:04.721
-This query partitions website visits by user and
-orders them by visit time and visit
+00:00:00.000 --> 00:00:06.412
+This query partitions website visits by user and orders them by visit time and visit ID.
 
-00:00:04.747 --> 00:00:11.935
-ID LEAD retrieves the next visit timestamp
-Subtracting
+00:00:06.412 --> 00:00:09.542
+LEAD retrieves the next visit timestamp.
 
-00:00:11.961 --> 00:00:17.638
-the current timestamp gives time to the next visit
-The last visit in each
+00:00:09.542 --> 00:00:13.467
+Subtracting the current timestamp gives time to the next visit.
 
-00:00:17.665 --> 00:00:21.033
-user sequence has no next row so LEAD returns NULL
+00:00:13.467 --> 00:00:19.792
+The last visit in each user sequence has no next row, so LEAD returns NULL.
+
+00:00:19.792 --> 00:00:25.312
+When reading the example, do not read punctuation one character at a time.
+
+00:00:25.312 --> 00:00:29.807
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:29.807 --> 00:00:33.977
+and the shape of the expected output.
+
+00:00:33.977 --> 00:00:40.247
+In a real setting such as a sales team calculating running revenue and top products by region,
+
+00:00:40.247 --> 00:00:46.662
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:46.662 --> 00:00:48.912
+before discussing syntax.
+
+00:00:48.912 --> 00:00:55.030
+After running it, inspect a few records manually and check that the result matches that explanation.

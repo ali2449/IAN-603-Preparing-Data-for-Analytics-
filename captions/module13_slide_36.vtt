@@ -1,17 +1,25 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:04.879
-This example uses LAG to compare an admission with
-the previous discharge for the same
+00:00:00.000 --> 00:00:05.892
+This example uses LAG to compare an admission with the previous discharge for the same subject.
 
-00:00:04.905 --> 00:00:10.440
-subject The logic is the same kind of sequence
-analysis we used
+00:00:05.892 --> 00:00:10.017
+The logic is the same kind of sequence analysis we used earlier.
 
-00:00:10.466 --> 00:00:16.054
-earlier In Spark this window query may require
-sorting within each
+00:00:10.017 --> 00:00:15.462
+In Spark, this window query may require sorting within each subject partition.
 
-00:00:16.081 --> 00:00:21.316
-subject partition Run the query and inspect the gap
-column
+00:00:15.462 --> 00:00:18.407
+Run the query and inspect the gap column.
+
+00:00:18.407 --> 00:00:26.272
+Window functions work in Spark SQL much like in PostgreSQL, but they can require sorting and shuffling within
+
+00:00:26.272 --> 00:00:26.672
+partitions.
+
+00:00:26.672 --> 00:00:32.982
+Define the business partition and sequence carefully, then inspect the physical plan when the dataset is
+
+00:00:32.982 --> 00:00:37.060
+large. Correct logic comes first; distributed cost comes next.

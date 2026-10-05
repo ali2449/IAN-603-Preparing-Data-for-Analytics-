@@ -1,17 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.644
-Percent of total is a classic window pattern Each
-sale row remains
+00:00:00.018 --> 00:00:02.907
+Percent of total is a classic window pattern.
 
-00:00:05.670 --> 00:00:13.236
-visible The denominator uses SUM revenue over all
-rows Dividing
+00:00:02.907 --> 00:00:05.337
+Each sale row remains visible.
 
-00:00:13.263 --> 00:00:19.476
-the current row revenue by that total produces the
-row's contribution percentage A
+00:00:05.337 --> 00:00:09.092
+The denominator uses SUM revenue over all rows.
 
-00:00:19.490 --> 00:00:23.174
-GROUP BY would not preserve each individual sale row
-in the same way
+00:00:09.092 --> 00:00:15.417
+Dividing the current row revenue by that total produces the row's contribution percentage.
+
+00:00:15.417 --> 00:00:20.552
+A GROUP BY would not preserve each individual sale row in the same way.
+
+00:00:20.552 --> 00:00:24.957
+GROUP BY collapses rows; PARTITION BY does not.
+
+00:00:24.957 --> 00:00:31.857
+That distinction lets you compute group totals, percentages, or rankings while preserving detail.
+
+00:00:31.857 --> 00:00:38.272
+For top-N-per-group problems, rank within each group first and then filter the ranked result in an outer
+
+00:00:38.272 --> 00:00:39.309
+query.

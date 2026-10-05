@@ -1,16 +1,34 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.064
-The GROUP BY versus PARTITION BY choice is
-fundamentally a grain decision If
+00:00:00.000 --> 00:00:04.897
+The GROUP BY versus PARTITION BY choice is fundamentally a grain decision.
 
-00:00:06.090 --> 00:00:11.814
-you want one row per patient GROUP BY may be correct
-If you need every
+00:00:04.897 --> 00:00:09.472
+If you want one row per patient, GROUP BY may be correct.
 
-00:00:11.840 --> 00:00:17.606
-admission and the patient average beside it a window
-is a better fit Ask
+00:00:09.472 --> 00:00:15.267
+If you need every admission and the patient average beside it, a window is a better fit.
 
-00:00:17.632 --> 00:00:20.119
-whether detail should be collapsed or preserved
+00:00:15.267 --> 00:00:19.112
+Ask whether detail should be collapsed or preserved.
+
+00:00:19.112 --> 00:00:23.522
+For this activity, make a prediction before you run anything.
+
+00:00:23.522 --> 00:00:28.922
+State what one output row should represent, which records you expect to remain,
+
+00:00:28.922 --> 00:00:32.652
+and what edge case is most likely to expose a mistake.
+
+00:00:32.652 --> 00:00:37.227
+Then run the SQL and compare the result with that prediction.
+
+00:00:37.227 --> 00:00:44.407
+If it does not match, debug the logic in small pieces instead of changing several clauses at once.
+
+00:00:44.407 --> 00:00:48.507
+This is the same habit you would use in a real analytics project:
+
+00:00:48.507 --> 00:00:53.059
+validate the meaning of the result, not only whether the statement executes.

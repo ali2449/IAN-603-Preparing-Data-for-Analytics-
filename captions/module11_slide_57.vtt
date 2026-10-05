@@ -1,17 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.659
-Top N per group is a common CTE plus window pattern
-First
+00:00:00.000 --> 00:00:04.277
+Top N per group is a common CTE plus window pattern.
 
-00:00:05.685 --> 00:00:11.953
-calculate a rank inside each group Then put that
-ranked result in a CTE
+00:00:04.277 --> 00:00:07.372
+First calculate a rank inside each group.
 
-00:00:13.699 --> 00:00:19.467
-Finally filter the rank in the outer query The
-separation is useful
+00:00:07.372 --> 00:00:10.412
+Then put that ranked result in a CTE.
 
-00:00:19.493 --> 00:00:23.243
-because window functions are computed before the
-outer filtering stage
+00:00:10.412 --> 00:00:13.497
+Finally filter the rank in the outer query.
+
+00:00:13.497 --> 00:00:19.507
+The separation is useful because window functions are computed before the outer filtering stage.
+
+00:00:19.507 --> 00:00:24.072
+GROUP BY collapses rows; PARTITION BY does not.
+
+00:00:24.072 --> 00:00:31.092
+That distinction lets you compute group totals, percentages, or rankings while preserving detail.
+
+00:00:31.092 --> 00:00:37.622
+For top-N-per-group problems, rank within each group first and then filter the ranked result in an outer
+
+00:00:37.622 --> 00:00:38.687
+query.

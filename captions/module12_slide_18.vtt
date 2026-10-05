@@ -1,20 +1,31 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.700
-A view can sit in the middle of a dependency chain
-Base tables feed the
+00:00:00.000 --> 00:00:02.927
+A view can sit in the middle of a dependency chain.
 
-00:00:05.713 --> 00:00:11.282
-shared interface A report-specific CTE reads the
-view
+00:00:02.927 --> 00:00:05.697
+Base tables feed the shared interface.
 
-00:00:13.027 --> 00:00:18.673
-A report consumes the final result If the view grain
-or column meaning
+00:00:05.697 --> 00:00:09.027
+A report-specific CTE reads the view.
 
-00:00:18.699 --> 00:00:24.402
-changes every downstream layer may be affected Treat
-important shared
+00:00:09.027 --> 00:00:11.842
+A report consumes the final result.
 
-00:00:24.416 --> 00:00:27.587
-views as versioned contracts not disposable snippets
+00:00:11.842 --> 00:00:17.467
+If the view grain or column meaning changes, every downstream layer may be affected.
+
+00:00:17.467 --> 00:00:22.952
+Treat important shared views as versioned contracts, not disposable snippets.
+
+00:00:22.952 --> 00:00:26.387
+Reusable SQL objects create dependencies.
+
+00:00:26.387 --> 00:00:33.092
+Before changing a base view, identify which other views, reports, or applications depend on it.
+
+00:00:33.092 --> 00:00:36.312
+Good change management includes version awareness, tests,
+
+00:00:36.312 --> 00:00:41.440
+and communication—not just editing CREATE VIEW until it succeeds.

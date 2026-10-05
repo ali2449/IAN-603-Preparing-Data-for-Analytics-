@@ -1,16 +1,25 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:04.418
-A global ORDER BY can be expensive in Spark because
-the entire result needs a
+00:00:00.000 --> 00:00:06.117
+A global ORDER BY can be expensive in Spark because the entire result needs a coordinated order.
 
-00:00:04.445 --> 00:00:11.767
-coordinated order That may be necessary for a final
-report It
+00:00:06.117 --> 00:00:08.987
+That may be necessary for a final report.
 
-00:00:11.780 --> 00:00:17.440
-is often unnecessary in intermediate transformations
-Sort only when the order
+00:00:08.987 --> 00:00:12.787
+It is often unnecessary in intermediate transformations.
 
-00:00:17.467 --> 00:00:19.388
-is part of the actual requirement
+00:00:12.787 --> 00:00:16.787
+Sort only when the order is part of the actual requirement.
+
+00:00:16.787 --> 00:00:23.222
+A shuffle moves data across executors so related keys end up together.
+
+00:00:23.222 --> 00:00:28.042
+GROUP BY, large joins, and global ORDER BY can trigger expensive shuffles.
+
+00:00:28.042 --> 00:00:34.717
+In distributed systems, moving data is often more costly than evaluating the SQL expression itself,
+
+00:00:34.717 --> 00:00:36.652
+so plan around data movement.

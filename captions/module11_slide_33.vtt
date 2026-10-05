@@ -1,16 +1,25 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.623
-DENSE_RANK also gives tied values the same rank But
-it does
+00:00:00.000 --> 00:00:03.512
+DENSE_RANK also gives tied values the same rank.
 
-00:00:05.636 --> 00:00:11.220
-not leave gaps If two employees tie for second the
-next distinct
+00:00:03.512 --> 00:00:05.602
+But it does not leave gaps.
 
-00:00:11.246 --> 00:00:16.754
-salary gets rank three This is often useful for
-grouping distinct
+00:00:05.602 --> 00:00:10.937
+If two employees tie for second, the next distinct salary gets rank three.
 
-00:00:16.780 --> 00:00:17.662
-ordered levels
+00:00:10.937 --> 00:00:14.927
+This is often useful for grouping distinct ordered levels.
+
+00:00:14.927 --> 00:00:18.827
+Ranking functions differ mainly in how they handle ties.
+
+00:00:18.827 --> 00:00:26.022
+ROW_NUMBER forces a unique sequence, RANK leaves gaps after ties, and DENSE_RANK does not.
+
+00:00:26.022 --> 00:00:29.857
+Add deterministic tie-breakers when a unique order matters;
+
+00:00:29.857 --> 00:00:34.196
+otherwise two executions can choose different rows among tied values.

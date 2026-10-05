@@ -1,17 +1,25 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.601
-A useful monitoring pattern is to compare the live
-result with the stored snapshot This
+00:00:00.000 --> 00:00:04.977
+A useful monitoring pattern is to compare the live result with the stored snapshot.
 
-00:00:06.614 --> 00:00:12.432
-query shows diagnosis counts from both sources After
-a successful
+00:00:04.977 --> 00:00:08.952
+This query shows diagnosis counts from both sources.
 
-00:00:12.458 --> 00:00:18.093
-refresh the values should agree for the same logic
-If they differ
+00:00:08.952 --> 00:00:13.897
+After a successful refresh, the values should agree for the same logic.
 
-00:00:18.106 --> 00:00:23.514
-unexpectedly investigate whether the snapshot is
-stale or the definitions are inconsistent
+00:00:13.897 --> 00:00:21.197
+If they differ unexpectedly, investigate whether the snapshot is stale or the definitions are inconsistent.
+
+00:00:21.197 --> 00:00:27.747
+A materialized view stores the query result physically, trading freshness for faster reads.
+
+00:00:27.747 --> 00:00:31.272
+That makes refresh policy part of the data contract.
+
+00:00:31.272 --> 00:00:36.672
+A dashboard should know whether the snapshot is five minutes old or one day old.
+
+00:00:36.672 --> 00:00:42.000
+Indexes can improve access, and concurrent refresh has additional requirements.

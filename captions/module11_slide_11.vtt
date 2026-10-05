@@ -1,21 +1,37 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.641
-This query first creates a CTE named older patients
-That
+00:00:00.000 --> 00:00:04.207
+This query first creates a CTE named older patients.
 
-00:00:05.654 --> 00:00:11.159
-stage contains one row per patient older than fifty
-The final query
+00:00:04.207 --> 00:00:08.727
+That stage contains one row per patient older than fifty.
 
-00:00:11.185 --> 00:00:16.711
-left joins admissions and counts admissions per
-older patient Run it
+00:00:08.727 --> 00:00:13.917
+The final query left joins admissions and counts admissions per older patient.
 
-00:00:16.737 --> 00:00:22.435
-and identify the grain of each stage The CTE is
-patient grain
+00:00:13.917 --> 00:00:17.297
+Run it and identify the grain of each stage.
 
-00:00:22.646 --> 00:00:25.607
-and the final grouped result is also one row per
-patient
+00:00:17.297 --> 00:00:23.392
+The CTE is patient grain, and the final grouped result is also one row per patient.
+
+00:00:23.392 --> 00:00:28.232
+When reading the example, do not read punctuation one character at a time.
+
+00:00:28.232 --> 00:00:33.997
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:33.997 --> 00:00:35.962
+and the shape of the expected output.
+
+00:00:35.962 --> 00:00:43.402
+In a real setting such as a sales team calculating running revenue and top products by region,
+
+00:00:43.402 --> 00:00:49.362
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:49.362 --> 00:00:52.257
+before discussing syntax.
+
+00:00:52.257 --> 00:00:58.468
+After running it, inspect a few records manually and check that the result matches that explanation.

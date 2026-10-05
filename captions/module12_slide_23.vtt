@@ -1,17 +1,22 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.641
-WITH CHECK OPTION enforces the view's filter for
-writes through the view If an
+00:00:00.000 --> 00:00:04.322
+WITH CHECK OPTION enforces the view's filter for writes through the view.
 
-00:00:05.668 --> 00:00:11.089
-update would make a row no longer satisfy the active
-equals true condition PostgreSQL rejects
+00:00:04.322 --> 00:00:09.357
+If an update would make a row no longer satisfy the active equals true condition,
 
-00:00:11.102 --> 00:00:16.848
-the write This turns the filtered view into a more
-controlled write interface
+00:00:09.357 --> 00:00:16.017
+PostgreSQL rejects the write. This turns the filtered view into a more controlled write interface.
 
-00:00:18.571 --> 00:00:22.084
-It does not replace general database constraints or
-permissions
+00:00:16.017 --> 00:00:20.187
+It does not replace general database constraints or permissions.
+
+00:00:20.187 --> 00:00:26.992
+Some simple views can be updated because PostgreSQL can map each view row back to one base-table row.
+
+00:00:26.992 --> 00:00:33.357
+Filtered views introduce a policy question: should an update be allowed to move a row outside the view?
+
+00:00:33.357 --> 00:00:37.200
+WITH CHECK OPTION prevents writes that violate the view's own filter.

@@ -1,19 +1,25 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.688
-This example creates stay days in the CTE Each CTE
+00:00:00.000 --> 00:00:03.262
+This example creates stay days in the CTE.
 
-00:00:05.714 --> 00:00:11.438
-row represents one completed admission The final
-query joins patients
+00:00:03.262 --> 00:00:07.432
+Each CTE row represents one completed admission.
 
-00:00:11.465 --> 00:00:17.272
-and calculates admission count and average stay per
-patient The grain changes
+00:00:07.432 --> 00:00:13.597
+The final query joins patients and calculates admission count and average stay per patient.
 
-00:00:17.299 --> 00:00:22.851
-only in the final GROUP BY That separation makes the
-transformation
+00:00:13.597 --> 00:00:17.052
+The grain changes only in the final GROUP BY.
 
-00:00:22.877 --> 00:00:24.075
-easier to validate
+00:00:17.052 --> 00:00:21.167
+That separation makes the transformation easier to validate.
+
+00:00:21.167 --> 00:00:27.902
+A CTE gives a name to an intermediate result so a complex query can be read in stages.
+
+00:00:27.902 --> 00:00:35.807
+Use it to clarify grain changes and major transformations, not simply to break every two lines into a
+
+00:00:35.807 --> 00:00:43.970
+new block. A useful CTE name describes what the rows represent, such as patient_totals or ranked_visits.

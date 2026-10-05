@@ -1,20 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:08.026
-ROW_NUMBER RANK and DENSE_RANK look similar until
-ties occur ROW_NUMBER
+00:00:00.000 --> 00:00:04.472
+ROW_NUMBER, RANK, and DENSE_RANK look similar until ties occur.
 
-00:00:08.053 --> 00:00:13.691
-always assigns a unique sequence RANK gives equal
-values the same
+00:00:04.472 --> 00:00:07.692
+ROW_NUMBER always assigns a unique sequence.
 
-00:00:13.704 --> 00:00:19.262
-rank and leaves gaps afterward DENSE_RANK also
-shares ranks
+00:00:07.692 --> 00:00:12.092
+RANK gives equal values the same rank and leaves gaps afterward.
 
-00:00:19.275 --> 00:00:24.803
-but does not leave gaps Choose the function based on
-what ties should mean
+00:00:12.092 --> 00:00:16.062
+DENSE_RANK also shares ranks but does not leave gaps.
 
-00:00:24.816 --> 00:00:26.027
-for the business question
+00:00:16.062 --> 00:00:20.377
+Choose the function based on what ties should mean for the business question.
+
+00:00:20.377 --> 00:00:24.127
+Ranking functions differ mainly in how they handle ties.
+
+00:00:24.127 --> 00:00:31.282
+ROW_NUMBER forces a unique sequence, RANK leaves gaps after ties, and DENSE_RANK does not.
+
+00:00:31.282 --> 00:00:35.307
+Add deterministic tie-breakers when a unique order matters;
+
+00:00:35.307 --> 00:00:39.516
+otherwise two executions can choose different rows among tied values.

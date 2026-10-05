@@ -1,25 +1,37 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:06.102
-Use this decision guide when designing modular SQL
-Choose a CTE
+00:00:00.000 --> 00:00:03.297
+Use this decision guide when designing modular SQL.
 
-00:00:06.115 --> 00:00:11.789
-for statement-local stages Choose a standard view
-for stable shared live
+00:00:03.297 --> 00:00:06.702
+Choose a CTE for statement-local stages.
 
-00:00:11.815 --> 00:00:17.385
-logic Use a simple updatable view only when write
-behavior is
+00:00:06.702 --> 00:00:10.527
+Choose a standard view for stable shared live logic.
 
-00:00:17.412 --> 00:00:23.371
-intentional Use views with proper privileges for
-controlled interfaces
+00:00:10.527 --> 00:00:15.342
+Use a simple updatable view only when write behavior is intentional.
 
-00:00:25.106 --> 00:00:32.069
-Choose a materialized view when storing a reusable
-result is worth the freshness tradeoff Keep
+00:00:15.342 --> 00:00:19.707
+Use views with proper privileges for controlled interfaces.
 
-00:00:32.095 --> 00:00:35.700
-highly changeable report thresholds outside stable
-shared objects
+00:00:19.707 --> 00:00:25.712
+Choose a materialized view when storing a reusable result is worth the freshness tradeoff.
+
+00:00:25.712 --> 00:00:31.247
+Keep highly changeable report thresholds outside stable shared objects.
+
+00:00:31.247 --> 00:00:35.212
+Choose the smallest reusable object that matches the need.
+
+00:00:35.212 --> 00:00:40.452
+A CTE is local to one query, a view centralizes live logic,
+
+00:00:40.452 --> 00:00:43.797
+and a materialized view persists a snapshot.
+
+00:00:43.797 --> 00:00:49.492
+Promote logic into shared objects when it is stable, reused, and worth governing as part of the analytical
+
+00:00:49.492 --> 00:00:51.269
+architecture.

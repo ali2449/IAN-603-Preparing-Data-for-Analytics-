@@ -1,20 +1,37 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.631
-This query creates a diagnosis summary materialized
-view The
+00:00:00.000 --> 00:00:03.882
+This query creates a diagnosis summary materialized view.
 
-00:00:05.645 --> 00:00:11.688
-result has one row per diagnosis It stores admission
-count distinct
+00:00:03.882 --> 00:00:06.947
+The result has one row per diagnosis.
 
-00:00:11.715 --> 00:00:17.238
-patient count average stay and a refresh timestamp
-The refresh
+00:00:06.947 --> 00:00:11.542
+It stores admission count, distinct patient count, average stay, and a refresh timestamp.
 
-00:00:17.251 --> 00:00:23.093
-timestamp documents when the snapshot was generated
-It does not update
+00:00:11.542 --> 00:00:17.692
+The refresh timestamp documents when the snapshot was generated.
 
-00:00:23.106 --> 00:00:25.711
-every time someone reads the materialized view
+00:00:17.692 --> 00:00:21.452
+It does not update every time someone reads the materialized view.
+
+00:00:21.452 --> 00:00:26.057
+When reading the example, do not read punctuation one character at a time.
+
+00:00:26.057 --> 00:00:32.217
+Start with the purpose of the query, then identify the input rows, the operation being applied,
+
+00:00:32.217 --> 00:00:34.737
+and the shape of the expected output.
+
+00:00:34.737 --> 00:00:40.862
+In a real setting such as a governance project limiting which columns different users can access,
+
+00:00:40.862 --> 00:00:46.807
+this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
+
+00:00:46.807 --> 00:00:49.012
+before discussing syntax.
+
+00:00:49.012 --> 00:00:55.239
+After running it, inspect a few records manually and check that the result matches that explanation.

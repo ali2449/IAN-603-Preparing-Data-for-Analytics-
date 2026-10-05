@@ -1,20 +1,28 @@
 WEBVTT
 
-00:00:00.103 --> 00:00:05.871
-This version uses RANK instead of ROW_NUMBER If two
-employees
+00:00:00.000 --> 00:00:02.912
+This version uses RANK instead of ROW_NUMBER.
 
-00:00:05.897 --> 00:00:10.239
-share the second-highest salary both can receive
-rank two and both can pass the rank
+00:00:02.912 --> 00:00:10.042
+If two employees share the second-highest salary, both can receive rank two and both can pass the rank
 
-00:00:10.253 --> 00:00:15.920
-less than or equal to two condition That means the
-output may contain more than
+00:00:10.042 --> 00:00:12.362
+less than or equal to two condition.
 
-00:00:15.946 --> 00:00:21.518
-two employees in a department Choose this behavior
-when ties should be
+00:00:12.362 --> 00:00:16.992
+That means the output may contain more than two employees in a department.
 
-00:00:21.545 --> 00:00:22.097
-included
+00:00:16.992 --> 00:00:20.592
+Choose this behavior when ties should be included.
+
+00:00:20.592 --> 00:00:24.712
+Ranking functions differ mainly in how they handle ties.
+
+00:00:24.712 --> 00:00:31.747
+ROW_NUMBER forces a unique sequence, RANK leaves gaps after ties, and DENSE_RANK does not.
+
+00:00:31.747 --> 00:00:35.647
+Add deterministic tie-breakers when a unique order matters;
+
+00:00:35.647 --> 00:00:39.920
+otherwise two executions can choose different rows among tied values.
