@@ -1017,6 +1017,46 @@ knowledge.forEach(k=>{
   };
 });
 
+function checkerValueToken(value){
+  if(value===null||value===undefined)return 'null';
+  if(typeof value==='bigint')return 'n:'+Number(value);
+  if(typeof value==='number'&&Number.isFinite(value))return 'n:'+value;
+  if(typeof value==='string'&&value.trim()!==''&&Number.isFinite(Number(value)))return 'n:'+Number(value);
+  return 's:'+String(value);
+}
+
+function checkerProfiles(rows,keyColumn){
+  if(!rows.length)return null;
+  const keyed=new Map();
+  for(const row of rows){
+    const key=row?.[keyColumn];
+    if(key===null||key===undefined)return null;
+    const normalizedKey=String(key);
+    if(keyed.has(normalizedKey))return null;
+    keyed.set(normalizedKey,row);
+  }
+  const keys=[...keyed.keys()].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'}));
+  const columns=Object.keys(rows[0]||{}).filter(column=>column!==keyColumn);
+  const profiles=columns.map(column=>
+    keys.map(key=>checkerValueToken(keyed.get(key)?.[column])).join('|')
+  ).sort();
+  return{keys,profiles};
+}
+
+function sameResultIgnoringAliases(actualRows,expectedRows,keyColumn){
+  if(actualRows.length!==expectedRows.length)return false;
+  const actual=checkerProfiles(actualRows,keyColumn);
+  const expected=checkerProfiles(expectedRows,keyColumn);
+  if(!actual||!expected)return false;
+  return JSON.stringify(actual)===JSON.stringify(expected);
+}
+
+async function rowsFromSql(db,sql){
+  const result=await db.exec(sql);
+  const query=[...result].reverse().find(x=>Array.isArray(x?.rows));
+  return query?.rows||[];
+}
+
 async function validateExercise(id,sql){
   const db=await resetDb();
   const r=await db.exec(sql);
@@ -1028,17 +1068,44 @@ async function validateExercise(id,sql){
   if(id==='code_anti') return JSON.stringify(ids.sort((a,b)=>a-b))===JSON.stringify([1011]);
   if(id==='code_on') return rows.length===11 && new Set(ids).size===11 && rows.filter(x=>x.test_id!=null).length===4;
   if(id==='code_counts'){
-    if(rows.length!==11||new Set(ids).size!==11)return false;
-    const m=Object.fromEntries(rows.map(x=>[Number(x.patient_id),x]));
-    return Number(m[1001]?.admissions)===2 && Number(m[1001]?.labs)===2 && Number(m[1001]?.prescriptions)===2 &&
-           Number(m[1011]?.admissions)===0 && Number(m[1011]?.labs)===0 && Number(m[1011]?.prescriptions)===0 &&
-           Number(m[1006]?.admissions)===2 && Number(m[1006]?.prescriptions)===2;
+    const expectedRows=await rowsFromSql(db,`WITH admission_counts AS (
+  SELECT patient_id, COUNT(*) AS admissions
+  FROM admissions
+  GROUP BY patient_id
+),
+lab_counts AS (
+  SELECT patient_id, COUNT(*) AS labs
+  FROM lab_results
+  GROUP BY patient_id
+),
+rx_counts AS (
+  SELECT patient_id, COUNT(*) AS prescriptions
+  FROM prescriptions
+  GROUP BY patient_id
+)
+SELECT p.patient_id, p.name,
+       COALESCE(a.admissions,0) AS admissions,
+       COALESCE(l.labs,0) AS labs,
+       COALESCE(r.prescriptions,0) AS prescriptions
+FROM patients AS p
+LEFT JOIN admission_counts AS a USING (patient_id)
+LEFT JOIN lab_counts AS l USING (patient_id)
+LEFT JOIN rx_counts AS r USING (patient_id)
+ORDER BY p.patient_id;`);
+    return sameResultIgnoringAliases(rows,expectedRows,'patient_id');
   }
   if(id==='code_dept'){
-    if(rows.length!==7)return false;
-    const m=Object.fromEntries(rows.map(x=>[String(x.department),x]));
-    return Number(m['Dermatology']?.admissions)===0 && Number(m['Dermatology']?.staff_count)===0 &&
-           Number(m['Cardiology']?.admissions)>=1 && Number(m['Cardiology']?.staff_count)===2;
+    const expectedRows=await rowsFromSql(db,`SELECT d.department,
+       COUNT(DISTINCT a.admission_id) AS admissions,
+       COUNT(DISTINCT s.staff_id) AS staff_count
+FROM departments AS d
+LEFT JOIN admissions AS a
+  ON a.department = d.department
+LEFT JOIN medical_staff AS s
+  ON s.department = d.department
+GROUP BY d.department
+ORDER BY d.department;`);
+    return sameResultIgnoringAliases(rows,expectedRows,'department');
   }
   return false;
 }
