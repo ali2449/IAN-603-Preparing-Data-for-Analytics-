@@ -1025,28 +1025,31 @@ function checkerValueToken(value){
   return 's:'+String(value);
 }
 
-function checkerProfiles(rows,keyColumn){
-  if(!rows.length)return null;
-  const keyed=new Map();
-  for(const row of rows){
-    const key=row?.[keyColumn];
-    if(key===null||key===undefined)return null;
-    const normalizedKey=String(key);
-    if(keyed.has(normalizedKey))return null;
-    keyed.set(normalizedKey,row);
-  }
-  const keys=[...keyed.keys()].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'}));
-  const columns=Object.keys(rows[0]||{}).filter(column=>column!==keyColumn);
-  const profiles=columns.map(column=>
-    keys.map(key=>checkerValueToken(keyed.get(key)?.[column])).join('|')
+function checkerShape(rows){
+  if(!Array.isArray(rows))return null;
+  if(rows.length===0)return{rows:0,cols:0,rowProfiles:[],columnProfiles:[]};
+
+  const columnNames=Object.keys(rows[0]||{});
+  const cols=columnNames.length;
+
+  if(!rows.every(row=>Object.keys(row||{}).length===cols))return null;
+
+  // Compare the values students returned, not the aliases they chose.
+  // Row and column order are intentionally ignored so equivalent SQL can pass.
+  const rowProfiles=rows.map(row=>
+    Object.values(row).map(checkerValueToken).sort().join('|')
   ).sort();
-  return{keys,profiles};
+
+  const columnProfiles=columnNames.map(column=>
+    rows.map(row=>checkerValueToken(row?.[column])).sort().join('|')
+  ).sort();
+
+  return{rows:rows.length,cols,rowProfiles,columnProfiles};
 }
 
-function sameResultIgnoringAliases(actualRows,expectedRows,keyColumn){
-  if(actualRows.length!==expectedRows.length)return false;
-  const actual=checkerProfiles(actualRows,keyColumn);
-  const expected=checkerProfiles(expectedRows,keyColumn);
+function sameResultIgnoringAliases(actualRows,expectedRows){
+  const actual=checkerShape(actualRows);
+  const expected=checkerShape(expectedRows);
   if(!actual||!expected)return false;
   return JSON.stringify(actual)===JSON.stringify(expected);
 }
@@ -1057,18 +1060,36 @@ async function rowsFromSql(db,sql){
   return query?.rows||[];
 }
 
-async function validateExercise(id,sql){
-  const db=await resetDb();
-  const r=await db.exec(sql);
-  const q=[...r].reverse().find(x=>Array.isArray(x?.rows));
-  const rows=q?.rows||[];
-  const ids=rows.map(x=>Number(x.patient_id)).filter(Number.isFinite);
-  if(id==='code_inner') return rows.length===12 && rows.every(x=>x.admission_id!=null) && new Set(ids).size===10;
-  if(id==='code_left') return rows.length===13 && new Set(ids).size===11 && rows.some(x=>Number(x.patient_id)===1011 && x.admission_id==null);
-  if(id==='code_anti') return JSON.stringify(ids.sort((a,b)=>a-b))===JSON.stringify([1011]);
-  if(id==='code_on') return rows.length===11 && new Set(ids).size===11 && rows.filter(x=>x.test_id!=null).length===4;
-  if(id==='code_counts'){
-    const expectedRows=await rowsFromSql(db,`WITH admission_counts AS (
+const exerciseReferenceSql={
+  code_inner:`SELECT p.patient_id, p.name,
+       a.admission_id, a.diagnosis, a.department
+FROM patients AS p
+INNER JOIN admissions AS a
+  ON a.patient_id = p.patient_id
+ORDER BY p.patient_id, a.admission_date;`,
+
+  code_left:`SELECT p.patient_id, p.name,
+       a.admission_id, a.diagnosis
+FROM patients AS p
+LEFT JOIN admissions AS a
+  ON a.patient_id = p.patient_id
+ORDER BY p.patient_id, a.admission_id;`,
+
+  code_anti:`SELECT p.patient_id, p.name
+FROM patients AS p
+LEFT JOIN lab_results AS l
+  ON l.patient_id = p.patient_id
+WHERE l.test_id IS NULL
+ORDER BY p.patient_id;`,
+
+  code_on:`SELECT p.patient_id, p.name, l.test_id, l.result_value
+FROM patients AS p
+LEFT JOIN lab_results AS l
+  ON l.patient_id = p.patient_id
+ AND l.test_name = 'Glucose'
+ORDER BY p.patient_id;`,
+
+  code_counts:`WITH admission_counts AS (
   SELECT patient_id, COUNT(*) AS admissions
   FROM admissions
   GROUP BY patient_id
@@ -1091,11 +1112,9 @@ FROM patients AS p
 LEFT JOIN admission_counts AS a USING (patient_id)
 LEFT JOIN lab_counts AS l USING (patient_id)
 LEFT JOIN rx_counts AS r USING (patient_id)
-ORDER BY p.patient_id;`);
-    return sameResultIgnoringAliases(rows,expectedRows,'patient_id');
-  }
-  if(id==='code_dept'){
-    const expectedRows=await rowsFromSql(db,`SELECT d.department,
+ORDER BY p.patient_id;`,
+
+  code_dept:`SELECT d.department,
        COUNT(DISTINCT a.admission_id) AS admissions,
        COUNT(DISTINCT s.staff_id) AS staff_count
 FROM departments AS d
@@ -1104,10 +1123,16 @@ LEFT JOIN admissions AS a
 LEFT JOIN medical_staff AS s
   ON s.department = d.department
 GROUP BY d.department
-ORDER BY d.department;`);
-    return sameResultIgnoringAliases(rows,expectedRows,'department');
-  }
-  return false;
+ORDER BY d.department;`
+};
+
+async function validateExercise(id,sql){
+  const db=await resetDb();
+  const studentRows=await rowsFromSql(db,sql);
+  const referenceSql=exerciseReferenceSql[id];
+  if(!referenceSql)return false;
+  const expectedRows=await rowsFromSql(db,referenceSql);
+  return sameResultIgnoringAliases(studentRows,expectedRows);
 }
 
 document.querySelectorAll('.assignment-code').forEach(box=>{
