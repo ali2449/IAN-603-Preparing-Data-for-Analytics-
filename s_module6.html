@@ -1019,39 +1019,36 @@ knowledge.forEach(k=>{
 
 function checkerValueToken(value){
   if(value===null||value===undefined)return 'null';
-  if(typeof value==='bigint')return 'n:'+Number(value);
-  if(typeof value==='number'&&Number.isFinite(value))return 'n:'+value;
-  if(typeof value==='string'&&value.trim()!==''&&Number.isFinite(Number(value)))return 'n:'+Number(value);
-  return 's:'+String(value);
+  if(typeof value==='bigint')return 'n:'+String(value);
+  if(typeof value==='number'&&Number.isFinite(value))return 'n:'+String(value);
+  if(typeof value==='string'&&value.trim()!==''&&Number.isFinite(Number(value)))return 'n:'+String(Number(value));
+  return 's:'+String(value).trim();
 }
 
 function checkerShape(rows){
   if(!Array.isArray(rows))return null;
-  if(rows.length===0)return{rows:0,cols:0,rowProfiles:[],columnProfiles:[]};
+  if(rows.length===0)return{rows:0,cols:0,rowProfiles:[]};
 
-  const columnNames=Object.keys(rows[0]||{});
-  const cols=columnNames.length;
+  const widths=rows.map(row=>Object.keys(row||{}).length);
+  const cols=widths[0]||0;
+  if(!cols||!widths.every(n=>n===cols))return null;
 
-  if(!rows.every(row=>Object.keys(row||{}).length===cols))return null;
-
-  // Compare the values students returned, not the aliases they chose.
-  // Row and column order are intentionally ignored so equivalent SQL can pass.
+  // Grade the returned data rather than exact SQL text, aliases, formatting,
+  // capitalization, or ORDER BY choice. This accepts equivalent PostgreSQL.
   const rowProfiles=rows.map(row=>
-    Object.values(row).map(checkerValueToken).sort().join('|')
+    Object.values(row||{}).map(checkerValueToken).sort().join('\u001f')
   ).sort();
 
-  const columnProfiles=columnNames.map(column=>
-    rows.map(row=>checkerValueToken(row?.[column])).sort().join('|')
-  ).sort();
-
-  return{rows:rows.length,cols,rowProfiles,columnProfiles};
+  return{rows:rows.length,cols,rowProfiles};
 }
 
 function sameResultIgnoringAliases(actualRows,expectedRows){
   const actual=checkerShape(actualRows);
   const expected=checkerShape(expectedRows);
   if(!actual||!expected)return false;
-  return JSON.stringify(actual)===JSON.stringify(expected);
+  return actual.rows===expected.rows &&
+         actual.cols===expected.cols &&
+         JSON.stringify(actual.rowProfiles)===JSON.stringify(expected.rowProfiles);
 }
 
 async function rowsFromSql(db,sql){
