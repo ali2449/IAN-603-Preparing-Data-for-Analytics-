@@ -294,6 +294,29 @@ async function validateExercise(id,sql){
     if(typeof value==='string'&&value.trim()!==''&&Number.isFinite(Number(value)))return Number(Number(value).toPrecision(10));
     return String(value);
   };
+  // Exercises 4 and 5 accept equivalent column ordering and common aliases.
+  // Compare the full set of meaningful values, not just the first row.
+  if(id==='code_conditional'||id==='code_window'){
+    const pick=(row,names)=>{for(const name of names){const key=Object.keys(row).find(k=>k.toLowerCase()===name);if(key!==undefined)return row[key]}return undefined};
+    const canonical=(row)=>{
+      if(id==='code_conditional'){
+        const subject=pick(row,['subject_id']);
+        const pneumonia=pick(row,['pneumonia_count','pneumonia_admissions','pneumonia']);
+        const fracture=pick(row,['fracture_count','fracture_admissions','fracture']);
+        if(subject!==undefined&&pneumonia!==undefined&&fracture!==undefined)return [subject,pneumonia,fracture].map(normalize);
+      }else{
+        const name=pick(row,['name']);
+        const department=pick(row,['department']);
+        const salary=pick(row,['salary']);
+        const rank=pick(row,['department_rank','salary_rank','rank','rank_in_department']);
+        if(name!==undefined&&department!==undefined&&salary!==undefined&&rank!==undefined)return [name,department,salary,rank].map(normalize);
+      }
+      // Fallback supports student-selected aliases, provided all values match.
+      return Object.values(row).map(normalize).sort((a,b)=>String(a).localeCompare(String(b)));
+    };
+    const comparable=rows=>rows.map(row=>JSON.stringify(canonical(row))).sort();
+    return JSON.stringify(comparable(actual))===JSON.stringify(comparable(expected));
+  }
   const signature=row=>JSON.stringify(Object.values(row).map(normalize));
   const sorted=rows=>rows.map(signature).sort();
   return JSON.stringify(sorted(actual))===JSON.stringify(sorted(expected));
