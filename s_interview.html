@@ -97,11 +97,49 @@ body[data-theme=dark] .pgadmin-editor-area textarea.editor{background:#142237;co
  .pgadmin-results .console-body{max-height:230px}
 }
 
+
+.mobile-brand{display:none}
+@media(max-width:630px){
+ /* Maximize available vertical space on a phone. */
+ .topwrap{padding:9px 13px;gap:8px}
+ .logo{font-size:14px;line-height:1.3}
+ .desktop-brand,.logo small{display:none}
+ .mobile-brand{display:inline}
+ .shell{padding-top:10px}
+ .intro{margin:0 0 12px}
+ .intro .eyebrow,.intro p{display:none}
+ .intro h1{font-size:21px;letter-spacing:-.02em;margin:5px 0 7px}
+ .intro .pill{font-size:10px;padding:4px 9px}
+ .navbar{display:flex;width:auto;gap:5px;flex-wrap:nowrap;margin-left:auto}
+ .navbar button{width:auto;min-height:36px;padding:5px 9px;font-size:11px}
+ body[data-view="exam"] .intro,body[data-view="resultView"] .intro{display:none}
+ body[data-view="exam"] .navbar #navHome,
+ body[data-view="exam"] .navbar #navProgress,
+ body[data-view="exam"] .navbar #navSchema{display:none}
+ body[data-view="exam"] .navbar #themeBtn{display:inline-flex}
+ body[data-view="exam"] .topbar{border-bottom:1px solid #244966}
+ body[data-view="exam"] .examtop{padding:11px 13px;margin:0 0 10px}
+ body[data-view="exam"] #questionPanel{padding-top:13px}
+ body[data-view="exam"] .question{margin:10px 0 16px}
+ body[data-view="exam"] .grid-main{gap:10px}
+ body[data-view="exam"] .pgadmin-shell{margin-top:8px}
+ body[data-view="exam"] #questionCategory{max-width:calc(100vw - 170px);white-space:normal}
+ body[data-view="exam"] #flagBtn{padding:7px 10px;font-size:12px;min-height:35px}
+ body[data-view="exam"] .question{font-size:17px}
+}
+@media(max-width:390px){
+ body[data-view="exam"] .examtop .row{gap:5px}
+ body[data-view="exam"] #answeredCount{font-size:10px}
+ body[data-view="exam"] #timer{font-size:10px}
+ body[data-view="exam"] #exitExam{padding:6px 8px;font-size:11px}
+ .topwrap{padding:8px 10px}
+}
+
 </style>
 </head>
-<body>
+<body data-view="home">
 <header class="topbar"><div class="topwrap">
-<div class="logo">IAN 603 · INTERVIEW STUDIO <small>Preparing Data for Analytics</small></div>
+<div class="logo"><span class="desktop-brand">IAN 603 · INTERVIEW STUDIO</span><span class="mobile-brand" aria-hidden="true">IAN 603</span><small>Preparing Data for Analytics</small></div>
 <div class="navbar" role="navigation" aria-label="Primary navigation">
 <button id="navHome" class="active">Practice</button><button id="navProgress">Progress</button><button id="navSchema">Database</button><button id="themeBtn" aria-pressed="false">Dark mode</button>
 </div></div></header>
@@ -167,7 +205,7 @@ if(!history.length){try{const older=JSON.parse(localStorage.getItem("ian603_mock
 function persist(){try{localStorage.setItem(STORAGE,JSON.stringify(history))}catch(e){alert("Your browser storage is full or unavailable. Export completed attempts to keep a backup.")}}
 function shuffle(a){let b=[...a];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
 function typeLabel(t){return t==="sql"?"SQL coding":t==="mcq"?"Multiple choice":"Ordering"}
-function view(v){mode=v;for(const id of ["home","exam","resultView","progressView","schemaView"])$(id).classList.toggle("hidden",id!==v);$("navHome").classList.toggle("active",v==="home"||v==="exam"||v==="resultView");$("navProgress").classList.toggle("active",v==="progressView");$("navSchema").classList.toggle("active",v==="schemaView");window.scrollTo({top:0,behavior:"instant"});if(v==="progressView")dashboard()}
+function view(v){mode=v;document.body.dataset.view=v;for(const id of ["home","exam","resultView","progressView","schemaView"])$(id).classList.toggle("hidden",id!==v);$("navHome").classList.toggle("active",v==="home"||v==="exam"||v==="resultView");$("navProgress").classList.toggle("active",v==="progressView");$("navSchema").classList.toggle("active",v==="schemaView");window.scrollTo({top:0,behavior:"instant"});if(v==="progressView")dashboard()}
 function navigate(v){if(mode==="exam"&&!graded&&!confirm("Leave the current mock interview? Your unfinished answers will be lost."))return;clearInterval(tick);view(v)}
 function elapsed(){let sec=Math.floor((Date.now()-started)/1000);return String(Math.floor(sec/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0")}
 function sampleByType(pool,n){const types={sql:shuffle(pool.filter(q=>q.t==="sql")),mcq:shuffle(pool.filter(q=>q.t==="mcq")),drag:shuffle(pool.filter(q=>q.t==="drag"))};const wants={sql:Math.round(n*.65),mcq:Math.round(n*.26),drag:Math.max(1,Math.round(n*.09))};let pick=[];for(const t of ["sql","mcq","drag"])pick.push(...types[t].splice(0,Math.min(types[t].length,wants[t])));const selected=new Set(pick.map(x=>x.id));pick.push(...shuffle(pool.filter(q=>!selected.has(q.id))).slice(0,Math.max(0,n-pick.length)));return shuffle(pick.slice(0,n))}
