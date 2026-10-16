@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0c2441"><title>IAN 603 | PostgreSQL Interview Studio</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <style>
 :root{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;--bg:#f4f7fb;--paper:#fff;--ink:#142d49;--sub:#64778d;--border:#dfe7f0;--navy:#0d294b;--blue:#1765b2;--accent:#e8f2fe;--green:#087c55;--red:#c13d46;--shadow:0 8px 28px rgba(23,55,89,.055);color-scheme:light}
 body[data-theme=dark]{--bg:#111c2e;--paper:#1b2a40;--ink:#e7edf8;--sub:#acbbcd;--border:#364861;--navy:#0c1b2c;--blue:#8cbdff;--accent:#2a4260;--green:#69ddb5;--red:#ff9399;--shadow:0 8px 28px rgba(0,0,0,.12);color-scheme:dark}
@@ -12,6 +13,90 @@ button,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(-
 @media(max-width:630px){.shell{padding:18px 13px 50px}.topwrap{padding:13px}.intro{display:block}.intro h1{font-size:30px}.panel{padding:16px;border-radius:13px}.settings{grid-template-columns:1fr 1fr}.settings .field:first-child{grid-column:1/-1}.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.stat{padding:13px}.stat b{font-size:24px}.qnav{grid-template-columns:repeat(8,minmax(0,1fr));gap:5px}.qnav button{padding:6px 0;min-height:39px;font-size:12px}.toolbar button{flex:1 1 125px}.table-list{grid-template-columns:repeat(2,1fr)}.question{font-size:18px}.navbar{width:100%;display:grid;grid-template-columns:repeat(4,1fr)}.navbar button{padding:9px 3px;font-size:12px;min-height:43px}.feature{margin-top:8px}.editor{font-size:13px;min-height:190px}.topwrap{gap:12px}.reviewlist details{overflow-wrap:anywhere}}
 @media(max-width:370px){.settings{grid-template-columns:1fr}.settings .field:first-child{grid-column:auto}.navbar button{font-size:11px}.qnav{grid-template-columns:repeat(6,1fr)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+
+/* pgAdmin-inspired query editor: toolbar, gutter, highlighted SQL, and data grid */
+.sql-hint-box{border:1px solid #cbdff2;background:var(--accent);border-radius:12px;padding:12px 15px;margin:4px 0 17px}
+.sql-hint-box summary{cursor:pointer;font-size:13px;font-weight:750;color:var(--ink);list-style-position:inside}
+.sql-hint-box summary::marker{color:var(--blue)}
+.hint-intro{font-size:12px;color:var(--sub);margin:6px 0 10px}
+.hint-table{padding:10px 0;border-top:1px solid var(--border)}
+.hint-table:first-of-type{border-top:0}
+.hint-table-row{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:8px;flex-wrap:wrap}
+.hint-table-row strong{font:700 13px/1.5 ui-monospace,Consolas,monospace;color:var(--ink)}
+.hint-preview-btn{font-size:12px;min-height:32px;padding:4px 10px}
+.hint-columns{display:flex;flex-wrap:wrap;gap:6px}
+.hint-column{display:inline-flex;flex-wrap:wrap;gap:5px;align-items:baseline;background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px}
+.hint-column code{font-size:12px;color:var(--ink);font-weight:650}
+.hint-column span{font-size:11px;color:var(--sub)}
+.hint-preview{border-radius:9px;overflow:hidden;margin-top:9px;border:1px solid var(--border)}
+.pgadmin-shell{border:1px solid #bac8d6;border-radius:11px;overflow:hidden;background:var(--paper);margin:11px 0}
+.pgadmin-bar{background:#f1f5f9;color:#263c54;padding:7px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;border-bottom:1px solid #d1dce7}
+.pgadmin-tab{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid #d5dfe8;padding:5px 10px;border-radius:7px;color:#253d59;font-weight:700;font-size:12px}
+.pgadmin-tab:before{content:"SQL";font-size:9px;letter-spacing:.03em;font-weight:800;background:#397fb3;color:white;border-radius:3px;padding:2px 4px}
+.pgadmin-connection{font-size:12px;color:#61758b;font-family:ui-monospace,Consolas,monospace}
+.pgadmin-editor-head{padding:9px 12px;background:#fbfcfe;border-bottom:1px solid #dbe3ec;color:#526783;font-size:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.pgadmin-editor-area{position:relative}
+.pgadmin-editor-area textarea.editor{margin:0;height:235px;min-height:160px;resize:vertical;background:#fff;color:#1b304c;border:0;border-radius:0;padding:15px;font-size:13.5px}
+.pgadmin-actions{padding:10px 12px;margin:0;border-top:1px solid #dfe8f0;background:#f8fafc}
+.pgadmin-actions button{min-height:38px;padding:7px 12px}
+.pgadmin-status{padding:6px 13px;background:#eef3f8;color:#536980;font-size:11px;border-top:1px solid #dbe3ed;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.pgadmin-results{margin:0;border:0;border-radius:0;border-top:1px solid #cbd8e5}
+.pgadmin-results .console-h{background:#e9eef4;color:#32465d;padding:9px 13px}
+.pgadmin-results .console-body{max-height:300px;background:var(--paper);color:var(--ink)}
+.pgadmin-results table th{background:#edf2f7}
+.CodeMirror{height:235px!important;font:13.5px/1.65 ui-monospace,Consolas,"Liberation Mono",monospace;background:#fff;color:#1f3148}
+.CodeMirror-gutters{background:#f2f5f8;border-right:1px solid #dfe6ed}
+.CodeMirror-linenumber{color:#8291a4}
+.CodeMirror-cursor{border-left:2px solid #1456a5}
+.CodeMirror-selected{background:#dceafa}
+.CodeMirror-focused .CodeMirror-selected{background:#cfe3fb}
+.CodeMirror-activeline-background{background:#f5f8fd}
+.CodeMirror .cm-keyword{color:#204fa5;font-weight:700}
+.CodeMirror .cm-operator{color:#445e80}
+.CodeMirror .cm-number{color:#b23c2e}
+.CodeMirror .cm-string{color:#127445}
+.CodeMirror .cm-comment{color:#7b8c9f;font-style:italic}
+.CodeMirror .cm-builtin,.CodeMirror .cm-variable-2{color:#7956b4}
+.CodeMirror .cm-def{color:#4c74b0}
+.CodeMirror .cm-atom{color:#8b43a5}
+.CodeMirror .cm-error{background:#ffe9e9;color:#ab2d37}
+.CodeMirror-scroll{max-width:100%;overflow:auto}
+.CodeMirror-focused{outline:0}
+.pgadmin-editor-area:focus-within{box-shadow:inset 0 0 0 1px #5a95d3}
+body[data-theme=dark] .pgadmin-shell{border-color:#425673}
+body[data-theme=dark] .pgadmin-bar{background:#24354b;border-color:#394c65;color:#e6edfb}
+body[data-theme=dark] .pgadmin-tab{background:#1d3048;color:#e7f0fc;border-color:#4d617c}
+body[data-theme=dark] .pgadmin-connection{color:#bcc9d7}
+body[data-theme=dark] .pgadmin-editor-head{background:#1c2b41;color:#afc1d6;border-color:#3b4d65}
+body[data-theme=dark] .pgadmin-actions{background:#1b2b40;border-color:#344964}
+body[data-theme=dark] .pgadmin-status{background:#20334b;color:#b6c5d8;border-color:#384a65}
+body[data-theme=dark] .pgadmin-results .console-h,body[data-theme=dark] .pgadmin-results table th{background:#2a3e56;color:#dbe8f8}
+body[data-theme=dark] .CodeMirror{background:#142237;color:#deebfb}
+body[data-theme=dark] .CodeMirror-gutters{background:#192b42;border-right-color:#354967}
+body[data-theme=dark] .CodeMirror-linenumber{color:#859ab3}
+body[data-theme=dark] .CodeMirror-cursor{border-left-color:#b9d8fa}
+body[data-theme=dark] .CodeMirror-selected{background:#2a486b}
+body[data-theme=dark] .CodeMirror-focused .CodeMirror-selected{background:#32537b}
+body[data-theme=dark] .CodeMirror .cm-keyword{color:#80b8ff}
+body[data-theme=dark] .CodeMirror .cm-string{color:#a9dc9a}
+body[data-theme=dark] .CodeMirror .cm-number{color:#f2b078}
+body[data-theme=dark] .CodeMirror .cm-operator{color:#c5d7ee}
+body[data-theme=dark] .CodeMirror .cm-atom,body[data-theme=dark] .CodeMirror .cm-builtin{color:#c7a8ff}
+body[data-theme=dark] .CodeMirror .cm-comment{color:#849bb7}
+body[data-theme=dark] .pgadmin-editor-area textarea.editor{background:#142237;color:#deebfb}
+@media(max-width:630px){
+ .sql-hint-box{padding:11px;margin-bottom:12px}
+ .hint-column{padding:4px 7px}
+ .pgadmin-connection{font-size:10px}
+ .pgadmin-bar,.pgadmin-editor-head{padding:7px 9px}
+ .pgadmin-actions{padding:9px}
+ .pgadmin-actions button{flex:1 1 90px;min-width:0}
+ .pgadmin-status span{display:block}
+ .CodeMirror{height:230px!important;font-size:13px}
+ .pgadmin-editor-area textarea.editor{min-height:200px}
+ .pgadmin-results .console-body{max-height:230px}
+}
+
 </style>
 </head>
 <body>
@@ -40,7 +125,23 @@ button,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(-
 <div class="panel examtop"><div class="row spread"><div><span class="eyebrow">Active assessment</span><strong id="examCount" style="display:block">Question 1</strong></div><div class="row"><span class="pill" id="answeredCount">0 answered</span><span class="pill" id="timer">00:00</span><button id="exitExam">Exit</button></div></div><div class="progress" aria-label="Answered questions"><div id="answeredBar" style="width:0%"></div></div></div>
 <div class="grid-main">
 <div>
-<section class="panel" id="questionPanel"><div class="row spread"><span class="pill" id="questionCategory">MCQ</span><button id="flagBtn">☆ Review later</button></div><h2 id="questionPrompt" class="question"></h2><div id="answerArea"></div><div id="queryArea" class="hidden"><div class="row spread"><strong>PostgreSQL editor</strong><span class="pill" id="engineStatus">Loading engine</span></div><textarea id="sqlEditor" class="editor" spellcheck="false" aria-label="SQL query editor"></textarea><div class="toolbar"><button id="runBtn" class="primary" disabled>▶ Run SQL</button><button id="resetBtn">Reset editor</button><button id="copyBtn">Copy SQL</button><span class="small muted">Ctrl / ⌘ + Enter to run</span></div><div id="queryConsole" class="console hidden" aria-live="polite"><div class="console-h">Query results</div><div id="consoleBody" class="console-body"></div></div></div><div id="currentFeedback" class="hidden"></div></section>
+<section class="panel" id="questionPanel"><div class="row spread"><span class="pill" id="questionCategory">MCQ</span><button id="flagBtn">☆ Review later</button></div><h2 id="questionPrompt" class="question"></h2><div id="answerArea"></div><div id="queryArea" class="hidden">
+<details class="sql-hint-box" id="schemaHint" open>
+<summary><span id="schemaHintTitle">Table hints and available columns</span></summary>
+<p class="hint-intro">These are the tables and columns available for this question. Hints never include the SQL answer.</p>
+<div id="schemaHintContents"></div>
+<div id="hintPreview" class="hint-preview hidden"><div class="console-h" id="hintPreviewTitle">Sample rows</div><div id="hintPreviewBody" class="console-body" style="max-height:190px;overflow:auto"></div></div>
+</details>
+<div class="pgadmin-shell" aria-label="PostgreSQL Query Tool">
+<div class="pgadmin-bar"><div class="pgadmin-tab">Query Tool</div><div class="pgadmin-connection">ian603_practice · PostgreSQL</div></div>
+<div class="pgadmin-editor-head"><strong>SQL editor</strong><span class="pill" id="engineStatus">Loading PostgreSQL…</span></div>
+<div class="pgadmin-editor-area"><textarea id="sqlEditor" class="editor" spellcheck="false" aria-label="PostgreSQL query editor"></textarea></div>
+<div class="toolbar pgadmin-actions"><button id="runBtn" class="primary" disabled>▶ Run SQL</button><button id="resetBtn">Reset query</button><button id="copyBtn">Copy SQL</button></div>
+<div class="pgadmin-status"><span>Read-only query tool · Results checked by PostgreSQL</span><span>Ctrl / ⌘ + Enter to run</span></div>
+<div id="queryConsole" class="console pgadmin-results hidden" aria-live="polite"><div class="console-h">Data Output · Query results</div><div id="consoleBody" class="console-body"></div></div>
+</div>
+<p class="small muted">Grading compares actual result rows—not the capitalization, line breaks, or spacing of your SQL.</p>
+</div><div id="currentFeedback" class="hidden"></div></section>
 <div class="panel row spread"><button id="prevBtn">← Previous</button><span class="small muted" id="navigationText"></span><button id="nextBtn" class="primary">Next →</button></div>
 </div>
 <aside><section class="panel"><div class="eyebrow">Question navigator</div><p class="small muted">Tap a number to jump directly to a question.</p><div id="questionNav" class="qnav" aria-label="Question navigation"></div><p class="small muted">Filled: answered · Outline: current · Gold: flagged</p><button id="submitBtn" class="primary" style="width:100%">Submit interview</button></section><section class="panel"><strong>Practice database</strong><p class="small muted">A synthetic PostgreSQL dataset with linked patients, orders, employees, events, and messy contacts.</p><button id="examSchemaBtn" class="secondary">Browse tables →</button></section></aside>
@@ -50,11 +151,16 @@ button,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(-
 <section id="schemaView" class="view hidden"><div class="grid2"><div class="panel"><div class="eyebrow">Synthetic teaching data</div><h2>Database explorer</h2><p class="muted">Browse schema names and preview actual rows. The same 16-table database is used to grade SQL exercises. Each query runs in a read-only transaction.</p><div id="tableButtons" class="table-list"></div><div id="schemaConsole" class="console hidden"><div class="console-h" id="schemaTitle">Table preview</div><div id="schemaBody" class="console-body"></div></div></div><div class="panel"><h2>PostgreSQL runtime</h2><p id="runtimeState" class="muted">Initializing…</p><p class="small muted">A private in-memory database runs inside a web worker. It resets whenever you reload the page. Practice records are fictional. Spark SQL questions focus on concepts rather than executing Spark code.</p><p class="small muted">Read-only SQL is supported, including SELECT, WITH, VALUES, and EXPLAIN. Database modifications are intentionally blocked in the interview environment.</p><a href="s_interview_dataset.sql" target="_blank" rel="noopener">View dataset SQL ↗</a></div></div></section>
 <div class="footer">IAN 603 · SQL Interview Studio · Practice data is fictional · Results are saved only on this browser</div>
 </main>
-<script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js" defer></script>
+<script defer>
 "use strict";
 const $=id=>document.getElementById(id);
 const escapeHtml=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const STORAGE="ian603_interview_v2", THEME="ian603_interview_theme";
+const SCHEMA={"departments":[{"name":"department_id","type":"integer"},{"name":"department_name","type":"text"},{"name":"location","type":"text"}],"patients":[{"name":"patient_id","type":"integer"},{"name":"full_name","type":"text"},{"name":"age","type":"integer"},{"name":"city","type":"text"},{"name":"email","type":"text"},{"name":"registered_on","type":"date"}],"admissions":[{"name":"admission_id","type":"integer"},{"name":"patient_id","type":"integer"},{"name":"admitted_on","type":"date"},{"name":"discharged_on","type":"date"},{"name":"diagnosis","type":"text"},{"name":"department_id","type":"integer"},{"name":"cost","type":"numeric(10,2)"}],"labs":[{"name":"lab_id","type":"integer"},{"name":"patient_id","type":"integer"},{"name":"collected_on","type":"date"},{"name":"test_name","type":"text"},{"name":"result_value","type":"numeric(8,2)"},{"name":"unit","type":"text"}],"prescriptions":[{"name":"rx_id","type":"integer"},{"name":"patient_id","type":"integer"},{"name":"drug_name","type":"text"},{"name":"quantity","type":"integer"},{"name":"prescribed_on","type":"date"}],"customers":[{"name":"customer_id","type":"integer"},{"name":"customer_name","type":"text"},{"name":"email","type":"text"},{"name":"region","type":"text"},{"name":"joined_on","type":"date"}],"products":[{"name":"product_id","type":"integer"},{"name":"product_name","type":"text"},{"name":"category","type":"text"},{"name":"list_price","type":"numeric(10,2)"},{"name":"stock_qty","type":"integer"}],"orders":[{"name":"order_id","type":"integer"},{"name":"customer_id","type":"integer"},{"name":"ordered_on","type":"date"},{"name":"status","type":"text"},{"name":"total","type":"numeric(10,2)"}],"order_items":[{"name":"item_id","type":"integer"},{"name":"order_id","type":"integer"},{"name":"product_id","type":"integer"},{"name":"quantity","type":"integer"},{"name":"unit_price","type":"numeric(10,2)"}],"payments":[{"name":"payment_id","type":"integer"},{"name":"order_id","type":"integer"},{"name":"paid_on","type":"date"},{"name":"amount","type":"numeric(10,2)"},{"name":"method","type":"text"}],"employees":[{"name":"employee_id","type":"integer"},{"name":"employee_name","type":"text"},{"name":"department_id","type":"integer"},{"name":"salary","type":"numeric(10,2)"},{"name":"hired_on","type":"date"},{"name":"manager_id","type":"integer"}],"events":[{"name":"event_id","type":"integer"},{"name":"customer_id","type":"integer"},{"name":"event_type","type":"text"},{"name":"occurred_at","type":"timestamp"},{"name":"properties","type":"jsonb"}],"raw_contacts":[{"name":"contact_id","type":"integer"},{"name":"raw_name","type":"text"},{"name":"raw_email","type":"text"},{"name":"raw_phone","type":"text"},{"name":"raw_city","type":"text"},{"name":"updated_on","type":"date"}],"monthly_metrics":[{"name":"metric_id","type":"integer"},{"name":"product_id","type":"integer"},{"name":"month_start","type":"date"},{"name":"revenue","type":"numeric(10,2)"},{"name":"units","type":"integer"}],"survey_responses":[{"name":"response_id","type":"integer"},{"name":"patient_id","type":"integer"},{"name":"question","type":"text"},{"name":"score","type":"integer"}],"claims":[{"name":"claim_id","type":"integer"},{"name":"patient_id","type":"integer"},{"name":"submitted_on","type":"date"},{"name":"amount","type":"numeric(10,2)"},{"name":"status","type":"text"}],"v_patient_admission_counts":[{"name":"patient_id","type":"integer"},{"name":"full_name","type":"text"},{"name":"admission_count","type":"bigint"}]};
+let editor=null;
 let bank=[],exam=[],answers=[],marked=new Set(),at=0,mode="home",graded=false,started=0,history=[],engineReady=false,worker=null,waiting=new Map(),seq=0,currentReview=null,tick=null,chosenDrag=null;
 try{history=JSON.parse(localStorage.getItem(STORAGE)||"[]");if(!Array.isArray(history))history=[]}catch(e){history=[]}
 if(!history.length){try{const older=JSON.parse(localStorage.getItem("ian603_mock_history_v1")||"[]");if(Array.isArray(older)&&older.length){history=older.map(x=>({date:x.date,correct:x.score,total:x.total,duration:x.seconds||0,byType:{},answers:(x.items||[]).map(q=>({id:q.id,q:q.q,module:null,t:q.t,correct:q.correct,user:typeof q.answer?.code==="string"?q.answer.code:"",order:q.answer?.order||[],choice:q.answer?.choice??null,expected:q.expected,explanation:q.explanation,reason:"Imported from the earlier version of the interview studio."}))}));}}catch(e){}}
@@ -70,13 +176,76 @@ function filtered(){const m=$("moduleFilter").value,d=$("difficultyFilter").valu
 function begin(){const pool=filtered(),n=Math.min(Number($("countFilter").value),pool.length);if(!n)return;exam=sampleByType(pool,n).map(q=>({...q,choices:q.t==="mcq"?shuffle(q.o.map((text,id)=>({text,id}))):null,tiles:q.t==="drag"?shuffle(q.p.map((text,id)=>({text,id}))):null}));answers=exam.map(q=>({text:"",choice:null,order:[],status:null,result:null}));marked=new Set();at=0;graded=false;started=Date.now();clearInterval(tick);tick=setInterval(()=>$("timer").textContent=elapsed(),1000);$("timer").textContent="00:00";view("exam");renderQuestion()}
 function answered(q,a){return q.t==="mcq"?a.choice!==null:q.t==="drag"?a.order.length===q.p.length:!!a.text.trim()}
 function progressNav(){const number=answers.filter((a,i)=>answered(exam[i],a)).length;$("examCount").textContent="Question "+(at+1)+" of "+exam.length;$("answeredCount").textContent=number+" of "+exam.length+" answered";$("answeredBar").style.width=(100*number/exam.length)+"%";$("navigationText").textContent=(at+1)+" / "+exam.length;$("prevBtn").disabled=at===0;$("nextBtn").textContent=at===exam.length-1?"Review & submit":"Next →";$("questionNav").innerHTML=exam.map((q,i)=>'<button class="'+(i===at?"current ":"")+(answered(q,answers[i])?"done ":"")+(marked.has(i)?"review ":"")+'" data-jump="'+i+'" aria-label="Question '+(i+1)+'">'+(i+1)+'</button>').join("")}
+
+function setupEditor(){
+ const textarea=$("sqlEditor");
+ if(typeof CodeMirror==="function"){
+  editor=CodeMirror.fromTextArea(textarea,{
+   mode:"text/x-pgsql",lineNumbers:true,matchBrackets:true,
+   indentUnit:4,tabSize:4,indentWithTabs:false,viewportMargin:10,
+   extraKeys:{
+    "Ctrl-Enter":()=>runSQL(),"Cmd-Enter":()=>runSQL(),
+    "Tab":cm=>cm.replaceSelection("    ","end")
+   }
+  });
+  editor.on("change",()=>{
+   if(mode==="exam"&&exam[at]?.t==="sql"){answers[at].text=editor.getValue();progressNav();}
+  });
+ }else{
+  // Keep a fully functioning textarea when the editor CDN is unavailable.
+  textarea.oninput=()=>{syncCode();if(mode==="exam")progressNav()};
+  textarea.onkeydown=e=>{
+   if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){e.preventDefault();runSQL();}
+   else if(e.key==="Tab"){e.preventDefault();const start=textarea.selectionStart;textarea.setRangeText("    ",start,textarea.selectionEnd,"end");syncCode();}
+  };
+ }
+}
+function editorValue(){return editor?editor.getValue():$("sqlEditor").value}
+function setEditorValue(value){
+ if(editor){
+  editor.setValue(value||"");
+  requestAnimationFrame(()=>editor.refresh());
+ }else $("sqlEditor").value=value||"";
+}
+function suggestedTables(q){
+ const source=(q.q||"")+" "+(q.reference||q.solution||"");
+ return Object.keys(SCHEMA).filter(t=>new RegExp("\\b"+t+"\\b","i").test(source));
+}
+function renderSchemaHints(q){
+ const names=suggestedTables(q);
+ $("schemaHintTitle").textContent=names.length?"Tables you can use: "+names.join(", "):"Tables and columns (hint)";
+ $("schemaHint").open=q.difficulty==="beginner";
+ $("hintPreview").classList.add("hidden");
+ if(!names.length){
+  $("schemaHintContents").innerHTML='<div class="small muted">You can explore the complete practice database using the Database tab.</div>';
+  return;
+ }
+ $("schemaHintContents").innerHTML=names.map(name=>
+  '<div class="hint-table"><div class="hint-table-row"><strong>'+escapeHtml(name)+'</strong><button class="hint-preview-btn" type="button" data-hint-preview="'+escapeHtml(name)+'">Preview 5 rows</button></div>'+
+  '<div class="hint-columns">'+SCHEMA[name].map(c=>'<div class="hint-column"><code>'+escapeHtml(c.name)+'</code><span>'+escapeHtml(c.type)+'</span></div>').join("")+'</div></div>'
+ ).join("");
+}
+async function previewHintTable(name){
+ if(!Object.prototype.hasOwnProperty.call(SCHEMA,name))return;
+ const preview=$("hintPreview"),body=$("hintPreviewBody");
+ preview.classList.remove("hidden");
+ $("hintPreviewTitle").textContent="Sample rows · "+name;
+ if(!engineReady){body.innerHTML='<p class="small muted" style="padding:10px">PostgreSQL is still loading. Please try again shortly.</p>';return}
+ body.innerHTML='<p class="small muted" style="padding:10px">Loading…</p>';
+ try{
+  const result=await call("run",{sql:"SELECT * FROM "+name+" LIMIT 5"});
+  if(result.ok)showRows(result.result,body);
+  else body.textContent=result.error;
+ }catch(e){body.textContent=e.message}
+}
+
 function renderQuestion(){const q=exam[at],a=answers[at];chosenDrag=null;progressNav();$("questionCategory").textContent=typeLabel(q.t)+" · "+q.topic+" · "+q.difficulty;$("questionPrompt").textContent=q.q;$("flagBtn").textContent=marked.has(at)?"★ Remove flag":"☆ Review later";$("answerArea").innerHTML="";$("queryArea").classList.toggle("hidden",q.t!=="sql");$("queryConsole").classList.add("hidden");$("currentFeedback").classList.add("hidden");
 if(q.t==="mcq"){$("answerArea").innerHTML=q.choices.map(c=>'<label class="option"><input type="radio" name="answer" value="'+c.id+'" '+(a.choice===c.id?"checked":"")+'> <span>'+escapeHtml(c.text)+'</span></label>').join("")}
 if(q.t==="drag"){const unused=q.tiles.filter(x=>!a.order.includes(x.id));$("answerArea").innerHTML='<p class="muted small">Tap an item, then tap a numbered slot to place it. Tap an occupied slot to remove it. Desktop drag and drop also works.</p><div class="drag-pool">'+unused.map(x=>'<button class="drag-token" type="button" draggable="true" data-tile="'+x.id+'">'+escapeHtml(x.text)+'</button>').join("")+'</div><div class="drag-slots">'+q.p.map((x,j)=>'<button class="drag-slot" type="button" data-slot="'+j+'">'+(j+1)+'. '+(a.order[j]===undefined?"Tap to place a selected item":escapeHtml(q.p[a.order[j]]))+'</button>').join("")+'</div>'}
-if(q.t==="sql"){$("sqlEditor").value=a.text;$("runBtn").disabled=!engineReady;$("engineStatus").textContent=engineReady?"PostgreSQL ready":"Loading PostgreSQL…";if(a.result){$("queryConsole").classList.remove("hidden");showRows(a.result,$("consoleBody"))}}
+if(q.t==="sql"){renderSchemaHints(q);setEditorValue(a.text);$("runBtn").disabled=!engineReady;$("engineStatus").textContent=engineReady?"PostgreSQL ready":"Loading PostgreSQL…";if(a.result){$("queryConsole").classList.remove("hidden");showRows(a.result,$("consoleBody"))}}
 }
 function showRows(result,container){const cols=result.columns||[];let rows=result.rows||[];if(!cols.length){container.innerHTML='<p style="padding:14px" class="small muted">Query completed with no result columns.</p>';return}let out='<table><thead><tr>'+cols.map(c=>'<th>'+escapeHtml(c)+'</th>').join("")+'</tr></thead><tbody>';out+=rows.map(row=>'<tr>'+cols.map(c=>'<td>'+escapeHtml(row[c]===null?"NULL":typeof row[c]==="object"?JSON.stringify(row[c]):row[c])+'</td>').join("")+'</tr>').join("");out+='</tbody></table><p class="small muted" style="padding:8px 13px">'+result.total+' rows'+(result.total>rows.length?" · preview truncated":"")+'</p>';container.innerHTML=out}
-function sqlText(){return $("sqlEditor").value}
+function sqlText(){return editorValue()}
 function syncCode(){if(exam[at]?.t==="sql")answers[at].text=sqlText()}
 async function runSQL(){if(!engineReady)return;const q=exam[at],a=answers[at],index=at;syncCode();if(!a.text.trim()){alert("Write a SQL query before running it.");return}const button=$("runBtn");button.disabled=true;button.textContent="Running…";try{const r=await call("run",{sql:a.text});if(index!==at)return;$("queryConsole").classList.remove("hidden");if(r.ok){a.result=r.result;showRows(r.result,$("consoleBody"));}else{$("consoleBody").innerHTML='<p class="badtxt" style="padding:14px">'+escapeHtml(r.error)+'</p>';a.result=null}}catch(e){if(index===at)$("consoleBody").innerHTML='<p class="badtxt" style="padding:14px">'+escapeHtml(e.message)+'</p>'}finally{button.disabled=!engineReady;button.textContent="▶ Run SQL";progressNav()}}
 function evaluateSimple(q,a){if(q.t==="mcq")return a.choice===q.a;if(q.t==="drag")return a.order.length===q.p.length&&a.order.every((v,i)=>v===i);return false}
@@ -93,7 +262,7 @@ function call(action,args){return new Promise((resolve,reject)=>{if(!engineReady
 async function previewTable(name){if(!engineReady){alert("PostgreSQL has not loaded. Check your connection and reload.");return}if(!tableNames.includes(name))return;$("schemaTitle").textContent="Preview · "+name;$("schemaConsole").classList.remove("hidden");$("schemaBody").innerHTML='<p class="muted" style="padding:12px">Loading rows…</p>';try{const r=await call("run",{sql:"SELECT * FROM "+name+" LIMIT 20"});if(r.ok)showRows(r.result,$("schemaBody"));else $("schemaBody").textContent=r.error}catch(e){$("schemaBody").textContent=e.message}}
 function loadTheme(){try{document.body.dataset.theme=localStorage.getItem(THEME)||"light"}catch(e){document.body.dataset.theme="light"}syncTheme()}
 function syncTheme(){$("themeBtn").textContent=document.body.dataset.theme==="dark"?"Light mode":"Dark mode";$("themeBtn").setAttribute("aria-pressed",String(document.body.dataset.theme==="dark"))}
-function wire(){loadTheme();$("themeBtn").onclick=()=>{document.body.dataset.theme=document.body.dataset.theme==="dark"?"light":"dark";try{localStorage.setItem(THEME,document.body.dataset.theme)}catch(e){}syncTheme()};$("navHome").onclick=()=>navigate("home");$("navProgress").onclick=()=>navigate("progressView");$("navSchema").onclick=()=>navigate("schemaView");$("jumpProgress").onclick=showProgress;$("resultProgressBtn").onclick=showProgress;$("examSchemaBtn").onclick=()=>navigate("schemaView");$("newAttemptBtn").onclick=()=>view("home");$("exitExam").onclick=()=>navigate("home");$("moduleFilter").onchange=availability;$("difficultyFilter").onchange=availability;$("startBtn").onclick=begin;$("prevBtn").onclick=()=>{syncCode();if(at>0){at--;renderQuestion()}};$("nextBtn").onclick=()=>{syncCode();if(at<exam.length-1){at++;renderQuestion()}else $("submitBtn").focus()};$("flagBtn").onclick=()=>{if(marked.has(at))marked.delete(at);else marked.add(at);renderQuestion()};$("questionNav").onclick=e=>{const b=e.target.closest("[data-jump]");if(!b)return;syncCode();at=Number(b.dataset.jump);renderQuestion()};$("answerArea").onchange=e=>{if(e.target.name==="answer"){answers[at].choice=Number(e.target.value);progressNav()}};$("answerArea").onclick=e=>{const tile=e.target.closest("[data-tile]"),slot=e.target.closest("[data-slot]");if(tile){chosenDrag=Number(tile.dataset.tile);$("answerArea").querySelectorAll("[data-tile]").forEach(x=>x.classList.toggle("active",Number(x.dataset.tile)===chosenDrag))}else if(slot){const index=Number(slot.dataset.slot),a=answers[at],old=a.order[index];if(chosenDrag!==null){const other=a.order.indexOf(chosenDrag);if(other>=0)a.order.splice(other,1);a.order.splice(index,0,chosenDrag);chosenDrag=null}else if(old!==undefined)a.order.splice(index,1);renderQuestion()}};$("answerArea").ondragstart=e=>{const tile=e.target.closest("[data-tile]");if(tile)e.dataTransfer.setData("text/plain",tile.dataset.tile)};$("answerArea").ondragover=e=>{if(e.target.closest("[data-slot]"))e.preventDefault()};$("answerArea").ondrop=e=>{const slot=e.target.closest("[data-slot]");if(!slot)return;e.preventDefault();const id=e.dataTransfer.getData("text/plain");if(id==="")return;chosenDrag=Number(id);const index=Number(slot.dataset.slot),a=answers[at];const other=a.order.indexOf(chosenDrag);if(other>=0)a.order.splice(other,1);a.order.splice(index,0,chosenDrag);chosenDrag=null;renderQuestion()};$("sqlEditor").oninput=()=>{syncCode();progressNav()};$("sqlEditor").onkeydown=e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){e.preventDefault();runSQL()}else if(e.key==="Tab"){e.preventDefault();let el=e.target,pos=el.selectionStart;el.setRangeText("    ",pos,el.selectionEnd,"end");syncCode()}};$("runBtn").onclick=runSQL;$("resetBtn").onclick=()=>{if(confirm("Clear this SQL answer?")){$("sqlEditor").value="";syncCode();$("queryConsole").classList.add("hidden");answers[at].result=null;progressNav()}};$("copyBtn").onclick=async()=>{try{await navigator.clipboard.writeText(sqlText())}catch(e){$("sqlEditor").select();document.execCommand("copy")}};$("submitBtn").onclick=submit;$("tableButtons").innerHTML=tableNames.map(n=>'<button data-table="'+n+'">'+n+'</button>').join("");$("tableButtons").onclick=e=>{const b=e.target.closest("[data-table]");if(b)previewTable(b.dataset.table)};$("history").onclick=e=>{const b=e.target.closest("[data-history]");if(b)showRecord(history[Number(b.dataset.history)])};$("clearBtn").onclick=()=>{if(confirm("Permanently remove saved mock interview history from this browser?")){history=[];persist();dashboard()}};$("exportBtn").onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(history,null,2)],{type:"application/json"})),a=document.createElement("a");a.href=url;a.download="ian603-interview-attempts.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}}
+function wire(){loadTheme();setupEditor();$("themeBtn").onclick=()=>{document.body.dataset.theme=document.body.dataset.theme==="dark"?"light":"dark";try{localStorage.setItem(THEME,document.body.dataset.theme)}catch(e){}syncTheme()};$("navHome").onclick=()=>navigate("home");$("navProgress").onclick=()=>navigate("progressView");$("navSchema").onclick=()=>navigate("schemaView");$("jumpProgress").onclick=showProgress;$("resultProgressBtn").onclick=showProgress;$("examSchemaBtn").onclick=()=>navigate("schemaView");$("newAttemptBtn").onclick=()=>view("home");$("exitExam").onclick=()=>navigate("home");$("moduleFilter").onchange=availability;$("difficultyFilter").onchange=availability;$("startBtn").onclick=begin;$("prevBtn").onclick=()=>{syncCode();if(at>0){at--;renderQuestion()}};$("nextBtn").onclick=()=>{syncCode();if(at<exam.length-1){at++;renderQuestion()}else $("submitBtn").focus()};$("flagBtn").onclick=()=>{if(marked.has(at))marked.delete(at);else marked.add(at);renderQuestion()};$("questionNav").onclick=e=>{const b=e.target.closest("[data-jump]");if(!b)return;syncCode();at=Number(b.dataset.jump);renderQuestion()};$("answerArea").onchange=e=>{if(e.target.name==="answer"){answers[at].choice=Number(e.target.value);progressNav()}};$("answerArea").onclick=e=>{const tile=e.target.closest("[data-tile]"),slot=e.target.closest("[data-slot]");if(tile){chosenDrag=Number(tile.dataset.tile);$("answerArea").querySelectorAll("[data-tile]").forEach(x=>x.classList.toggle("active",Number(x.dataset.tile)===chosenDrag))}else if(slot){const index=Number(slot.dataset.slot),a=answers[at],old=a.order[index];if(chosenDrag!==null){const other=a.order.indexOf(chosenDrag);if(other>=0)a.order.splice(other,1);a.order.splice(index,0,chosenDrag);chosenDrag=null}else if(old!==undefined)a.order.splice(index,1);renderQuestion()}};$("answerArea").ondragstart=e=>{const tile=e.target.closest("[data-tile]");if(tile)e.dataTransfer.setData("text/plain",tile.dataset.tile)};$("answerArea").ondragover=e=>{if(e.target.closest("[data-slot]"))e.preventDefault()};$("answerArea").ondrop=e=>{const slot=e.target.closest("[data-slot]");if(!slot)return;e.preventDefault();const id=e.dataTransfer.getData("text/plain");if(id==="")return;chosenDrag=Number(id);const index=Number(slot.dataset.slot),a=answers[at];const other=a.order.indexOf(chosenDrag);if(other>=0)a.order.splice(other,1);a.order.splice(index,0,chosenDrag);chosenDrag=null;renderQuestion()};$("schemaHintContents").onclick=e=>{const button=e.target.closest("[data-hint-preview]");if(button)previewHintTable(button.dataset.hintPreview)};$("runBtn").onclick=runSQL;$("resetBtn").onclick=()=>{if(confirm("Clear this SQL answer?")){setEditorValue("");syncCode();$("queryConsole").classList.add("hidden");answers[at].result=null;progressNav()}};$("copyBtn").onclick=async()=>{const value=sqlText();try{await navigator.clipboard.writeText(value)}catch(e){const temp=document.createElement("textarea");temp.value=value;document.body.appendChild(temp);temp.select();document.execCommand("copy");temp.remove()}};$("submitBtn").onclick=submit;$("tableButtons").innerHTML=tableNames.map(n=>'<button data-table="'+n+'">'+n+'</button>').join("");$("tableButtons").onclick=e=>{const b=e.target.closest("[data-table]");if(b)previewTable(b.dataset.table)};$("history").onclick=e=>{const b=e.target.closest("[data-history]");if(b)showRecord(history[Number(b.dataset.history)])};$("clearBtn").onclick=()=>{if(confirm("Permanently remove saved mock interview history from this browser?")){history=[];persist();dashboard()}};$("exportBtn").onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(history,null,2)],{type:"application/json"})),a=document.createElement("a");a.href=url;a.download="ian603-interview-attempts.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}}
 async function loadBank(){try{const response=await fetch("s_interview_questions.txt",{cache:"no-cache"});if(!response.ok)throw Error("HTTP "+response.status);const text=await response.text();bank=text.trim().split(/\r?\n/).map(JSON.parse);if(!bank.length)throw Error("No questions available.");$("bankStatus").textContent=bank.length+" questions available";$("moduleFilter").innerHTML='<option value="all">All modules + interviews</option>'+[...new Map(bank.map(q=>[q.module,q.topic])).entries()].sort((a,b)=>a[0]-b[0]).map(([m,t])=>'<option value="'+m+'">Module '+m+' · '+escapeHtml(t)+'</option>').join("");availability()}catch(e){$("bankStatus").textContent="Bank unavailable";$("available").textContent="Could not load questions: "+e.message}}
 wire();setupWorker();dashboard();loadBank();
 </script>
