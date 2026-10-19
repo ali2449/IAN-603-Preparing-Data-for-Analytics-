@@ -137,14 +137,23 @@ body[data-theme=dark] .pgadmin-editor-area textarea.editor{background:#142237;co
 
 
 /* Answer-review SQL execution: reuse the pgAdmin-style data grid. */
-.reviewlist .review-sql{max-width:100%;margin:9px 0;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:9px;color:var(--ink);font:13px/1.65 ui-monospace,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;overflow-x:auto}
+.review-sql-shell{margin:10px 0;border:1px solid #bac8d6;border-radius:10px;overflow:hidden;max-width:100%}
+.review-sql-shell .CodeMirror{height:auto!important;min-height:115px;max-height:340px}
+.review-sql-shell .CodeMirror-scroll{min-height:115px;max-height:340px}
+.review-sql-shell textarea{display:block;width:100%;min-height:125px;resize:vertical;border:0;border-radius:0;background:var(--paper);color:var(--ink);padding:12px;font:13px/1.6 ui-monospace,Consolas,monospace}
+.review-sql-shell .pgadmin-bar{padding:6px 11px}
+.review-sql-shell .pgadmin-editor-head{padding:7px 11px}
+.review-sql-shell .pgadmin-actions{border-top:1px solid var(--border)}
+.review-sql-shell .pgadmin-actions button{min-height:36px}
+.review-sql-shell .pgadmin-status{padding:6px 11px}
+
 .review-query-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:11px 0}
 .review-query-actions button{min-height:39px}
 .review-output{max-width:100%;margin:10px 0 16px}
 .review-output .console-body{max-height:340px;overflow:auto}
 @media(max-width:630px){
  .reviewlist details{padding:11px;min-width:0}
- .reviewlist .review-sql{padding:10px;font-size:12px}
+ .review-sql-shell .CodeMirror{font-size:12px}.review-sql-shell textarea{font-size:12px}
  .review-query-actions{align-items:stretch}
  .review-query-actions button{width:100%}
  .review-output .console-body{max-height:260px}
@@ -212,7 +221,7 @@ const $=id=>document.getElementById(id);
 const escapeHtml=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const STORAGE="ian603_interview_v2", THEME="ian603_interview_theme";
 const SCHEMA={"departments":[{"name":"department_id","type":"integer"},{"name":"department_name","type":"text"},{"name":"location","type":"text"}],"patients":[{"name":"patient_id","type":"integer"},{"name":"full_name","type":"text"},{"name":"age","type":"integer"},{"name":"city","type":"text"},{"name":"email","type":"text"},{"name":"registered_on","type":"date"}],"admissions":[{"name":"admission_id","type":"integer"},{"name":"patient_id","type":"integer"},{"name":"admitted_on","type":"date"},{"name":"discharged_on","type":"date"},{"name":"diagnosis","type":"text"},{"name":"department_id","type":"integer"},{"name":"cost","type":"numeric(10,2)"}],"labs":[{"name":"lab_id","type":"integer"},{"name":"patient_id","type":"integer"},{"name":"collected_on","type":"date"},{"name":"test_name","type":"text"},{"name":"result_value","type":"numeric(8,2)"},{"name":"unit","type":"text"}],"prescriptions":[{"name":"rx_id","type":"integer"},{"name":"patient_id","type":"integer"},{"name":"drug_name","type":"text"},{"name":"quantity","type":"integer"},{"name":"prescribed_on","type":"date"}],"customers":[{"name":"customer_id","type":"integer"},{"name":"customer_name","type":"text"},{"name":"email","type":"text"},{"name":"region","type":"text"},{"name":"joined_on","type":"date"}],"products":[{"name":"product_id","type":"integer"},{"name":"product_name","type":"text"},{"name":"category","type":"text"},{"name":"list_price","type":"numeric(10,2)"},{"name":"stock_qty","type":"integer"}],"orders":[{"name":"order_id","type":"integer"},{"name":"customer_id","type":"integer"},{"name":"ordered_on","type":"date"},{"name":"status","type":"text"},{"name":"total","type":"numeric(10,2)"}],"order_items":[{"name":"item_id","type":"integer"},{"name":"order_id","type":"integer"},{"name":"product_id","type":"integer"},{"name":"quantity","type":"integer"},{"name":"unit_price","type":"numeric(10,2)"}],"payments":[{"name":"payment_id","type":"integer"},{"name":"order_id","type":"integer"},{"name":"paid_on","type":"date"},{"name":"amount","type":"numeric(10,2)"},{"name":"method","type":"text"}],"employees":[{"name":"employee_id","type":"integer"},{"name":"employee_name","type":"text"},{"name":"department_id","type":"integer"},{"name":"salary","type":"numeric(10,2)"},{"name":"hired_on","type":"date"},{"name":"manager_id","type":"integer"}],"events":[{"name":"event_id","type":"integer"},{"name":"customer_id","type":"integer"},{"name":"event_type","type":"text"},{"name":"occurred_at","type":"timestamp"},{"name":"properties","type":"jsonb"}],"raw_contacts":[{"name":"contact_id","type":"integer"},{"name":"raw_name","type":"text"},{"name":"raw_email","type":"text"},{"name":"raw_phone","type":"text"},{"name":"raw_city","type":"text"},{"name":"updated_on","type":"date"}],"monthly_metrics":[{"name":"metric_id","type":"integer"},{"name":"product_id","type":"integer"},{"name":"month_start","type":"date"},{"name":"revenue","type":"numeric(10,2)"},{"name":"units","type":"integer"}],"survey_responses":[{"name":"response_id","type":"integer"},{"name":"patient_id","type":"integer"},{"name":"question","type":"text"},{"name":"score","type":"integer"}],"claims":[{"name":"claim_id","type":"integer"},{"name":"patient_id","type":"integer"},{"name":"submitted_on","type":"date"},{"name":"amount","type":"numeric(10,2)"},{"name":"status","type":"text"}],"v_patient_admission_counts":[{"name":"patient_id","type":"integer"},{"name":"full_name","type":"text"},{"name":"admission_count","type":"bigint"}]};
-let editor=null;
+let editor=null,reviewEditors=new Map();
 let bank=[],exam=[],answers=[],marked=new Set(),at=0,mode="home",graded=false,started=0,history=[],engineReady=false,worker=null,waiting=new Map(),seq=0,currentReview=null,reviewQueryBusy=false,tick=null,chosenDrag=null;
 try{history=JSON.parse(localStorage.getItem(STORAGE)||"[]");if(!Array.isArray(history))history=[]}catch(e){history=[]}
 if(!history.length){try{const older=JSON.parse(localStorage.getItem("ian603_mock_history_v1")||"[]");if(Array.isArray(older)&&older.length){history=older.map(x=>({date:x.date,correct:x.score,total:x.total,duration:x.seconds||0,byType:{},answers:(x.items||[]).map(q=>({id:q.id,q:q.q,module:null,t:q.t,correct:q.correct,user:typeof q.answer?.code==="string"?q.answer.code:"",order:q.answer?.order||[],choice:q.answer?.choice??null,expected:q.expected,explanation:q.explanation,reason:"Imported from the earlier version of the interview studio."}))}));}}catch(e){}}
@@ -306,16 +315,61 @@ const record={date:new Date().toISOString(),correct,total:exam.length,duration:M
 function renderReview(r){
   return r.answers.map((x,i)=>{
     const expected=Array.isArray(x.expected)?x.expected.join(" → "):x.expected;
-    const runControl=x.t==="sql"&&typeof x.expected==="string"&&x.expected.trim()
-      ? '<div class="review-query-actions"><button type="button" class="primary" data-review-run="'+i+'" '+(!engineReady?'disabled':'')+'>'+(engineReady?'▶ Run expected query':'Loading PostgreSQL…')+'</button><span class="small muted">Execute this query on the practice PostgreSQL database.</span></div><div class="console pgadmin-results review-output hidden" data-review-output="'+i+'" aria-live="polite"><div class="console-h">Data Output · Expected query</div><div class="console-body"></div></div>'
-      : '';
-    return '<details><summary><span class="'+(x.correct?'goodtxt':'badtxt')+'">'+(x.correct?'✓':'✕')+'</span> '+(i+1)+'. '+escapeHtml(x.q)+' <span class="small muted">· '+escapeHtml(typeLabel(x.t))+'</span></summary><p><strong>Result:</strong> '+(x.correct?'Correct':'Incorrect')+'</p><p><strong>Your answer:</strong> '+escapeHtml(x.t==='sql'?x.user||'(blank)':x.t==='mcq'?(x.choice===null?'(not answered)':findAnswer(x)):x.order.length?x.order.join(' → '):'(not answered)')+'</p><p><strong>Expected answer:</strong></p><pre class="review-sql">'+escapeHtml(expected)+'</pre>'+runControl+'<p class="small muted">'+escapeHtml(x.reason||x.explanation||'')+'</p><p class="small muted">'+escapeHtml(x.explanation||'')+'</p></details>';
+    const sql=x.t==="sql"&&typeof x.expected==="string"&&x.expected.trim();
+    const workbench=sql?
+      '<div class="review-sql-shell pgadmin-shell"><div class="pgadmin-bar"><span class="pgadmin-tab">Query Tool</span><span class="pgadmin-connection">ian603_practice · PostgreSQL</span></div>'+
+      '<div class="pgadmin-editor-head"><strong>Editable expected SQL</strong><span class="small muted">Experiment with the query</span></div>'+
+      '<textarea spellcheck="false" aria-label="Editable expected query for question '+(i+1)+'" data-review-editor="'+i+'">'+escapeHtml(x.expected)+'</textarea>'+
+      '<div class="toolbar pgadmin-actions review-query-actions"><button type="button" class="primary" data-review-run="'+i+'" '+(!engineReady?'disabled':'')+'>▶ Run SQL</button><button type="button" data-review-reset="'+i+'">↺ Reset to expected</button></div>'+
+      '<div class="pgadmin-status">Read-only PostgreSQL · Ctrl / ⌘ + Enter to run · Changes do not affect scores</div>'+
+      '<div class="console pgadmin-results review-output hidden" data-review-output="'+i+'" aria-live="polite"><div class="console-h">Data Output · Query results</div><div class="console-body"></div></div></div>'
+      :'<pre class="review-sql">'+escapeHtml(expected)+'</pre>';
+    return '<details><summary><span class="'+(x.correct?'goodtxt':'badtxt')+'">'+(x.correct?'✓':'✕')+'</span> '+(i+1)+'. '+escapeHtml(x.q)+' <span class="small muted">· '+escapeHtml(typeLabel(x.t))+'</span></summary><p><strong>Result:</strong> '+(x.correct?'Correct':'Incorrect')+'</p><p><strong>Your answer:</strong> '+escapeHtml(x.t==='sql'?x.user||'(blank)':x.t==='mcq'?(x.choice===null?'(not answered)':findAnswer(x)):x.order.length?x.order.join(' → '):'(not answered)')+'</p><p><strong>Expected answer:</strong></p>'+workbench+'<p class="small muted">'+escapeHtml(x.reason||x.explanation||'')+'</p><p class="small muted">'+escapeHtml(x.explanation||'')+'</p></details>';
   }).join('');
+}
+function initReviewEditor(index){
+  if(reviewEditors.has(index))return;
+  const textarea=$('resultReview').querySelector('[data-review-editor="'+index+'"]');
+  if(!textarea)return;
+  if(typeof CodeMirror==='function'){
+    const cm=CodeMirror.fromTextArea(textarea,{
+      mode:'text/x-pgsql',lineNumbers:true,matchBrackets:true,lineWrapping:true,
+      indentUnit:4,tabSize:4,indentWithTabs:false,viewportMargin:10,
+      extraKeys:{'Ctrl-Enter':()=>runExpectedQuery(index),'Cmd-Enter':()=>runExpectedQuery(index),
+        'Tab':editor=>editor.replaceSelection('    ','end')}
+    });
+    reviewEditors.set(index,cm);
+    requestAnimationFrame(()=>cm.refresh());
+  }else{
+    textarea.addEventListener('keydown',event=>{
+      if((event.ctrlKey||event.metaKey)&&event.key==='Enter'){
+        event.preventDefault();runExpectedQuery(index);
+      }
+    });
+    reviewEditors.set(index,null);
+  }
+}
+function reviewEditorValue(index){
+  const cm=reviewEditors.get(index);
+  if(cm)return cm.getValue();
+  return $('resultReview').querySelector('[data-review-editor="'+index+'"]')?.value||'';
+}
+function resetReviewEditor(index){
+  const original=currentReview?.answers?.[index]?.expected;
+  if(typeof original!=='string')return;
+  const cm=reviewEditors.get(index);
+  if(cm)cm.setValue(original);
+  else{
+    const textarea=$('resultReview').querySelector('[data-review-editor="'+index+'"]');
+    if(textarea)textarea.value=original;
+  }
+  const output=$('resultReview').querySelector('[data-review-output="'+index+'"]');
+  if(output)output.classList.add('hidden');
 }
 function syncReviewButtons(){
   $('resultReview').querySelectorAll('[data-review-run]').forEach(button=>{
     button.disabled=!engineReady||reviewQueryBusy;
-    button.textContent=!engineReady?'PostgreSQL loading or unavailable':reviewQueryBusy&&button.dataset.running==='1'?'Running…':'▶ Run expected query';
+    button.textContent=!engineReady?'PostgreSQL loading or unavailable':reviewQueryBusy&&button.dataset.running==='1'?'Running…':'▶ Run SQL';
   });
 }
 async function runExpectedQuery(index){
@@ -323,12 +377,13 @@ async function runExpectedQuery(index){
   const button=$('resultReview').querySelector('[data-review-run="'+index+'"]');
   const output=$('resultReview').querySelector('[data-review-output="'+index+'"]');
   if(!engineReady||reviewQueryBusy||!button||!output||!answer||answer.t!=='sql'||typeof answer.expected!=='string'||!answer.expected.trim())return;
-  const record=currentReview,body=output.querySelector('.console-body');
+  const record=currentReview,body=output.querySelector('.console-body'),sql=reviewEditorValue(index);
+  if(!sql.trim()){output.classList.remove('hidden');body.innerHTML='<p class="badtxt" style="padding:14px">Enter a SQL query before running it.</p>';return;}
   output.classList.remove('hidden');
   body.innerHTML='<p class="small muted" style="padding:12px">Running expected query…</p>';
   reviewQueryBusy=true;button.dataset.running='1';syncReviewButtons();
   try{
-    const response=await call('run',{sql:answer.expected});
+    const response=await call('run',{sql});
     if(currentReview!==record||!button.isConnected)return;
     if(response.ok)showRows(response.result,body);
     else body.innerHTML='<p class="badtxt" style="padding:14px">'+escapeHtml(response.error||'The query could not be executed.')+'</p>';
@@ -339,7 +394,7 @@ async function runExpectedQuery(index){
   }
 }
 function findAnswer(x){const q=bank.find(q=>q.id===x.id);return q?.o?.[x.choice]||"(unknown option)"}
-function showRecord(record){currentReview=record;$("resultScore").textContent=Math.round(100*record.correct/record.total)+"%";$("resultText").textContent=record.correct+" of "+record.total+" correct · "+Math.round(record.duration/60)+" min · "+new Date(record.date).toLocaleString();$("resultReview").innerHTML=renderReview(record);view("resultView")}
+function showRecord(record){reviewEditors.forEach(cm=>{if(cm)cm.toTextArea()});reviewEditors.clear();currentReview=record;$("resultScore").textContent=Math.round(100*record.correct/record.total)+"%";$("resultText").textContent=record.correct+" of "+record.total+" correct · "+Math.round(record.duration/60)+" min · "+new Date(record.date).toLocaleString();$("resultReview").innerHTML=renderReview(record);view("resultView")}
 function showProgress(){view("progressView")}
 function dashboard(){const percentages=history.map(x=>100*x.correct/x.total),avg=percentages.length?Math.round(percentages.reduce((a,b)=>a+b,0)/percentages.length):0,best=percentages.length?Math.round(Math.max(...percentages)):0,latest=percentages.length?Math.round(percentages[percentages.length-1]):0;const tiles=[["Attempts",history.length],["Average",avg+"%"],["Best score",best+"%"],["Latest",latest+"%"]];const markup=tiles.map(([k,v])=>'<div class="stat"><div class="small muted">'+k+'</div><b>'+v+'</b></div>').join("");$("stats").innerHTML=markup;$("homeStats").innerHTML=markup;const chart=$("progressChart");const pts=percentages.slice(-30);let c=[0,25,50,75,100].map(y=>'<line class="gridline" x1="47" x2="720" y1="'+(213-1.8*y)+'" y2="'+(213-1.8*y)+'"/><text x="5" y="'+(217-1.8*y)+'">'+y+'%</text>').join("");if(pts.length){const xy=pts.map((p,i)=>({x:pts.length===1?390:52+i*660/(pts.length-1),y:213-p*1.8}));if(xy.length>1)c+='<polyline class="plot" points="'+xy.map(p=>p.x+","+p.y).join(" ")+'"/>';c+=xy.map((p,i)=>'<circle class="dot" cx="'+p.x+'" cy="'+p.y+'" r="5"><title>Attempt '+(history.length-pts.length+i+1)+': '+Math.round(pts[i])+'%</title></circle>').join("");c+='<text x="48" y="245">Older</text><text x="665" y="245">Recent</text>'}else c+='<text x="210" y="126">Finish a mock interview to begin your graph</text>';chart.innerHTML=c;$("history").innerHTML=history.length?'<table><thead><tr><th>Date</th><th>Score</th><th>Correct</th><th>Duration</th><th>Review</th></tr></thead><tbody>'+history.map((x,i)=>({...x,i})).reverse().map(x=>'<tr><td>'+new Date(x.date).toLocaleString()+'</td><td>'+Math.round(x.correct/x.total*100)+'%</td><td>'+x.correct+' / '+x.total+'</td><td>'+Math.round(x.duration/60)+' min</td><td><button data-history="'+x.i+'">Review</button></td></tr>').join("")+'</tbody></table>':'<p class="muted">No completed attempts yet.</p>'}
 const tableNames=["departments","patients","admissions","labs","prescriptions","customers","products","orders","order_items","payments","employees","events","raw_contacts","monthly_metrics","survey_responses","claims","v_patient_admission_counts"];
@@ -348,7 +403,7 @@ function call(action,args){return new Promise((resolve,reject)=>{if(!engineReady
 async function previewTable(name){if(!engineReady){alert("PostgreSQL has not loaded. Check your connection and reload.");return}if(!tableNames.includes(name))return;$("schemaTitle").textContent="Preview · "+name;$("schemaConsole").classList.remove("hidden");$("schemaBody").innerHTML='<p class="muted" style="padding:12px">Loading rows…</p>';try{const r=await call("run",{sql:"SELECT * FROM "+name+" LIMIT 20"});if(r.ok)showRows(r.result,$("schemaBody"));else $("schemaBody").textContent=r.error}catch(e){$("schemaBody").textContent=e.message}}
 function loadTheme(){try{document.body.dataset.theme=localStorage.getItem(THEME)||"light"}catch(e){document.body.dataset.theme="light"}syncTheme()}
 function syncTheme(){$("themeBtn").textContent=document.body.dataset.theme==="dark"?"Light mode":"Dark mode";$("themeBtn").setAttribute("aria-pressed",String(document.body.dataset.theme==="dark"))}
-function wire(){loadTheme();setupEditor();$("themeBtn").onclick=()=>{document.body.dataset.theme=document.body.dataset.theme==="dark"?"light":"dark";try{localStorage.setItem(THEME,document.body.dataset.theme)}catch(e){}syncTheme()};$("navHome").onclick=()=>navigate("home");$("navProgress").onclick=()=>navigate("progressView");$("navSchema").onclick=()=>navigate("schemaView");$("jumpProgress").onclick=showProgress;$("resultProgressBtn").onclick=showProgress;$("examSchemaBtn").onclick=()=>navigate("schemaView");$("newAttemptBtn").onclick=()=>view("home");$("exitExam").onclick=()=>navigate("home");$("moduleFilter").onchange=availability;$("difficultyFilter").onchange=availability;$("startBtn").onclick=begin;$("prevBtn").onclick=()=>{syncCode();if(at>0){at--;renderQuestion()}};$("nextBtn").onclick=()=>{syncCode();if(at<exam.length-1){at++;renderQuestion()}else $("submitBtn").focus()};$("flagBtn").onclick=()=>{if(marked.has(at))marked.delete(at);else marked.add(at);renderQuestion()};$("questionNav").onclick=e=>{const b=e.target.closest("[data-jump]");if(!b)return;syncCode();at=Number(b.dataset.jump);renderQuestion()};$("answerArea").onchange=e=>{if(e.target.name==="answer"){answers[at].choice=Number(e.target.value);progressNav()}};$("answerArea").onclick=e=>{const tile=e.target.closest("[data-tile]"),slot=e.target.closest("[data-slot]");if(tile){chosenDrag=Number(tile.dataset.tile);$("answerArea").querySelectorAll("[data-tile]").forEach(x=>x.classList.toggle("active",Number(x.dataset.tile)===chosenDrag))}else if(slot){const index=Number(slot.dataset.slot),a=answers[at],old=a.order[index];if(chosenDrag!==null){const other=a.order.indexOf(chosenDrag);if(other>=0)a.order.splice(other,1);a.order.splice(index,0,chosenDrag);chosenDrag=null}else if(old!==undefined)a.order.splice(index,1);renderQuestion()}};$("answerArea").ondragstart=e=>{const tile=e.target.closest("[data-tile]");if(tile)e.dataTransfer.setData("text/plain",tile.dataset.tile)};$("answerArea").ondragover=e=>{if(e.target.closest("[data-slot]"))e.preventDefault()};$("answerArea").ondrop=e=>{const slot=e.target.closest("[data-slot]");if(!slot)return;e.preventDefault();const id=e.dataTransfer.getData("text/plain");if(id==="")return;chosenDrag=Number(id);const index=Number(slot.dataset.slot),a=answers[at];const other=a.order.indexOf(chosenDrag);if(other>=0)a.order.splice(other,1);a.order.splice(index,0,chosenDrag);chosenDrag=null;renderQuestion()};$("schemaHintContents").onclick=e=>{const button=e.target.closest("[data-hint-preview]");if(button)previewHintTable(button.dataset.hintPreview)};$("runBtn").onclick=runSQL;$("resetBtn").onclick=()=>{if(confirm("Clear this SQL answer?")){setEditorValue("");syncCode();$("queryConsole").classList.add("hidden");answers[at].result=null;progressNav()}};$("copyBtn").onclick=async()=>{const value=sqlText();try{await navigator.clipboard.writeText(value)}catch(e){const temp=document.createElement("textarea");temp.value=value;document.body.appendChild(temp);temp.select();document.execCommand("copy");temp.remove()}};$("submitBtn").onclick=submit;$("tableButtons").innerHTML=tableNames.map(n=>'<button data-table="'+n+'">'+n+'</button>').join("");$("tableButtons").onclick=e=>{const b=e.target.closest("[data-table]");if(b)previewTable(b.dataset.table)};$("resultReview").onclick=e=>{const button=e.target.closest("[data-review-run]");if(button)runExpectedQuery(Number(button.dataset.reviewRun))};$("history").onclick=e=>{const b=e.target.closest("[data-history]");if(b)showRecord(history[Number(b.dataset.history)])};$("clearBtn").onclick=()=>{if(confirm("Permanently remove saved mock interview history from this browser?")){history=[];persist();dashboard()}};$("exportBtn").onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(history,null,2)],{type:"application/json"})),a=document.createElement("a");a.href=url;a.download="ian603-interview-attempts.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}}
+function wire(){loadTheme();setupEditor();$("themeBtn").onclick=()=>{document.body.dataset.theme=document.body.dataset.theme==="dark"?"light":"dark";try{localStorage.setItem(THEME,document.body.dataset.theme)}catch(e){}syncTheme()};$("navHome").onclick=()=>navigate("home");$("navProgress").onclick=()=>navigate("progressView");$("navSchema").onclick=()=>navigate("schemaView");$("jumpProgress").onclick=showProgress;$("resultProgressBtn").onclick=showProgress;$("examSchemaBtn").onclick=()=>navigate("schemaView");$("newAttemptBtn").onclick=()=>view("home");$("exitExam").onclick=()=>navigate("home");$("moduleFilter").onchange=availability;$("difficultyFilter").onchange=availability;$("startBtn").onclick=begin;$("prevBtn").onclick=()=>{syncCode();if(at>0){at--;renderQuestion()}};$("nextBtn").onclick=()=>{syncCode();if(at<exam.length-1){at++;renderQuestion()}else $("submitBtn").focus()};$("flagBtn").onclick=()=>{if(marked.has(at))marked.delete(at);else marked.add(at);renderQuestion()};$("questionNav").onclick=e=>{const b=e.target.closest("[data-jump]");if(!b)return;syncCode();at=Number(b.dataset.jump);renderQuestion()};$("answerArea").onchange=e=>{if(e.target.name==="answer"){answers[at].choice=Number(e.target.value);progressNav()}};$("answerArea").onclick=e=>{const tile=e.target.closest("[data-tile]"),slot=e.target.closest("[data-slot]");if(tile){chosenDrag=Number(tile.dataset.tile);$("answerArea").querySelectorAll("[data-tile]").forEach(x=>x.classList.toggle("active",Number(x.dataset.tile)===chosenDrag))}else if(slot){const index=Number(slot.dataset.slot),a=answers[at],old=a.order[index];if(chosenDrag!==null){const other=a.order.indexOf(chosenDrag);if(other>=0)a.order.splice(other,1);a.order.splice(index,0,chosenDrag);chosenDrag=null}else if(old!==undefined)a.order.splice(index,1);renderQuestion()}};$("answerArea").ondragstart=e=>{const tile=e.target.closest("[data-tile]");if(tile)e.dataTransfer.setData("text/plain",tile.dataset.tile)};$("answerArea").ondragover=e=>{if(e.target.closest("[data-slot]"))e.preventDefault()};$("answerArea").ondrop=e=>{const slot=e.target.closest("[data-slot]");if(!slot)return;e.preventDefault();const id=e.dataTransfer.getData("text/plain");if(id==="")return;chosenDrag=Number(id);const index=Number(slot.dataset.slot),a=answers[at];const other=a.order.indexOf(chosenDrag);if(other>=0)a.order.splice(other,1);a.order.splice(index,0,chosenDrag);chosenDrag=null;renderQuestion()};$("schemaHintContents").onclick=e=>{const button=e.target.closest("[data-hint-preview]");if(button)previewHintTable(button.dataset.hintPreview)};$("runBtn").onclick=runSQL;$("resetBtn").onclick=()=>{if(confirm("Clear this SQL answer?")){setEditorValue("");syncCode();$("queryConsole").classList.add("hidden");answers[at].result=null;progressNav()}};$("copyBtn").onclick=async()=>{const value=sqlText();try{await navigator.clipboard.writeText(value)}catch(e){const temp=document.createElement("textarea");temp.value=value;document.body.appendChild(temp);temp.select();document.execCommand("copy");temp.remove()}};$("submitBtn").onclick=submit;$("tableButtons").innerHTML=tableNames.map(n=>'<button data-table="'+n+'">'+n+'</button>').join("");$("tableButtons").onclick=e=>{const b=e.target.closest("[data-table]");if(b)previewTable(b.dataset.table)};$("resultReview").onclick=e=>{const button=e.target.closest("[data-review-run]");if(button)runExpectedQuery(Number(button.dataset.reviewRun));const reset=e.target.closest("[data-review-reset]");if(reset)resetReviewEditor(Number(reset.dataset.reviewReset))};$("resultReview").addEventListener("toggle",e=>{if(e.target.matches("details")&&e.target.open){const area=e.target.querySelector("[data-review-editor]");if(area)initReviewEditor(Number(area.dataset.reviewEditor))}},true);$("history").onclick=e=>{const b=e.target.closest("[data-history]");if(b)showRecord(history[Number(b.dataset.history)])};$("clearBtn").onclick=()=>{if(confirm("Permanently remove saved mock interview history from this browser?")){history=[];persist();dashboard()}};$("exportBtn").onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(history,null,2)],{type:"application/json"})),a=document.createElement("a");a.href=url;a.download="ian603-interview-attempts.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}}
 async function loadBank(){try{const response=await fetch("s_interview_questions.txt",{cache:"no-cache"});if(!response.ok)throw Error("HTTP "+response.status);const text=await response.text();bank=text.trim().split(/\r?\n/).map(JSON.parse);if(!bank.length)throw Error("No questions available.");$("bankStatus").textContent=bank.length+" questions available";$("moduleFilter").innerHTML='<option value="all">All modules + interviews</option>'+[...new Map(bank.map(q=>[q.module,q.topic])).entries()].sort((a,b)=>a[0]-b[0]).map(([m,t])=>'<option value="'+m+'">Module '+m+' · '+escapeHtml(t)+'</option>').join("");availability()}catch(e){$("bankStatus").textContent="Bank unavailable";$("available").textContent="Could not load questions: "+e.message}}
 wire();setupWorker();dashboard();loadBank();
 </script>
