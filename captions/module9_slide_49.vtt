@@ -1,28 +1,31 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.577
-The integrated project uses a staging table with messy customer data.
+00:00:00.000 --> 00:00:04.762
+Now we will combine the ideas from the module into a small cleaning project.
 
-00:00:04.577 --> 00:00:10.437
-You will normalize text, parse supported date formats, rank duplicate candidates,
+00:00:04.762 --> 00:00:08.372
+The source is a messy customer staging table.
 
-00:00:10.437 --> 00:00:12.942
-and label records that need review.
+00:00:08.372 --> 00:00:11.182
+Our first task is normalization.
 
-00:00:12.942 --> 00:00:17.147
-The objective is a transparent candidate-clean output.
+00:00:11.182 --> 00:00:17.202
+We will standardize the representation of names, emails, and phone numbers.
 
-00:00:17.147 --> 00:00:24.307
-Unsupported or ambiguous values should remain visible as uncertainty rather than being guessed.
+00:00:17.202 --> 00:00:24.322
+Next, we will parse signup dates, but only for date formats that we explicitly support.
 
-00:00:24.307 --> 00:00:32.197
-A quarantine pattern separates questionable records from trusted analytical output without deleting evidence.
+00:00:24.322 --> 00:00:29.707
+Then we will rank possible duplicate records using a reproducible rule.
 
-00:00:32.197 --> 00:00:39.372
-Views are useful for reusable cleaning logic because they let you expose a consistent cleaned representation
+00:00:29.707 --> 00:00:36.764
+Finally, we will label each output row as either a candidate clean row or a row that needs review.
 
-00:00:39.372 --> 00:00:42.127
-while keeping raw source data intact.
+00:00:37.406 --> 00:00:42.958
+The goal is important: we are not trying to create a magically perfect source table.
 
-00:00:42.127 --> 00:00:45.758
-That improves reproducibility and auditability.
+00:00:42.958 --> 00:00:51.108
+We are creating a candidate-clean analytical output while preserving uncertainty and making our decisions visible.
+
+00:00:51.108 --> 00:00:56.407
+This is much closer to how a real data preparation workflow should behave.

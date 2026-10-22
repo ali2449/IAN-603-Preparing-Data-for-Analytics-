@@ -1,22 +1,37 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.757
-Phone validation first strips punctuation and other non-digit characters.
+00:00:00.000 --> 00:00:03.777
+Phone validation becomes easier after normalization.
 
-00:00:04.757 --> 00:00:08.607
-Then it checks whether the resulting candidate has ten digits.
+00:00:03.777 --> 00:00:08.492
+The query first removes punctuation and other non-digit characters.
 
-00:00:08.607 --> 00:00:12.472
-Missing values are separated from invalid-shaped values.
+00:00:08.492 --> 00:00:11.902
+Then it checks the length of the resulting digit string.
 
-00:00:12.472 --> 00:00:18.802
-This is a good pattern: normalize representation first, then apply the validation rule.
+00:00:11.902 --> 00:00:17.552
+If there are exactly ten digits, the phone receives a valid-shape status.
 
-00:00:18.802 --> 00:00:24.017
-Standardization should make equivalent values comparable without inventing facts.
+00:00:17.552 --> 00:00:22.507
+If the original value is missing or blank, it is labeled missing.
 
-00:00:24.017 --> 00:00:30.322
-Lowercasing an email or normalizing a known category map is different from guessing what an ambiguous value
+00:00:22.507 --> 00:00:24.748
+Other cases are sent for review.
 
-00:00:30.322 --> 00:00:36.333
-was supposed to mean. Good cleaning reduces representation noise while preserving uncertainty.
+00:00:25.291 --> 00:00:30.413
+Imagine two phone values. One uses parentheses and a dash.
+
+00:00:30.413 --> 00:00:34.688
+The other contains exactly the same number with no punctuation.
+
+00:00:34.688 --> 00:00:37.998
+If we compare the raw strings, they look different.
+
+00:00:37.998 --> 00:00:41.288
+After digit extraction, they become identical.
+
+00:00:41.288 --> 00:00:46.393
+That is why normalization should often happen before validation or matching.
+
+00:00:46.393 --> 00:00:53.709
+When you run the query, inspect the original phone, the digits-only value, and the final status together.

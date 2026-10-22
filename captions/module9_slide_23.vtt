@@ -1,25 +1,37 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.207
-This query checks email shape.
+00:00:00.000 --> 00:00:05.172
+A regular expression can help us test whether text follows a particular structure.
 
-00:00:02.207 --> 00:00:05.367
-Missing values receive a missing status.
+00:00:05.172 --> 00:00:10.147
+For the email example, we first handle missing or blank values.
 
-00:00:05.367 --> 00:00:10.567
-Values matching the teaching-level regular expression are labeled valid shape.
+00:00:10.147 --> 00:00:18.442
+Then we test whether the cleaned email has a reasonable pattern: some text before the at sign, a domain after it,
 
-00:00:10.567 --> 00:00:14.377
-Other nonmissing values are flagged for review.
+00:00:18.442 --> 00:00:20.304
+and a final domain ending.
 
-00:00:14.377 --> 00:00:21.332
-The phrase valid shape is important because the regex does not prove the mailbox exists.
+00:00:20.821 --> 00:00:25.358
+You do not need to memorize the full regular expression character by character.
 
-00:00:21.332 --> 00:00:26.907
-Standardization should make equivalent values comparable without inventing facts.
+00:00:25.358 --> 00:00:30.143
+Focus on what it is doing: it is checking the shape of the text.
 
-00:00:26.907 --> 00:00:34.252
-Lowercasing an email or normalizing a known category map is different from guessing what an ambiguous value
+00:00:30.143 --> 00:00:33.913
+If the value matches, we label it valid shape.
 
-00:00:34.252 --> 00:00:40.186
-was supposed to mean. Good cleaning reduces representation noise while preserving uncertainty.
+00:00:33.913 --> 00:00:37.383
+If it does not match, we label it for review.
+
+00:00:37.383 --> 00:00:40.378
+But remember what this does not prove.
+
+00:00:40.378 --> 00:00:47.943
+An address can have a perfect shape and still be nonexistent, inactive, or typed for the wrong person.
+
+00:00:47.943 --> 00:00:51.953
+Regular expressions are useful structural filters.
+
+00:00:51.953 --> 00:00:54.354
+They are not proof of real-world truth.

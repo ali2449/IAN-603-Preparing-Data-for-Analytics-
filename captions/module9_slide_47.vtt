@@ -1,31 +1,34 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.207
-Some cleaning shortcuts make a dataset look better while reducing its truthfulness.
+00:00:00.000 --> 00:00:03.372
+Some problems cannot be safely fixed automatically.
 
-00:00:05.207 --> 00:00:08.352
-A bad date should not become today's date.
+00:00:03.372 --> 00:00:09.937
+A negative price should not automatically become positive unless we know the intended value.
 
-00:00:08.352 --> 00:00:12.417
-A negative price should not become positive without evidence.
+00:00:09.937 --> 00:00:16.742
+A bad date string should not be replaced with today's date simply to avoid a missing value.
 
-00:00:12.417 --> 00:00:17.937
-A missing phone should remain missing unless a reliable source provides one.
+00:00:16.742 --> 00:00:22.597
+A missing phone number should not be filled using some unrelated contact field.
 
-00:00:17.937 --> 00:00:23.297
-A possible duplicate should not be deleted just because its ID is larger.
+00:00:22.597 --> 00:00:28.216
+And a possible duplicate should not be deleted simply because it has a lower identifier.
 
-00:00:23.297 --> 00:00:27.617
-Cleaning should preserve uncertainty when the truth is unknown.
+00:00:28.918 --> 00:00:35.775
+The safer response is often to preserve the source, produce a cleaned value only when justified,
 
-00:00:27.617 --> 00:00:33.357
-Once a quality rule is well understood, prevention may be better than repeated cleanup.
+00:00:35.775 --> 00:00:37.860
+and add a review status.
 
-00:00:33.357 --> 00:00:37.557
-Constraints can stop known invalid values at write time.
+00:00:37.860 --> 00:00:44.045
+This may feel less satisfying because the dataset still contains unresolved problems.
 
-00:00:37.557 --> 00:00:43.722
-When updates are required, preview the target rows, change only what is justified,
+00:00:44.045 --> 00:00:46.670
+But that is actually more honest.
 
-00:00:43.722 --> 00:00:48.631
-and use RETURNING or an audit log so the transformation can be reviewed.
+00:00:46.670 --> 00:00:51.935
+A clean dataset should not mean a dataset where uncertainty has been hidden.
+
+00:00:51.935 --> 00:00:59.707
+It should mean a dataset where known transformations are consistent and unresolved uncertainty is clearly represented.

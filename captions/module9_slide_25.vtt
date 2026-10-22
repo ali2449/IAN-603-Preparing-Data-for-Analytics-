@@ -1,28 +1,34 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.812
-This query applies several product rules in priority order.
+00:00:00.000 --> 00:00:05.317
+Sometimes we want one status that summarizes the first problem found in a record.
 
-00:00:03.812 --> 00:00:09.902
-It checks for a missing product name, missing price, invalid price, and negative stock.
+00:00:05.317 --> 00:00:09.522
+This product-validation query checks several rules in order.
 
-00:00:09.902 --> 00:00:15.447
-If none of those selected rules fail, the row passes the selected checks.
+00:00:09.522 --> 00:00:16.722
+It looks for a missing product name, a missing price, an invalid price, and a negative stock quantity.
 
-00:00:15.447 --> 00:00:21.137
-A production system might store several issue codes instead of only the first one,
+00:00:16.722 --> 00:00:21.506
+If none of those conditions is triggered, the row passes the selected rules.
 
-00:00:21.137 --> 00:00:25.172
-but this CASE expression is a clear beginner-friendly start.
+00:00:22.448 --> 00:00:28.500
+The order matters because a case expression returns the first matching condition.
 
-00:00:25.172 --> 00:00:28.107
-Validation is rule-based detection, not automatic correction.
+00:00:28.500 --> 00:00:32.380
+For example, if a product has both a missing name and a negative price,
 
-00:00:28.107 --> 00:00:33.867
-A failed email-shape check tells you that a record deserves attention;
+00:00:32.380 --> 00:00:36.140
+this particular query reports the missing name first.
 
-00:00:33.867 --> 00:00:36.287
-it does not tell you the correct email.
+00:00:36.140 --> 00:00:40.080
+That does not mean the price problem disappeared.
 
-00:00:36.287 --> 00:00:43.200
-Treat quality flags as evidence that can drive quarantine, review, or a documented repair process.
+00:00:40.080 --> 00:00:48.395
+For a full data-quality system, we may want separate issue flags so multiple problems can be recorded at the same time.
+
+00:00:48.395 --> 00:00:55.145
+Use this example to understand row-level validation, but also recognize its limitation:
+
+00:00:55.145 --> 00:00:59.296
+one status may summarize rather than capture every issue.

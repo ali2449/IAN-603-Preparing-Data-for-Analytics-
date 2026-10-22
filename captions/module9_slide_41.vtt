@@ -1,34 +1,37 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:07.417
-After you understand the data and reconcile legacy problems, stable rules can move closer to data entry.
+00:00:00.000 --> 00:00:05.692
+Cleaning historical data is useful, but preventing future problems is even better.
 
-00:00:07.417 --> 00:00:10.627
-NOT NULL protects required values.
+00:00:05.692 --> 00:00:11.222
+Once a rule is stable and well understood, the database can help enforce it.
 
-00:00:10.627 --> 00:00:13.972
-CHECK can enforce a pattern or domain.
+00:00:11.222 --> 00:00:14.657
+A not-null constraint can require a value.
 
-00:00:13.972 --> 00:00:18.102
-UNIQUE can protect a field that truly must be unique.
+00:00:14.657 --> 00:00:18.982
+A check constraint can enforce a domain or pattern rule.
 
-00:00:18.102 --> 00:00:21.067
-Foreign keys protect relationships.
+00:00:18.982 --> 00:00:25.062
+A unique constraint can prevent duplicate values when uniqueness is truly required.
 
-00:00:21.067 --> 00:00:27.942
-Constraints prevent known defects from reappearing, but they should reflect real business rules.
+00:00:25.062 --> 00:00:28.934
+A foreign key protects relationships between tables.
 
-00:00:27.942 --> 00:00:35.277
-Connect this idea to a healthcare pipeline validating contact, demographic, and event fields.
+00:00:29.591 --> 00:00:37.211
+For example, if every order must reference an existing customer, a foreign key can prevent an order from pointing to a
 
-00:00:35.277 --> 00:00:41.462
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+00:00:37.211 --> 00:00:39.901
+customer identifier that does not exist.
 
-00:00:41.462 --> 00:00:49.787
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+00:00:39.901 --> 00:00:43.776
+Constraints should represent rules we are confident about.
 
-00:00:49.787 --> 00:00:55.517
-A strong analyst can explain both the SQL operation and the assumption behind it.
+00:00:43.776 --> 00:00:46.806
+Do not use them to encode guesses.
 
-00:00:55.517 --> 00:01:01.569
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:46.806 --> 00:00:51.171
+When a business rule is unclear, investigate first.
+
+00:00:51.171 --> 00:00:56.613
+When the rule becomes stable, move it closer to the point where data enters the system.

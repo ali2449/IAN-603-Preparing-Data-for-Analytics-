@@ -1,31 +1,43 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.352
-Start by inspecting the source rows.
+00:00:00.000 --> 00:00:03.712
+Before writing cleaning logic, look at the raw records.
 
-00:00:02.352 --> 00:00:06.027
-Look for visible and invisible formatting differences.
+00:00:03.712 --> 00:00:12.602
+The query on the screen selects the customer identifier, name, email, phone, address, and signup date.
 
-00:00:06.027 --> 00:00:13.682
-Notice missing emails or phones, blank values, inconsistent punctuation, and possible duplicate people.
+00:00:12.602 --> 00:00:15.962
+It then orders the records by identifier.
 
-00:00:13.682 --> 00:00:16.942
-The purpose of this first query is not to fix anything.
+00:00:15.962 --> 00:00:20.252
+When you run it, do not immediately start fixing values.
 
-00:00:16.942 --> 00:00:20.777
-It is to build evidence about the source before defining rules.
+00:00:20.252 --> 00:00:22.086
+First, look carefully.
 
-00:00:20.777 --> 00:00:27.462
-Connect this idea to a healthcare pipeline validating contact, demographic, and event fields.
+00:00:22.558 --> 00:00:25.224
+Can you see names with extra spaces?
 
-00:00:27.462 --> 00:00:32.767
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+00:00:25.224 --> 00:00:28.294
+Are some names capitalized differently?
 
-00:00:32.767 --> 00:00:40.257
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+00:00:28.294 --> 00:00:31.644
+Do phone numbers use different formats?
 
-00:00:40.257 --> 00:00:46.052
-A strong analyst can explain both the SQL operation and the assumption behind it.
+00:00:31.644 --> 00:00:35.904
+Are there blank values that are different from null values?
 
-00:00:46.052 --> 00:00:51.887
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:35.904 --> 00:00:40.334
+Do two rows look as if they may represent the same customer?
+
+00:00:40.334 --> 00:00:43.739
+This first inspection gives you context.
+
+00:00:43.739 --> 00:00:50.049
+It is similar to opening a spreadsheet and scanning the columns before writing a transformation.
+
+00:00:50.049 --> 00:00:58.109
+Later, we will automate much of this profiling, but visual inspection is still useful because it helps you understand
+
+00:00:58.109 --> 00:01:01.683
+what kinds of problems your SQL needs to detect.

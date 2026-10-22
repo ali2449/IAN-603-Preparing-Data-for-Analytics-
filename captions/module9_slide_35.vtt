@@ -1,25 +1,31 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.522
-This query creates pairs of customers that share the same normalized phone number.
+00:00:00.000 --> 00:00:03.952
+Not every possible duplicate should be automatically merged.
 
-00:00:04.522 --> 00:00:12.162
-The condition a ID less than b ID avoids comparing a row with itself and avoids duplicate pair
+00:00:03.952 --> 00:00:11.347
+This query compares customer records in pairs and looks for rows that share the same normalized phone number.
 
-00:00:12.162 --> 00:00:15.917
-orderings. These are possible duplicates, not proven duplicates.
+00:00:11.347 --> 00:00:17.742
+It uses a self join, meaning the customers table is joined to another copy of itself.
 
-00:00:15.917 --> 00:00:22.257
-A shared phone number may represent one person, a household, or reused contact information.
+00:00:17.742 --> 00:00:24.812
+The condition that the left identifier must be smaller than the right identifier prevents us from seeing the same pair
 
-00:00:22.257 --> 00:00:29.557
-Review may be necessary. Duplicate resolution requires a definition of identity and a survivor rule.
+00:00:24.812 --> 00:00:25.521
+twice.
 
-00:00:29.557 --> 00:00:34.392
-Exact duplicate rows are easy; duplicate people or customers are harder.
+00:00:25.975 --> 00:00:34.002
+If two records share a phone number, the query returns their identifiers, names, and emails for comparison.
 
-00:00:34.392 --> 00:00:40.497
-If you choose one survivor, document the priority—latest update, verified source, highest completeness,
+00:00:34.002 --> 00:00:37.462
+Suppose two customers have the same phone number but different names and emails.
 
-00:00:40.497 --> 00:00:45.840
-or another defensible rule—and preserve links to the merged records.
+00:00:37.462 --> 00:00:46.122
+That could represent a duplicate, but it could also represent two people in the same household.
+
+00:00:46.122 --> 00:00:52.747
+This is exactly the kind of situation where SQL should identify a candidate and a person may need to make the final
+
+00:00:52.747 --> 00:00:53.877
+decision.

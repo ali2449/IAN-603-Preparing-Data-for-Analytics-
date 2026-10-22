@@ -1,34 +1,34 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.282
-Duplicate detection and duplicate resolution are different stages.
+00:00:00.000 --> 00:00:04.892
+Keep duplicate detection and duplicate resolution as two separate phases.
 
-00:00:04.282 --> 00:00:08.067
-Detection tries to find plausible candidate groups.
+00:00:04.892 --> 00:00:09.537
+Detection asks: which rows might represent the same entity?
 
-00:00:08.067 --> 00:00:10.967
-Resolution decides what to do with them.
+00:00:09.537 --> 00:00:14.887
+It can use normalized keys, matching fields, or similarity evidence.
 
-00:00:10.967 --> 00:00:17.347
-That could mean choosing a survivor, merging complementary fields, quarantining the group,
+00:00:14.887 --> 00:00:20.662
+Detection is often intentionally broad because we do not want to miss possible matches.
 
-00:00:17.347 --> 00:00:19.642
-or sending it for human review.
+00:00:20.662 --> 00:00:26.250
+Resolution asks a different question: what should we do with those candidate records?
 
-00:00:19.642 --> 00:00:23.617
-Separating the stages makes deduplication safer.
+00:00:26.827 --> 00:00:32.159
+Possible responses include selecting a survivor, merging selected fields, quarantining a group,
 
-00:00:23.617 --> 00:00:31.177
-Connect this idea to a product catalog standardizing categories and quarantining invalid rows.
+00:00:32.159 --> 00:00:36.909
+or sending the records for manual review.
 
-00:00:31.177 --> 00:00:37.282
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+00:00:36.909 --> 00:00:43.229
+Resolution should usually be more conservative because it can change or consolidate data.
 
-00:00:37.282 --> 00:00:45.577
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+00:00:43.229 --> 00:00:45.909
+This separation gives you flexibility.
 
-00:00:45.577 --> 00:00:51.667
-A strong analyst can explain both the SQL operation and the assumption behind it.
+00:00:45.909 --> 00:00:50.994
+You can improve your detection logic without automatically changing records,
 
-00:00:51.667 --> 00:00:57.733
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:50.994 --> 00:00:56.332
+and you can apply different resolution policies depending on the risk and the business context.

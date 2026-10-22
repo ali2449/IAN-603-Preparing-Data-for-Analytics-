@@ -1,40 +1,37 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.712
-This query labels different phone states.
+00:00:00.000 --> 00:00:04.692
+This query classifies phone values instead of immediately changing them.
 
-00:00:02.712 --> 00:00:06.117
-A true SQL NULL is labeled NULL.
+00:00:04.692 --> 00:00:08.447
+The case expression first checks whether the phone is null.
 
-00:00:06.117 --> 00:00:08.312
-A trimmed empty string is labeled blank.
+00:00:08.447 --> 00:00:12.807
+Then it checks whether the value becomes empty after trimming spaces.
 
-00:00:08.312 --> 00:00:13.492
-All-zero or all-nine digit patterns are labeled sentinel for this teaching example.
+00:00:12.807 --> 00:00:18.207
+Next, it removes everything except digits and checks for known placeholder values,
 
-00:00:13.492 --> 00:00:16.627
-Everything else is treated as a candidate value.
+00:00:18.207 --> 00:00:21.922
+such as a phone number made entirely of zeros or nines.
 
-00:00:16.627 --> 00:00:23.762
-This classification step is useful before deciding whether any states should be normalized together.
+00:00:21.922 --> 00:00:25.067
+Anything else is labeled as a candidate value.
 
-00:00:23.762 --> 00:00:27.627
-For this activity, make a prediction before you run anything.
+00:00:25.545 --> 00:00:30.662
+Notice the word candidate. We have not proven that the phone number is correct.
 
-00:00:27.627 --> 00:00:33.392
-State what one output row should represent, which records you expect to remain,
+00:00:30.662 --> 00:00:37.772
+We have only determined that it is not obviously missing, blank, or one of our known sentinel values.
 
-00:00:33.392 --> 00:00:37.962
-and what edge case is most likely to expose a mistake.
+00:00:37.772 --> 00:00:42.957
+For example, a ten-digit number can still belong to the wrong person.
 
-00:00:37.962 --> 00:00:42.887
-Then run the SQL and compare the result with that prediction.
+00:00:42.957 --> 00:00:48.287
+Technical validation and real-world correctness are different questions.
 
-00:00:42.887 --> 00:00:49.492
-If it does not match, debug the logic in small pieces instead of changing several clauses at once.
+00:00:48.287 --> 00:00:52.787
+Run the query and compare the phone value with the state assigned to it.
 
-00:00:49.492 --> 00:00:53.392
-This is the same habit you would use in a real analytics project:
-
-00:00:53.392 --> 00:00:57.840
-validate the meaning of the result, not only whether the statement executes.
+00:00:52.787 --> 00:00:56.987
+This is a good example of using SQL to make uncertainty visible.

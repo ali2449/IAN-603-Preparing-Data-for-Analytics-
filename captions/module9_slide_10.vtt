@@ -1,31 +1,37 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.177
-This query distinguishes NULL from blank text.
+00:00:00.000 --> 00:00:02.752
+Here we are comparing two different questions.
 
-00:00:03.177 --> 00:00:07.927
-COUNT column ignores NULL values but still counts empty strings.
+00:00:02.752 --> 00:00:08.237
+The count function applied directly to a column counts values that are not null.
 
-00:00:07.927 --> 00:00:15.672
-COUNT of NULLIF BTRIM column comma empty string excludes both NULL and blank-after-trimming values.
+00:00:08.237 --> 00:00:14.742
+But a text value containing an empty string or only spaces is still technically not null.
 
-00:00:15.672 --> 00:00:19.867
-Run the query and compare the non-null and non-blank counts.
+00:00:14.742 --> 00:00:18.682
+So we also create a nonblank version of the count.
 
-00:00:19.867 --> 00:00:23.692
-That difference is an important part of completeness profiling.
+00:00:18.682 --> 00:00:25.832
+The query trims spaces from the text and uses the null if function to convert an empty result to null before counting
 
-00:00:23.692 --> 00:00:28.832
-Missingness has several representations: NULL, blank text, whitespace,
+00:00:25.832 --> 00:00:26.423
+it.
 
-00:00:28.832 --> 00:00:33.017
-and sometimes sentinel codes such as Unknown or 999.
+00:00:27.091 --> 00:00:31.462
+For example, suppose a table has ten customer names.
 
-00:00:33.017 --> 00:00:34.872
-Do not collapse them blindly.
+00:00:31.462 --> 00:00:38.097
+Eight rows contain visible names, one row contains null, and one row contains only spaces.
 
-00:00:34.872 --> 00:00:40.622
-First decide whether they mean the same thing in the source system,
+00:00:38.097 --> 00:00:41.767
+A simple non-null count would report nine.
 
-00:00:40.622 --> 00:00:45.427
-then normalize deliberately and keep lineage when the original value may matter.
+00:00:41.767 --> 00:00:43.497
+A nonblank count would report eight.
+
+00:00:43.497 --> 00:00:53.057
+That difference is useful because it tells us that missingness can be represented in more than one way.
+
+00:00:53.057 --> 00:01:00.297
+When you run the query, compare the non-null and nonblank counts for the name, email, and phone columns.

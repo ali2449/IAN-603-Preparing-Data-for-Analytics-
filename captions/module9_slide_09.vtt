@@ -1,34 +1,40 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.997
-A source review becomes more useful when we quantify the problems.
+00:00:00.000 --> 00:00:03.777
+After visually inspecting the data, start measuring it.
 
-00:00:03.997 --> 00:00:05.997
-How many values are missing?
+00:00:03.777 --> 00:00:08.177
+There are several questions we can ask.
 
-00:00:05.997 --> 00:00:08.292
-How many fail a validation rule?
+00:00:08.177 --> 00:00:13.487
+For missingness, how many values are null, and how many contain only blank text?
 
-00:00:08.292 --> 00:00:13.872
-How many duplicate groups appear after normalization?
+00:00:13.487 --> 00:00:18.177
+For validity, how many values violate a documented rule?
 
-00:00:13.872 --> 00:00:16.652
-Are unusual values rare but plausible, or clearly impossible?
+00:00:18.177 --> 00:00:23.052
+For example, how many product prices are zero or negative?
 
-00:00:16.652 --> 00:00:23.942
-Profiling gives you a baseline and helps you measure whether a cleaning step actually improves the dataset.
+00:00:23.052 --> 00:00:30.048
+For uniqueness, how many possible duplicate groups appear after we normalize the fields used for matching?
 
-00:00:23.942 --> 00:00:30.042
-Connect this idea to a product catalog standardizing categories and quarantining invalid rows.
+00:00:30.534 --> 00:00:36.386
+And for distribution, are there values that are unusual enough to deserve investigation?
 
-00:00:30.042 --> 00:00:37.802
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+00:00:36.386 --> 00:00:39.466
+Imagine a dataset of patient ages.
 
-00:00:37.802 --> 00:00:43.667
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+00:00:39.466 --> 00:00:44.436
+An age of ninety-five may be unusual but completely valid.
 
-00:00:43.667 --> 00:00:49.617
-A strong analyst can explain both the SQL operation and the assumption behind it.
+00:00:44.436 --> 00:00:48.836
+An age of nine hundred fifty is almost certainly a problem.
 
-00:00:49.617 --> 00:00:55.520
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:48.836 --> 00:00:54.206
+The important idea is that unusual does not automatically mean invalid.
+
+00:00:54.206 --> 00:00:57.231
+Profiling helps us find where to look.
+
+00:00:57.231 --> 00:01:02.186
+Business knowledge and documented rules help us decide what the values mean.

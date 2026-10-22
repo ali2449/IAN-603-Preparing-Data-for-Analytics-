@@ -1,34 +1,34 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.427
-Suppose a product price is negative.
+00:00:00.000 --> 00:00:08.827
+One of the most important ideas in data cleaning is that an invalid value does not automatically tell us what the
 
-00:00:02.427 --> 00:00:06.347
-It may be tempting to use ABS and make it positive.
+00:00:08.827 --> 00:00:12.732
+correct value should be. Suppose a product price is negative fifty dollars.
 
-00:00:06.347 --> 00:00:09.357
-But that silently invents a correction.
+00:00:12.732 --> 00:00:19.782
+We can easily use an absolute value function and turn negative fifty into positive fifty.
 
-00:00:09.357 --> 00:00:16.072
-The negative value is evidence that something went wrong.
+00:00:19.782 --> 00:00:26.752
+Technically, that is easy. But do we actually know that fifty dollars is the correct price?
 
-00:00:16.072 --> 00:00:22.417
-A safer workflow flags the value, preserves the source, and corrects it only when reliable evidence identifies
+00:00:26.752 --> 00:00:30.072
+Maybe the negative number represents a refund.
 
-00:00:22.417 --> 00:00:29.907
-the intended price. This principle applies to dates, phone numbers, emails, categories, and other fields.
+00:00:30.072 --> 00:00:32.752
+Maybe the source system has an error.
 
-00:00:29.907 --> 00:00:37.232
-Connect this idea to a product catalog standardizing categories and quarantining invalid rows.
+00:00:32.752 --> 00:00:35.557
+Maybe the intended value was five hundred.
 
-00:00:37.232 --> 00:00:43.147
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+00:00:36.140 --> 00:00:42.902
+So the safer response is to flag the value as invalid and investigate the source or the business rule.
 
-00:00:43.147 --> 00:00:51.187
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+00:00:42.902 --> 00:00:50.572
+This distinction is important. Data cleaning should reduce inconsistency without inventing facts.
 
-00:00:51.187 --> 00:00:57.212
-A strong analyst can explain both the SQL operation and the assumption behind it.
+00:00:50.572 --> 00:00:54.932
+Whenever you are tempted to automatically fix a suspicious value, ask yourself one question:
 
-00:00:57.212 --> 00:01:03.280
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:54.932 --> 00:01:02.496
+do I have evidence for the replacement, or am I only choosing something that looks reasonable?

@@ -1,1107 +1,624 @@
 {
   "module": "module9",
+  "generation_version": "ian620_safe_v4_exact_reference_text_seed1234",
   "filename_prefix": "module9",
-  "source_file": "IAN603_Module9_Narration_Detailed.txt",
-  "voice_consistency_version": 3,
+  "source_file": "IAN_603_Module_9_Breeze_TTS_Instructor_Narration.txt",
   "reference_audio": "/home/ali/breeze-tts/voice_reference/course_instructor_consistent_v4.wav",
+  "reference_text_version": "course_instructor_consistent_v4_exact_transcript",
   "reference_text": "Welcome to the course. We will work through each concept carefully, connect the\nideas step by step, and use practical examples to make technical topics easier\nto understand. When we introduce a new method, focus first on the problem it\nsolves and why it is useful. For example, in machine learning, features are the\ninformation we give the model, while the target is what we want it to predict.\nNow consider a simple question: what changes when the data contains missing\nvalues? We will think through the reason and then look at the code. In Python,\nwe can inspect the data, run one small step at a time, and explain what the\nresult means. The goal is to understand the logic, not simply memorize syntax.",
-  "locked_narration_seed": true,
-  "narration_seed": 1234,
-  "long_narration": {
-    "automatic_chunking": true,
-    "max_text_tokens_per_call": 260,
-    "chunk_pause_seconds": 0.38,
-    "manual_break_marker": "[tts-break]",
-    "breeze_max_new_tokens": 1500,
-    "breeze_max_seq_len": 2048
+  "subtitle_method": "tts_break_section_generation",
+  "generation_boundary": "[tts-break]",
+  "instruction_mode": "disabled_to_prevent_spoken_prompt_leakage",
+  "spoken_instruction_sent_to_breeze": false,
+  "audio_settings": {
+    "speech_speed": 0.93,
+    "speed_method": "ffmpeg_atempo_before_vtt_alignment"
   },
-  "subtitle_method": "whole_slide_silence_alignment",
   "caption_settings": {
-    "max_words": 18,
-    "max_chars": 110,
-    "minimum_silence_seconds": 0.2,
-    "boundary_search_window_seconds": 1.4
+    "max_words": 24,
+    "max_chars": 120,
+    "tts_break_pause_seconds": 0.45
   },
   "slides": [
     {
       "slide": 1,
-      "title": "Start",
-      "transcript": "Welcome to Module 9, Data Cleaning in PostgreSQL. This module brings together the ideas from earlier modules and turns them into a repeatable cleaning workflow. We will profile missing and invalid values, standardize representation, validate business rules, identify duplicate groups, quarantine questionable records, preview updates safely, and add constraints when the rules are known. The most important principle is simple: cleaning should make uncertainty visible, not hide it. Keep a real project in mind as we work through this section—for example, a customer master-data project cleaning duplicate profiles. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
-      "seed": 1234,
-      "tts_text_tokens": 175,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        175
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Data Cleaning in PostgreSQL",
+      "transcript": "Welcome to Module 9, Data Cleaning in Postgres.\n\nBefore we start, think about how much SQL you can already use. In the earlier modules, you learned how relational databases organize data, how to query tables with S Q L, how to aggregate values, apply logical conditions, join related tables, and use subqueries. In the previous module, you also worked with strings and dates, including functions that help us transform text and handle date values.\n\n[tts-break]\n\nNow we will bring many of those skills together for a very practical problem: real data is rarely clean. A customer name may contain extra spaces. An email may use inconsistent capitalization. A phone number may contain parentheses, spaces, or dashes. Some values may be missing, invalid, or duplicated.\n\nThe goal is not simply to make the data look nicer. Our goal is to profile the data, preserve the original evidence, standardize values when we understand the rule, validate what we can, identify duplicates, and make changes safely. By the end of this module, I want you to think of data cleaning as a careful and explainable process rather than a collection of quick fixes.",
       "wav": "wav/module9_slide_01.wav",
       "audio": "audio/module9_slide_01.mp3",
       "captions": "audio/module9_slide_01.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 2,
-      "title": "Cleaning is decision making",
-      "transcript": "Cleaning is not a collection of random fixes. It is a sequence of evidence-based decisions. First, understand the source problems. Then apply only rules you can explain. Keep raw values when provenance matters. And when the correct value is unknown, do not invent one. A review flag is often more honest than an automatic replacement. Connect this idea to a healthcare pipeline validating contact, demographic, and event fields. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 147,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        147
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Data Cleaning Is Evidence-Based Decision Making",
+      "transcript": "A useful way to think about data cleaning is as evidence-based decision making.\n\nWe begin by observing what is actually in the data. Before changing anything, count missing values, blank strings, invalid values, duplicates, and unusual values. We want to understand the problem before we try to solve it.\n\n[tts-break]\n\nNext, we decide what can be standardized using a documented rule. For example, if an email has extra spaces around it, removing those spaces does not change the meaning of the email address. That is a reasonable standardization.\n\nBut we should also preserve the original evidence. A cleaned value is our interpretation of the source value. It should not erase where the value came from.\n\nAnd finally, when we do not know the correct answer, we should not guess. A suspicious record can be flagged for review instead of being automatically changed. That mindset will guide the entire module.",
       "wav": "wav/module9_slide_02.wav",
       "audio": "audio/module9_slide_02.mp3",
       "captions": "audio/module9_slide_02.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 3,
-      "title": "Core principle",
-      "transcript": "Suppose a product price is negative. It may be tempting to use ABS and make it positive. But that silently invents a correction. The negative value is evidence that something went wrong. A safer workflow flags the value, preserves the source, and corrects it only when reliable evidence identifies the intended price. This principle applies to dates, phone numbers, emails, categories, and other fields. Connect this idea to a product catalog standardizing categories and quarantining invalid rows. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 158,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        158
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Invalid Does Not Mean Replace with Something Plausible",
+      "transcript": "One of the most important ideas in data cleaning is that an invalid value does not automatically tell us what the correct value should be.\n\nSuppose a product price is negative fifty dollars. We can easily use an absolute value function and turn negative fifty into positive fifty. Technically, that is easy. But do we actually know that fifty dollars is the correct price? Maybe the negative number represents a refund. Maybe the source system has an error. Maybe the intended value was five hundred.\n\n[tts-break]\n\nSo the safer response is to flag the value as invalid and investigate the source or the business rule.\n\nThis distinction is important. Data cleaning should reduce inconsistency without inventing facts. Whenever you are tempted to automatically fix a suspicious value, ask yourself one question: do I have evidence for the replacement, or am I only choosing something that looks reasonable?",
       "wav": "wav/module9_slide_03.wav",
       "audio": "audio/module9_slide_03.mp3",
       "captions": "audio/module9_slide_03.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 4,
-      "title": "Learning goals",
-      "transcript": "By the end of this module, you should be able to build a cleaning workflow rather than a one-off fix. You should be able to profile quality problems, normalize representation, validate rules, identify duplicates, and use safer SQL patterns for changes. You should also be able to explain what your cleaning logic knows and what it does not know. Keep a real project in mind as we work through this section—for example, a customer master-data project cleaning duplicate profiles. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
-      "seed": 1234,
-      "tts_text_tokens": 162,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        162
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "What You Should Be Able to Do",
+      "transcript": "By the end of this module, you should be able to perform several connected data-cleaning tasks with S Q L.\n\nFirst, you should be able to profile a dataset. That means measuring missing values, blanks, placeholders, invalid values, and possible duplicates.\n\nSecond, you should be able to standardize representations. For example, you may normalize names, email addresses, phone numbers, or categories without pretending that an uncertain value is known.\n\n[tts-break]\n\nYou should also be able to validate values using clear rules, identify duplicate groups, and apply an explicit rule when choosing a preferred record.\n\nFinally, you should know how to protect the original data. We will use views, transactions, returning results from updates, and database constraints.\n\nThe larger goal is not just to write working SQL. You should be able to explain why each cleaning decision is reasonable and what uncertainty still remains.",
       "wav": "wav/module9_slide_04.wav",
       "audio": "audio/module9_slide_04.mp3",
       "captions": "audio/module9_slide_04.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 5,
-      "title": "Six-stage workflow",
-      "transcript": "This six-stage workflow organizes the module. Profile first. Preserve the source. Normalize representation where the rule is known. Validate values against documented rules. Resolve duplicates or questionable rows with explicit logic. Finally, move stable rules closer to data entry through constraints or monitoring. The order matters because prevention should come after you understand the data and the rules. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a healthcare pipeline validating contact, demographic, and event fields, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 169,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        169
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "A Practical Cleaning Cycle",
+      "transcript": "A practical cleaning workflow can be organized into six steps.\n\nFirst, profile the data. Measure the problems before changing anything.\n\nSecond, preserve the source. Keep the raw evidence available so you can always compare a cleaned result with its original value.\n\nThird, normalize representations that have a known meaning. For example, trimming extra spaces is usually a safe normalization.\n\n[tts-break]\n\nFourth, validate values against documented rules. Fifth, resolve problems that require a decision, such as duplicate records or rows that should be quarantined for review.\n\nAnd sixth, prevent the same problems from appearing again. Once a rule is stable and well understood, we may enforce it with constraints or validation during data entry.\n\nNotice the order. Prevention comes after we understand the data and the rules. Good cleaning is a cycle of measuring, deciding, checking, and improving.",
       "wav": "wav/module9_slide_05.wav",
       "audio": "audio/module9_slide_05.mp3",
       "captions": "audio/module9_slide_05.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 6,
-      "title": "Raw record to analytical representation",
-      "transcript": "This simple record illustrates representation cleaning. The name changes spacing and display case. The email is trimmed and lowercased. The phone keeps only digits. Each transformation is explainable. But the cleaned value should not erase the source evidence. In many analytical workflows, raw and cleaned layers are both valuable. Connect this idea to a product catalog standardizing categories and quarantining invalid rows. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 141,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        141
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Cleaned Fields Should Remain Explainable",
+      "transcript": "A cleaned value should be easy to explain.\n\nConsider a customer name stored as Jane Smith with several extra spaces around it. A cleaned version can remove those spaces and use consistent capitalization. The same idea applies to an email address. We can remove surrounding spaces and convert the text to lowercase. For a phone number, we may remove punctuation and keep only the digits.\n\n[tts-break]\n\nThese are useful analytical representations, but the original values still matter. If someone asks how a cleaned value was produced, we should be able to point back to the source and describe the transformation.\n\nThis is called preserving lineage or provenance. It means keeping enough information to reproduce and audit the cleaning process.\n\nWhen possible, think in terms of two layers: what the source actually contained, and what representation we created for analysis.",
       "wav": "wav/module9_slide_06.wav",
       "audio": "audio/module9_slide_06.mp3",
       "captions": "audio/module9_slide_06.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 7,
-      "title": "Teaching database",
-      "transcript": "The teaching database intentionally contains imperfect data. Customers includes formatting differences, missing values, and duplicates. Products includes inconsistent categories and invalid numeric values. Messy customers is a staging table designed for the integrated cleaning project. The problems are deliberate so that we can practice detection and resolution instead of working with already-perfect data. Connect this idea to a customer master-data project cleaning duplicate profiles. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 142,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        142
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "The Sample Data Contains Quality Problems",
+      "transcript": "For this module, the sample database intentionally contains messy data so that we can practice realistic cleaning decisions.\n\nThe customers table includes missing values, blank text, inconsistent names, different phone formats, inconsistent email formatting, and possible duplicate identities.\n\nThe products table includes inconsistent category labels, invalid prices, and stock problems.\n\n[tts-break]\n\nThe messy customers table acts more like a staging table. It contains mixed date formats, an invalid date, empty values, and a duplicate record. We will use it later to build a more complete cleaning pipeline.\n\nThe orders table gives us additional relational context.\n\nAs you work through the examples, do not think of these problems as unusual. Real operational databases often contain exactly this kind of variation, especially when information comes from multiple systems, manual entry, spreadsheets, or older applications.",
       "wav": "wav/module9_slide_07.wav",
       "audio": "audio/module9_slide_07.mp3",
       "captions": "audio/module9_slide_07.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 8,
-      "title": "Inspect source customers",
-      "transcript": "Start by inspecting the source rows. Look for visible and invisible formatting differences. Notice missing emails or phones, blank values, inconsistent punctuation, and possible duplicate people. The purpose of this first query is not to fix anything. It is to build evidence about the source before defining rules. Connect this idea to a healthcare pipeline validating contact, demographic, and event fields. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 137,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        137
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Inspect Raw Records First",
+      "transcript": "Before writing cleaning logic, look at the raw records.\n\nThe query on the screen selects the customer identifier, name, email, phone, address, and signup date. It then orders the records by identifier.\n\nWhen you run it, do not immediately start fixing values. First, look carefully.\n\n[tts-break]\n\nCan you see names with extra spaces? Are some names capitalized differently? Do phone numbers use different formats? Are there blank values that are different from null values? Do two rows look as if they may represent the same customer?\n\nThis first inspection gives you context. It is similar to opening a spreadsheet and scanning the columns before writing a transformation.\n\nLater, we will automate much of this profiling, but visual inspection is still useful because it helps you understand what kinds of problems your SQL needs to detect.",
       "wav": "wav/module9_slide_08.wav",
       "audio": "audio/module9_slide_08.mp3",
       "captions": "audio/module9_slide_08.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 9,
-      "title": "Profile before changing",
-      "transcript": "A source review becomes more useful when we quantify the problems. How many values are missing? How many fail a validation rule? How many duplicate groups appear after normalization? Are unusual values rare but plausible, or clearly impossible? Profiling gives you a baseline and helps you measure whether a cleaning step actually improves the dataset. Connect this idea to a product catalog standardizing categories and quarantining invalid rows. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 144,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        144
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Begin with Counts and Distributions",
+      "transcript": "After visually inspecting the data, start measuring it.\n\nThere are several questions we can ask. For missingness, how many values are null, and how many contain only blank text?\n\nFor validity, how many values violate a documented rule? For example, how many product prices are zero or negative?\n\nFor uniqueness, how many possible duplicate groups appear after we normalize the fields used for matching?\n\n[tts-break]\n\nAnd for distribution, are there values that are unusual enough to deserve investigation?\n\nImagine a dataset of patient ages. An age of ninety-five may be unusual but completely valid. An age of nine hundred fifty is almost certainly a problem.\n\nThe important idea is that unusual does not automatically mean invalid. Profiling helps us find where to look. Business knowledge and documented rules help us decide what the values mean.",
       "wav": "wav/module9_slide_09.wav",
       "audio": "audio/module9_slide_09.mp3",
       "captions": "audio/module9_slide_09.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 10,
-      "title": "Missingness profile",
-      "transcript": "This query distinguishes NULL from blank text. COUNT column ignores NULL values but still counts empty strings. COUNT of NULLIF BTRIM column comma empty string excludes both NULL and blank-after-trimming values. Run the query and compare the non-null and non-blank counts. That difference is an important part of completeness profiling. Missingness has several representations: NULL, blank text, whitespace, and sometimes sentinel codes such as Unknown or 999. Do not collapse them blindly. First decide whether they mean the same thing in the source system, then normalize deliberately and keep lineage when the original value may matter.",
-      "seed": 1234,
-      "tts_text_tokens": 125,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        125
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Non-Null and Non-Blank Counts",
+      "transcript": "Here we are comparing two different questions.\n\nThe count function applied directly to a column counts values that are not null. But a text value containing an empty string or only spaces is still technically not null.\n\nSo we also create a nonblank version of the count. The query trims spaces from the text and uses the null if function to convert an empty result to null before counting it.\n\n[tts-break]\n\nFor example, suppose a table has ten customer names. Eight rows contain visible names, one row contains null, and one row contains only spaces. A simple non-null count would report nine. A nonblank count would report eight.\n\nThat difference is useful because it tells us that missingness can be represented in more than one way.\n\nWhen you run the query, compare the non-null and nonblank counts for the name, email, and phone columns.",
       "wav": "wav/module9_slide_10.wav",
       "audio": "audio/module9_slide_10.mp3",
       "captions": "audio/module9_slide_10.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 11,
-      "title": "NULL is not blank",
-      "transcript": "Missing data can appear in several forms. NULL is a database null. Blank text is still a string value. A sentinel such as all zeros is an ordinary value unless the business rule says it represents missingness. The word Unknown is also ordinary text unless its meaning is documented. Do not collapse these states automatically without understanding the source convention. Missingness has several representations: NULL, blank text, whitespace, and sometimes sentinel codes such as Unknown or 999. Do not collapse them blindly. First decide whether they mean the same thing in the source system, then normalize deliberately and keep lineage when the original value may matter.",
-      "seed": 1234,
-      "tts_text_tokens": 125,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        125
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Different Missing States",
+      "transcript": "Missing data does not always appear in the same form.\n\nA null value means no SQL value is stored. A blank string is different. It is still a text value, but it contains no useful visible information.\n\nYou may also encounter sentinel values such as ten zeros in a phone field. A system may use that value to mean unknown or not provided.\n\n[tts-break]\n\nAnother example is the literal word Unknown. That is not a null value. It is an actual category value that communicates uncertainty.\n\nWhy does this matter? Because we should not automatically treat all of these states as equivalent. Their meanings depend on the system and the business rules.\n\nBefore standardizing missing data, identify how missingness is represented and document which representations are allowed to be converted to null.",
       "wav": "wav/module9_slide_11.wav",
       "audio": "audio/module9_slide_11.mp3",
       "captions": "audio/module9_slide_11.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 12,
-      "title": "NULL, blank, sentinel in practice",
-      "transcript": "This query labels different phone states. A true SQL NULL is labeled NULL. A trimmed empty string is labeled blank. All-zero or all-nine digit patterns are labeled sentinel for this teaching example. Everything else is treated as a candidate value. This classification step is useful before deciding whether any states should be normalized together. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
-      "seed": 1234,
-      "tts_text_tokens": 163,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        163
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Classify Phone States Explicitly",
+      "transcript": "This query classifies phone values instead of immediately changing them.\n\nThe case expression first checks whether the phone is null. Then it checks whether the value becomes empty after trimming spaces. Next, it removes everything except digits and checks for known placeholder values, such as a phone number made entirely of zeros or nines.\n\nAnything else is labeled as a candidate value.\n\n[tts-break]\n\nNotice the word candidate. We have not proven that the phone number is correct. We have only determined that it is not obviously missing, blank, or one of our known sentinel values.\n\nFor example, a ten-digit number can still belong to the wrong person. Technical validation and real-world correctness are different questions.\n\nRun the query and compare the phone value with the state assigned to it. This is a good example of using SQL to make uncertainty visible.",
       "wav": "wav/module9_slide_12.wav",
       "audio": "audio/module9_slide_12.mp3",
       "captions": "audio/module9_slide_12.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 13,
-      "title": "Normalize blanks to NULL",
-      "transcript": "Sometimes blank strings and NULL represent the same business state. If that rule is documented, NULLIF can convert a blank-after-trimming string into NULL. This can make later logic easier because one missing representation is easier to handle than several. But do this only when blank truly means missing for that field. Missingness has several representations: NULL, blank text, whitespace, and sometimes sentinel codes such as Unknown or 999. Do not collapse them blindly. First decide whether they mean the same thing in the source system, then normalize deliberately and keep lineage when the original value may matter.",
-      "seed": 1234,
-      "tts_text_tokens": 120,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        120
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Standardize a Known Missing Representation",
+      "transcript": "The null if function is very useful when one specific value should be treated as missing.\n\nHere we trim spaces from the address. If the result is an empty string, the null if function returns null. Otherwise, it keeps the trimmed address.\n\n[tts-break]\n\nSuppose one record contains several spaces in the address field. Without trimming, the database technically sees a text value. After trimming, nothing remains, so we can represent that known blank state as null.\n\nThis is a reasonable transformation only when our rule says blank addresses should be considered missing.\n\nCompare the original address with the normalized address. The point is not that null is always better than a blank. The point is that consistent missing-value representation makes later analysis and quality checks much easier.",
       "wav": "wav/module9_slide_13.wav",
       "audio": "audio/module9_slide_13.mp3",
       "captions": "audio/module9_slide_13.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 14,
-      "title": "COALESCE is a fallback",
-      "transcript": "COALESCE returns the first non-null expression. Here, we try cleaned email first, then cleaned phone, then a text label saying no contact method. This is a reporting or business-logic fallback. It does not repair the missing email or phone. The source still has the same missingness; we are simply choosing a value for the current output. Missingness has several representations: NULL, blank text, whitespace, and sometimes sentinel codes such as Unknown or 999. Do not collapse them blindly. First decide whether they mean the same thing in the source system, then normalize deliberately and keep lineage when the original value may matter.",
-      "seed": 1234,
-      "tts_text_tokens": 130,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        130
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Use Fallback Values Carefully",
+      "transcript": "Sometimes we want the first available value from several possible columns.\n\nThe coalesce function returns the first value that is not null. In this example, we first try a cleaned email address. If no usable email is available, we try the phone number. If neither is available, we return the phrase no contact method.\n\n[tts-break]\n\nThink of this as a fallback strategy, not a correction.\n\nIf a customer's email is missing and we use the phone number as the preferred contact, we have not repaired the email. We have only selected another available contact method.\n\nThat distinction matters because a fallback can be useful for a report or workflow while the original data quality problem still exists.\n\nWhen you run the query, identify which records use email, which fall back to phone, and which have no available contact method.",
       "wav": "wav/module9_slide_14.wav",
       "audio": "audio/module9_slide_14.mp3",
       "captions": "audio/module9_slide_14.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 15,
-      "title": "Standardization vs correction",
-      "transcript": "Standardization and correction should not be treated as the same operation. Trimming an email or changing case preserves the intended value. Mapping tech to Electronics may be appropriate if the business taxonomy explicitly defines that equivalence. Changing a negative price to a positive price makes a much stronger claim about reality. That kind of correction needs evidence. Connect this idea to a product catalog standardizing categories and quarantining invalid rows. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 145,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        145
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Standardization Is Different from Correcting a Fact",
+      "transcript": "Not every transformation makes the same kind of claim.\n\nIf an email contains extra spaces and uppercase letters, trimming it and converting it to lowercase usually changes only the representation. We still believe it refers to the same email address.\n\nIf a business rule says the labels tech, electronic, and electronics all represent one category, mapping them to Electronics is also a documented standardization.\n\n[tts-break]\n\nBut changing a negative price of negative fifty to positive fifty is different. Now we are claiming that we know the true price. That requires evidence.\n\nA useful question is: am I changing how the same information is represented, or am I claiming that the underlying fact itself is different?\n\nStandardize when equivalence is known. Correct a fact only when the correct value is supported by a trustworthy source or rule.",
       "wav": "wav/module9_slide_15.wav",
       "audio": "audio/module9_slide_15.mp3",
       "captions": "audio/module9_slide_15.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 16,
-      "title": "Standardize names",
-      "transcript": "This query trims name boundaries, collapses repeated whitespace, and applies title-style capitalization. Run it and compare raw and cleaned names. The goal is to create a more consistent analytical representation. In production, name capitalization can be domain-sensitive, so treat INITCAP as a teaching convenience rather than a universal truth. Standardization should make equivalent values comparable without inventing facts. Lowercasing an email or normalizing a known category map is different from guessing what an ambiguous value was supposed to mean. Good cleaning reduces representation noise while preserving uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 105,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        105
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Normalize Customer Names",
+      "transcript": "Names often contain formatting differences that make analysis and matching harder.\n\nThe query starts by trimming spaces at the beginning and end of the name. It then uses a regular expression replacement to collapse repeated internal spaces into a single space. Finally, it applies consistent display capitalization.\n\n[tts-break]\n\nFor example, imagine the source value contains several spaces before Jane, two spaces between Jane and Smith, and several spaces afterward. The cleaned representation becomes simply Jane Smith.\n\nNotice what we are not doing. We are not deciding whether Jane Smith and Jane A. Smith are the same person. That would be an identity question.\n\nHere we are only normalizing spacing and display case.\n\nRun the query and compare the raw name with the cleaned name so you can see exactly what changed.",
       "wav": "wav/module9_slide_16.wav",
       "audio": "audio/module9_slide_16.mp3",
       "captions": "audio/module9_slide_16.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 17,
-      "title": "Standardize emails",
-      "transcript": "Email standardization starts with a small set of explainable transformations. Trim boundary spaces. Convert empty strings to NULL if blank means missing. Lowercase the value for a consistent analytical representation. This does not validate the email. It only standardizes the representation before validation. Standardization should make equivalent values comparable without inventing facts. Lowercasing an email or normalizing a known category map is different from guessing what an ambiguous value was supposed to mean. Good cleaning reduces representation noise while preserving uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 95,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        95
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Normalize Customer Emails",
+      "transcript": "Email cleaning is another good example of safe representation changes.\n\nThe query trims spaces around the email, converts a blank result to null, and then converts the remaining text to lowercase.\n\nFor example, an email stored with spaces around it and uppercase letters can become a consistent lowercase value without changing the intended address.\n\n[tts-break]\n\nWhy convert blank text to null? Because it gives us a consistent representation for a missing email and makes later filtering and counting easier.\n\nBut remember, lowercasing and trimming do not prove that the email actually exists. They only standardize the text.\n\nLater, we will perform a structural validation check. Even that will only tell us whether the text looks like an email address, not whether messages can actually be delivered to it.",
       "wav": "wav/module9_slide_17.wav",
       "audio": "audio/module9_slide_17.mp3",
       "captions": "audio/module9_slide_17.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 18,
-      "title": "Standardize phones",
-      "transcript": "This phone example performs two different tasks. First, it removes non-digit characters to create a digits-only candidate. Second, it checks whether the candidate has exactly ten digits. If it does not, the validated ten-digit output becomes NULL. Notice that formatting normalization does not automatically make a phone number valid. Standardization should make equivalent values comparable without inventing facts. Lowercasing an email or normalizing a known category map is different from guessing what an ambiguous value was supposed to mean. Good cleaning reduces representation noise while preserving uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 106,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        106
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Extract Phone Digits Before Validating",
+      "transcript": "Phone numbers are often stored with parentheses, spaces, periods, dashes, or other formatting.\n\nThe first useful step is to separate normalization from validation.\n\nThe query removes every character that is not a digit. That gives us a digits-only version of the phone number. Then we ask whether the result has exactly ten digits.\n\n[tts-break]\n\nFor example, a phone written as three three six, with punctuation around the area code and between the number groups, can normalize to the same ten digits as a phone written with only digits.\n\nIf the normalized value has ten digits, we keep it as a valid-shaped candidate. Otherwise, we return null for the validated field.\n\nAgain, ten digits do not prove that the number belongs to the customer. They only satisfy the technical rule we selected.",
       "wav": "wav/module9_slide_18.wav",
       "audio": "audio/module9_slide_18.mp3",
       "captions": "audio/module9_slide_18.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 19,
-      "title": "Category mapping",
-      "transcript": "Category standardization is more than text cleaning. If several labels should map to one canonical category, that mapping reflects business meaning. You need a documented rule. Do not merge categories simply because their names look similar. The transformation should reflect the intended taxonomy. Standardization should make equivalent values comparable without inventing facts. Lowercasing an email or normalizing a known category map is different from guessing what an ambiguous value was supposed to mean. Good cleaning reduces representation noise while preserving uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 92,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        92
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Category Standardization Requires a Business Rule",
+      "transcript": "Categorical values often contain several labels for what may be the same concept.\n\nFor example, a product dataset might contain electronics, electronic, and tech. We may want all three to appear as Electronics.\n\nBut SQL cannot know that these labels mean the same thing unless we define that rule.\n\n[tts-break]\n\nThis is why category standardization is partly a business decision. The database can apply the mapping, but a person or organization must define what the mapping means.\n\nImagine another category called accessories. Should it be grouped with electronics? Maybe yes in one company and no in another.\n\nSo before creating mappings, review the observed values and document which source labels belong to each target category. Once that rule is clear, SQL can enforce it consistently.",
       "wav": "wav/module9_slide_19.wav",
       "audio": "audio/module9_slide_19.mp3",
       "captions": "audio/module9_slide_19.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 20,
-      "title": "Standardize categories",
-      "transcript": "This CASE expression maps several known labels to standard categories. Electronics, electronic, and tech map to Electronics. Other documented variants map to their canonical labels. For a small teaching example, CASE is readable. For a larger production taxonomy, a reference or mapping table is usually easier to maintain. Standardization should make equivalent values comparable without inventing facts. Lowercasing an email or normalizing a known category map is different from guessing what an ambiguous value was supposed to mean. Good cleaning reduces representation noise while preserving uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 100,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        100
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Use CASE for a Small Category Mapping",
+      "transcript": "For a small number of category mappings, a case expression is easy to read and teach.\n\nThe query first handles missing or blank categories. Then it converts the source text to a consistent form and checks whether it belongs to one of several known groups.\n\nFor example, electronics, electronic, and tech are mapped to Electronics. Audio and headphones are mapped to Audio. Other known labels are handled in the same way.\n\n[tts-break]\n\nIf a value does not match one of the documented groups, the query keeps it but gives it consistent capitalization.\n\nThis approach works well for a small teaching example. In a production system with many mappings, a separate lookup table is usually easier to maintain.\n\nRun the query and compare the raw category with the standardized category. Focus on the idea that the mapping rule is explicit and reviewable.",
       "wav": "wav/module9_slide_20.wav",
       "audio": "audio/module9_slide_20.mp3",
       "captions": "audio/module9_slide_20.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 21,
-      "title": "Flag invalid values",
-      "transcript": "This query classifies product prices. Missing values are labeled missing. Zero or negative prices are flagged invalid and require review. Positive prices are valid candidates. Notice that the query does not change the values. Validation should often begin by identifying problems, not by overwriting them. Validation is rule-based detection, not automatic correction. A failed email-shape check tells you that a record deserves attention; it does not tell you the correct email. Treat quality flags as evidence that can drive quarantine, review, or a documented repair process.",
-      "seed": 1234,
-      "tts_text_tokens": 105,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        105
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Detect Invalid Prices Before Correcting Them",
+      "transcript": "Validation should normally happen before correction.\n\nThis query checks product prices and assigns a status. A missing price is labeled missing. A price less than or equal to zero is labeled invalid and marked for review. Anything else becomes a valid candidate.\n\n[tts-break]\n\nThe important word again is candidate. A positive number satisfies our selected rule, but it may still be wrong. A product that normally costs twenty dollars could accidentally be entered as two thousand dollars and still pass this simple check.\n\nValidation only tests the rules we define.\n\nSo begin with clear, transparent checks. Identify the records that fail. Then decide what to do with them based on evidence.\n\nThis is much safer than immediately changing every value that looks unusual.",
       "wav": "wav/module9_slide_21.wav",
       "audio": "audio/module9_slide_21.mp3",
       "captions": "audio/module9_slide_21.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 22,
-      "title": "Validation is rule-based",
-      "transcript": "Validation tests values against documented rules. A rule might describe a text pattern, a length, a domain, or a numeric range. Passing a rule means the value satisfies that rule. It does not necessarily prove the value is correct in the real world. Keep the distinction between validity and accuracy from Module 1. Connect this idea to a customer master-data project cleaning duplicate profiles. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 141,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        141
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Validation Should Answer a Documented Question",
+      "transcript": "A good validation rule should answer a specific question.\n\nFor an email, we might ask whether the cleaned text has the basic structure required by our system.\n\nFor a phone number, we might ask whether the normalized candidate contains the required number of digits.\n\nFor a price, we may ask whether a value is present and whether it falls inside an allowed numeric domain.\n\nFor stock quantity, we might require a nonnegative number.\n\n[tts-break]\n\nNotice that each check is tied to a documented expectation.\n\nAvoid writing complicated validation logic just because you can. Start with the business question, then write the simplest SQL that tests that question.\n\nA validation result is only meaningful when you can explain the rule behind it.",
       "wav": "wav/module9_slide_22.wav",
       "audio": "audio/module9_slide_22.mp3",
       "captions": "audio/module9_slide_22.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 23,
-      "title": "Validate email shape",
-      "transcript": "This query checks email shape. Missing values receive a missing status. Values matching the teaching-level regular expression are labeled valid shape. Other nonmissing values are flagged for review. The phrase valid shape is important because the regex does not prove the mailbox exists. Standardization should make equivalent values comparable without inventing facts. Lowercasing an email or normalizing a known category map is different from guessing what an ambiguous value was supposed to mean. Good cleaning reduces representation noise while preserving uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 94,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        94
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Use a Regular Expression for Email Shape",
+      "transcript": "A regular expression can help us test whether text follows a particular structure.\n\nFor the email example, we first handle missing or blank values. Then we test whether the cleaned email has a reasonable pattern: some text before the at sign, a domain after it, and a final domain ending.\n\n[tts-break]\n\nYou do not need to memorize the full regular expression character by character. Focus on what it is doing: it is checking the shape of the text.\n\nIf the value matches, we label it valid shape. If it does not match, we label it for review.\n\nBut remember what this does not prove. An address can have a perfect shape and still be nonexistent, inactive, or typed for the wrong person.\n\nRegular expressions are useful structural filters. They are not proof of real-world truth.",
       "wav": "wav/module9_slide_23.wav",
       "audio": "audio/module9_slide_23.mp3",
       "captions": "audio/module9_slide_23.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 24,
-      "title": "Validate phone shape",
-      "transcript": "Phone validation first strips punctuation and other non-digit characters. Then it checks whether the resulting candidate has ten digits. Missing values are separated from invalid-shaped values. This is a good pattern: normalize representation first, then apply the validation rule. Standardization should make equivalent values comparable without inventing facts. Lowercasing an email or normalizing a known category map is different from guessing what an ambiguous value was supposed to mean. Good cleaning reduces representation noise while preserving uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 92,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        92
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Normalize Phone Numbers Before Checking Length",
+      "transcript": "Phone validation becomes easier after normalization.\n\nThe query first removes punctuation and other non-digit characters. Then it checks the length of the resulting digit string.\n\nIf there are exactly ten digits, the phone receives a valid-shape status. If the original value is missing or blank, it is labeled missing. Other cases are sent for review.\n\n[tts-break]\n\nImagine two phone values. One uses parentheses and a dash. The other contains exactly the same number with no punctuation. If we compare the raw strings, they look different. After digit extraction, they become identical.\n\nThat is why normalization should often happen before validation or matching.\n\nWhen you run the query, inspect the original phone, the digits-only value, and the final status together.",
       "wav": "wav/module9_slide_24.wav",
       "audio": "audio/module9_slide_24.mp3",
       "captions": "audio/module9_slide_24.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 25,
-      "title": "Validate products",
-      "transcript": "This query applies several product rules in priority order. It checks for a missing product name, missing price, invalid price, and negative stock. If none of those selected rules fail, the row passes the selected checks. A production system might store several issue codes instead of only the first one, but this CASE expression is a clear beginner-friendly start. Validation is rule-based detection, not automatic correction. A failed email-shape check tells you that a record deserves attention; it does not tell you the correct email. Treat quality flags as evidence that can drive quarantine, review, or a documented repair process.",
-      "seed": 1234,
-      "tts_text_tokens": 122,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        122
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Combine Business Rules into a Row Status",
+      "transcript": "Sometimes we want one status that summarizes the first problem found in a record.\n\nThis product-validation query checks several rules in order. It looks for a missing product name, a missing price, an invalid price, and a negative stock quantity. If none of those conditions is triggered, the row passes the selected rules.\n\n[tts-break]\n\nThe order matters because a case expression returns the first matching condition.\n\nFor example, if a product has both a missing name and a negative price, this particular query reports the missing name first. That does not mean the price problem disappeared.\n\nFor a full data-quality system, we may want separate issue flags so multiple problems can be recorded at the same time.\n\nUse this example to understand row-level validation, but also recognize its limitation: one status may summarize rather than capture every issue.",
       "wav": "wav/module9_slide_25.wav",
       "audio": "audio/module9_slide_25.mp3",
       "captions": "audio/module9_slide_25.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 26,
-      "title": "Issue report",
-      "transcript": "Row-level validation is useful, but managers and analysts often need a summary. This query combines several issue detectors with UNION ALL. Then it groups by entity and issue type to count how many problems exist. This turns cleaning logic into a measurable quality report. Validation is rule-based detection, not automatic correction. A failed email-shape check tells you that a record deserves attention; it does not tell you the correct email. Treat quality flags as evidence that can drive quarantine, review, or a documented repair process.",
-      "seed": 1234,
-      "tts_text_tokens": 103,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        103
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Turn Row-Level Problems into Issue Counts",
+      "transcript": "Once we can identify individual data-quality problems, we can summarize them.\n\nThis query creates a temporary issue list using a common table expression. One part identifies invalid customer emails. Another identifies invalid customer phone numbers. Another identifies invalid product prices.\n\nThe union all operation combines those issue records into one list.\n\n[tts-break]\n\nThen the final query groups by entity type and issue type and counts how many records have each problem.\n\nInstead of reading the long SQL statement character by character, focus on the pattern: detect problems first, represent each problem as a row, then aggregate the issue rows.\n\nThis approach is useful for dashboards and monitoring. It can answer questions such as: what is our most common quality problem, and is that problem getting better or worse over time?",
       "wav": "wav/module9_slide_26.wav",
       "audio": "audio/module9_slide_26.mp3",
       "captions": "audio/module9_slide_26.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 27,
-      "title": "Quality dimensions",
-      "transcript": "Data quality has multiple dimensions. Completeness is not the same as validity. Validity is not the same as uniqueness. Timeliness asks a different question again. Measure these dimensions separately whenever possible. A single score can be useful for triage, but it can hide which problem actually caused the low score. Validation is rule-based detection, not automatic correction. A failed email-shape check tells you that a record deserves attention; it does not tell you the correct email. Treat quality flags as evidence that can drive quarantine, review, or a documented repair process.",
-      "seed": 1234,
-      "tts_text_tokens": 111,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        111
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Measure Quality Dimensions Separately",
+      "transcript": "Data quality is not a single idea. It has several dimensions.\n\nCompleteness asks whether required values are present.\n\nValidity asks whether values satisfy documented rules.\n\nUniqueness asks whether duplicate identities are controlled.\n\nTimeliness asks whether the data is current enough for the intended use.\n\n[tts-break]\n\nA dataset can perform well in one dimension and poorly in another. For example, every customer may have a phone number, so completeness is high. But if many phone numbers are invalid, validity is low.\n\nThat is why it is useful to measure these dimensions separately before combining them into one overall score.\n\nWhen someone says a dataset has ninety percent quality, ask what that number actually measures. A useful quality metric should be transparent enough that you can explain how it was calculated.",
       "wav": "wav/module9_slide_27.wav",
       "audio": "audio/module9_slide_27.mp3",
       "captions": "audio/module9_slide_27.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 28,
-      "title": "Illustrative quality score",
-      "transcript": "This query creates an illustrative score out of four component checks. Each contributes twenty-five points. That weighting is a policy choice for teaching. Another organization might value the dimensions differently. The important lesson is to keep the component checks visible and avoid treating a composite score as an objective truth. Validation is rule-based detection, not automatic correction. A failed email-shape check tells you that a record deserves attention; it does not tell you the correct email. Treat quality flags as evidence that can drive quarantine, review, or a documented repair process.",
-      "seed": 1234,
-      "tts_text_tokens": 109,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        109
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Composite Quality Scores Are Policy Choices",
+      "transcript": "Here we create a simple teaching example of a customer quality score.\n\nThe query checks four conditions: whether the name is present, whether the email has a valid shape, whether the phone has ten digits, and whether the signup date passes the selected date rule.\n\nEach condition contributes twenty-five points, so a record can receive a score from zero to one hundred.\n\n[tts-break]\n\nThe mathematics is simple, but the important question is why each check receives the same weight.\n\nIn a real organization, perhaps a valid email is more important than a phone number. Or perhaps the signup date should not affect quality at all.\n\nSo treat this score as an illustration, not a universal formula.\n\nA composite score is a policy decision. Always keep the underlying component checks available so people can understand what the final number means.",
       "wav": "wav/module9_slide_28.wav",
       "audio": "audio/module9_slide_28.mp3",
       "captions": "audio/module9_slide_28.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 29,
-      "title": "Quality-band summary",
-      "transcript": "This query converts numeric quality scores into broad bands and counts customers in each band. A summary like this can help prioritize review. But the band does not replace the underlying dimensions. If a row has a low score, you should still be able to explain whether the problem is missingness, invalid contact data, timeliness, or something else. Validation is rule-based detection, not automatic correction. A failed email-shape check tells you that a record deserves attention; it does not tell you the correct email. Treat quality flags as evidence that can drive quarantine, review, or a documented repair process.",
-      "seed": 1234,
-      "tts_text_tokens": 119,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        119
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Summarize Quality Scores into Bands",
+      "transcript": "After calculating a numeric quality score, we can summarize records into categories.\n\nThe query creates score bands such as Excellent, Good, Fair, and Poor, and then counts how many customers fall into each band.\n\nThis can make a quality report easier to read.\n\n[tts-break]\n\nBut be careful not to hide too much information behind a label.\n\nSuppose two customers both receive a score of seventy-five. One may be missing a phone number, while the other may have an invalid email. They have the same total score but different problems.\n\nSo quality bands are useful for high-level summaries, while the detailed issue flags remain important for action.\n\nUse summaries to communicate. Use component-level checks to diagnose and improve the data.",
       "wav": "wav/module9_slide_29.wav",
       "audio": "audio/module9_slide_29.mp3",
       "captions": "audio/module9_slide_29.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 30,
-      "title": "Duplicate detection",
-      "transcript": "Deduplication has two separate problems. First, detect which rows appear to represent the same entity. Second, decide which row should survive or how the records should be merged. Do not jump directly from detection to deletion. The duplicate key and survivor rule both need to be explicit. Duplicate resolution requires a definition of identity and a survivor rule. Exact duplicate rows are easy; duplicate people or customers are harder. If you choose one survivor, document the priority—latest update, verified source, highest completeness, or another defensible rule—and preserve links to the merged records.",
-      "seed": 1234,
-      "tts_text_tokens": 114,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        114
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Find Duplicate Groups Before Choosing a Survivor",
+      "transcript": "Deduplication should begin with detection, not deletion.\n\nFirst, normalize the fields you plan to use as identity evidence. For example, convert emails to a consistent form and normalize name spacing and capitalization.\n\nSecond, group records using the duplicate key you have chosen.\n\nThird, review groups where the count is greater than one.\n\n[tts-break]\n\nAt this point, do not delete anything.\n\nTwo rows can look similar without representing the same person. Two family members might share a phone number. A person might use two email addresses. A common name can appear many times.\n\nThe goal of the first stage is to identify candidate duplicate groups.\n\nOnly after you understand the relationship should you decide whether records should be merged, ranked, quarantined, or simply left alone.",
       "wav": "wav/module9_slide_30.wav",
       "audio": "audio/module9_slide_30.mp3",
       "captions": "audio/module9_slide_30.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 31,
-      "title": "Exact normalized duplicates",
-      "transcript": "This query creates normalized email and name keys. It groups rows by those normalized values. Groups with more than one row become duplicate candidates. ARRAY_AGG shows the source IDs in each group. This is detection only. It does not yet say which source row is better. Standardization should make equivalent values comparable without inventing facts. Lowercasing an email or normalizing a known category map is different from guessing what an ambiguous value was supposed to mean. Good cleaning reduces representation noise while preserving uncertainty.",
-      "seed": 1234,
-      "tts_text_tokens": 97,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        97
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Normalize Identity Fields Before Grouping",
+      "transcript": "This query searches for duplicate groups using normalized email and normalized name.\n\nThe email is trimmed and converted to lowercase. The name has extra spaces removed and is given consistent display capitalization. Then the query groups records by those normalized values.\n\nOnly groups with more than one row are returned.\n\n[tts-break]\n\nThe query also collects the source identifiers so you can see which records belong to the candidate group.\n\nImagine that one record contains Jane Smith with extra spaces and another contains the same name with different capitalization. Without normalization, SQL may treat them as different values. After normalization, they may fall into the same group.\n\nThat does not prove they are the same person. It gives us stronger evidence that the records deserve review.",
       "wav": "wav/module9_slide_31.wav",
       "audio": "audio/module9_slide_31.mp3",
       "captions": "audio/module9_slide_31.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 32,
-      "title": "Duplicate key is a rule",
-      "transcript": "Duplicate detection depends on the identity rule. Email alone may be useful but can fail when emails are shared or changed. Name plus email can be stronger but may miss rows with incomplete values. Phone can provide supporting evidence but is not perfect. For sensitive data, possible duplicates often need multiple signals and review. Duplicate resolution requires a definition of identity and a survivor rule. Exact duplicate rows are easy; duplicate people or customers are harder. If you choose one survivor, document the priority—latest update, verified source, highest completeness, or another defensible rule—and preserve links to the merged records.",
-      "seed": 1234,
-      "tts_text_tokens": 118,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        118
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Different Duplicate Keys Answer Different Questions",
+      "transcript": "The fields you use for duplicate detection change the meaning of the result.\n\nUsing normalized email alone is simple and often useful, but people can change emails, share accounts, or have missing values.\n\nUsing name plus email is more specific, but differences in spelling or missing information can split records that actually belong to the same person.\n\nPhone digits can provide useful secondary evidence, but households may share a number and phone numbers can be reassigned.\n\n[tts-break]\n\nCombining several fields usually gives stronger evidence, but it also makes the logic more complex.\n\nThere is no perfect duplicate key for every dataset.\n\nChoose identity evidence based on the domain, understand the risks of false matches and missed matches, and use human review when the consequences of an incorrect merge are important.",
       "wav": "wav/module9_slide_32.wav",
       "audio": "audio/module9_slide_32.mp3",
       "captions": "audio/module9_slide_32.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 33,
-      "title": "Survivor selection",
-      "transcript": "After detecting duplicates, define a survivor rule. A row with more useful fields might rank higher. A more recent record might be preferred when recency is meaningful. Some systems have a designated authoritative source. And ties should be broken deterministically. The important point is that survivor selection is a policy, not an automatic property of SQL. Duplicate resolution requires a definition of identity and a survivor rule. Exact duplicate rows are easy; duplicate people or customers are harder. If you choose one survivor, document the priority—latest update, verified source, highest completeness, or another defensible rule—and preserve links to the merged records.",
-      "seed": 1234,
-      "tts_text_tokens": 124,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        124
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Choose a Survivor with an Explicit Rule",
+      "transcript": "After identifying a duplicate group, we may need to choose a preferred record, sometimes called the survivor.\n\nThat choice should follow an explicit rule.\n\nOne option is completeness: prefer the record with more useful populated fields.\n\nAnother is recency: prefer a newer trusted record when that makes sense.\n\nA third is source priority: if one system is considered authoritative, prefer its record.\n\n[tts-break]\n\nAnd finally, use a stable tie-breaker, such as the record identifier, so the result is reproducible.\n\nImagine two duplicate records with the same name and email. One has a phone and address, while the other does not. A completeness rule may prefer the first record.\n\nThe key is that the decision should be explainable. We should never choose a survivor simply because one row happened to appear first.",
       "wav": "wav/module9_slide_33.wav",
       "audio": "audio/module9_slide_33.mp3",
       "captions": "audio/module9_slide_33.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 34,
-      "title": "Rank duplicate survivors",
-      "transcript": "This query calculates a simple completeness score. Then ROW_NUMBER ranks rows inside each normalized duplicate group. The most complete row ranks first, with signup date and ID used as additional ordering. This does not mean the first row is always truly correct. It means the rule is explicit, reproducible, and reviewable. Duplicate resolution requires a definition of identity and a survivor rule. Exact duplicate rows are easy; duplicate people or customers are harder. If you choose one survivor, document the priority—latest update, verified source, highest completeness, or another defensible rule—and preserve links to the merged records.",
-      "seed": 1234,
-      "tts_text_tokens": 120,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        120
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Use Row Number for Reproducible Ranking",
+      "transcript": "The row number window function is useful when we need to rank duplicate candidates.\n\nThe query first calculates a completeness score. It gives a point when useful fields such as name, email, phone, or address are populated.\n\nThen the duplicate records are grouped using the normalized identity fields.\n\nWithin each group, row number assigns a rank. More complete records come first. If completeness is tied, the query considers signup date, and then the identifier provides a stable final tie-breaker.\n\n[tts-break]\n\nThe record with rank one is the preferred candidate according to this rule.\n\nNotice that SQL is not deciding which person is real. We are implementing a policy that we designed.\n\nRun the query and compare the completeness score with the survivor rank for the duplicate group.",
       "wav": "wav/module9_slide_34.wav",
       "audio": "audio/module9_slide_34.mp3",
       "captions": "audio/module9_slide_34.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 35,
-      "title": "Possible duplicates",
-      "transcript": "This query creates pairs of customers that share the same normalized phone number. The condition a ID less than b ID avoids comparing a row with itself and avoids duplicate pair orderings. These are possible duplicates, not proven duplicates. A shared phone number may represent one person, a household, or reused contact information. Review may be necessary. Duplicate resolution requires a definition of identity and a survivor rule. Exact duplicate rows are easy; duplicate people or customers are harder. If you choose one survivor, document the priority—latest update, verified source, highest completeness, or another defensible rule—and preserve links to the merged records.",
-      "seed": 1234,
-      "tts_text_tokens": 124,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        124
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Some Possible Duplicates Need Review",
+      "transcript": "Not every possible duplicate should be automatically merged.\n\nThis query compares customer records in pairs and looks for rows that share the same normalized phone number.\n\nIt uses a self join, meaning the customers table is joined to another copy of itself. The condition that the left identifier must be smaller than the right identifier prevents us from seeing the same pair twice.\n\n[tts-break]\n\nIf two records share a phone number, the query returns their identifiers, names, and emails for comparison.\n\nSuppose two customers have the same phone number but different names and emails. That could represent a duplicate, but it could also represent two people in the same household.\n\nThis is exactly the kind of situation where SQL should identify a candidate and a person may need to make the final decision.",
       "wav": "wav/module9_slide_35.wav",
       "audio": "audio/module9_slide_35.mp3",
       "captions": "audio/module9_slide_35.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 36,
-      "title": "Detection vs resolution",
-      "transcript": "Duplicate detection and duplicate resolution are different stages. Detection tries to find plausible candidate groups. Resolution decides what to do with them. That could mean choosing a survivor, merging complementary fields, quarantining the group, or sending it for human review. Separating the stages makes deduplication safer. Connect this idea to a product catalog standardizing categories and quarantining invalid rows. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 138,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        138
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Separate Duplicate Detection from Resolution",
+      "transcript": "Keep duplicate detection and duplicate resolution as two separate phases.\n\nDetection asks: which rows might represent the same entity? It can use normalized keys, matching fields, or similarity evidence. Detection is often intentionally broad because we do not want to miss possible matches.\n\nResolution asks a different question: what should we do with those candidate records?\n\n[tts-break]\n\nPossible responses include selecting a survivor, merging selected fields, quarantining a group, or sending the records for manual review.\n\nResolution should usually be more conservative because it can change or consolidate data.\n\nThis separation gives you flexibility. You can improve your detection logic without automatically changing records, and you can apply different resolution policies depending on the risk and the business context.",
       "wav": "wav/module9_slide_36.wav",
       "audio": "audio/module9_slide_36.mp3",
       "captions": "audio/module9_slide_36.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 37,
-      "title": "Quarantine pattern",
-      "transcript": "Quarantine is a useful pattern when values are questionable but not safely correctable. The source remains intact. Issue flags identify what needs attention. A view or table exposes the review subset. After review, records can be corrected, approved, or excluded according to policy. This is often safer than automatic replacement. A quarantine pattern separates questionable records from trusted analytical output without deleting evidence. Views are useful for reusable cleaning logic because they let you expose a consistent cleaned representation while keeping raw source data intact. That improves reproducibility and auditability.",
-      "seed": 1234,
-      "tts_text_tokens": 105,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        105
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Quarantine Instead of Hiding Problems",
+      "transcript": "When a record is questionable, one useful strategy is quarantine.\n\nQuarantine does not necessarily mean moving the record to another physical database table. The main idea is to separate questionable data from trusted analytical data while preserving the source.\n\nFirst, keep the original record.\n\nSecond, create issue flags that describe what is missing, invalid, or suspicious.\n\n[tts-break]\n\nThird, create a review subset containing only records that need attention.\n\nLater, if evidence becomes available, those records can be corrected, approved, or promoted to a trusted layer.\n\nFor example, an invalid signup date should not be silently replaced with today's date. We can preserve the raw date text, produce a null cleaned date, and flag the record for review.\n\nQuarantine makes uncertainty visible instead of pretending the problem has been solved.",
       "wav": "wav/module9_slide_37.wav",
       "audio": "audio/module9_slide_37.mp3",
       "captions": "audio/module9_slide_37.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 38,
-      "title": "Create a quarantine view",
-      "transcript": "This example creates a view with quality flags. It marks missing names, invalid email shapes, and invalid phone shapes. The final SELECT returns only rows that need attention. Because the source customer table is unchanged, the view becomes a transparent review layer. This is a strong pattern for reproducible cleaning. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a healthcare pipeline validating contact, demographic, and event fields, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 158,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        158
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Expose Quality Issues with a View",
+      "transcript": "A database view can expose quality problems without overwriting the source table.\n\nThe example creates a customer quality issues view. It keeps identifying fields such as customer ID, name, email, and phone, and then adds separate true-or-false flags.\n\nOne flag identifies a missing name. Another identifies an email that fails the selected shape check. Another identifies a phone that does not contain the required number of digits after normalization.\n\n[tts-break]\n\nThe second query returns only records where at least one issue flag is true.\n\nThis design is useful because one customer can have more than one problem at the same time.\n\nThe source data stays intact, while the view gives us a reusable quality layer that can support review, reporting, or downstream cleaning workflows.",
       "wav": "wav/module9_slide_38.wav",
       "audio": "audio/module9_slide_38.mp3",
       "captions": "audio/module9_slide_38.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 39,
-      "title": "Views as cleaning layers",
-      "transcript": "Views can help separate source data from analytical representation. The raw table preserves provenance. A clean view applies standardized transformations. A quality view exposes rows that need review. Downstream analysis can use the prepared layer without permanently overwriting the source. This also makes the cleaning logic visible in SQL. A quarantine pattern separates questionable records from trusted analytical output without deleting evidence. Views are useful for reusable cleaning logic because they let you expose a consistent cleaned representation while keeping raw source data intact. That improves reproducibility and auditability.",
-      "seed": 1234,
-      "tts_text_tokens": 101,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        101
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Use Separate Raw, Clean, and Quality Layers",
+      "transcript": "A strong data preparation design often keeps several logical layers.\n\nThe raw table preserves source records with little or no modification.\n\nA clean view provides reusable transformations for analysis, such as normalized names, emails, and phone numbers.\n\nA quality view exposes issue flags and review logic.\n\n[tts-break]\n\nDownstream users can then choose the layer appropriate for their task.\n\nFor example, an analyst building a dashboard may use the clean view. A data steward investigating problems may use the quality view. An auditor may need the raw table.\n\nThis layered approach is safer than repeatedly overwriting the same source columns.\n\nIt also makes your pipeline easier to explain: raw data came in here, standardization happened here, and quality rules were applied here.",
       "wav": "wav/module9_slide_39.wav",
       "audio": "audio/module9_slide_39.mp3",
       "captions": "audio/module9_slide_39.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 40,
-      "title": "Clean preview view",
-      "transcript": "This query creates a clean preview view. Names, emails, phones, and addresses are transformed into candidate analytical fields. The original customer rows remain unchanged. This gives you a reusable prepared layer while keeping the source available for comparison and audit. A quarantine pattern separates questionable records from trusted analytical output without deleting evidence. Views are useful for reusable cleaning logic because they let you expose a consistent cleaned representation while keeping raw source data intact. That improves reproducibility and auditability.",
-      "seed": 1234,
-      "tts_text_tokens": 91,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        91
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Create Clean Analytical Fields without Changing the Source",
+      "transcript": "Here we create a clean preview view for the customers table.\n\nThe view standardizes the name, cleans the email, creates a ten-digit phone candidate when the number passes the selected rule, normalizes blank addresses, and keeps the signup date.\n\nThe original customers table is not changed.\n\n[tts-break]\n\nThis is useful while developing cleaning logic because you can compare the clean preview with the source at any time.\n\nSuppose you later decide that phone numbers should allow an international format. You can revise the view logic without trying to reconstruct values that were permanently overwritten.\n\nRun the view and compare several rows with the original customers table.\n\nA preview layer gives us a safe place to test analytical transformations before deciding whether any permanent correction is justified.",
       "wav": "wav/module9_slide_40.wav",
       "audio": "audio/module9_slide_40.mp3",
       "captions": "audio/module9_slide_40.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 41,
-      "title": "Prevent known defects",
-      "transcript": "After you understand the data and reconcile legacy problems, stable rules can move closer to data entry. NOT NULL protects required values. CHECK can enforce a pattern or domain. UNIQUE can protect a field that truly must be unique. Foreign keys protect relationships. Constraints prevent known defects from reappearing, but they should reflect real business rules. Connect this idea to a healthcare pipeline validating contact, demographic, and event fields. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 146,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        146
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Move Stable Rules Closer to Data Entry",
+      "transcript": "Cleaning historical data is useful, but preventing future problems is even better.\n\nOnce a rule is stable and well understood, the database can help enforce it.\n\nA not-null constraint can require a value.\n\nA check constraint can enforce a domain or pattern rule.\n\nA unique constraint can prevent duplicate values when uniqueness is truly required.\n\nA foreign key protects relationships between tables.\n\n[tts-break]\n\nFor example, if every order must reference an existing customer, a foreign key can prevent an order from pointing to a customer identifier that does not exist.\n\nConstraints should represent rules we are confident about.\n\nDo not use them to encode guesses. When a business rule is unclear, investigate first. When the rule becomes stable, move it closer to the point where data enters the system.",
       "wav": "wav/module9_slide_41.wav",
       "audio": "audio/module9_slide_41.mp3",
       "captions": "audio/module9_slide_41.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 42,
-      "title": "Constraint demonstration",
-      "transcript": "This example creates a small table with several constraints. Email is required. The email must match a teaching-level shape check. Phone is either NULL or exactly ten digits. Email is also unique. Run the valid insert first. Then try changing a value to violate one rule and observe PostgreSQL reject it. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a product catalog standardizing categories and quarantining invalid rows, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 160,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        160
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Build a Small Validated Contact Table",
+      "transcript": "This example creates a small contact table with several database constraints.\n\nThe contact identifier is the primary key. Email is required, so it uses a not-null rule.\n\nA check constraint tests whether the email follows the selected structural pattern.\n\nAnother check requires the phone, when present, to contain exactly ten digits.\n\nThe email also has a unique constraint.\n\n[tts-break]\n\nThe example then inserts one valid record.\n\nAfter you run the valid insert, try changing one thing at a time. For example, use an email that does not follow the expected pattern, or use a phone with too few digits.\n\nPostgres should reject values that violate the constraints.\n\nThis is how a database can prevent some known quality problems before they become part of the stored data.",
       "wav": "wav/module9_slide_42.wav",
       "audio": "audio/module9_slide_42.mp3",
       "captions": "audio/module9_slide_42.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 43,
-      "title": "When to add constraints",
-      "transcript": "Constraints are powerful, but timing matters. If you add a strict rule before understanding legacy data, valid historical exceptions may be blocked or the migration may fail. Profile first. Resolve existing violations. Confirm the business rule and its owner. Then add the constraint and monitor future data. Once a quality rule is well understood, prevention may be better than repeated cleanup. Constraints can stop known invalid values at write time. When updates are required, preview the target rows, change only what is justified, and use RETURNING or an audit log so the transformation can be reviewed.",
-      "seed": 1234,
-      "tts_text_tokens": 112,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        112
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Do Not Add Strict Constraints Blindly",
+      "transcript": "Constraints are powerful, but adding them to an existing database requires care.\n\nFirst, profile the current data. You may discover that many historical records already violate the proposed rule.\n\nNext, document allowed values and important exceptions.\n\nThen decide how existing violations should be handled. Some may be corrected using evidence. Others may need to be quarantined or reviewed.\n\n[tts-break]\n\nAlso consider the systems that insert data. A new constraint can break an existing import process if the incoming data does not satisfy the rule.\n\nSo the sequence matters: understand the data, confirm the business rule, address legacy problems, test the impact, and then enforce the stable rule.\n\nConstraints are most effective when they are the final step of a well-understood quality policy, not the first reaction to messy data.",
       "wav": "wav/module9_slide_43.wav",
       "audio": "audio/module9_slide_43.mp3",
       "captions": "audio/module9_slide_43.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 44,
-      "title": "Safe updates",
-      "transcript": "When a cleaning rule is strong enough to update data, use a controlled workflow. Preview with SELECT. Start a transaction. Run UPDATE with a narrow condition. Use RETURNING to inspect the changed rows. Then either commit the change or roll it back. This makes destructive cleaning much safer. Once a quality rule is well understood, prevention may be better than repeated cleanup. Constraints can stop known invalid values at write time. When updates are required, preview the target rows, change only what is justified, and use RETURNING or an audit log so the transformation can be reviewed.",
-      "seed": 1234,
-      "tts_text_tokens": 114,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        114
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Preview Before You Update",
+      "transcript": "Permanent updates should follow a safe workflow.\n\nStart with a select query that identifies exactly which rows would change.\n\nThen begin a transaction.\n\nNext, perform the update and use the returning feature so Postgres immediately shows the rows affected by the change.\n\nInspect the results carefully.\n\n[tts-break]\n\nIf everything is correct, commit the transaction and keep the changes. If something is wrong, roll back the transaction and discard them.\n\nThink of a transaction as a protected testing area for your update.\n\nThis is especially important when you are learning, working with production data, or applying a transformation to many rows.\n\nA simple habit can prevent a serious mistake: select first, update inside a transaction, inspect the results, and only then decide whether to commit.",
       "wav": "wav/module9_slide_44.wav",
       "audio": "audio/module9_slide_44.mp3",
       "captions": "audio/module9_slide_44.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 45,
-      "title": "UPDATE RETURNING",
-      "transcript": "This script begins a transaction. It lowercases and trims emails only when the stored value is actually different. RETURNING shows which rows changed. Then ROLLBACK discards the changes. This is a useful teaching pattern because you can inspect the effect without permanently modifying the source table. Once a quality rule is well understood, prevention may be better than repeated cleanup. Constraints can stop known invalid values at write time. When updates are required, preview the target rows, change only what is justified, and use RETURNING or an audit log so the transformation can be reviewed.",
-      "seed": 1234,
-      "tts_text_tokens": 112,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        112
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Inspect a Reversible Cleaning Update",
+      "transcript": "This example demonstrates a reversible update.\n\nWe begin a transaction, standardize customer emails by trimming spaces and converting the text to lowercase, and use returning to display the affected records.\n\nThe where condition limits the update to rows where the current email is actually different from the standardized version.\n\n[tts-break]\n\nThen the example performs a rollback.\n\nThat means you can see which rows would change, but the database does not keep the changes after the transaction ends.\n\nThis is an excellent way to test cleaning logic.\n\nWhen you are confident that the transformation is correct and appropriate, the same workflow can end with commit instead of rollback.\n\nWhile developing or teaching, rollback gives you a repeatable example because the source data remains unchanged.",
       "wav": "wav/module9_slide_45.wav",
       "audio": "audio/module9_slide_45.mp3",
       "captions": "audio/module9_slide_45.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 46,
-      "title": "IS DISTINCT FROM",
-      "transcript": "IS DISTINCT FROM is useful in cleaning updates because it handles NULL explicitly. Ordinary equality follows three-valued logic. IS DISTINCT FROM tells you whether two values are meaningfully different, including cases where one is NULL. This can help avoid unnecessary updates and make conditions more predictable. Connect this idea to a customer master-data project cleaning duplicate profiles. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 132,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        132
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Compare Nullable Values Safely",
+      "transcript": "Null values require special care in SQL comparisons.\n\nIf you compare a value with null using the normal equals operator, the result is not simply true or false. SQL treats the comparison as unknown.\n\nThat behavior can make update conditions difficult when nullable columns are involved.\n\n[tts-break]\n\nPostgres provides the phrase is distinct from. It gives us a null-safe way to ask whether two values are different.\n\nFor example, suppose we compare an existing email with a cleaned version. We want to know whether an update would actually change the value, even if one side could be null.\n\nUsing is distinct from makes that comparison explicit and predictable.\n\nYou do not need to use it everywhere, but it is a very useful Postgres feature when cleaning nullable data.",
       "wav": "wav/module9_slide_46.wav",
       "audio": "audio/module9_slide_46.mp3",
       "captions": "audio/module9_slide_46.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 47,
-      "title": "Do not overwrite uncertainty",
-      "transcript": "Some cleaning shortcuts make a dataset look better while reducing its truthfulness. A bad date should not become today's date. A negative price should not become positive without evidence. A missing phone should remain missing unless a reliable source provides one. A possible duplicate should not be deleted just because its ID is larger. Cleaning should preserve uncertainty when the truth is unknown. Once a quality rule is well understood, prevention may be better than repeated cleanup. Constraints can stop known invalid values at write time. When updates are required, preview the target rows, change only what is justified, and use RETURNING or an audit log so the transformation can be reviewed.",
-      "seed": 1234,
-      "tts_text_tokens": 129,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        129
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Some Defects Should Stay Flagged",
+      "transcript": "Some problems cannot be safely fixed automatically.\n\nA negative price should not automatically become positive unless we know the intended value.\n\nA bad date string should not be replaced with today's date simply to avoid a missing value.\n\nA missing phone number should not be filled using some unrelated contact field.\n\nAnd a possible duplicate should not be deleted simply because it has a lower identifier.\n\n[tts-break]\n\nThe safer response is often to preserve the source, produce a cleaned value only when justified, and add a review status.\n\nThis may feel less satisfying because the dataset still contains unresolved problems. But that is actually more honest.\n\nA clean dataset should not mean a dataset where uncertainty has been hidden. It should mean a dataset where known transformations are consistent and unresolved uncertainty is clearly represented.",
       "wav": "wav/module9_slide_47.wav",
       "audio": "audio/module9_slide_47.mp3",
       "captions": "audio/module9_slide_47.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 48,
-      "title": "Issue codes and lineage",
-      "transcript": "Production cleaning pipelines often need lineage fields. Source ID links the prepared row back to the raw record. A rule version identifies which logic was used. A timestamp records when cleaning occurred. Issue codes explain detected problems. Review status records the resolution state. These fields make the cleaning process reproducible and auditable. Validation is rule-based detection, not automatic correction. A failed email-shape check tells you that a record deserves attention; it does not tell you the correct email. Treat quality flags as evidence that can drive quarantine, review, or a documented repair process.",
-      "seed": 1234,
-      "tts_text_tokens": 112,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        112
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Record How Cleaning Decisions Were Made",
+      "transcript": "Cleaning becomes much easier to audit when we record information about the process.\n\nA source identifier tells us which raw record produced a cleaned row.\n\nA rule version tells us which version of the cleaning logic was applied.\n\nA cleaned-at timestamp tells us when the transformation ran.\n\nIssue codes describe the quality problems detected.\n\nAnd a review status tells us whether a record was accepted, rejected, or is still waiting for review.\n\n[tts-break]\n\nImagine that a rule changes next month. If you stored the rule version, you can identify which records were processed with the older logic and decide whether they need to be reprocessed.\n\nThis kind of metadata turns cleaning from an informal one-time activity into a reproducible data pipeline.",
       "wav": "wav/module9_slide_48.wav",
       "audio": "audio/module9_slide_48.mp3",
       "captions": "audio/module9_slide_48.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 49,
-      "title": "Integrated project overview",
-      "transcript": "The integrated project uses a staging table with messy customer data. You will normalize text, parse supported date formats, rank duplicate candidates, and label records that need review. The objective is a transparent candidate-clean output. Unsupported or ambiguous values should remain visible as uncertainty rather than being guessed. A quarantine pattern separates questionable records from trusted analytical output without deleting evidence. Views are useful for reusable cleaning logic because they let you expose a consistent cleaned representation while keeping raw source data intact. That improves reproducibility and auditability.",
-      "seed": 1234,
-      "tts_text_tokens": 101,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        101
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Project — Clean a Messy Staging Table",
+      "transcript": "Now we will combine the ideas from the module into a small cleaning project.\n\nThe source is a messy customer staging table.\n\nOur first task is normalization. We will standardize the representation of names, emails, and phone numbers.\n\nNext, we will parse signup dates, but only for date formats that we explicitly support.\n\nThen we will rank possible duplicate records using a reproducible rule.\n\nFinally, we will label each output row as either a candidate clean row or a row that needs review.\n\n[tts-break]\n\nThe goal is important: we are not trying to create a magically perfect source table.\n\nWe are creating a candidate-clean analytical output while preserving uncertainty and making our decisions visible.\n\nThis is much closer to how a real data preparation workflow should behave.",
       "wav": "wav/module9_slide_49.wav",
       "audio": "audio/module9_slide_49.mp3",
       "captions": "audio/module9_slide_49.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 50,
-      "title": "Project step 1",
-      "transcript": "Run the project query once so you can see the final columns. The query uses several common table expressions. The first stage normalizes name, email, and phone values. The second parses supported dates. The third ranks duplicates. The final SELECT creates clean output fields and a row status. We will unpack those stages separately. Connect this idea to a healthcare pipeline validating contact, demographic, and event fields. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 145,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        145
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Read the Full Cleaning Pipeline as Stages",
+      "transcript": "The query here is long, so do not try to read every symbol from beginning to end.\n\nInstead, read it as a sequence of stages.\n\nThe first common table expression is called normalized. It cleans the basic text representations while keeping the raw date string.\n\nThe next stage is called typed. It attempts to convert only supported date formats into real date values.\n\nThe third stage is called ranked. It calculates duplicate ranking using normalized identity fields and a completeness rule.\n\n[tts-break]\n\nFinally, the outer query returns cleaned analytical fields and assigns a row status.\n\nThis is one reason common table expressions are useful: they let us break a complex cleaning pipeline into understandable steps.\n\nRun the whole query once. Then use the next few slides to study each stage separately.",
       "wav": "wav/module9_slide_50.wav",
       "audio": "audio/module9_slide_50.mp3",
       "captions": "audio/module9_slide_50.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 51,
-      "title": "Project CTE 1",
-      "transcript": "The first CTE performs representation normalization. It does not yet claim that the values are valid. Names are cleaned for whitespace. Emails are trimmed and lowercased. Phone values become digit-only candidates. The raw signup date is carried forward unchanged. This separation makes the pipeline easier to reason about. Connect this idea to a product catalog standardizing categories and quarantining invalid rows. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 140,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        140
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Normalize Without Guessing",
+      "transcript": "The first stage creates normalized versions of the messy customer fields.\n\nFor the name, we trim surrounding spaces, collapse repeated internal spaces, and convert an empty result to null.\n\nFor the email, we trim the text, convert it to lowercase, and convert a blank to null.\n\nFor the phone, we keep only digits. If no digits remain, the result becomes null.\n\n[tts-break]\n\nThe signup date is different. At this stage, we preserve the original date text exactly as it came from the source.\n\nWhy? Because date parsing is a separate decision.\n\nKeeping normalization and parsing separate makes the pipeline easier to understand and debug.\n\nEach stage should do one clear job. That way, if a value looks wrong later, we can trace where the change occurred.",
       "wav": "wav/module9_slide_51.wav",
       "audio": "audio/module9_slide_51.mp3",
       "captions": "audio/module9_slide_51.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 52,
-      "title": "Project CTE 2",
-      "transcript": "The second CTE parses dates. It recognizes two documented formats. If the raw text matches one of them, PostgreSQL creates a typed date. If the value does not match a supported format, the clean date becomes NULL. That preserves the distinction between known and unsupported input. Connect this idea to a customer master-data project cleaning duplicate profiles. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 132,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        132
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Parse Only Supported Date Formats",
+      "transcript": "Date parsing is a good place to be conservative.\n\nIn the project, we support two known formats.\n\nThe first is year, month, day, such as 2026 dash 10 dash 22. When the source matches that structure, we convert it to a date.\n\nThe second is month, day, year, using slashes. When the text matches that format, we use the documented conversion rule.\n\n[tts-break]\n\nWhat happens when the source value uses some other format or contains an impossible date? We return null rather than inventing a date.\n\nFor example, if the source contains text that could be interpreted in two different ways, guessing could silently create the wrong date.\n\nA null cleaned date plus a review flag is safer than a confident but incorrect value.",
       "wav": "wav/module9_slide_52.wav",
       "audio": "audio/module9_slide_52.mp3",
       "captions": "audio/module9_slide_52.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 53,
-      "title": "Project CTE 3",
-      "transcript": "The third CTE ranks possible duplicates. Rows with the same normalized identity key are placed in the same partition. A simple completeness expression helps prefer the more useful record. ID provides a stable tie-breaker. Again, the rank is a reproducible policy, not proof that one record is universally correct. Connect this idea to a healthcare pipeline validating contact, demographic, and event fields. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 139,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        139
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Rank Duplicate Candidates Reproducibly",
+      "transcript": "The ranking stage groups records using normalized email and normalized name.\n\nWithin each candidate duplicate group, it calculates how complete each record is. A usable name, email, valid-shaped phone, and parsed signup date each contribute to that completeness logic.\n\nThe more complete record is ranked first.\n\n[tts-break]\n\nIf two records have the same completeness, the identifier is used as a stable tie-breaker.\n\nThat final tie-breaker matters because it makes the result deterministic. If you run the query again on the same data, you should receive the same ranking.\n\nRemember that rank one means preferred by our selected policy. It does not prove that the record is factually superior in every possible way.\n\nThe ranking is a reproducible decision rule, not a statement of absolute truth.",
       "wav": "wav/module9_slide_53.wav",
       "audio": "audio/module9_slide_53.mp3",
       "captions": "audio/module9_slide_53.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 54,
-      "title": "Project final output",
-      "transcript": "The final SELECT exposes the results of the pipeline. Phone candidates are only kept when they satisfy the ten-digit teaching rule. Unsupported dates remain NULL. Duplicate rank remains visible. The row status flags records that still contain important unresolved problems. This is what transparent cleaning looks like: useful output plus visible uncertainty. Connect this idea to a product catalog standardizing categories and quarantining invalid rows. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 142,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        142
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Return Clean Fields and a Review Status",
+      "transcript": "The final project output contains both cleaned fields and information about uncertainty.\n\nClean name is the normalized display version of the name.\n\nClean email is the normalized email candidate.\n\nClean phone is only kept when the normalized number contains the expected ten digits.\n\nSignup date clean contains a real date only when the source matched one of the supported formats.\n\nDuplicate rank indicates the record's position inside a candidate duplicate group.\n\n[tts-break]\n\nThe row status tells us whether the record passes the selected technical checks or should be reviewed.\n\nThis is a useful output design because it does not hide the cleaning logic.\n\nAn analyst can use the clean fields, while the duplicate rank and status still communicate where additional attention may be needed.",
       "wav": "wav/module9_slide_54.wav",
       "audio": "audio/module9_slide_54.mp3",
       "captions": "audio/module9_slide_54.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 55,
-      "title": "Project result interpretation",
-      "transcript": "The phrase candidate clean row is intentional. Passing selected checks does not mean every fact is verified. It means the row satisfies the rules we implemented for this exercise. Review rows still need attention. Duplicate ranking still requires policy or evidence. Use labels that accurately describe what your process knows. Connect this idea to a customer master-data project cleaning duplicate profiles. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 135,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        135
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "A Clean Candidate Is Not Verified Truth",
+      "transcript": "A record labeled candidate clean has passed the technical checks selected for this exercise.\n\nThat is useful, but it does not mean every value has been verified against the real world.\n\nA review status means the record contains missing, invalid, unsupported, or unresolved information.\n\nThe duplicate rank helps us compare candidate records, but it does not prove identity.\n\n[tts-break]\n\nFor example, an email can have a valid structure, a phone can have ten digits, and a date can parse correctly, yet the information can still belong to the wrong person.\n\nTechnical validation improves consistency. It does not automatically establish truth.\n\nThat distinction is one of the most important professional habits in data work: describe exactly what your checks prove, and do not claim more than the evidence supports.",
       "wav": "wav/module9_slide_55.wav",
       "audio": "audio/module9_slide_55.mp3",
       "captions": "audio/module9_slide_55.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 56,
-      "title": "Assessment recognition",
-      "transcript": "Use this checkpoint to test whether you understand the reasoning, not only the SQL. Explain why NULL differs from blank text. Explain why an invalid value should be detected before it is corrected. Explain why duplicate detection and survivor selection are separate. Explain the limits of regex validation. And explain why a transaction makes cleaning updates safer. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
-      "seed": 1234,
-      "tts_text_tokens": 163,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        163
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Explain the Cleaning Decisions",
+      "transcript": "Before moving on, make sure you can explain the reasoning behind the techniques we used.\n\nWhy are null and blank text different? Because null represents the absence of an SQL value, while a blank is still a stored text value.\n\nWhy do we flag an invalid numeric value before correcting it? Because knowing that a value is wrong does not tell us the correct replacement.\n\n[tts-break]\n\nWhy do we separate duplicate detection from survivor selection? Because identifying possible matches and deciding what to do with them are different decisions.\n\nWhat does a regular expression prove? Only that text matches the selected structure.\n\nAnd why test updates with returning and rollback? Because we can inspect the proposed changes before permanently keeping them.\n\nIf you can explain these ideas in your own words, you understand the logic behind the SQL rather than only the syntax.",
       "wav": "wav/module9_slide_56.wav",
       "audio": "audio/module9_slide_56.mp3",
       "captions": "audio/module9_slide_56.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 57,
-      "title": "Assessment starter",
-      "transcript": "The applied assessment asks you to produce one row per customer with cleaned fields, a quality status, and a duplicate rank. Do not overwrite the customer source table. Build the solution in stages. Start with normalization. Add validation. Then add duplicate ranking. Finally create the row-level status. Run each stage as you build it so errors remain easy to locate. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
-      "seed": 1234,
-      "tts_text_tokens": 171,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        171
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Assessment — Build a Clean Output without Overwriting the Source",
+      "transcript": "For the assessment, you will build a cleaned customer output while leaving the source table unchanged.\n\nThe starter query gives you the original customer fields inside a common table expression.\n\nYour task is to extend that query.\n\nCreate a cleaned name by handling spacing and display case. Create a cleaned email by trimming and standardizing the text. Create a cleaned phone candidate using the rules from this module.\n\n[tts-break]\n\nThen add a row-level quality status and a duplicate rank.\n\nAs you work, think about the order of operations. Normalize before you validate. Detect possible duplicates before making any resolution decision. Preserve uncertainty instead of inventing replacements.\n\nDo not focus only on making the query run. Make sure you can explain why each transformation is appropriate.",
       "wav": "wav/module9_slide_57.wav",
       "audio": "audio/module9_slide_57.mp3",
       "captions": "audio/module9_slide_57.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 58,
-      "title": "Module 9 takeaways",
-      "transcript": "These are the main habits from Module 9. Profile before cleaning. Preserve uncertainty rather than inventing corrections. Keep standardization, validation, duplicate handling, and correction conceptually separate. Use views, quarantine patterns, transactions, and lineage to make work safer and reproducible. Add constraints after the rules are stable. And keep quality dimensions visible instead of hiding everything behind one score. Connect this idea to a customer master-data project cleaning duplicate profiles. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 151,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        151
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Cleaning Habits to Keep",
+      "transcript": "There are several habits from this module that I want you to keep using.\n\nProfile first. Measure the data before changing it.\n\nPreserve uncertainty. Do not invent values just because a field is missing or invalid.\n\nKeep standardization, validation, duplicate detection, and correction conceptually separate.\n\nUse safe layers such as views, review sets, and transactions so the original evidence remains available.\n\n[tts-break]\n\nAdd constraints only after the rule is stable and existing problems are understood.\n\nAnd when you measure data quality, keep the individual dimensions visible even if you also calculate one summary score.\n\nThese habits make your SQL more than technically correct. They make your data preparation process safer, more reproducible, and easier for someone else to understand.",
       "wav": "wav/module9_slide_58.wav",
       "audio": "audio/module9_slide_58.mp3",
       "captions": "audio/module9_slide_58.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 59,
-      "title": "Cleaning decision guide",
-      "transcript": "Use this guide to decide what kind of action the evidence supports. A known formatting difference can be standardized. A documented blank-as-missing convention can be normalized. An invalid value with unknown truth should be flagged or quarantined. Possible duplicates need detection and resolution logic. A supported correction can be applied safely. And stable rules can become constraints for future prevention. Connect this idea to a healthcare pipeline validating contact, demographic, and event fields. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 152,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        152
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Choose the Response Based on the Evidence",
+      "transcript": "Different data-quality problems require different responses.\n\nIf two values differ only in formatting and we know they mean the same thing, standardize the representation.\n\nIf a documented rule says blank text means missing, normalize it to null.\n\nIf a value violates a rule but the true value is unknown, flag it or quarantine it rather than guessing.\n\n[tts-break]\n\nIf records may represent the same entity, detect the candidate group and then apply a ranking or review process.\n\nIf an authoritative source supports a correction, update the data safely and keep an audit trail.\n\nAnd when a rule is stable for future data, enforce it with a constraint or ingestion validation.\n\nThe main lesson is simple: the evidence should determine the action.",
       "wav": "wav/module9_slide_59.wav",
       "audio": "audio/module9_slide_59.mp3",
       "captions": "audio/module9_slide_59.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 60,
-      "title": "Next: Module 10",
-      "transcript": "Module 10 moves from cleaning to reshaping. Once data is trustworthy enough for the task, we often need to change its structure for reporting, comparison, or modeling. You will work with analytical grain and wide versus long representations. The cleaning principles from Module 9 remain important because reshaping bad or ambiguous data does not fix its quality problems. As you move forward, keep the reasoning habits from this module. The next topic will add new SQL tools, but it still depends on understanding grain, missing values, and the meaning of each transformation.",
-      "seed": 1234,
-      "tts_text_tokens": 108,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        108
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Next Module — Reshaping Data",
+      "transcript": "You have now completed the main data-cleaning workflow for this course.\n\nYou learned how to profile messy data, distinguish different missing states, standardize text, validate values, measure quality, identify duplicate candidates, preserve questionable records for review, use constraints, and test updates safely.\n\nThese skills give us something very important: a more trustworthy and explainable dataset.\n\n[tts-break]\n\nIn the next module, we will build on that foundation by reshaping data.\n\nA clean relational table is not always in the best shape for analysis. Sometimes we need a wide format. Sometimes we need a long format. We may need to pivot categories into columns, unpivot columns into rows, or change the analytical grain.\n\nSo the next question becomes: once the data is clean, how should we organize it for reporting, comparison, visualization, and modeling?\n\nThat is where we will continue in Module 10.",
       "wav": "wav/module9_slide_60.wav",
       "audio": "audio/module9_slide_60.mp3",
       "captions": "audio/module9_slide_60.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     }
   ]
 }

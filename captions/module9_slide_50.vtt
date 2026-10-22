@@ -1,34 +1,37 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.762
-Run the project query once so you can see the final columns.
+00:00:00.000 --> 00:00:05.757
+The query here is long, so do not try to read every symbol from beginning to end.
 
-00:00:03.762 --> 00:00:07.207
-The query uses several common table expressions.
+00:00:05.757 --> 00:00:09.782
+Instead, read it as a sequence of stages.
 
-00:00:07.207 --> 00:00:11.772
-The first stage normalizes name, email, and phone values.
+00:00:09.782 --> 00:00:14.072
+The first common table expression is called normalized.
 
-00:00:11.772 --> 00:00:14.317
-The second parses supported dates.
+00:00:14.072 --> 00:00:19.712
+It cleans the basic text representations while keeping the raw date string.
 
-00:00:14.317 --> 00:00:20.667
-The third ranks duplicates. The final SELECT creates clean output fields and a row status.
+00:00:19.712 --> 00:00:22.287
+The next stage is called typed.
 
-00:00:20.667 --> 00:00:23.557
-We will unpack those stages separately.
+00:00:22.287 --> 00:00:27.652
+It attempts to convert only supported date formats into real date values.
 
-00:00:23.557 --> 00:00:30.317
-Connect this idea to a healthcare pipeline validating contact, demographic, and event fields.
+00:00:27.652 --> 00:00:30.307
+The third stage is called ranked.
 
-00:00:30.317 --> 00:00:35.932
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+00:00:30.307 --> 00:00:36.033
+It calculates duplicate ranking using normalized identity fields and a completeness rule.
 
-00:00:35.932 --> 00:00:43.242
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+00:00:36.483 --> 00:00:42.620
+Finally, the outer query returns cleaned analytical fields and assigns a row status.
 
-00:00:43.242 --> 00:00:48.987
-A strong analyst can explain both the SQL operation and the assumption behind it.
+00:00:42.620 --> 00:00:49.805
+This is one reason common table expressions are useful: they let us break a complex cleaning pipeline into
 
-00:00:48.987 --> 00:00:54.821
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:49.805 --> 00:00:53.545
+understandable steps. Run the whole query once.
+
+00:00:53.545 --> 00:00:57.274
+Then use the next few slides to study each stage separately.

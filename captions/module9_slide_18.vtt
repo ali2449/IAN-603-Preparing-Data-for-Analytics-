@@ -1,25 +1,34 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.192
-This phone example performs two different tasks.
+00:00:00.000 --> 00:00:06.087
+Phone numbers are often stored with parentheses, spaces, periods, dashes, or other formatting.
 
-00:00:03.192 --> 00:00:08.467
-First, it removes non-digit characters to create a digits-only candidate.
+00:00:06.087 --> 00:00:10.822
+The first useful step is to separate normalization from validation.
 
-00:00:08.467 --> 00:00:13.357
-Second, it checks whether the candidate has exactly ten digits.
+00:00:10.822 --> 00:00:14.492
+The query removes every character that is not a digit.
 
-00:00:13.357 --> 00:00:18.147
-If it does not, the validated ten-digit output becomes NULL.
+00:00:14.492 --> 00:00:18.002
+That gives us a digits-only version of the phone number.
 
-00:00:18.147 --> 00:00:23.632
-Notice that formatting normalization does not automatically make a phone number valid.
+00:00:18.002 --> 00:00:21.976
+Then we ask whether the result has exactly ten digits.
 
-00:00:23.632 --> 00:00:29.382
-Standardization should make equivalent values comparable without inventing facts.
+00:00:22.461 --> 00:00:30.833
+For example, a phone written as three three six, with punctuation around the area code and between the number groups,
 
-00:00:29.382 --> 00:00:36.442
-Lowercasing an email or normalizing a known category map is different from guessing what an ambiguous value
+00:00:30.833 --> 00:00:36.583
+can normalize to the same ten digits as a phone written with only digits.
 
-00:00:36.442 --> 00:00:42.240
-was supposed to mean. Good cleaning reduces representation noise while preserving uncertainty.
+00:00:36.583 --> 00:00:43.048
+If the normalized value has ten digits, we keep it as a valid-shaped candidate.
+
+00:00:43.048 --> 00:00:47.503
+Otherwise, we return null for the validated field.
+
+00:00:47.503 --> 00:00:52.843
+Again, ten digits do not prove that the number belongs to the customer.
+
+00:00:52.843 --> 00:00:56.034
+They only satisfy the technical rule we selected.

@@ -1,40 +1,49 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.787
-Welcome to Module 9, Data Cleaning in PostgreSQL.
+00:00:00.000 --> 00:00:04.172
+Welcome to Module 9, Data Cleaning in Postgres.
 
-00:00:03.787 --> 00:00:10.952
-This module brings together the ideas from earlier modules and turns them into a repeatable cleaning workflow.
+00:00:04.172 --> 00:00:08.762
+Before we start, think about how much SQL you can already use.
 
-00:00:10.952 --> 00:00:18.057
-We will profile missing and invalid values, standardize representation, validate business rules,
+00:00:08.762 --> 00:00:16.972
+In the earlier modules, you learned how relational databases organize data, how to query tables with S Q L,
 
-00:00:18.057 --> 00:00:22.487
-identify duplicate groups, quarantine questionable records, preview updates safely,
+00:00:16.972 --> 00:00:24.862
+how to aggregate values, apply logical conditions, join related tables, and use subqueries.
 
-00:00:22.487 --> 00:00:27.172
-and add constraints when the rules are known.
+00:00:24.862 --> 00:00:32.722
+In the previous module, you also worked with strings and dates, including functions that help us transform text and
 
-00:00:27.172 --> 00:00:32.322
-The most important principle is simple: cleaning should make uncertainty visible, not hide it.
+00:00:32.722 --> 00:00:34.433
+handle date values.
 
-00:00:32.322 --> 00:00:37.397
-Keep a real project in mind as we work through this section—for example,
+00:00:35.178 --> 00:00:42.930
+Now we will bring many of those skills together for a very practical problem: real data is rarely clean.
 
-00:00:37.397 --> 00:00:42.677
-a customer master-data project cleaning duplicate profiles.
+00:00:42.930 --> 00:00:46.290
+A customer name may contain extra spaces.
 
-00:00:42.677 --> 00:00:47.942
-The technical feature matters because it changes what questions we can answer reliably and how easily another
+00:00:46.290 --> 00:00:49.935
+An email may use inconsistent capitalization.
 
-00:00:47.942 --> 00:00:51.717
-analyst can understand our work.
+00:00:49.935 --> 00:00:54.025
+A phone number may contain parentheses, spaces, or dashes.
 
-00:00:51.717 --> 00:00:58.887
-As you listen, try to connect each SQL or data concept to a decision you might need to
+00:00:54.025 --> 00:00:58.250
+Some values may be missing, invalid, or duplicated.
 
-00:00:58.887 --> 00:01:02.432
-defend later: what the data means, what one row represents, what can be missing,
+00:00:58.250 --> 00:01:02.080
+The goal is not simply to make the data look nicer.
 
-00:01:02.432 --> 00:01:06.542
-and what assumptions the transformation introduces.
+00:01:02.080 --> 00:01:09.865
+Our goal is to profile the data, preserve the original evidence, standardize values when we understand the rule,
+
+00:01:09.865 --> 00:01:13.590
+validate what we can, identify duplicates, and make changes safely.
+
+00:01:13.590 --> 00:01:22.220
+By the end of this module, I want you to think of data cleaning as a careful and explainable process rather than a
+
+00:01:22.220 --> 00:01:24.695
+collection of quick fixes.

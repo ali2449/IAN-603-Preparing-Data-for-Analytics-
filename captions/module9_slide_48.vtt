@@ -1,34 +1,31 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.522
-Production cleaning pipelines often need lineage fields.
+00:00:00.000 --> 00:00:05.482
+Cleaning becomes much easier to audit when we record information about the process.
 
-00:00:03.522 --> 00:00:07.282
-Source ID links the prepared row back to the raw record.
+00:00:05.482 --> 00:00:10.617
+A source identifier tells us which raw record produced a cleaned row.
 
-00:00:07.282 --> 00:00:10.752
-A rule version identifies which logic was used.
+00:00:10.617 --> 00:00:15.697
+A rule version tells us which version of the cleaning logic was applied.
 
-00:00:10.752 --> 00:00:13.552
-A timestamp records when cleaning occurred.
+00:00:15.697 --> 00:00:20.672
+A cleaned-at timestamp tells us when the transformation ran.
 
-00:00:13.552 --> 00:00:16.467
-Issue codes explain detected problems.
+00:00:20.672 --> 00:00:24.762
+Issue codes describe the quality problems detected.
 
-00:00:16.467 --> 00:00:19.452
-Review status records the resolution state.
+00:00:24.762 --> 00:00:31.698
+And a review status tells us whether a record was accepted, rejected, or is still waiting for review.
 
-00:00:19.452 --> 00:00:24.007
-These fields make the cleaning process reproducible and auditable.
+00:00:32.177 --> 00:00:34.664
+Imagine that a rule changes next month.
 
-00:00:24.007 --> 00:00:28.792
-Validation is rule-based detection, not automatic correction.
+00:00:34.664 --> 00:00:41.209
+If you stored the rule version, you can identify which records were processed with the older logic and decide whether
 
-00:00:28.792 --> 00:00:32.837
-A failed email-shape check tells you that a record deserves attention;
+00:00:41.209 --> 00:00:44.229
+they need to be reprocessed.
 
-00:00:32.837 --> 00:00:35.307
-it does not tell you the correct email.
-
-00:00:35.307 --> 00:00:42.000
-Treat quality flags as evidence that can drive quarantine, review, or a documented repair process.
+00:00:44.229 --> 00:00:51.460
+This kind of metadata turns cleaning from an informal one-time activity into a reproducible data pipeline.

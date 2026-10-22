@@ -1,31 +1,34 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.667
-The second CTE parses dates.
+00:00:00.000 --> 00:00:03.292
+Date parsing is a good place to be conservative.
 
-00:00:02.667 --> 00:00:06.072
-It recognizes two documented formats.
+00:00:03.292 --> 00:00:07.032
+In the project, we support two known formats.
 
-00:00:06.072 --> 00:00:11.162
-If the raw text matches one of them, PostgreSQL creates a typed date.
+00:00:07.032 --> 00:00:13.242
+The first is year, month, day, such as 2026 dash 10 dash 22.
 
-00:00:11.162 --> 00:00:17.142
-If the value does not match a supported format, the clean date becomes NULL.
+00:00:13.242 --> 00:00:19.312
+When the source matches that structure, we convert it to a date.
 
-00:00:17.142 --> 00:00:23.282
-That preserves the distinction between known and unsupported input.
+00:00:19.312 --> 00:00:23.432
+The second is month, day, year, using slashes.
 
-00:00:23.282 --> 00:00:27.747
-Connect this idea to a customer master-data project cleaning duplicate profiles.
+00:00:23.432 --> 00:00:28.359
+When the text matches that format, we use the documented conversion rule.
 
-00:00:27.747 --> 00:00:33.847
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+00:00:28.832 --> 00:00:34.970
+What happens when the source value uses some other format or contains an impossible date?
 
-00:00:33.847 --> 00:00:43.682
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+00:00:34.970 --> 00:00:38.295
+We return null rather than inventing a date.
 
-00:00:43.682 --> 00:00:49.327
-A strong analyst can explain both the SQL operation and the assumption behind it.
+00:00:38.295 --> 00:00:44.030
+For example, if the source contains text that could be interpreted in two different ways,
 
-00:00:49.327 --> 00:00:55.040
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:44.030 --> 00:00:47.330
+guessing could silently create the wrong date.
+
+00:00:47.330 --> 00:00:53.180
+A null cleaned date plus a review flag is safer than a confident but incorrect value.

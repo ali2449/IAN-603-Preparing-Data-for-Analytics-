@@ -1,25 +1,34 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.212
-Category standardization is more than text cleaning.
+00:00:00.000 --> 00:00:06.672
+Categorical values often contain several labels for what may be the same concept.
 
-00:00:03.212 --> 00:00:09.452
-If several labels should map to one canonical category, that mapping reflects business meaning.
+00:00:06.672 --> 00:00:12.207
+For example, a product dataset might contain electronics, electronic, and tech.
 
-00:00:09.452 --> 00:00:11.587
-You need a documented rule.
+00:00:12.207 --> 00:00:14.847
+We may want all three to appear as Electronics.
 
-00:00:11.587 --> 00:00:15.622
-Do not merge categories simply because their names look similar.
+00:00:14.847 --> 00:00:21.941
+But SQL cannot know that these labels mean the same thing unless we define that rule.
 
-00:00:15.622 --> 00:00:19.337
-The transformation should reflect the intended taxonomy.
+00:00:22.456 --> 00:00:27.008
+This is why category standardization is partly a business decision.
 
-00:00:19.337 --> 00:00:24.672
-Standardization should make equivalent values comparable without inventing facts.
+00:00:27.008 --> 00:00:34.273
+The database can apply the mapping, but a person or organization must define what the mapping means.
 
-00:00:24.672 --> 00:00:32.752
-Lowercasing an email or normalizing a known category map is different from guessing what an ambiguous value
+00:00:34.273 --> 00:00:38.133
+Imagine another category called accessories.
 
-00:00:32.752 --> 00:00:37.672
-was supposed to mean. Good cleaning reduces representation noise while preserving uncertainty.
+00:00:38.133 --> 00:00:40.723
+Should it be grouped with electronics?
+
+00:00:40.723 --> 00:00:44.758
+Maybe yes in one company and no in another.
+
+00:00:44.758 --> 00:00:53.933
+So before creating mappings, review the observed values and document which source labels belong to each target category.
+
+00:00:53.933 --> 00:00:58.573
+Once that rule is clear, SQL can enforce it consistently.

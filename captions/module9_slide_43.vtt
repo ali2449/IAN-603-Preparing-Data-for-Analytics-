@@ -1,28 +1,40 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.192
-Constraints are powerful, but timing matters.
+00:00:00.000 --> 00:00:05.477
+Constraints are powerful, but adding them to an existing database requires care.
 
-00:00:03.192 --> 00:00:11.542
-If you add a strict rule before understanding legacy data, valid historical exceptions may be blocked or the
+00:00:05.477 --> 00:00:08.482
+First, profile the current data.
 
-00:00:11.542 --> 00:00:13.382
-migration may fail. Profile first.
+00:00:08.482 --> 00:00:13.852
+You may discover that many historical records already violate the proposed rule.
 
-00:00:13.382 --> 00:00:18.242
-Resolve existing violations. Confirm the business rule and its owner.
+00:00:13.852 --> 00:00:18.832
+Next, document allowed values and important exceptions.
 
-00:00:18.242 --> 00:00:21.557
-Then add the constraint and monitor future data.
+00:00:18.832 --> 00:00:23.162
+Then decide how existing violations should be handled.
 
-00:00:21.557 --> 00:00:27.502
-Once a quality rule is well understood, prevention may be better than repeated cleanup.
+00:00:23.162 --> 00:00:25.832
+Some may be corrected using evidence.
 
-00:00:27.502 --> 00:00:31.762
-Constraints can stop known invalid values at write time.
+00:00:25.832 --> 00:00:28.553
+Others may need to be quarantined or reviewed.
 
-00:00:31.762 --> 00:00:37.922
-When updates are required, preview the target rows, change only what is justified,
+00:00:29.003 --> 00:00:32.205
+Also consider the systems that insert data.
 
-00:00:37.922 --> 00:00:42.304
-and use RETURNING or an audit log so the transformation can be reviewed.
+00:00:32.205 --> 00:00:39.650
+A new constraint can break an existing import process if the incoming data does not satisfy the rule.
+
+00:00:39.650 --> 00:00:47.770
+So the sequence matters: understand the data, confirm the business rule, address legacy problems, test the impact,
+
+00:00:47.770 --> 00:00:51.915
+and then enforce the stable rule.
+
+00:00:51.915 --> 00:00:58.285
+Constraints are most effective when they are the final step of a well-understood quality policy,
+
+00:00:58.285 --> 00:01:00.855
+not the first reaction to messy data.

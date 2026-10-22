@@ -1,31 +1,31 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.162
-The third CTE ranks possible duplicates.
+00:00:00.000 --> 00:00:05.037
+The ranking stage groups records using normalized email and normalized name.
 
-00:00:03.162 --> 00:00:08.492
-Rows with the same normalized identity key are placed in the same partition.
+00:00:05.037 --> 00:00:10.737
+Within each candidate duplicate group, it calculates how complete each record is.
 
-00:00:08.492 --> 00:00:13.477
-A simple completeness expression helps prefer the more useful record.
+00:00:10.737 --> 00:00:19.347
+A usable name, email, valid-shaped phone, and parsed signup date each contribute to that completeness logic.
 
-00:00:13.477 --> 00:00:16.467
-ID provides a stable tie-breaker.
+00:00:19.347 --> 00:00:21.911
+The more complete record is ranked first.
 
-00:00:16.467 --> 00:00:23.532
-Again, the rank is a reproducible policy, not proof that one record is universally correct.
+00:00:22.545 --> 00:00:28.657
+If two records have the same completeness, the identifier is used as a stable tie-breaker.
 
-00:00:23.532 --> 00:00:30.682
-Connect this idea to a healthcare pipeline validating contact, demographic, and event fields.
+00:00:28.657 --> 00:00:33.757
+That final tie-breaker matters because it makes the result deterministic.
 
-00:00:30.682 --> 00:00:36.272
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+00:00:33.757 --> 00:00:39.262
+If you run the query again on the same data, you should receive the same ranking.
 
-00:00:36.272 --> 00:00:43.887
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+00:00:39.262 --> 00:00:43.842
+Remember that rank one means preferred by our selected policy.
 
-00:00:43.887 --> 00:00:49.602
-A strong analyst can explain both the SQL operation and the assumption behind it.
+00:00:43.842 --> 00:00:49.207
+It does not prove that the record is factually superior in every possible way.
 
-00:00:49.602 --> 00:00:55.200
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:49.207 --> 00:00:54.767
+The ranking is a reproducible decision rule, not a statement of absolute truth.

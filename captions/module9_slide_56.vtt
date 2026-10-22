@@ -1,40 +1,37 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.087
-Use this checkpoint to test whether you understand the reasoning, not only the SQL.
+00:00:00.000 --> 00:00:05.897
+Before moving on, make sure you can explain the reasoning behind the techniques we used.
 
-00:00:05.087 --> 00:00:08.877
-Explain why NULL differs from blank text.
+00:00:05.897 --> 00:00:09.392
+Why are null and blank text different?
 
-00:00:08.877 --> 00:00:13.927
-Explain why an invalid value should be detected before it is corrected.
+00:00:09.392 --> 00:00:17.702
+Because null represents the absence of an SQL value, while a blank is still a stored text value.
 
-00:00:13.927 --> 00:00:18.997
-Explain why duplicate detection and survivor selection are separate.
+00:00:17.702 --> 00:00:22.537
+Why do we flag an invalid numeric value before correcting it?
 
-00:00:18.997 --> 00:00:22.622
-Explain the limits of regex validation.
+00:00:22.537 --> 00:00:27.514
+Because knowing that a value is wrong does not tell us the correct replacement.
 
-00:00:22.622 --> 00:00:27.117
-And explain why a transaction makes cleaning updates safer.
+00:00:28.126 --> 00:00:32.262
+Why do we separate duplicate detection from survivor selection?
 
-00:00:27.117 --> 00:00:28.907
-For this activity, make a prediction before you run anything.
+00:00:32.262 --> 00:00:38.562
+Because identifying possible matches and deciding what to do with them are different decisions.
 
-00:00:28.907 --> 00:00:34.462
-State what one output row should represent, which records you expect to remain,
+00:00:38.562 --> 00:00:41.493
+What does a regular expression prove?
 
-00:00:34.462 --> 00:00:40.287
-and what edge case is most likely to expose a mistake.
+00:00:41.493 --> 00:00:45.068
+Only that text matches the selected structure.
 
-00:00:40.287 --> 00:00:44.907
-Then run the SQL and compare the result with that prediction.
+00:00:45.068 --> 00:00:48.922
+And why test updates with returning and rollback?
 
-00:00:44.907 --> 00:00:51.802
-If it does not match, debug the logic in small pieces instead of changing several clauses at once.
+00:00:48.922 --> 00:00:53.873
+Because we can inspect the proposed changes before permanently keeping them.
 
-00:00:51.802 --> 00:00:55.982
-This is the same habit you would use in a real analytics project:
-
-00:00:55.982 --> 00:01:00.456
-validate the meaning of the result, not only whether the statement executes.
+00:00:53.873 --> 00:01:01.883
+If you can explain these ideas in your own words, you understand the logic behind the SQL rather than only the syntax.

@@ -1,34 +1,40 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.782
-Missing data can appear in several forms.
+00:00:00.000 --> 00:00:03.497
+Missing data does not always appear in the same form.
 
-00:00:02.782 --> 00:00:05.042
-NULL is a database null.
+00:00:03.497 --> 00:00:07.382
+A null value means no SQL value is stored.
 
-00:00:05.042 --> 00:00:07.867
-Blank text is still a string value.
+00:00:07.382 --> 00:00:09.527
+A blank string is different.
 
-00:00:07.867 --> 00:00:15.372
-A sentinel such as all zeros is an ordinary value unless the business rule says it represents missingness.
+00:00:09.527 --> 00:00:14.772
+It is still a text value, but it contains no useful visible information.
 
-00:00:15.372 --> 00:00:20.892
-The word Unknown is also ordinary text unless its meaning is documented.
+00:00:14.772 --> 00:00:20.592
+You may also encounter sentinel values such as ten zeros in a phone field.
 
-00:00:20.892 --> 00:00:26.187
-Do not collapse these states automatically without understanding the source convention.
+00:00:20.592 --> 00:00:25.293
+A system may use that value to mean unknown or not provided.
 
-00:00:26.187 --> 00:00:31.752
-Missingness has several representations: NULL, blank text, whitespace,
+00:00:25.876 --> 00:00:29.283
+Another example is the literal word Unknown.
 
-00:00:31.752 --> 00:00:34.152
-and sometimes sentinel codes such as Unknown or 999.
+00:00:29.283 --> 00:00:31.428
+That is not a null value.
 
-00:00:34.152 --> 00:00:36.932
-Do not collapse them blindly.
+00:00:31.428 --> 00:00:35.978
+It is an actual category value that communicates uncertainty.
 
-00:00:36.932 --> 00:00:42.757
-First decide whether they mean the same thing in the source system,
+00:00:35.978 --> 00:00:42.558
+Why does this matter? Because we should not automatically treat all of these states as equivalent.
 
-00:00:42.757 --> 00:00:47.503
-then normalize deliberately and keep lineage when the original value may matter.
+00:00:42.558 --> 00:00:46.503
+Their meanings depend on the system and the business rules.
+
+00:00:46.503 --> 00:00:53.538
+Before standardizing missing data, identify how missingness is represented and document which representations are
+
+00:00:53.538 --> 00:00:56.357
+allowed to be converted to null.

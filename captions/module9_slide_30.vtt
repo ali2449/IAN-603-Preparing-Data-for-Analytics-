@@ -1,28 +1,40 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.737
-Deduplication has two separate problems.
+00:00:00.000 --> 00:00:04.162
+Deduplication should begin with detection, not deletion.
 
-00:00:02.737 --> 00:00:07.007
-First, detect which rows appear to represent the same entity.
+00:00:04.162 --> 00:00:09.967
+First, normalize the fields you plan to use as identity evidence.
 
-00:00:07.007 --> 00:00:12.502
-Second, decide which row should survive or how the records should be merged.
+00:00:09.967 --> 00:00:18.007
+For example, convert emails to a consistent form and normalize name spacing and capitalization.
 
-00:00:12.502 --> 00:00:15.917
-Do not jump directly from detection to deletion.
+00:00:18.007 --> 00:00:23.302
+Second, group records using the duplicate key you have chosen.
 
-00:00:15.917 --> 00:00:19.887
-The duplicate key and survivor rule both need to be explicit.
+00:00:23.302 --> 00:00:27.587
+Third, review groups where the count is greater than one.
 
-00:00:19.887 --> 00:00:24.892
-Duplicate resolution requires a definition of identity and a survivor rule.
+00:00:28.138 --> 00:00:30.555
+At this point, do not delete anything.
 
-00:00:24.892 --> 00:00:30.142
-Exact duplicate rows are easy; duplicate people or customers are harder.
+00:00:30.555 --> 00:00:34.585
+Two rows can look similar without representing the same person.
 
-00:00:30.142 --> 00:00:37.737
-If you choose one survivor, document the priority—latest update, verified source, highest completeness,
+00:00:34.585 --> 00:00:37.375
+Two family members might share a phone number.
 
-00:00:37.737 --> 00:00:42.160
-or another defensible rule—and preserve links to the merged records.
+00:00:37.375 --> 00:00:40.330
+A person might use two email addresses.
+
+00:00:40.330 --> 00:00:43.440
+A common name can appear many times.
+
+00:00:43.440 --> 00:00:48.345
+The goal of the first stage is to identify candidate duplicate groups.
+
+00:00:48.345 --> 00:00:55.805
+Only after you understand the relationship should you decide whether records should be merged, ranked, quarantined,
+
+00:00:55.805 --> 00:00:57.346
+or simply left alone.

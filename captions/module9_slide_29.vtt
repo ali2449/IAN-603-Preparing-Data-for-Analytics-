@@ -1,28 +1,28 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:06.157
-This query converts numeric quality scores into broad bands and counts customers in each band.
+00:00:00.000 --> 00:00:05.862
+After calculating a numeric quality score, we can summarize records into categories.
 
-00:00:06.157 --> 00:00:09.897
-A summary like this can help prioritize review.
+00:00:05.862 --> 00:00:15.507
+The query creates score bands such as Excellent, Good, Fair, and Poor, and then counts how many customers fall into each
 
-00:00:09.897 --> 00:00:13.607
-But the band does not replace the underlying dimensions.
+00:00:15.507 --> 00:00:18.874
+band. This can make a quality report easier to read.
 
-00:00:13.607 --> 00:00:19.347
-If a row has a low score, you should still be able to explain whether the problem is
+00:00:19.442 --> 00:00:23.619
+But be careful not to hide too much information behind a label.
 
-00:00:19.347 --> 00:00:23.567
-missingness, invalid contact data, timeliness, or something else.
+00:00:23.619 --> 00:00:28.064
+Suppose two customers both receive a score of seventy-five.
 
-00:00:23.567 --> 00:00:28.517
-Validation is rule-based detection, not automatic correction.
+00:00:28.064 --> 00:00:33.499
+One may be missing a phone number, while the other may have an invalid email.
 
-00:00:28.517 --> 00:00:32.922
-A failed email-shape check tells you that a record deserves attention;
+00:00:33.499 --> 00:00:37.774
+They have the same total score but different problems.
 
-00:00:32.922 --> 00:00:35.497
-it does not tell you the correct email.
+00:00:37.774 --> 00:00:45.814
+So quality bands are useful for high-level summaries, while the detailed issue flags remain important for action.
 
-00:00:35.497 --> 00:00:42.440
-Treat quality flags as evidence that can drive quarantine, review, or a documented repair process.
+00:00:45.814 --> 00:00:52.295
+Use summaries to communicate. Use component-level checks to diagnose and improve the data.

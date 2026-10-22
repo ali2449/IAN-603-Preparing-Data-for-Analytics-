@@ -1,25 +1,37 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.062
-Row-level validation is useful, but managers and analysts often need a summary.
+00:00:00.000 --> 00:00:05.552
+Once we can identify individual data-quality problems, we can summarize them.
 
-00:00:05.062 --> 00:00:09.082
-This query combines several issue detectors with UNION ALL.
+00:00:05.552 --> 00:00:11.267
+This query creates a temporary issue list using a common table expression.
 
-00:00:09.082 --> 00:00:13.687
-Then it groups by entity and issue type to count how many problems exist.
+00:00:11.267 --> 00:00:15.167
+One part identifies invalid customer emails.
 
-00:00:13.687 --> 00:00:17.602
-This turns cleaning logic into a measurable quality report.
+00:00:15.167 --> 00:00:18.887
+Another identifies invalid customer phone numbers.
 
-00:00:17.602 --> 00:00:22.262
-Validation is rule-based detection, not automatic correction.
+00:00:18.887 --> 00:00:22.372
+Another identifies invalid product prices.
 
-00:00:22.262 --> 00:00:26.407
-A failed email-shape check tells you that a record deserves attention;
+00:00:22.372 --> 00:00:26.948
+The union all operation combines those issue records into one list.
 
-00:00:26.407 --> 00:00:28.782
-it does not tell you the correct email.
+00:00:27.524 --> 00:00:34.581
+Then the final query groups by entity type and issue type and counts how many records have each problem.
 
-00:00:28.782 --> 00:00:35.633
-Treat quality flags as evidence that can drive quarantine, review, or a documented repair process.
+00:00:34.581 --> 00:00:42.776
+Instead of reading the long SQL statement character by character, focus on the pattern: detect problems first,
+
+00:00:42.776 --> 00:00:47.856
+represent each problem as a row, then aggregate the issue rows.
+
+00:00:47.856 --> 00:00:51.576
+This approach is useful for dashboards and monitoring.
+
+00:00:51.576 --> 00:00:59.356
+It can answer questions such as: what is our most common quality problem, and is that problem getting better or worse
+
+00:00:59.356 --> 00:00:59.914
+over time?

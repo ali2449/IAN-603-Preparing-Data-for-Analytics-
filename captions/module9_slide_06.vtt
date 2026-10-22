@@ -1,34 +1,37 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.272
-This simple record illustrates representation cleaning.
+00:00:00.000 --> 00:00:03.277
+A cleaned value should be easy to explain.
 
-00:00:03.272 --> 00:00:06.302
-The name changes spacing and display case.
+00:00:03.277 --> 00:00:09.982
+Consider a customer name stored as Jane Smith with several extra spaces around it.
 
-00:00:06.302 --> 00:00:11.072
-The email is trimmed and lowercased.
+00:00:09.982 --> 00:00:16.287
+A cleaned version can remove those spaces and use consistent capitalization.
 
-00:00:11.072 --> 00:00:13.592
-The phone keeps only digits.
+00:00:16.287 --> 00:00:20.117
+The same idea applies to an email address.
 
-00:00:13.592 --> 00:00:19.572
-Each transformation is explainable. But the cleaned value should not erase the source evidence.
+00:00:20.117 --> 00:00:25.317
+We can remove surrounding spaces and convert the text to lowercase.
 
-00:00:19.572 --> 00:00:22.647
-In many analytical workflows, raw and cleaned layers are both valuable.
+00:00:25.317 --> 00:00:30.438
+For a phone number, we may remove punctuation and keep only the digits.
 
-00:00:22.647 --> 00:00:30.117
-Connect this idea to a product catalog standardizing categories and quarantining invalid rows.
+00:00:30.888 --> 00:00:36.675
+These are useful analytical representations, but the original values still matter.
 
-00:00:30.117 --> 00:00:35.997
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+00:00:36.675 --> 00:00:45.355
+If someone asks how a cleaned value was produced, we should be able to point back to the source and describe the
 
-00:00:35.997 --> 00:00:43.702
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+00:00:45.355 --> 00:00:49.435
+transformation. This is called preserving lineage or provenance.
 
-00:00:43.702 --> 00:00:49.387
-A strong analyst can explain both the SQL operation and the assumption behind it.
+00:00:49.435 --> 00:00:54.930
+It means keeping enough information to reproduce and audit the cleaning process.
 
-00:00:49.387 --> 00:00:55.287
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:54.930 --> 00:01:01.215
+When possible, think in terms of two layers: what the source actually contained,
+
+00:01:01.215 --> 00:01:04.505
+and what representation we created for analysis.

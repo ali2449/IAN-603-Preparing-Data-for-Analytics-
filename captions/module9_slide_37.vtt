@@ -1,28 +1,31 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.277
-Quarantine is a useful pattern when values are questionable but not safely correctable.
+00:00:00.009 --> 00:00:04.667
+When a record is questionable, one useful strategy is quarantine.
 
-00:00:05.277 --> 00:00:10.357
-The source remains intact. Issue flags identify what needs attention.
+00:00:04.667 --> 00:00:10.412
+Quarantine does not necessarily mean moving the record to another physical database table.
 
-00:00:10.357 --> 00:00:14.117
-A view or table exposes the review subset.
+00:00:10.412 --> 00:00:18.642
+The main idea is to separate questionable data from trusted analytical data while preserving the source.
 
-00:00:14.117 --> 00:00:20.597
-After review, records can be corrected, approved, or excluded according to policy.
+00:00:18.642 --> 00:00:21.632
+First, keep the original record.
 
-00:00:20.597 --> 00:00:24.037
-This is often safer than automatic replacement.
+00:00:21.632 --> 00:00:27.018
+Second, create issue flags that describe what is missing, invalid, or suspicious.
 
-00:00:24.037 --> 00:00:31.357
-A quarantine pattern separates questionable records from trusted analytical output without deleting evidence.
+00:00:27.610 --> 00:00:33.047
+Third, create a review subset containing only records that need attention.
 
-00:00:31.357 --> 00:00:38.532
-Views are useful for reusable cleaning logic because they let you expose a consistent cleaned representation
+00:00:33.047 --> 00:00:41.812
+Later, if evidence becomes available, those records can be corrected, approved, or promoted to a trusted layer.
 
-00:00:38.532 --> 00:00:41.387
-while keeping raw source data intact.
+00:00:41.812 --> 00:00:48.237
+For example, an invalid signup date should not be silently replaced with today's date.
 
-00:00:41.387 --> 00:00:44.701
-That improves reproducibility and auditability.
+00:00:48.237 --> 00:00:55.527
+We can preserve the raw date text, produce a null cleaned date, and flag the record for review.
+
+00:00:55.527 --> 00:01:01.193
+Quarantine makes uncertainty visible instead of pretending the problem has been solved.

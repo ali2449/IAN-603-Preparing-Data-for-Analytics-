@@ -1,28 +1,34 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.142
-This query calculates a simple completeness score.
+00:00:00.000 --> 00:00:04.672
+The row number window function is useful when we need to rank duplicate candidates.
 
-00:00:03.142 --> 00:00:08.137
-Then ROW_NUMBER ranks rows inside each normalized duplicate group.
+00:00:04.672 --> 00:00:08.552
+The query first calculates a completeness score.
 
-00:00:08.137 --> 00:00:14.707
-The most complete row ranks first, with signup date and ID used as additional ordering.
+00:00:08.552 --> 00:00:15.467
+It gives a point when useful fields such as name, email, phone, or address are populated.
 
-00:00:14.707 --> 00:00:20.597
-This does not mean the first row is always truly correct.
+00:00:15.467 --> 00:00:20.417
+Then the duplicate records are grouped using the normalized identity fields.
 
-00:00:20.597 --> 00:00:23.122
-It means the rule is explicit, reproducible, and reviewable.
+00:00:20.417 --> 00:00:23.987
+Within each group, row number assigns a rank.
 
-00:00:23.122 --> 00:00:28.697
-Duplicate resolution requires a definition of identity and a survivor rule.
+00:00:23.987 --> 00:00:26.742
+More complete records come first.
 
-00:00:28.697 --> 00:00:34.427
-Exact duplicate rows are easy; duplicate people or customers are harder.
+00:00:26.742 --> 00:00:34.910
+If completeness is tied, the query considers signup date, and then the identifier provides a stable final tie-breaker.
 
-00:00:34.427 --> 00:00:42.372
-If you choose one survivor, document the priority—latest update, verified source, highest completeness,
+00:00:35.360 --> 00:00:39.837
+The record with rank one is the preferred candidate according to this rule.
 
-00:00:42.372 --> 00:00:46.880
-or another defensible rule—and preserve links to the merged records.
+00:00:39.837 --> 00:00:43.802
+Notice that SQL is not deciding which person is real.
+
+00:00:43.802 --> 00:00:47.107
+We are implementing a policy that we designed.
+
+00:00:47.107 --> 00:00:52.506
+Run the query and compare the completeness score with the survivor rank for the duplicate group.

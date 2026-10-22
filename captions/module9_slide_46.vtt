@@ -1,28 +1,31 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.472
-IS DISTINCT FROM is useful in cleaning updates because it handles NULL explicitly.
+00:00:00.000 --> 00:00:04.027
+Null values require special care in SQL comparisons.
 
-00:00:05.472 --> 00:00:09.312
-Ordinary equality follows three-valued logic.
+00:00:04.027 --> 00:00:11.852
+If you compare a value with null using the normal equals operator, the result is not simply true or false.
 
-00:00:09.312 --> 00:00:16.592
-IS DISTINCT FROM tells you whether two values are meaningfully different, including cases where one is NULL.
+00:00:11.852 --> 00:00:15.582
+SQL treats the comparison as unknown.
 
-00:00:16.592 --> 00:00:22.157
-This can help avoid unnecessary updates and make conditions more predictable.
+00:00:15.582 --> 00:00:21.063
+That behavior can make update conditions difficult when nullable columns are involved.
 
-00:00:22.157 --> 00:00:28.422
-Connect this idea to a customer master-data project cleaning duplicate profiles.
+00:00:21.671 --> 00:00:24.893
+Postgres provides the phrase is distinct from.
 
-00:00:28.422 --> 00:00:34.347
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+00:00:24.893 --> 00:00:29.773
+It gives us a null-safe way to ask whether two values are different.
 
-00:00:34.347 --> 00:00:42.337
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
+00:00:29.773 --> 00:00:35.313
+For example, suppose we compare an existing email with a cleaned version.
 
-00:00:42.337 --> 00:00:48.497
-A strong analyst can explain both the SQL operation and the assumption behind it.
+00:00:35.313 --> 00:00:41.953
+We want to know whether an update would actually change the value, even if one side could be null.
 
-00:00:48.497 --> 00:00:54.390
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:41.953 --> 00:00:47.598
+Using is distinct from makes that comparison explicit and predictable.
+
+00:00:47.598 --> 00:00:54.289
+You do not need to use it everywhere, but it is a very useful Postgres feature when cleaning nullable data.

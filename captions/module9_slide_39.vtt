@@ -1,31 +1,34 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.377
-Views can help separate source data from analytical representation.
+00:00:00.000 --> 00:00:04.877
+A strong data preparation design often keeps several logical layers.
 
-00:00:04.377 --> 00:00:07.042
-The raw table preserves provenance.
+00:00:04.877 --> 00:00:09.772
+The raw table preserves source records with little or no modification.
 
-00:00:07.042 --> 00:00:10.572
-A clean view applies standardized transformations.
+00:00:09.772 --> 00:00:19.017
+A clean view provides reusable transformations for analysis, such as normalized names, emails, and phone numbers.
 
-00:00:10.572 --> 00:00:14.237
-A quality view exposes rows that need review.
+00:00:19.017 --> 00:00:23.419
+A quality view exposes issue flags and review logic.
 
-00:00:14.237 --> 00:00:20.022
-Downstream analysis can use the prepared layer without permanently overwriting the source.
+00:00:23.997 --> 00:00:28.809
+Downstream users can then choose the layer appropriate for their task.
 
-00:00:20.022 --> 00:00:23.857
-This also makes the cleaning logic visible in SQL.
+00:00:28.809 --> 00:00:34.234
+For example, an analyst building a dashboard may use the clean view.
 
-00:00:23.857 --> 00:00:31.442
-A quarantine pattern separates questionable records from trusted analytical output without deleting evidence.
+00:00:34.234 --> 00:00:38.989
+A data steward investigating problems may use the quality view.
 
-00:00:31.442 --> 00:00:38.547
-Views are useful for reusable cleaning logic because they let you expose a consistent cleaned representation
+00:00:38.989 --> 00:00:41.874
+An auditor may need the raw table.
 
-00:00:38.547 --> 00:00:41.112
-while keeping raw source data intact.
+00:00:41.874 --> 00:00:47.884
+This layered approach is safer than repeatedly overwriting the same source columns.
 
-00:00:41.112 --> 00:00:44.313
-That improves reproducibility and auditability.
+00:00:47.884 --> 00:00:55.874
+It also makes your pipeline easier to explain: raw data came in here, standardization happened here,
+
+00:00:55.874 --> 00:00:58.339
+and quality rules were applied here.

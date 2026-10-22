@@ -1,31 +1,40 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.737
-This query classifies product prices.
+00:00:00.000 --> 00:00:03.202
+Validation should normally happen before correction.
 
-00:00:02.737 --> 00:00:05.342
-Missing values are labeled missing.
+00:00:03.202 --> 00:00:07.167
+This query checks product prices and assigns a status.
 
-00:00:05.342 --> 00:00:10.047
-Zero or negative prices are flagged invalid and require review.
+00:00:07.167 --> 00:00:09.782
+A missing price is labeled missing.
 
-00:00:10.047 --> 00:00:13.237
-Positive prices are valid candidates.
+00:00:09.782 --> 00:00:15.622
+A price less than or equal to zero is labeled invalid and marked for review.
 
-00:00:13.237 --> 00:00:16.677
-Notice that the query does not change the values.
+00:00:15.622 --> 00:00:18.106
+Anything else becomes a valid candidate.
 
-00:00:16.677 --> 00:00:22.347
-Validation should often begin by identifying problems, not by overwriting them.
+00:00:18.756 --> 00:00:21.343
+The important word again is candidate.
 
-00:00:22.347 --> 00:00:27.127
-Validation is rule-based detection, not automatic correction.
+00:00:21.343 --> 00:00:27.203
+A positive number satisfies our selected rule, but it may still be wrong.
 
-00:00:27.127 --> 00:00:31.302
-A failed email-shape check tells you that a record deserves attention;
+00:00:27.203 --> 00:00:36.278
+A product that normally costs twenty dollars could accidentally be entered as two thousand dollars and still pass this
 
-00:00:31.302 --> 00:00:33.827
-it does not tell you the correct email.
+00:00:36.278 --> 00:00:40.098
+simple check. Validation only tests the rules we define.
 
-00:00:33.827 --> 00:00:40.960
-Treat quality flags as evidence that can drive quarantine, review, or a documented repair process.
+00:00:40.098 --> 00:00:43.278
+So begin with clear, transparent checks.
+
+00:00:43.278 --> 00:00:45.838
+Identify the records that fail.
+
+00:00:45.838 --> 00:00:49.338
+Then decide what to do with them based on evidence.
+
+00:00:49.338 --> 00:00:54.380
+This is much safer than immediately changing every value that looks unusual.

@@ -1,25 +1,37 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.792
-Email standardization starts with a small set of explainable transformations.
+00:00:00.000 --> 00:00:04.657
+Email cleaning is another good example of safe representation changes.
 
-00:00:04.792 --> 00:00:10.877
-Trim boundary spaces. Convert empty strings to NULL if blank means missing.
+00:00:04.657 --> 00:00:10.072
+The query trims spaces around the email, converts a blank result to null,
 
-00:00:10.877 --> 00:00:15.382
-Lowercase the value for a consistent analytical representation.
+00:00:10.072 --> 00:00:13.507
+and then converts the remaining text to lowercase.
 
-00:00:15.382 --> 00:00:17.827
-This does not validate the email.
+00:00:13.507 --> 00:00:21.542
+For example, an email stored with spaces around it and uppercase letters can become a consistent lowercase value without
 
-00:00:17.827 --> 00:00:21.737
-It only standardizes the representation before validation.
+00:00:21.542 --> 00:00:23.892
+changing the intended address.
 
-00:00:21.737 --> 00:00:27.472
-Standardization should make equivalent values comparable without inventing facts.
+00:00:24.693 --> 00:00:27.125
+Why convert blank text to null?
 
-00:00:27.472 --> 00:00:35.712
-Lowercasing an email or normalizing a known category map is different from guessing what an ambiguous value
+00:00:27.125 --> 00:00:35.055
+Because it gives us a consistent representation for a missing email and makes later filtering and counting easier.
 
-00:00:35.712 --> 00:00:40.948
-was supposed to mean. Good cleaning reduces representation noise while preserving uncertainty.
+00:00:35.055 --> 00:00:41.375
+But remember, lowercasing and trimming do not prove that the email actually exists.
+
+00:00:41.375 --> 00:00:43.970
+They only standardize the text.
+
+00:00:43.970 --> 00:00:48.050
+Later, we will perform a structural validation check.
+
+00:00:48.050 --> 00:00:52.660
+Even that will only tell us whether the text looks like an email address,
+
+00:00:52.660 --> 00:00:55.934
+not whether messages can actually be delivered to it.

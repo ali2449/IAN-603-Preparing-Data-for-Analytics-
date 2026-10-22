@@ -1,25 +1,34 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.507
-This query creates normalized email and name keys.
+00:00:00.000 --> 00:00:05.877
+This query searches for duplicate groups using normalized email and normalized name.
 
-00:00:03.507 --> 00:00:06.662
-It groups rows by those normalized values.
+00:00:05.877 --> 00:00:09.547
+The email is trimmed and converted to lowercase.
 
-00:00:06.662 --> 00:00:10.522
-Groups with more than one row become duplicate candidates.
+00:00:09.547 --> 00:00:15.912
+The name has extra spaces removed and is given consistent display capitalization.
 
-00:00:10.522 --> 00:00:14.852
-ARRAY_AGG shows the source IDs in each group.
+00:00:15.912 --> 00:00:20.457
+Then the query groups records by those normalized values.
 
-00:00:14.852 --> 00:00:20.162
-This is detection only. It does not yet say which source row is better.
+00:00:20.457 --> 00:00:23.682
+Only groups with more than one row are returned.
 
-00:00:20.162 --> 00:00:25.917
-Standardization should make equivalent values comparable without inventing facts.
+00:00:24.261 --> 00:00:31.333
+The query also collects the source identifiers so you can see which records belong to the candidate group.
 
-00:00:25.917 --> 00:00:33.972
-Lowercasing an email or normalizing a known category map is different from guessing what an ambiguous value
+00:00:31.333 --> 00:00:40.613
+Imagine that one record contains Jane Smith with extra spaces and another contains the same name with different
 
-00:00:33.972 --> 00:00:39.177
-was supposed to mean. Good cleaning reduces representation noise while preserving uncertainty.
+00:00:40.613 --> 00:00:45.918
+capitalization. Without normalization, SQL may treat them as different values.
+
+00:00:45.918 --> 00:00:47.868
+After normalization, they may fall into the same group.
+
+00:00:47.868 --> 00:00:53.403
+That does not prove they are the same person.
+
+00:00:53.403 --> 00:00:57.229
+It gives us stronger evidence that the records deserve review.

@@ -1,28 +1,34 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.247
-Sometimes blank strings and NULL represent the same business state.
+00:00:00.000 --> 00:00:05.542
+The null if function is very useful when one specific value should be treated as missing.
 
-00:00:04.247 --> 00:00:10.042
-If that rule is documented, NULLIF can convert a blank-after-trimming string into NULL.
+00:00:05.542 --> 00:00:08.522
+Here we trim spaces from the address.
 
-00:00:10.042 --> 00:00:16.112
-This can make later logic easier because one missing representation is easier to handle than several.
+00:00:08.522 --> 00:00:13.467
+If the result is an empty string, the null if function returns null.
 
-00:00:16.112 --> 00:00:20.462
-But do this only when blank truly means missing for that field.
+00:00:13.467 --> 00:00:16.579
+Otherwise, it keeps the trimmed address.
 
-00:00:20.462 --> 00:00:25.162
-Missingness has several representations: NULL, blank text, whitespace,
+00:00:17.029 --> 00:00:21.136
+Suppose one record contains several spaces in the address field.
 
-00:00:25.162 --> 00:00:30.262
-and sometimes sentinel codes such as Unknown or 999.
+00:00:21.136 --> 00:00:25.851
+Without trimming, the database technically sees a text value.
 
-00:00:30.262 --> 00:00:30.832
-Do not collapse them blindly.
+00:00:25.851 --> 00:00:32.431
+After trimming, nothing remains, so we can represent that known blank state as null.
 
-00:00:30.832 --> 00:00:36.232
-First decide whether they mean the same thing in the source system,
+00:00:32.431 --> 00:00:39.461
+This is a reasonable transformation only when our rule says blank addresses should be considered missing.
 
-00:00:36.232 --> 00:00:40.880
-then normalize deliberately and keep lineage when the original value may matter.
+00:00:39.461 --> 00:00:43.491
+Compare the original address with the normalized address.
+
+00:00:43.491 --> 00:00:47.321
+The point is not that null is always better than a blank.
+
+00:00:47.321 --> 00:00:54.744
+The point is that consistent missing-value representation makes later analysis and quality checks much easier.

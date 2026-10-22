@@ -1,25 +1,31 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.472
-This query creates a clean preview view.
+00:00:00.000 --> 00:00:03.832
+Here we create a clean preview view for the customers table.
 
-00:00:03.472 --> 00:00:09.392
-Names, emails, phones, and addresses are transformed into candidate analytical fields.
+00:00:03.832 --> 00:00:12.727
+The view standardizes the name, cleans the email, creates a ten-digit phone candidate when the number passes the
 
-00:00:09.392 --> 00:00:12.687
-The original customer rows remain unchanged.
+00:00:12.727 --> 00:00:16.957
+selected rule, normalizes blank addresses, and keeps the signup date.
 
-00:00:12.687 --> 00:00:18.987
-This gives you a reusable prepared layer while keeping the source available for comparison and audit.
+00:00:16.957 --> 00:00:20.009
+The original customers table is not changed.
 
-00:00:18.987 --> 00:00:26.112
-A quarantine pattern separates questionable records from trusted analytical output without deleting evidence.
+00:00:20.476 --> 00:00:27.143
+This is useful while developing cleaning logic because you can compare the clean preview with the source at any time.
 
-00:00:26.112 --> 00:00:32.837
-Views are useful for reusable cleaning logic because they let you expose a consistent cleaned representation
+00:00:27.143 --> 00:00:31.733
+Suppose you later decide that phone numbers should allow an international format.
 
-00:00:32.837 --> 00:00:35.392
-while keeping raw source data intact.
+00:00:31.733 --> 00:00:37.913
+You can revise the view logic without trying to reconstruct values that were permanently overwritten.
 
-00:00:35.392 --> 00:00:38.358
-That improves reproducibility and auditability.
+00:00:37.913 --> 00:00:42.913
+Run the view and compare several rows with the original customers table.
+
+00:00:42.913 --> 00:00:49.558
+A preview layer gives us a safe place to test analytical transformations before deciding whether any permanent
+
+00:00:49.558 --> 00:00:51.491
+correction is justified.
