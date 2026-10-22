@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="IAN 603 Module 9R - Interactive PostgreSQL Regular Expressions Lab">
+<title>IAN 603 · Module 9R · PostgreSQL Regex Lab</title>
+<style>
+:root{
+  --bg:#eaf0f6;--surface:#fff;--surface2:#f5f8fb;--surface3:#eef4fa;
+  --text:#101827;--muted:#607086;--border:#d2dce7;--primary:#1263a5;
+  --primary2:#0b4f86;--primarySoft:#e1effa;--good:#15803d;--bad:#b42318;
+  --warn:#a16207;--shadow:0 14px 38px rgba(31,55,82,.12);--radius:16px
+}
+body.dark{
+  --bg:#101923;--surface:#18232f;--surface2:#202d3b;--surface3:#263646;
+  --text:#edf4fb;--muted:#aab8c8;--border:#3b4b5d;--primary:#67b7f7;
+  --primary2:#8dccff;--primarySoft:#163b58;--shadow:0 14px 38px rgba(0,0,0,.3)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}
+a{color:inherit}
+.topbar{
+  position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  gap:16px;padding:10px 18px;background:var(--surface);border-bottom:1px solid var(--border)
+}
+.brand{display:flex;align-items:center;gap:11px;font-weight:900}
+.brand-mark{width:38px;height:38px;border-radius:10px;background:var(--primary);color:#fff;display:grid;place-items:center}
+.brand small{display:block;color:var(--muted);font-weight:650;font-size:11px;margin-top:2px}
+.top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.control{
+  border:1px solid var(--border);background:var(--surface);color:var(--text);
+  border-radius:9px;padding:8px 11px;font-size:12px;font-weight:800;text-decoration:none;cursor:pointer
+}
+.control.primary{background:var(--primary);border-color:var(--primary);color:white}
+.db-status{font-size:12px;color:var(--muted);font-weight:750}.db-status.ready{color:var(--good)}.db-status.error{color:var(--bad)}
+.layout{max-width:1500px;margin:0 auto;display:grid;grid-template-columns:260px minmax(0,1fr);gap:18px;padding:18px}
+.sidebar{
+  position:sticky;top:77px;height:calc(100vh - 95px);overflow:auto;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)
+}
+.sidebar h3{font-size:13px;margin:4px 5px 10px}.nav{display:grid;gap:5px}
+.nav a{padding:9px 10px;border-radius:9px;text-decoration:none;color:var(--muted);font-size:12px;font-weight:800}
+.nav a:hover,.nav a.active{background:var(--primarySoft);color:var(--primary)}
+.progress-box{margin-top:16px;border-top:1px solid var(--border);padding-top:13px}
+.progress-track{height:8px;border-radius:999px;background:var(--border);overflow:hidden}.progress-bar{height:100%;width:0;background:var(--primary)}
+.progress-text{font-size:11px;color:var(--muted);margin-top:7px}
+main{min-width:0}
+.hero,.card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:clamp(20px,3vw,34px);margin-bottom:18px
+}
+.hero{background:linear-gradient(135deg,var(--surface),var(--primarySoft))}
+.kicker{text-transform:uppercase;letter-spacing:.11em;font-size:11px;font-weight:900;color:var(--primary);margin-bottom:8px}
+h1{font-size:clamp(36px,5vw,64px);line-height:1.02;letter-spacing:-.045em;margin:0 0 14px}
+h2{font-size:clamp(25px,3vw,38px);letter-spacing:-.025em;margin:0 0 12px}
+h3{margin:0 0 7px}
+p{color:var(--muted);line-height:1.58}
+.lead{font-size:18px;max-width:950px}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:17px}.pill{font-size:11px;font-weight:850;padding:7px 10px;border:1px solid var(--border);border-radius:999px;background:var(--surface)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.mini{border:1px solid var(--border);background:var(--surface2);border-radius:13px;padding:15px}.mini p{font-size:13px;margin:0}
+.note{border-left:5px solid var(--primary);background:var(--primarySoft);padding:13px 15px;border-radius:10px;margin-top:14px;font-size:13px}
+.note.warn{border-left-color:var(--warn)}
+code{font-family:Consolas,"Courier New",monospace}
+.pattern-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.pattern{border:1px solid var(--border);background:var(--surface2);border-radius:11px;padding:12px}
+.pattern code{display:block;color:var(--primary);font-weight:900;font-size:15px;margin-bottom:4px}.pattern span{font-size:11px;color:var(--muted)}
+.lab{
+  border:1px solid #8a98a8;border-radius:9px;overflow:hidden;background:#1e1e1e;margin-top:14px
+}
+.lab-head{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#31445a;color:#fff;padding:9px 11px}
+.lab-head b{font-size:13px}.lab-head small{display:block;color:#c8d5e2;font-size:10px}
+.lab-actions{display:flex;gap:6px;flex-wrap:wrap}
+.lab-btn{border:1px solid #65798e;background:#42566d;color:white;border-radius:5px;padding:6px 9px;font-size:10px;font-weight:850;cursor:pointer}
+.lab-btn.run{background:#2f78b7}.lab-btn.check{background:#15803d}
+.editor{display:block;width:100%;min-height:150px;resize:vertical;border:0;outline:0;padding:14px 16px;background:#1e1e1e;color:#d4d4d4;font:13px/1.55 Consolas,"Courier New",monospace;tab-size:2}
+.output{min-height:54px;max-height:240px;overflow:auto;background:#fff;color:#1f2937;border-top:1px solid #aab5c1;padding:10px 12px;font:12px/1.45 Consolas,"Courier New",monospace}
+.output.success{border-top:4px solid #15803d}.output.fail{border-top:4px solid #b42318}
+.result-table{width:100%;border-collapse:collapse;font-family:Consolas,"Courier New",monospace;font-size:11px}.result-table th{background:#e8edf3}.result-table th,.result-table td{padding:7px 8px;border:1px solid #d6dde6;text-align:left;color:#1f2937}
+.playground{display:grid;grid-template-columns:1fr 1fr 150px;gap:10px;margin-top:15px}.field label{display:block;font-size:11px;font-weight:850;margin-bottom:5px}.field input,.field select{width:100%;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;padding:10px}
+.generated{margin-top:11px;border:1px solid var(--border);background:var(--surface2);border-radius:10px;padding:12px;font:12px/1.5 Consolas,"Courier New",monospace;white-space:pre-wrap;overflow:auto}
+.example-row{display:grid;grid-template-columns:260px minmax(0,1fr);gap:16px;align-items:start;margin-top:14px}
+.explain{border:1px solid var(--border);background:var(--surface2);border-radius:12px;padding:14px}.explain h3{font-size:15px}.explain p{font-size:12px}
+.exercise{border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:14px;background:var(--surface2)}
+.exercise-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.status-pill{font-size:10px;font-weight:900;border-radius:999px;padding:6px 8px;background:var(--surface3);color:var(--muted);white-space:nowrap}.status-pill.done{background:#dcfce7;color:#166534}
+details{margin-top:10px}summary{cursor:pointer;font-weight:850;color:var(--primary);font-size:12px}
+.footer{padding:18px;text-align:center;color:var(--muted);font-size:12px}
+@media(max-width:1050px){.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto}.nav{grid-template-columns:repeat(4,1fr)}.pattern-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.topbar{align-items:flex-start}.brand small{display:none}.db-status{display:none}.layout{padding:10px}.sidebar{display:none}.hero,.card{padding:18px}.grid2,.grid3,.example-row,.playground{grid-template-columns:1fr}.pattern-grid{grid-template-columns:repeat(2,1fr)}h1{font-size:38px}.lab-head{align-items:flex-start;flex-direction:column}.editor{font-size:12px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><div class="brand-mark">9R</div><div>IAN 603<small>Module 9R · PostgreSQL Regular Expressions</small></div></div>
+  <div class="top-actions">
+    <span id="dbStatus" class="db-status">Loading PostgreSQL...</span>
+    <a class="control" href="s_module9.html">← Module 9</a>
+    <button class="control" id="themeBtn" type="button">Dark mode</button>
+    <button class="control" id="resetProgress" type="button">Reset progress</button>
+  </div>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <h3>Regex Lab</h3>
+  <nav class="nav">
+    <a href="#start">Start</a>
+    <a href="#playground">Playground</a>
+    <a href="#matching">1. Match</a>
+    <a href="#patterns">2. Patterns</a>
+    <a href="#quantifiers">3. Repeat</a>
+    <a href="#replace">4. Replace</a>
+    <a href="#extract">5. Extract</a>
+    <a href="#data">6. Real data</a>
+    <a href="#practice">Practice</a>
+    <a href="#reference">Reference</a>
+  </nav>
+  <div class="progress-box">
+    <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+    <div id="progressText" class="progress-text">0 of 8 exercises complete</div>
+  </div>
+</aside>
+
+<main>
+<section class="hero" id="start">
+  <div class="kicker">IAN 603 · Module 9R · Interactive Submodule</div>
+  <h1>Regular Expressions in PostgreSQL</h1>
+  <p class="lead">Learn regex by changing patterns and running real PostgreSQL directly in the browser. Start with simple matching, then use regex to clean, validate, extract, and split messy text.</p>
+  <div class="pills"><span class="pill">No audio</span><span class="pill">No captions</span><span class="pill">Real PostgreSQL</span><span class="pill">Editable SQL</span><span class="pill">Saved progress</span><span class="pill">Mobile friendly</span></div>
+  <div class="note"><strong>Recommended workflow:</strong> predict the result, run the SQL, change one part of the pattern, then run it again.</div>
+</section>
+
+<section class="card">
+  <div class="kicker">Big picture</div>
+  <h2>Regex is a pattern language</h2>
+  <div class="grid3">
+    <div class="mini"><h3>Match</h3><p>Ask whether text fits a pattern.</p></div>
+    <div class="mini"><h3>Transform</h3><p>Replace matching text with something else.</p></div>
+    <div class="mini"><h3>Extract</h3><p>Pull useful pieces from a larger string.</p></div>
+  </div>
+  <div class="note warn"><strong>Important:</strong> regex can test structure. It does not prove that an email mailbox exists, that a phone belongs to a person, or that a value is semantically correct.</div>
+</section>
+
+<section class="card" id="playground">
+  <div class="kicker">Try before writing full SQL</div>
+  <h2>Regex Playground</h2>
+  <p>Enter a value and a PostgreSQL pattern. The page generates and runs the SQL for you.</p>
+  <div class="playground">
+    <div class="field"><label for="pgText">Test value</label><input id="pgText" value="student@example.edu"></div>
+    <div class="field"><label for="pgPattern">Regex pattern</label><input id="pgPattern" value="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"></div>
+    <div class="field"><label for="pgOperator">Operator</label><select id="pgOperator"><option>~</option><option>~*</option><option>!~</option><option>!~*</option></select></div>
+  </div>
+  <div id="generatedSql" class="generated"></div>
+  <div class="lab-actions" style="margin-top:10px"><button class="control primary" id="runPlayground" type="button">Run pattern</button></div>
+  <div id="playgroundOutput" class="output" style="margin-top:10px">Waiting for PostgreSQL.</div>
+</section>
+
+<section class="card" id="matching">
+  <div class="kicker">1 · Match</div><h2>Start with PostgreSQL regex operators</h2>
+  <div class="grid2">
+    <div class="mini"><h3><code>~</code></h3><p>Case-sensitive match.</p></div>
+    <div class="mini"><h3><code>~*</code></h3><p>Case-insensitive match.</p></div>
+    <div class="mini"><h3><code>!~</code></h3><p>Case-sensitive non-match.</p></div>
+    <div class="mini"><h3><code>!~*</code></h3><p>Case-insensitive non-match.</p></div>
+  </div>
+  <div class="example-row">
+    <div class="explain"><h3>Predict first</h3><p><code>'The Cat is sleeping' ~ 'cat'</code> is false because the operator is case-sensitive. Change it to <code>~*</code> and run again.</p></div>
+    <div class="lab sql-lab" data-original="SELECT 'The Cat is sleeping' ~ 'cat' AS matches;">
+      <div class="lab-head"><div><b>Simple matching</b><small>PostgreSQL · editable</small></div><div class="lab-actions"><button class="lab-btn run">Run</button><button class="lab-btn reset">Reset</button><button class="lab-btn copy">Copy</button></div></div>
+      <textarea class="editor" spellcheck="false">SELECT 'The Cat is sleeping' ~ 'cat' AS matches;</textarea><div class="output">Run the query.</div>
+    </div>
+  </div>
+</section>
+
+<section class="card" id="patterns">
+  <div class="kicker">2 · Build patterns</div><h2>Anchors, dots, and character classes</h2>
+  <div class="pattern-grid">
+    <div class="pattern"><code>^</code><span>start of text</span></div>
+    <div class="pattern"><code>$</code><span>end of text</span></div>
+    <div class="pattern"><code>.</code><span>any single character</span></div>
+    <div class="pattern"><code>[0-9]</code><span>one digit</span></div>
+    <div class="pattern"><code>[A-Z]</code><span>one uppercase letter</span></div>
+    <div class="pattern"><code>[A-Za-z]</code><span>one letter</span></div>
+    <div class="pattern"><code>[^0-9]</code><span>anything except a digit</span></div>
+    <div class="pattern"><code>[[:space:]]</code><span>whitespace</span></div>
+  </div>
+  <div class="lab sql-lab" data-original="SELECT&#10;  'Alice Johnson' ~ '^Alice' AS starts_with_alice,&#10;  'student@example.edu' ~ '\.edu$' AS ends_with_edu,&#10;  'Room 205' ~ '[0-9]' AS contains_digit;">
+    <div class="lab-head"><div><b>Anchors and classes</b><small>Change the strings or patterns</small></div><div class="lab-actions"><button class="lab-btn run">Run</button><button class="lab-btn reset">Reset</button><button class="lab-btn copy">Copy</button></div></div>
+    <textarea class="editor" spellcheck="false">SELECT
+  'Alice Johnson' ~ '^Alice' AS starts_with_alice,
+  'student@example.edu' ~ '\.edu$' AS ends_with_edu,
+  'Room 205' ~ '[0-9]' AS contains_digit;</textarea><div class="output">Run the query.</div>
+  </div>
+</section>
+
+<section class="card" id="quantifiers">
+  <div class="kicker">3 · Repeat and combine</div><h2>Quantifiers and groups</h2>
+  <div class="pattern-grid">
+    <div class="pattern"><code>+</code><span>one or more</span></div>
+    <div class="pattern"><code>*</code><span>zero or more</span></div>
+    <div class="pattern"><code>?</code><span>zero or one</span></div>
+    <div class="pattern"><code>{3}</code><span>exactly three</span></div>
+    <div class="pattern"><code>{2,5}</code><span>two through five</span></div>
+    <div class="pattern"><code>(cat|dog)</code><span>cat OR dog</span></div>
+    <div class="pattern"><code>^...$</code><span>match the whole value</span></div>
+    <div class="pattern"><code>[0-9]{10}</code><span>ten consecutive digits</span></div>
+  </div>
+  <div class="lab sql-lab" data-original="SELECT&#10;  '2026' ~ '^[0-9]+$' AS digits_only,&#10;  '3365551234' ~ '^[0-9]{10}$' AS ten_digits,&#10;  'dog' ~ '^(cat|dog)$' AS cat_or_dog;">
+    <div class="lab-head"><div><b>Quantifiers</b><small>PostgreSQL</small></div><div class="lab-actions"><button class="lab-btn run">Run</button><button class="lab-btn reset">Reset</button><button class="lab-btn copy">Copy</button></div></div>
+    <textarea class="editor" spellcheck="false">SELECT
+  '2026' ~ '^[0-9]+$' AS digits_only,
+  '3365551234' ~ '^[0-9]{10}$' AS ten_digits,
+  'dog' ~ '^(cat|dog)$' AS cat_or_dog;</textarea><div class="output">Run the query.</div>
+  </div>
+</section>
+
+<section class="card" id="replace">
+  <div class="kicker">4 · Clean text</div><h2>REGEXP_REPLACE</h2>
+  <p><code>REGEXP_REPLACE(source, pattern, replacement, flags)</code> is one of the most useful regex tools for data cleaning.</p>
+  <div class="grid3">
+    <div class="mini"><h3>Collapse spaces</h3><p><code>[[:space:]]+</code> → one space</p></div>
+    <div class="mini"><h3>Keep digits</h3><p><code>[^0-9]</code> → empty string</p></div>
+    <div class="mini"><h3>Global flag</h3><p><code>g</code> processes every match.</p></div>
+  </div>
+  <div class="lab sql-lab" data-original="SELECT&#10;  REGEXP_REPLACE(BTRIM('   Alice      Johnson   '), '[[:space:]]+', ' ', 'g') AS clean_name,&#10;  REGEXP_REPLACE('(336) 555-1234', '[^0-9]', '', 'g') AS clean_phone;">
+    <div class="lab-head"><div><b>Cleaning examples</b><small>PostgreSQL</small></div><div class="lab-actions"><button class="lab-btn run">Run</button><button class="lab-btn reset">Reset</button><button class="lab-btn copy">Copy</button></div></div>
+    <textarea class="editor" spellcheck="false">SELECT
+  REGEXP_REPLACE(BTRIM('   Alice      Johnson   '), '[[:space:]]+', ' ', 'g') AS clean_name,
+  REGEXP_REPLACE('(336) 555-1234', '[^0-9]', '', 'g') AS clean_phone;</textarea><div class="output">Run the query.</div>
+  </div>
+</section>
+
+<section class="card" id="extract">
+  <div class="kicker">5 · Extract and split</div><h2>Pull useful pieces from larger strings</h2>
+  <div class="grid2">
+    <div class="mini"><h3>SUBSTRING + regex</h3><p>Extract a matching part, such as the first number.</p></div>
+    <div class="mini"><h3>REGEXP_MATCHES</h3><p>Return repeated matches, especially with the <code>g</code> flag.</p></div>
+    <div class="mini"><h3>REGEXP_MATCH</h3><p>Return captured groups from the first match.</p></div>
+    <div class="mini"><h3>REGEXP_SPLIT_TO_TABLE</h3><p>Split one text value into multiple rows.</p></div>
+  </div>
+  <div class="lab sql-lab" data-original="SELECT SUBSTRING('Course 603 Data Preparation', '[0-9]+') AS course_number;&#10;&#10;SELECT REGEXP_MATCHES('A12 B400 C7', '([0-9]+)', 'g') AS number_group;&#10;&#10;SELECT REGEXP_SPLIT_TO_TABLE('SQL | Python | Pandas', '[[:space:]]*\|[[:space:]]*') AS tool;">
+    <div class="lab-head"><div><b>Extraction and splitting</b><small>Run all three statements</small></div><div class="lab-actions"><button class="lab-btn run">Run</button><button class="lab-btn reset">Reset</button><button class="lab-btn copy">Copy</button></div></div>
+    <textarea class="editor" spellcheck="false">SELECT SUBSTRING('Course 603 Data Preparation', '[0-9]+') AS course_number;
+
+SELECT REGEXP_MATCHES('A12 B400 C7', '([0-9]+)', 'g') AS number_group;
+
+SELECT REGEXP_SPLIT_TO_TABLE('SQL | Python | Pandas', '[[:space:]]*\|[[:space:]]*') AS tool;</textarea><div class="output">Run the statements.</div>
+  </div>
+</section>
+
+<section class="card" id="data">
+  <div class="kicker">6 · Real data</div><h2>Use regex against a messy table</h2>
+  <p>The browser creates a temporary <code>regex_people</code> table with inconsistent names, emails, and phone formats.</p>
+  <div class="lab sql-lab" data-original="SELECT * FROM regex_people ORDER BY id;&#10;&#10;SELECT id, name FROM regex_people WHERE name ~ '[0-9]';">
+    <div class="lab-head"><div><b>Explore regex_people</b><small>Disposable practice data</small></div><div class="lab-actions"><button class="lab-btn run">Run</button><button class="lab-btn reset">Reset</button><button class="lab-btn copy">Copy</button></div></div>
+    <textarea class="editor" spellcheck="false">SELECT * FROM regex_people ORDER BY id;
+
+SELECT id, name
+FROM regex_people
+WHERE name ~ '[0-9]';</textarea><div class="output">Run the statements.</div>
+  </div>
+  <div class="lab sql-lab" data-original="SELECT&#10;  id,&#10;  phone,&#10;  REGEXP_REPLACE(phone, '[^0-9]', '', 'g') AS clean_phone&#10;FROM regex_people&#10;ORDER BY id;">
+    <div class="lab-head"><div><b>Clean all phone numbers</b><small>Representation cleaning</small></div><div class="lab-actions"><button class="lab-btn run">Run</button><button class="lab-btn reset">Reset</button><button class="lab-btn copy">Copy</button></div></div>
+    <textarea class="editor" spellcheck="false">SELECT
+  id,
+  phone,
+  REGEXP_REPLACE(phone, '[^0-9]', '', 'g') AS clean_phone
+FROM regex_people
+ORDER BY id;</textarea><div class="output">Run the query.</div>
+  </div>
+</section>
+
+<section class="card" id="practice">
+  <div class="kicker">Practice · Run & Check</div><h2>Eight short exercises</h2>
+  <p>The checker evaluates the PostgreSQL result rather than capitalization, line breaks, or one exact query style.</p>
+
+  <div class="exercise" data-ex="1" data-check="bool_true">
+    <div class="exercise-top"><div><h3>Exercise 1 · Letters and digits only</h3><p>Check whether <code>COURSE101</code> contains only letters and digits. Return one Boolean column.</p></div><span class="status-pill">Not complete</span></div>
+    <div class="lab"><div class="lab-head"><div><b>Your SQL</b><small>Expected result: true</small></div><div class="lab-actions"><button class="lab-btn run">Run</button><button class="lab-btn check">Run & Check</button><button class="lab-btn reset">Reset</button></div></div><textarea class="editor">SELECT 'COURSE101' ~ '^[A-Za-z0-9]+$' AS result;</textarea><div class="output">Run and check.</div></div>
+  </div>
+
+  <div class="exercise" data-ex="2" data-check="bool_true">
+    <div class="exercise-top"><div><h3>Exercise 2 · Product code</h3><p>Check whether <code>ABC-1234</code> follows: three uppercase letters, hyphen, four digits.</p></div><span class="status-pill">Not complete</span></div>
+    <div class="lab"><div class="lab-head"><div><b>Your SQL</b><small>Expected result: true</small></div><div class="lab-actions"><button class="lab-btn run">Run</button><button class="lab-btn check">Run & Check</button><button class="lab-btn reset">Reset</button></div></div><textarea class="editor">SELECT 'ABC-1234' ~ '^[A-Z]{3}-[0-9]{4}$' AS result;</textarea><div class="output">Run and check.</div></div>
+  </div>
+
+  <div class="exercise" data-ex="3" data-check="data_analytics">
+    <div class="exercise-top"><div><h3>Exercise 3 · Normalize whitespace</h3><p>Convert <code>   Data     Analytics   </code> to <code>Data Analytics</code>.</p></div><span class="status-pill">Not complete</span></div>
+    <div class="lab"><div class="lab-head"><div><b>Your SQL</b><small>Expected text: Data Analytics</small></div><div class="lab-actions"><button class="lab-btn run">Run</button><button class="lab-btn check">Run & Check</button><button class="lab-btn reset">Reset</button></div></div><textarea class="editor">SELECT REGEXP_REPLACE(
+  BTRIM('   Data     Analytics   '),
+  '[[:space:]]+',
+  ' ',
+  'g'
+) AS result;</textarea><div class="output">Run and check.</div></div>
+  </div>
+
+  <div class="exercise" data-ex="4" data-check="phone">
+    <div class="exercise-top"><div><h3>Exercise 4 · Keep only digits</h3><p>Remove every non-digit from <code>+1 (336) 555-9000</code>.</p></div><span class="status-pill">Not complete</span></div>
+    <div class="lab"><div class="lab-head"><div><b>Your SQL</b><small>Expected text: 13365559000</small></div><div class="lab-actions"><button class="lab-btn run">Run</button><button class="lab-btn check">Run & Check</button><button class="lab-btn reset">Reset</button></div></div><textarea class="editor">SELECT REGEXP_REPLACE(
+  '+1 (336) 555-9000',
+  '[^0-9]',
+  '',
+  'g'
+) AS result;</textarea><div class="output">Run and check.</div></div>
+  </div>
+
+  <div class="exercise" data-ex="5" data-check="course101">
+    <div class="exercise-top"><div><h3>Exercise 5 · Extract a number</h3><p>Extract <code>101</code> from <code>Course 101</code>.</p></div><span class="status-pill">Not complete</span></div>
+    <div class="lab"><div class="lab-head"><div><b>Your SQL</b><small>Expected text: 101</small></div><div class="lab-actions"><button class="lab-btn run">Run</button><button class="lab-btn check">Run & Check</button><button class="lab-btn reset">Reset</button></div></div><textarea class="editor">SELECT SUBSTRING('Course 101', '[0-9]+') AS result;</textarea><div class="output">Run and check.</div></div>
+  </div>
+
+  <div class="exercise" data-ex="6" data-check="three_tools">
+    <div class="exercise-top"><div><h3>Exercise 6 · Split into rows</h3><p>Split <code>SQL | Python | Pandas</code> into three separate rows.</p></div><span class="status-pill">Not complete</span></div>
+    <div class="lab"><div class="lab-head"><div><b>Your SQL</b><small>Expected rows: SQL, Python, Pandas</small></div><div class="lab-actions"><button class="lab-btn run">Run</button><button class="lab-btn check">Run & Check</button><button class="lab-btn reset">Reset</button></div></div><textarea class="editor">SELECT REGEXP_SPLIT_TO_TABLE(
+  'SQL | Python | Pandas',
+  '[[:space:]]*\|[[:space:]]*'
+) AS result;</textarea><div class="output">Run and check.</div></div>
+  </div>
+
+  <div class="exercise" data-ex="7" data-check="bool_true">
+    <div class="exercise-top"><div><h3>Exercise 7 · .edu ending</h3><p>Check whether <code>student@example.edu</code> ends with <code>.edu</code>.</p></div><span class="status-pill">Not complete</span></div>
+    <div class="lab"><div class="lab-head"><div><b>Your SQL</b><small>Expected result: true</small></div><div class="lab-actions"><button class="lab-btn run">Run</button><button class="lab-btn check">Run & Check</button><button class="lab-btn reset">Reset</button></div></div><textarea class="editor">SELECT 'student@example.edu' ~ '\.edu$' AS result;</textarea><div class="output">Run and check.</div></div>
+  </div>
+
+  <div class="exercise" data-ex="8" data-check="numbers_12_400_7">
+    <div class="exercise-top"><div><h3>Exercise 8 · Find every number group</h3><p>Return the number groups from <code>A12 B400 C7</code>.</p></div><span class="status-pill">Not complete</span></div>
+    <div class="lab"><div class="lab-head"><div><b>Your SQL</b><small>Expected matches: 12, 400, 7</small></div><div class="lab-actions"><button class="lab-btn run">Run</button><button class="lab-btn check">Run & Check</button><button class="lab-btn reset">Reset</button></div></div><textarea class="editor">SELECT REGEXP_MATCHES(
+  'A12 B400 C7',
+  '([0-9]+)',
+  'g'
+) AS result;</textarea><div class="output">Run and check.</div></div>
+  </div>
+</section>
+
+<section class="card" id="reference">
+  <div class="kicker">Quick reference</div><h2>Patterns worth remembering</h2>
+  <div class="pattern-grid">
+    <div class="pattern"><code>[0-9]</code><span>one digit</span></div>
+    <div class="pattern"><code>[0-9]+</code><span>one or more digits</span></div>
+    <div class="pattern"><code>^[0-9]+$</code><span>digits only</span></div>
+    <div class="pattern"><code>[A-Za-z]+</code><span>letters</span></div>
+    <div class="pattern"><code>[^0-9]</code><span>not a digit</span></div>
+    <div class="pattern"><code>[[:space:]]+</code><span>one or more whitespace characters</span></div>
+    <div class="pattern"><code>^A</code><span>starts with A</span></div>
+    <div class="pattern"><code>edu$</code><span>ends with edu</span></div>
+    <div class="pattern"><code>(cat|dog)</code><span>cat OR dog</span></div>
+    <div class="pattern"><code>[0-9]{3}</code><span>exactly three digits</span></div>
+    <div class="pattern"><code>[0-9]{2,5}</code><span>two through five digits</span></div>
+    <div class="pattern"><code>\mcat\M</code><span>whole word cat in PostgreSQL</span></div>
+  </div>
+  <div class="note"><strong>Return to Module 9:</strong> use these patterns for standardization and validation, but keep the larger cleaning principle in mind: detect uncertainty rather than inventing missing truth.</div>
+</section>
+<div class="footer">IAN 603 · Preparing Data for Analytics · Module 9R Regex Lab</div>
+</main>
+</div>
+
+<script type="module">
+const STORAGE_KEY='ian603_m9r_regex_progress_v1';
+const THEME_KEY='ian603_theme';
+const SEED_SQL=String.raw\`
+DROP TABLE IF EXISTS regex_people;
+CREATE TABLE regex_people (
+  id integer PRIMARY KEY,
+  name text,
+  email text,
+  phone text
+);
+INSERT INTO regex_people (id,name,email,phone) VALUES
+(1,'  Alice    Johnson  ','alice@example.edu','(336) 555-1234'),
+(2,'BOB   SMITH','bob.smith@example.com','336-555-9876'),
+(3,'Carol123 Brown','carol@example.org','336.555.1111'),
+(4,'  David   Lee ','invalid-email','555 222 3333'),
+(5,'Emma O''Neil','emma@example.net','+1 336 555 2222');
+\`;
+
+let db=null,dbPromise=null;
+async function initDb(){
+  if(db) return db;
+  if(!dbPromise){
+    dbPromise=(async()=>{
+      const mod=await import('https://cdn.jsdelivr.net/npm/@electric-sql/pglite@0.5.4/dist/index.js');
+      db=await mod.PGlite.create();
+      await db.exec(SEED_SQL);
+      const s=document.getElementById('dbStatus');s.textContent='PostgreSQL ready';s.classList.add('ready');
+      return db;
+    })().catch(err=>{
+      const s=document.getElementById('dbStatus');s.textContent='PostgreSQL unavailable';s.classList.add('error');throw err;
+    });
+  }
+  return dbPromise;
+}
+function esc(v){return String(v).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
+function normalize(v){
+  if(v===null||v===undefined) return null;
+  if(typeof v==='bigint') return v.toString();
+  if(v instanceof Date) return v.toISOString();
+  if(Array.isArray(v)) return v.map(normalize);
+  return v;
+}
+function resultSets(results){
+  const arr=Array.isArray(results)?results:[results];
+  return arr.filter(r=>Array.isArray(r?.rows));
+}
+function render(results){
+  const sets=resultSets(results);
+  if(!sets.length) return 'Executed successfully.';
+  return sets.map((q,i)=>{
+    if(!q.rows.length) return '<div>Result '+(i+1)+': 0 rows returned.</div>';
+    const cols=q.fields?.map(f=>f.name)||Object.keys(q.rows[0]);
+    let h='<div style="margin-bottom:10px"><table class="result-table"><thead><tr>'+cols.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr></thead><tbody>';
+    h+=q.rows.slice(0,100).map(r=>'<tr>'+cols.map(c=>'<td>'+esc(normalize(r[c])??'NULL')+'</td>').join('')+'</tr>').join('');
+    return h+'</tbody></table></div>';
+  }).join('');
+}
+async function runSql(textarea,output){
+  output.classList.remove('success','fail');output.textContent='Running...';
+  try{
+    const d=await initDb();const r=await d.exec(textarea.value);output.innerHTML=render(r);return r;
+  }catch(e){output.classList.add('fail');output.textContent='PostgreSQL error:\n'+(e?.message||String(e));return null}
+}
+function firstValues(results){
+  const sets=resultSets(results);if(!sets.length) return [];
+  const q=sets[sets.length-1];
+  if(!q.rows.length) return [];
+  const cols=q.fields?.map(f=>f.name)||Object.keys(q.rows[0]);
+  return q.rows.map(row=>normalize(row[cols[0]]));
+}
+function passes(type,results){
+  const vals=firstValues(results);
+  if(type==='bool_true') return vals.length===1 && vals[0]===true;
+  if(type==='data_analytics') return vals.length===1 && String(vals[0])==='Data Analytics';
+  if(type==='phone') return vals.length===1 && String(vals[0])==='13365559000';
+  if(type==='course101') return vals.length===1 && String(vals[0])==='101';
+  if(type==='three_tools') return JSON.stringify(vals.map(String))===JSON.stringify(['SQL','Python','Pandas']);
+  if(type==='numbers_12_400_7'){
+    const flat=vals.map(v=>Array.isArray(v)?String(v[0]):String(v));
+    return JSON.stringify(flat)===JSON.stringify(['12','400','7']);
+  }
+  return false;
+}
+function loadProgress(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch{return {}}}
+let progress=loadProgress();
+function saveProgress(){localStorage.setItem(STORAGE_KEY,JSON.stringify(progress));renderProgress()}
+function renderProgress(){
+  const done=Object.values(progress).filter(Boolean).length;
+  document.getElementById('progressBar').style.width=(done/8*100)+'%';
+  document.getElementById('progressText').textContent=done+' of 8 exercises complete';
+  document.querySelectorAll('.exercise').forEach(ex=>{
+    const pill=ex.querySelector('.status-pill'),ok=!!progress[ex.dataset.ex];
+    pill.textContent=ok?'Complete':'Not complete';pill.classList.toggle('done',ok);
+  });
+}
+document.querySelectorAll('.lab').forEach(lab=>{
+  const ta=lab.querySelector('.editor'),out=lab.querySelector('.output');
+  if(!ta||!out)return;
+  const original=lab.dataset.original?lab.dataset.original.replaceAll('&#10;','\n'):ta.value;
+  lab.querySelector('.run')?.addEventListener('click',()=>runSql(ta,out));
+  lab.querySelector('.reset')?.addEventListener('click',()=>{ta.value=original;out.textContent='Reset. Run the query.';out.classList.remove('success','fail')});
+  lab.querySelector('.copy')?.addEventListener('click',async e=>{await navigator.clipboard.writeText(ta.value);const b=e.currentTarget,o=b.textContent;b.textContent='Copied';setTimeout(()=>b.textContent=o,900)});
+});
+document.querySelectorAll('.exercise').forEach(ex=>{
+  const lab=ex.querySelector('.lab'),ta=lab.querySelector('.editor'),out=lab.querySelector('.output'),check=lab.querySelector('.check'),original=ta.value;
+  lab.querySelector('.reset').addEventListener('click',()=>{ta.value=original;out.textContent='Reset. Run and check.';out.classList.remove('success','fail')});
+  check.addEventListener('click',async()=>{
+    const r=await runSql(ta,out);if(!r)return;
+    const ok=passes(ex.dataset.check,r);out.classList.toggle('success',ok);out.classList.toggle('fail',!ok);
+    const msg=document.createElement('div');msg.style.marginTop='8px';msg.style.fontWeight='800';msg.textContent=ok?'✓ Correct — result matches the requirement.':'Not complete yet — inspect the returned value or rows and revise your pattern.';
+    out.appendChild(msg);if(ok){progress[ex.dataset.ex]=true;saveProgress()}
+  });
+});
+function sqlLiteral(s){return "'"+String(s).replaceAll("'","''")+"'"}
+function updateGenerated(){
+  const text=document.getElementById('pgText').value,pat=document.getElementById('pgPattern').value,op=document.getElementById('pgOperator').value;
+  document.getElementById('generatedSql').textContent='SELECT '+sqlLiteral(text)+' '+op+' '+sqlLiteral(pat)+' AS matches;';
+}
+['pgText','pgPattern','pgOperator'].forEach(id=>document.getElementById(id).addEventListener('input',updateGenerated));
+document.getElementById('runPlayground').addEventListener('click',async()=>{
+  const sql=document.getElementById('generatedSql').textContent,out=document.getElementById('playgroundOutput');out.textContent='Running...';
+  try{const d=await initDb();const r=await d.exec(sql);out.innerHTML=render(r);out.classList.remove('fail')}catch(e){out.classList.add('fail');out.textContent='PostgreSQL error:\n'+(e?.message||String(e))}
+});
+document.getElementById('themeBtn').addEventListener('click',()=>{
+  document.body.classList.toggle('dark');localStorage.setItem(THEME_KEY,document.body.classList.contains('dark')?'dark':'light');
+  document.getElementById('themeBtn').textContent=document.body.classList.contains('dark')?'Light mode':'Dark mode';
+});
+if(localStorage.getItem(THEME_KEY)==='dark'){document.body.classList.add('dark');document.getElementById('themeBtn').textContent='Light mode'}
+document.getElementById('resetProgress').addEventListener('click',()=>{progress={};localStorage.removeItem(STORAGE_KEY);renderProgress()});
+const sections=[...document.querySelectorAll('main section[id]')],links=[...document.querySelectorAll('.nav a')];
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))}})
+},{rootMargin:'-25% 0px -65% 0px'});
+sections.forEach(s=>obs.observe(s));
+updateGenerated();renderProgress();initDb();
+</script>
+</body>
+</html>
