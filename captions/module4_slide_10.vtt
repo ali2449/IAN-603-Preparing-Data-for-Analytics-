@@ -1,16 +1,16 @@
 WEBVTT
 
 00:00:00.000 --> 00:00:03.352
-GROUP BY defines the grain of a summary result.
+groupby defines the grain of a summary result.
 
 00:00:03.352 --> 00:00:08.772
-With no GROUP BY, an aggregate can summarize the whole table into one row.
+With no groupby, an aggregate can summarize the whole table into one row.
 
 00:00:08.772 --> 00:00:14.297
-If we group by diagnosis, the output becomes one row per diagnosis.
+If we groupby diagnosis, the output becomes one row per diagnosis.
 
 00:00:14.297 --> 00:00:17.147
-If we group by patient and diagnosis, the result becomes more detailed:
+If we groupby patient and diagnosis, the result becomes more detailed:
 
 00:00:17.147 --> 00:00:20.692
 one row per patient-and-diagnosis combination.
@@ -22,19 +22,19 @@ This is why adding grouping columns usually increases the number of output rows.
 A beginner-friendly rule is that selected columns that are not inside aggregate functions generally need to
 
 00:00:34.047 --> 00:00:38.942
-appear in GROUP BY. But the deeper rule is about meaning.
+appear in groupby. But the deeper rule is about meaning.
 
 00:00:38.942 --> 00:00:45.692
 Every selected non-aggregate value should be well-defined for the group represented by that output row.
 
 00:00:45.692 --> 00:00:49.247
-Before writing GROUP BY, finish the sentence: one row in my result represents one...
+Before writing groupby, finish the sentence: one row in my result represents one...
 
 00:00:49.247 --> 00:00:52.432
-GROUP BY changes the grain of the result.
+groupby changes the grain of the result.
 
 00:00:52.432 --> 00:00:59.192
-If you group by department and month, one output row represents one department-month combination.
+If you groupby department and month, one output row represents one department-month combination.
 
 00:00:59.192 --> 00:01:02.772
 State that sentence before adding measures.
