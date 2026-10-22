@@ -360,28 +360,28 @@ ORDER BY id;</textarea><div class="output">Run the query.</div>
 <script type="module">
 const STORAGE_KEY='ian603_m9r_regex_progress_v1';
 const THEME_KEY='ian603_theme';
-const SEED_SQL=String.raw\`
-DROP TABLE IF EXISTS regex_people;
-CREATE TABLE regex_people (
-  id integer PRIMARY KEY,
-  name text,
-  email text,
-  phone text
-);
-INSERT INTO regex_people (id,name,email,phone) VALUES
-(1,'  Alice    Johnson  ','alice@example.edu','(336) 555-1234'),
-(2,'BOB   SMITH','bob.smith@example.com','336-555-9876'),
-(3,'Carol123 Brown','carol@example.org','336.555.1111'),
-(4,'  David   Lee ','invalid-email','555 222 3333'),
-(5,'Emma O''Neil','emma@example.net','+1 336 555 2222');
-\`;
+const SEED_SQL = [
+  "DROP TABLE IF EXISTS regex_people;",
+  "CREATE TABLE regex_people (",
+  "  id integer PRIMARY KEY,",
+  "  name text,",
+  "  email text,",
+  "  phone text",
+  ");",
+  "INSERT INTO regex_people (id,name,email,phone) VALUES",
+  "(1,'  Alice    Johnson  ','alice@example.edu','(336) 555-1234'),",
+  "(2,'BOB   SMITH','bob.smith@example.com','336-555-9876'),",
+  "(3,'Carol123 Brown','carol@example.org','336.555.1111'),",
+  "(4,'  David   Lee ','invalid-email','555 222 3333'),",
+  "(5,'Emma O''Neil','emma@example.net','+1 336 555 2222');"
+].join("\n");
 
 let db=null,dbPromise=null;
 async function initDb(){
   if(db) return db;
   if(!dbPromise){
     dbPromise=(async()=>{
-      const mod=await import('https://cdn.jsdelivr.net/npm/@electric-sql/pglite@0.5.4/dist/index.js');
+      const mod=await import('https://cdn.jsdelivr.net/npm/@electric-sql/pglite@0.5.8/dist/index.js');
       db=await mod.PGlite.create();
       await db.exec(SEED_SQL);
       const s=document.getElementById('dbStatus');s.textContent='PostgreSQL ready';s.classList.add('ready');
