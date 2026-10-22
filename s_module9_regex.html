@@ -76,7 +76,7 @@ code{font-family:Consolas,"Courier New",monospace}
 .lab-actions{display:flex;gap:6px;flex-wrap:wrap}
 .lab-btn{border:1px solid #65798e;background:#42566d;color:white;border-radius:5px;padding:6px 9px;font-size:10px;font-weight:850;cursor:pointer}
 .lab-btn.run{background:#2f78b7}.lab-btn.check{background:#15803d}
-.editor{display:block;width:100%;min-height:150px;resize:vertical;border:0;outline:0;padding:14px 16px;background:#1e1e1e;color:#d4d4d4;font:13px/1.55 Consolas,"Courier New",monospace;tab-size:2}
+.pg-shell{position:relative;min-height:180px;background:#1e1e1e;border-top:1px solid #26384a}.pg-gutter{position:absolute;inset:0 auto 0 0;width:48px;background:#252526;color:#858585;border-right:1px solid #3b3b3b;overflow:hidden;z-index:3}.pg-gutter-lines{font:12.5px/21px Consolas,"Courier New",monospace;text-align:right;padding-top:13px}.pg-gutter-lines div{height:21px;padding-right:9px}.pg-highlight,.editor{position:absolute;inset:0 0 0 48px;width:calc(100% - 48px);height:100%;min-height:180px;padding:13px 16px;border:0;outline:0;resize:none;overflow:auto;white-space:pre;tab-size:2;font:13px/21px Consolas,"Courier New",monospace}.pg-highlight{z-index:1;margin:0;background:#1e1e1e;color:#d4d4d4;pointer-events:none}.editor{z-index:2;background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:#fff}.sql-keyword{color:#569cd6;font-weight:700}.sql-function{color:#dcdcaa}.sql-string{color:#ce9178}.sql-number{color:#b5cea8}.sql-comment{color:#6a9955;font-style:italic}.sql-operator{color:#d4d4d4}.sql-identifier{color:#9cdcfe}
 .output{min-height:54px;max-height:240px;overflow:auto;background:#fff;color:#1f2937;border-top:1px solid #aab5c1;padding:10px 12px;font:12px/1.45 Consolas,"Courier New",monospace}
 .output.success{border-top:4px solid #15803d}.output.fail{border-top:4px solid #b42318}
 .result-table{width:100%;border-collapse:collapse;font-family:Consolas,"Courier New",monospace;font-size:11px}.result-table th{background:#e8edf3}.result-table th,.result-table td{padding:7px 8px;border:1px solid #d6dde6;text-align:left;color:#1f2937}
@@ -400,6 +400,34 @@ function normalize(v){
   if(Array.isArray(v)) return v.map(normalize);
   return v;
 }
+function highlightSql(sql){
+  let s=esc(sql);
+  s=s.replace(/(--[^\n]*)/g,'<span class="sql-comment">$1</span>');
+  s=s.replace(/('(?:''|[^'])*')/g,'<span class="sql-string">$1</span>');
+  s=s.replace(/\b(SELECT|FROM|WHERE|AS|AND|OR|NOT|NULL|IS|IN|LIKE|ILIKE|CASE|WHEN|THEN|ELSE|END|ORDER|BY|GROUP|HAVING|DISTINCT|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|DROP|TABLE|VIEW|WITH|JOIN|LEFT|RIGHT|FULL|INNER|OUTER|ON|UNION|ALL|LIMIT|OFFSET|RETURNING|PRIMARY|KEY|REFERENCES|CHECK|TRUE|FALSE)\b/gi,'<span class="sql-keyword">$1</span>');
+  s=s.replace(/\b(REGEXP_REPLACE|REGEXP_MATCH|REGEXP_MATCHES|REGEXP_SPLIT_TO_ARRAY|REGEXP_SPLIT_TO_TABLE|SUBSTRING|BTRIM|LOWER|UPPER|INITCAP|COUNT|COALESCE|NULLIF|LENGTH)\b/gi,'<span class="sql-function">$1</span>');
+  s=s.replace(/\b(\d+(?:\.\d+)?)\b/g,'<span class="sql-number">$1</span>');
+  return s;
+}
+function setupPgEditor(lab){
+  const ta=lab.querySelector('.editor'); if(!ta||ta.closest('.pg-shell')) return;
+  const shell=document.createElement('div'); shell.className='pg-shell';
+  const gutter=document.createElement('div'); gutter.className='pg-gutter'; gutter.innerHTML='<div class="pg-gutter-lines"></div>';
+  const pre=document.createElement('pre'); pre.className='pg-highlight';
+  ta.parentNode.insertBefore(shell,ta); shell.appendChild(gutter); shell.appendChild(pre); shell.appendChild(ta);
+  function sync(){
+    const lines=Math.max(1,ta.value.split('\n').length);
+    gutter.firstElementChild.innerHTML=Array.from({length:lines},(_,i)=>'<div>'+(i+1)+'</div>').join('');
+    pre.innerHTML=highlightSql(ta.value)+'\n';
+    pre.scrollTop=ta.scrollTop; pre.scrollLeft=ta.scrollLeft; gutter.scrollTop=ta.scrollTop;
+    const target=Math.max(180,Math.min(420,ta.scrollHeight+2)); shell.style.height=target+'px';
+  }
+  ta.addEventListener('input',sync); ta.addEventListener('scroll',sync);
+  ta.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const a=ta.selectionStart,b=ta.selectionEnd;ta.setRangeText('  ',a,b,'end');sync()}});
+  ta._syncPg=sync; sync();
+}
+document.querySelectorAll('.lab').forEach(setupPgEditor);
+
 function resultSets(results){
   const arr=Array.isArray(results)?results:[results];
   return arr.filter(r=>Array.isArray(r?.rows));
@@ -458,12 +486,12 @@ document.querySelectorAll('.lab').forEach(lab=>{
   if(!ta||!out)return;
   const original=lab.dataset.original?lab.dataset.original.replaceAll('&#10;','\n'):ta.value;
   lab.querySelector('.run')?.addEventListener('click',()=>runSql(ta,out));
-  lab.querySelector('.reset')?.addEventListener('click',()=>{ta.value=original;out.textContent='Reset. Run the query.';out.classList.remove('success','fail')});
+  lab.querySelector('.reset')?.addEventListener('click',()=>{ta.value=original;ta._syncPg?.();out.textContent='Reset. Run the query.';out.classList.remove('success','fail')});
   lab.querySelector('.copy')?.addEventListener('click',async e=>{await navigator.clipboard.writeText(ta.value);const b=e.currentTarget,o=b.textContent;b.textContent='Copied';setTimeout(()=>b.textContent=o,900)});
 });
 document.querySelectorAll('.exercise').forEach(ex=>{
   const lab=ex.querySelector('.lab'),ta=lab.querySelector('.editor'),out=lab.querySelector('.output'),check=lab.querySelector('.check'),original=ta.value;
-  lab.querySelector('.reset').addEventListener('click',()=>{ta.value=original;out.textContent='Reset. Run and check.';out.classList.remove('success','fail')});
+  lab.querySelector('.reset').addEventListener('click',()=>{ta.value=original;ta._syncPg?.();out.textContent='Reset. Run and check.';out.classList.remove('success','fail')});
   check.addEventListener('click',async()=>{
     const r=await runSql(ta,out);if(!r)return;
     const ok=passes(ex.dataset.check,r);out.classList.toggle('success',ok);out.classList.toggle('fail',!ok);
