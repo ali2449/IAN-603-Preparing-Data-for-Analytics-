@@ -1,28 +1,16 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.107
-UNION ALL is a straightforward unpivot pattern.
+00:00:00.000 --> 00:00:04.132
+One simple way to un pivot data is to use union all.
 
-00:00:03.107 --> 00:00:06.002
-Write one SELECT for each source column.
+00:00:04.132 --> 00:00:11.142
+We write one select statement for January, another for February, and another for March.
 
-00:00:06.002 --> 00:00:08.962
-Give each SELECT the same output structure.
+00:00:11.142 --> 00:00:14.817
+Each select returns the same column structure.
 
-00:00:08.962 --> 00:00:11.627
-Then stack the rows with UNION ALL.
+00:00:14.817 --> 00:00:18.367
+Then union all stacks those rows together.
 
-00:00:11.627 --> 00:00:18.057
-This is verbose but very beginner-friendly because each source column is visible in its own SELECT.
-
-00:00:18.057 --> 00:00:21.932
-Unpivoting turns repeated columns into row values.
-
-00:00:21.932 --> 00:00:28.167
-UNION ALL is explicit and portable; LATERAL VALUES can be more compact in PostgreSQL.
-
-00:00:28.167 --> 00:00:35.012
-The important design decision is which columns become identifiers and which column names become values.
-
-00:00:35.012 --> 00:00:38.536
-Keep data types compatible across the generated rows.
+00:00:18.367 --> 00:00:25.639
+This approach is repetitive, but it is easy to understand because each source column is handled explicitly.

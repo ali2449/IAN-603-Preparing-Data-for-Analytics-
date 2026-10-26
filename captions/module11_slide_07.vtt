@@ -1,28 +1,25 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.867
-A Common Table Expression begins with WITH.
+00:00:00.000 --> 00:00:06.297
+A common table expression is a temporary named result inside one S Q L statement.
 
-00:00:02.867 --> 00:00:07.602
-Think of it as a named intermediate relation inside one statement.
+00:00:06.297 --> 00:00:09.807
+Think of it as giving a name to an intermediate step.
 
-00:00:07.602 --> 00:00:11.222
-The first stage can summarize or clean the source.
+00:00:09.807 --> 00:00:12.427
+One step might filter patients.
 
-00:00:11.222 --> 00:00:14.497
-A later stage can join or enrich that result.
+00:00:12.427 --> 00:00:15.112
+Another step might count admissions.
 
-00:00:14.497 --> 00:00:17.712
-The final SELECT consumes the prepared data.
+00:00:15.112 --> 00:00:20.191
+A later step can use that prepared result instead of repeating the same logic.
 
-00:00:17.712 --> 00:00:22.772
-Naming the stages helps you reason about the transformation one step at a time.
+00:00:20.656 --> 00:00:25.493
+The important point is that the common table expression is not a permanent table.
 
-00:00:22.772 --> 00:00:28.992
-A CTE gives a name to an intermediate result so a complex query can be read in stages.
+00:00:25.493 --> 00:00:28.643
+It exists only while that statement runs.
 
-00:00:28.992 --> 00:00:36.462
-Use it to clarify grain changes and major transformations, not simply to break every two lines into a
-
-00:00:36.462 --> 00:00:43.600
-new block. A useful CTE name describes what the rows represent, such as patient_totals or ranked_visits.
+00:00:28.643 --> 00:00:36.668
+When you see a long query, try reading it as a sequence of small named stages instead of one large block of code.

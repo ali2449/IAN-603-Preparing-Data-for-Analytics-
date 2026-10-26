@@ -1,28 +1,28 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.042
-A shuffle happens when data must be redistributed across workers.
+00:00:00.000 --> 00:00:04.362
+A shuffle means Spark has to redistribute data between workers.
 
-00:00:04.042 --> 00:00:09.342
-This often occurs for groupby, ORDER BY, DISTINCT, and many joins.
+00:00:04.362 --> 00:00:08.452
+Consider grouping millions of sales records by customer.
 
-00:00:09.342 --> 00:00:11.427
-Shuffles are not always bad.
+00:00:08.452 --> 00:00:13.617
+The records for one customer may currently be spread across many partitions.
 
-00:00:11.427 --> 00:00:17.297
-Sometimes they are necessary. But they are important because they involve network and disk work.
+00:00:13.617 --> 00:00:19.794
+Before Spark can calculate that customer's total, those related records need to be brought together.
 
-00:00:17.297 --> 00:00:22.347
-In Spark performance reasoning, always ask where shuffles occur.
+00:00:20.478 --> 00:00:25.655
+That movement uses network, memory, and sometimes disk resources.
 
-00:00:22.347 --> 00:00:27.942
-A shuffle moves data across executors so related keys end up together.
+00:00:25.655 --> 00:00:31.380
+Grouping, global sorting, distinct operations, and many joins can cause shuffles.
 
-00:00:27.942 --> 00:00:33.677
-groupby, large joins, and global ORDER BY can trigger expensive shuffles.
+00:00:31.380 --> 00:00:36.210
+A shuffle is not automatically a mistake.
 
-00:00:33.677 --> 00:00:40.297
-In distributed systems, moving data is often more costly than evaluating the SQL expression itself,
+00:00:36.210 --> 00:00:39.670
+Sometimes it is required to answer the question.
 
-00:00:40.297 --> 00:00:42.201
-so plan around data movement.
+00:00:39.670 --> 00:00:44.753
+The goal is to recognize when it happens and avoid unnecessary movement.

@@ -1,25 +1,25 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.957
-Schema inference is convenient for exploration.
+00:00:00.000 --> 00:00:03.757
+Spark can inspect a file and try to infer the schema.
 
-00:00:02.957 --> 00:00:05.942
-Spark can look at data and guess types.
+00:00:03.757 --> 00:00:09.422
+That is convenient when we are exploring data, but inference is still a guess.
 
-00:00:05.942 --> 00:00:13.912
-But inferred types can be wrong, especially for identifiers, dates, mixed values, or sparse columns.
+00:00:09.422 --> 00:00:13.632
+A column that looks numeric may actually be an identifier.
 
-00:00:13.912 --> 00:00:22.082
-For production workflows and important assignments, an explicit schema is often safer because it documents the
+00:00:13.632 --> 00:00:16.977
+A date may be interpreted as plain text.
 
-00:00:22.082 --> 00:00:22.582
-expected structure.
+00:00:16.977 --> 00:00:21.582
+A mostly empty column may be assigned an unexpected type.
 
-00:00:22.582 --> 00:00:29.297
-Schema inference is convenient for exploration, but production pipelines benefit from explicit schemas.
+00:00:21.582 --> 00:00:26.597
+For important pipelines, an explicit schema is often safer.
 
-00:00:29.297 --> 00:00:36.982
-A single malformed file or unexpected type can change inference or force expensive extra scans.
+00:00:26.597 --> 00:00:33.052
+It documents what each column is expected to contain and reduces the chance that the same file is interpreted
 
-00:00:36.982 --> 00:00:42.766
-Defining types up front also documents expectations and catches defects earlier.
+00:00:33.052 --> 00:00:34.482
+differently later.

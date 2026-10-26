@@ -1,0 +1,967 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:04.502
+Section 01: Course Synthesis and Sample Project Walkthrough
+
+00:00:04.502 --> 00:00:11.122
+Welcome to Module 14, the final course synthesis for IAN 603.
+
+00:00:11.122 --> 00:00:21.187
+You have now worked through relational design, S Q L querying, aggregation, logic, joins, subqueries,
+
+00:00:21.187 --> 00:00:28.092
+text and date transformation, data cleaning, reshaping, advanced S Q L, reusable views,
+
+00:00:28.092 --> 00:00:32.281
+and distributed processing with Spark.
+
+00:00:32.887 --> 00:00:33.358
+This module brings those ideas together into one complete way of thinking about data preparation.
+
+00:00:33.358 --> 00:00:33.738
+The goal is not to introduce a large new set of commands.
+
+00:00:33.738 --> 00:00:34.038
+Instead, I want you to see how the skills from the course connect when you work on a realistic problem.
+
+00:00:34.038 --> 00:00:34.338
+We will use a small public-transit example from Greensboro to walk through the process.
+
+00:00:34.338 --> 00:00:34.644
+We will inspect the source, identify quality issues, clean only what we can justify, integrate tables carefully,
+
+00:00:34.644 --> 00:00:34.944
+validate the final result, and document the decisions.
+
+00:00:34.944 --> 00:00:35.244
+One important point before we begin: this walkthrough is a sample.
+
+00:00:35.244 --> 00:00:35.544
+It is not the official Final Project assignment.
+
+00:00:35.544 --> 00:00:35.873
+Your actual Final Project instructions, rubric, required files, due date, and submission area are in Canvas.
+
+00:00:35.873 --> 00:00:36.178
+Section 02: Module Contents Here is the overall path for this module.
+
+00:00:36.178 --> 00:00:36.508
+We begin by clarifying the role of this page and the role of Canvas.
+
+00:00:36.508 --> 00:00:36.818
+Then we connect the major course skills into one workflow.
+
+00:00:36.818 --> 00:00:37.138
+After that, we use a small transit example to move through profiling, cleaning, normalization, integration, validation,
+
+00:00:37.138 --> 00:00:37.438
+and documentation.
+
+00:00:37.438 --> 00:00:37.778
+At the end, you will use a readiness checklist and a few reflection questions to prepare for your own Final Project.
+
+00:00:37.778 --> 00:00:38.088
+Think of this module as a bridge between learning individual techniques and applying them as one defensible process.
+
+00:00:38.088 --> 00:00:38.438
+Section 03: This module is a synthesis, not the final-project assignment
+
+00:00:38.438 --> 00:00:38.788
+Module 14 is a synthesis.
+
+00:00:38.788 --> 00:00:39.118
+That means we are combining the ideas from Modules 1 through 13 rather than treating this page as the official project
+
+00:00:39.118 --> 00:00:39.438
+prompt. Across the semester, you learned many techniques separately.
+
+00:00:39.438 --> 00:00:39.738
+You learned how to understand structure, write queries, combine tables, clean values, reshape data,
+
+00:00:39.738 --> 00:00:40.048
+build reusable logic, and think about scale.
+
+00:00:40.048 --> 00:00:40.368
+Now we are asking a bigger question: how do those skills work together when the data is messy and the final output must
+
+00:00:40.368 --> 00:00:40.708
+be trustworthy? The sample on this page helps answer that question.
+
+00:00:40.708 --> 00:00:41.058
+Your own Final Project may use different data, different requirements, and different deliverables.
+
+00:00:41.058 --> 00:00:41.388
+Section 04: Learning objectives
+
+00:00:41.388 --> 00:00:41.698
+By the end of this module, you should be able to explain an end-to-end data-preparation workflow.
+
+00:00:41.698 --> 00:00:42.048
+You should be able to identify which course techniques belong at different stages of that workflow.
+
+00:00:42.048 --> 00:00:42.398
+You should also be able to look at a sample project and discuss its data-quality risks, transformation decisions,
+
+00:00:42.398 --> 00:00:42.698
+output grain, and validation evidence.
+
+00:00:42.698 --> 00:00:43.048
+Most importantly, you should be able to separate a teaching example from the actual assignment requirements.
+
+00:00:43.048 --> 00:00:43.348
+When you prepare your own Final Project, you should use Canvas as the source of truth and use the ideas from this module
+
+00:00:43.348 --> 00:00:43.678
+as a reasoning framework. Section 05: Your actual final project is in Canvas
+
+00:00:43.678 --> 00:00:44.028
+Your actual Final Project is in Canvas.
+
+00:00:44.028 --> 00:00:44.328
+This page is here to help you think through the process, but it does not replace the Canvas assignment.
+
+00:00:44.328 --> 00:00:44.678
+When you are ready to begin your project, go to the Final Project area in Canvas and read the complete instructions
+
+00:00:44.678 --> 00:00:44.978
+before choosing your approach.
+
+00:00:44.978 --> 00:00:45.328
+That will prevent a common problem: building a good project that does not actually match the required deliverables.
+
+00:00:45.328 --> 00:00:45.658
+Section 06: Canvas is the authoritative location
+
+00:00:45.658 --> 00:00:45.958
+Canvas is the authoritative location for the Final Project.
+
+00:00:45.958 --> 00:00:46.288
+Use Canvas for the official prompt, the grading rubric, the required files, the due date, formatting requirements,
+
+00:00:46.288 --> 00:00:46.588
+and submission instructions. If anything on this sample page seems different from Canvas, follow Canvas.
+
+00:00:46.588 --> 00:00:46.918
+The sample here teaches the workflow.
+
+00:00:46.918 --> 00:00:47.268
+Canvas defines what you must submit.
+
+00:00:47.268 --> 00:00:47.618
+Section 07: Instructions
+
+00:00:47.618 --> 00:00:47.918
+Before you choose a dataset or begin writing code, read the entire Final Project assignment in Canvas.
+
+00:00:47.918 --> 00:00:48.268
+Do not start from assumptions.
+
+00:00:48.268 --> 00:00:48.618
+First understand what the assignment is asking you to produce, how it will be graded,
+
+00:00:48.618 --> 00:00:48.948
+and what evidence you need to include.
+
+00:00:48.948 --> 00:00:49.298
+That is the same principle we use in data preparation: understand the requirement before transforming the data.
+
+00:00:49.298 --> 00:00:49.598
+Section 08: Rubric Use the Canvas rubric as a quality-control checklist.
+
+00:00:49.598 --> 00:00:49.928
+Do not wait until the end to look at the rubric.
+
+00:00:49.928 --> 00:00:50.268
+Read it early, and then use it again before submission.
+
+00:00:50.268 --> 00:00:50.618
+A rubric tells you what evidence the instructor expects to see.
+
+00:00:50.618 --> 00:00:50.938
+That can help you decide what to document, what screenshots or outputs to preserve,
+
+00:00:50.938 --> 00:00:51.268
+and what explanations need to be clear.
+
+00:00:51.268 --> 00:00:51.568
+Section 09: Submission When your project is complete, submit the required materials through Canvas.
+
+00:00:51.568 --> 00:00:51.888
+After uploading, verify that the submission was successful and that the correct files are attached.
+
+00:00:51.888 --> 00:00:52.188
+This sounds simple, but it is part of a professional workflow.
+
+00:00:52.188 --> 00:00:52.538
+A completed project that is not submitted correctly cannot be evaluated.
+
+00:00:52.538 --> 00:00:52.594
+So treat submission verification as the final validation step for the assignment itself.
+
+00:00:52.594 --> 00:00:52.644
+Section 10: How the course skills fit into one workflow
+
+00:00:52.644 --> 00:00:52.694
+A real data-preparation project rarely follows the course modules in a perfect straight line.
+
+00:00:52.694 --> 00:00:52.744
+You may inspect the data, notice a quality problem, return to the schema, clean a field, join another source,
+
+00:00:52.744 --> 00:00:52.794
+discover a grain problem, reshape the output, and then validate again.
+
+00:00:53.094 --> 00:00:53.426
+A useful workflow is to think in stages.
+
+00:00:53.426 --> 00:00:53.776
+First, understand the context and the meaning of one row.
+
+00:00:53.776 --> 00:00:54.106
+Second, profile the data and identify problems.
+
+00:00:54.106 --> 00:00:54.406
+Third, clean and standardize only what you can justify.
+
+00:00:54.406 --> 00:00:54.716
+Fourth, integrate sources using correct keys and cardinality.
+
+00:00:54.716 --> 00:00:55.026
+Fifth, transform the structure for the analytical goal.
+
+00:00:55.026 --> 00:00:55.366
+Finally, validate and communicate what you did.
+
+00:00:55.366 --> 00:00:55.716
+You may move back and forth between these stages, but each decision should remain explainable.
+
+00:00:55.716 --> 00:00:56.016
+Section 11: Meaning and structure
+
+00:00:56.016 --> 00:00:56.356
+The first part of the course focused on meaning and structure.
+
+00:00:56.356 --> 00:00:56.706
+Before writing complex S Q L, you need to understand data types, keys, relationships, quality dimensions,
+
+00:00:56.706 --> 00:00:57.056
+and normalization. For example, if one table has one row per patient and another has many admissions per patient,
+
+00:00:57.056 --> 00:00:57.396
+that relationship affects every later join.
+
+00:00:57.396 --> 00:00:57.696
+A technically correct query can still be analytically wrong if the row meaning is misunderstood.
+
+00:00:57.696 --> 00:00:58.046
+So the first question in almost every project should be: what does one row represent?
+
+00:00:58.046 --> 00:00:58.396
+Section 12: Relational querying The next group of skills involved relational querying.
+
+00:00:58.396 --> 00:00:58.736
+You learned how to select data, modify data, aggregate values, apply Boolean logic, join tables, and use subqueries.
+
+00:00:58.736 --> 00:00:59.086
+These are not isolated commands.
+
+00:00:59.086 --> 00:00:59.436
+They are tools for changing the grain and combining information.
+
+00:00:59.436 --> 00:00:59.736
+For example, a join can add useful attributes, but a one-to-many join can also multiply rows.
+
+00:00:59.736 --> 00:01:00.086
+An aggregate can summarize information, but it can also remove detail.
+
+00:01:00.086 --> 00:01:00.396
+The important habit is to understand what each query changes about the result.
+
+00:01:00.396 --> 00:01:00.736
+Section 13: Preparation and shape
+
+00:01:00.736 --> 00:01:01.086
+Modules 8 through 10 focused heavily on preparation and analytical shape.
+
+00:01:01.086 --> 00:01:01.406
+You worked with strings, dates, validation, cleaning, duplicate detection, pivoting, and un pivoting.
+
+00:01:01.406 --> 00:01:01.756
+These skills are useful because real data rarely arrives in the exact form we want.
+
+00:01:01.756 --> 00:01:02.076
+But cleaning does not mean forcing every value into a convenient form.
+
+00:01:02.076 --> 00:01:02.426
+Sometimes the correct action is to standardize.
+
+00:01:02.426 --> 00:01:02.726
+Sometimes it is to flag.
+
+00:01:02.726 --> 00:01:03.056
+Sometimes it is to preserve a null value because the truth is unknown.
+
+00:01:03.056 --> 00:01:03.366
+And when reshaping, we always protect the meaning of the data by checking grain and totals.
+
+00:01:03.366 --> 00:01:03.716
+Section 14: Reusable and scalable analytics
+
+00:01:03.716 --> 00:01:04.016
+Modules 11 through 13 moved toward reusable and scalable analytics.
+
+00:01:04.016 --> 00:01:04.316
+You learned common table expressions, window functions, standard views, materialized views, modular design, Spark S Q L,
+
+00:01:04.316 --> 00:01:04.666
+and distributed execution. These tools help when the logic becomes larger, when many people need the same definition,
+
+00:01:04.666 --> 00:01:05.016
+or when the amount of data grows.
+
+00:01:05.016 --> 00:01:05.356
+Even in those more advanced environments, the basic habits do not change.
+
+00:01:05.356 --> 00:01:05.656
+You still need clear grain, trustworthy joins, careful null handling, validation, and documentation.
+
+00:01:05.656 --> 00:01:05.996
+Section 15: Sample project: Greensboro public transit data preparation
+
+00:01:05.996 --> 00:01:06.346
+Now we will use a small Greensboro public-transit example.
+
+00:01:06.346 --> 00:01:06.696
+Imagine that an analyst receives three C S V files.
+
+00:01:06.696 --> 00:01:07.026
+One file describes bus routes.
+
+00:01:07.026 --> 00:01:07.336
+One describes bus stops. And one contains daily ridership.
+
+00:01:07.336 --> 00:01:07.686
+The goal is to prepare these sources for analysis.
+
+00:01:07.686 --> 00:01:08.026
+This is intentionally a small example.
+
+00:01:08.026 --> 00:01:08.326
+The purpose is not to build a complete transit system model.
+
+00:01:08.326 --> 00:01:08.656
+The purpose is to practice the reasoning process from raw source to validated analytical output.
+
+00:01:08.656 --> 00:01:08.956
+Section 16: bus routes C S V
+
+00:01:08.956 --> 00:01:09.306
+The first file contains bus routes.
+
+00:01:09.306 --> 00:01:09.656
+Each route has an I D, a route name, and a field containing major street names.
+
+00:01:09.656 --> 00:01:09.966
+The important issue is that the street field contains several street names inside one cell, separated by commas.
+
+00:01:09.966 --> 00:01:10.316
+That may be convenient in a source file, but it is not ideal if we want to analyze streets individually.
+
+00:01:10.316 --> 00:01:10.616
+So later, we will normalize that field into one route-and-street relationship per row.
+
+00:01:10.616 --> 00:01:10.966
+Section 17: bus stops C S V
+
+00:01:10.966 --> 00:01:11.266
+The second file contains bus stops.
+
+00:01:11.266 --> 00:01:11.316
+Each stop has its own I D, a route I D, a stop name, and an accessibility value.
+
+00:01:11.316 --> 00:01:11.366
+Some accessibility values are missing.
+
+00:01:11.366 --> 00:01:11.416
+That creates an important data-quality question.
+
+00:01:11.416 --> 00:01:11.466
+A missing value does not automatically mean no.
+
+00:01:11.466 --> 00:01:11.516
+It means we do not know from the source.
+
+00:01:11.516 --> 00:01:11.566
+So our cleaning process should preserve that uncertainty instead of inventing an answer.
+
+00:01:11.566 --> 00:01:11.616
+Section 18: daily ridership C S V
+
+00:01:11.616 --> 00:01:11.666
+The third file contains daily ridership.
+
+00:01:11.666 --> 00:01:11.716
+Each row has a ridership I D, a route I D, a service date, and a rider count.
+
+00:01:11.716 --> 00:01:11.766
+The main issue is that the date appears in more than one text format.
+
+00:01:11.766 --> 00:01:11.816
+For example, one row may use month, day, year with slashes, while another uses year, month, day with hyphens.
+
+00:01:11.816 --> 00:01:11.866
+Before analysis, we want one consistent typed date column.
+
+00:01:11.866 --> 00:01:11.916
+The key is to support formats we understand and leave unsupported values as null rather than guessing.
+
+00:01:11.916 --> 00:01:11.966
+Section 19: What is visibly wrong or risky in the sample?
+
+00:01:11.966 --> 00:01:12.016
+Even this small sample already contains several risks.
+
+00:01:12.016 --> 00:01:12.066
+The route file stores multiple street names in one field.
+
+00:01:12.066 --> 00:01:12.116
+The stop file contains missing accessibility values.
+
+00:01:12.116 --> 00:01:12.166
+The ridership file contains more than one date representation.
+
+00:01:11.771 --> 00:01:15.228
+Notice that none of these problems should be fixed blindly.
+
+00:01:15.228 --> 00:01:18.023
+The street list needs normalization.
+
+00:01:18.023 --> 00:01:24.863
+The missing accessibility value should remain unknown unless a trustworthy rule tells us otherwise.
+
+00:01:24.863 --> 00:01:31.163
+And the date text should be parsed only when it matches a supported format.
+
+00:01:31.163 --> 00:01:34.963
+This is the difference between cleaning and guessing.
+
+00:01:34.963 --> 00:01:37.818
+Section 20: Profile before changing anything
+
+00:01:37.818 --> 00:01:40.883
+Before changing the data, profile it.
+
+00:01:40.883 --> 00:01:45.023
+Start with basic questions. How many rows are there?
+
+00:01:45.023 --> 00:01:49.838
+Are the identifiers unique? How many route I Ds are missing?
+
+00:01:49.838 --> 00:01:52.248
+How many rider counts are missing?
+
+00:01:52.248 --> 00:01:55.608
+What are the minimum and maximum rider counts?
+
+00:01:55.608 --> 00:01:58.887
+What date formats actually appear in the source?
+
+00:01:59.337 --> 00:02:01.514
+Profiling gives you evidence.
+
+00:02:01.514 --> 00:02:10.144
+If you later explain that you standardized two date formats, you should be able to show that those two formats were
+
+00:02:10.144 --> 00:02:17.999
+actually present. A cleaning decision is much easier to defend when it is connected to something you observed.
+
+00:02:17.999 --> 00:02:21.384
+Section 21: Clean values without inventing facts
+
+00:02:21.384 --> 00:02:25.534
+Once the problems are understood, begin cleaning.
+
+00:02:25.534 --> 00:02:31.079
+The rule is simple: standardize representation without inventing facts.
+
+00:02:31.079 --> 00:02:36.844
+For the ridership data, we can convert supported date strings into a typed date.
+
+00:02:36.844 --> 00:02:41.459
+For accessibility, we can map known yes values to true and known no values to false.
+
+00:02:41.459 --> 00:02:46.644
+If the source is missing or unclear, we keep a null value.
+
+00:02:46.644 --> 00:02:55.189
+For the route street list, we can split the known comma-separated values into separate rows.
+
+00:02:55.189 --> 00:03:01.179
+Each of those changes is explainable because it is based on observed source structure.
+
+00:03:01.179 --> 00:03:03.239
+Section 22: Standardize date text into a typed date
+
+00:03:03.239 --> 00:03:09.389
+The date-cleaning query checks the text before converting it.
+
+00:03:09.389 --> 00:03:14.159
+If the value looks like year, month, day, it is converted directly to a date.
+
+00:03:14.159 --> 00:03:20.009
+If it looks like month, day, year with slashes, we parse it using that pattern.
+
+00:03:20.009 --> 00:03:25.523
+If it matches neither supported pattern, the cleaned date becomes null.
+
+00:03:25.973 --> 00:03:27.780
+Notice what we are not doing.
+
+00:03:27.780 --> 00:03:31.715
+We are not trying several random conversions until something works.
+
+00:03:31.715 --> 00:03:32.320
+We are explicitly stating which formats we support.
+
+00:03:32.320 --> 00:03:36.115
+That makes the rule easier to test, document, and trust.
+
+00:03:36.115 --> 00:03:38.690
+Section 23: Normalize accessibility while preserving uncertainty
+
+00:03:38.690 --> 00:03:40.700
+Now consider the accessibility field.
+
+00:03:40.700 --> 00:03:42.670
+If the source says yes, we store true.
+
+00:03:42.670 --> 00:03:43.685
+If it says no, we store false.
+
+00:03:43.685 --> 00:03:46.520
+If the source is blank, missing, or something we do not recognize, we store null.
+
+00:03:46.520 --> 00:03:51.385
+We can also create a small status field that tells us whether the source value was present.
+
+00:03:51.385 --> 00:03:55.710
+This is useful because the cleaned Boolean value and the source-quality status answer different questions.
+
+00:03:55.710 --> 00:03:57.410
+One describes the normalized value.
+
+00:03:57.410 --> 00:04:00.470
+The other describes what evidence was available.
+
+00:04:00.470 --> 00:04:02.035
+Section 24: Normalize the comma-separated street list
+
+00:04:02.035 --> 00:04:05.220
+The route file contains several streets inside one field.
+
+00:04:05.220 --> 00:04:08.390
+We can split that field at the commas and return one street name per row.
+
+00:04:08.390 --> 00:04:11.740
+For example, if Route A contains Main Street, Elm Street, and Oak Avenue, the normalized result has three rows for Route
+
+00:04:11.740 --> 00:04:18.215
+A. This is a better structure if we want to count streets, join street information, or analyze route coverage.
+
+00:04:18.215 --> 00:04:21.200
+The important idea is not the exact regular-expression syntax.
+
+00:04:21.200 --> 00:04:26.290
+The important idea is that repeated values stored inside one cell can often be normalized into separate rows.
+
+00:04:26.290 --> 00:04:26.635
+Section 25: Integrate at the correct grain
+
+00:04:26.635 --> 00:04:30.005
+Now we combine the cleaned data.
+
+00:04:30.005 --> 00:04:32.780
+Suppose our final analytical grain is one row per route and service date.
+
+00:04:32.780 --> 00:04:35.375
+Ridership already fits that idea reasonably well.
+
+00:04:35.375 --> 00:04:36.700
+Stops do not. A route can have many stops.
+
+00:04:36.700 --> 00:04:40.860
+If we join each ridership row directly to every stop, the rider count repeats once for each stop.
+
+00:04:40.860 --> 00:04:42.517
+That would inflate later totals.
+
+00:04:42.975 --> 00:04:43.709
+So we first summarize stops to one row per route.
+
+00:04:43.709 --> 00:04:46.554
+For each route, we can calculate the number of stops, the number known to be accessible,
+
+00:04:46.554 --> 00:04:47.709
+and the number with unknown accessibility.
+
+00:04:47.709 --> 00:04:48.359
+Then we join that route-level summary to the route-and-date ridership data.
+
+00:04:48.359 --> 00:04:49.329
+This preserves the intended final grain.
+
+00:04:49.329 --> 00:04:50.074
+Section 26: Validation turns looks clean into evidence
+
+00:04:50.074 --> 00:04:51.359
+A result can look clean and still be wrong.
+
+00:04:51.359 --> 00:04:52.244
+Validation gives us evidence that the transformation behaved as intended.
+
+00:04:52.244 --> 00:04:53.119
+We can test identifier uniqueness.
+
+00:04:53.119 --> 00:04:54.559
+We can test whether route references are valid.
+
+00:04:54.559 --> 00:04:55.019
+We can look for dates that failed parsing.
+
+00:04:55.019 --> 00:04:55.929
+We can check for negative rider counts.
+
+00:04:55.929 --> 00:04:57.019
+And we can confirm that the final output contains no duplicate route-and-date combinations.
+
+00:04:57.019 --> 00:04:58.519
+Validation is not one magic query.
+
+00:04:58.519 --> 00:04:58.999
+It is a collection of checks tied to the properties that matter for the dataset.
+
+00:04:58.999 --> 00:04:59.369
+Section 27: Uniqueness
+
+00:04:59.369 --> 00:04:59.669
+A uniqueness check asks whether an identifier appears more than once when it is supposed to be unique.
+
+00:04:59.669 --> 00:05:02.039
+For ridership, we can group by ridership I D and look for counts greater than one.
+
+00:05:02.039 --> 00:05:03.894
+If the query returns no rows, that is evidence that we did not find duplicate ridership identifiers.
+
+00:05:03.894 --> 00:05:04.199
+Be careful with the wording.
+
+00:05:04.199 --> 00:05:05.709
+An empty result does not prove that the entire dataset is correct.
+
+00:05:05.709 --> 00:05:06.349
+It only tells us that this specific uniqueness problem was not found.
+
+00:05:06.349 --> 00:05:07.524
+Section 28: Referential integrity
+
+00:05:07.524 --> 00:05:07.829
+Referential-integrity validation checks whether related identifiers actually point to valid parent records.
+
+00:05:07.829 --> 00:05:10.089
+For example, every route I D in the ridership table should match a route in the route table.
+
+00:05:10.089 --> 00:05:12.164
+A left join can help us find ridership rows that have no matching route.
+
+00:05:12.164 --> 00:05:12.529
+If any appear, we have an orphaned reference that should be investigated.
+
+00:05:12.529 --> 00:05:14.964
+This kind of check is essential whenever several source tables are integrated.
+
+00:05:14.964 --> 00:05:15.759
+Section 29: Date parsing A date-parsing validation is straightforward.
+
+00:05:15.759 --> 00:05:17.609
+After creating the cleaned date field, search for rows where that date is null.
+
+00:05:17.609 --> 00:05:18.039
+Those rows deserve review. Some may represent missing source dates.
+
+00:05:18.039 --> 00:05:18.519
+Others may contain unsupported or invalid text.
+
+00:05:18.519 --> 00:05:20.489
+The important point is that the failed conversion remains visible.
+
+00:05:20.489 --> 00:05:21.309
+We did not silently replace it with a guessed date.
+
+00:05:21.309 --> 00:05:23.004
+Section 30: Range validity Range validation asks whether a numeric value falls inside a reasonable domain.
+
+00:05:23.004 --> 00:05:24.309
+For rider counts, a negative value is suspicious because a count should not normally be below zero.
+
+00:05:24.309 --> 00:05:25.259
+That does not automatically tell us what the correct value should be.
+
+00:05:25.259 --> 00:05:25.759
+It tells us that the record needs review.
+
+00:05:25.759 --> 00:05:27.379
+This is the same principle you practiced earlier: validation identifies a problem;
+
+00:05:27.379 --> 00:05:28.924
+it does not give us permission to invent a correction.
+
+00:05:28.924 --> 00:05:29.409
+Section 31: Validate the intended final grain
+
+00:05:29.409 --> 00:05:30.409
+One of the most important validation checks is the final grain.
+
+00:05:30.409 --> 00:05:31.954
+If one row is supposed to represent one route on one service date, then the combination of route I D and service date
+
+00:05:31.954 --> 00:05:33.519
+should appear only once. We can group by those two fields and search for groups with more than one row.
+
+00:05:33.519 --> 00:05:35.433
+If none are returned, we have evidence that the intended route-by-date grain is unique.
+
+00:05:35.883 --> 00:05:36.545
+Again, this validates one property.
+
+00:05:36.545 --> 00:05:38.530
+We still need the other quality checks as well.
+
+00:05:38.530 --> 00:05:41.495
+Section 32: Document decisions, not just code
+
+00:05:41.495 --> 00:05:42.135
+Professional data preparation includes documentation.
+
+00:05:42.135 --> 00:05:43.670
+Another analyst should be able to understand what the source meant, what you changed,
+
+00:05:43.670 --> 00:05:46.550
+what you deliberately left unchanged, and how you validated the output.
+
+00:05:46.550 --> 00:05:48.195
+Code alone is not always enough.
+
+00:05:48.195 --> 00:05:50.815
+A query may show how a value was transformed, but it may not explain why that transformation was appropriate.
+
+00:05:50.815 --> 00:05:54.230
+Good documentation connects the technical step to the reasoning behind it.
+
+00:05:54.230 --> 00:05:55.640
+Section 33: What the source meant
+
+00:05:55.640 --> 00:05:58.090
+Begin documentation with the source.
+
+00:05:58.090 --> 00:06:00.440
+Describe where the files came from, what the important fields mean, and what one source row represents.
+
+00:06:00.440 --> 00:06:00.815
+Mention known limitations and assumptions.
+
+00:06:00.815 --> 00:06:03.425
+For example, if a ridership row represents one route on one day, state that clearly.
+
+00:06:03.425 --> 00:06:06.460
+Source meaning is the foundation for every later transformation.
+
+00:06:06.460 --> 00:06:07.515
+Section 34: What you changed
+
+00:06:07.515 --> 00:06:10.360
+Next, document the transformations. Explain which text values were standardized.
+
+00:06:10.360 --> 00:06:10.695
+Explain which types were converted.
+
+00:06:10.695 --> 00:06:13.045
+Explain whether duplicates were removed or only flagged.
+
+00:06:13.045 --> 00:06:15.165
+Describe normalization, joins, derived fields, and any change in grain.
+
+00:06:15.165 --> 00:06:18.870
+A useful question is: could someone understand the purpose of the transformation without reading every line of S Q L?
+
+00:06:18.870 --> 00:06:21.650
+Section 35: What you refused to guess
+
+00:06:21.650 --> 00:06:24.095
+Good documentation should also explain what you refused to guess.
+
+00:06:24.095 --> 00:06:24.465
+Maybe an accessibility value was missing.
+
+00:06:24.465 --> 00:06:26.145
+Maybe a date did not match a supported pattern.
+
+00:06:26.145 --> 00:06:28.880
+Maybe two records looked like possible duplicates but there was not enough evidence to merge them.
+
+00:06:28.880 --> 00:06:31.905
+Those uncertainties should remain visible.
+
+00:06:31.905 --> 00:06:33.145
+A trustworthy workflow is not one that makes every field look complete.
+
+00:06:33.145 --> 00:06:35.115
+It is one that distinguishes known values from unknown ones.
+
+00:06:35.115 --> 00:06:36.695
+Section 36: How you validated it
+
+00:06:36.695 --> 00:06:38.450
+Finally, document the validation evidence.
+
+00:06:38.450 --> 00:06:40.855
+Show the checks you used for row counts, keys, ranges, null values, categories, duplicates, referential integrity,
+
+00:06:40.855 --> 00:06:42.875
+and final grain. If a check returns no problem rows, say what that means.
+
+00:06:42.875 --> 00:06:45.933
+If a check identifies exceptions, explain how they were handled.
+
+00:06:47.111 --> 00:06:54.878
+The goal is reproducibility. Another analyst should be able to follow the path from source, to transformation,
+
+00:06:54.878 --> 00:07:00.368
+to validation and understand why the final dataset can be trusted.
+
+00:07:00.368 --> 00:07:02.813
+Section 37: Final-project readiness checklist
+
+00:07:02.813 --> 00:07:06.343
+Before submitting your Final Project, perform a final review.
+
+00:07:06.343 --> 00:07:11.908
+First, confirm that you read the complete Canvas prompt and rubric.
+
+00:07:11.908 --> 00:07:17.613
+Make sure you are not using this transit example as the assignment specification.
+
+00:07:17.613 --> 00:07:23.773
+Confirm that you can state the grain of each important source and final table.
+
+00:07:23.773 --> 00:07:32.758
+Check that you profiled the source before cleaning and that your cleaning rules respond to observed issues.
+
+00:07:32.758 --> 00:07:37.108
+Make sure source values remain traceable where appropriate.
+
+00:07:37.108 --> 00:07:44.206
+Confirm that you validated the final dataset and that your explanation matches what your code actually produces.
+
+00:07:44.656 --> 00:07:48.163
+Then return to Canvas. Check the required files, file names, due date, and submission instructions.
+
+00:07:48.163 --> 00:07:49.228
+Upload the project and verify that the correct files were successfully submitted.
+
+00:07:49.228 --> 00:07:52.008
+Section 38: Course closure: from S Q L syntax to defensible data preparation
+
+00:07:52.008 --> 00:07:55.228
+As we close IAN 603, remember that the goal of the course is larger than memorizing S Q L commands.
+
+00:07:55.228 --> 00:07:57.573
+You have practiced making decisions about data meaning, structure, quality, joins, grain, transformation, validation,
+
+00:07:57.573 --> 00:08:00.823
+reuse, and scale. Those decisions are what make data preparation valuable.
+
+00:08:00.823 --> 00:08:04.858
+Syntax helps us express the decisions, but the quality of the analysis depends on whether the decisions are correct and
+
+00:08:04.858 --> 00:08:05.248
+explainable. That is the larger skill I want you to carry forward.
+
+00:08:05.248 --> 00:08:07.908
+Section 39: A useful final mental model
+
+00:08:07.908 --> 00:08:08.648
+Here is a useful final mental model.
+
+00:08:08.648 --> 00:08:11.348
+Correct syntax is necessary, but it is only the beginning.
+
+00:08:11.348 --> 00:08:12.748
+A strong data-preparation workflow should also be explainable.
+
+00:08:12.748 --> 00:08:13.148
+It should be reproducible. It should include validation.
+
+00:08:13.148 --> 00:08:16.128
+It should preserve uncertainty when the source does not support a confident correction.
+
+00:08:16.128 --> 00:08:18.028
+It should use a structure that fits the analytical purpose.
+
+00:08:18.028 --> 00:08:21.038
+And another person should be able to understand how the final result was created.
+
+00:08:21.038 --> 00:08:22.153
+That is what makes a dataset defensible.
+
+00:08:22.153 --> 00:08:24.018
+Section 40: Reflection prompts
+
+00:08:24.018 --> 00:08:25.808
+Before moving to the Final Project, reflect on what changed in the way you think about data.
+
+00:08:25.808 --> 00:08:27.728
+Which concept from the course changed your approach the most?
+
+00:08:27.728 --> 00:08:30.698
+Where are you now more likely to check grain before trusting a result?
+
+00:08:30.698 --> 00:08:32.598
+Which validation query do you think you will use in many future projects?
+
+00:08:32.598 --> 00:08:34.913
+When would you choose Postgres, and when might Spark or Microsoft Fabric be more appropriate?
+
+00:08:34.913 --> 00:08:37.718
+And for your Final Project, what evidence will you include to show that your final output is trustworthy?
+
+00:08:37.718 --> 00:08:40.113
+These questions are not just about the course.
+
+00:08:40.113 --> 00:08:42.183
+They are useful habits for real analytical work.
+
+00:08:42.183 --> 00:08:44.693
+Section 41: Next action Your next action is to open the Final Project assignment in Canvas.
+
+00:08:44.693 --> 00:08:45.108
+Read the official requirements carefully.
+
+00:08:45.108 --> 00:08:47.603
+Use the Canvas rubric to guide your work.
+
+00:08:47.603 --> 00:08:50.153
+Apply the course habits you have practiced: understand the source, state the grain, profile before cleaning,
+
+00:08:50.153 --> 00:08:51.713
+avoid guessing, validate the output, and explain your decisions.
+
+00:08:52.792 --> 00:08:58.439
+Then submit the required project materials through Canvas and verify the submission.
+
+00:08:58.439 --> 00:09:04.844
+That completes Module 14 and brings the course together around one central idea:
+
+00:09:04.844 --> 00:09:09.064
+good data preparation is not only about producing an answer.
+
+00:09:09.064 --> 00:09:14.110
+It is about producing an answer that can be understood, checked, and trusted.

@@ -1,28 +1,22 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.792
-An organization hierarchy is a classic recursive example.
+00:00:00.000 --> 00:00:02.647
+Imagine a small organization chart.
 
-00:00:03.792 --> 00:00:08.022
-We start with the root employee whose manager ID is NULL.
+00:00:02.647 --> 00:00:05.127
+The president is at level zero.
 
-00:00:08.022 --> 00:00:11.352
-Then we find employees who report to that root.
+00:00:05.127 --> 00:00:09.407
+Two directors report to the president, so they are at level one.
 
-00:00:11.352 --> 00:00:14.947
-Then employees who report to those employees.
+00:00:09.407 --> 00:00:13.452
+Managers who report to those directors are at level two.
 
-00:00:14.947 --> 00:00:21.322
-Depth tells us the level, and a path string lets us see the route from the top of
+00:00:13.452 --> 00:00:20.897
+A recursive query can build that structure automatically from the manager relationship stored in the employee table.
 
-00:00:21.322 --> 00:00:28.362
-the hierarchy. Recursive CTEs are useful when rows refer to other rows in a hierarchy or graph-like chain.
+00:00:20.897 --> 00:00:26.597
+The important idea is that the source table does not need one column for every level.
 
-00:00:28.362 --> 00:00:34.232
-The anchor establishes the starting set; the recursive term finds the next level.
-
-00:00:34.232 --> 00:00:37.437
-Always think about termination and cycles.
-
-00:00:37.437 --> 00:00:42.156
-Production hierarchies often need safeguards against malformed relationships.
+00:00:26.597 --> 00:00:31.804
+The hierarchy is discovered by repeatedly following the parent and child relationship.

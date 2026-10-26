@@ -1,22 +1,13 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:07.412
+00:00:00.000 --> 00:00:07.872
 This example intentionally fails. The active-patient view shows only active rows and includes a check option.
 
-00:00:07.412 --> 00:00:12.292
+00:00:07.872 --> 00:00:12.872
 The update tries to set an active patient to inactive through that view.
 
-00:00:12.292 --> 00:00:18.722
-Because the resulting row would no longer satisfy the view condition, PostgreSQL rejects the update.
+00:00:12.872 --> 00:00:19.542
+Because the resulting row would no longer satisfy the view condition, Postgres rejects the update.
 
-00:00:18.722 --> 00:00:20.967
+00:00:19.542 --> 00:00:21.667
 This is expected behavior.
-
-00:00:20.967 --> 00:00:27.837
-Some simple views can be updated because PostgreSQL can map each view row back to one base-table row.
-
-00:00:27.837 --> 00:00:34.547
-Filtered views introduce a policy question: should an update be allowed to move a row outside the view?
-
-00:00:34.547 --> 00:00:38.560
-WITH CHECK OPTION prevents writes that violate the view's own filter.

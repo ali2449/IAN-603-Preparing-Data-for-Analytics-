@@ -1,40 +1,16 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.357
-This example shows two versions of the same pivot cell.
+00:00:00.000 --> 00:00:04.067
+This example compares two ways to handle a missing category.
 
-00:00:03.357 --> 00:00:08.997
-The first CASE has no ELSE zero, so a missing Q3 response stays NULL.
+00:00:04.067 --> 00:00:08.922
+If we preserve the null value, a missing response stays missing.
 
-00:00:08.997 --> 00:00:11.802
-The second explicitly forces zero.
+00:00:08.922 --> 00:00:14.517
+If the query forces zero, the result now claims that the value is zero.
 
-00:00:11.802 --> 00:00:16.252
-Run the query and find respondents with no Q3 observation.
+00:00:14.517 --> 00:00:21.907
+That may be correct in some situations, but it should be a business decision, not a convenience decision.
 
-00:00:16.252 --> 00:00:21.232
-Ask whether zero is a real score or simply a convenient placeholder.
-
-00:00:21.232 --> 00:00:24.862
-That distinction affects later averages and models.
-
-00:00:24.862 --> 00:00:29.747
-When reading the example, do not read punctuation one character at a time.
-
-00:00:29.747 --> 00:00:35.607
-Start with the purpose of the query, then identify the input rows, the operation being applied,
-
-00:00:35.607 --> 00:00:38.132
-and the shape of the expected output.
-
-00:00:38.132 --> 00:00:44.417
-In a real setting such as a survey project reshaping question responses for analysis,
-
-00:00:44.417 --> 00:00:50.232
-this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
-
-00:00:50.232 --> 00:00:52.447
-before discussing syntax.
-
-00:00:52.447 --> 00:00:58.628
-After running it, inspect a few records manually and check that the result matches that explanation.
+00:00:21.907 --> 00:00:28.372
+Before replacing a missing value with zero, ask what the missing source row actually means.

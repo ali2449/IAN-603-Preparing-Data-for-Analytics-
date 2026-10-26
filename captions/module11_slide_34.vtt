@@ -1,28 +1,25 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.327
-Run this query and focus on rows with the same salary.
+00:00:00.018 --> 00:00:01.797
+Here is a simple example.
 
-00:00:03.327 --> 00:00:06.767
-ROW_NUMBER still gives them different sequence numbers.
+00:00:01.797 --> 00:00:06.132
+Suppose three scores are ninety, ninety, and eighty.
 
-00:00:06.767 --> 00:00:09.987
-RANK gives them the same rank and leaves a gap.
+00:00:06.132 --> 00:00:10.847
+Row number gives the rows positions one, two, and three.
 
-00:00:09.987 --> 00:00:13.422
-DENSE_RANK gives the same rank but no gap.
+00:00:10.847 --> 00:00:14.117
+It must choose a unique position for every row.
 
-00:00:13.422 --> 00:00:17.932
-This side-by-side comparison makes the business differences visible.
+00:00:14.117 --> 00:00:17.552
+Rank gives the two ninety scores rank one.
 
-00:00:17.932 --> 00:00:21.747
-Ranking functions differ mainly in how they handle ties.
+00:00:17.552 --> 00:00:23.209
+The score of eighty then receives rank three, because two positions were used by the tie.
 
-00:00:21.747 --> 00:00:28.872
-ROW_NUMBER forces a unique sequence, RANK leaves gaps after ties, and DENSE_RANK does not.
+00:00:23.744 --> 00:00:30.641
+Dense rank also gives the two ninety scores rank one, but the score of eighty receives rank two.
 
-00:00:28.872 --> 00:00:32.692
-Add deterministic tie-breakers when a unique order matters;
-
-00:00:32.692 --> 00:00:36.960
-otherwise two executions can choose different rows among tied values.
+00:00:30.641 --> 00:00:36.910
+This small example is worth remembering because it makes the difference among the three functions very clear.

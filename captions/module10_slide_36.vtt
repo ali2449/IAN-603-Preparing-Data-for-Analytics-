@@ -1,25 +1,16 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:06.487
-This query uses the lateral VALUES pattern and then filters out rows whose generated revenue is NULL.
+00:00:00.000 --> 00:00:06.757
+If you decide that missing generated values should not appear in the long result, make that rule explicit.
 
-00:00:06.487 --> 00:00:09.617
-The WHERE clause makes the policy explicit.
+00:00:06.757 --> 00:00:08.967
+First un pivot the columns.
 
-00:00:09.617 --> 00:00:14.577
-Run it and compare the row count with a version that keeps all generated rows.
+00:00:08.967 --> 00:00:12.942
+Then filter out rows where the generated value is null.
 
-00:00:14.577 --> 00:00:19.217
-Always document whether missing cells were preserved or removed.
+00:00:12.942 --> 00:00:18.992
+This is better than silently losing them because the query clearly documents the decision.
 
-00:00:19.217 --> 00:00:26.687
-A pivot converts category values into columns, usually through conditional aggregation in portable SQL.
-
-00:00:26.687 --> 00:00:30.172
-Each target column needs a clear aggregation rule.
-
-00:00:30.172 --> 00:00:36.202
-Before pivoting, check whether the source contains more than one value for the same row-key and category
-
-00:00:36.202 --> 00:00:37.030
-combination.
+00:00:18.992 --> 00:00:25.453
+Whenever you remove missing values, explain why they are not needed for the downstream analysis.

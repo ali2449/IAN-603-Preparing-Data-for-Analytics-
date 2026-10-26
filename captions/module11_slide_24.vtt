@@ -1,28 +1,22 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.777
-Window functions are powerful because they preserve row detail.
+00:00:00.000 --> 00:00:06.012
+Window functions are useful when you want group context without collapsing the detail rows.
 
-00:00:03.777 --> 00:00:08.257
-groupby usually reduces multiple rows to one grouped row.
+00:00:06.012 --> 00:00:09.752
+Suppose five employees work in the same department.
 
-00:00:08.257 --> 00:00:13.462
-A window function can calculate a group average, rank, running total,
+00:00:09.752 --> 00:00:14.682
+A group by query can return one row with the department average salary.
 
-00:00:13.462 --> 00:00:17.257
-or previous value while still returning the individual row.
+00:00:14.682 --> 00:00:21.306
+But sometimes we want all five employee rows and the department average beside every employee.
 
-00:00:17.257 --> 00:00:22.672
-This is why windows are ideal when you need both detail and context in the same result.
+00:00:21.767 --> 00:00:24.064
+That is a window-function problem.
 
-00:00:22.672 --> 00:00:28.207
-Window functions preserve detail rows while calculating across a related set.
+00:00:24.064 --> 00:00:31.579
+The same idea works for ranking, previous and next events, running totals, and moving averages.
 
-00:00:28.207 --> 00:00:33.412
-PARTITION BY defines independent groups, ORDER BY defines sequence,
-
-00:00:33.412 --> 00:00:37.152
-and the frame defines which neighboring rows participate.
-
-00:00:37.152 --> 00:00:41.360
-Those three choices are part of the business rule, not just syntax.
+00:00:31.579 --> 00:00:36.348
+The result keeps the original rows and adds analytical information around them.

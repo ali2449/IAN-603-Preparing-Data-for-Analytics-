@@ -1,1143 +1,644 @@
 {
   "module": "module12",
+  "generation_version": "ian620_safe_v4_exact_reference_text_seed1234",
   "filename_prefix": "module12",
-  "source_file": "IAN603_Module12_Narration_Detailed.txt",
-  "voice_consistency_version": 3,
+  "source_file": "IAN_603_Module_12_Breeze_Optimized_Instructor_Narration.txt",
   "reference_audio": "/home/ali/breeze-tts/voice_reference/course_instructor_consistent_v4.wav",
+  "reference_text_version": "course_instructor_consistent_v4_exact_transcript",
   "reference_text": "Welcome to the course. We will work through each concept carefully, connect the\nideas step by step, and use practical examples to make technical topics easier\nto understand. When we introduce a new method, focus first on the problem it\nsolves and why it is useful. For example, in machine learning, features are the\ninformation we give the model, while the target is what we want it to predict.\nNow consider a simple question: what changes when the data contains missing\nvalues? We will think through the reason and then look at the code. In Python,\nwe can inspect the data, run one small step at a time, and explain what the\nresult means. The goal is to understand the logic, not simply memorize syntax.",
-  "locked_narration_seed": true,
-  "narration_seed": 1234,
-  "long_narration": {
-    "automatic_chunking": true,
-    "max_text_tokens_per_call": 260,
-    "chunk_pause_seconds": 0.38,
-    "manual_break_marker": "[tts-break]",
-    "breeze_max_new_tokens": 1500,
-    "breeze_max_seq_len": 2048
+  "subtitle_method": "tts_break_section_generation",
+  "generation_boundary": "[tts-break]",
+  "instruction_mode": "disabled_to_prevent_spoken_prompt_leakage",
+  "spoken_instruction_sent_to_breeze": false,
+  "audio_settings": {
+    "speech_speed": 0.93,
+    "speed_method": "ffmpeg_atempo_before_vtt_alignment"
   },
-  "subtitle_method": "whole_slide_silence_alignment",
   "caption_settings": {
-    "max_words": 18,
-    "max_chars": 110,
-    "minimum_silence_seconds": 0.2,
-    "boundary_search_window_seconds": 1.4
+    "max_words": 24,
+    "max_chars": 120,
+    "tts_break_pause_seconds": 0.45
   },
   "slides": [
     {
       "slide": 1,
-      "title": "Start",
-      "transcript": "Welcome to Module 12, Views and Modular Queries. This module is about turning useful SQL logic into reusable database interfaces. We will learn standard views, materialized views, updatable views, check options, dependency inspection, freshness policies, and modular query design. The central idea is that a view is not just saved text. It is an interface with a row grain, a set of columns, and a meaning that downstream users may depend on. Keep a real project in mind as we work through this section—for example, an analytics team exposing a stable reporting view to dashboard users. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
-      "seed": 1234,
-      "tts_text_tokens": 185,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        185
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Views and Reusable S Q L Objects in Postgres",
+      "transcript": "Welcome to Module 12, Views and Reusable S Q L Objects in Postgres.\n\nIn Module 11, you learned how to organize advanced queries with common table expressions and window functions. Those tools are useful inside one analysis. But what happens when the same trusted logic is needed by many reports, many analysts, or many applications?\n\n[tts-break]\n\nThat is where this module begins. We are moving from writing one good query to creating reusable database interfaces.\n\nWe will start with standard views. Then we will look at materialized views, which store a snapshot of a query result. We will also discuss dependencies, updates through views, access boundaries, and freshness.\n\nThe main question to keep in mind is simple: which logic should stay inside one query, and which logic is stable enough to become a reusable database object?",
       "wav": "wav/module12_slide_01.wav",
       "audio": "audio/module12_slide_01.mp3",
       "captions": "audio/module12_slide_01.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 2,
       "title": "Why views matter",
-      "transcript": "Views solve several problems at once. They let us centralize shared SQL logic. They create a stable interface with deliberate columns and row meaning. They can reduce accidental exposure by omitting unnecessary fields, although actual authorization still depends on database security controls. And materialized views can store reusable results when freshness does not need to be immediate. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 114,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        114
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Views matter because they let us define important logic once and reuse it.\n\nSuppose five reports all need the same patient and admission join. We could copy that join into five different queries. But if the logic changes later, we now have five places to update.\n\nA view gives that shared logic one name and one definition. Reports can query the view instead of rebuilding the same steps.\n\nA view can also expose only the columns that are useful for a task. That can reduce accidental exposure, but permissions still need to be configured separately.",
       "wav": "wav/module12_slide_02.wav",
       "audio": "audio/module12_slide_02.mp3",
       "captions": "audio/module12_slide_02.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 3,
       "title": "Learning goals",
-      "transcript": "By the end of this module, you should be able to create standard views, inspect their definitions and dependencies, explain when a view is updatable, and use a check option to control writes through a filtered view. You should also understand materialized-view freshness and be able to decide whether logic belongs in a statement-level CTE, a reusable standard view, or a stored materialized result. Keep a real project in mind as we work through this section—for example, a governance project limiting which columns different users can access. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
-      "seed": 1234,
-      "tts_text_tokens": 172,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        172
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "By the end of this module, you should be able to create and use standard views, inspect how they are defined, and understand what other objects they depend on.\n\nYou should also be able to explain when a simple view can accept updates, what the with check option does, and why a materialized view can become stale.\n\nMost importantly, you should be able to choose among three tools: a common table expression for logic used inside one statement, a standard view for shared live logic, and a materialized view for a stored result that can be refreshed.",
       "wav": "wav/module12_slide_03.wav",
       "audio": "audio/module12_slide_03.mp3",
       "captions": "audio/module12_slide_03.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 4,
       "title": "Module roadmap",
-      "transcript": "We will start with modularity and standard views. Then we will inspect reusable objects and their dependencies. After that, we will explore controlled writes and access boundaries. Materialized views come next, with a focus on freshness and refresh policy. Finally, we will combine views and CTEs into a small reusable analytics layer. Keep a real project in mind as we work through this section—for example, an analytics team exposing a stable reporting view to dashboard users. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
-      "seed": 1234,
-      "tts_text_tokens": 158,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        158
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "We will start with modularity and standard views.\n\n[tts-break]\n\nThen we will inspect reusable objects and their dependencies. After that, we will explore controlled writes and access boundaries.\n\nMaterialized views come next, with a focus on freshness and refresh policy. Finally, we will combine views and common table expressions into a small reusable analytics layer.",
       "wav": "wav/module12_slide_04.wav",
       "audio": "audio/module12_slide_04.mp3",
       "captions": "audio/module12_slide_04.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 5,
       "title": "Teaching database",
-      "transcript": "The database contains a few small source areas. Patient and admission tables support healthcare-style views. Employee, department, and sales-order tables support a performance interface. Customer transactions support recent-activity and retention examples. Reusable objects are placed in an analytics schema so the source tables and analytical interfaces are clearly separated. Connect this idea to a data platform materializing expensive summaries for faster consumption. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 143,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        143
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "The database contains a few small source areas. Patient and admission tables support healthcare-style views. Employee, department, and sales-order tables support a performance interface.\n\nCustomer transactions support recent activity and retention examples. Reusable objects are placed in an analytics schema so the source tables and analytical interfaces are clearly separated.",
       "wav": "wav/module12_slide_05.wav",
       "audio": "audio/module12_slide_05.mp3",
       "captions": "audio/module12_slide_05.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 6,
       "title": "Modular architecture",
-      "transcript": "Modularity works best when each layer has one responsibility. Base tables store source facts. A shared view can own stable relational logic. A report-level CTE can own a temporary threshold, ranking rule, or sequence calculation. The final query produces the consumer-specific result. This separation makes each layer easier to test and change. Choose the smallest reusable object that matches the need. A CTE is local to one query, a view centralizes live logic, and a materialized view persists a snapshot. Promote logic into shared objects when it is stable, reused, and worth governing as part of the analytical architecture.",
-      "seed": 1234,
-      "tts_text_tokens": 120,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        120
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Modularity works best when each layer has one responsibility.\n\n[tts-break]\n\nBase tables store source facts. A shared view can own stable relational logic.\n\nA report-level common table expression can own a temporary threshold, ranking rule, or sequence calculation. The final query produces the consumer-specific result. This separation makes each layer easier to test and change.",
       "wav": "wav/module12_slide_06.wav",
       "audio": "audio/module12_slide_06.mp3",
       "captions": "audio/module12_slide_06.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 7,
       "title": "Three reusable choices",
-      "transcript": "The three main choices in this module differ in lifetime and storage. A CTE exists for one statement. A standard view is a persistent database object, but it stores the query definition rather than a result snapshot. A materialized view is persistent and stores the query result. Choose among them based on reuse, freshness, and computational cost. Connect this idea to an analytics team exposing a stable reporting view to dashboard users. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 146,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        146
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "We have three main choices for reusable query logic.\n\nA common table expression exists only while one S Q L statement is running. It is useful for organizing temporary stages inside that statement.\n\nA standard view is saved in the database, but it stores the query definition rather than a separate copy of the result.\n\nA materialized view is also saved in the database, but it stores the result itself.\n\nThe choice depends on three questions: how often the logic will be reused, how current the result must be, and how expensive the underlying query is.",
       "wav": "wav/module12_slide_07.wav",
       "audio": "audio/module12_slide_07.mp3",
       "captions": "audio/module12_slide_07.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 8,
       "title": "What a standard view stores",
-      "transcript": "A standard view stores a query definition. It does not normally store a separate snapshot of the result. When the view is queried, PostgreSQL uses the view definition to access current underlying data. For consumers, the view behaves like a named relation with columns and rows. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 102,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        102
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "A standard view stores a query definition, not a separate snapshot of the rows.\n\nHere is a simple way to think about it. Imagine a window looking into the underlying tables. The window has a name, and the view definition controls what you can see through it.\n\n[tts-break]\n\nWhen the source tables change, the next query against the view uses the current source data. We do not have to manually refresh a standard view.\n\nSo a standard view is useful when we want reusable logic and current data at the same time.",
       "wav": "wav/module12_slide_08.wav",
       "audio": "audio/module12_slide_08.mp3",
       "captions": "audio/module12_slide_08.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 9,
       "title": "View contract",
-      "transcript": "Think of a view as a contract. The object name matters. The exposed columns and types matter. The row grain matters. And consumers should understand how fresh the data is. If you change a shared view in a way that breaks one of these expectations, downstream queries can fail or change meaning. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 109,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        109
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Think of a view as a contract between the database and the people who use it.\n\nThe contract includes the object name, the exposed columns, the data types, and the meaning of one row. That last part is the grain.\n\nFor example, if a view promises one row per admission, changing it later to one row per patient is not a small change. The query might still run, but the meaning of the data has changed.\n\nShared views should therefore be changed carefully, just like an interface in software.",
       "wav": "wav/module12_slide_09.wav",
       "audio": "audio/module12_slide_09.mp3",
       "captions": "audio/module12_slide_09.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 10,
       "title": "Explore database objects",
-      "transcript": "Run the schema exploration query first. Look at objects in the public and analytics schemas. The public schema contains source tables. The analytics schema contains reusable interfaces. This separation is helpful because object location can communicate purpose. Choose the smallest reusable object that matches the need. A CTE is local to one query, a view centralizes live logic, and a materialized view persists a snapshot. Promote logic into shared objects when it is stable, reused, and worth governing as part of the analytical architecture.",
-      "seed": 1234,
-      "tts_text_tokens": 97,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        97
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Run the schema exploration query first.\n\nLook at objects in the public and analytics schemas. The public schema contains source tables.\n\nThe analytics schema contains reusable interfaces. This separation is helpful because object location can communicate purpose.",
       "wav": "wav/module12_slide_10.wav",
       "audio": "audio/module12_slide_10.mp3",
       "captions": "audio/module12_slide_10.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 11,
       "title": "Query a view",
-      "transcript": "This query reads the patient-admission summary view. Consumers do not need to repeat the join or stay-duration expression. The view already defines that interface. Run it and identify the grain. One row represents one admission with selected patient attributes and a derived stay duration. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a data platform materializing expensive summaries for faster consumption, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 152,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        152
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "This query reads the patient admission summary view.\n\nConsumers do not need to repeat the join or stay-duration expression. The view already defines that interface.\n\nRun it and identify the grain. One row represents one admission with selected patient attributes and a derived stay duration.",
       "wav": "wav/module12_slide_11.wav",
       "audio": "audio/module12_slide_11.mp3",
       "captions": "audio/module12_slide_11.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 12,
       "title": "Create a view",
-      "transcript": "Before creating a view, make four decisions. Choose a meaningful name. Define the row grain. Choose the columns intentionally. Then write the SELECT that implements that interface. Starting with the contract makes the SQL easier to evaluate. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a governance project limiting which columns different users can access, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 143,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        143
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Before creating a view, make four decisions.\n\nChoose a meaningful name. Define the row grain.\n\nChoose the columns intentionally. Then write the select statement that implements that interface. Starting with the contract makes the S Q L easier to evaluate.",
       "wav": "wav/module12_slide_12.wav",
       "audio": "audio/module12_slide_12.mp3",
       "captions": "audio/module12_slide_12.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 13,
-      "title": "CREATE OR REPLACE VIEW",
-      "transcript": "CREATE OR REPLACE VIEW lets you update a compatible view definition without first dropping the object. This is useful when the interface should remain available under the same name. But compatibility matters. Changing column names, meanings, types, or grain can still affect downstream users, even if the SQL command succeeds. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as an analytics team exposing a stable reporting view to dashboard users, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 158,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        158
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Create or Replace View",
+      "transcript": "The create or replace view command lets us change a compatible view definition without dropping the view first.\n\nThat sounds convenient, and it is. But do not confuse a successful command with a safe change.\n\nIf we rename a column, change a data type, or change what one row represents, downstream reports may behave differently even when the database accepts the new definition.\n\nSo after changing a shared view, review the contract: name, columns, types, and grain.",
       "wav": "wav/module12_slide_13.wav",
       "audio": "audio/module12_slide_13.mp3",
       "captions": "audio/module12_slide_13.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 14,
       "title": "Use the view for aggregation",
-      "transcript": "Once the patient-admission interface exists, later reports can start from it. This query groups the reusable admission rows by department. The report author does not need to repeat patient joins or stay-duration calculations. That is the value of modular SQL: stable logic is centralized, and consumer queries become smaller. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 110,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        110
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Once the patient admission interface exists, later reports can start from it.\n\nThis query groups the reusable admission rows by department.\n\nThe report author does not need to repeat patient joins or stay-duration calculations. That is the value of modular S Q L. stable logic is centralized, and consumer queries become smaller.",
       "wav": "wav/module12_slide_14.wav",
       "audio": "audio/module12_slide_14.mp3",
       "captions": "audio/module12_slide_14.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 15,
       "title": "Naming conventions",
-      "transcript": "This course uses vw as a prefix for standard views and mv for materialized views. PostgreSQL does not require that naming convention. The goal is readability and discoverability. Whatever convention a team chooses, use it consistently and document the intended grain and meaning of important shared objects. Connect this idea to a governance project limiting which columns different users can access. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 133,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        133
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "This course uses V W as a prefix for standard views and M V for materialized views. Postgres does not require that naming convention.\n\nThe goal is readability and discoverability. Whatever convention a team chooses, use it consistently and document the intended grain and meaning of important shared objects.",
       "wav": "wav/module12_slide_15.wav",
       "audio": "audio/module12_slide_15.mp3",
       "captions": "audio/module12_slide_15.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 16,
       "title": "Inspect view definitions",
-      "transcript": "Shared database objects should not be mysterious. PostgreSQL's information schema can show view names and definitions. Run this query and inspect the SQL behind the analytics views. Being able to inspect a view helps with debugging, documentation, and change review. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 98,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        98
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Shared database objects should not be mysterious. the Postgres information schema can show view names and definitions.\n\nRun this query and inspect the S Q L behind the analytics views. Being able to inspect a view helps with debugging, documentation, and change review.",
       "wav": "wav/module12_slide_16.wav",
       "audio": "audio/module12_slide_16.mp3",
       "captions": "audio/module12_slide_16.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 17,
       "title": "Inspect dependencies",
-      "transcript": "A shared view depends on other database objects. This query uses information schema metadata to show which tables feed each view. Dependency awareness matters because changing a base object or shared view can affect several downstream consumers. Before making a breaking change, understand the dependency chain. Reusable SQL objects create dependencies. Before changing a base view, identify which other views, reports, or applications depend on it. Good change management includes version awareness, tests, and communication—not just editing CREATE VIEW until it succeeds.",
-      "seed": 1234,
-      "tts_text_tokens": 98,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        98
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "A shared view depends on other database objects.\n\n[tts-break]\n\nThis query uses information schema metadata to show which tables feed each view.\n\nDependency awareness matters because changing a base object or shared view can affect several downstream consumers. Before making a breaking change, understand the dependency chain.",
       "wav": "wav/module12_slide_17.wav",
       "audio": "audio/module12_slide_17.mp3",
       "captions": "audio/module12_slide_17.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 18,
       "title": "Dependency chain",
-      "transcript": "A view can sit in the middle of a dependency chain. Base tables feed the shared interface. A report-specific CTE reads the view. A report consumes the final result. If the view grain or column meaning changes, every downstream layer may be affected. Treat important shared views as versioned contracts, not disposable snippets. Reusable SQL objects create dependencies. Before changing a base view, identify which other views, reports, or applications depend on it. Good change management includes version awareness, tests, and communication—not just editing CREATE VIEW until it succeeds.",
-      "seed": 1234,
-      "tts_text_tokens": 111,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        111
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "A reusable view can sit in the middle of a larger dependency chain.\n\nBase tables feed the view. A report may then query that view directly, or a common table expression may use the view as its starting point. A dashboard or application may depend on the final result.\n\n[tts-break]\n\nThis means one change near the beginning can affect several downstream objects.\n\nBefore making a breaking change, ask: what uses this view, and what assumptions do those users make about it?",
       "wav": "wav/module12_slide_18.wav",
       "audio": "audio/module12_slide_18.mp3",
       "captions": "audio/module12_slide_18.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 19,
       "title": "Change management",
-      "transcript": "Change management goes beyond syntax. A CREATE OR REPLACE command may succeed, but a semantic change can still break analytics. Consumers may depend on a column name, data type, business definition, or row grain. Review those contract elements before changing a shared object. Reusable SQL objects create dependencies. Before changing a base view, identify which other views, reports, or applications depend on it. Good change management includes version awareness, tests, and communication—not just editing CREATE VIEW until it succeeds.",
-      "seed": 1234,
-      "tts_text_tokens": 98,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        98
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Change management goes beyond syntax.\n\nA create or replace command may succeed, but a meaningful change can still break analytics.\n\nConsumers may depend on a column name, data type, business definition, or row grain. Review those contract elements before changing a shared object.",
       "wav": "wav/module12_slide_19.wav",
       "audio": "audio/module12_slide_19.mp3",
       "captions": "audio/module12_slide_19.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 20,
       "title": "Simple views can be updatable",
-      "transcript": "Some simple PostgreSQL views are automatically updatable. A write through the view can flow to the underlying table. But this is not true for every view. Joins, aggregates, grouping, and other features can make a view non-updatable. Treat writable views as a deliberate interface and test their behavior. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 113,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        113
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Some simple views can be updated directly.\n\nIf a view is based on one table and keeps a clear one to one relationship with the underlying rows, Postgres may allow an update through the view to change the base table.\n\nBut this does not apply to every view. A view with joins, grouping, or aggregate calculations may not have a clear single source row to update.\n\nSo treat write behavior as something you verify, not something you assume.",
       "wav": "wav/module12_slide_20.wav",
       "audio": "audio/module12_slide_20.mp3",
       "captions": "audio/module12_slide_20.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 21,
       "title": "Update through a view",
-      "transcript": "This example updates city through a simple active-patient view. RETURNING shows the changed row. The transaction then rolls back, so the demonstration does not permanently modify the teaching database. This is a good pattern when learning or testing write behavior. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 98,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        98
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "This example updates the city value through a simple view.\n\nThe returning clause immediately shows the row that would be changed. Then the transaction is rolled back, so the teaching database returns to its original state.\n\nThis is a useful testing pattern. Make the change inside a transaction, inspect what happened, and keep or undo the change only after you understand the result.",
       "wav": "wav/module12_slide_21.wav",
       "audio": "audio/module12_slide_21.mp3",
       "captions": "audio/module12_slide_21.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 22,
       "title": "Filtered updatable view",
-      "transcript": "A filtered view introduces an important write question. If the view only shows active patients, what should happen when an update through the view sets active to false? Without a check option, the row may simply disappear from the view after the update. WITH CHECK OPTION can enforce the view condition for writes performed through the view. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 114,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        114
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "A filtered view creates an interesting question about updates.\n\nSuppose the view shows only active patients. Now imagine we update one of those patients through the view and set active to false.\n\nWithout additional protection, the update may succeed. The row then disappears from the view because it no longer satisfies the filter.\n\nThe with check option lets us prevent that kind of update when we want the row to remain valid according to the view's own condition.",
       "wav": "wav/module12_slide_22.wav",
       "audio": "audio/module12_slide_22.mp3",
       "captions": "audio/module12_slide_22.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 23,
-      "title": "WITH CHECK OPTION",
-      "transcript": "WITH CHECK OPTION enforces the view's filter for writes through the view. If an update would make a row no longer satisfy the active equals true condition, PostgreSQL rejects the write. This turns the filtered view into a more controlled write interface. It does not replace general database constraints or permissions. Some simple views can be updated because PostgreSQL can map each view row back to one base-table row. Filtered views introduce a policy question: should an update be allowed to move a row outside the view? WITH CHECK OPTION prevents writes that violate the view's own filter.",
-      "seed": 1234,
-      "tts_text_tokens": 116,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        116
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "With Check Option",
+      "transcript": "The with check option enforces the view condition when someone writes through the view.\n\nIf the view shows only active patients, an update through that view must still produce an active patient. If the update would make the row fall outside the view, Postgres rejects it.\n\nThis gives the view a more controlled write behavior. It is useful, but it does not replace normal constraints, permissions, or other database rules.",
       "wav": "wav/module12_slide_23.wav",
       "audio": "audio/module12_slide_23.mp3",
       "captions": "audio/module12_slide_23.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 24,
-      "title": "CHECK OPTION failure",
-      "transcript": "This example intentionally fails. The active-patient view shows only active rows and includes a check option. The update tries to set an active patient to inactive through that view. Because the resulting row would no longer satisfy the view condition, PostgreSQL rejects the update. This is expected behavior. Some simple views can be updated because PostgreSQL can map each view row back to one base-table row. Filtered views introduce a policy question: should an update be allowed to move a row outside the view? WITH CHECK OPTION prevents writes that violate the view's own filter.",
-      "seed": 1234,
-      "tts_text_tokens": 113,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        113
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Check Option failure",
+      "transcript": "This example intentionally fails.\n\nThe active-patient view shows only active rows and includes a check option. The update tries to set an active patient to inactive through that view.\n\nBecause the resulting row would no longer satisfy the view condition, Postgres rejects the update. This is expected behavior.",
       "wav": "wav/module12_slide_24.wav",
       "audio": "audio/module12_slide_24.mp3",
       "captions": "audio/module12_slide_24.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 25,
       "title": "Do not infer writability",
-      "transcript": "Do not assume every view is writable. A simple one-table view may support automatic updates. A join or aggregate view does not have the same direct row mapping. Materialized views are stored query results, not ordinary write-through interfaces. Always check the actual PostgreSQL behavior for the view definition you are designing. Connect this idea to an analytics team exposing a stable reporting view to dashboard users. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 143,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        143
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Do not assume every view is writable.\n\nA simple single table view may support automatic updates. A join or aggregate view does not have the same direct row mapping.\n\nMaterialized views are stored query results, not ordinary write through interfaces. Always check the actual Postgres behavior for the view definition you are designing.",
       "wav": "wav/module12_slide_25.wav",
       "audio": "audio/module12_slide_25.mp3",
       "captions": "audio/module12_slide_25.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 26,
       "title": "Views as access boundaries",
-      "transcript": "A view can reduce accidental exposure by publishing only the columns required for an analytical task. For example, an analytics interface may expose an age band and city instead of direct contact fields. But hiding columns in a view definition is not the same as granting or denying access. Actual authorization depends on PostgreSQL privileges and, where appropriate, row-level security or other controls. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 122,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        122
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Views can also create a narrower interface for analytics.\n\nFor example, an analyst may need age group, city, and activity status, but not the patient's name, email address, or date of birth. A view can expose only the fields needed for that task.\n\n[tts-break]\n\nThat can reduce accidental exposure, but it is important to use precise language. Hiding a column in a view does not automatically prevent someone from querying the base table.\n\nReal access control still depends on permissions, roles, and sometimes row level security.",
       "wav": "wav/module12_slide_26.wav",
       "audio": "audio/module12_slide_26.mp3",
       "captions": "audio/module12_slide_26.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 27,
       "title": "Limited analytics view",
-      "transcript": "This analytics view exposes subject ID, age band, city, and active status. It omits name, email, and date of birth. That creates a narrower analytical interface. Run it and compare the result with the source patient table. The design reduces unnecessary fields, but access to objects must still be configured separately. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 113,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        113
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "This analytics view exposes subject I D, age band, city, and active status.\n\nIt omits name, email, and date of birth. That creates a narrower analytical interface.\n\nRun it and compare the result with the source patient table. The design reduces unnecessary fields, but access to objects must still be configured separately.",
       "wav": "wav/module12_slide_27.wav",
       "audio": "audio/module12_slide_27.mp3",
       "captions": "audio/module12_slide_27.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 28,
-      "title": "security_invoker",
-      "transcript": "PostgreSQL supports a security invoker option for views. With security invoker, permissions on underlying relations are checked using the invoking user's rights. This can matter in a real multi-role security design. Our browser lab is useful for syntax and object behavior, but it does not reproduce a full production authorization environment. Views can reduce exposure by presenting only approved columns or rows, but they are not a complete security strategy by themselves. Understand ownership, privileges, and whether the view executes with invoker or definer-like behavior. Sensitive data controls should be explicit and tested.",
-      "seed": 1234,
-      "tts_text_tokens": 116,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        116
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Security Invoker",
+      "transcript": "Postgres also supports a setting called security invoker for views.\n\nWith this setting, Postgres checks access to the underlying tables using the permissions of the person who is running the view.\n\nThis matters in real systems with multiple roles and permission levels.\n\nFor this course, focus on the idea: the view definition and the permission model are connected, and both need to be tested in the environment where the view will actually be used.",
       "wav": "wav/module12_slide_28.wav",
       "audio": "audio/module12_slide_28.mp3",
       "captions": "audio/module12_slide_28.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 29,
-      "title": "security_invoker SQL",
-      "transcript": "This query recreates the patient analytics view with security invoker enabled. It still exposes the same selected analytical columns. The key difference is how PostgreSQL evaluates underlying access permissions. In a production environment, you would test this with real roles and grants. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a data platform materializing expensive summaries for faster consumption, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 148,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        148
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Security Invoker S Q L",
+      "transcript": "This query recreates the patient analytics view with security invoker enabled.\n\nIt still exposes the same selected analytical columns.\n\nThe key difference is how Postgres evaluates underlying access permissions. In a production environment, you would test this with real roles and grants.",
       "wav": "wav/module12_slide_29.wav",
       "audio": "audio/module12_slide_29.mp3",
       "captions": "audio/module12_slide_29.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 30,
       "title": "Security boundaries",
-      "transcript": "Views are useful security-adjacent interfaces, but they should not be described as secure or compliant simply because they hide columns. Permissions still matter. Row-level security may matter. Application access paths matter. Compliance depends on a broader system of controls. Keep the claim proportional to what the view actually does. Views can reduce exposure by presenting only approved columns or rows, but they are not a complete security strategy by themselves. Understand ownership, privileges, and whether the view executes with invoker or definer-like behavior. Sensitive data controls should be explicit and tested.",
-      "seed": 1234,
-      "tts_text_tokens": 112,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        112
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Views are useful security-adjacent interfaces, but they should not be described as secure or compliant simply because they hide columns.\n\n[tts-break]\n\nPermissions still matter. Row-level security may matter.\n\nApplication access paths matter. Compliance depends on a broader system of controls. Keep the claim proportional to what the view actually does.",
       "wav": "wav/module12_slide_30.wav",
       "audio": "audio/module12_slide_30.mp3",
       "captions": "audio/module12_slide_30.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 31,
       "title": "Materialized views",
-      "transcript": "A materialized view is fundamentally different from a standard view. The materialized view stores query results. That can make repeated reads of an expensive summary convenient. But the stored result can become stale as base tables change. Freshness therefore becomes part of the object's contract. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 103,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        103
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "A materialized view is different from a standard view because it stores the query result.\n\nThink of it as a prepared snapshot. Suppose a dashboard needs the same expensive summary again and again. Instead of recalculating the summary every time, we can store the result in a materialized view.\n\n[tts-break]\n\nThat can make repeated reads faster. But now we have a new responsibility: the stored snapshot can become old.\n\nSo whenever you use a materialized view, you must think about both performance and freshness.",
       "wav": "wav/module12_slide_31.wav",
       "audio": "audio/module12_slide_31.mp3",
       "captions": "audio/module12_slide_31.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 32,
       "title": "When materialization helps",
-      "transcript": "Materialization is useful when an expensive result is read repeatedly and consumers can tolerate a known refresh lag. The database object alone is not the whole design. You also need a refresh schedule, freshness metadata, and a plan for refresh failures. Without those, consumers may not know how current the snapshot is. Connect this idea to a data platform materializing expensive summaries for faster consumption. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 140,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        140
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "A materialized view is useful when the same expensive summary is needed repeatedly and users can accept some delay between the source data and the stored result.\n\nFor example, a dashboard may not need second by second updates. A snapshot refreshed every hour may be completely acceptable.\n\nBut the refresh policy has to be clear. Users should know when the snapshot was last refreshed and what happens if a refresh fails.",
       "wav": "wav/module12_slide_32.wav",
       "audio": "audio/module12_slide_32.mp3",
       "captions": "audio/module12_slide_32.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 33,
       "title": "Create materialized view",
-      "transcript": "This query creates a diagnosis summary materialized view. The result has one row per diagnosis. It stores admission count, distinct patient count, average stay, and a refresh timestamp. The refresh timestamp documents when the snapshot was generated. It does not update every time someone reads the materialized view. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a governance project limiting which columns different users can access, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 155,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        155
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "This example creates a diagnosis summary as a materialized view.\n\nOne row represents one diagnosis. The stored measures include the number of admissions, the number of distinct patients, and the average length of stay.\n\nThe example also stores a refresh time so we can see when the snapshot was generated.\n\nThat refresh time does not change simply because someone queries the materialized view. It changes when the stored result is rebuilt.",
       "wav": "wav/module12_slide_33.wav",
       "audio": "audio/module12_slide_33.mp3",
       "captions": "audio/module12_slide_33.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 34,
       "title": "Materialized view grain",
-      "transcript": "Materialized views still need a clear grain. In this example, one row represents one diagnosis. The measures summarize admissions for that diagnosis. The refreshed-at value records when the stored result was produced. Consumers need both the grain and freshness information to interpret the data correctly. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 104,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        104
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Materialized views still need a clear grain.\n\nIn this example, one row represents one diagnosis. The measures summarize admissions for that diagnosis.\n\nThe refresh time value records when the stored result was produced. Consumers need both the grain and freshness information to interpret the data correctly.",
       "wav": "wav/module12_slide_34.wav",
       "audio": "audio/module12_slide_34.mp3",
       "captions": "audio/module12_slide_34.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 35,
       "title": "Query the snapshot",
-      "transcript": "Once the materialized view exists, consumers can query the stored summary directly. The consuming query is simple because the aggregation has already been computed. But remember that the result is only as fresh as the last successful refresh. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a data platform materializing expensive summaries for faster consumption, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 141,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        141
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Once the materialized view exists, consumers can query the stored summary directly.\n\nThe report query is simple because the aggregation has already been computed.\n\nBut remember that the result is only as fresh as the last successful refresh.",
       "wav": "wav/module12_slide_35.wav",
       "audio": "audio/module12_slide_35.mp3",
       "captions": "audio/module12_slide_35.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 36,
       "title": "Freshness timeline",
-      "transcript": "Materialized-view freshness is easiest to understand as a timeline. The snapshot is built. Later, a new base-table row arrives. The standard base query can see it immediately, but the materialized view does not. After a refresh, the stored snapshot catches up. That delay must be documented for users. A materialized view stores the query result physically, trading freshness for faster reads. That makes refresh policy part of the data contract. A dashboard should know whether the snapshot is five minutes old or one day old. Indexes can improve access, and concurrent refresh has additional requirements.",
-      "seed": 1234,
-      "tts_text_tokens": 115,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        115
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Freshness is easiest to understand with a timeline.\n\nImagine the materialized view is refreshed at nine in the morning. At ten, a new admission is inserted into the source table. A normal query against the source can see that new row immediately.\n\nThe materialized view cannot see it yet because its stored snapshot still represents nine o'clock.\n\n[tts-break]\n\nAfter the materialized view is refreshed again, the snapshot catches up.\n\nThat time difference between the source and the snapshot is not automatically a problem. It becomes a problem only when users expect fresher data than the system is designed to provide.",
       "wav": "wav/module12_slide_36.wav",
       "audio": "audio/module12_slide_36.mp3",
       "captions": "audio/module12_slide_36.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 37,
       "title": "Create stale snapshot demo",
-      "transcript": "This example inserts another Influenza admission into the base table. Then it compares the live base-table count with the stored materialized-view count. The base table changes immediately. The snapshot remains unchanged because it has not been refreshed. This demonstrates staleness directly. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as an analytics team exposing a stable reporting view to dashboard users, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 151,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        151
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "This example inserts another Influenza admission into the base table.\n\nThen it compares the live base-table count with the stored materialized view count. The base table changes immediately.\n\nThe snapshot remains unchanged because it has not been refreshed. This demonstrates staleness directly.",
       "wav": "wav/module12_slide_37.wav",
       "audio": "audio/module12_slide_37.mp3",
       "captions": "audio/module12_slide_37.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 38,
       "title": "Refresh materialized view",
-      "transcript": "REFRESH MATERIALIZED VIEW recomputes the stored result from the underlying query. Run this after creating the stale condition. The Influenza count should now match the current base data. The refreshed-at value should also be recomputed, documenting the new snapshot time. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 102,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        102
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Refreshing a materialized view rebuilds the stored result from its underlying query.\n\nIn this example, after we create a stale condition, we refresh the materialized view and compare the counts again.\n\nThe stored diagnosis count should now match the current source data, and the refresh time should show when the new snapshot was created.",
       "wav": "wav/module12_slide_38.wav",
       "audio": "audio/module12_slide_38.mp3",
       "captions": "audio/module12_slide_38.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 39,
       "title": "Freshness is a contract",
-      "transcript": "Freshness policy is part of the data product. Consumers need to know how often the materialized view refreshes. They need a way to see the last successful refresh. The team should know what happens when refresh fails. And the expected maximum latency should be documented rather than assumed. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 105,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        105
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Freshness is part of the data contract.\n\nUsers should know how often the snapshot is refreshed, when the last successful refresh occurred, and how much delay is acceptable.\n\nThey should also know what happens when a refresh fails.\n\nA materialized view without a clear freshness policy can be technically correct but operationally confusing.",
       "wav": "wav/module12_slide_39.wav",
       "audio": "audio/module12_slide_39.mp3",
       "captions": "audio/module12_slide_39.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 40,
       "title": "Index a materialized view",
-      "transcript": "Because a materialized view stores rows, PostgreSQL can index those rows. This example creates a unique index on diagnosis. Indexes may support faster reads and are also relevant to certain PostgreSQL concurrent refresh requirements. Choose indexes based on real query patterns and constraints, not simply because the object is materialized. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 106,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        106
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Because a materialized view stores rows, Postgres can index those rows.\n\n[tts-break]\n\nThis example creates a unique index on diagnosis.\n\nIndexes may support faster reads and are also relevant to certain Postgres concurrent refresh requirements. Choose indexes based on real query patterns and constraints, not simply because the object is materialized.",
       "wav": "wav/module12_slide_40.wav",
       "audio": "audio/module12_slide_40.mp3",
       "captions": "audio/module12_slide_40.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 41,
       "title": "Concurrent refresh note",
-      "transcript": "Production PostgreSQL supports REFRESH MATERIALIZED VIEW CONCURRENTLY under specific conditions. An appropriate unique index is required. Concurrent refresh is an availability technique. It does not remove the need for a refresh policy, freshness metadata, or monitoring. A materialized view stores the query result physically, trading freshness for faster reads. That makes refresh policy part of the data contract. A dashboard should know whether the snapshot is five minutes old or one day old. Indexes can improve access, and concurrent refresh has additional requirements.",
-      "seed": 1234,
-      "tts_text_tokens": 100,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        100
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Production Postgres supports refresh materialized view concurrently under specific conditions.\n\nAn appropriate unique index is required.\n\nConcurrent refresh is an availability technique. It does not remove the need for a refresh policy, freshness metadata, or monitoring.",
       "wav": "wav/module12_slide_41.wav",
       "audio": "audio/module12_slide_41.mp3",
       "captions": "audio/module12_slide_41.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 42,
       "title": "Compare live and snapshot",
-      "transcript": "A useful monitoring pattern is to compare the live result with the stored snapshot. This query shows diagnosis counts from both sources. After a successful refresh, the values should agree for the same logic. If they differ unexpectedly, investigate whether the snapshot is stale or the definitions are inconsistent. A materialized view stores the query result physically, trading freshness for faster reads. That makes refresh policy part of the data contract. A dashboard should know whether the snapshot is five minutes old or one day old. Indexes can improve access, and concurrent refresh has additional requirements.",
-      "seed": 1234,
-      "tts_text_tokens": 108,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        108
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "A useful monitoring pattern is to compare the live result with the stored snapshot.\n\nThis query shows diagnosis counts from both sources.\n\nAfter a successful refresh, the values should agree for the same logic. If they differ unexpectedly, investigate whether the snapshot is stale or the definitions are inconsistent.",
       "wav": "wav/module12_slide_42.wav",
       "audio": "audio/module12_slide_42.mp3",
       "captions": "audio/module12_slide_42.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 43,
-      "title": "CTE vs view vs materialized view",
-      "transcript": "This comparison helps choose the right object. A CTE is local to one statement. A standard view is shared and live. A materialized view is shared and stored. Temporary business thresholds usually belong close to the report. Stable shared relational meaning often belongs in a standard view. Expensive reused summaries may justify materialization if the freshness tradeoff is acceptable. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 117,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        117
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Common Table Expression versus view versus materialized view",
+      "transcript": "Here is a simple decision rule for choosing among these objects.\n\nIf the logic is needed only inside one query, a common table expression is usually enough.\n\nIf many queries need the same reusable logic and they should always read current source data, use a standard view.\n\n[tts-break]\n\nIf many queries need the same expensive summary, and some delay is acceptable, a materialized view may be a better choice.\n\nThe best object is not the most advanced one. It is the one that matches the reuse, freshness, and performance requirements.",
       "wav": "wav/module12_slide_43.wav",
       "audio": "audio/module12_slide_43.mp3",
       "captions": "audio/module12_slide_43.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 44,
       "title": "Promote only stable logic",
-      "transcript": "A useful architecture rule is to promote stable meaning into persistent objects. If many consumers agree on what a patient-admission row means, that can become a view. If one report uses a temporary thirty-day threshold, keep that logic in the report. If a summary is expensive and reused frequently, materialization may be appropriate. Do not turn every query into a database object. Choose the smallest reusable object that matches the need. A CTE is local to one query, a view centralizes live logic, and a materialized view persists a snapshot. Promote logic into shared objects when it is stable, reused, and worth governing as part of the analytical architecture.",
-      "seed": 1234,
-      "tts_text_tokens": 130,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        130
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "A useful architecture rule is to promote stable meaning into persistent objects.\n\nIf many consumers agree on what a patient admission row means, that can become a view. If one report uses a temporary thirty day threshold, keep that logic in the report.\n\nIf a summary is expensive and reused frequently, materialization may be appropriate. Do not turn every query into a database object.",
       "wav": "wav/module12_slide_44.wav",
       "audio": "audio/module12_slide_44.mp3",
       "captions": "audio/module12_slide_44.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 45,
-      "title": "View + CTE",
-      "transcript": "This query combines Modules 11 and 12. The view owns the stable patient-admission interface. The CTEs own report-specific sequence and readmission logic. LAG calculates the previous discharge. The final threshold checks whether the gap is within thirty days. This separation keeps the stable data interface reusable while allowing reports to define their own analytical rules. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 121,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        121
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "View + Common Table Expression",
+      "transcript": "This example combines ideas from Modules 11 and 12.\n\nThe standard view owns the stable patient admission logic. A common table expression then adds report specific sequence logic.\n\nThe lag function, which gives us the previous value, retrieves the earlier discharge time. The report then checks whether the next admission happened within thirty days.\n\n[tts-break]\n\nThis is good modular design because stable shared meaning stays in the view, while a temporary analytical rule stays in the report.",
       "wav": "wav/module12_slide_45.wav",
       "audio": "audio/module12_slide_45.mp3",
       "captions": "audio/module12_slide_45.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 46,
       "title": "Project architecture",
-      "transcript": "The project asks you to design a small analytics layer for three needs. Employee performance is stable shared logic and fits a standard view. Recent customer activity can be a shared view, while the at-risk threshold remains in a CTE because it may vary by report. The diagnosis dashboard uses a repeated summary and can use a materialized view when a refresh delay is acceptable. Choose the smallest reusable object that matches the need. A CTE is local to one query, a view centralizes live logic, and a materialized view persists a snapshot. Promote logic into shared objects when it is stable, reused, and worth governing as part of the analytical architecture.",
-      "seed": 1234,
-      "tts_text_tokens": 127,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        127
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "The project asks you to design a small analytics layer for three different needs.\n\nEmployee performance is stable shared logic, so a standard view makes sense.\n\nRecent customer activity can also be a reusable view, while a specific inactivity threshold can stay in a common table expression because different reports may use different thresholds.\n\nThe diagnosis dashboard uses a repeatedly requested summary, so a materialized view can make sense when a known refresh delay is acceptable.",
       "wav": "wav/module12_slide_46.wav",
       "audio": "audio/module12_slide_46.mp3",
       "captions": "audio/module12_slide_46.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 47,
       "title": "Employee performance view",
-      "transcript": "This view joins employees to departments and sales orders. It aggregates orders and sales amount. One output row represents one employee. Because this definition can support several operations reports, publishing it as a reusable view is reasonable. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 92,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        92
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "This view joins employees to departments and sales orders.\n\nIt aggregates orders and sales amount.\n\nOne output row represents one employee. Because this definition can support several operations reports, publishing it as a reusable view is reasonable.",
       "wav": "wav/module12_slide_47.wav",
       "audio": "audio/module12_slide_47.mp3",
       "captions": "audio/module12_slide_47.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 48,
       "title": "Consume employee view",
-      "transcript": "This query consumes the employee performance interface. The total-sales threshold remains outside the view. That is useful because different reports may choose different thresholds. The stable performance definition stays shared, while temporary business rules remain report-specific. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 95,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        95
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "This query consumes the employee performance interface.\n\nThe total-sales threshold remains outside the view.\n\nThat is useful because different reports may choose different thresholds. The stable performance definition stays shared, while temporary business rules remain report specific.",
       "wav": "wav/module12_slide_48.wav",
       "audio": "audio/module12_slide_48.mp3",
       "captions": "audio/module12_slide_48.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 49,
       "title": "Recent activity view",
-      "transcript": "The recent-activity view publishes completed transactions from a defined six-month window. That shared definition can support multiple retention analyses. It creates a smaller, clearer interface than asking every report author to repeat the transaction-status logic. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 95,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        95
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "The recent activity view publishes completed transactions from a defined six month window.\n\nThat shared definition can support multiple retention analyses.\n\nIt creates a smaller, clearer interface than asking every report author to repeat the transaction-status logic.",
       "wav": "wav/module12_slide_49.wav",
       "audio": "audio/module12_slide_49.mp3",
       "captions": "audio/module12_slide_49.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 50,
-      "title": "Retention CTE",
-      "transcript": "This retention query starts from the recent-activity view. A CTE finds the last transaction per customer. Another CTE applies a sixty-day inactivity threshold. That threshold is intentionally report-specific. If another report wants ninety days, the shared activity view does not need to change. Connect this idea to a data platform materializing expensive summaries for faster consumption. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 135,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        135
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Retention Common Table Expression",
+      "transcript": "This retention example begins with the recent activity view.\n\nThe first common table expression finds the most recent transaction for each customer. The next stage applies a sixty day inactivity rule.\n\nWhy keep that threshold outside the shared view? Because another report may want ninety days instead.\n\nThe view owns the stable definition of recent activity. The report owns the temporary business rule.",
       "wav": "wav/module12_slide_50.wav",
       "audio": "audio/module12_slide_50.mp3",
       "captions": "audio/module12_slide_50.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 51,
       "title": "Diagnosis dashboard object",
-      "transcript": "The diagnosis dashboard is a good materialized-view example. Its grain and measures are stable. The summary may be read frequently. And leadership can tolerate a documented refresh interval. The materialized view becomes a small data product with both a schema contract and a freshness contract. Choose the smallest reusable object that matches the need. A CTE is local to one query, a view centralizes live logic, and a materialized view persists a snapshot. Promote logic into shared objects when it is stable, reused, and worth governing as part of the analytical architecture.",
-      "seed": 1234,
-      "tts_text_tokens": 107,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        107
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "The diagnosis dashboard is a good materialized view example.\n\nIts grain and measures are stable. The summary may be read frequently.\n\nAnd leadership can tolerate a documented refresh interval. The materialized view becomes a small data interface with both a schema contract and a freshness contract.",
       "wav": "wav/module12_slide_51.wav",
       "audio": "audio/module12_slide_51.mp3",
       "captions": "audio/module12_slide_51.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 52,
       "title": "Object catalog",
-      "transcript": "An analytics layer should be discoverable. This query lists views and materialized views in the analytics schema. Object catalogs help teams understand what reusable interfaces already exist before creating duplicates. They also support documentation and governance. Choose the smallest reusable object that matches the need. A CTE is local to one query, a view centralizes live logic, and a materialized view persists a snapshot. Promote logic into shared objects when it is stable, reused, and worth governing as part of the analytical architecture.",
-      "seed": 1234,
-      "tts_text_tokens": 96,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        96
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "An analytics layer should be discoverable.\n\nThis query lists views and materialized views in the analytics schema.\n\nObject catalogs help teams understand what reusable interfaces already exist before creating duplicates. They also support documentation and governance.",
       "wav": "wav/module12_slide_52.wav",
       "audio": "audio/module12_slide_52.mp3",
       "captions": "audio/module12_slide_52.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 53,
       "title": "Architecture review questions",
-      "transcript": "Before publishing a reusable object, review more than the SQL. State the grain. Review what the interface exposes. Document freshness. Inspect dependencies. And identify ownership of the business definition and operational process. These questions turn a view from an ad hoc query into a maintainable interface. A standard view stores a query definition, not a separate copy of the rows. Treat the selected columns, names, types, and grain as a contract with downstream users. Changing that contract can break dashboards or applications even if the underlying query still runs.",
-      "seed": 1234,
-      "tts_text_tokens": 105,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        105
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Before publishing a reusable database object, review more than whether the query runs.\n\nAsk what one row represents. Ask which columns are exposed. Ask how current the data needs to be. Check which source tables and views the object depends on.\n\n[tts-break]\n\nAlso ask who owns the business definition and who is responsible for maintaining the object.\n\nThese questions turn a saved query into a reliable analytical interface.",
       "wav": "wav/module12_slide_53.wav",
       "audio": "audio/module12_slide_53.mp3",
       "captions": "audio/module12_slide_53.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 54,
       "title": "Recognition checkpoint",
-      "transcript": "Use this checkpoint to connect requirements with objects. Temporary stages suggest a CTE. Shared live relational logic suggests a standard view. An expensive summary with acceptable refresh delay suggests a materialized view. A controlled filtered one-table interface may use an updatable view and check option. The object choice should follow the contract you need. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
-      "seed": 1234,
-      "tts_text_tokens": 163,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        163
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Use this checkpoint to connect each requirement with the right object.\n\nTemporary logic used inside one statement suggests a common table expression.\n\nShared logic that should always read current data suggests a standard view.\n\nAn expensive reusable summary that can tolerate a refresh delay suggests a materialized view.\n\nA filtered single table view may support controlled updates when that behavior is intentional and tested.",
       "wav": "wav/module12_slide_54.wav",
       "audio": "audio/module12_slide_54.mp3",
       "captions": "audio/module12_slide_54.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 55,
       "title": "Freshness checkpoint",
-      "transcript": "Freshness is one of the clearest differences among these objects. A later CTE statement uses current source data. A standard view reads through to the current underlying data. A materialized view stays at its last snapshot until refreshed. Consumers should never have to guess which freshness model they are using. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
-      "seed": 1234,
-      "tts_text_tokens": 155,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        155
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Freshness is one of the clearest differences among these tools.\n\nA common table expression reads the source data available to its statement. A standard view reads through to the current underlying data when it is queried.\n\nA materialized view is different. It keeps the stored result from its most recent refresh.\n\nUsers should never have to guess which freshness model they are working with.",
       "wav": "wav/module12_slide_55.wav",
       "audio": "audio/module12_slide_55.mp3",
       "captions": "audio/module12_slide_55.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 56,
       "title": "Access checkpoint",
-      "transcript": "A limited view can reduce the columns and rows exposed through that interface. That is useful. But it does not by itself guarantee that users cannot access the base table. It does not replace grants, row-level security, or broader compliance controls. Use precise language about what the view actually protects. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
-      "seed": 1234,
-      "tts_text_tokens": 158,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        158
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "A limited view can reduce the columns and rows exposed through that interface.\n\nThat is useful. But it does not by itself guarantee that users cannot access the base table.\n\nIt does not replace grants, row level security, or broader compliance controls. Use precise language about what the view actually protects.",
       "wav": "wav/module12_slide_56.wav",
       "audio": "audio/module12_slide_56.mp3",
       "captions": "audio/module12_slide_56.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 57,
       "title": "Assessment task",
-      "transcript": "The assessment has two parts. First, create analytics dot vw employee department info with employee name, salary, and department name. Second, use only that view to calculate the average salary for Sales. The point is not only the syntax. You should also state the grain and explain why the view is a reusable interface. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
-      "seed": 1234,
-      "tts_text_tokens": 162,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        162
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "The assessment has two parts.\n\nFirst, create the employee and department information view in the analytics schema. The view should include employee name, salary, and department name.\n\nSecond, use only that view to calculate the average salary for the Sales department.\n\nThe important part is not only getting the syntax right. You should also be able to say that one row in the view represents one employee, and explain why the view is reusable.",
       "wav": "wav/module12_slide_57.wav",
       "audio": "audio/module12_slide_57.mp3",
       "captions": "audio/module12_slide_57.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 58,
       "title": "Assessment reasoning",
-      "transcript": "Before looking at a sample solution, explain your design. The view should have one row per employee. It should expose the columns required for employee-department analysis. The consuming query should rely on that interface rather than rebuilding the join. That is how you demonstrate modular design rather than only SQL syntax. Connect this idea to an analytics team exposing a stable reporting view to dashboard users. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 140,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        140
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Before looking at a sample solution, explain your design.\n\nThe view should have one row per employee. It should expose the columns required for employee and department analysis.\n\nThe report query should rely on that interface rather than rebuilding the join. That is how you demonstrate modular design rather than only S Q L syntax.",
       "wav": "wav/module12_slide_58.wav",
       "audio": "audio/module12_slide_58.mp3",
       "captions": "audio/module12_slide_58.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 59,
       "title": "Sample assessment solution",
-      "transcript": "This sample creates the employee-department view by joining employees and departments. Then it queries only that view to calculate the Sales average salary. Compare it with your own approach. The important points are the interface grain, exposed columns, and reuse of the published object. Connect this idea to a data platform materializing expensive summaries for faster consumption. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 132,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        132
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "This sample creates the employee and department view by joining employees and departments.\n\nThen it queries only that view to calculate the Sales average salary.\n\nCompare it with your own approach. The important points are the interface grain, exposed columns, and reuse of the published object.",
       "wav": "wav/module12_slide_59.wav",
       "audio": "audio/module12_slide_59.mp3",
       "captions": "audio/module12_slide_59.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 60,
       "title": "Module 12 takeaways",
-      "transcript": "These are the key habits from Module 12. Treat important views as contracts. Separate stable reusable meaning from report-specific logic. Understand whether a view is writable. Be precise about the difference between limiting an interface and enforcing authorization. Remember that materialized views create a freshness obligation. And inspect dependencies before changing shared objects. Connect this idea to a governance project limiting which columns different users can access. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 144,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        144
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Here are the main habits to keep from Module 12.\n\nTreat important views as contracts. Keep stable shared logic separate from temporary report logic. Do not assume that every view can be updated.\n\nBe precise about security. A narrower view can reduce exposure, but actual authorization depends on permissions and related controls.\n\nAnd remember that a materialized view always creates a freshness responsibility. If you store a snapshot, users need to know how and when it is refreshed.",
       "wav": "wav/module12_slide_60.wav",
       "audio": "audio/module12_slide_60.mp3",
       "captions": "audio/module12_slide_60.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 61,
       "title": "Object decision guide",
-      "transcript": "Use this decision guide when designing modular SQL. Choose a CTE for statement-local stages. Choose a standard view for stable shared live logic. Use a simple updatable view only when write behavior is intentional. Use views with proper privileges for controlled interfaces. Choose a materialized view when storing a reusable result is worth the freshness tradeoff. Keep highly changeable report thresholds outside stable shared objects. Choose the smallest reusable object that matches the need. A CTE is local to one query, a view centralizes live logic, and a materialized view persists a snapshot. Promote logic into shared objects when it is stable, reused, and worth governing as part of the analytical architecture.",
-      "seed": 1234,
-      "tts_text_tokens": 131,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        131
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Use this guide when choosing a reusable S Q L object.\n\nUse a common table expression for a temporary stage inside one statement.\n\nUse a standard view for shared logic that should stay connected to current source data.\n\nUse a simple updatable view only when write behavior is intentional and tested.\n\nUse a materialized view when storing a reusable result is worth the freshness tradeoff.\n\nAnd keep frequently changing report thresholds outside stable shared objects whenever possible.",
       "wav": "wav/module12_slide_61.wav",
       "audio": "audio/module12_slide_61.mp3",
       "captions": "audio/module12_slide_61.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 62,
       "title": "Next: Module 13",
-      "transcript": "Module 13 moves from PostgreSQL database objects into distributed analytical processing with Spark SQL. The relational concepts remain familiar: tables, joins, filters, grouping, and reusable transformations. The new challenge is scale and distributed execution. Carry forward the interface and grain habits from this module because they remain important when data processing moves to a distributed engine. As you move forward, keep the reasoning habits from this module. The next topic will add new SQL tools, but it still depends on understanding grain, missing values, and the meaning of each transformation.",
-      "seed": 1234,
-      "tts_text_tokens": 107,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        107
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "You have now moved from advanced query writing to reusable analytical design.\n\nIn this module, you learned how standard views centralize live logic, how materialized views store snapshots, how dependencies affect change management, and why access and freshness need to be part of the design.\n\n[tts-break]\n\nModule 13 takes these same analytical habits into a distributed environment with Spark S Q L and Microsoft Fabric.\n\nThe technology changes, but the important questions remain familiar. What does one row represent? Where does the data come from? How current is it? And how can we validate that the output still means what we think it means?",
       "wav": "wav/module12_slide_62.wav",
       "audio": "audio/module12_slide_62.mp3",
       "captions": "audio/module12_slide_62.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     }
   ]
 }

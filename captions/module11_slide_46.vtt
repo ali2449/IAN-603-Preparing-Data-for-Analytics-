@@ -1,34 +1,19 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.037
-The daily CTE produces one revenue value per date.
+00:00:00.000 --> 00:00:03.767
+The query first prepares one revenue value per date.
 
-00:00:04.037 --> 00:00:11.222
-The window AVG orders those dates and uses a frame from two preceding rows through the current row.
+00:00:03.767 --> 00:00:09.197
+Then the window average uses the current row and up to two earlier rows.
 
-00:00:11.222 --> 00:00:16.682
-Run the query and compare the raw daily revenue with the smoothed moving average.
+00:00:09.197 --> 00:00:12.582
+That creates a three-row moving average.
 
-00:00:16.682 --> 00:00:23.167
-Remember that this is a three-row window, not necessarily three calendar days if dates are missing.
+00:00:12.582 --> 00:00:19.607
+Notice the phrase three-row. It does not automatically mean three calendar days.
 
-00:00:23.167 --> 00:00:28.172
-When reading the example, do not read punctuation one character at a time.
+00:00:19.607 --> 00:00:25.167
+If some dates are missing, the three rows may cover a longer period of time.
 
-00:00:28.172 --> 00:00:34.487
-Start with the purpose of the query, then identify the input rows, the operation being applied,
-
-00:00:34.487 --> 00:00:37.117
-and the shape of the expected output.
-
-00:00:37.117 --> 00:00:42.177
-In a real setting such as a hospital ranking visits and identifying readmissions,
-
-00:00:42.177 --> 00:00:48.417
-this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
-
-00:00:48.417 --> 00:00:50.737
-before discussing syntax.
-
-00:00:50.737 --> 00:00:57.280
-After running it, inspect a few records manually and check that the result matches that explanation.
+00:00:25.167 --> 00:00:29.644
+This is why the frame definition and the row grain both matter.

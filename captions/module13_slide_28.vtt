@@ -1,31 +1,25 @@
 WEBVTT
 
-00:00:00.016 --> 00:00:02.882
-Partitions are central to Spark parallelism.
+00:00:00.013 --> 00:00:03.997
+Partitions are one of the basic units of Spark parallelism.
 
-00:00:02.882 --> 00:00:08.117
-A dataset is divided into pieces, and tasks process those pieces.
+00:00:03.997 --> 00:00:07.817
+Imagine a very large book divided into sections.
 
-00:00:08.117 --> 00:00:11.247
-Too few partitions can limit parallelism.
+00:00:07.817 --> 00:00:11.902
+Different workers can read different sections at the same time.
 
-00:00:11.247 --> 00:00:14.667
-Too many small partitions can create overhead.
+00:00:11.902 --> 00:00:18.255
+In Spark, partitions give executors pieces of the dataset that can be processed in parallel.
 
-00:00:14.667 --> 00:00:18.957
-As a beginner, you do not need to tune every partition setting,
+00:00:18.759 --> 00:00:24.381
+If there are too few partitions, we may not use the available workers effectively.
 
-00:00:18.957 --> 00:00:22.917
-but you should understand why partitioning affects performance.
+00:00:24.381 --> 00:00:31.641
+If there are far too many tiny partitions, Spark spends more time coordinating small tasks.
 
-00:00:22.917 --> 00:00:29.817
-Partitions organize data so the engine can avoid reading files that cannot satisfy a filter.
+00:00:31.641 --> 00:00:36.836
+At this stage, you do not need to tune partition counts perfectly.
 
-00:00:29.817 --> 00:00:35.137
-Good partition columns are commonly filtered and have manageable cardinality.
-
-00:00:35.137 --> 00:00:39.452
-Column pruning similarly avoids reading unused columns.
-
-00:00:39.452 --> 00:00:44.877
-Both optimizations reduce I/O before more expensive computation begins.
+00:00:36.836 --> 00:00:42.498
+I want you to understand why partitioning affects both parallelism and overhead.

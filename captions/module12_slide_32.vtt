@@ -1,28 +1,19 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:07.777
-Materialization is useful when an expensive result is read repeatedly and consumers can tolerate a known
+00:00:00.000 --> 00:00:08.402
+A materialized view is useful when the same expensive summary is needed repeatedly and users can accept some delay
 
-00:00:07.777 --> 00:00:11.302
-refresh lag. The database object alone is not the whole design.
+00:00:08.402 --> 00:00:10.562
+between the source data and the stored result.
 
-00:00:11.302 --> 00:00:17.552
-You also need a refresh schedule, freshness metadata, and a plan for refresh failures.
+00:00:10.562 --> 00:00:15.392
+For example, a dashboard may not need second by second updates.
 
-00:00:17.552 --> 00:00:22.947
-Without those, consumers may not know how current the snapshot is.
+00:00:15.392 --> 00:00:19.602
+A snapshot refreshed every hour may be completely acceptable.
 
-00:00:22.947 --> 00:00:29.577
-Connect this idea to a data platform materializing expensive summaries for faster consumption.
+00:00:19.602 --> 00:00:22.652
+But the refresh policy has to be clear.
 
-00:00:29.577 --> 00:00:35.342
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
-
-00:00:35.342 --> 00:00:42.882
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
-
-00:00:42.882 --> 00:00:48.812
-A strong analyst can explain both the SQL operation and the assumption behind it.
-
-00:00:48.812 --> 00:00:54.453
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:22.652 --> 00:00:28.555
+Users should know when the snapshot was last refreshed and what happens if a refresh fails.

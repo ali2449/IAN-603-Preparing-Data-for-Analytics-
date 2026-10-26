@@ -1,25 +1,16 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.982
-A running total uses an ordered window frame.
+00:00:00.000 --> 00:00:03.797
+A running total grows as we move through an ordered sequence.
 
-00:00:02.982 --> 00:00:08.382
-The calculation starts at the beginning of the partition and ends at the current row.
+00:00:03.797 --> 00:00:09.987
+Imagine daily revenue of one hundred dollars, two hundred dollars, and fifty dollars.
 
-00:00:08.382 --> 00:00:12.187
-As the current row moves forward, the frame grows.
+00:00:09.987 --> 00:00:15.126
+The running totals become one hundred, three hundred, and three hundred fifty.
 
-00:00:12.187 --> 00:00:17.292
-If we partition by department, each department gets its own running total.
+00:00:15.663 --> 00:00:21.930
+For each row, the calculation includes everything from the beginning of the sequence through the current row.
 
-00:00:17.292 --> 00:00:21.327
-Running and moving calculations depend on the window frame.
-
-00:00:21.327 --> 00:00:28.602
-Defaults can be surprising, especially with duplicate ordering values or LAST_VALUE.
-
-00:00:28.602 --> 00:00:33.082
-Write the frame explicitly when the intended range matters.
-
-00:00:33.082 --> 00:00:38.548
-A clear frame makes the query easier to audit and protects against subtle changes in data.
+00:00:21.930 --> 00:00:27.437
+If we partition by department, each department gets its own independent running total.

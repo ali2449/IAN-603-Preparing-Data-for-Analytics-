@@ -1,25 +1,28 @@
 WEBVTT
 
-00:00:00.013 --> 00:00:03.352
-When reading recursion, identify the anchor first.
+00:00:00.008 --> 00:00:04.917
+When you read a recursive query, identify the anchor term first.
 
-00:00:03.352 --> 00:00:10.222
-Then identify the self-reference. The join condition defines how one level connects to the next.
+00:00:04.917 --> 00:00:08.097
+Ask which rows start the process.
 
-00:00:10.222 --> 00:00:16.587
-Adding a depth or path column can make the traversal much easier to inspect and debug.
+00:00:08.097 --> 00:00:10.802
+Then identify the recursive term.
 
-00:00:16.587 --> 00:00:20.817
-Do not try to understand the whole recursive statement at once.
+00:00:10.802 --> 00:00:14.402
+Ask how the current level connects to the next level.
 
-00:00:20.817 --> 00:00:28.397
-Recursive CTEs are useful when rows refer to other rows in a hierarchy or graph-like chain.
+00:00:14.402 --> 00:00:20.167
+For an employee hierarchy, the connection is usually the manager relationship.
 
-00:00:28.397 --> 00:00:34.412
-The anchor establishes the starting set; the recursive term finds the next level.
+00:00:20.167 --> 00:00:26.077
+A manager I D in one row points to an employee I D in another row.
 
-00:00:34.412 --> 00:00:37.787
-Always think about termination and cycles.
+00:00:26.077 --> 00:00:30.687
+Adding a depth value can show how far we are from the starting point.
 
-00:00:37.787 --> 00:00:42.800
-Production hierarchies often need safeguards against malformed relationships.
+00:00:30.687 --> 00:00:34.482
+A path value can show the route through the hierarchy.
+
+00:00:34.482 --> 00:00:38.740
+These extra fields make recursion much easier to inspect.

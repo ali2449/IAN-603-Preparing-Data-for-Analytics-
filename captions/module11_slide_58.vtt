@@ -1,25 +1,16 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.022
-This query uses ROW_NUMBER within each department.
+00:00:00.000 --> 00:00:03.512
+This version uses row number inside each department.
 
-00:00:03.022 --> 00:00:05.932
-Salary descending defines the main order.
+00:00:03.512 --> 00:00:10.332
+Salary defines the main descending order, and employee I D provides a stable tie-breaker.
 
-00:00:05.932 --> 00:00:10.112
-Employee ID breaks exact salary ties deterministically.
+00:00:10.332 --> 00:00:14.252
+The outer query keeps only row numbers one and two.
 
-00:00:10.112 --> 00:00:14.712
-The outer query filters row number less than or equal to two.
+00:00:14.252 --> 00:00:21.947
+Because row number always assigns unique positions, the result contains at most two employees per department.
 
-00:00:14.712 --> 00:00:17.927
-That returns at most two rows per department.
-
-00:00:17.927 --> 00:00:24.397
-A CTE gives a name to an intermediate result so a complex query can be read in stages.
-
-00:00:24.397 --> 00:00:32.052
-Use it to clarify grain changes and major transformations, not simply to break every two lines into a
-
-00:00:32.052 --> 00:00:38.802
-new block. A useful CTE name describes what the rows represent, such as patient_totals or ranked_visits.
+00:00:21.947 --> 00:00:27.022
+Use this pattern when the requirement is exactly a fixed number of rows per group.

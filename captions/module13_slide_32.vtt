@@ -1,25 +1,22 @@
 WEBVTT
 
-00:00:00.015 --> 00:00:04.982
-When we groupby product, Spark must bring rows with the same product together.
+00:00:00.000 --> 00:00:06.237
+Grouping is a good example of why distributed execution changes the performance discussion.
 
-00:00:04.982 --> 00:00:09.927
-If those rows are spread across partitions, the engine needs a shuffle.
+00:00:06.237 --> 00:00:10.072
+Logically, group by product is simple.
 
-00:00:09.927 --> 00:00:15.832
-This is why aggregation is not just a mathematical step.
+00:00:10.072 --> 00:00:14.477
+We want all rows for the same product summarized together.
 
-00:00:15.832 --> 00:00:18.237
-In distributed execution, it also has a data-movement cost.
+00:00:14.477 --> 00:00:19.232
+Physically, those product rows may be stored on different workers.
 
-00:00:18.237 --> 00:00:23.607
-A shuffle moves data across executors so related keys end up together.
+00:00:19.232 --> 00:00:23.882
+Spark may need to redistribute them before the aggregation can finish.
 
-00:00:23.607 --> 00:00:29.572
-groupby, large joins, and global ORDER BY can trigger expensive shuffles.
+00:00:23.882 --> 00:00:26.732
+So group by changes two things.
 
-00:00:29.572 --> 00:00:36.252
-In distributed systems, moving data is often more costly than evaluating the SQL expression itself,
-
-00:00:36.252 --> 00:00:38.066
-so plan around data movement.
+00:00:26.732 --> 00:00:31.549
+It changes the row grain, and it may also create a data-movement cost.

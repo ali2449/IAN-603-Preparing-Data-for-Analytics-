@@ -1,28 +1,25 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.762
-Materialized-view freshness is easiest to understand as a timeline.
+00:00:00.000 --> 00:00:03.707
+Freshness is easiest to understand with a timeline.
 
-00:00:04.762 --> 00:00:09.882
-The snapshot is built. Later, a new base-table row arrives.
+00:00:03.707 --> 00:00:08.342
+Imagine the materialized view is refreshed at nine in the morning.
 
-00:00:09.882 --> 00:00:15.527
-The standard base query can see it immediately, but the materialized view does not.
+00:00:08.342 --> 00:00:13.062
+At ten, a new admission is inserted into the source table.
 
-00:00:15.527 --> 00:00:19.792
-After a refresh, the stored snapshot catches up.
+00:00:13.062 --> 00:00:18.117
+A normal query against the source can see that new row immediately.
 
-00:00:19.792 --> 00:00:23.087
-That delay must be documented for users.
+00:00:18.117 --> 00:00:25.075
+The materialized view cannot see it yet because its stored snapshot still represents nine o'clock.
 
-00:00:23.087 --> 00:00:30.022
-A materialized view stores the query result physically, trading freshness for faster reads.
+00:00:25.889 --> 00:00:31.041
+After the materialized view is refreshed again, the snapshot catches up.
 
-00:00:30.022 --> 00:00:33.802
-That makes refresh policy part of the data contract.
+00:00:31.041 --> 00:00:36.871
+That time difference between the source and the snapshot is not automatically a problem.
 
-00:00:33.802 --> 00:00:39.227
-A dashboard should know whether the snapshot is five minutes old or one day old.
-
-00:00:39.227 --> 00:00:44.629
-Indexes can improve access, and concurrent refresh has additional requirements.
+00:00:36.871 --> 00:00:43.292
+It becomes a problem only when users expect fresher data than the system is designed to provide.

@@ -1,25 +1,16 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.342
-A reshape round trip is not automatically reversible.
+00:00:00.000 --> 00:00:07.607
+It is tempting to think that pivoting and then un pivoting will always return the original data.
 
-00:00:03.342 --> 00:00:10.012
-If the pivot aggregated transaction rows to monthly totals, unpivoting can only recover those monthly totals.
+00:00:07.607 --> 00:00:08.022
+That is not true.
 
-00:00:10.012 --> 00:00:14.987
-It cannot recreate the original transaction IDs or individual amounts.
+00:00:08.022 --> 00:00:15.717
+If the pivot aggregated several transaction rows into one total, the individual transactions have already been lost.
 
-00:00:14.987 --> 00:00:18.172
-The grain that survives is the aggregated grain.
+00:00:15.717 --> 00:00:23.692
+Un pivoting can recover the aggregated product and month totals, but it cannot recreate the original transaction IDs or
 
-00:00:18.172 --> 00:00:26.052
-A reshape is reversible only when the transformation preserves enough information to reconstruct the source.
-
-00:00:26.052 --> 00:00:31.187
-Aggregation, duplicate collapsing, and dropped NULL cells can make the process lossy.
-
-00:00:31.187 --> 00:00:38.112
-Validate row counts, keys, totals, and category coverage before assuming a pivot-unpivot round trip preserves
-
-00:00:38.112 --> 00:00:39.208
-everything.
+00:00:23.692 --> 00:00:25.095
+individual amounts.

@@ -1,25 +1,22 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.842
-Spark SQL still uses SQL-style NULL semantics.
+00:00:00.000 --> 00:00:03.692
+Null values still mean what they meant earlier in the course.
 
-00:00:03.842 --> 00:00:08.832
-Distributed execution does not make NULL easier or less important.
+00:00:03.692 --> 00:00:07.082
+A null value is not automatically zero.
 
-00:00:08.832 --> 00:00:14.282
-Missing values affect comparisons, filters, joins, and aggregates.
+00:00:07.082 --> 00:00:13.078
+It is not the same as an empty string, and it is not the same as a placeholder such as unknown.
 
-00:00:14.282 --> 00:00:18.992
-The data-quality habits from Module 9 still apply in Spark.
+00:00:13.686 --> 00:00:18.498
+This matters even more when a transformation is running across millions of rows.
 
-00:00:18.992 --> 00:00:27.672
-Many relational ideas transfer directly to Spark SQL: NULL semantics, date arithmetic, CTEs, joins, grouping,
+00:00:18.498 --> 00:00:23.133
+A small mistake in null handling can affect a very large output.
 
-00:00:27.672 --> 00:00:28.537
-and windows.
+00:00:23.133 --> 00:00:30.773
+Keep the Module 9 habit: decide what missingness means, standardize it only when the business rule is clear,
 
-00:00:28.537 --> 00:00:35.827
-Syntax details may differ, but the same reasoning about grain, missingness, and cardinality still applies.
-
-00:00:35.827 --> 00:00:43.600
-Portability is easiest when the business rule is clear before dialect-specific tuning.
+00:00:30.773 --> 00:00:32.357
+and validate the result.

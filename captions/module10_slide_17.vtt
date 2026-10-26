@@ -1,25 +1,16 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.387
-This query groups admissions by month.
+00:00:00.000 --> 00:00:04.477
+In the case expression version, the query groups admissions by month.
 
-00:00:02.387 --> 00:00:10.377
-Inside each SUM, CASE contributes one when the row matches a selected diagnosis and zero otherwise.
+00:00:04.477 --> 00:00:11.842
+For each diagnosis column, the case expression checks whether the current row belongs to that diagnosis.
 
-00:00:10.377 --> 00:00:13.947
-The sum becomes the diagnosis count for that month.
+00:00:11.842 --> 00:00:15.402
+If it matches, the row contributes a value.
 
-00:00:13.947 --> 00:00:18.752
-Run the query and verify that each result row represents one month.
+00:00:15.402 --> 00:00:21.672
+If it does not match, it contributes zero or nothing, depending on the expression.
 
-00:00:18.752 --> 00:00:25.772
-A pivot converts category values into columns, usually through conditional aggregation in portable SQL.
-
-00:00:25.772 --> 00:00:29.402
-Each target column needs a clear aggregation rule.
-
-00:00:29.402 --> 00:00:34.902
-Before pivoting, check whether the source contains more than one value for the same row-key and category
-
-00:00:34.902 --> 00:00:36.280
-combination.
+00:00:21.672 --> 00:00:26.591
+The aggregate then combines those contributions into the final monthly count.

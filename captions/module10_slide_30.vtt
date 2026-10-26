@@ -1,25 +1,13 @@
 WEBVTT
 
-00:00:00.016 --> 00:00:06.157
-PostgreSQL offers a compact unpivot pattern with CROSS JOIN LATERAL and VALUES.
+00:00:00.009 --> 00:00:04.007
+Postgres also gives us a shorter option called lateral values.
 
-00:00:06.157 --> 00:00:11.657
-For each monthly sales row, VALUES creates several month-revenue pairs.
+00:00:04.007 --> 00:00:11.532
+Instead of writing several full select statements, we can create several month and value pairs for each source row.
 
-00:00:11.657 --> 00:00:19.252
-LATERAL allows those pairs to reference jan revenue, feb revenue, and mar revenue from the current source row.
+00:00:11.532 --> 00:00:17.337
+The lateral part lets those generated pairs use values from the current source row.
 
-00:00:19.252 --> 00:00:23.177
-This is often cleaner than repeating full SELECT statements.
-
-00:00:23.177 --> 00:00:26.992
-Unpivoting turns repeated columns into row values.
-
-00:00:26.992 --> 00:00:33.697
-UNION ALL is explicit and portable; LATERAL VALUES can be more compact in PostgreSQL.
-
-00:00:33.697 --> 00:00:40.392
-The important design decision is which columns become identifiers and which column names become values.
-
-00:00:40.392 --> 00:00:43.957
-Keep data types compatible across the generated rows.
+00:00:17.337 --> 00:00:21.902
+This is useful when many wide columns follow the same repeated pattern.

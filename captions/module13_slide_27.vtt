@@ -1,25 +1,22 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.702
-This browser example uses EXPLAIN to build the habit of inspecting a plan.
+00:00:00.000 --> 00:00:02.867
+Build the habit of using the explain command.
 
-00:00:04.702 --> 00:00:13.192
-Spark EXPLAIN output is different and usually more detailed, but the habit is the same.
+00:00:02.867 --> 00:00:10.777
+The exact plan format in Spark is different from the plan you may see in Postgres, but the purpose is similar.
 
-00:00:13.192 --> 00:00:16.562
-Do not guess what the engine is doing.
+00:00:10.777 --> 00:00:14.517
+We want evidence about what the engine plans to do.
 
-00:00:16.562 --> 00:00:22.197
-Inspect the planned operators and look for scans, filters, joins, aggregates, sorts, and exchanges.
+00:00:14.517 --> 00:00:20.867
+Look for scans, filters, joins, aggregations, sorting, and exchanges.
 
-00:00:22.197 --> 00:00:29.477
-Spark transformations are often lazy: they build a logical plan rather than immediately processing every row.
+00:00:20.867 --> 00:00:28.952
+In Spark, exchanges are especially interesting because they often indicate that data will be redistributed between
 
-00:00:29.477 --> 00:00:35.692
-An action triggers execution. That gives Spark an opportunity to optimize the plan.
+00:00:28.952 --> 00:00:33.117
+workers. You do not need to understand every line of the plan.
 
-00:00:35.692 --> 00:00:42.997
-Develop the habit of reading EXPLAIN output and asking which operations cause scans, shuffles, sorts,
-
-00:00:42.997 --> 00:00:44.154
-or exchanges.
+00:00:33.117 --> 00:00:37.893
+Start by asking where the expensive movement and large scans may occur.

@@ -1,25 +1,16 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:07.617
-A frame describes which rows within an ordered partition contribute to the current calculation.
+00:00:00.000 --> 00:00:06.072
+A window frame defines which ordered rows participate in a calculation for the current row.
 
-00:00:07.617 --> 00:00:14.017
-For a running total, the frame may start at the beginning and end at the current row.
+00:00:06.072 --> 00:00:13.315
+For a running total, the frame usually begins with the first row in the partition and ends with the current row.
 
-00:00:14.017 --> 00:00:20.132
-For a three-row moving average, it may include two preceding rows and the current row.
+00:00:13.846 --> 00:00:20.888
+For a three-row moving average, the frame can include the current row and the two rows immediately before it.
 
-00:00:20.132 --> 00:00:26.662
-For some value functions, the frame may need to extend to the end of the partition.
+00:00:20.888 --> 00:00:24.913
+Think of the frame as a window that moves with the current row.
 
-00:00:26.662 --> 00:00:31.422
-Window functions preserve detail rows while calculating across a related set.
-
-00:00:31.422 --> 00:00:35.907
-PARTITION BY defines independent groups, ORDER BY defines sequence,
-
-00:00:35.907 --> 00:00:39.747
-and the frame defines which neighboring rows participate.
-
-00:00:39.747 --> 00:00:44.546
-Those three choices are part of the business rule, not just syntax.
+00:00:24.913 --> 00:00:30.773
+The size and boundaries of that window determine which values are used in the calculation.

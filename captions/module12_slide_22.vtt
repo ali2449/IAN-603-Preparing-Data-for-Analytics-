@@ -1,22 +1,22 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.427
-A filtered view introduces an important write question.
+00:00:00.000 --> 00:00:04.107
+A filtered view creates an interesting question about updates.
 
-00:00:03.427 --> 00:00:10.457
-If the view only shows active patients, what should happen when an update through the view sets active
+00:00:04.107 --> 00:00:07.637
+Suppose the view shows only active patients.
 
-00:00:10.457 --> 00:00:15.767
-to false? Without a check option, the row may simply disappear from the view after the update.
+00:00:07.637 --> 00:00:13.342
+Now imagine we update one of those patients through the view and set active to false.
 
-00:00:15.767 --> 00:00:20.897
-WITH CHECK OPTION can enforce the view condition for writes performed through the view.
+00:00:13.342 --> 00:00:17.507
+Without additional protection, the update may succeed.
 
-00:00:20.897 --> 00:00:26.297
-A standard view stores a query definition, not a separate copy of the rows.
+00:00:17.507 --> 00:00:23.027
+The row then disappears from the view because it no longer satisfies the filter.
 
-00:00:26.297 --> 00:00:33.162
-Treat the selected columns, names, types, and grain as a contract with downstream users.
+00:00:23.027 --> 00:00:29.052
+The with check option lets us prevent that kind of update when we want the row to remain valid according to the view's
 
-00:00:33.162 --> 00:00:39.600
-Changing that contract can break dashboards or applications even if the underlying query still runs.
+00:00:29.052 --> 00:00:30.939
+own condition.

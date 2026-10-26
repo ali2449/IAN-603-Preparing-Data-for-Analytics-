@@ -1,25 +1,25 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.397
-Reading files is one of the places where Spark-specific syntax appears.
+00:00:00.000 --> 00:00:04.887
+Reading files is one place where Spark-specific code is very visible.
 
-00:00:04.397 --> 00:00:09.862
-CSV, Parquet, and Delta each have their own read patterns.
+00:00:04.887 --> 00:00:12.087
+Spark can read C S V files, Parquet files, Delta data, and other formats.
 
-00:00:09.862 --> 00:00:16.302
-After the data becomes a DataFrame or table, the relational SQL logic becomes more familiar.
+00:00:12.087 --> 00:00:16.652
+The exact read command depends on the format and environment.
 
-00:00:16.302 --> 00:00:20.947
-Do not confuse the file-ingestion step with the SQL analysis step.
+00:00:16.652 --> 00:00:24.527
+After the file has been loaded into a data frame or a table, the relational logic becomes much more familiar.
 
-00:00:20.947 --> 00:00:26.577
-Spark distributes work across multiple processes and often multiple machines.
+00:00:24.527 --> 00:00:28.907
+We can filter, join, group, reshape, and validate the data.
 
-00:00:26.577 --> 00:00:32.897
-The driver coordinates the job, while executors perform tasks on partitions of the data.
+00:00:28.907 --> 00:00:33.967
+Keep the two stages separate in your mind.
 
-00:00:32.897 --> 00:00:38.582
-This architecture becomes valuable when the data or workload is too large for one machine or when a
+00:00:33.967 --> 00:00:38.372
+File ingestion brings the data into the processing environment.
 
-00:00:38.582 --> 00:00:41.938
-platform needs scalable parallel processing.
+00:00:38.372 --> 00:00:42.899
+S Q L and data-frame transformations prepare it for analysis.

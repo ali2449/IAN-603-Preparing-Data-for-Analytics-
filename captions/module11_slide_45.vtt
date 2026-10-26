@@ -1,25 +1,16 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.507
-A moving average uses a sliding frame rather than an ever-growing frame.
+00:00:00.000 --> 00:00:08.002
+A moving average is different from a running total because the calculation uses a limited number of nearby rows.
 
-00:00:04.507 --> 00:00:10.637
-With two preceding rows and the current row, the calculation uses up to three ordered rows.
+00:00:08.002 --> 00:00:13.502
+Suppose daily sales are ten, twenty, thirty, and forty.
 
-00:00:10.637 --> 00:00:15.267
-At the beginning of the sequence, fewer than three rows may be available.
+00:00:13.502 --> 00:00:20.137
+A three-row moving average for the fourth row uses twenty, thirty, and forty.
 
-00:00:15.267 --> 00:00:18.292
-The frame moves forward with the current row.
+00:00:20.137 --> 00:00:23.638
+The earliest value has moved outside the frame.
 
-00:00:18.292 --> 00:00:22.062
-Running and moving calculations depend on the window frame.
-
-00:00:22.062 --> 00:00:28.362
-Defaults can be surprising, especially with duplicate ordering values or LAST_VALUE.
-
-00:00:28.362 --> 00:00:32.092
-Write the frame explicitly when the intended range matters.
-
-00:00:32.092 --> 00:00:37.594
-A clear frame makes the query easier to audit and protects against subtle changes in data.
+00:00:24.088 --> 00:00:30.571
+This kind of calculation smooths short-term variation while still following the sequence over time.

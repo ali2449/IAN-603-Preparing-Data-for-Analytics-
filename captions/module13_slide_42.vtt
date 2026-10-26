@@ -1,37 +1,19 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.777
-In Microsoft Fabric, be careful about which SQL surface you are using.
+00:00:00.000 --> 00:00:07.517
+Microsoft Fabric has more than one place where S Q L can appear, so always check which engine is running your code.
 
-00:00:04.777 --> 00:00:08.837
-A Spark notebook or Spark SQL cell runs through Spark.
+00:00:07.517 --> 00:00:12.472
+A Spark notebook or Spark S Q L cell runs through Spark.
 
-00:00:08.837 --> 00:00:16.162
-A SQL analytics endpoint uses a different SQL serving surface, often with T-SQL style behavior.
+00:00:12.472 --> 00:00:21.124
+A Fabric S Q L analytics endpoint uses a different S Q L serving environment and often follows T S Q L conventions.
 
-00:00:16.162 --> 00:00:19.142
-Some syntax and capabilities differ.
+00:00:21.596 --> 00:00:29.293
+The same query concept may therefore need slightly different syntax depending on the surface.
 
-00:00:19.142 --> 00:00:23.917
-When code fails, first check which engine you are actually using.
+00:00:29.293 --> 00:00:33.213
+When code fails, do not immediately assume the analytical idea is wrong.
 
-00:00:23.917 --> 00:00:29.257
-When reading the example, do not read punctuation one character at a time.
-
-00:00:29.257 --> 00:00:33.837
-Start with the purpose of the query, then identify the input rows, the operation being applied,
-
-00:00:33.837 --> 00:00:38.327
-and the shape of the expected output.
-
-00:00:38.327 --> 00:00:45.362
-In a real setting such as a retail pipeline aggregating high-volume sales data across partitions,
-
-00:00:45.362 --> 00:00:51.517
-this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
-
-00:00:51.517 --> 00:00:53.907
-before discussing syntax.
-
-00:00:53.907 --> 00:01:00.298
-After running it, inspect a few records manually and check that the result matches that explanation.
+00:00:33.213 --> 00:00:40.001
+First ask: which engine am I using, and which S Q L dialect does that engine expect?

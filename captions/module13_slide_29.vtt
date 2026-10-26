@@ -1,25 +1,19 @@
 WEBVTT
 
-00:00:00.016 --> 00:00:05.952
-Partition pruning means Spark can skip reading some partitions when a filter matches the partition layout.
+00:00:00.010 --> 00:00:05.347
+Partition pruning can help Spark avoid reading data that is not relevant to the query.
 
-00:00:05.952 --> 00:00:10.502
-A date column can be useful if queries often filter by date range.
+00:00:05.347 --> 00:00:11.807
+Suppose a large table is organized by service date, and the query asks for only one month.
 
-00:00:10.502 --> 00:00:16.432
-A unique ID is usually a poor partition column because it can create many tiny partitions.
+00:00:11.807 --> 00:00:17.527
+If the storage layout supports it, Spark may skip partitions outside that month.
 
-00:00:16.432 --> 00:00:19.722
-Partition design should follow query patterns.
+00:00:17.527 --> 00:00:24.132
+That can be much more efficient than scanning the entire dataset and then discarding most of the rows.
 
-00:00:19.722 --> 00:00:25.772
-Partitions organize data so the engine can avoid reading files that cannot satisfy a filter.
+00:00:24.132 --> 00:00:28.127
+A partition column should match useful access patterns.
 
-00:00:25.772 --> 00:00:30.952
-Good partition columns are commonly filtered and have manageable cardinality.
-
-00:00:30.952 --> 00:00:35.047
-Column pruning similarly avoids reading unused columns.
-
-00:00:35.047 --> 00:00:39.520
-Both optimizations reduce I/O before more expensive computation begins.
+00:00:28.127 --> 00:00:34.540
+A nearly unique identifier is often a poor choice because it can create too many tiny partitions.

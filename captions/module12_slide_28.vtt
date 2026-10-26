@@ -1,25 +1,16 @@
 WEBVTT
 
-00:00:00.016 --> 00:00:04.207
-PostgreSQL supports a security invoker option for views.
+00:00:00.013 --> 00:00:05.387
+Postgres also supports a setting called security invoker for views.
 
-00:00:04.207 --> 00:00:10.982
-With security invoker, permissions on underlying relations are checked using the invoking user's rights.
+00:00:05.387 --> 00:00:14.007
+With this setting, Postgres checks access to the underlying tables using the permissions of the person who is running
 
-00:00:10.982 --> 00:00:15.192
-This can matter in a real multi-role security design.
+00:00:14.007 --> 00:00:19.292
+the view. This matters in real systems with multiple roles and permission levels.
 
-00:00:15.192 --> 00:00:21.292
-Our browser lab is useful for syntax and object behavior, but it does not reproduce a full production
+00:00:19.292 --> 00:00:24.552
+For this course, focus on the idea: the view definition and the permission model are connected,
 
-00:00:21.292 --> 00:00:28.607
-authorization environment. Views can reduce exposure by presenting only approved columns or rows,
-
-00:00:28.607 --> 00:00:32.382
-but they are not a complete security strategy by themselves.
-
-00:00:32.382 --> 00:00:39.542
-Understand ownership, privileges, and whether the view executes with invoker or definer-like behavior.
-
-00:00:39.542 --> 00:00:42.760
-Sensitive data controls should be explicit and tested.
+00:00:24.552 --> 00:00:31.053
+and both need to be tested in the environment where the view will actually be used.

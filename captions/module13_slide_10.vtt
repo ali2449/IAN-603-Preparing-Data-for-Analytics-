@@ -1,34 +1,25 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.737
-Spark SQL does not execute your text directly in one simple step.
+00:00:00.008 --> 00:00:09.032
+When you submit Spark S Q L, Spark does not simply read the statement from top to bottom and execute each word
 
-00:00:04.737 --> 00:00:13.277
-It parses the SQL, resolves tables and columns, optimizes the logical plan, and creates a physical plan.
+00:00:09.032 --> 00:00:13.422
+immediately. It first understands the query and builds a logical plan.
 
-00:00:13.277 --> 00:00:18.972
-The physical plan includes operators such as scans, filters, joins, aggregates, and exchanges.
+00:00:13.422 --> 00:00:18.562
+Then it optimizes that plan and produces a physical execution plan.
 
-00:00:18.972 --> 00:00:21.137
-Exchanges often indicate data movement.
+00:00:18.562 --> 00:00:27.087
+The physical plan may include table or file scans, filters, joins, aggregations, sorting, and data exchanges.
 
-00:00:21.137 --> 00:00:26.022
-When reading the example, do not read punctuation one character at a time.
+00:00:27.087 --> 00:00:32.812
+An exchange is often a clue that data needs to move between workers.
 
-00:00:26.022 --> 00:00:34.057
-Start with the purpose of the query, then identify the input rows, the operation being applied,
+00:00:32.812 --> 00:00:37.652
+You do not need to memorize the entire optimizer.
 
-00:00:34.057 --> 00:00:36.057
-and the shape of the expected output.
+00:00:37.652 --> 00:00:44.112
+The useful habit is to remember that your S Q L is translated into an execution plan,
 
-00:00:36.057 --> 00:00:43.222
-In a real setting such as a lakehouse processing millions of web events across many files,
-
-00:00:43.222 --> 00:00:50.812
-this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
-
-00:00:50.812 --> 00:00:53.087
-before discussing syntax.
-
-00:00:53.087 --> 00:00:59.200
-After running it, inspect a few records manually and check that the result matches that explanation.
+00:00:44.112 --> 00:00:49.586
+and that plan helps explain why one query may be much more expensive than another.

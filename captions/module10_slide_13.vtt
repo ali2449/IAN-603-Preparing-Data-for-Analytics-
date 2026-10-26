@@ -1,28 +1,22 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.787
-A pivot often requires aggregation.
+00:00:00.000 --> 00:00:03.142
+A pivot often does more than change layout.
 
-00:00:02.787 --> 00:00:10.357
-If only one source row maps to each output cell, the reshape can preserve that value directly.
+00:00:03.142 --> 00:00:08.302
+Suppose several sales transactions belong to the same product and month.
 
-00:00:10.357 --> 00:00:16.802
-But if multiple source rows map to one cell, PostgreSQL needs an aggregate such as SUM, COUNT, MAX,
+00:00:08.302 --> 00:00:14.795
+If we want only one product and month value in the pivot, those transactions must be combined.
 
-00:00:16.802 --> 00:00:22.332
-or AVG. That aggregation changes the level of detail, so it must be chosen deliberately.
+00:00:15.317 --> 00:00:17.779
+That means we need an aggregation rule.
 
-00:00:22.332 --> 00:00:31.137
-Connect this idea to a BI dashboard turning monthly categories into presentation columns.
+00:00:17.779 --> 00:00:21.409
+For revenue, we usually add the values together.
 
-00:00:31.137 --> 00:00:36.852
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
+00:00:21.409 --> 00:00:29.154
+At that point, the transformation is doing two things: reshaping the data and reducing transaction level detail.
 
-00:00:36.852 --> 00:00:44.577
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
-
-00:00:44.577 --> 00:00:50.427
-A strong analyst can explain both the SQL operation and the assumption behind it.
-
-00:00:50.427 --> 00:00:56.320
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:29.154 --> 00:00:32.619
+That is why the aggregation decision must be explicit.

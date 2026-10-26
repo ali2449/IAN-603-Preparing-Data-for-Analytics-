@@ -1,34 +1,25 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:06.822
-In Microsoft Fabric, a common workflow uses a Lakehouse, a notebook, Spark SQL, and Delta tables.
+00:00:00.000 --> 00:00:08.202
+Microsoft Fabric gives us an environment where storage, notebooks, Spark, and analytical tables can work together.
 
-00:00:06.822 --> 00:00:12.352
-You might upload or connect files, read them with Spark, create temporary views, transform data using SQL,
+00:00:08.202 --> 00:00:12.122
+A common workflow begins with files in a lakehouse.
 
-00:00:12.352 --> 00:00:17.237
-and save curated results as tables.
+00:00:12.122 --> 00:00:15.262
+A notebook reads those files with Spark.
 
-00:00:17.237 --> 00:00:22.402
-The same relational ideas still apply, but the environment is lakehouse-oriented.
+00:00:15.262 --> 00:00:21.597
+We clean and transform the data, perhaps using both data frames and Spark S Q L.
 
-00:00:22.402 --> 00:00:27.867
-When reading the example, do not read punctuation one character at a time.
+00:00:21.597 --> 00:00:25.442
+Then we save a curated result as a reusable table.
 
-00:00:27.867 --> 00:00:32.062
-Start with the purpose of the query, then identify the input rows, the operation being applied,
+00:00:25.901 --> 00:00:29.878
+Notice that the basic data-preparation process is still familiar.
 
-00:00:32.062 --> 00:00:36.442
-and the shape of the expected output.
+00:00:29.878 --> 00:00:37.473
+We inspect the source, define the grain, clean values, transform the structure, validate the result,
 
-00:00:36.442 --> 00:00:43.152
-In a real setting such as a retail pipeline aggregating high-volume sales data across partitions,
-
-00:00:43.152 --> 00:00:49.447
-this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
-
-00:00:49.447 --> 00:00:51.777
-before discussing syntax.
-
-00:00:51.777 --> 00:00:57.758
-After running it, inspect a few records manually and check that the result matches that explanation.
+00:00:37.473 --> 00:00:45.161
+and publish something useful. Fabric changes the environment, but it does not remove those responsibilities.

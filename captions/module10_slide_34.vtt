@@ -1,31 +1,16 @@
 WEBVTT
 
-00:00:00.015 --> 00:00:06.102
-When several source columns become one value column, PostgreSQL needs a common data type.
+00:00:00.006 --> 00:00:08.097
+When several source columns become one long value column, Postgres needs a compatible data type for those values.
 
-00:00:06.102 --> 00:00:12.387
-If one metric is integer and another is numeric, explicit casts may be helpful.
+00:00:08.097 --> 00:00:15.299
+For example, one source column may contain whole numbers while another contains decimal values.
 
-00:00:12.387 --> 00:00:16.947
-The patient metric example casts selected values to numeric.
+00:00:15.749 --> 00:00:21.611
+If the data types do not match, we may need to convert them to one compatible type.
 
-00:00:16.947 --> 00:00:21.407
-Do not let type coercion become an accidental part of the reshape.
+00:00:21.611 --> 00:00:26.901
+This is important because the long value column must have one consistent type,
 
-00:00:21.407 --> 00:00:24.692
-Choose the long value type deliberately.
-
-00:00:24.692 --> 00:00:31.187
-Connect this idea to a BI dashboard turning monthly categories into presentation columns.
-
-00:00:31.187 --> 00:00:36.987
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
-
-00:00:36.987 --> 00:00:45.087
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
-
-00:00:45.087 --> 00:00:51.132
-A strong analyst can explain both the SQL operation and the assumption behind it.
-
-00:00:51.132 --> 00:00:56.880
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:26.901 --> 00:00:30.295
+even though its values came from different source columns.

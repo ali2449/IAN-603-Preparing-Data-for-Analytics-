@@ -1,46 +1,40 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.597
-Welcome to Module 11, Advanced SQL: CTEs and Window Functions.
+00:00:00.000 --> 00:00:04.792
+Welcome to Module 11, Advanced S Q L in Postgres.
 
-00:00:05.597 --> 00:00:09.922
-The word advanced can make these topics sound harder than they are.
+00:00:04.792 --> 00:00:09.637
+Before we begin, connect this module to what you already know.
 
-00:00:09.922 --> 00:00:13.147
-Most of the difficulty comes from two questions.
+00:00:09.637 --> 00:00:17.782
+You have learned how to filter and aggregate data, join tables, use subqueries, work with strings and dates,
 
-00:00:13.147 --> 00:00:16.797
-First, what does each intermediate result represent?
+00:00:17.782 --> 00:00:19.532
+clean messy values, and reshape data.
 
-00:00:16.797 --> 00:00:21.597
-Second, which related rows are visible to the current calculation?
+00:00:19.532 --> 00:00:26.102
+In Module 10, you also learned to protect the grain of a result.
 
-00:00:21.597 --> 00:00:27.707
-We will answer those questions gradually with Common Table Expressions, recursive CTEs, window functions,
+00:00:26.102 --> 00:00:28.500
+That idea remains important here.
 
-00:00:27.707 --> 00:00:31.382
-ranking, LAG and LEAD, and explicit window frames.
+00:00:28.992 --> 00:00:32.359
+Now we will build more advanced analytical queries.
 
-00:00:31.382 --> 00:00:37.122
-Every SQL example can run directly in the browser, and you can also copy it into pgAdmin.
+00:00:32.359 --> 00:00:38.209
+We will use common table expressions to break complicated logic into clear stages.
 
-00:00:37.122 --> 00:00:43.892
-Keep a real project in mind as we work through this section—for example,
+00:00:38.209 --> 00:00:42.214
+We will use recursive queries to move through hierarchies.
 
-00:00:43.892 --> 00:00:46.872
-a hospital ranking visits and identifying readmissions.
+00:00:42.214 --> 00:00:48.959
+And we will use window functions to rank rows, compare one event with an earlier or later event,
 
-00:00:46.872 --> 00:00:53.747
-The technical feature matters because it changes what questions we can answer reliably and how easily another
+00:00:48.959 --> 00:00:54.914
+calculate running totals, and create moving averages without losing the detail rows.
 
-00:00:53.747 --> 00:00:57.322
-analyst can understand our work.
+00:00:54.914 --> 00:00:58.399
+The goal is not to memorize difficult syntax.
 
-00:00:57.322 --> 00:01:03.842
-As you listen, try to connect each SQL or data concept to a decision you might need to
-
-00:01:03.842 --> 00:01:07.432
-defend later: what the data means, what one row represents, what can be missing,
-
-00:01:07.432 --> 00:01:11.502
-and what assumptions the transformation introduces.
+00:00:58.399 --> 00:01:05.352
+The goal is to understand what each stage is doing, what one row represents, and why the result is correct.

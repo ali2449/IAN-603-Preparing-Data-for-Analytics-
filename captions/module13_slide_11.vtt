@@ -1,25 +1,31 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.532
-Spark uses lazy evaluation for many operations.
+00:00:00.000 --> 00:00:03.012
+Spark often uses lazy evaluation.
 
-00:00:03.532 --> 00:00:09.957
-A transformation, such as selecting columns or filtering rows, usually adds to a plan.
+00:00:03.012 --> 00:00:10.297
+That means many transformation steps describe what should happen without immediately processing the entire dataset.
 
-00:00:09.957 --> 00:00:15.092
-An action, such as show, count, collect, or writing a table, triggers execution.
+00:00:10.297 --> 00:00:16.237
+You might select a few columns, add a filter, and define another transformation.
 
-00:00:15.092 --> 00:00:21.592
-This gives Spark time to optimize the work before actually running tasks.
+00:00:16.237 --> 00:00:18.380
+Spark can keep building the plan.
 
-00:00:21.592 --> 00:00:28.382
-Spark transformations are often lazy: they build a logical plan rather than immediately processing every row.
+00:00:19.019 --> 00:00:23.836
+The larger computation begins when an action needs an actual result.
 
-00:00:28.382 --> 00:00:34.372
-An action triggers execution. That gives Spark an opportunity to optimize the plan.
+00:00:23.836 --> 00:00:32.511
+For example, displaying rows, counting records, collecting data, or writing a table can trigger execution.
 
-00:00:34.372 --> 00:00:41.382
-Develop the habit of reading EXPLAIN output and asking which operations cause scans, shuffles, sorts,
+00:00:32.511 --> 00:00:39.681
+This is useful because Spark can examine several transformations together and optimize the combined work before running
 
-00:00:41.382 --> 00:00:42.527
-or exchanges.
+00:00:39.681 --> 00:00:41.131
+it.
+
+00:00:41.131 --> 00:00:48.241
+So when you write Spark code, remember that defining a transformation and actually executing the job are not always the
+
+00:00:48.241 --> 00:00:50.106
+same moment.

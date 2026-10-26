@@ -1,981 +1,554 @@
 {
   "module": "module13",
+  "generation_version": "ian620_safe_v4_exact_reference_text_seed1234",
   "filename_prefix": "module13",
-  "source_file": "IAN603_Module13_Narration_Detailed.txt",
-  "voice_consistency_version": 3,
+  "source_file": "IAN_603_Module_13_Breeze_Optimized_Instructor_Narration.txt",
   "reference_audio": "/home/ali/breeze-tts/voice_reference/course_instructor_consistent_v4.wav",
+  "reference_text_version": "course_instructor_consistent_v4_exact_transcript",
   "reference_text": "Welcome to the course. We will work through each concept carefully, connect the\nideas step by step, and use practical examples to make technical topics easier\nto understand. When we introduce a new method, focus first on the problem it\nsolves and why it is useful. For example, in machine learning, features are the\ninformation we give the model, while the target is what we want it to predict.\nNow consider a simple question: what changes when the data contains missing\nvalues? We will think through the reason and then look at the code. In Python,\nwe can inspect the data, run one small step at a time, and explain what the\nresult means. The goal is to understand the logic, not simply memorize syntax.",
-  "locked_narration_seed": true,
-  "narration_seed": 1234,
-  "long_narration": {
-    "automatic_chunking": true,
-    "max_text_tokens_per_call": 260,
-    "chunk_pause_seconds": 0.38,
-    "manual_break_marker": "[tts-break]",
-    "breeze_max_new_tokens": 1500,
-    "breeze_max_seq_len": 2048
+  "subtitle_method": "tts_break_section_generation",
+  "generation_boundary": "[tts-break]",
+  "instruction_mode": "disabled_to_prevent_spoken_prompt_leakage",
+  "spoken_instruction_sent_to_breeze": false,
+  "audio_settings": {
+    "speech_speed": 0.93,
+    "speed_method": "ffmpeg_atempo_before_vtt_alignment"
   },
-  "subtitle_method": "whole_slide_silence_alignment",
   "caption_settings": {
-    "max_words": 18,
-    "max_chars": 110,
-    "minimum_silence_seconds": 0.2,
-    "boundary_search_window_seconds": 1.4
+    "max_words": 24,
+    "max_chars": 120,
+    "tts_break_pause_seconds": 0.45
   },
   "slides": [
     {
       "slide": 1,
-      "title": "Start",
-      "transcript": "Welcome to Module 13, Introduction to Spark SQL. In earlier modules, we used PostgreSQL to learn relational thinking. In this module, we keep that same thinking, but we move the execution environment to Spark. Spark SQL lets us write familiar SQL while Spark plans and executes the work across distributed data. The key question is not only whether the query is correct. We also ask what data is scanned, what has to move across workers, and what one output row represents. Keep a real project in mind as we work through this section—for example, a lakehouse processing millions of web events across many files. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
-      "seed": 1234,
-      "tts_text_tokens": 190,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        190
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Scalable S Q L with Spark and Microsoft Fabric",
+      "transcript": "Welcome to Module 13, Scalable S Q L with Spark and Microsoft Fabric.\n\nBefore we move into Spark, think about what you already know. You have learned how to organize relational data, write S Q L queries, join tables, clean messy values, reshape data, use advanced analytical functions, and create reusable database views. Those ideas do not disappear when the data becomes larger.\n\n[tts-break]\n\nWhat changes is the computing environment. Spark can divide a large job across multiple workers. That gives us more computing power, but it also creates new questions. How is the data divided? When does data have to move between workers? Which operations create expensive shuffles? And when is Spark actually a better choice than a database?\n\nThe goal of this module is not to turn you into a Spark administrator. The goal is to help you carry your existing data-preparation skills into a distributed environment while keeping the same habits: know the grain, understand the schema, handle null values carefully, validate the output, and explain what the pipeline is doing.",
       "wav": "wav/module13_slide_01.wav",
       "audio": "audio/module13_slide_01.mp3",
       "captions": "audio/module13_slide_01.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 2,
       "title": "Same ideas, different environment",
-      "transcript": "Spark SQL does not erase the SQL ideas we already learned. Filters, joins, grouping, windows, NULL handling, and row grain still matter. What changes is the execution environment. In PostgreSQL, we usually think about one database engine managing tables and indexes. In Spark, the work may run across many workers and many data partitions. That means a correct query can still be expensive if it scans too much data or causes large shuffles. Connect this idea to a healthcare analytics platform processing large longitudinal event tables. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 166,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        166
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Spark S Q L does not erase the S Q L ideas we already learned. Filters, joins, grouping, windows, null handling, and row grain still matter.\n\n[tts-break]\n\nWhat changes is the execution environment. In Postgres, we usually think about one database engine managing tables and indexes. In Spark, the work may run across many workers and many data partitions. That means a correct query can still be expensive if it scans too much data or causes large shuffles.",
       "wav": "wav/module13_slide_02.wav",
       "audio": "audio/module13_slide_02.mp3",
       "captions": "audio/module13_slide_02.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 3,
       "title": "Learning goals",
-      "transcript": "By the end of this module, you should be able to explain when distributed processing is useful, describe the basic Spark execution model, and understand how Spark SQL and DataFrames connect. You should also be able to reason about lakehouse tables, schema choices, Delta tables, query plans, partitions, and shuffles at an introductory level. The goal is practical understanding, not cluster administration. Keep a real project in mind as we work through this section—for example, a retail pipeline aggregating high-volume sales data across partitions. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
-      "seed": 1234,
-      "tts_text_tokens": 172,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        172
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "By the end of this module, you should be able to explain when distributed processing is useful, describe the basic Spark execution model, and understand how Spark S Q L and data frames connect. You should also be able to reason about lakehouse tables, schema choices, Delta tables, query plans, partitions, and shuffles at an introductory level. The goal is practical understanding, not cluster administration.",
       "wav": "wav/module13_slide_03.wav",
       "audio": "audio/module13_slide_03.mp3",
       "captions": "audio/module13_slide_03.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 4,
       "title": "Roadmap",
-      "transcript": "We will start by asking why a workload might need distributed processing. Then we will introduce the Spark execution model. After that, we will connect SQL and DataFrames, discuss lakehouse and Delta concepts, and practice familiar SQL patterns. The last part of the module focuses on query plans, partitions, shuffles, and project-style reasoning. Keep a real project in mind as we work through this section—for example, a lakehouse processing millions of web events across many files. The technical feature matters because it changes what questions we can answer reliably and how easily another analyst can understand our work. As you listen, try to connect each SQL or data concept to a decision you might need to defend later: what the data means, what one row represents, what can be missing, and what assumptions the transformation introduces.",
-      "seed": 1234,
-      "tts_text_tokens": 163,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        163
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "We will start by asking why a workload might need distributed processing. Then we will introduce the Spark execution model. After that, we will connect S Q L and data frames, discuss lakehouse and Delta concepts, and practice familiar S Q L patterns.\n\n[tts-break]\n\nThe last part of the module focuses on query plans, partitions, shuffles, and project-style reasoning.",
       "wav": "wav/module13_slide_04.wav",
       "audio": "audio/module13_slide_04.mp3",
       "captions": "audio/module13_slide_04.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 5,
-      "title": "Spark is not just bigger PostgreSQL",
-      "transcript": "A common misunderstanding is to think of Spark as PostgreSQL but bigger. Spark is different. PostgreSQL is a database system with transactions, constraints, indexes, and stored tables. Spark is a distributed compute engine. It can query tables and files, but its strength is large-scale analytical processing. In many real architectures, a database and Spark work together rather than replacing each other. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a healthcare analytics platform processing large longitudinal event tables, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 173,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        173
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Spark is not just bigger Postgres",
+      "transcript": "It is tempting to think of Spark as simply a larger version of Postgres. That is not a good mental model.\n\nPostgres is a database system. It is designed to store and manage relational data, support transactions, enforce constraints, use indexes, and answer database queries efficiently.\n\n[tts-break]\n\nSpark is mainly a distributed computing engine. Its strength is processing large analytical workloads by spreading work across multiple machines or workers.\n\nIn a real organization, these tools can work together. A database may manage operational data, while Spark prepares large analytical datasets. The question is not which tool is better in general. The question is which tool fits the workload.",
       "wav": "wav/module13_slide_05.wav",
       "audio": "audio/module13_slide_05.mp3",
       "captions": "audio/module13_slide_05.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 6,
       "title": "When a database may be better",
-      "transcript": "Spark is not always the right tool. A conventional database may be better for transactional workloads, frequent small updates, low-latency point lookups, and strict relational constraints. If the data fits comfortably in the database and the query workload is already efficient, moving to Spark may add complexity without much benefit. Connect this idea to a retail pipeline aggregating high-volume sales data across partitions. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 141,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        141
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Spark is not always the right tool. A conventional database may be better for transactional workloads, frequent small updates, low-latency point lookups, and strict relational constraints.\n\nIf the data fits comfortably in the database and the query workload is already efficient, moving to Spark may add complexity without much benefit.",
       "wav": "wav/module13_slide_06.wav",
       "audio": "audio/module13_slide_06.mp3",
       "captions": "audio/module13_slide_06.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 7,
       "title": "When Spark may be better",
-      "transcript": "Spark becomes useful when data and computation benefit from being divided across workers. Large file-based transformations, broad scans, batch feature preparation, and analytical pipelines across different storage systems are common examples. The main benefit is parallelism, but parallelism also introduces new costs such as coordination and shuffling. Spark distributes work across multiple processes and often multiple machines. The driver coordinates the job, while executors perform tasks on partitions of the data. This architecture becomes valuable when the data or workload is too large for one machine or when a platform needs scalable parallel processing.",
-      "seed": 1234,
-      "tts_text_tokens": 107,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        107
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Spark becomes useful when data and computation benefit from being divided across workers. Large file-based transformations, broad scans, batch feature preparation, and analytical pipelines across different storage systems are common examples.\n\nThe main benefit is parallelism, but parallelism also introduces new costs such as coordination and shuffling.",
       "wav": "wav/module13_slide_07.wav",
       "audio": "audio/module13_slide_07.mp3",
       "captions": "audio/module13_slide_07.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 8,
       "title": "Distributed vocabulary",
-      "transcript": "These four words appear often in Spark. A partition is a chunk of distributed data. A task is a unit of work that runs on an executor. A stage is a group of tasks that can run before a new exchange is needed. A shuffle is the movement of data across workers. Shuffles often matter for performance because they require network and disk work. Spark distributes work across multiple processes and often multiple machines. The driver coordinates the job, while executors perform tasks on partitions of the data. This architecture becomes valuable when the data or workload is too large for one machine or when a platform needs scalable parallel processing.",
-      "seed": 1234,
-      "tts_text_tokens": 122,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        122
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "There are four Spark terms I want you to recognize.\n\nA partition is one piece of a larger dataset. A task is a unit of work that processes a partition. A stage is a group of tasks that can run before Spark needs to reorganize the data. A shuffle is the movement of data between workers.\n\nHere is the key idea. Parallel processing is helpful when workers can operate on separate pieces of data. It becomes more expensive when the workers must exchange large amounts of data. That is why the word shuffle will come up repeatedly in this module.",
       "wav": "wav/module13_slide_08.wav",
       "audio": "audio/module13_slide_08.mp3",
       "captions": "audio/module13_slide_08.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 9,
       "title": "Driver and executors",
-      "transcript": "A Spark application has a driver and executors. The driver coordinates the application and builds the plan. Executors run tasks on data partitions. A beginner-friendly way to think about this is that the driver organizes the work and the executors perform the work. We should avoid collecting huge data back to the driver because that can create memory problems. Spark distributes work across multiple processes and often multiple machines. The driver coordinates the job, while executors perform tasks on partitions of the data. This architecture becomes valuable when the data or workload is too large for one machine or when a platform needs scalable parallel processing.",
-      "seed": 1234,
-      "tts_text_tokens": 117,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        117
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "A Spark application usually has a driver and one or more executors.\n\nThink of the driver as the coordinator. It understands the job, builds the execution plan, and coordinates the work. Think of the executors as the workers. They process partitions of the data and perform the tasks assigned to them.\n\n[tts-break]\n\nSuppose we have a very large sales dataset. Instead of one process reading every row, Spark can divide the data into partitions and let several executors work at the same time.\n\nOne important warning is that we normally do not want to bring a huge distributed dataset back to the driver. Doing that can create a memory bottleneck and defeats the purpose of distributing the work.",
       "wav": "wav/module13_slide_09.wav",
       "audio": "audio/module13_slide_09.mp3",
       "captions": "audio/module13_slide_09.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 10,
-      "title": "SQL to distributed plan",
-      "transcript": "Spark SQL does not execute your text directly in one simple step. It parses the SQL, resolves tables and columns, optimizes the logical plan, and creates a physical plan. The physical plan includes operators such as scans, filters, joins, aggregates, and exchanges. Exchanges often indicate data movement. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a lakehouse processing millions of web events across many files, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 158,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        158
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "S Q L to distributed plan",
+      "transcript": "When you submit Spark S Q L, Spark does not simply read the statement from top to bottom and execute each word immediately.\n\nIt first understands the query and builds a logical plan. Then it optimizes that plan and produces a physical execution plan.\n\nThe physical plan may include table or file scans, filters, joins, aggregations, sorting, and data exchanges. An exchange is often a clue that data needs to move between workers.\n\nYou do not need to memorize the entire optimizer. The useful habit is to remember that your S Q L is translated into an execution plan, and that plan helps explain why one query may be much more expensive than another.",
       "wav": "wav/module13_slide_10.wav",
       "audio": "audio/module13_slide_10.mp3",
       "captions": "audio/module13_slide_10.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 11,
       "title": "Lazy evaluation",
-      "transcript": "Spark uses lazy evaluation for many operations. A transformation, such as selecting columns or filtering rows, usually adds to a plan. An action, such as show, count, collect, or writing a table, triggers execution. This gives Spark time to optimize the work before actually running tasks. Spark transformations are often lazy: they build a logical plan rather than immediately processing every row. An action triggers execution. That gives Spark an opportunity to optimize the plan. Develop the habit of reading EXPLAIN output and asking which operations cause scans, shuffles, sorts, or exchanges.",
-      "seed": 1234,
-      "tts_text_tokens": 113,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        113
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Spark often uses lazy evaluation.\n\nThat means many transformation steps describe what should happen without immediately processing the entire dataset. You might select a few columns, add a filter, and define another transformation. Spark can keep building the plan.\n\n[tts-break]\n\nThe larger computation begins when an action needs an actual result. For example, displaying rows, counting records, collecting data, or writing a table can trigger execution.\n\nThis is useful because Spark can examine several transformations together and optimize the combined work before running it. So when you write Spark code, remember that defining a transformation and actually executing the job are not always the same moment.",
       "wav": "wav/module13_slide_11.wav",
       "audio": "audio/module13_slide_11.mp3",
       "captions": "audio/module13_slide_11.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 12,
-      "title": "Spark SQL and DataFrames",
-      "transcript": "Spark SQL and the DataFrame API are closely related. SQL expresses the logic with SQL syntax. The DataFrame API expresses transformations through code. Both can use Spark's structured execution engine. For students who already know SQL, Spark SQL is a natural entry point into distributed processing. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a retail pipeline aggregating high-volume sales data across partitions, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 154,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        154
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Spark S Q L and Data Frames",
+      "transcript": "Spark gives us more than one way to express structured data transformations.\n\nWe can use Spark S Q L, which feels familiar if you already know S Q L. We can also use the data frame A P I, where transformations are written as code.\n\n[tts-break]\n\nThese are not two completely separate worlds. Both can use Spark's structured processing engine.\n\nFor this course, Spark S Q L is a good bridge because you can focus on concepts you already understand: selecting columns, filtering rows, joining data, grouping values, and using window functions. Then, when you see the same operation written with a data frame, you can connect the code back to the S Q L idea.",
       "wav": "wav/module13_slide_12.wav",
       "audio": "audio/module13_slide_12.mp3",
       "captions": "audio/module13_slide_12.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 13,
       "title": "Temp views",
-      "transcript": "A common workflow is to load data into a DataFrame, register it as a temporary view, and then query it with SQL. The temporary view is not the same as a permanent database view from Module 12. It is usually session-scoped and useful inside notebooks or jobs. Spark DataFrames and Spark SQL are two interfaces to the same underlying engine. You can prepare data with DataFrame operations, register a temporary view, and query it with familiar SQL. Choose the interface that makes the transformation easiest to read and maintain.",
-      "seed": 1234,
-      "tts_text_tokens": 104,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        104
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "A common notebook workflow is to load data into a data frame and then register that data frame as a temporary view.\n\nOnce the temporary view exists, we can query it with Spark S Q L.\n\nThe word temporary is important. This is not the same as a permanent database view from Module 12. A temporary Spark view usually belongs to the current session or notebook workflow. It is a convenient bridge between the data frame A P I and S Q L.",
       "wav": "wav/module13_slide_13.wav",
       "audio": "audio/module13_slide_13.mp3",
       "captions": "audio/module13_slide_13.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 14,
-      "title": "Spark SQL notebook example",
-      "transcript": "Here is a simple Spark notebook workflow. A file is read into a DataFrame. The DataFrame is registered as a temporary view. Then Spark SQL queries that view. This code is not meant for the browser practice engine because it requires a real Spark session. The important idea is the connection between files, DataFrames, temporary views, and SQL. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a healthcare analytics platform processing large longitudinal event tables, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 166,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        166
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Spark S Q L notebook example",
+      "transcript": "The notebook example follows a simple sequence.\n\nFirst, Spark reads a file into a data frame. Second, that data frame is registered as a temporary view. Third, Spark S Q L queries the temporary view.\n\nDo not focus on memorizing every function call. Focus on the flow: file, data frame, temporary view, then S Q L.\n\nThis code requires a real Spark environment, so it is not intended to run inside the small browser S Q L practice engine used in the course.",
       "wav": "wav/module13_slide_14.wav",
       "audio": "audio/module13_slide_14.mp3",
       "captions": "audio/module13_slide_14.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 15,
       "title": "Fabric workflow",
-      "transcript": "In Microsoft Fabric, a common workflow uses a Lakehouse, a notebook, Spark SQL, and Delta tables. You might upload or connect files, read them with Spark, create temporary views, transform data using SQL, and save curated results as tables. The same relational ideas still apply, but the environment is lakehouse-oriented. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a retail pipeline aggregating high-volume sales data across partitions, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 166,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        166
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Microsoft Fabric gives us an environment where storage, notebooks, Spark, and analytical tables can work together.\n\nA common workflow begins with files in a lakehouse. A notebook reads those files with Spark. We clean and transform the data, perhaps using both data frames and Spark S Q L. Then we save a curated result as a reusable table.\n\n[tts-break]\n\nNotice that the basic data-preparation process is still familiar. We inspect the source, define the grain, clean values, transform the structure, validate the result, and publish something useful. Fabric changes the environment, but it does not remove those responsibilities.",
       "wav": "wav/module13_slide_15.wav",
       "audio": "audio/module13_slide_15.mp3",
       "captions": "audio/module13_slide_15.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 16,
       "title": "Lakehouse layers",
-      "transcript": "A lakehouse combines file storage with table-like access. Raw files may enter the lakehouse first. Curated outputs are often stored as Delta tables. Spark provides distributed compute over those data assets. Reports, notebooks, and models consume the prepared results. This layered thinking helps keep raw, cleaned, and analytical data separate. A lakehouse combines scalable file-based storage with table-management features. Delta-style tables add transaction logs, schema controls, and reliable table operations on top of object storage. Keep raw ingestion, cleaned data, and curated analytical tables conceptually separate so lineage remains clear.",
-      "seed": 1234,
-      "tts_text_tokens": 119,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        119
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "A lakehouse combines file storage with table-like access. Raw files may enter the lakehouse first. Curated outputs are often stored as Delta tables. Spark provides distributed compute over those data assets.\n\nReports, notebooks, and models consume the prepared results. This layered thinking helps keep raw, cleaned, and analytical data separate.",
       "wav": "wav/module13_slide_16.wav",
       "audio": "audio/module13_slide_16.mp3",
       "captions": "audio/module13_slide_16.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 17,
       "title": "Delta tables",
-      "transcript": "Delta tables add table behavior on top of data files. They use a transaction log to track table changes and support more reliable operations than plain collections of files. For this course, the key idea is that Delta tables make lakehouse data easier to query and manage as tables. A lakehouse combines scalable file-based storage with table-management features. Delta-style tables add transaction logs, schema controls, and reliable table operations on top of object storage. Keep raw ingestion, cleaned data, and curated analytical tables conceptually separate so lineage remains clear.",
-      "seed": 1234,
-      "tts_text_tokens": 108,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        108
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Delta tables are important in many lakehouse workflows.\n\nAt a beginner level, think of a Delta table as data files with additional table-management information. Delta keeps a transaction log that records changes to the table and supports more reliable table operations than working with unrelated files alone.\n\n[tts-break]\n\nYou do not need to learn every Delta feature here. The key idea is that curated lakehouse data can behave more like a managed table, which makes it easier to query, update, track, and reuse in analytical pipelines.",
       "wav": "wav/module13_slide_17.wav",
       "audio": "audio/module13_slide_17.mp3",
       "captions": "audio/module13_slide_17.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 18,
-      "title": "Raw files vs managed tables",
-      "transcript": "A raw file is flexible, but Spark may need to infer or be given the schema. A curated Delta table has a stronger table contract. For teaching, think of raw files as ingestion material and tables as reusable analytical assets. That is not an absolute rule, but it is a helpful workflow. A lakehouse combines scalable file-based storage with table-management features. Delta-style tables add transaction logs, schema controls, and reliable table operations on top of object storage. Keep raw ingestion, cleaned data, and curated analytical tables conceptually separate so lineage remains clear.",
-      "seed": 1234,
-      "tts_text_tokens": 113,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        113
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Raw files versus managed tables",
+      "transcript": "A raw file is flexible, but Spark may need to infer or be given the schema. A curated Delta table has a stronger table contract.\n\nFor teaching, think of raw files as ingestion material and tables as reusable analytical assets. That is not an absolute rule, but it is a helpful workflow.",
       "wav": "wav/module13_slide_18.wav",
       "audio": "audio/module13_slide_18.mp3",
       "captions": "audio/module13_slide_18.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 19,
       "title": "Schema inference caution",
-      "transcript": "Schema inference is convenient for exploration. Spark can look at data and guess types. But inferred types can be wrong, especially for identifiers, dates, mixed values, or sparse columns. For production workflows and important assignments, an explicit schema is often safer because it documents the expected structure. Schema inference is convenient for exploration, but production pipelines benefit from explicit schemas. A single malformed file or unexpected type can change inference or force expensive extra scans. Defining types up front also documents expectations and catches defects earlier.",
-      "seed": 1234,
-      "tts_text_tokens": 100,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        100
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Spark can inspect a file and try to infer the schema. That is convenient when we are exploring data, but inference is still a guess.\n\nA column that looks numeric may actually be an identifier. A date may be interpreted as plain text. A mostly empty column may be assigned an unexpected type.\n\nFor important pipelines, an explicit schema is often safer. It documents what each column is expected to contain and reduces the chance that the same file is interpreted differently later.",
       "wav": "wav/module13_slide_19.wav",
       "audio": "audio/module13_slide_19.mp3",
       "captions": "audio/module13_slide_19.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 20,
       "title": "Explicit schema example",
-      "transcript": "This example shows an explicit schema in PySpark. The schema states the expected column names and data types. It is more verbose than inference, but it is more transparent. In data preparation, being explicit often prevents silent mistakes later. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a healthcare analytics platform processing large longitudinal event tables, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 144,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        144
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "The code on this slide defines an explicit schema in Pie Spark.\n\nRather than asking Spark to guess every data type, we tell it the expected column names and types in advance.\n\nThis takes more work than automatic inference, but it gives us a clearer contract. For example, we can intentionally store an identifier as text even if every current value happens to contain digits.\n\nThe larger lesson is the same one we used throughout the course: when the meaning is known, make the data type intentional rather than accidental.",
       "wav": "wav/module13_slide_20.wav",
       "audio": "audio/module13_slide_20.mp3",
       "captions": "audio/module13_slide_20.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 21,
-      "title": "Portable SQL lab",
-      "transcript": "This deck includes a portable SQL practice engine in the browser. It is not a Spark cluster. We use it to practice the relational logic that will transfer to Spark SQL, such as grouping, joins, windows, and grain checks. Spark-specific file reading and Delta operations should be run in Fabric or another Spark environment. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a retail pipeline aggregating high-volume sales data across partitions, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 164,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        164
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Portable S Q L lab",
+      "transcript": "This deck includes a portable S Q L practice engine in the browser. It is not a Spark cluster. We use it to practice the relational logic that will transfer to Spark S Q L, such as grouping, joins, windows, and grain checks.\n\nSpark-specific file reading and Delta operations should be run in Fabric or another Spark environment.",
       "wav": "wav/module13_slide_21.wav",
       "audio": "audio/module13_slide_21.mp3",
       "captions": "audio/module13_slide_21.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 22,
       "title": "Practice data",
-      "transcript": "The browser practice database is intentionally small. It includes sales, admissions, survey responses, and web events. These are not meant to be big-data examples. They are meant to help you practice SQL logic before running the same kind of logic in Spark. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
-      "seed": 1234,
-      "tts_text_tokens": 150,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        150
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "The browser practice database is intentionally small. It includes sales, admissions, survey responses, and web events.\n\nThese are not meant to be big-data examples. They are meant to help you practice S Q L logic before running the same kind of logic in Spark.",
       "wav": "wav/module13_slide_22.wav",
       "audio": "audio/module13_slide_22.mp3",
       "captions": "audio/module13_slide_22.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 23,
       "title": "Survey summary",
-      "transcript": "Here we have a simple aggregate. The query groups survey responses by question and calculates the number of responses and the average score. Run it in the browser and check the grain. One output row represents one question. In Spark SQL, the same grouping idea would apply, but the data could be distributed across many partitions. Connect this idea to a healthcare analytics platform processing large longitudinal event tables. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 142,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        142
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Here we have a simple aggregate. The query groups survey responses by question and calculates the number of responses and the average score.\n\nRun it in the browser and check the grain. One output row represents one question. In Spark S Q L, the same grouping idea would apply, but the data could be distributed across many partitions.",
       "wav": "wav/module13_slide_23.wav",
       "audio": "audio/module13_slide_23.mp3",
       "captions": "audio/module13_slide_23.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 24,
       "title": "Filter early",
-      "transcript": "This query filters sales before returning results. In Spark, filters can be especially important because they may reduce how much data needs to be processed. When data is stored in an efficient format and partitioned well, some filters can help avoid scanning unnecessary data. The teaching habit is simple: filter as early as the logic allows. Connect this idea to a retail pipeline aggregating high-volume sales data across partitions. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 144,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        144
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Filtering early can reduce unnecessary work.\n\nSuppose a large sales table contains five years of history, but the analysis needs only the most recent month. If the filter can be applied before a large join or aggregation, Spark may have much less data to process.\n\n[tts-break]\n\nThis does not mean we blindly move every filter to the beginning. The logic still has to remain correct. The principle is to remove data you know you do not need as early as the analytical logic safely allows.",
       "wav": "wav/module13_slide_24.wav",
       "audio": "audio/module13_slide_24.mp3",
       "captions": "audio/module13_slide_24.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 25,
       "title": "Group sales by product",
-      "transcript": "This query groups order rows by product. The output grain changes from one order row to one product. That grain change is important in PostgreSQL and in Spark. In Spark, GROUP BY can also create a shuffle because rows with the same product may need to be brought together across workers. Connect this idea to a lakehouse processing millions of web events across many files. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 137,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        137
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "This query groups order rows by product. The output grain changes from one order row to one product.\n\nThat grain change is important in Postgres and in Spark. In Spark, group by can also create a shuffle because rows with the same product may need to be brought together across workers.",
       "wav": "wav/module13_slide_25.wav",
       "audio": "audio/module13_slide_25.mp3",
       "captions": "audio/module13_slide_25.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 26,
       "title": "Join mindset",
-      "transcript": "This example uses a cross join with a filter only to demonstrate that joins can multiply rows. In real Spark work, joins can be expensive because Spark may need to move data so matching keys are together. Before joining large datasets, ask whether the join keys are correct, whether the grain is controlled, and whether one side is small enough to broadcast. Connect this idea to a healthcare analytics platform processing large longitudinal event tables. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 148,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        148
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Joins need extra attention in a distributed system.\n\nFirst, the same relational rule still applies: confirm the join keys and understand the relationship between the tables. A one-to-many join can multiply rows whether you are using Postgres or Spark.\n\nSecond, Spark may need to move data between workers so matching keys can meet. That movement can be expensive.\n\nBefore a large join, ask three questions. Are the keys correct? Is the output grain controlled? And can either side be reduced safely before the join?",
       "wav": "wav/module13_slide_26.wav",
       "audio": "audio/module13_slide_26.mp3",
       "captions": "audio/module13_slide_26.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 27,
-      "title": "EXPLAIN habit",
-      "transcript": "This browser example uses EXPLAIN to build the habit of inspecting a plan. Spark EXPLAIN output is different and usually more detailed, but the habit is the same. Do not guess what the engine is doing. Inspect the planned operators and look for scans, filters, joins, aggregates, sorts, and exchanges. Spark transformations are often lazy: they build a logical plan rather than immediately processing every row. An action triggers execution. That gives Spark an opportunity to optimize the plan. Develop the habit of reading EXPLAIN output and asking which operations cause scans, shuffles, sorts, or exchanges.",
-      "seed": 1234,
-      "tts_text_tokens": 118,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        118
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Explain habit",
+      "transcript": "Build the habit of using the explain command.\n\nThe exact plan format in Spark is different from the plan you may see in Postgres, but the purpose is similar. We want evidence about what the engine plans to do.\n\nLook for scans, filters, joins, aggregations, sorting, and exchanges. In Spark, exchanges are especially interesting because they often indicate that data will be redistributed between workers.\n\nYou do not need to understand every line of the plan. Start by asking where the expensive movement and large scans may occur.",
       "wav": "wav/module13_slide_27.wav",
       "audio": "audio/module13_slide_27.mp3",
       "captions": "audio/module13_slide_27.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 28,
       "title": "Partitions",
-      "transcript": "Partitions are central to Spark parallelism. A dataset is divided into pieces, and tasks process those pieces. Too few partitions can limit parallelism. Too many small partitions can create overhead. As a beginner, you do not need to tune every partition setting, but you should understand why partitioning affects performance. Partitions organize data so the engine can avoid reading files that cannot satisfy a filter. Good partition columns are commonly filtered and have manageable cardinality. Column pruning similarly avoids reading unused columns. Both optimizations reduce I/O before more expensive computation begins.",
-      "seed": 1234,
-      "tts_text_tokens": 107,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        107
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Partitions are one of the basic units of Spark parallelism.\n\nImagine a very large book divided into sections. Different workers can read different sections at the same time. In Spark, partitions give executors pieces of the dataset that can be processed in parallel.\n\n[tts-break]\n\nIf there are too few partitions, we may not use the available workers effectively. If there are far too many tiny partitions, Spark spends more time coordinating small tasks.\n\nAt this stage, you do not need to tune partition counts perfectly. I want you to understand why partitioning affects both parallelism and overhead.",
       "wav": "wav/module13_slide_28.wav",
       "audio": "audio/module13_slide_28.mp3",
       "captions": "audio/module13_slide_28.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 29,
       "title": "Partition pruning",
-      "transcript": "Partition pruning means Spark can skip reading some partitions when a filter matches the partition layout. A date column can be useful if queries often filter by date range. A unique ID is usually a poor partition column because it can create many tiny partitions. Partition design should follow query patterns. Partitions organize data so the engine can avoid reading files that cannot satisfy a filter. Good partition columns are commonly filtered and have manageable cardinality. Column pruning similarly avoids reading unused columns. Both optimizations reduce I/O before more expensive computation begins.",
-      "seed": 1234,
-      "tts_text_tokens": 103,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        103
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Partition pruning can help Spark avoid reading data that is not relevant to the query.\n\nSuppose a large table is organized by service date, and the query asks for only one month. If the storage layout supports it, Spark may skip partitions outside that month.\n\nThat can be much more efficient than scanning the entire dataset and then discarding most of the rows.\n\nA partition column should match useful access patterns. A nearly unique identifier is often a poor choice because it can create too many tiny partitions.",
       "wav": "wav/module13_slide_29.wav",
       "audio": "audio/module13_slide_29.mp3",
       "captions": "audio/module13_slide_29.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 30,
       "title": "Column pruning",
-      "transcript": "Column pruning means the engine may read only needed columns, especially with columnar formats such as Parquet and Delta. This is one reason SELECT star can be costly in large analytical work. It may be fine during exploration, but production transformations should choose needed columns deliberately. Partitions organize data so the engine can avoid reading files that cannot satisfy a filter. Good partition columns are commonly filtered and have manageable cardinality. Column pruning similarly avoids reading unused columns. Both optimizations reduce I/O before more expensive computation begins.",
-      "seed": 1234,
-      "tts_text_tokens": 100,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        100
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Column pruning is the column version of the same idea.\n\nIf a dataset has one hundred columns but your transformation needs only five, a columnar format can often avoid reading the other ninety-five.\n\nThis is one reason I do not want you to develop the habit of always selecting every column. During quick exploration, selecting all columns may be convenient. In a large production transformation, choose the columns you actually need.",
       "wav": "wav/module13_slide_30.wav",
       "audio": "audio/module13_slide_30.mp3",
       "captions": "audio/module13_slide_30.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 31,
       "title": "Shuffle",
-      "transcript": "A shuffle happens when data must be redistributed across workers. This often occurs for GROUP BY, ORDER BY, DISTINCT, and many joins. Shuffles are not always bad. Sometimes they are necessary. But they are important because they involve network and disk work. In Spark performance reasoning, always ask where shuffles occur. A shuffle moves data across executors so related keys end up together. GROUP BY, large joins, and global ORDER BY can trigger expensive shuffles. In distributed systems, moving data is often more costly than evaluating the SQL expression itself, so plan around data movement.",
-      "seed": 1234,
-      "tts_text_tokens": 115,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        115
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "A shuffle means Spark has to redistribute data between workers.\n\nConsider grouping millions of sales records by customer. The records for one customer may currently be spread across many partitions. Before Spark can calculate that customer's total, those related records need to be brought together.\n\n[tts-break]\n\nThat movement uses network, memory, and sometimes disk resources. Grouping, global sorting, distinct operations, and many joins can cause shuffles.\n\nA shuffle is not automatically a mistake. Sometimes it is required to answer the question. The goal is to recognize when it happens and avoid unnecessary movement.",
       "wav": "wav/module13_slide_31.wav",
       "audio": "audio/module13_slide_31.mp3",
       "captions": "audio/module13_slide_31.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 32,
       "title": "Group by and shuffle",
-      "transcript": "When we group by product, Spark must bring rows with the same product together. If those rows are spread across partitions, the engine needs a shuffle. This is why aggregation is not just a mathematical step. In distributed execution, it also has a data-movement cost. A shuffle moves data across executors so related keys end up together. GROUP BY, large joins, and global ORDER BY can trigger expensive shuffles. In distributed systems, moving data is often more costly than evaluating the SQL expression itself, so plan around data movement.",
-      "seed": 1234,
-      "tts_text_tokens": 106,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        106
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Grouping is a good example of why distributed execution changes the performance discussion.\n\nLogically, group by product is simple. We want all rows for the same product summarized together.\n\nPhysically, those product rows may be stored on different workers. Spark may need to redistribute them before the aggregation can finish.\n\nSo group by changes two things. It changes the row grain, and it may also create a data-movement cost.",
       "wav": "wav/module13_slide_32.wav",
       "audio": "audio/module13_slide_32.mp3",
       "captions": "audio/module13_slide_32.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 33,
       "title": "Join cost",
-      "transcript": "Spark has several join strategies. If one side is small, Spark may broadcast it to workers. If both sides are large, the data may need to be shuffled by join key. A practical habit is to filter rows and select needed columns before a large join, as long as doing so preserves the correct logic. A shuffle moves data across executors so related keys end up together. GROUP BY, large joins, and global ORDER BY can trigger expensive shuffles. In distributed systems, moving data is often more costly than evaluating the SQL expression itself, so plan around data movement.",
-      "seed": 1234,
-      "tts_text_tokens": 114,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        114
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "The cost of a join depends partly on the size and distribution of the two inputs.\n\nIf both inputs are large, Spark may need to shuffle substantial amounts of data by the join key.\n\nIf one input is genuinely small, Spark may be able to broadcast that smaller table to the workers. Think of a small lookup table, such as a short list of department codes, being copied to the workers instead of moving the much larger fact table around.\n\n[tts-break]\n\nDo not assume a particular strategy will always be used. Filter unnecessary rows, choose only needed columns when it is safe, and inspect the execution plan to see what Spark actually intends to do.",
       "wav": "wav/module13_slide_33.wav",
       "audio": "audio/module13_slide_33.mp3",
       "captions": "audio/module13_slide_33.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 34,
-      "title": "ORDER BY caution",
-      "transcript": "A global ORDER BY can be expensive in Spark because the entire result needs a coordinated order. That may be necessary for a final report. It is often unnecessary in intermediate transformations. Sort only when the order is part of the actual requirement. A shuffle moves data across executors so related keys end up together. GROUP BY, large joins, and global ORDER BY can trigger expensive shuffles. In distributed systems, moving data is often more costly than evaluating the SQL expression itself, so plan around data movement.",
-      "seed": 1234,
-      "tts_text_tokens": 99,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        99
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Order by caution",
+      "transcript": "A global order by can be expensive because Spark must coordinate an ordering across the entire result.\n\nThat may be necessary for a final report or a small result that truly needs a global order. But many intermediate transformations do not require it.\n\nDo not sort data simply because ordered output looks nicer while you are developing the pipeline. Sort when the order is part of the actual analytical requirement.",
       "wav": "wav/module13_slide_34.wav",
       "audio": "audio/module13_slide_34.mp3",
       "captions": "audio/module13_slide_34.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 35,
-      "title": "Windows in Spark SQL",
-      "transcript": "The window function concepts from Module 11 transfer to Spark SQL. PARTITION BY defines groups. ORDER BY defines sequence. LAG and LEAD provide previous and next values. Frames define running or moving calculations. In Spark, these are powerful, but they may also require sorting and data movement. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a healthcare analytics platform processing large longitudinal event tables, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 156,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        156
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Windows in Spark S Q L",
+      "transcript": "The window-function ideas from Module 11 transfer directly to Spark S Q L.\n\nPartition by defines which rows belong to the same analytical group. Order by defines the sequence inside that group. The lag function can retrieve a previous value. The function spelled L E A D can retrieve the next value. Window frames support running totals and moving calculations.\n\n[tts-break]\n\nThe new consideration is execution cost. Window functions may require Spark to redistribute and sort data so the correct rows are together and in the correct order. The analytical idea is familiar, but the distributed engine has more work to coordinate.",
       "wav": "wav/module13_slide_35.wav",
       "audio": "audio/module13_slide_35.mp3",
       "captions": "audio/module13_slide_35.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 36,
       "title": "Readmission-style sequence",
-      "transcript": "This example uses LAG to compare an admission with the previous discharge for the same subject. The logic is the same kind of sequence analysis we used earlier. In Spark, this window query may require sorting within each subject partition. Run the query and inspect the gap column. Window functions work in Spark SQL much like in PostgreSQL, but they can require sorting and shuffling within partitions. Define the business partition and sequence carefully, then inspect the physical plan when the dataset is large. Correct logic comes first; distributed cost comes next.",
-      "seed": 1234,
-      "tts_text_tokens": 103,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        103
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "This example uses lag to compare an admission with the previous discharge for the same subject. The logic is the same kind of sequence analysis we used earlier.\n\nIn Spark, this window query may require sorting within each subject partition. Run the query and inspect the gap column.",
       "wav": "wav/module13_slide_36.wav",
       "audio": "audio/module13_slide_36.mp3",
       "captions": "audio/module13_slide_36.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 37,
-      "title": "NULL semantics still matter",
-      "transcript": "Spark SQL still uses SQL-style NULL semantics. Distributed execution does not make NULL easier or less important. Missing values affect comparisons, filters, joins, and aggregates. The data-quality habits from Module 9 still apply in Spark. Many relational ideas transfer directly to Spark SQL: NULL semantics, date arithmetic, CTEs, joins, grouping, and windows. Syntax details may differ, but the same reasoning about grain, missingness, and cardinality still applies. Portability is easiest when the business rule is clear before dialect-specific tuning.",
-      "seed": 1234,
-      "tts_text_tokens": 108,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        108
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Null semantics still matter",
+      "transcript": "Null values still mean what they meant earlier in the course.\n\nA null value is not automatically zero. It is not the same as an empty string, and it is not the same as a placeholder such as unknown.\n\n[tts-break]\n\nThis matters even more when a transformation is running across millions of rows. A small mistake in null handling can affect a very large output.\n\nKeep the Module 9 habit: decide what missingness means, standardize it only when the business rule is clear, and validate the result.",
       "wav": "wav/module13_slide_37.wav",
       "audio": "audio/module13_slide_37.mp3",
       "captions": "audio/module13_slide_37.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 38,
       "title": "Dates and intervals",
-      "transcript": "Temporal preparation remains important in Spark. Parse raw strings into typed dates or timestamps. Use Spark SQL date functions appropriate to that environment. And always state the output grain. For example, one row per event is different from one row per month. Many relational ideas transfer directly to Spark SQL: NULL semantics, date arithmetic, CTEs, joins, grouping, and windows. Syntax details may differ, but the same reasoning about grain, missingness, and cardinality still applies. Portability is easiest when the business rule is clear before dialect-specific tuning.",
-      "seed": 1234,
-      "tts_text_tokens": 109,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        109
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Temporal preparation remains important in Spark. Parse raw strings into typed dates or timestamps. Use Spark S Q L date functions appropriate to that environment.\n\nAnd always state the output grain. For example, one row per event is different from one row per month.",
       "wav": "wav/module13_slide_38.wav",
       "audio": "audio/module13_slide_38.mp3",
       "captions": "audio/module13_slide_38.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 39,
-      "title": "CTEs in Spark SQL",
-      "transcript": "Common Table Expressions are still useful in Spark SQL. They make complex logic readable by separating stages. The same rule from Module 11 applies: each stage should have a clear row meaning. In Spark, this also helps you reason about scans, filters, aggregations, and shuffles. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a retail pipeline aggregating high-volume sales data across partitions, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 158,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        158
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Common Table Expressions in Spark S Q L",
+      "transcript": "Common table expressions are still useful in Spark S Q L. They make complex logic readable by separating stages.\n\nThe same rule from Module 11 applies: each stage should have a clear row meaning. In Spark, this also helps you reason about scans, filters, aggregations, and shuffles.",
       "wav": "wav/module13_slide_39.wav",
       "audio": "audio/module13_slide_39.mp3",
       "captions": "audio/module13_slide_39.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 40,
-      "title": "CTE query example",
-      "transcript": "This query uses CTEs and a window function. The monthly sales stage has one row per month and product. The ranked stage keeps that grain and adds a rank within each month. The final SELECT keeps the top two rank groups. This is a good example of readable staged SQL that can transfer to Spark SQL. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a lakehouse processing millions of web events across many files, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 162,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        162
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Common Table Expression query example",
+      "transcript": "This query uses common table expressions and a window function. The monthly sales stage has one row per month and product. The ranked stage keeps that grain and adds a rank within each month.\n\nThe final select keeps the top two rank groups. This is a good example of readable staged S Q L that can transfer to Spark S Q L.",
       "wav": "wav/module13_slide_40.wav",
       "audio": "audio/module13_slide_40.mp3",
       "captions": "audio/module13_slide_40.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 41,
       "title": "Creating a managed table",
-      "transcript": "In a lakehouse workflow, we often save curated results as a table. This example creates a monthly sales table from raw sales data. The important design choice is the output grain: one row per month and product. In a real Spark environment, you would also think about table format, location, and refresh process. A lakehouse combines scalable file-based storage with table-management features. Delta-style tables add transaction logs, schema controls, and reliable table operations on top of object storage. Keep raw ingestion, cleaned data, and curated analytical tables conceptually separate so lineage remains clear.",
-      "seed": 1234,
-      "tts_text_tokens": 117,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        117
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "In a lakehouse workflow, we often save curated results as a table. This example creates a monthly sales table from raw sales data.\n\nThe important design choice is the output grain: one row per month and product. In a real Spark environment, you would also think about table format, location, and refresh process.",
       "wav": "wav/module13_slide_41.wav",
       "audio": "audio/module13_slide_41.mp3",
       "captions": "audio/module13_slide_41.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 42,
-      "title": "Fabric SQL surfaces",
-      "transcript": "In Microsoft Fabric, be careful about which SQL surface you are using. A Spark notebook or Spark SQL cell runs through Spark. A SQL analytics endpoint uses a different SQL serving surface, often with T-SQL style behavior. Some syntax and capabilities differ. When code fails, first check which engine you are actually using. When reading the example, do not read punctuation one character at a time. Start with the purpose of the query, then identify the input rows, the operation being applied, and the shape of the expected output. In a real setting such as a retail pipeline aggregating high-volume sales data across partitions, this habit makes code reviews much easier because you can explain what the query is supposed to guarantee before discussing syntax. After running it, inspect a few records manually and check that the result matches that explanation.",
-      "seed": 1234,
-      "tts_text_tokens": 163,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        163
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "title": "Fabric S Q L surfaces",
+      "transcript": "Microsoft Fabric has more than one place where S Q L can appear, so always check which engine is running your code.\n\nA Spark notebook or Spark S Q L cell runs through Spark. A Fabric S Q L analytics endpoint uses a different S Q L serving environment and often follows T S Q L conventions.\n\n[tts-break]\n\nThe same query concept may therefore need slightly different syntax depending on the surface.\n\nWhen code fails, do not immediately assume the analytical idea is wrong. First ask: which engine am I using, and which S Q L dialect does that engine expect?",
       "wav": "wav/module13_slide_42.wav",
       "audio": "audio/module13_slide_42.mp3",
       "captions": "audio/module13_slide_42.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 43,
       "title": "Portability",
-      "transcript": "A lot of SQL knowledge transfers across PostgreSQL and Spark SQL, especially core relational patterns. But dialect differences remain. Date functions, file-reading commands, table creation, and temporary view syntax can differ. A strong learner separates the relational idea from the engine-specific syntax used to express it. Many relational ideas transfer directly to Spark SQL: NULL semantics, date arithmetic, CTEs, joins, grouping, and windows. Syntax details may differ, but the same reasoning about grain, missingness, and cardinality still applies. Portability is easiest when the business rule is clear before dialect-specific tuning.",
-      "seed": 1234,
-      "tts_text_tokens": 119,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        119
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "A lot of S Q L knowledge transfers across Postgres and Spark S Q L, especially core relational patterns. But dialect differences remain.\n\nDate functions, file-reading commands, table creation, and temporary view syntax can differ. A strong learner separates the relational idea from the engine-specific syntax used to express it.",
       "wav": "wav/module13_slide_43.wav",
       "audio": "audio/module13_slide_43.mp3",
       "captions": "audio/module13_slide_43.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 44,
       "title": "Reading files in Spark",
-      "transcript": "Reading files is one of the places where Spark-specific syntax appears. CSV, Parquet, and Delta each have their own read patterns. After the data becomes a DataFrame or table, the relational SQL logic becomes more familiar. Do not confuse the file-ingestion step with the SQL analysis step. Spark distributes work across multiple processes and often multiple machines. The driver coordinates the job, while executors perform tasks on partitions of the data. This architecture becomes valuable when the data or workload is too large for one machine or when a platform needs scalable parallel processing.",
-      "seed": 1234,
-      "tts_text_tokens": 111,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        111
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Reading files is one place where Spark-specific code is very visible.\n\nSpark can read C S V files, Parquet files, Delta data, and other formats. The exact read command depends on the format and environment.\n\nAfter the file has been loaded into a data frame or a table, the relational logic becomes much more familiar. We can filter, join, group, reshape, and validate the data.\n\nKeep the two stages separate in your mind. File ingestion brings the data into the processing environment. S Q L and data-frame transformations prepare it for analysis.",
       "wav": "wav/module13_slide_44.wav",
       "audio": "audio/module13_slide_44.mp3",
       "captions": "audio/module13_slide_44.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 45,
       "title": "Project overview",
-      "transcript": "The project asks students to build a small Spark SQL pipeline. First, inspect the source schema and grain. Second, clean and type the needed columns. Third, summarize monthly product revenue or readmission intervals. Finally, validate output grain and totals. In Spark, validation is still essential because distributed execution can make mistakes expensive. Connect this idea to a retail pipeline aggregating high-volume sales data across partitions. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 145,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        145
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "The project asks students to build a small Spark S Q L pipeline. First, inspect the source schema and grain. Second, clean and type the needed columns. Third, summarize monthly product revenue or readmission intervals.\n\nFinally, validate output grain and totals. In Spark, validation is still essential because distributed execution can make mistakes expensive.",
       "wav": "wav/module13_slide_45.wav",
       "audio": "audio/module13_slide_45.mp3",
       "captions": "audio/module13_slide_45.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 46,
       "title": "Project step: inspect",
-      "transcript": "The first project step is inspection. In Spark, printSchema helps you see column types. show displays sample records. count can be useful, but remember that it triggers work. Use it intentionally. Before writing transformations, know what the raw data looks like and what one row represents. Connect this idea to a lakehouse processing millions of web events across many files. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 137,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        137
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "The first project step is inspection.\n\nIn a Spark notebook, the print schema command helps you inspect column names and data types. A show command lets you look at sample rows. A count action can tell you how many records exist, but remember that counting a distributed dataset triggers computation.\n\nUse these tools intentionally. Before you clean or aggregate anything, answer the same questions you have used throughout the course. What columns do I have? What types do they use? Are values missing? And what does one raw row represent?",
       "wav": "wav/module13_slide_46.wav",
       "audio": "audio/module13_slide_46.mp3",
       "captions": "audio/module13_slide_46.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 47,
       "title": "Project step: curate",
-      "transcript": "The curated table should not just be a copy of the raw data. It should have useful types, deliberate columns, and a documented row grain. For example, a monthly sales table may have one row per product and month. A readmission table may have one row per repeat admission. Connect this idea to a healthcare analytics platform processing large longitudinal event tables. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 136,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        136
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "The curated table should not just be a copy of the raw data. It should have useful types, deliberate columns, and a documented row grain.\n\nFor example, a monthly sales table may have one row per product and month. A readmission table may have one row per repeat admission.",
       "wav": "wav/module13_slide_47.wav",
       "audio": "audio/module13_slide_47.mp3",
       "captions": "audio/module13_slide_47.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 48,
       "title": "Project validation",
-      "transcript": "Validation is not optional. State the row grain. Compare totals when the measure is additive. Check whether NULL values were preserved or filtered intentionally. Inspect the plan for unnecessary scans or shuffles. A pipeline is stronger when the result is both correct and explainable. Connect this idea to a retail pipeline aggregating high-volume sales data across partitions. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 133,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        133
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Validation is still required in Spark. A distributed pipeline that finishes successfully can still produce the wrong result.\n\nState the expected row grain. Compare totals when the measure is additive. Check row counts at important stages. Inspect unexpected null values. Confirm that joins did not multiply the data. And review the execution plan for unnecessarily large scans or shuffles.\n\n[tts-break]\n\nThink of validation as having two sides. First, is the result analytically correct? Second, is the pipeline doing the work in a reasonable way for the scale of the data?\n\nA trustworthy pipeline should be both correct and explainable.",
       "wav": "wav/module13_slide_48.wav",
       "audio": "audio/module13_slide_48.mp3",
       "captions": "audio/module13_slide_48.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 49,
       "title": "Recognition checkpoint",
-      "transcript": "Use this checkpoint to connect requirements with concepts. Large lake files suggest distributed scanning. Grouping by a key may create a shuffle. Previous-event analysis suggests LAG. A reusable curated output may be stored as a Delta table. Plan inspection begins with EXPLAIN. These mappings help you choose the right Spark SQL pattern. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
-      "seed": 1234,
-      "tts_text_tokens": 162,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        162
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Use this checkpoint to connect a requirement with the Spark concept that supports it.\n\nLarge files may benefit from distributed scanning. Grouping by a key may require a shuffle. A previous-event question suggests the lag function. A reusable curated lakehouse result may be stored as a Delta table. The explain command helps us inspect the execution plan.\n\nThe goal is not to memorize isolated vocabulary. It is to recognize which idea becomes relevant when the requirement changes.",
       "wav": "wav/module13_slide_49.wav",
       "audio": "audio/module13_slide_49.mp3",
       "captions": "audio/module13_slide_49.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 50,
       "title": "Assessment starter",
-      "transcript": "The assessment starter asks for one row per product and month. The browser version is already complete so you can run it and inspect the result. In a student assignment, you can remove part of the SELECT or GROUP BY and ask students to finish it. After running it, explain the output grain and why a Spark version may need a shuffle for the grouping keys. For this activity, make a prediction before you run anything. State what one output row should represent, which records you expect to remain, and what edge case is most likely to expose a mistake. Then run the SQL and compare the result with that prediction. If it does not match, debug the logic in small pieces instead of changing several clauses at once. This is the same habit you would use in a real analytics project: validate the meaning of the result, not only whether the statement executes.",
-      "seed": 1234,
-      "tts_text_tokens": 171,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        171
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "The assessment starter asks for one row per product and month. The browser version is already complete so you can run it and inspect the result.\n\nIn a student assignment, you can remove part of the select or group by and ask students to finish it. After running it, explain the output grain and why a Spark version may need a shuffle for the grouping keys.",
       "wav": "wav/module13_slide_50.wav",
       "audio": "audio/module13_slide_50.mp3",
       "captions": "audio/module13_slide_50.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 51,
       "title": "Object decision guide",
-      "transcript": "This decision guide helps you choose where work belongs. Transactional workflows often belong in a database. Large file transformations often fit Spark. Reusable lakehouse outputs often become Delta tables. Small dashboard queries may fit a database or SQL endpoint. Batch feature preparation may fit Spark. The best choice depends on workload, freshness, governance, and scale. Connect this idea to a retail pipeline aggregating high-volume sales data across partitions. Ask what could go wrong if the concept were misunderstood: could rows be duplicated, important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce? A strong analyst can explain both the SQL operation and the assumption behind it. After the example, summarize the idea in one plain-language sentence before moving on.",
-      "seed": 1234,
-      "tts_text_tokens": 149,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        149
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "This decision guide helps you choose where work belongs. Transactional workflows often belong in a database. Large file transformations often fit Spark. Reusable lakehouse outputs often become Delta tables.\n\nSmall dashboard queries may fit a database or S Q L endpoint. Batch feature preparation may fit Spark. The best choice depends on workload, freshness, governance, and scale.",
       "wav": "wav/module13_slide_51.wav",
       "audio": "audio/module13_slide_51.mp3",
       "captions": "audio/module13_slide_51.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 52,
       "title": "Module 13 takeaways",
-      "transcript": "These are the main habits from Module 13. Keep the relational thinking you built earlier. Add distributed cost awareness. Use raw files, temporary views, and Delta tables deliberately. Inspect plans. Validate outputs. And match the tool to the workload instead of assuming Spark is always better. Do not treat this as a list to memorize. Try to explain each idea using one example from a project you understand. If you can describe when you would use the concept, what assumption it makes, and how you would validate the result, you are ready to apply it independently.",
-      "seed": 1234,
-      "tts_text_tokens": 113,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        113
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "These are the main habits from Module 13. Keep the relational thinking you built earlier. Add distributed cost awareness. Use raw files, temporary views, and Delta tables deliberately.\n\n[tts-break]\n\nInspect plans. Validate outputs. And match the tool to the workload instead of assuming Spark is always better.",
       "wav": "wav/module13_slide_52.wav",
       "audio": "audio/module13_slide_52.mp3",
       "captions": "audio/module13_slide_52.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     },
     {
       "slide": 53,
       "title": "Next: Module 14",
-      "transcript": "Module 14 is the final project. You will bring together the course skills: understanding data, preparing it, writing SQL, validating outputs, and communicating results. The Spark SQL ideas from this module give you one more option for thinking about analytical scale, but the core habits remain the same: know your data, state the grain, validate your work, and explain your decisions. As you move forward, keep the reasoning habits from this module. The next topic will add new SQL tools, but it still depends on understanding grain, missing values, and the meaning of each transformation.",
-      "seed": 1234,
-      "tts_text_tokens": 116,
-      "tts_chunk_count": 1,
-      "tts_chunk_tokens": [
-        116
-      ],
-      "tts_explicit_breaks": 0,
-      "tts_chunk_limit": 260,
-      "stitched_audio": false,
+      "transcript": "Module 14 brings the course together.\n\nIt is important to be clear about one thing. Module 14 is a course synthesis and a sample data-preparation walkthrough. It is not the official final-project assignment. The actual project instructions, rubric, due date, required files, and submission details are in Canvas.\n\n[tts-break]\n\nIn Module 14, we will connect the major habits from the entire course. We will start with source meaning and grain, then move through profiling, cleaning, integration, reshaping, validation, reusable outputs, and documentation.\n\nSpark adds one more perspective to that workflow: sometimes the same data-preparation ideas need to operate at a much larger scale. But the core standard does not change. Understand the data, make deliberate transformations, validate what you produce, and be able to explain your decisions.",
       "wav": "wav/module13_slide_53.wav",
       "audio": "audio/module13_slide_53.mp3",
       "captions": "audio/module13_slide_53.vtt",
-      "sync_method": "whole_slide_silence_alignment"
+      "sync_method": "tts_break_section_generation",
+      "speech_speed": 0.93
     }
   ]
 }

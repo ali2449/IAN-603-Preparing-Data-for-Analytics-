@@ -1,43 +1,25 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.952
-Use this guide when selecting advanced SQL tools.
+00:00:00.000 --> 00:00:02.642
+Here is a simple decision guide.
 
-00:00:02.952 --> 00:00:03.582
-Named stages suggest CTEs. Hierarchies suggest recursive CTEs.
+00:00:02.642 --> 00:00:10.227
+If a complex query needs clear intermediate stages, consider common table expressions.
 
-00:00:03.582 --> 00:00:06.277
-Detail plus group context suggests windows.
+00:00:10.227 --> 00:00:19.282
+If the data contains a hierarchy such as employees and managers, consider a recursive common table expression.
 
-00:00:06.277 --> 00:00:07.042
-Top N requires a ranking rule.
+00:00:19.282 --> 00:00:25.772
+If you need detail rows plus group context, consider a window function.
 
-00:00:07.042 --> 00:00:07.732
-Previous and next suggest LAG and LEAD.
+00:00:25.772 --> 00:00:28.197
+If the question says previous, think about lag.
 
-00:00:07.732 --> 00:00:09.577
-Running and moving calculations require ordered windows and meaningful frames.
+00:00:28.197 --> 00:00:33.472
+If it says next, think about the function spelled L E A D.
 
-00:00:09.577 --> 00:00:13.192
-And if you truly want one row per group, groupby may still be the simplest correct choice.
+00:00:33.472 --> 00:00:40.922
+If you need a running or moving calculation, define a meaningful sequence and frame.
 
-00:00:13.192 --> 00:00:15.802
-When reading the example, do not read punctuation one character at a time.
-
-00:00:15.802 --> 00:00:18.857
-Start with the purpose of the query, then identify the input rows, the operation being applied,
-
-00:00:18.857 --> 00:00:19.162
-and the shape of the expected output.
-
-00:00:19.162 --> 00:00:23.792
-In a real setting such as a sales team calculating running revenue and top products by region,
-
-00:00:23.792 --> 00:00:26.722
-this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
-
-00:00:26.722 --> 00:00:27.852
-before discussing syntax.
-
-00:00:27.852 --> 00:00:29.829
-After running it, inspect a few records manually and check that the result matches that explanation.
+00:00:40.922 --> 00:00:49.623
+And if the true goal is one summary row per group, a regular group by query may still be the best solution.

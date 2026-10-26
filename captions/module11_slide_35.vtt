@@ -1,34 +1,22 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.347
-Deterministic ordering matters when you use ROW_NUMBER.
+00:00:00.000 --> 00:00:06.217
+Deterministic ordering means the same data should produce the same row sequence every time.
 
-00:00:03.347 --> 00:00:09.542
-If two employees have equal salary, salary alone does not define which comes first.
+00:00:06.217 --> 00:00:10.222
+Suppose two employees have exactly the same salary.
 
-00:00:09.542 --> 00:00:13.182
-Adding employee ID creates a stable order.
+00:00:10.222 --> 00:00:19.382
+If row number is ordered only by salary, the database has no business rule that says which tied employee should come
 
-00:00:13.182 --> 00:00:16.792
-But be careful with RANK and DENSE_RANK.
+00:00:19.382 --> 00:00:26.402
+first. Adding employee I D as a second ordering value gives the query a stable tie-breaker.
 
-00:00:16.792 --> 00:00:24.072
-If you include employee ID inside the ranking ORDER BY, the tied salary rows are no longer peers.
+00:00:26.402 --> 00:00:28.072
+Be careful, though.
 
-00:00:24.072 --> 00:00:27.062
-Choose the ordering based on the meaning you want.
+00:00:28.072 --> 00:00:36.442
+If you add employee I D to a rank calculation, the two salary values may no longer be treated as true peers.
 
-00:00:27.062 --> 00:00:33.282
-Connect this idea to a sales team calculating running revenue and top products by region.
-
-00:00:33.282 --> 00:00:39.232
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
-
-00:00:39.232 --> 00:00:47.047
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
-
-00:00:47.047 --> 00:00:52.902
-A strong analyst can explain both the SQL operation and the assumption behind it.
-
-00:00:52.902 --> 00:00:58.684
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:36.442 --> 00:00:39.532
+The ordering rule must match the meaning you want.

@@ -1,25 +1,19 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:07.462
-groupby and PARTITION BY both organize rows into groups, but they affect output very differently.
+00:00:00.000 --> 00:00:06.992
+Group by and partition by both organize rows into groups, but they produce very different outputs.
 
-00:00:07.462 --> 00:00:11.217
-groupby collapses rows to the grouping grain.
+00:00:06.992 --> 00:00:12.889
+Group by usually collapses several detail rows into one summary row for each group.
 
-00:00:11.217 --> 00:00:17.072
-PARTITION BY defines a window context while preserving the detail rows.
+00:00:13.425 --> 00:00:16.187
+Partition by does not collapse the rows.
 
-00:00:17.072 --> 00:00:24.352
-Choose based on the output grain you need, not because window functions are newer or more advanced.
+00:00:16.187 --> 00:00:22.007
+It defines the context for a window calculation while keeping the detail rows.
 
-00:00:24.352 --> 00:00:30.537
-Window functions preserve detail rows while calculating across a related set.
+00:00:22.007 --> 00:00:27.492
+For example, group by can give one row per patient with average stay.
 
-00:00:30.537 --> 00:00:35.457
-PARTITION BY defines independent groups, ORDER BY defines sequence,
-
-00:00:35.457 --> 00:00:40.982
-and the frame defines which neighboring rows participate.
-
-00:00:40.982 --> 00:00:45.548
-Those three choices are part of the business rule, not just syntax.
+00:00:27.492 --> 00:00:34.041
+A window function can keep every admission and place the patient's average stay beside each admission.

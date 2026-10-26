@@ -1,28 +1,31 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.327
-A Spark application has a driver and executors.
+00:00:00.000 --> 00:00:05.142
+A Spark application usually has a driver and one or more executors.
 
-00:00:03.327 --> 00:00:07.032
-The driver coordinates the application and builds the plan.
+00:00:05.142 --> 00:00:07.867
+Think of the driver as the coordinator.
 
-00:00:07.032 --> 00:00:10.662
-Executors run tasks on data partitions.
+00:00:07.867 --> 00:00:13.922
+It understands the job, builds the execution plan, and coordinates the work.
 
-00:00:10.662 --> 00:00:18.582
-A beginner-friendly way to think about this is that the driver organizes the work and the executors perform
+00:00:13.922 --> 00:00:16.912
+Think of the executors as the workers.
 
-00:00:18.582 --> 00:00:24.882
-the work. We should avoid collecting huge data back to the driver because that can create memory problems.
+00:00:16.912 --> 00:00:21.939
+They process partitions of the data and perform the tasks assigned to them.
 
-00:00:24.882 --> 00:00:30.712
-Spark distributes work across multiple processes and often multiple machines.
+00:00:22.456 --> 00:00:25.473
+Suppose we have a very large sales dataset.
 
-00:00:30.712 --> 00:00:36.892
-The driver coordinates the job, while executors perform tasks on partitions of the data.
+00:00:25.473 --> 00:00:31.488
+Instead of one process reading every row, Spark can divide the data into partitions and let several executors work at
 
-00:00:36.892 --> 00:00:42.897
-This architecture becomes valuable when the data or workload is too large for one machine or when a
+00:00:31.488 --> 00:00:34.843
+the same time.
 
-00:00:42.897 --> 00:00:46.224
-platform needs scalable parallel processing.
+00:00:34.843 --> 00:00:41.833
+One important warning is that we normally do not want to bring a huge distributed dataset back to the driver.
+
+00:00:41.833 --> 00:00:46.980
+Doing that can create a memory bottleneck and defeats the purpose of distributing the work.

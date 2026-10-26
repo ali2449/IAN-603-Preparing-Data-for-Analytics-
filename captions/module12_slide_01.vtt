@@ -1,43 +1,34 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.037
-Welcome to Module 12, Views and Modular Queries.
+00:00:00.000 --> 00:00:06.312
+Welcome to Module 12, Views and Reusable S Q L Objects in Postgres.
 
-00:00:04.037 --> 00:00:09.862
-This module is about turning useful SQL logic into reusable database interfaces.
+00:00:06.312 --> 00:00:14.362
+In Module 11, you learned how to organize advanced queries with common table expressions and window functions.
 
-00:00:09.862 --> 00:00:14.987
-We will learn standard views, materialized views, updatable views, check options, dependency inspection,
+00:00:14.362 --> 00:00:18.547
+Those tools are useful inside one analysis.
 
-00:00:14.987 --> 00:00:19.282
-freshness policies, and modular query design.
+00:00:18.547 --> 00:00:26.478
+But what happens when the same trusted logic is needed by many reports, many analysts, or many applications?
 
-00:00:19.282 --> 00:00:21.802
-The central idea is that a view is not just saved text.
+00:00:26.928 --> 00:00:29.355
+That is where this module begins.
 
-00:00:21.802 --> 00:00:27.472
-It is an interface with a row grain, a set of columns,
+00:00:29.355 --> 00:00:35.790
+We are moving from writing one good query to creating reusable database interfaces.
 
-00:00:27.472 --> 00:00:28.807
-and a meaning that downstream users may depend on.
+00:00:35.790 --> 00:00:38.375
+We will start with standard views.
 
-00:00:28.807 --> 00:00:35.282
-Keep a real project in mind as we work through this section—for example,
+00:00:38.375 --> 00:00:44.235
+Then we will look at materialized views, which store a snapshot of a query result.
 
-00:00:35.282 --> 00:00:41.202
-an analytics team exposing a stable reporting view to dashboard users.
+00:00:44.235 --> 00:00:52.100
+We will also discuss dependencies, updates through views, access boundaries, and freshness.
 
-00:00:41.202 --> 00:00:45.982
-The technical feature matters because it changes what questions we can answer reliably and how easily another
+00:00:52.100 --> 00:00:58.895
+The main question to keep in mind is simple: which logic should stay inside one query,
 
-00:00:45.982 --> 00:00:49.492
-analyst can understand our work.
-
-00:00:49.492 --> 00:00:56.527
-As you listen, try to connect each SQL or data concept to a decision you might need to
-
-00:00:56.527 --> 00:01:00.087
-defend later: what the data means, what one row represents, what can be missing,
-
-00:01:00.087 --> 00:01:04.229
-and what assumptions the transformation introduces.
+00:00:58.895 --> 00:01:03.525
+and which logic is stable enough to become a reusable database object?

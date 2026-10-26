@@ -1,25 +1,22 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.042
-Multiple CTEs can depend on earlier CTEs.
+00:00:00.000 --> 00:00:08.042
+A query can contain several common table expressions, and later stages can use results produced by earlier stages.
 
-00:00:04.042 --> 00:00:08.817
-This creates a pipeline. The first stage summarizes admissions.
+00:00:08.042 --> 00:00:10.807
+Think of this as a small pipeline.
 
-00:00:08.817 --> 00:00:12.672
-The second stage joins those counts to patient attributes.
+00:00:10.807 --> 00:00:14.082
+The first stage may calculate admission counts.
 
-00:00:12.672 --> 00:00:16.087
-The final query creates a visit-pattern label.
+00:00:14.082 --> 00:00:18.187
+The second stage may join those counts to patient information.
 
-00:00:16.087 --> 00:00:20.902
-Each stage has one focused job and one explainable grain.
+00:00:18.187 --> 00:00:23.095
+The final stage may create a label such as repeat visitor or single visit.
 
-00:00:20.902 --> 00:00:27.732
-A CTE gives a name to an intermediate result so a complex query can be read in stages.
+00:00:23.738 --> 00:00:28.595
+This structure is useful because every stage has one clear responsibility.
 
-00:00:27.732 --> 00:00:35.572
-Use it to clarify grain changes and major transformations, not simply to break every two lines into a
-
-00:00:35.572 --> 00:00:42.320
-new block. A useful CTE name describes what the rows represent, such as patient_totals or ranked_visits.
+00:00:28.595 --> 00:00:35.589
+When a result looks wrong, you can inspect one stage at a time instead of debugging one very large query.

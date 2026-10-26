@@ -1,34 +1,25 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.372
-The applied challenge returns the two longest completed stays per department.
+00:00:00.000 --> 00:00:05.107
+The applied challenge asks for the two longest completed stays in each department.
 
-00:00:04.372 --> 00:00:09.582
-The CTE calculates stay days and assigns ROW_NUMBER within each department.
+00:00:05.107 --> 00:00:09.462
+Start by calculating the stay duration for each completed admission.
 
-00:00:09.582 --> 00:00:12.992
-Stay duration descending defines the main order.
+00:00:09.462 --> 00:00:13.082
+The row grain is still one admission.
 
-00:00:12.992 --> 00:00:16.502
-Admission ID breaks exact duration ties.
+00:00:13.082 --> 00:00:17.407
+Next, rank admissions within each department, with the longest stay first.
 
-00:00:16.502 --> 00:00:20.357
-The outer query keeps row numbers one and two.
+00:00:17.407 --> 00:00:22.767
+Use admission I D as a stable tie-breaker when exact durations match.
 
-00:00:20.357 --> 00:00:25.492
-After running it, explain why admission-level detail is preserved.
+00:00:22.767 --> 00:00:27.037
+Finally, keep the first two row numbers from each department.
 
-00:00:25.492 --> 00:00:31.777
-Connect this idea to an operations team comparing each event with the previous and next event.
+00:00:27.037 --> 00:00:34.422
+After the query runs, explain why the result still contains admission-level detail rather than one summary row per
 
-00:00:31.777 --> 00:00:37.477
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
-
-00:00:37.477 --> 00:00:45.152
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
-
-00:00:45.152 --> 00:00:50.722
-A strong analyst can explain both the SQL operation and the assumption behind it.
-
-00:00:50.722 --> 00:00:56.684
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:34.422 --> 00:00:35.274
+department.

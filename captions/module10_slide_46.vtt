@@ -1,25 +1,16 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.762
-Pre-aggregation can help control grain.
+00:00:00.000 --> 00:00:04.142
+One way to control row multiplication is to summarize first.
 
-00:00:02.762 --> 00:00:06.852
-First summarize the fact table to the level you actually need.
+00:00:04.142 --> 00:00:08.947
+First summarize the fact table to the grain you actually need.
 
-00:00:06.852 --> 00:00:10.787
-Then perform later joins or pivots from that stable grain.
+00:00:08.947 --> 00:00:13.132
+Then join or pivot from that stable intermediate result.
 
-00:00:10.787 --> 00:00:17.672
-This separates fact aggregation from presentation reshaping and can make the query easier to verify.
+00:00:13.132 --> 00:00:18.332
+This separates the aggregation decision from the presentation decision.
 
-00:00:17.672 --> 00:00:22.167
-Joining detail tables before reshaping can multiply rows.
-
-00:00:22.167 --> 00:00:27.432
-If the target is one row per patient or product, summarize each one-to-many source to the target grain
-
-00:00:27.432 --> 00:00:29.957
-before combining them.
-
-00:00:29.957 --> 00:00:35.384
-This keeps measures interpretable and prevents a pivot from hiding earlier join inflation.
+00:00:18.332 --> 00:00:24.079
+It also makes the query easier to validate because each stage has a clear grain.

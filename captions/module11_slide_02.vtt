@@ -1,40 +1,25 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.527
-Advanced SQL is mostly about controlling intermediate results and row context.
+00:00:00.000 --> 00:00:06.197
+Advanced S Q L is mostly about controlling two things: intermediate results and row context.
 
-00:00:05.527 --> 00:00:09.962
-A CTE gives a meaningful name to a stage in the query.
+00:00:06.197 --> 00:00:14.332
+A common table expression gives a useful name to one stage of a larger query.
 
-00:00:09.962 --> 00:00:16.547
-A window function lets one row see related rows without automatically collapsing the result.
+00:00:14.332 --> 00:00:18.322
+That makes a complicated query easier to read one step at a time.
 
-00:00:16.547 --> 00:00:19.812
-Sequence functions depend on a meaningful order.
+00:00:18.322 --> 00:00:21.112
+A window function does something different.
 
-00:00:19.812 --> 00:00:21.512
-And throughout the module, grain still matters.
+00:00:21.112 --> 00:00:31.142
+It lets the current row use information from related rows while still keeping the current row in the result.
 
-00:00:21.512 --> 00:00:26.942
-At every stage, you should be able to complete the sentence: one row represents what?
+00:00:31.142 --> 00:00:39.347
+For example, we can keep every employee row and place the department average salary beside each employee.
 
-00:00:26.942 --> 00:00:34.207
-When reading the example, do not read punctuation one character at a time.
+00:00:39.347 --> 00:00:45.617
+Or we can keep every admission and place the previous admission date beside the current one.
 
-00:00:34.207 --> 00:00:38.422
-Start with the purpose of the query, then identify the input rows, the operation being applied,
-
-00:00:38.422 --> 00:00:42.767
-and the shape of the expected output.
-
-00:00:42.767 --> 00:00:49.162
-In a real setting such as a sales team calculating running revenue and top products by region,
-
-00:00:49.162 --> 00:00:55.342
-this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
-
-00:00:55.342 --> 00:00:57.582
-before discussing syntax.
-
-00:00:57.582 --> 00:01:03.817
-After running it, inspect a few records manually and check that the result matches that explanation.
+00:00:45.617 --> 00:00:53.457
+That is the main idea of this module: add analytical context without losing track of the row grain.

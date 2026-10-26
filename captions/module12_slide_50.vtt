@@ -1,31 +1,22 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.462
-This retention query starts from the recent-activity view.
+00:00:00.000 --> 00:00:03.797
+This retention example begins with the recent activity view.
 
-00:00:03.462 --> 00:00:07.182
-A CTE finds the last transaction per customer.
+00:00:03.797 --> 00:00:09.497
+The first common table expression finds the most recent transaction for each customer.
 
-00:00:07.182 --> 00:00:11.667
-Another CTE applies a sixty-day inactivity threshold.
+00:00:09.497 --> 00:00:13.447
+The next stage applies a sixty day inactivity rule.
 
-00:00:11.667 --> 00:00:15.227
-That threshold is intentionally report-specific.
+00:00:13.447 --> 00:00:16.897
+Why keep that threshold outside the shared view?
 
-00:00:15.227 --> 00:00:21.037
-If another report wants ninety days, the shared activity view does not need to change.
+00:00:16.897 --> 00:00:20.442
+Because another report may want ninety days instead.
 
-00:00:21.037 --> 00:00:27.562
-Connect this idea to a data platform materializing expensive summaries for faster consumption.
+00:00:20.442 --> 00:00:24.392
+The view owns the stable definition of recent activity.
 
-00:00:27.562 --> 00:00:33.262
-Ask what could go wrong if the concept were misunderstood: could rows be duplicated,
-
-00:00:33.262 --> 00:00:41.002
-important records disappear, categories be interpreted incorrectly, or a report become difficult to reproduce?
-
-00:00:41.002 --> 00:00:46.597
-A strong analyst can explain both the SQL operation and the assumption behind it.
-
-00:00:46.597 --> 00:00:52.480
-After the example, summarize the idea in one plain-language sentence before moving on.
+00:00:24.392 --> 00:00:27.218
+The report owns the temporary business rule.

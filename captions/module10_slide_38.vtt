@@ -1,37 +1,16 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.687
-This query first creates a wide product-level table with month totals.
+00:00:00.000 --> 00:00:03.397
+This example makes the round trip idea visible.
 
-00:00:04.687 --> 00:00:08.777
-Then it unpivots the wide columns into product-month rows.
+00:00:03.397 --> 00:00:06.457
+The first step creates a wide summary.
 
-00:00:08.777 --> 00:00:13.582
-The result is long again, but it is not the original transaction table.
+00:00:06.457 --> 00:00:11.282
+The second step converts that wide summary back into long form.
 
-00:00:13.582 --> 00:00:16.592
-It is one row per product-month total.
+00:00:11.282 --> 00:00:16.287
+The result is long again, but it still contains summarized data.
 
-00:00:16.592 --> 00:00:21.317
-That is the key distinction between reshaping and recovering detail.
-
-00:00:21.317 --> 00:00:26.572
-When reading the example, do not read punctuation one character at a time.
-
-00:00:26.572 --> 00:00:30.827
-Start with the purpose of the query, then identify the input rows, the operation being applied,
-
-00:00:30.827 --> 00:00:35.042
-and the shape of the expected output.
-
-00:00:35.042 --> 00:00:41.522
-In a real setting such as a machine-learning workflow converting wide measurements into tidy long data,
-
-00:00:41.522 --> 00:00:47.707
-this habit makes code reviews much easier because you can explain what the query is supposed to guarantee
-
-00:00:47.707 --> 00:00:49.897
-before discussing syntax.
-
-00:00:49.897 --> 00:00:55.885
-After running it, inspect a few records manually and check that the result matches that explanation.
+00:00:16.287 --> 00:00:21.775
+So a return to long form does not necessarily mean a return to the original detail.

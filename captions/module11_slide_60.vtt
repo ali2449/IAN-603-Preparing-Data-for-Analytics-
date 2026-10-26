@@ -1,25 +1,19 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.282
-CTEs and windows are most useful when combined into a pipeline.
+00:00:00.000 --> 00:00:06.962
+Common table expressions and window functions work especially well together in a multi-stage analytical pipeline.
 
-00:00:04.282 --> 00:00:08.717
-The first CTE aggregates revenue to department-product grain.
+00:00:06.962 --> 00:00:10.577
+One stage can aggregate data to the grain we need.
 
-00:00:08.717 --> 00:00:13.122
-The second stage ranks those product totals inside each department.
+00:00:10.577 --> 00:00:16.562
+A second stage can add a ranking or sequence calculation without changing that grain.
 
-00:00:13.122 --> 00:00:16.362
-The final query filters to the top ranks.
+00:00:16.562 --> 00:00:20.369
+The final query can filter or label the prepared result.
 
-00:00:16.362 --> 00:00:20.542
-Each stage has a different job and a clear row meaning.
+00:00:20.819 --> 00:00:24.086
+The advantage is not that the query looks more advanced.
 
-00:00:20.542 --> 00:00:26.872
-A CTE gives a name to an intermediate result so a complex query can be read in stages.
-
-00:00:26.872 --> 00:00:35.147
-Use it to clarify grain changes and major transformations, not simply to break every two lines into a
-
-00:00:35.147 --> 00:00:42.442
-new block. A useful CTE name describes what the rows represent, such as patient_totals or ranked_visits.
+00:00:24.086 --> 00:00:29.117
+The advantage is that every stage has a clear purpose and can be checked separately.
